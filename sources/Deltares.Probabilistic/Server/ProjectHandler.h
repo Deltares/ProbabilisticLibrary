@@ -173,6 +173,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
 
             std::unordered_map <std::string, std::vector<double>> tempValues;
+            double argValue = nan("");
             int tempIntValue = 0;
             
             std::shared_ptr<Models::ModelProject> GetProject(int id);

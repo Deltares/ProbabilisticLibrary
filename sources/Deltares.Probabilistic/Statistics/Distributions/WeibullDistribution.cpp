@@ -29,6 +29,8 @@
 #include <cmath>
 #include <numbers>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -130,7 +132,8 @@ namespace Deltares
             // see https://www.researchgate.net/post/Can_anybody_explain_how_to_find_out_the_shape_and_scale_parameters_for_weibull_statistics_for_average_wind_speed_data_for_a_month
             double kGuess = 1.2785 / u - 0.5004;
 
-            auto bisection = Numeric::BisectionRootFinder(tolBisection);
+            constexpr double toleranceBisection = 0.00001;
+            auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
             Numeric::RootFinderMethod method = [](double k)
             {
@@ -171,13 +174,13 @@ namespace Deltares
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
-                this->setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 
-        void WeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void WeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = this->getFittedMinimum(values);
+            stochast->Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
 
             std::vector<double> shiftedValues = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast->Shift; });
 
@@ -203,6 +206,11 @@ namespace Deltares
             stochast->Scale = std::pow(sum / shiftedValues.size(), 1 / stochast->Shape);
 
             stochast->Observations = static_cast<int>(values.size());
+        }
+
+        double WeibullDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
         }
 
         std::vector<double> WeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

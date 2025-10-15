@@ -23,6 +23,8 @@
 #include "../../Math/NumericSupport.h"
 #include <algorithm>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -98,12 +100,12 @@ namespace Deltares
 
         double CompositeDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
         {
-            return this->getDeviationByIteration(stochast);
+            return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
         double CompositeDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
         {
-            return this->getXFromUByIteration(stochast, u);
+            return DistributionSupport::getXFromUByIteration(*this, stochast, u);
         }
 
         double CompositeDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)

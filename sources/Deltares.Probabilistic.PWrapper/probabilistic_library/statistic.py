@@ -22,7 +22,7 @@
 from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
-from math import isnan
+from math import isnan, nan
 from .utils import FrozenObject, FrozenList, PrintUtils, NumericUtils, CallbackList
 from .logging import Evaluation, Message, ValidationReport
 from . import interface
@@ -140,10 +140,7 @@ class ProbabilityValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['reliability_index',
@@ -207,10 +204,7 @@ class Stochast(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['name',
@@ -594,29 +588,67 @@ class Stochast(FrozenObject):
 		interface.Execute(self._id, 'initialize_conditional_values');
 		return interface.GetValue(self._id, 'x_from_u_and_source')
 
-	def fit(self, values):
-		interface.SetArrayValue(self._id, 'fit', values)
-		self._histogram_values = None
-		self._discrete_values = None
-		self._fragility_values = None
+	def fit(self, values : list[float], shift : float = nan):
+		"""Fits the stochast parameters from a list of values.
+        Validates first whether fit can be performed, if not aerror messagse a reprinted and no fit is performed.
+
+        Parameters
+        ----------
+        values : list[float]
+            The list of values from which is fitted
+
+        shift : float, optional
+            If set, the shift value is not fitted, but taken from this value
+        """
+
+		interface.SetIntValue(self._id, 'prior', 0)
+		interface.SetValue(self._id, 'shift_for_fit', shift)
+		interface.SetArrayValue(self._id, 'data', values)
+		validate_id = interface.GetIdValue(self._id, 'validate_fit')
+		validation_report = ValidationReport(validate_id)
+		if validation_report.is_valid():
+			interface.Execute(self._id, 'fit')
+			self._histogram_values = None
+			self._discrete_values = None
+			self._fragility_values = None
+		else:
+			for message in validation_report.messages:
+				message.print()
 
 	def can_fit_prior(self) -> bool:
 		return interface.GetBoolValue(self._id, 'can_fit_prior')
 
-	def fit_prior(self, prior : str | Stochast, values):
+	def fit_prior(self, prior : str | Stochast, values : list[float], shift : float = nan):
+		"""Fits the stochast parameters from a list of values.
+        Validates first whether fit can be performed, if not aerror messagse a reprinted and no fit is performed.
+
+        Parameters
+        ----------
+        values : list[float]
+            The list of values from which is fitted
+
+        prior : Stochast | str
+            Prior stochast, Bayesian updating is used to perform fitting with prior
+
+        shift : float, optional
+            If set, the shift value is not fitted, but taken from this value
+        """
 		if type(prior) == str:
 			prior = self._variables[prior]
 
-		if not self.can_fit_prior():
-			print('Fit with prior is not supported for distribution type ' + str(self.distribution))
-		elif self.distribution != prior.distribution:
-			print('Fit from prior with another distribution type is not supported')
-		else:
-			interface.SetIntValue(self._id, 'prior', prior._id)
-			interface.SetArrayValue(self._id, 'fit_prior', values)
+		interface.SetIntValue(self._id, 'prior', prior._id)
+		interface.SetValue(self._id, 'shift_for_fit', shift)
+		interface.SetArrayValue(self._id, 'data', values)
+		validate_id = interface.GetIdValue(self._id, 'validate_fit')
+		validation_report = ValidationReport(validate_id)
+		if validation_report.is_valid():
+			interface.Execute(self._id, 'fit_prior')
 			self._histogram_values = None
 			self._discrete_values = None
 			self._fragility_values = None
+		else:
+			for message in validation_report.messages:
+				message.print()
 
 	def get_ks_test(self, values) -> float:
 		interface.SetArrayValue(self._id, 'data', values)
@@ -854,10 +886,7 @@ class DiscreteValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['x',
@@ -896,10 +925,7 @@ class FragilityValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['x',
@@ -975,10 +1001,7 @@ class HistogramValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['lower_bound',
@@ -1028,10 +1051,7 @@ class ContributingStochast(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['probability',
@@ -1075,10 +1095,7 @@ class ConditionalValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['x',
@@ -1201,10 +1218,7 @@ class CorrelationMatrix(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	@property
 	def variables(self) -> list[Stochast]:
@@ -1261,10 +1275,7 @@ class SelfCorrelationMatrix(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def _set_variables(self, variables):
 		self._variables = FrozenList(variables)
@@ -1293,10 +1304,7 @@ class Scenario(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['name',

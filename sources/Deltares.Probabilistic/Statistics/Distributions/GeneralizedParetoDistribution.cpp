@@ -27,6 +27,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -44,12 +46,12 @@ namespace Deltares
 
         double GeneralizedParetoDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
         {
-            return getMeanByIteration(stochast);
+            return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
         double GeneralizedParetoDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
         {
-            return getDeviationByIteration(stochast);
+            return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
         double GeneralizedParetoDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
@@ -137,7 +139,7 @@ namespace Deltares
 
         void GeneralizedParetoDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
         std::vector<double> GeneralizedParetoDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

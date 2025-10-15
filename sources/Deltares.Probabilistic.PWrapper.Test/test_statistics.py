@@ -75,6 +75,12 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(4.41, stochast.mean, delta=margin)
         self.assertAlmostEqual(0.37, stochast.deviation, delta=margin)
 
+        stochast.fit(values, 0)
+
+        self.assertAlmostEqual(0, stochast.shift, delta=margin)
+        self.assertAlmostEqual(4.38, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.29, stochast.deviation, delta=margin)
+
         prior = Stochast()
         prior.distribution = DistributionType.log_normal
         prior.mean = 3.5
@@ -95,6 +101,12 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(3.33, stochast.mean, delta=margin)
         self.assertAlmostEqual(0.48, stochast.deviation, delta=margin)
         self.assertAlmostEqual(-4.4, stochast.shift, delta=margin)
+
+        stochast.fit_prior(prior, negative_values, -3)
+
+        self.assertAlmostEqual(3.40, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.48, stochast.deviation, delta=margin)
+        self.assertAlmostEqual(-3, stochast.shift, delta=margin)
 
     def test_exponential(self):
         stochast = Stochast()
@@ -122,6 +134,12 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(8.2, stochast.deviation, delta=margin)
         self.assertAlmostEqual(-1.0, stochast.shift, delta=margin)
 
+        stochast.fit([2.0, 3.0, 5.0, 9.0, 17.0], 0)
+
+        self.assertAlmostEqual(7.2, stochast.mean, delta=margin)
+        self.assertAlmostEqual(7.2, stochast.deviation, delta=margin)
+        self.assertAlmostEqual(0, stochast.shift, delta=margin)
+
         prior = Stochast()
         prior.distribution = DistributionType.exponential
         prior.mean = 5.0
@@ -135,7 +153,7 @@ class Test_statistics(unittest.TestCase):
         printed = sys.stdout.getvalue()
         sys.stdout = sys.__stdout__
 
-        self.assertEqual("""Fit with prior is not supported for distribution type exponential\n""", printed)
+        self.assertEqual("""Error: Fit with prior is not supported for distribution type exponential.\n""", printed)
 
     def test_validation_ok(self):
         stochast = Stochast()
@@ -425,7 +443,7 @@ class Test_statistics(unittest.TestCase):
         printed = sys.stdout.getvalue()
         sys.stdout = sys.__stdout__
 
-        self.assertEqual("Fit from prior with another distribution type is not supported\n", printed)
+        self.assertEqual("Error: Fit from prior with other distribution type is not supported.\n", printed)
 
     def test_bernoulli(self):
         stochast = Stochast()

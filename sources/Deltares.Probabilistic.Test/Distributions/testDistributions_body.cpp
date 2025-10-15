@@ -416,7 +416,7 @@ namespace Deltares::Probabilistic::Test
         prior->setMean(3.0);
         prior->setDeviation(0.5);
 
-        stochast->fitPrior(prior, values);
+        stochast->fitPrior(values, prior);
 
         EXPECT_NEAR(stochast->getMean(), 4.380, margin);
         EXPECT_NEAR(stochast->getDeviation(), 0.141, margin);
@@ -437,23 +437,44 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(stochast->getDeviation(), 0.262, margin);
         EXPECT_EQ(stochast->getProperties()->Observations, 4);
 
+        Logging::ValidationReport report = stochast->getFitValidationReport(values, nullptr, 5);
+        EXPECT_FALSE(report.isValid());
+
+        Logging::ValidationReport report2 = stochast->getFitValidationReport(values, nullptr, 0);
+        EXPECT_TRUE(report2.isValid());
+
+        stochast->fit(values, 0);
+
+        EXPECT_EQ(stochast->getProperties()->Shift, 0);
+        EXPECT_NEAR(stochast->getMean(), 4.502, margin);
+        EXPECT_NEAR(stochast->getDeviation(), 0.295, margin);
+        EXPECT_EQ(stochast->getProperties()->Observations, 4);
+
         std::shared_ptr<Stochast> prior = std::make_shared<Stochast>();
         prior->setDistributionType(DistributionType::Normal);
+
+        Logging::ValidationReport report3 = stochast->getFitValidationReport(values, prior);
+        EXPECT_FALSE(report3.isValid());
+
+        prior->setDistributionType(DistributionType::LogNormal);
         prior->setMean(3.0);
         prior->setDeviation(0.5);
 
-        stochast->fitPrior(prior, values);
+        Logging::ValidationReport report4 = stochast->getFitValidationReport(values, prior);
+        EXPECT_TRUE(report4.isValid());
 
-        EXPECT_NEAR(stochast->getMean(), 4.503, margin);
+        stochast->fitPrior(values, prior);
+
+        EXPECT_NEAR(stochast->getMean(), 4.391, margin);
         EXPECT_NEAR(stochast->getDeviation(), 0.0, margin);
 
         stochast->setMeanAndDeviation(2.0, 0.5);
 
         std::vector<double> negativeValues = { -2.2, -0.7, 1.2, 1.3 };
-        stochast->fitPrior(prior, negativeValues);
+        stochast->fitPrior(negativeValues, prior);
 
-        EXPECT_NEAR(stochast->getMean(), 1.670, margin);
-        EXPECT_NEAR(stochast->getDeviation(), 1.216, margin);
+        EXPECT_NEAR(stochast->getMean(), 2.633, margin);
+        EXPECT_NEAR(stochast->getDeviation(), 0.455, margin);
         EXPECT_NEAR(stochast->getProperties()->Shift, -4.4, margin);
     }
 
@@ -477,7 +498,7 @@ namespace Deltares::Probabilistic::Test
         prior->setMean(0.4);
         prior->getProperties()->Observations = 5;
 
-        stochast->fitPrior(prior, values);
+        stochast->fitPrior(values, prior);
 
         EXPECT_NEAR(stochast->getMean(), 0.6, margin);
         EXPECT_NEAR(stochast->getDeviation(), sqrt(0.6 * 0.4), margin);

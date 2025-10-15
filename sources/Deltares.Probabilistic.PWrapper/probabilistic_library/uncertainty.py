@@ -54,10 +54,7 @@ class UncertaintySettings(FrozenObject):
 		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['max_parallel_processes',

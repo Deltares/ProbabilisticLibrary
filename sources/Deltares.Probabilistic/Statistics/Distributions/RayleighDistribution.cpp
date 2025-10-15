@@ -27,6 +27,8 @@
 #include <cmath>
 #include <numbers>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -118,15 +120,12 @@ namespace Deltares
 
         void RayleighDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            this->setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
-            double xMin = Numeric::NumericSupport::getMinimum(values);
-            double xMax = Numeric::NumericSupport::getMaximum(values);
-
-            stochast->Shift = xMin - (xMax - xMin) / values.size();
+            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });
             stochast->Scale = std::sqrt( sum/ (2 * values.size()));
@@ -134,6 +133,11 @@ namespace Deltares
 
             // Unbiased estimator, but cannot handle large sets:
             //stochast.Scale = s * SpecialFunctions.Gamma(x.Length) * Math.Sqrt(x.Length) / SpecialFunctions.Gamma(x.Length + 0.5);
+        }
+
+        double RayleighDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
         }
 
         std::vector<double> RayleighDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

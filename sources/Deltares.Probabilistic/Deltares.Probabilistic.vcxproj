@@ -189,6 +189,7 @@
     <ClInclude Include="Sensitivity\SobolDirection.h" />
     <ClInclude Include="Sensitivity\SobolResource.h" />
     <ClInclude Include="Sensitivity\SobolDirectionLoader.h" />
+    <ClInclude Include="Statistics\Distributions\DistributionSupport.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />
@@ -413,6 +414,7 @@
     <ClCompile Include="Sensitivity\SobolSequence.cpp" />
     <ClCompile Include="Sensitivity\SobolResource.cpp" />
     <ClCompile Include="Sensitivity\SobolDirectionLoader.cpp" />
+    <ClCompile Include="Statistics\Distributions\DistributionSupport.cpp" />
     <ClCompile Include="Uncertainty\UncertaintyResult.cpp" />
     <ClCompile Include="Model\RunProject.cpp" />
     <ClCompile Include="Model\RunProjectSettings.cpp" />

@@ -30,6 +30,8 @@
 
 #include <numbers>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -131,7 +133,7 @@ namespace Deltares
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
-                this->setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 
@@ -155,7 +157,7 @@ namespace Deltares
             return StandardNormal::getPFromU(u);
         }
 
-        void StudentTDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void StudentTDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             const double minSigma = 1.0E-9;
             const double minRelativeSigma = 0.99;
@@ -211,14 +213,14 @@ namespace Deltares
                 return nullptr;
             }
 
-            if (values.empty())
+            if (studentValues.empty())
             {
                 loadValues();
             }
 
-            for (size_t i = 0; i < values.size(); i++)
+            for (size_t i = 0; i < studentValues.size(); i++)
             {
-                auto studentValue = values[i];
+                auto studentValue = studentValues[i];
 
                 if (studentValue->N >= degreesOfFreedom)
                 {
@@ -229,15 +231,15 @@ namespace Deltares
                     else
                     {
                         // linear interpolation
-                        double fraction = static_cast<double>(degreesOfFreedom - values[i - 1]->N) / static_cast<double>(values[i]->N - values[i - 1]->N);
+                        double fraction = static_cast<double>(degreesOfFreedom - studentValues[i - 1]->N) / static_cast<double>(studentValues[i]->N - studentValues[i - 1]->N);
 
                         std::shared_ptr<StudentTDistribution::StudentTValue> newStudentValue = std::make_shared<StudentTDistribution::StudentTValue>(
                             degreesOfFreedom,
-                            (1 - fraction) * values[i - 1]->P0_100 + fraction * values[i]->P0_100,
-                            (1 - fraction) * values[i - 1]->P0_050 + fraction * values[i]->P0_050,
-                            (1 - fraction) * values[i - 1]->P0_025 + fraction * values[i]->P0_025,
-                            (1 - fraction) * values[i - 1]->P0_010 + fraction * values[i]->P0_010,
-                            (1 - fraction) * values[i - 1]->P0_005 + fraction * values[i]->P0_005);
+                            (1 - fraction) * studentValues[i - 1]->P0_100 + fraction * studentValues[i]->P0_100,
+                            (1 - fraction) * studentValues[i - 1]->P0_050 + fraction * studentValues[i]->P0_050,
+                            (1 - fraction) * studentValues[i - 1]->P0_025 + fraction * studentValues[i]->P0_025,
+                            (1 - fraction) * studentValues[i - 1]->P0_010 + fraction * studentValues[i]->P0_010,
+                            (1 - fraction) * studentValues[i - 1]->P0_005 + fraction * studentValues[i]->P0_005);
 
                         return newStudentValue;
                     }
@@ -316,40 +318,40 @@ namespace Deltares
 
         void StudentTDistribution::loadValues()
         {
-            values.push_back(std::make_shared<StudentTValue>(1, 3.078, 6.314, 12.706, 31.821, 63.657));
-            values.push_back(std::make_shared<StudentTValue>(2, 1.886, 2.92, 4.303, 6.965, 9.925));
-            values.push_back(std::make_shared<StudentTValue>(3, 1.638, 2.353, 3.182, 4.541, 5.841));
-            values.push_back(std::make_shared<StudentTValue>(4, 1.533, 2.132, 2.776, 3.747, 4.604));
-            values.push_back(std::make_shared<StudentTValue>(5, 1.476, 2.015, 2.571, 3.365, 4.032));
-            values.push_back(std::make_shared<StudentTValue>(6, 1.44, 1.943, 2.447, 3.143, 3.707));
-            values.push_back(std::make_shared<StudentTValue>(7, 1.415, 1.895, 2.365, 2.998, 3.499));
-            values.push_back(std::make_shared<StudentTValue>(8, 1.397, 1.86, 2.306, 2.896, 3.355));
-            values.push_back(std::make_shared<StudentTValue>(9, 1.383, 1.833, 2.262, 2.821, 3.25));
-            values.push_back(std::make_shared<StudentTValue>(10, 1.372, 1.812, 2.228, 2.764, 3.169));
-            values.push_back(std::make_shared<StudentTValue>(11, 1.363, 1.796, 2.201, 2.718, 3.106));
-            values.push_back(std::make_shared<StudentTValue>(12, 1.356, 1.782, 2.179, 2.681, 3.055));
-            values.push_back(std::make_shared<StudentTValue>(13, 1.35, 1.771, 2.16, 2.65, 3.012));
-            values.push_back(std::make_shared<StudentTValue>(14, 1.345, 1.761, 2.145, 2.624, 2.977));
-            values.push_back(std::make_shared<StudentTValue>(15, 1.341, 1.753, 2.131, 2.602, 2.947));
-            values.push_back(std::make_shared<StudentTValue>(16, 1.337, 1.746, 2.12, 2.583, 2.921));
-            values.push_back(std::make_shared<StudentTValue>(17, 1.333, 1.74, 2.11, 2.567, 2.898));
-            values.push_back(std::make_shared<StudentTValue>(18, 1.33, 1.734, 2.101, 2.552, 2.878));
-            values.push_back(std::make_shared<StudentTValue>(19, 1.328, 1.729, 2.093, 2.539, 2.861));
-            values.push_back(std::make_shared<StudentTValue>(20, 1.325, 1.725, 2.086, 2.528, 2.845));
-            values.push_back(std::make_shared<StudentTValue>(21, 1.323, 1.721, 2.08, 2.518, 2.831));
-            values.push_back(std::make_shared<StudentTValue>(22, 1.321, 1.717, 2.074, 2.508, 2.819));
-            values.push_back(std::make_shared<StudentTValue>(23, 1.319, 1.714, 2.069, 2.5, 2.807));
-            values.push_back(std::make_shared<StudentTValue>(24, 1.318, 1.711, 2.064, 2.492, 2.797));
-            values.push_back(std::make_shared<StudentTValue>(25, 1.316, 1.708, 2.06, 2.485, 2.787));
-            values.push_back(std::make_shared<StudentTValue>(26, 1.315, 1.706, 2.056, 2.479, 2.779));
-            values.push_back(std::make_shared<StudentTValue>(27, 1.314, 1.703, 2.052, 2.473, 2.771));
-            values.push_back(std::make_shared<StudentTValue>(28, 1.313, 1.701, 2.048, 2.467, 2.763));
-            values.push_back(std::make_shared<StudentTValue>(29, 1.311, 1.699, 2.045, 2.462, 2.756));
-            values.push_back(std::make_shared<StudentTValue>(30, 1.31, 1.697, 2.042, 2.457, 2.75));
-            values.push_back(std::make_shared<StudentTValue>(40, 1.303, 1.684, 2.021, 2.423, 2.704));
-            values.push_back(std::make_shared<StudentTValue>(60, 1.296, 1.671, 2, 2.39, 2.66));
-            values.push_back(std::make_shared<StudentTValue>(120, 1.289, 1.658, 1.98, 2.358, 2.617));
-            values.push_back(std::make_shared<StudentTValue>(std::numeric_limits<int>::max(), 1.282, 1.645, 1.96, 2.326, 2.576));
+            studentValues.push_back(std::make_shared<StudentTValue>(1, 3.078, 6.314, 12.706, 31.821, 63.657));
+            studentValues.push_back(std::make_shared<StudentTValue>(2, 1.886, 2.92, 4.303, 6.965, 9.925));
+            studentValues.push_back(std::make_shared<StudentTValue>(3, 1.638, 2.353, 3.182, 4.541, 5.841));
+            studentValues.push_back(std::make_shared<StudentTValue>(4, 1.533, 2.132, 2.776, 3.747, 4.604));
+            studentValues.push_back(std::make_shared<StudentTValue>(5, 1.476, 2.015, 2.571, 3.365, 4.032));
+            studentValues.push_back(std::make_shared<StudentTValue>(6, 1.44, 1.943, 2.447, 3.143, 3.707));
+            studentValues.push_back(std::make_shared<StudentTValue>(7, 1.415, 1.895, 2.365, 2.998, 3.499));
+            studentValues.push_back(std::make_shared<StudentTValue>(8, 1.397, 1.86, 2.306, 2.896, 3.355));
+            studentValues.push_back(std::make_shared<StudentTValue>(9, 1.383, 1.833, 2.262, 2.821, 3.25));
+            studentValues.push_back(std::make_shared<StudentTValue>(10, 1.372, 1.812, 2.228, 2.764, 3.169));
+            studentValues.push_back(std::make_shared<StudentTValue>(11, 1.363, 1.796, 2.201, 2.718, 3.106));
+            studentValues.push_back(std::make_shared<StudentTValue>(12, 1.356, 1.782, 2.179, 2.681, 3.055));
+            studentValues.push_back(std::make_shared<StudentTValue>(13, 1.35, 1.771, 2.16, 2.65, 3.012));
+            studentValues.push_back(std::make_shared<StudentTValue>(14, 1.345, 1.761, 2.145, 2.624, 2.977));
+            studentValues.push_back(std::make_shared<StudentTValue>(15, 1.341, 1.753, 2.131, 2.602, 2.947));
+            studentValues.push_back(std::make_shared<StudentTValue>(16, 1.337, 1.746, 2.12, 2.583, 2.921));
+            studentValues.push_back(std::make_shared<StudentTValue>(17, 1.333, 1.74, 2.11, 2.567, 2.898));
+            studentValues.push_back(std::make_shared<StudentTValue>(18, 1.33, 1.734, 2.101, 2.552, 2.878));
+            studentValues.push_back(std::make_shared<StudentTValue>(19, 1.328, 1.729, 2.093, 2.539, 2.861));
+            studentValues.push_back(std::make_shared<StudentTValue>(20, 1.325, 1.725, 2.086, 2.528, 2.845));
+            studentValues.push_back(std::make_shared<StudentTValue>(21, 1.323, 1.721, 2.08, 2.518, 2.831));
+            studentValues.push_back(std::make_shared<StudentTValue>(22, 1.321, 1.717, 2.074, 2.508, 2.819));
+            studentValues.push_back(std::make_shared<StudentTValue>(23, 1.319, 1.714, 2.069, 2.5, 2.807));
+            studentValues.push_back(std::make_shared<StudentTValue>(24, 1.318, 1.711, 2.064, 2.492, 2.797));
+            studentValues.push_back(std::make_shared<StudentTValue>(25, 1.316, 1.708, 2.06, 2.485, 2.787));
+            studentValues.push_back(std::make_shared<StudentTValue>(26, 1.315, 1.706, 2.056, 2.479, 2.779));
+            studentValues.push_back(std::make_shared<StudentTValue>(27, 1.314, 1.703, 2.052, 2.473, 2.771));
+            studentValues.push_back(std::make_shared<StudentTValue>(28, 1.313, 1.701, 2.048, 2.467, 2.763));
+            studentValues.push_back(std::make_shared<StudentTValue>(29, 1.311, 1.699, 2.045, 2.462, 2.756));
+            studentValues.push_back(std::make_shared<StudentTValue>(30, 1.31, 1.697, 2.042, 2.457, 2.75));
+            studentValues.push_back(std::make_shared<StudentTValue>(40, 1.303, 1.684, 2.021, 2.423, 2.704));
+            studentValues.push_back(std::make_shared<StudentTValue>(60, 1.296, 1.671, 2, 2.39, 2.66));
+            studentValues.push_back(std::make_shared<StudentTValue>(120, 1.289, 1.658, 1.98, 2.358, 2.617));
+            studentValues.push_back(std::make_shared<StudentTValue>(std::numeric_limits<int>::max(), 1.282, 1.645, 1.96, 2.326, 2.576));
         }
     }
 }

@@ -28,6 +28,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -155,10 +157,10 @@ namespace Deltares
 
         void ParetoDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void ParetoDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void ParetoDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             stochast->Scale = *std::min_element(values.begin(), values.end());
 

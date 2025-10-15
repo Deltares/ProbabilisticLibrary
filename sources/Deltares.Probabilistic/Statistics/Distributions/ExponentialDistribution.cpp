@@ -25,7 +25,7 @@
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
-#include <numbers>
+#include "DistributionSupport.h"
 
 namespace Deltares
 {
@@ -37,7 +37,7 @@ namespace Deltares
             stochast->Shift = mean - stochast->Scale;
         }
 
-        void ExponentialDistribution::setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted)
+        void ExponentialDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
         {
             double oldMean = this->getMean(stochast);
 
@@ -127,15 +127,20 @@ namespace Deltares
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
-                this->setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 
-        void ExponentialDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void ExponentialDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = this->getFittedMinimum(values);
+            stochast->Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
             stochast->Scale = Numeric::NumericSupport::getMean(values) - stochast->Shift;
             stochast->Observations = static_cast<int>(values.size());
+        }
+
+        double ExponentialDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return Numeric::NumericSupport::getMean(values);
         }
 
         std::vector<double> ExponentialDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

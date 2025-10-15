@@ -48,13 +48,14 @@ namespace Deltares
             double getMean(std::shared_ptr<StochastProperties> stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
             void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
-            void setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted) override;
+            void setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted) override;
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
-            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
+            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
+            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
+            double getMaxShiftValue(std::vector<double>& values) override;
             double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override;

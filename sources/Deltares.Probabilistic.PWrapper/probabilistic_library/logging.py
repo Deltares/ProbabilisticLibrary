@@ -100,8 +100,13 @@ class ValidationReport(FrozenObject):
 		interface.Destroy(self._id)
 
 	def __dir__(self):
-		return ['messages',
+		return ['is_valid',
+		        'messages',
 		        'print']
+
+
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
 
 	@property   
 	def messages(self) -> FrozenList[Message]:

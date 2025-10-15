@@ -29,6 +29,8 @@
 #include <cmath>
 #include <numbers>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -45,12 +47,12 @@ namespace Deltares
 
         double RayleighNDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
         {
-            return this->getMeanByIteration(stochast);
+            return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
         double RayleighNDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
         {
-            return this->getDeviationByIteration(stochast);
+            return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
         double RayleighNDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
@@ -137,7 +139,8 @@ namespace Deltares
 
             if (stochast->Shape != 1.0) 
             {
-                auto bisection = Numeric::BisectionRootFinder(tolBisection);
+                constexpr double toleranceBisection = 0.00001;
+                auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
                 Distribution* distribution = this;
 
@@ -156,18 +159,15 @@ namespace Deltares
 
         void RayleighNDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            this->setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void RayleighNDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void RayleighNDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             // first Rayleigh fit is done
 
-            double xMin = Numeric::NumericSupport::getMinimum(values);
-            double xMax = Numeric::NumericSupport::getMaximum(values);
-
+            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
             stochast->Shape = 1;
-            stochast->Shift = xMin - (xMax - xMin) / values.size();
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });
             stochast->Scale = std::sqrt(sum / (2 * values.size()));
@@ -184,6 +184,11 @@ namespace Deltares
             stochast->Shift = parameters[1];
             stochast->Shape = std::max(0.0, parameters[2]);
             stochast->Observations = static_cast<int>(values.size());
+        }
+
+        double RayleighNDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
         }
 
         std::vector<double> RayleighNDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
