@@ -399,18 +399,28 @@ namespace Deltares
 
                 virtual void Fit(array<double>^ values)
                 {
+                    Fit(values, System::Double::NaN);
+                }
+
+                virtual void Fit(array<double>^ values, double shift)
+                {
                     std::vector<double> nativeValues = NativeSupport::toNative(values);
 
-                    shared->object->fit(nativeValues);
+                    shared->object->fit(nativeValues, shift);
 
                     updateLists();
                 }
 
                 virtual void FitPrior(Stochast^ source, array<double>^ values)
                 {
+                    FitPrior(source, values, System::Double::NaN);
+                }
+
+                virtual void FitPrior(Stochast^ source, array<double>^ values, double shift)
+                {
                     std::vector<double> nativeValues = NativeSupport::toNative(values);
 
-                    shared->object->fitPrior(source->GetStochast(), nativeValues);
+                    shared->object->fitPrior(nativeValues, source->GetStochast(), shift);
 
                     updateLists();
                 }

@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cmath>
 
+#include "DistributionSupport.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
@@ -289,7 +290,7 @@ namespace Deltares
             return p;
         }
 
-        void DiscreteDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void DiscreteDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             std::vector<double> weights = Numeric::NumericSupport::select(values, [](double x) {return 1.0; });
             return fitWeighted(stochast, values, weights);
@@ -299,7 +300,7 @@ namespace Deltares
         {
             stochast->DiscreteValues.clear();
 
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = this->GetWeightedValues(values, weights);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = DistributionSupport::GetWeightedValues(values, weights);
 
             for (size_t i = 0; i < x.size(); i++)
             {

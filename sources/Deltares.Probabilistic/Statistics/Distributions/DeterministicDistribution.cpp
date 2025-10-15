@@ -103,7 +103,7 @@ namespace Deltares
             };
         }
 
-        void DeterministicDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void DeterministicDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             stochast->Location = Numeric::NumericSupport::getMean(values);
             stochast->Observations = static_cast<int>(values.size());

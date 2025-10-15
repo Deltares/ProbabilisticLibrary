@@ -28,6 +28,7 @@
 #include <numbers>
 #include <algorithm>
 
+#include "DistributionSupport.h"
 #include "NormalDistribution.h"
 
 namespace Deltares
@@ -102,7 +103,7 @@ namespace Deltares
             }
         }
 
-        void LogNormalDistribution::setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted)
+        void LogNormalDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
         {
             bool useRequestedValues = std::isinf(stochast->Location) && !std::isnan(this->requestedMean);
 
@@ -188,20 +189,20 @@ namespace Deltares
                 }
                 else
                 {
-                    this->setXAtUByIteration(stochast, x, u, constantType);
+                    DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
                 }
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
-                this->setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 
-        double LogNormalDistribution::fitShift(std::vector<double> values)
+        double LogNormalDistribution::getFittedMinimum(std::vector<double>& values)
         {
             // see https://stats.stackexchange.com/questions/49495/robust-parameter-estimation-for-shifted-log-normal-distribution
 
-            double minX = *std::min_element(values.begin(), values.end());
+            double minX = *std::ranges::min_element(values);
 
             double min = minX - Numeric::NumericSupport::getFraction(minX, 1);
             double max = minX - Numeric::NumericSupport::getFraction(minX, 1E-6);
@@ -252,21 +253,20 @@ namespace Deltares
             return sum / n;
         }
 
-
-        void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = fitShift(values);
+            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
             std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
 
             NormalDistribution normal;
 
-            normal.fit(stochast, logValues);
+            normal.fit(stochast, logValues, nan(""));
         }
 
-        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
+        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
         {
-            double shiftData = fitShift(values);
+            double shiftData = std::isnan(shift) ? getFittedMinimum(values) : shift;
             double shiftPrior = prior->Shift;
 
             double fitShift = shiftPrior;
@@ -286,9 +286,14 @@ namespace Deltares
 
             NormalDistribution normal;
 
-            normal.fitPrior(stochast, fitPrior, logValues);
+            normal.fitPrior(stochast, logValues, fitPrior, nan(""));
 
             stochast->Shift = fitShift;
+        }
+
+        double LogNormalDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
         }
 
         std::vector<double> LogNormalDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

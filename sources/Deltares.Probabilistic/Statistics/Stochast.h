@@ -355,15 +355,25 @@ namespace Deltares
             /**
              * \brief Estimates stochastic parameters for a given set of x-values
              * \param values Given set of x-values
+             * \param shift If set, shift is not fitted but uses given shift parameter
              */
-            void fit(std::vector<double> values) const;
+            void fit(std::vector<double> values, const double shift = nan("")) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and a prior variable
-             * \param prior Prior variable
              * \param values Given set of x-values
+             * \param prior Prior variable
+             * \param shift If set, shift is not fitted but uses given shift parameter
              */
-            void fitPrior(std::shared_ptr<Stochast> prior, std::vector<double> values) const;
+            void fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift = nan("")) const;
+
+            /**
+             * \brief Gets a validation report which tells whether a fit operation is allowed
+             * \param values Given set of x-values
+             * \param prior If set, validates whether a fit with prior is allowed
+             * \param shift If set, shift is not fitted but uses given shift parameter
+             */
+            Logging::ValidationReport getFitValidationReport(std::vector<double>& values, const std::shared_ptr<Stochast>& prior = nullptr, const double shift = nan("")) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and their weights
