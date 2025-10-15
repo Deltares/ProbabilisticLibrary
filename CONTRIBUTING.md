@@ -10,18 +10,19 @@ II. Code should follow our guidelines (see below).
 
 III. New code should be tested with unit tests and documented (see below).
 
-IV. New code should not lead to new dependencies.
+IV. All contributions will get a header with (c) Deltares
+
+V. New code should not lead to new dependencies.
 If you think a new dependency is needed, contact us before making your changes.
 The current dependencies are given in:
 [wiki PL](https://github.com/Deltares/ProbabilisticLibrary/wiki/Tools-and-other-software)
 
-V. Make a pull request for your contribution, or create a issue with your suggestion.
+VI. Make a pull request for your contribution, or create a issue with your suggestion.
 
-VI. All contributions will get a header with (c) Deltares
 
 # Code guide lines
 
-We follow a part of the guide lines
+We follow a part of the guidelines
 of [AirSim](https://github.com/microsoft/AirSim/blob/main/docs/coding_guidelines.md)
 with a few exceptions :
 
@@ -74,7 +75,7 @@ When overriding virtual method, use override suffix.
 ## Pointers
 
 This is really about memory management.
-A simulator has much performance critical code, so we try and avoid overloading the memory manager
+A kernel has much performance critical code, so we try and avoid overloading the memory manager
 with lots of calls to new/delete.
 We also want to avoid too much copying of things on the stack, so we pass things by reference when ever possible.
 But when the object really needs to live longer than the call stack you often need to allocate that object on
@@ -95,23 +96,28 @@ i.e. use `my_obj` instead of `myobj_ptr` except in cases where it might make sen
 The C++ code base uses four spaces for indentation (not tabs).
 In Python code tabs are allowed, but per file there is consistent usage of tabs or spaces.
 
-## Other style settings
+## Other style settings, both python and C++
 
-- we use ` #pragma once ` in header files to protect against multiple inclusion.
-- do not use auto for basic types as int, double and string.
-- use auto to avoid a classname left and right of the assignment,
-especially in combination with an unique or shared pointer declaration.
 - maximum line length is 120 characters; maximum file size is 750 lines.
-- when throwing an exception, use the exception class in probLibException.h,
-so that we can distinguish between exception from our own library or system libraries.
-- when using std::format provide fall back code for compilers that do not support it.
+Long lines are inconvenient when doing a side-by-side diff.
 - TODO's are allowed to identify corner cases.
-- use 0.0, 1.0 etc if they are doubles
-- counters may be i,j,k , but loops are preferable of the form : for( const auto& o : listOfObjects) {}
+- use 0.0, 1.0 etc if they are floats/doubles; use 0, 1 etc if they are integers.
 - in principle no abbreviations in names of methods, members and variables.
 - Boy Scout Rule: if you change an existing file, leave the code better than you found it.
 If the change is very small, do your changes in the existing style. That makes reviewing easier.
 If the change is substantial, and a style change is needed, do the style changes in a separate commit.
+
+## Other style settings, C++ specific
+
+- we use ` #pragma once ` in header files to protect against multiple inclusion.
+- do not use ` auto ` for basic types as int, double and string.
+- use ` auto ` to avoid a classname left and right of the assignment,
+especially in combination with an unique or shared pointer declaration.
+- when throwing an exception, use the exception class in probLibException.h,
+so that we can distinguish between exceptions from our own library or the system libraries.
+- when using std::format provide fall back code for compilers that do not support it.
+Besides this, all features of C++20 are allowed. We do not use Boost.
+- counters may be i,j,k , but loops are preferable of the form : for( const auto& o : listOfObjects) {}
 
 # Finishing your work
 
