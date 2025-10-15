@@ -32,7 +32,7 @@
 
 namespace Deltares::Uncertainty
 {
-        std::shared_ptr<UncertaintyMethod> SettingsS::GetUncertaintyMethod()
+        std::shared_ptr<UncertaintyMethod> SettingsS::GetUncertaintyMethod() const
         {
             switch (this->UncertaintyMethod)
             {
@@ -46,7 +46,7 @@ namespace Deltares::Uncertainty
             }
         }
 
-        const std::shared_ptr<UncertaintyMethod> SettingsS::GetFORMMethod()
+        std::shared_ptr<FORMS> SettingsS::GetFORMMethod() const
         {
             std::shared_ptr<FORMS> form = std::make_shared<FORMS>();
 
@@ -62,7 +62,7 @@ namespace Deltares::Uncertainty
             return form;
         }
 
-        const std::shared_ptr<UncertaintyMethod> SettingsS::GetFOSMMethod()
+        std::shared_ptr<FOSM> SettingsS::GetFOSMMethod() const
         {
             std::shared_ptr<FOSM> fosm = std::make_shared<FOSM>();
 
@@ -75,7 +75,7 @@ namespace Deltares::Uncertainty
             return fosm;
         }
 
-        const std::shared_ptr<UncertaintyMethod> SettingsS::GetNumericalIntegrationMethod()
+        std::shared_ptr<NumericalIntegrationS> SettingsS::GetNumericalIntegrationMethod() const
         {
             std::shared_ptr<NumericalIntegrationS> numericalIntegration = std::make_shared<NumericalIntegrationS>();
 
@@ -88,7 +88,7 @@ namespace Deltares::Uncertainty
             return numericalIntegration;
         }
 
-        const std::shared_ptr<UncertaintyMethod> SettingsS::GetCrudeMonteCarloMethod()
+        std::shared_ptr<CrudeMonteCarloS> SettingsS::GetCrudeMonteCarloMethod() const
         {
             std::shared_ptr<CrudeMonteCarloS> crudeMonteCarlo = std::make_shared<CrudeMonteCarloS>();
 
@@ -106,7 +106,7 @@ namespace Deltares::Uncertainty
             return crudeMonteCarlo;
         }
 
-        const std::shared_ptr<UncertaintyMethod> SettingsS::GetImportanceSamplingMethod()
+        std::shared_ptr<ImportanceSamplingS> SettingsS::GetImportanceSamplingMethod() const
         {
             std::shared_ptr<ImportanceSamplingS> importanceSampling = std::make_shared<ImportanceSamplingS>();
 
@@ -125,7 +125,7 @@ namespace Deltares::Uncertainty
             return importanceSampling;
         }
 
-        const std::shared_ptr<UncertaintyMethod> SettingsS::GetDirectionalSamplingMethod()
+        std::shared_ptr<DirectionalSamplingS> SettingsS::GetDirectionalSamplingMethod() const
         {
             std::shared_ptr<DirectionalSamplingS> directionalSampling = std::make_shared<DirectionalSamplingS>();
 
@@ -142,16 +142,16 @@ namespace Deltares::Uncertainty
             return directionalSampling;
         }
 
-        void SettingsS::validate(Logging::ValidationReport& report) 
+        void SettingsS::validate(Logging::ValidationReport& report) const
         {
             switch (this->UncertaintyMethod)
             {
-            case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: return std::dynamic_pointer_cast<CrudeMonteCarloS>(this->GetCrudeMonteCarloMethod())->Settings->validate(report);
-            case UncertaintyMethodType::UncertaintyImportanceSampling: return std::dynamic_pointer_cast<ImportanceSamplingS>(this->GetImportanceSamplingMethod())->Settings->validate(report);
-            case UncertaintyMethodType::UncertaintyNumericalIntegration: return std::dynamic_pointer_cast<NumericalIntegrationS>(this->GetNumericalIntegrationMethod())->Settings->validate(report);
-            case UncertaintyMethodType::UncertaintyDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSamplingS>(this->GetDirectionalSamplingMethod())->Settings->validate(report);
-            case UncertaintyMethodType::UncertaintyFORM: return std::dynamic_pointer_cast<FORMS>(this->GetFORMMethod())->Settings->validate(report);
-            case UncertaintyMethodType::UncertaintyFOSM: return std::dynamic_pointer_cast<FOSM>(this->GetFOSMMethod())->Settings->validate(report);
+            case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings->validate(report); break;
+            case UncertaintyMethodType::UncertaintyImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
+            case UncertaintyMethodType::UncertaintyNumericalIntegration: GetNumericalIntegrationMethod()->Settings->validate(report); break;
+            case UncertaintyMethodType::UncertaintyDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;
+            case UncertaintyMethodType::UncertaintyFORM: GetFORMMethod()->Settings->validate(report); break;
+            case UncertaintyMethodType::UncertaintyFOSM: GetFOSMMethod()->Settings->validate(report); break;
             default: throw Reliability::probLibException("Uncertainty method");
             }
         }

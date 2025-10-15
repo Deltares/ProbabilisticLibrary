@@ -77,6 +77,7 @@ namespace Deltares
             {
                 Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
                 Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");
+                Logging::ValidationSupport::checkMinimum(report, 0, VariationCoefficient, "variation coefficient");
 
                 RunSettings->validate(report);
             }

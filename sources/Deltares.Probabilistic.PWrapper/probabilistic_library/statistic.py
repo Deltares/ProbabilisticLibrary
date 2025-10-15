@@ -672,11 +672,7 @@ class Stochast(FrozenObject):
 		id_ = interface.GetIdValue(self._id, 'validate')
 		if id_ > 0:
 			validation_report = ValidationReport(id_)
-			if len(validation_report.messages) == 0:
-				print('ok')
-			else:
-				for message in validation_report.messages:
-					message.print()
+			validation_report.print()
 
 	def print(self, decimals = 4):
 		pre = '  '

@@ -179,7 +179,7 @@ namespace Deltares
             std::shared_ptr<Models::ModelProject> GetProject(int id);
             std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
             static bool IsModelProjectType(ObjectType objectType);
-
+            static bool IsModelSettingsType(ObjectType objectType);
         };
     }
 }

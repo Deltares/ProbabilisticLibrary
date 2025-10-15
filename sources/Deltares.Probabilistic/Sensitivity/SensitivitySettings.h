@@ -66,7 +66,7 @@ namespace Deltares::Sensitivity
          * \brief Reports whether the settings have valid values
          * \param report Report in which the validity is reported
          */
-        void validate(Logging::ValidationReport& report) const;
+        void validate(Logging::ValidationReport& report) const override;
 
         static std::string getSensitivityMethodTypeString(SensitivityMethodType method);
         static SensitivityMethodType getSensitivityMethodType(std::string method);

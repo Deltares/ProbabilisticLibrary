@@ -62,6 +62,45 @@ class Test_uncertainty(unittest.TestCase):
 
         self.assertEqual("""Error: a => scale value -1 is less than 0.\n""", printed)
 
+    def test_validation(self):
+        project = project_builder.get_uncertainty_linear_project()
+
+        project.settings.uncertainty_method = UncertaintyMethod.importance_sampling
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 100
+
+        self.assertFalse(project.is_valid())
+
+        sys.stdout = StringIO()
+
+        project.validate();
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: maximum samples value 100 is less than 1000.
+""", printed)
+
+    def test_validation_settings(self):
+        project = project_builder.get_uncertainty_linear_project()
+
+        project.settings.uncertainty_method = UncertaintyMethod.importance_sampling
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 100
+
+        self.assertFalse(project.settings.is_valid())
+
+        sys.stdout = StringIO()
+
+        project.settings.validate();
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: maximum samples value 100 is less than 1000.
+""", printed)
+
+
     def test_crude_monte_carlo_add_one(self):
         project = project_builder.get_uncertainty_add_one_project()
 
@@ -595,8 +634,6 @@ Quantiles:
   quantile 0.95: [-0.4336, -0.9487] -> [3.182] -> 3.182
 """
         self.assertEqual(expected, printed)
-
-
 
 if __name__ == '__main__':
     unittest.main()
