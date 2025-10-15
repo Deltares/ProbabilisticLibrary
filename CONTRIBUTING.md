@@ -20,7 +20,7 @@ The current dependencies are given in:
 VI. Make a pull request for your contribution, or create a issue with your suggestion.
 
 
-# Code guide lines
+# Code guidelines
 
 We follow a part of the guidelines
 of [AirSim](https://github.com/microsoft/AirSim/blob/main/docs/coding_guidelines.md)
@@ -121,7 +121,7 @@ Besides this, all features of C++20 are allowed. We do not use Boost.
 
 # Finishing your work
 
-After your pull request is approved, merge your changes into the master.
+After your pull request (PR) is approved, merge your changes into the master.
 That can be done using a merge commit or a squash commit.
 The last one keeps the history cleaner, but can give difficulties when another issue is based on this branch.
 
