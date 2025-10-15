@@ -104,7 +104,7 @@ especially in combination with an unique or shared pointer declaration.
 - maximum line length is 120 characters; maximum file size is 750 lines.
 - when throwing an exception, use the exception class in probLibException.h,
 so that we can distinguish between exception from our own library or system libraries.
-- we using std::format provide fall back code for compilers that do not support it.
+- when using std::format provide fall back code for compilers that do not support it.
 - TODO's are allowed to identify corner cases.
 - use 0.0, 1.0 etc if they are doubles
 - counters may be i,j,k , but loops are preferable of the form : for( const auto& o : listOfObjects) {}
