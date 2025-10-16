@@ -26,8 +26,9 @@
 
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
-#include "../Math/NumericSupport.h"
 #include "ImportanceSamplingSettingsS.h"
+#include "../Reliability/DesignPointBuilder.h"
+#include "../Reliability/ImportanceSamplingSupport.h"
 
 using namespace Deltares::Models;
 
@@ -47,17 +48,21 @@ namespace Deltares::Uncertainty
         randomSampleGenerator->initialize();
 
         int nParameters = modelRunner->getVaryingStochastCount();
-        std::vector<double> zValues; // copy of z for all parallel threads as double
+
+        // for convergence, simulate that this is a reliability calculation with failure at given probability
+        Reliability::DesignPointBuilder designPointBuilder = Reliability::DesignPointBuilder(nParameters, Reliability::CenterOfGravity, this->Settings->StochastSet);
+        double normalizedProbabilityForConvergence = std::min(Settings->ProbabilityForConvergence, 1 - Settings->ProbabilityForConvergence);
 
         std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
         std::vector<std::shared_ptr<Sample>> samples;
-        std::vector<double> zSamples;
-        std::vector<double> zWeights;
-        std::vector<double> zCumulativeWeights;
+        std::vector<double> zValues;
+        std::vector<double> weights;
+        std::vector<double> cumulativeWeights;
+        std::vector<bool> isDesignPointSamples;
         size_t zIndex = 0;
         int nSamples = 0;
         double sumWeights = 0;
-        bool convergenceLowSide = this->Settings->ProbabilityForConvergence < 0.5;
+        std::vector<std::shared_ptr<Sample>> allSamples;
 
         bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() &&
             this->Settings->CalculateCorrelations &&
@@ -66,7 +71,7 @@ namespace Deltares::Uncertainty
         std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
 
         std::vector<double> factors = this->getFactors(Settings->StochastSet);
-        double dimensionality = getDimensionality(factors);
+        double dimensionality = Reliability::ImportanceSamplingSupport::getDimensionality(factors);
 
         bool converged = false;
 
@@ -88,82 +93,61 @@ namespace Deltares::Uncertainty
                     samples.push_back(modifiedSample);
                 }
 
-                zValues = modelRunner->getZValues(samples);
+                std::vector<double> zSampleValues = modelRunner->getZValues(samples);
 
                 zIndex = 0;
             }
 
-            double z = zValues[zIndex];
-            std::shared_ptr<Sample> u = samples[zIndex];
+            std::shared_ptr<Sample> sample = samples[zIndex];
 
-            if (std::isnan(z))
+            if (std::isnan(sample->Z))
             {
                 continue;
             }
 
-            zSamples.push_back(z);
-            zWeights.push_back(samples[zIndex]->Weight);
-            sumWeights += samples[zIndex]->Weight;
+            zValues.push_back(sample->Z);
+            weights.push_back(sample->Weight);
+            sumWeights += sample->Weight;
+            isDesignPointSamples.push_back(false);
+            cumulativeWeights.push_back(sample->Weight);
+            allSamples.push_back(sample);
 
-            zCumulativeWeights.push_back(samples[zIndex]->Weight);
-            for (size_t i = 0; i < zCumulativeWeights.size() - 1; i++)
-            {
-                if (convergenceLowSide)
-                {
-                    if (zSamples[i] > z)
-                    {
-                        zCumulativeWeights[i] += samples[zIndex]->Weight;
-                    }
-                    else
-                    {
-                        zCumulativeWeights.back() += zWeights[i];
-                    }
-                }
-                else
-                {
-                    if (zSamples[i] < z)
-                    {
-                        zCumulativeWeights[i] += samples[zIndex]->Weight;
-                    }
-                    else
-                    {
-                        zCumulativeWeights.back() += zWeights[i];
-                    }
-                }
-            }
+            nSamples++;
+
+            updateCumulativeWeights(zValues, weights, cumulativeWeights, sample);
 
             if (registerSamplesForCorrelation)
             {
-                modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
+                modelRunner->registerSample(this->correlationMatrixBuilder, sample);
             }
 
-
-            nSamples++;
+            // check whether all added samples in design point builder are supposed to be there
+            // the design point builder should contain samples corresponding with a given probability of failure
+            for (size_t i = 0; i < cumulativeWeights.size(); i++)
+            {
+                bool shouldBeDesignPointSample = cumulativeWeights[i] < sumWeights * normalizedProbabilityForConvergence;
+                if (shouldBeDesignPointSample && !isDesignPointSamples[i])
+                {
+                    // register for counting in design point
+                    designPointBuilder.addSample(allSamples[i]);
+                    isDesignPointSamples[i] = true;
+                }
+                else if (!shouldBeDesignPointSample && isDesignPointSamples[i])
+                {
+                    // unregister for counting in design point
+                    designPointBuilder.removeSample(allSamples[i]);
+                    isDesignPointSamples[i] = false;
+                }
+            }
 
             // check if convergence is reached (or stop criterion)
             if (sampleIndex >= Settings->MinimumSamples)
             {
-                double normalizedProbabilityForConvergence = std::min(Settings->ProbabilityForConvergence, 1 - Settings->ProbabilityForConvergence);
-                double highestExceedingCumulativeWeight = 0;
-                double highestExceedingWeight = 0;
+                std::shared_ptr<Sample> designPoint = designPointBuilder.getSample();
 
-                // find the weights of exceeding samples
-                for (size_t i = 0; i < zCumulativeWeights.size(); i++)
-                {
-                    if (zCumulativeWeights[i] < normalizedProbabilityForConvergence)
-                    {
-                        if (zCumulativeWeights[i] > highestExceedingCumulativeWeight)
-                        {
-                            highestExceedingCumulativeWeight = zCumulativeWeights[i];
-                            highestExceedingWeight = zWeights[i];
-                        }
-                    }
-                }
+                double designPointWeight = Reliability::ImportanceSamplingSupport::getSampleWeight(designPoint, center, dimensionality, factors);
 
-                double pf = highestExceedingCumulativeWeight / sampleIndex;
-                double designPointWeight = highestExceedingWeight;
-
-                double convergence = getConvergence(pf, sampleIndex, designPointWeight);
+                double convergence = Reliability::ImportanceSamplingSupport::getConvergence(normalizedProbabilityForConvergence, designPointWeight, nSamples);
                 converged = convergence < this->Settings->VariationCoefficient;
             }
         }
@@ -175,31 +159,31 @@ namespace Deltares::Uncertainty
         double overWeightedSum = 0;
 
         // calculate over weight frm samples with weight > 1
-        for (size_t i = 0; i < zWeights.size(); i++)
+        for (size_t i = 0; i < weights.size(); i++)
         {
-            if (zWeights[i] > 1)
+            if (weights[i] > 1)
             {
-                overWeightedSum += zWeights[i];
+                overWeightedSum += weights[i];
             }
         }
 
         // correct samples with weight > 1 so that sum of weights equals number of samples
-        for (size_t i = 0; i < zWeights.size(); i++)
+        for (size_t i = 0; i < weights.size(); i++)
         {
-            if (zWeights[i] > 1)
+            if (weights[i] > 1)
             {
-                zWeights[i] += zWeights[i] * weightDifference / overWeightedSum;
+                weights[i] += weights[i] * weightDifference / overWeightedSum;
             }
         }
 
-        std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
+        std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zValues, weights);
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
         for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
         {
             double p = quantile->getProbabilityOfNonFailure();
-            int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
+            int quantileIndex = this->getQuantileIndex(zValues, weights, p);
 
             if (quantileIndex >= 0)
             {
@@ -221,41 +205,12 @@ namespace Deltares::Uncertainty
 
         if (this->correlationMatrixBuilder != nullptr)
         {
-            this->correlationMatrixBuilder->registerWeights(zWeights);
-            this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
+            this->correlationMatrixBuilder->registerWeights(weights);
+            this->correlationMatrixBuilder->registerSamples(stochast, zValues);
         }
 
         return result;
 
-    }
-
-    /// <summary>
-    /// return the weight for the sample.
-    /// This is given by: dimensionality * pdf / pdfOriginal, with pdf = normalFactor * std::exp(-SquaredSum/2).
-    /// Rewritten to avoid a possible division by zero.
-    /// </summary>
-    /// <param name="modifiedSample"> the scaled sample </param>
-    /// <param name="sample"> the original sample </param>
-    /// <param name="dimensionality"> constant dependent on the number of stochasts </param>
-    /// <returns> the weight </returns>
-    double ImportanceSamplingS::getWeight(std::shared_ptr<Sample> modifiedSample, std::shared_ptr<Sample> sample, double dimensionality)
-    {
-        double sumSquared = Numeric::NumericSupport::GetSquaredSum(modifiedSample->Values);
-        double sumSquaredOrg = Numeric::NumericSupport::GetSquaredSum(sample->Values);
-        double ratioPdf = std::exp(0.5 * (sumSquaredOrg - sumSquared));
-        return dimensionality * ratioPdf;
-    }
-
-    double ImportanceSamplingS::getDimensionality(std::vector<double> factors)
-    {
-        double dimensionality = 1; // correction for the dimensionality effect
-
-        for (size_t k = 0; k < factors.size(); k++)
-        {
-            dimensionality *= factors[k];
-        }
-
-        return dimensionality;
     }
 
     std::vector<double> ImportanceSamplingS::getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings)
@@ -279,14 +234,40 @@ namespace Deltares::Uncertainty
             modifiedSample->Values[k] = factors[k] * sample->Values[k] + center->Values[k];
         }
 
-        modifiedSample->Weight = getWeight(modifiedSample, sample, dimensionality);
+        modifiedSample->Weight = Reliability::ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
 
         return modifiedSample;
     }
 
-    double ImportanceSamplingS::getConvergence(double pf, int samples, double weightedSum)
+    void ImportanceSamplingS::updateCumulativeWeights(const std::vector<double>& zValues,
+                                                      const std::vector<double>& weights,
+                                                      std::vector<double>& cumulativeWeights,
+                                                      const std::shared_ptr<Sample>& sample) const
     {
-        double varPf = sqrt(std::max(0.0, (weightedSum - pf) / (samples * pf)));
-        return varPf;
+        for (size_t i = 0; i < cumulativeWeights.size() - 1; i++)
+        {
+            if (this->Settings->ProbabilityForConvergence < 0.5)
+            {
+                if (zValues[i] > sample->Z)
+                {
+                    cumulativeWeights[i] += sample->Weight;
+                }
+                else
+                {
+                    cumulativeWeights.back() += weights[i];
+                }
+            }
+            else
+            {
+                if (zValues[i] < sample->Z)
+                {
+                    cumulativeWeights[i] += sample->Weight;
+                }
+                else
+                {
+                    cumulativeWeights.back() += weights[i];
+                }
+            }
+        }
     }
 }

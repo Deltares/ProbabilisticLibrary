@@ -55,6 +55,7 @@ namespace Deltares
             int qualitativeCount = 0;
             std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
+            void handleSample(std::shared_ptr<Sample> sample, double weight);
             void initializeSamples(int count, DesignPointMethod method);
             void initializeTotals();
 
@@ -64,6 +65,7 @@ namespace Deltares
 
             void initialize(double beta);
             void addSample(std::shared_ptr<Sample> sample);
+            void removeSample(std::shared_ptr<Sample> sample);
             std::shared_ptr<Sample> getSample();
 
             static std::string getDesignPointMethodString(DesignPointMethod method);

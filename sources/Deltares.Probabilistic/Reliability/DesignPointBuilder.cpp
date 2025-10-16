@@ -153,8 +153,6 @@ namespace Deltares
 
         void DesignPointBuilder::addSample(std::shared_ptr<Sample> sample)
         {
-            const double delta = 1E-10;
-
             sampleAdded = true;
 
             double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
@@ -172,6 +170,25 @@ namespace Deltares
                     weight = 1;
                 }
             }
+
+            handleSample(sample, weight);
+        }
+
+        void DesignPointBuilder::removeSample(std::shared_ptr<Sample> sample)
+        {
+            if (method == DesignPointMethod::NearestToMean)
+            {
+                throw probLibException("Nearest to mean method cannot remove samples");
+            }
+
+            double weight = std::isnan(sample->Weight) ? -1 : -sample->Weight;
+
+            handleSample(sample, weight);
+        }
+
+        void DesignPointBuilder::handleSample(std::shared_ptr<Sample> sample, double weight)
+        {
+            const double delta = 1E-10;
 
             switch (method)
             {
