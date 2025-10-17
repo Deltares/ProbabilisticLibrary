@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 from .utils import FrozenObject, FrozenList, CallbackList
 from .logging import Evaluation, Message, ValidationReport
 from .statistic import Stochast, ProbabilityValue
-from .reliability import StochastSettings, RandomType, GradientType
+from .reliability import StochastSettings, GradientType
 from . import interface
 
 if not interface.IsLibraryLoaded():
