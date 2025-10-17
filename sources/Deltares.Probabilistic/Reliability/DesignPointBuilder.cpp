@@ -141,7 +141,7 @@ namespace Deltares
             sumWeights = 0;
         }
 
-        void DesignPointBuilder::initialize(double beta)
+        void DesignPointBuilder::initialize(double beta) const
         {
             double value = Numeric::NumericSupport::GetSign(beta) * sqrt(std::abs(beta) / count);
 
@@ -151,7 +151,7 @@ namespace Deltares
             }
         }
 
-        void DesignPointBuilder::addSample(std::shared_ptr<Sample> sample)
+        void DesignPointBuilder::addSample(const std::shared_ptr<Sample>& sample)
         {
             sampleAdded = true;
 
@@ -174,39 +174,64 @@ namespace Deltares
             handleSample(sample, weight);
         }
 
-        void DesignPointBuilder::removeSample(std::shared_ptr<Sample> sample)
+        void DesignPointBuilder::removeSample(const std::shared_ptr<Sample>& sample)
         {
-            if (method == DesignPointMethod::NearestToMean)
-            {
-                throw probLibException("Nearest to mean method cannot remove samples");
-            }
-
             double weight = std::isnan(sample->Weight) ? -1 : -sample->Weight;
 
             handleSample(sample, weight);
         }
 
-        void DesignPointBuilder::handleSample(std::shared_ptr<Sample> sample, double weight)
+        void DesignPointBuilder::handleSample(const std::shared_ptr<Sample>& sample, double weight)
         {
-            const double delta = 1E-10;
+            constexpr double delta = 1E-10;
 
             switch (method)
             {
             case DesignPointMethod::NearestToMean:
             {
-                double beta = sample->getBeta();
-                if (beta < minimumBeta)
+                if (weight < 0)
                 {
-                    if (Numeric::NumericSupport::areEqual(beta, Statistics::StandardNormal::BetaMax, delta))
+                    if (sampleAdded)
                     {
-                        minimumBeta = beta - 2.0 * delta;
-                    }
-                    else
-                    {
-                        minimumBeta = beta;
-                    }
+                        bool updateMinimumSample = nearestSamples.back() == sample;
 
-                    meanSample = sample->clone();
+                        std::erase(nearestSamples, sample);
+                        sampleAdded = !nearestSamples.empty();
+
+                        if (updateMinimumSample)
+                        {
+                            if (sampleAdded)
+                            {
+                                minimumBeta = nearestSamples.back()->getBeta();
+                                meanSample = nearestSamples.back()->clone();
+                            }
+                            else
+                            {
+                                minimumBeta = std::numeric_limits<double>::infinity();
+                                meanSample = nullptr;
+                            }
+                        }
+                    }
+                }
+                else 
+                {
+                    double beta = sample->getBeta();
+
+                    if (beta < minimumBeta)
+                    {
+                        if (Numeric::NumericSupport::areEqual(beta, Statistics::StandardNormal::BetaMax, delta))
+                        {
+                            minimumBeta = beta - 2.0 * delta;
+                        }
+                        else
+                        {
+                            minimumBeta = beta;
+                        }
+
+                        nearestSamples.push_back(sample);
+
+                        meanSample = sample->clone();
+                    }
                 }
                 break;
             }
