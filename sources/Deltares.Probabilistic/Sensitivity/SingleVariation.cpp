@@ -21,7 +21,6 @@
 //
 #include "SingleVariation.h"
 
-#include <algorithm>
 #include <memory>
 
 #include "SensitivityValue.h"
@@ -58,6 +57,11 @@ namespace Deltares::Sensitivity
         std::vector<double> z = modelRunner->getZValues(samples);
 
         SensitivityResult result = modelRunner->getSensitivityResult();
+
+        if (isStopped())
+        {
+            return result;
+        }
 
         for (int i = 0; i < nStochasts; i++)
         {

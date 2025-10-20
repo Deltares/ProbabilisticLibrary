@@ -50,6 +50,10 @@ namespace Deltares
                     shared->object->Settings = Settings->GetSettings();
                     return shared->object;
                 }
+
+                void Stop()    override { shared->object->Stop(); }
+
+                bool IsStopped() override { return shared->object->isStopped(); }
             };
         }
     }
