@@ -106,7 +106,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Settings.SaveMessages = false;
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.Samples = 100000;
+            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.MaximumSamples = 100000;
 
             Stochast stochast = project.GetStochast();
 

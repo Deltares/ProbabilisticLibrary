@@ -61,7 +61,13 @@ namespace Deltares
                     void set(bool value) { shared->object->CalculateInputCorrelations = value; }
                 }
 
-                property int Samples
+                property int MinimumSamples
+                {
+                    int get() { return shared->object->MinimumSamples; }
+                    void set(int value) { shared->object->MinimumSamples = value; }
+                }
+
+                property int MaximumSamples
                 {
                     int get() { return shared->object->MaximumSamples; }
                     void set(int value) { shared->object->MaximumSamples = value; }
