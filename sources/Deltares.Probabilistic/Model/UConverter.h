@@ -80,6 +80,7 @@ namespace Deltares
             std::vector<double> getVaryingValues(std::vector<double> values);
             std::shared_ptr<StochastPoint> GetStochastPoint(std::shared_ptr<Sample> sample, double beta);
             std::shared_ptr<StochastPoint> GetStochastPoint(double beta, std::vector<double> alphas);
+            std::shared_ptr<Sample> getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
             void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
             Sensitivity::SensitivityResult getSensitivityResult();

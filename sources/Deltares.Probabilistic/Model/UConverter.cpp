@@ -513,6 +513,18 @@ namespace Deltares
             return qualitativeExcludedSample->getSampleAtBeta(sample->getBeta());
         }
 
+        std::shared_ptr<Sample> UConverter::getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
+        {
+            std::shared_ptr<Sample> sample = std::make_shared<Sample>(this->getVaryingStochastCount());
+
+            for (size_t i = 0; i < pureVaryingStochastIndex.size(); i++)
+            {
+                sample->Values[i] = stochastPoint->Alphas[pureVaryingStochastIndex[i]]->U;
+            }
+
+            return sample;
+        }
+
         /**
          * \brief Gets the indices of the variable stochasts in order of assignment
          */
