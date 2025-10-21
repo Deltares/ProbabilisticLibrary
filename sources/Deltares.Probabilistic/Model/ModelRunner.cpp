@@ -194,6 +194,11 @@ namespace Deltares
             return evaluation;
         }
 
+        std::shared_ptr<Sample> ModelRunner::getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
+        {
+            return this->uConverter->getSampleFromStochastPoint(stochastPoint);
+        }
+
         /**
          * \brief Runs the model in the design point
          * \param designPoint design point to be calculated
