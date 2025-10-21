@@ -131,6 +131,7 @@ class StandardNormal(FrozenObject):
 		return interface.GetArgValue(StandardNormal._id(), 'u_from_t', t)
 
 class ProbabilityValue(FrozenObject):
+	"""Contains a probability in several interchangable definitions"""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -153,37 +154,55 @@ class ProbabilityValue(FrozenObject):
 
 	@property
 	def reliability_index(self) -> float:
+		"""Gets the probability as a reliability index (u-space)"""
 		return interface.GetValue(self._id, 'reliability_index')
 
 	@reliability_index.setter
 	def reliability_index(self, value : float):
+		"""Sets the probability as a reliability index (u-space)"""
 		interface.SetValue(self._id, 'reliability_index',  value)
 
 	@property
 	def probability_of_failure(self) -> float:
+		"""Gets the probability as a probability, i.e. a value between 0 and 1"""
 		return interface.GetValue(self._id, 'probability_of_failure')
 
 	@probability_of_failure.setter
 	def probability_of_failure(self, value : float):
+		"""Sets the probability as a probability, i.e. a value between 0 and 1"""
 		interface.SetValue(self._id, 'probability_of_failure',  value)
 
 	@property
 	def probability_of_non_failure(self) -> float:
+		"""Gets the probability as a probability of non-failure"""
 		return interface.GetValue(self._id, 'probability_of_non_failure')
 
 	@probability_of_non_failure.setter
 	def probability_of_non_failure(self, value : float):
+		"""Sets the probability as a probability of non-failure"""
 		interface.SetValue(self._id, 'probability_of_non_failure',  value)
 
 	@property
 	def return_period(self) -> float:
+		"""Gets the probability as a return period"""
 		return interface.GetValue(self._id, 'return_period')
 
 	@return_period.setter
 	def return_period(self, value : float):
+		"""Sets the probability as a return period"""
 		interface.SetValue(self._id, 'return_period',  value)
 
 class Stochast(FrozenObject):
+	"""Contains the definitiotion of a stochastic variable
+
+    The stochastic variable is definied by the following properties: distribution, location, scale, shape, shape_b, shift, shift_b,
+    minimum, maximum, observations, truncated and inverted. Depending on the distribution, a selection of these properties are used.
+    For some distributions, a list of histogram values, discrete values or fragility values is used.
+
+    A number of characteristics can be derived. They can also be set and then stochast properties are updated. These characteristics are:
+    mean, (standard) deviation, variation (coefficient) and design value.
+
+    """
 
 	def __init__(self, id = None):
 		if id is None:
@@ -572,25 +591,71 @@ class Stochast(FrozenObject):
 		return interface.GetArgValue(self._id, 'quantile', quantile)
 
 	def get_x_from_u(self, u : float) -> float:
+		"""Gets the x-value at a given u-value of the stochast
+
+        Parameters
+        ----------
+        u : float
+            U-value for which the x-value is requested
+        Returns
+        -------
+            Requested x-value
+        """
 		return interface.GetArgValue(self._id, 'x_from_u', u)
 
 	def get_u_from_x(self, x : float) -> float:
+		"""Gets the u-value at a given x-value of the stochast
+
+        Parameters
+        ----------
+        x : float
+            X-value for which the u-value is requested
+        Returns
+        -------
+            Requested u-value
+        """
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
 	def get_pdf(self, x : float) -> float:
+		"""Gets the PDF or PMF value of the stochast
+
+        Parameters
+        ----------
+        x : float
+            X-value for which the PDF or PMF is requested
+        """
 		return interface.GetArgValue(self._id, 'pdf', x)
 
 	def get_cdf(self, x : float) -> float:
+		"""Gets the CDF value of the stochast
+
+        Parameters
+        ----------
+        x : float
+            X-value for which the CDF is requested
+        """
 		return interface.GetArgValue(self._id, 'cdf', x)
 
 	def get_x_from_u_and_source(self, u : float, x: float) -> float:
+		"""Gets the x-value at a given u-value of a conditional stochast
+
+        Parameters
+        ----------
+        u : float
+            U-value for which the x-value is requested
+        x : float
+            The conditional value on which the distribution of this conditional stochast is based
+        Returns
+        -------
+            Requested x-value
+        """
 		interface.SetArrayValue(self._id, 'u_and_x', [u, x])
 		interface.Execute(self._id, 'initialize_conditional_values');
 		return interface.GetValue(self._id, 'x_from_u_and_source')
 
 	def fit(self, values : list[float], shift : float = nan):
 		"""Fits the stochast parameters from a list of values.
-        Validates first whether fit can be performed, if not aerror messagse a reprinted and no fit is performed.
+        Validates first whether fit can be performed, if not an error message is printed and no fit is performed.
 
         Parameters
         ----------
@@ -616,6 +681,7 @@ class Stochast(FrozenObject):
 				message.print()
 
 	def can_fit_prior(self) -> bool:
+		"""Tells whether a fit with prior can be performed. """
 		return interface.GetBoolValue(self._id, 'can_fit_prior')
 
 	def fit_prior(self, prior : str | Stochast, values : list[float], shift : float = nan):
