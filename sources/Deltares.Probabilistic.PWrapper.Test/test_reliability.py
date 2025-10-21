@@ -26,7 +26,7 @@ import os
 from io import StringIO
 
 from probabilistic_library.utils import FrozenList, FrozenObject
-from probabilistic_library.reliability import (DesignPoint, DesignPointMethod, ReliabilityMethod, RandomType, CompareType, StartMethod,
+from probabilistic_library.reliability import (DesignPoint, DesignPointMethod, ReliabilityMethod, CompareType, StartMethod,
                                                FragilityCurve, FragilityValue)
 from probabilistic_library.project import ReliabilityProject
 from probabilistic_library.statistic import Stochast, DistributionType, ContributingStochast, ConditionalValue
