@@ -69,8 +69,7 @@ pass as `const T&;` (if they are readonly) or `T&` (if they are writable). Also 
 Resharper can help you with this.
 
 ## Overriding
-When overriding virtual method, use override suffix.
-
+When overriding a virtual method, use override suffix.
 
 ## Pointers
 
@@ -91,14 +90,35 @@ Avoid using prefix or suffix to indicate pointer types in variable names,
 i.e. use `my_obj` instead of `myobj_ptr` except in cases where it might make sense to differentiate variables better, for example,
 `int mynum = 5; int* mynum_ptr = mynum;`
 
+Don't do:
+```
+        void LogNormalDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        {
+            stochast->Shift = values[2];
+            setMeanAndDeviation(stochast, values[0], values[1]);
+        }
+
+```
+But do this:
+```
+        void LogNormalDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
+        {
+            stochast.Shift = values[2];
+            setMeanAndDeviation(stochast, values[0], values[1]);
+        }
+
+```
+Now it is clear that the stochast is updated by the initialize, but the values remain unchanged.
+And the caller of this initialize is not forced to use a shared pointer for the stochast, but still has that possibility. 
+
 ## Indentation
 
 The C++ code base uses four spaces for indentation (not tabs).
 In Python code tabs are allowed, but per file there is consistent usage of tabs or spaces.
 
-## Other style settings, both python and C++
+## Other style settings, both Python and C++
 
-- maximum line length is 120 characters; maximum file size is 750 lines.
+- the maximum line length is 120 characters; maximum file size is 750 lines.
 Long lines are inconvenient when doing a side-by-side diff.
 - TODO's are allowed to identify corner cases.
 - use 0.0, 1.0 etc if they are floats/doubles; use 0, 1 etc if they are integers.
@@ -116,7 +136,7 @@ especially in combination with an unique or shared pointer declaration.
 - when throwing an exception, use the exception class in probLibException.h,
 so that we can distinguish between exceptions from our own library or the system libraries.
 - when using std::format provide fall back code for compilers that do not support it.
-Besides this, all features of C++20 are allowed. We do not use Boost.
+Besides this, all features of C++20 are allowed. We do not use the Boost library.
 - counters may be i,j,k , but loops are preferable of the form : for( const auto& o : listOfObjects) {}
 
 # Finishing your work
