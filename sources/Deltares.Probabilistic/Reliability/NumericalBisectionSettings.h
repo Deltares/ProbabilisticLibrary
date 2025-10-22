@@ -25,12 +25,13 @@
 
 #include "DesignPointBuilder.h"
 #include "StochastSettingsSet.h"
+#include "../Model/Validatable.h"
 
 namespace Deltares
 {
     namespace Reliability
     {
-        class NumericalBisectionSettings
+        class NumericalBisectionSettings : public Models::Validatable
         {
         public:
             int MinimumIterations = 8;
@@ -53,9 +54,10 @@ namespace Deltares
              * \brief Reports whether the settings have valid values
              * \param report Report in which the validity is reported
              */
-            void validate(Logging::ValidationReport& report) const
+            void validate(Logging::ValidationReport& report) const override
             {
                 Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
+                runSettings->validate(report);
             }
 
             /**

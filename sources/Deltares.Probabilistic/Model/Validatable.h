@@ -20,28 +20,38 @@
 // All rights reserved.
 //
 #pragma once
+#include "RunSettings.h"
 
-#include "ReliabilityMethod.h"
-#include "LatinHyperCubeSettings.h"
-
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Reliability
+    class Validatable
     {
-        class LatinHyperCube: public ReliabilityMethod
-        {
-        public:
-            std::shared_ptr<LatinHyperCubeSettings> Settings = std::make_shared<LatinHyperCubeSettings>();
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-            bool isValid() override
-            {
-                return Settings->isValid();
-            }
+    public:
+        /**
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        virtual void validate(Logging::ValidationReport& report) const { /* implemented by inheritors */ }
 
-        private:
-            std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner>& modelRunner, double qRange);
-            double ReportConvergence(std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nMaal) const;
-            std::vector<std::shared_ptr<Sample>> CreateAllSamples(int nStochasts);
-        };
-    }
+        /**
+         * \brief Validates the project and puts the result in a validation report
+         * \returns Validation report
+         */
+        Logging::ValidationReport getValidationReport() const
+        {
+            Logging::ValidationReport report;
+            validate(report);
+
+            return report;
+        }
+
+        /**
+         * \brief Indicates whether a run can be performed
+         */
+        bool isValid() const
+        {
+            return getValidationReport().isValid();
+        }
+    };
 }
+

@@ -248,6 +248,7 @@
     <ClCompile Include="Logging\ValidationSupport.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionSupport.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
+    <ClCompile Include="Model\Validatable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -525,6 +526,7 @@
     <ClInclude Include="Model\ModelProjectSettings.h" />
     <ClInclude Include="Statistics\Distributions\DistributionSupport.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSupport.h" />
+    <ClInclude Include="Model\Validatable.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

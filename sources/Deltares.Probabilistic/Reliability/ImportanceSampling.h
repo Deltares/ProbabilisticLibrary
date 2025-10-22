@@ -38,6 +38,11 @@ namespace Deltares
 			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 			void setSampleLambda(RegisterSampleLambda sampleFunction);
 			void setBreakLoopLambda(BreakLoopLambda breakFunction);
+            bool isValid() override
+            {
+                return this->Settings->isValid();
+            }
+
 		private:
 			RegisterSampleLambda sampleFunction = nullptr;
 			BreakLoopLambda breakFunction = nullptr;

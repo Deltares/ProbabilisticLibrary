@@ -22,13 +22,13 @@
 #pragma once
 
 #include "StochastSettingsSet.h"
-#include "../Model/Sample.h"
+#include "../Model/Validatable.h"
 
 namespace Deltares::Reliability
 {
     enum class ModelVaryingType { Monotone, Varying };
 
-    class DirectionReliabilitySettings
+    class DirectionReliabilitySettings : public Models::Validatable
     {
     public:
         ModelVaryingType modelVaryingType = ModelVaryingType::Monotone;
@@ -42,7 +42,7 @@ namespace Deltares::Reliability
 
         std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
-        void validate(Logging::ValidationReport& report) const;
+        void validate(Logging::ValidationReport& report) const override;
         int SectionCount() const;
     };
 }

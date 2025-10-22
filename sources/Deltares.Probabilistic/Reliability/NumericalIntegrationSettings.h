@@ -21,6 +21,7 @@
 //
 #pragma once
 #include "DesignPointBuilder.h"
+#include "../Model/Validatable.h"
 
 namespace Deltares
 {
@@ -29,7 +30,7 @@ namespace Deltares
         /**
          * \brief Settings for numerical integration
          */
-        class NumericalIntegrationSettings
+        class NumericalIntegrationSettings : public Models::Validatable
         {
         public:
             /**
@@ -51,7 +52,7 @@ namespace Deltares
              * \brief Reports whether the settings have valid values
              * \param report Report in which the validity is reported
              */
-            void validate(Logging::ValidationReport& report) const
+            void validate(Logging::ValidationReport& report) const override
             {
                 validateStochastSet(report);
                 runSettings->validate(report);

@@ -19,29 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
 
-#include "ReliabilityMethod.h"
-#include "LatinHyperCubeSettings.h"
-
-namespace Deltares
-{
-    namespace Reliability
-    {
-        class LatinHyperCube: public ReliabilityMethod
-        {
-        public:
-            std::shared_ptr<LatinHyperCubeSettings> Settings = std::make_shared<LatinHyperCubeSettings>();
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-            bool isValid() override
-            {
-                return Settings->isValid();
-            }
-
-        private:
-            std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner>& modelRunner, double qRange);
-            double ReportConvergence(std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nMaal) const;
-            std::vector<std::shared_ptr<Sample>> CreateAllSamples(int nStochasts);
-        };
-    }
-}
+#include "Validatable.h"

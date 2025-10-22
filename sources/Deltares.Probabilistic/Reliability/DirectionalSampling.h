@@ -39,6 +39,7 @@ namespace Deltares::Reliability
         std::shared_ptr<DirectionalSamplingSettings> Settings = std::make_shared<DirectionalSamplingSettings>();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         size_t preComputedCounter = 0;
+        bool isValid() override { return this->Settings->isValid(); }
     };
 }
 

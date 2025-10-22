@@ -37,6 +37,11 @@ namespace Deltares
         public:
             std::shared_ptr<SubsetSimulationSettings> Settings = std::make_shared<SubsetSimulationSettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            bool isValid() override
+            {
+                return Settings->isValid();
+            }
+
         private:
             std::vector<std::shared_ptr<Sample>> getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, bool initial);
             std::vector<std::shared_ptr<Sample>> getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples, double z0Fac);

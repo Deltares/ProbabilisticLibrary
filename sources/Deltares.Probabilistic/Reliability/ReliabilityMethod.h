@@ -41,6 +41,7 @@ namespace Deltares
             virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
             virtual ~ReliabilityMethod() = default;
 
+            virtual bool isValid() { return false; }
             bool isStopped();
             void Stop();
         };

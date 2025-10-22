@@ -50,6 +50,12 @@ namespace Deltares
              * \return Design point
              */
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+
+            bool isValid() override
+            {
+                return this->Settings->isValid();
+            }
+
         protected:
             void setStopped() override;
         private:

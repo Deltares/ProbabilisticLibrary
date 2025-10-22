@@ -38,6 +38,7 @@ namespace Deltares::Reliability
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         virtual double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0);
         virtual double getBeta(Models::ModelRunner& modelRunner, double z0) { return 0.0; }
+        bool isValid() override { return Settings->isValid(); }
     protected:
         double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
         std::shared_ptr<DirectionSectionsCalculation> sectionsCalc;

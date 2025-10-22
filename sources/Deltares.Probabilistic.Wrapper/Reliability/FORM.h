@@ -53,7 +53,7 @@ namespace Deltares
 
                 System::Object^ GetSettings() override { return Settings; }
 
-                void Stop()    override { shared->object->Stop(); }
+                void Stop() override { shared->object->Stop(); }
 
                 bool IsStopped() override { return shared->object->isStopped(); }
             };

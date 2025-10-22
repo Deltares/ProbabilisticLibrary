@@ -24,7 +24,6 @@
 #include <vector>
 #include "ReliabilityMethod.h"
 #include "NumericalBisectionSettings.h"
-#include "../Math/NumericSupport.h"
 #include "IntegrationGrid.h"
 
 namespace Deltares
@@ -36,6 +35,11 @@ namespace Deltares
         public:
             std::shared_ptr<NumericalBisectionSettings> Settings = std::make_shared<NumericalBisectionSettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            bool isValid() override
+            {
+                return Settings->isValid();
+            }
+
         private:
             std::vector<double> getStartPoint(const int nStochasts) const;
             static size_t getChunkSize(const int nStochasts);
