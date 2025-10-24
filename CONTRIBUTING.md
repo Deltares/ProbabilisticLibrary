@@ -3,8 +3,8 @@
 The Probabilistic Library is open source and we welcome contributions from everyone.
 However, we have some rules for that.
 
-I. It should fit in our primary focus: probabilistic.
-New methods or distributions should be usefull for more than one purpose.
+I. It should fit in our primary focus: probabilistic, sensitivity and uncertainty analysis.
+It is up to Deltares to decide if it should be part of the main line.
 
 II. Code should follow our guidelines (see below).
 
@@ -15,9 +15,17 @@ IV. All contributions will get a header with (c) Deltares
 V. New code should not lead to new dependencies.
 If you think a new dependency is needed, contact us before making your changes.
 The current dependencies are given in:
-[wiki PL](https://github.com/Deltares/ProbabilisticLibrary/wiki/Tools-and-other-software)
+[wiki PL](https://github.com/Deltares/ProbabilisticLibrary/wiki/Tools-and-other-software).
+In short : C++ code follows the C++-20 standard ; the python version is 3.11.
 
-VI. Make a pull request for your contribution, or create a issue with your suggestion.
+VI. New code should be complete, no TODO's.
+That means include a python wrapper, and if you add an new distribution,
+all methods for distributions must be implemented.
+
+VII. **No** Boy Scout Rule: if you change an existing file, make only the necessary changes for your issue.
+If you think the file does not comply to our guidelines, make an issue for that.
+
+VIII. Make a pull request for your contribution, or create a issue with your suggestion.
 
 
 # Code guidelines
@@ -45,7 +53,7 @@ Avoid using any sort of Hungarian notation on names and "_ptr" on pointers.
 ## Bracketing
 
 We are using the Allman style of Bracketing, see: [Indent style](https://en.wikipedia.org/wiki/Indent_style).
-Notice that curlies are also required if you have a single statement.
+Notice that curlies are also required if you have a single statement, except for return statements.
 
 ```
 int main(int argc, char* argv[])
@@ -113,8 +121,7 @@ And the caller of this initialize is not forced to use a shared pointer for the 
 
 ## Indentation
 
-The C++ code base uses four spaces for indentation (not tabs).
-In Python code tabs are allowed, but per file there is consistent usage of tabs or spaces.
+Both Python and C++ code base uses four spaces for indentation (not tabs).
 
 ## Other style settings, both Python and C++
 
@@ -123,9 +130,6 @@ Long lines are inconvenient when doing a side-by-side diff.
 - TODO's are allowed to identify corner cases.
 - use 0.0, 1.0 etc if they are floats/doubles; use 0, 1 etc if they are integers.
 - in principle no abbreviations in names of methods, members and variables.
-- Boy Scout Rule: if you change an existing file, leave the code better than you found it.
-If the change is very small, do your changes in the existing style. That makes reviewing easier.
-If the change is substantial, and a style change is needed, do the style changes in a separate commit.
 
 ## Other style settings, C++ specific
 
@@ -152,6 +156,8 @@ After the merge the branch must be deleted.
 
 # Documentation
 Algorithms are described in the scientific background.
+
+Python code is documented with examples in a notebook.
 
 Code should have inline documentation for each class and all the public methods and members.
 
