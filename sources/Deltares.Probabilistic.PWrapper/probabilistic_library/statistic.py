@@ -76,18 +76,16 @@ class DistributionType(Enum):
 		return str(self.value)
 
 class StandardNormal(FrozenObject):
-	"""
-	Provides conversions between probabilities (p,q), reliability (u) and return time (t)
-	"""
+	"""Provides conversions between probabilities (p,q), reliability (u) and return time (t)"""
 	_id_value = 0
 
 	def __dir__(self):
 		return ['get_u_from_q',
-			'get_u_from_p',
-			'get_q_from_u',
-			'get_p_from_u',
-			'get_t_from_u',
-			'get_u_from_t']
+		        'get_u_from_p',
+		        'get_q_from_u',
+		        'get_p_from_u',
+		        'get_t_from_u',
+		        'get_u_from_t']
 
 	def _id() -> int:
 		if StandardNormal._id_value == 0:
@@ -95,39 +93,27 @@ class StandardNormal(FrozenObject):
 		return StandardNormal._id_value
 
 	def get_u_from_q (q : float) -> float:
-		"""
-		get u from q (probability of exceedence)
-		"""
+		"""Gets u from q (probability of exceedence)"""
 		return interface.GetArgValue(StandardNormal._id(), 'u_from_q', q)
 
 	def get_u_from_p (p : float) -> float:
-		"""
-		get u from p (probability of non-exceedence)
-		"""
+		"""Gets u from p (probability of non-exceedence)"""
 		return interface.GetArgValue(StandardNormal._id(), 'u_from_p', p)
 
 	def get_q_from_u (u : float) -> float:
-		"""
-		get q (probability of exceedence) from u
-		"""
+		"""Gets q (probability of exceedence) from u"""
 		return interface.GetArgValue(StandardNormal._id(), 'q_from_u', u)
 
 	def get_p_from_u (u : float) -> float:
-		"""
-		get p (probability of non-exceedence) from u
-		"""
+		"""Gets p (probability of non-exceedence) from u"""
 		return interface.GetArgValue(StandardNormal._id(), 'p_from_u', u)
 
 	def get_t_from_u (u : float) -> float:
-		"""
-		get return time from u
-		"""
+		"""Gets return time from u"""
 		return interface.GetArgValue(StandardNormal._id(), 't_from_u', u)
 
 	def get_u_from_t (t : float) -> float:
-		"""
-		get u from return time
-		"""
+		"""Gets u from return time"""
 		return interface.GetArgValue(StandardNormal._id(), 'u_from_t', t)
 
 class ProbabilityValue(FrozenObject):
@@ -154,54 +140,65 @@ class ProbabilityValue(FrozenObject):
 
 	@property
 	def reliability_index(self) -> float:
-		"""Gets the probability as a reliability index (u-space)"""
+		"""The probability as a reliability index (u-space)"""
 		return interface.GetValue(self._id, 'reliability_index')
 
 	@reliability_index.setter
 	def reliability_index(self, value : float):
-		"""Sets the probability as a reliability index (u-space)"""
 		interface.SetValue(self._id, 'reliability_index',  value)
 
 	@property
 	def probability_of_failure(self) -> float:
-		"""Gets the probability as a probability, i.e. a value between 0 and 1"""
+		"""The probability as a probability, i.e. a value between 0 and 1"""
 		return interface.GetValue(self._id, 'probability_of_failure')
 
 	@probability_of_failure.setter
 	def probability_of_failure(self, value : float):
-		"""Sets the probability as a probability, i.e. a value between 0 and 1"""
 		interface.SetValue(self._id, 'probability_of_failure',  value)
 
 	@property
 	def probability_of_non_failure(self) -> float:
-		"""Gets the probability as a probability of non-failure"""
+		"""The probability as a probability of non-failure"""
 		return interface.GetValue(self._id, 'probability_of_non_failure')
 
 	@probability_of_non_failure.setter
 	def probability_of_non_failure(self, value : float):
-		"""Sets the probability as a probability of non-failure"""
 		interface.SetValue(self._id, 'probability_of_non_failure',  value)
 
 	@property
 	def return_period(self) -> float:
-		"""Gets the probability as a return period"""
+		"""The probability as a return period"""
 		return interface.GetValue(self._id, 'return_period')
 
 	@return_period.setter
 	def return_period(self, value : float):
-		"""Sets the probability as a return period"""
 		interface.SetValue(self._id, 'return_period',  value)
 
 class Stochast(FrozenObject):
-	"""Contains the definitiotion of a stochastic variable
+	"""Contains the definition of a stochastic variable
 
     The stochastic variable is definied by the following properties: distribution, location, scale, shape, shape_b, shift, shift_b,
     minimum, maximum, observations, truncated and inverted. Depending on the distribution, a selection of these properties are used.
-    For some distributions, a list of histogram values, discrete values or fragility values is used.
+    For some distributions, the list of histogram_values, discrete_values or fragility_values is used. Composite stochasts are supported,
+    where a stochast consists of several other stochasts, each with a certain fraction.
 
     A number of characteristics can be derived. They can also be set and then stochast properties are updated. These characteristics are:
-    mean, (standard) deviation, variation (coefficient) and design value.
+    mean, (standard) deviation, variation (coefficient) and design_value. The design_value needs the input values design_factor and
+    design_quantile to be calculated. The following characteristic features needing an x-value are available: get_cdf, get_pdf, get_u_at_x,
+    get_x_at_u and get_quantile.
 
+    The stochast properties can be estimated by providing a number of values from which the properties will be fitted. The methods fit and
+    fit_prior enable this feature. The goodness of fit can be retrieved by get_ks_test.
+
+    Conditional stochasts are supported. The stochast properties depend on the value (or realization in a probabiistic analysis) of another
+    stochast, indicated by conditional_source. A table condiotnal_values is used to define the stochast properties for a certain value  of
+    the source stochast.
+
+    A stochast can function as an array in a probabilstic analysis. The stochast will function as a number of uncorrelated stochastic variables.
+    To define an array, use is_array and array_size.
+
+    Printing and plotting are supported with methods print, plot_get_plot, get_series and get_special_values. Validation is supported by
+    is_valid and validate.
     """
 
 	def __init__(self, id = None):
@@ -280,6 +277,8 @@ class Stochast(FrozenObject):
 		
 	@property
 	def name(self) -> str:
+		"""The name of the stochast
+        The name is set automatically when the stochast is provided by a model"""
 		return interface.GetStringValue(self._id, 'name')
 
 	@name.setter
@@ -291,6 +290,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def distribution(self) -> DistributionType:
+		"""Distribution type of the stochast"""
 		return DistributionType[interface.GetStringValue(self._id, 'distribution')]
 
 	@distribution.setter
@@ -299,6 +299,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def inverted(self) -> bool:
+		"""Indicates whether the stochast is inverted, i.e. mirrored in the shift"""
 		return interface.GetBoolValue(self._id, 'inverted')
 
 	@inverted.setter
@@ -307,6 +308,8 @@ class Stochast(FrozenObject):
 
 	@property
 	def truncated(self) -> bool:
+		"""Indicates whether the stochast is truncated
+        The truncation takes place at the minimum and maximum value"""
 		return interface.GetBoolValue(self._id, 'truncated')
 
 	@truncated.setter
@@ -315,6 +318,8 @@ class Stochast(FrozenObject):
 
 	@property
 	def mean(self) -> float:
+		"""Mean value of the stochast
+        When set, defining properties are modified in such a way that the set value and deviation are maintained"""
 		return interface.GetValue(self._id, 'mean')
 
 	@mean.setter
@@ -323,6 +328,8 @@ class Stochast(FrozenObject):
 
 	@property
 	def deviation(self) -> float:
+		"""Standard deviation of the stochast
+        When set, defining properties are modified in such a way that the set value and mean are maintained"""
 		return interface.GetValue(self._id, 'deviation')
 
 	@deviation.setter
@@ -332,6 +339,8 @@ class Stochast(FrozenObject):
 
 	@property
 	def variation(self) -> float:
+		"""Variation coefficient of the stochast
+        When set, defining properties are modified in such a way that the set value and mean are maintained"""
 		return interface.GetValue(self._id, 'variation')
 
 	@variation.setter
@@ -341,6 +350,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def location(self) -> float:
+		"""Location parameter of the stochast (one of the defining properties)"""
 		return interface.GetValue(self._id, 'location')
 
 	@location.setter
@@ -349,6 +359,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def scale(self) -> float:
+		"""Scale parameter of the stochast (one of the defining properties)"""
 		return interface.GetValue(self._id, 'scale')
 
 	@scale.setter
@@ -357,6 +368,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def shift(self) -> float:
+		"""Shift parameter of the stochast (one of the defining properties)"""
 		return interface.GetValue(self._id, 'shift')
 
 	@shift.setter
@@ -365,6 +377,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def shift_b(self) -> float:
+		"""Additional shift parameter of the stochast (one of the defining properties)"""
 		return interface.GetValue(self._id, 'shift_b')
 
 	@shift_b.setter
@@ -373,6 +386,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def minimum(self) -> float:
+		"""Minimum value of the stochast (one of the defining properties)"""
 		return interface.GetValue(self._id, 'minimum')
 
 	@minimum.setter
@@ -381,6 +395,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def maximum(self) -> float:
+		"""Maximum value of the stochast (one of the defining properties)"""
 		return interface.GetValue(self._id, 'maximum')
 
 	@maximum.setter
@@ -389,6 +404,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def shape(self) -> float:
+		"""Shape parameter of the stochast (one of the defining properties)"""
 		return interface.GetValue(self._id, 'shape')
 
 	@shape.setter
@@ -397,6 +413,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def shape_b(self) -> float:
+		"""Additional shape parameter of the stochast (one of the defining properties)"""
 		return interface.GetValue(self._id, 'shape_b')
 
 	@shape_b.setter
@@ -405,6 +422,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def rate(self) -> float:
+		"""Rate parameter of the stochast, derived from scale"""
 		return interface.GetValue(self._id, 'rate')
 
 	@rate.setter
@@ -413,6 +431,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def observations(self) -> int:
+		"""Number of observations of the stochast (one of the defining properties)"""
 		return interface.GetIntValue(self._id, 'observations')
 
 	@observations.setter
@@ -421,6 +440,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def discrete_values(self) -> list[DiscreteValue]:
+		"""List of discrete values, defines a stochast of distribution type discrete"""
 		if self._discrete_values is None:
 			self._synchronizing = True
 			self._discrete_values = CallbackList(self._discrete_values_changed)
@@ -437,6 +457,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def histogram_values(self) -> list[HistogramValue]:
+		"""List of histogram values, defines a stochast of distribution type histogram"""
 		if self._histogram_values is None:
 			self._synchronizing = True
 			self._histogram_values = CallbackList(self._histogram_values_changed)
@@ -453,6 +474,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def fragility_values(self) -> list[FragilityValue]:
+		"""List of fragility values, defines a stochast of distribution type cdf_curve"""
 		if self._fragility_values is None:
 			self._synchronizing = True
 			self._fragility_values = CallbackList(self._fragility_values_changed)
@@ -469,6 +491,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def contributing_stochasts(self) -> list[ContributingStochast]:
+		"""List of contributing stochasts, defines a stochast of distribution type composite"""
 		if self._contributing_stochasts is None:
 			self._synchronizing = True
 			self._contributing_stochasts = CallbackList(self._contributing_stochasts_changed)
@@ -488,6 +511,12 @@ class Stochast(FrozenObject):
 
 	@property
 	def conditional(self) -> bool:
+		"""Indicates whether the stochast is conditional, which means that the defining stochast properties depend on the value
+        of the conditional_source
+
+        Within a probabilistic analysis, all stochastic variables get realizations, which means the a value is assigned to them.
+        The value assigned to the conditional_source is used to look up the defining properties of this stochast. Therefore the list
+        conditional_values is used, where these values are defined for some values of the conditional_source"""
 		return interface.GetBoolValue(self._id, 'conditional')
 
 	@conditional.setter
@@ -496,6 +525,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def conditional_source(self) -> Stochast:
+		"""The source stochast if this stochast is conditional"""
 		cs_id = interface.GetIdValue(self._id, 'conditional_source')
 		if cs_id > 0:
 			if self._conditional_source is None or not self._conditional_source._id == cs_id:
@@ -517,6 +547,12 @@ class Stochast(FrozenObject):
 
 	@property
 	def conditional_values(self) -> list[ConditionalValue]:
+		"""The list of conditional values if this stochast is conditional
+
+        In a probabilistic analysis, the defining properties of are derived from this list. By interpolation against
+        the value assigned to the conditional_source the defining properties are determined. No extrapoloation takes
+        place, but the values belonging to the most extreme conditional_source values are used."""
+
 		if self._conditional_values is None:
 			self._synchronizing = True
 			self._conditional_values = CallbackList(self._conditional_values_changed)
@@ -532,7 +568,59 @@ class Stochast(FrozenObject):
 			interface.SetArrayIntValue(self._id, 'conditional_values', [conditional_value._id for conditional_value in self._conditional_values])
 
 	@property
+	def design_quantile(self) -> float:
+		"""Defines the quantile, which is used to calculate the design_value"""
+		return interface.GetValue(self._id, 'design_quantile')
+
+	@design_quantile.setter
+	def design_quantile(self, value : float):
+		interface.SetValue(self._id, 'design_quantile', value)
+
+	@property
+	def design_factor(self) -> float:
+		"""Defines the factor, which is used to calculate the design_value"""
+		return interface.GetValue(self._id, 'design_factor')
+
+	@design_factor.setter
+	def design_factor(self, value : float):
+		interface.SetValue(self._id, 'design_factor',  value)
+
+	@property
+	def design_value(self) -> float:
+		"""The design value, which is a representable calculation value based on the stochastic definition
+        When set, defining properties are adapted while keeping the variation property value unchanged"""
+		return interface.GetValue(self._id, 'design_value')
+
+	@design_value.setter
+	def design_value(self, value : float):
+		interface.SetValue(self._id, 'design_value', value)
+
+	@property
+	def is_array(self) -> bool:
+		"""Indicates whether this stopchast should be used as a list of stochasts in a probabilistic analysis"""
+		return interface.GetBoolValue(self._id, 'is_array')
+		
+	@is_array.setter
+	def is_array(self, value : bool):
+		interface.SetBoolValue(self._id, 'is_array', value)
+
+	@property
+	def array_size(self) -> int:
+		"""Size of the array when this stochast is an array (defined by is_array)"""
+		return interface.GetIntValue(self._id, 'array_size')
+		
+	@array_size.setter
+	def array_size(self, value : int):
+		interface.SetIntValue(self._id, 'array_size', value)
+
+	@property
 	def array_variables(self) -> list[Stochast]:
+		"""Optional list of stochasts which are used when this stochast is an array
+
+        If not filled, this stochast definition is used for each member in the array. If filled, the items in this list are used
+        in the array, where the firts item in this list corresponds with the first array stochast, the second list item to the second
+        array stochast, etc. When this list is exhausted, this stochast definition is used for the remaining array stochasts."""
+
 		if self._array_variables is None:
 			self._synchronizing = True
 			self._array_variables = CallbackList(self._array_variables_changed)
@@ -547,47 +635,8 @@ class Stochast(FrozenObject):
 		if not self._synchronizing:
 			interface.SetArrayIntValue(self._id, 'array_variables', [array_variable._id for array_variable in self._array_variables])
 
-	@property
-	def design_quantile(self) -> float:
-		return interface.GetValue(self._id, 'design_quantile')
-
-	@design_quantile.setter
-	def design_quantile(self, value : float):
-		interface.SetValue(self._id, 'design_quantile', value)
-
-	@property
-	def design_factor(self) -> float:
-		return interface.GetValue(self._id, 'design_factor')
-
-	@design_factor.setter
-	def design_factor(self, value : float):
-		interface.SetValue(self._id, 'design_factor',  value)
-
-	@property
-	def design_value(self) -> float:
-		return interface.GetValue(self._id, 'design_value')
-
-	@design_value.setter
-	def design_value(self, value : float):
-		interface.SetValue(self._id, 'design_value', value)
-
-	@property
-	def is_array(self) -> bool:
-		return interface.GetBoolValue(self._id, 'is_array')
-		
-	@is_array.setter
-	def is_array(self, value : bool):
-		interface.SetBoolValue(self._id, 'is_array', value)
-
-	@property
-	def array_size(self) -> int:
-		return interface.GetIntValue(self._id, 'array_size')
-		
-	@array_size.setter
-	def array_size(self, value : int):
-		interface.SetIntValue(self._id, 'array_size', value)
-
 	def get_quantile(self, quantile : float) -> float:
+		"""Gets the value belonging to a given quantile"""
 		return interface.GetArgValue(self._id, 'quantile', quantile)
 
 	def get_x_from_u(self, u : float) -> float:
@@ -717,10 +766,25 @@ class Stochast(FrozenObject):
 				message.print()
 
 	def get_ks_test(self, values) -> float:
+		"""Generates the Kolmogoriv-Smirnov statistic, which indicates the goodness of fit.
+        A value of 1 indicates a perfect fit, a value of 0 indicates the worst possible fit.
+
+        Parameters
+        ----------
+        values : list[float]
+            The list of values to compare this stochast against"""
+
 		interface.SetArrayValue(self._id, 'data', values)
 		return interface.GetValue(self._id, 'ks_test')
 
 	def copy_from(self, source):
+		"""Copies the stochast properties from a source stochast.
+
+        Parameters
+        ----------
+        source : Stochast|str
+            The stochast to copy the properties from"""
+
 		if type(source) == str:
 			source = self._variables[source]
 		if isinstance(source, Stochast):
@@ -732,15 +796,18 @@ class Stochast(FrozenObject):
 			self._conditional_values = None
 
 	def is_valid(self) -> bool:
+		"""Indicates whether the stochast is valid"""
 		return interface.GetBoolValue(self._id, 'is_valid')
 
 	def validate(self):
+		"""Prints the validation of this stochast"""
 		id_ = interface.GetIdValue(self._id, 'validate')
 		if id_ > 0:
 			validation_report = ValidationReport(id_)
 			validation_report.print()
 
 	def print(self, decimals = 4):
+		"""Prints this stochast"""
 		pre = '  '
 		if self.name == '':
 			print(f'Variable:')
@@ -796,6 +863,7 @@ class Stochast(FrozenObject):
 				print(pre + f'design_value = {self.design_value:.{decimals}g}')
 
 	def get_special_values(self) -> list[float]:
+		"""Gets a list of special x-values, which is useful for plotting"""
 		return interface.GetArrayValue(self._id, 'special_values')
 
 	def get_series(self, xmin : float = None, xmax : float = None, number_of_points : int = None) -> list[float]:
@@ -853,10 +921,28 @@ class Stochast(FrozenObject):
 		return values
 
 	def plot(self, xmin : float = None, xmax : float = None):
+		"""Shows a plot of this stochast
+
+        Parameters
+        ----------
+        xmin : float, optional
+            The minimum x value (default is None, a proper minimum value will be used)
+
+        xmax : float, optional
+            The maximum x value (default is None, a proper maximum value will be used)"""
 
 		self.get_plot(xmin, xmax).show()
 
 	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
+		"""Gets the plot object of this stochast
+
+        Parameters
+        ----------
+        xmin : float, optional
+            The minimum x value (default is None, a proper minimum value will be used)
+
+        xmax : float, optional
+            The maximum x value (default is None, a proper maximum value will be used)"""
 
 		if not self.is_valid():
 			self.validate()
@@ -943,6 +1029,7 @@ class Stochast(FrozenObject):
 		plt.legend()
 
 class DiscreteValue(FrozenObject):
+	"""Defines a discrete value of a stochast in case of a discrete distribution"""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -959,6 +1046,16 @@ class DiscreteValue(FrozenObject):
 	            'amount']
 
 	def create(x : float, amount : float):
+		"""Creates a discrete value with an x-value and amount
+
+        Parameters
+        ----------
+        x: float
+            The x-value to which the discrete value applies
+
+        amount : float
+            The amount corresponding with the x-value"""
+
 		discreteValue = DiscreteValue()
 		discreteValue.x = x
 		discreteValue.amount = amount
@@ -966,6 +1063,7 @@ class DiscreteValue(FrozenObject):
 
 	@property
 	def x(self) -> float:
+		"""X-value for which this discrete value is defined"""
 		return interface.GetValue(self._id, 'x')
 
 	@x.setter
@@ -974,6 +1072,8 @@ class DiscreteValue(FrozenObject):
 
 	@property
 	def amount(self) -> float:
+		"""The number of occurrences or PMF (probability mass function) corresponding with the x-value of this discrete value
+        The amounts do not have to be normalized over all discrete values of a stochast"""
 		return interface.GetValue(self._id, 'amount')
 
 	@amount.setter
@@ -981,6 +1081,7 @@ class DiscreteValue(FrozenObject):
 		interface.SetValue(self._id, 'amount',  value)
 
 class FragilityValue(FrozenObject):
+	"""Defines a point in a CDF curve of a stochast in case of a cdf_curve distribution"""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -995,13 +1096,22 @@ class FragilityValue(FrozenObject):
 
 	def __dir__(self):
 		return ['x',
-			'reliability_index',
-			'probability_of_failure',
-			'probability_of_non_failure',
-			'return_period',
-			'design_point']
+		        'reliability_index',
+		        'probability_of_failure',
+		        'probability_of_non_failure',
+		        'return_period',
+		        'design_point']
 
 	def create(x: float, reliability_index :float):
+		"""Creates a discrete value with an x-value and amount
+
+        Parameters
+        ----------
+        x: float
+            The x-value to which the fragility value applies
+
+        reliability_index : float
+            The reliability index corresponding with the x-value"""
 		fragilityValue = FragilityValue()
 		fragilityValue.x = x
 		fragilityValue.reliability_index = reliability_index
@@ -1009,6 +1119,7 @@ class FragilityValue(FrozenObject):
 
 	@property
 	def x(self) -> float:
+		"""X-value for which this fragility value is defined"""
 		return interface.GetValue(self._id, 'x')
 
 	@x.setter
@@ -1017,6 +1128,7 @@ class FragilityValue(FrozenObject):
 
 	@property
 	def reliability_index(self) -> float:
+		"""Reliablity index corresponding with the x-value of this fragility value"""
 		return interface.GetValue(self._id, 'reliability_index')
 
 	@reliability_index.setter
@@ -1025,6 +1137,7 @@ class FragilityValue(FrozenObject):
 
 	@property
 	def probability_of_failure(self) -> float:
+		"""Probability of failure corresponding with the reliability index in this fragility value"""
 		return interface.GetValue(self._id, 'probability_of_failure')
 
 	@probability_of_failure.setter
@@ -1033,6 +1146,7 @@ class FragilityValue(FrozenObject):
 
 	@property
 	def probability_of_non_failure(self) -> float:
+		"""Probability of non-failure corresponding with the reliability index in this fragility value"""
 		return interface.GetValue(self._id, 'probability_of_non_failure')
 
 	@probability_of_non_failure.setter
@@ -1041,6 +1155,7 @@ class FragilityValue(FrozenObject):
 
 	@property
 	def return_period(self) -> float:
+		"""Return period corresponding with the reliability index in this fragility value"""
 		return interface.GetValue(self._id, 'return_period')
 
 	@return_period.setter
@@ -1049,6 +1164,7 @@ class FragilityValue(FrozenObject):
 
 	@property
 	def design_point(self) -> DesignPoint:
+		"""Design point corresponding with this fragility value"""
 		return self._design_point
 
 	@design_point.setter
@@ -1058,6 +1174,15 @@ class FragilityValue(FrozenObject):
 			interface.SetIntValue(self._id, 'design_point',  self._design_point._id)
 
 class HistogramValue(FrozenObject):
+	"""Defines a histogram value (or bin) of a stochast in case of a histogram distribution
+
+    A histoogram value is defined by a lower bound and upper bound and contains an amount, which is the
+    number of occurrences between these boundaries (the height of the bin). The difference between the lower
+    and upper bound (the width of the bin) may vary between the histogram values of a stochast and can even
+    be zero.
+
+    When the histogram values are the result of an operation (fit of the stochast or an uncertainty analysis),
+    all histogram values have the same width for clarity for the user and understandability of a plot."""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1075,6 +1200,19 @@ class HistogramValue(FrozenObject):
 		        'amount']
 
 	def create(lower_bound : float, upper_bound : float, amount : float):
+		"""Creates a discrete value with an x-value and amount
+
+        Parameters
+        ----------
+        lower_bound: float
+            The lower bound of the histogram value
+
+        upper_bound: float
+            The upper_bound of the histogram value
+
+        amount : float
+            The amount of the histogram value"""
+
 		histogramValue = HistogramValue();
 		histogramValue.lower_bound = lower_bound
 		histogramValue.upper_bound = upper_bound
@@ -1083,6 +1221,7 @@ class HistogramValue(FrozenObject):
 
 	@property
 	def lower_bound(self) -> float:
+		"""The lower bound of the histogram value"""
 		return interface.GetValue(self._id, 'lower_bound')
 
 	@lower_bound.setter
@@ -1091,6 +1230,7 @@ class HistogramValue(FrozenObject):
 
 	@property
 	def upper_bound(self) -> float:
+		"""The upper bound of the histogram value"""
 		return interface.GetValue(self._id, 'upper_bound')
 
 	@upper_bound.setter
@@ -1099,6 +1239,8 @@ class HistogramValue(FrozenObject):
 
 	@property
 	def amount(self) -> float:
+		"""The number of occurrences or PMF (probability mass function) corresponding with the histogram value
+        The amounts do not have to be normalized over all histogram values of a stochast"""
 		return interface.GetValue(self._id, 'amount')
 
 	@amount.setter
@@ -1106,6 +1248,7 @@ class HistogramValue(FrozenObject):
 		interface.SetValue(self._id, 'amount',  value)
 
 class ContributingStochast(FrozenObject):
+	"""Stochast contributing to a stochast with distribution type composite"""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1124,6 +1267,15 @@ class ContributingStochast(FrozenObject):
 		        'variable']
 
 	def create(probability : float, variable : Stochast):
+		"""Creates a contributing stochast
+
+        Parameters
+        ----------
+        probability: float
+            Fraction of the contributing stochast
+
+        variable: Stochast
+            Stochast definition of the contributing stochast"""
 		contributingStochast = ContributingStochast();
 		contributingStochast.probability = probability
 		contributingStochast.variable = variable
@@ -1131,6 +1283,10 @@ class ContributingStochast(FrozenObject):
 
 	@property
 	def probability(self) -> float:
+		"""Fraction how much this contributing stochast contributes to the parent stochast.
+
+        The contributing stochast contributes for a certain fraction (probability) to a parent stochast. All
+        probability values must add up to 1."""
 		return interface.GetValue(self._id, 'probability')
 
 	@probability.setter
@@ -1139,6 +1295,7 @@ class ContributingStochast(FrozenObject):
 
 	@property
 	def variable(self) -> Stochast:
+		"""Stochast definition of the contributing stochast"""
 		if self._variable is None:
 			id_ = interface.GetIdValue(self._id, 'variable')
 			if id_ > 0:
@@ -1152,6 +1309,12 @@ class ContributingStochast(FrozenObject):
 			interface.SetIntValue(self._id, 'variable',  self._variable._id)
 
 class ConditionalValue(FrozenObject):
+	"""Defines the stochast properties at a certain value of a conditional_source, which is used when
+    a stochast is conditional
+
+    Several conditional values form a list, which is used to derive stochast properties in case of a
+    conditional stochast. The values in this conditional value are used for interpolation to retrieve
+    the stochast properties at a certain value assigned to the conditional_source of a stochast."""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1167,18 +1330,19 @@ class ConditionalValue(FrozenObject):
 		return ['x',
 	            'mean',
 	            'deviation',
-				'location',
-				'scale',
-				'shift',
-				'shift_b',
-				'shape',
-				'shape_b',
-				'observations',
-				'minimum',
-				'maximum']
+		        'location',
+		        'scale',
+		        'shift',
+		        'shift_b',
+		        'shape',
+		        'shape_b',
+		        'observations',
+		        'minimum',
+		        'maximum']
 
 	@property
 	def x(self) -> float:
+		"""The x-value for which the stochast properties in this conditional value apply"""
 		return interface.GetValue(self._id, 'x')
 
 	@x.setter
@@ -1187,6 +1351,11 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def mean(self) -> float:
+		"""Optional mean value of the conditional value
+
+        When retrieved, the value set by the user is returned and nan if not set. When set, other
+        properties in this conditional values are modified in such a way that the set value and
+        deviation are maintained. The same distribution type is assumed as the parent stochast"""
 		return interface.GetValue(self._id, 'mean')
 
 	@mean.setter
@@ -1195,6 +1364,11 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def deviation(self) -> float:
+		"""Optional standard deviation value of the conditional value
+
+        When retrieved, the value set by the user is returned and nan if not set. When set, other
+        properties in this conditional values are modified in such a way that the set value and mean
+        are maintained. The same distribution type is assumed as the parent stochast"""
 		return interface.GetValue(self._id, 'deviation')
 
 	@deviation.setter
@@ -1203,6 +1377,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def location(self) -> float:
+		"""Defines the location of the conditional value"""
 		return interface.GetValue(self._id, 'location')
 
 	@location.setter
@@ -1211,6 +1386,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def scale(self) -> float:
+		"""Defines the scale of the conditional value"""
 		return interface.GetValue(self._id, 'scale')
 
 	@scale.setter
@@ -1219,6 +1395,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def shift(self) -> float:
+		"""Defines the shift of the conditional value"""
 		return interface.GetValue(self._id, 'shift')
 
 	@shift.setter
@@ -1227,6 +1404,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def shift_b(self) -> float:
+		"""Defines the additional shift of the conditional value"""
 		return interface.GetValue(self._id, 'shift_b')
 
 	@shift_b.setter
@@ -1235,6 +1413,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def minimum(self) -> float:
+		"""Defines the minimum of the conditional value"""
 		return interface.GetValue(self._id, 'minimum')
 
 	@minimum.setter
@@ -1243,6 +1422,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def maximum(self) -> float:
+		"""Defines the maximum of the conditional value"""
 		return interface.GetValue(self._id, 'maximum')
 
 	@maximum.setter
@@ -1251,6 +1431,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def shape(self) -> float:
+		"""Defines the shape of the conditional value"""
 		return interface.GetValue(self._id, 'shape')
 
 	@shape.setter
@@ -1259,6 +1440,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def shape_b(self) -> float:
+		"""Defines the additional shape of the conditional value"""
 		return interface.GetValue(self._id, 'shape_b')
 
 	@shape_b.setter
@@ -1267,6 +1449,7 @@ class ConditionalValue(FrozenObject):
 
 	@property
 	def observations(self) -> int:
+		"""Defines the number of observations of the conditional value"""
 		return interface.GetIntValue(self._id, 'observations')
 
 	@observations.setter
@@ -1274,6 +1457,13 @@ class ConditionalValue(FrozenObject):
 		interface.SetIntValue(self._id, 'observations', value)
 
 class CorrelationMatrix(FrozenObject):
+	"""Correlation matrix for stochastic variables
+
+    The correlation is edfined as the Pearson correlation value. The correlation value must be between
+    -1 and 1 (inclusive). The correlation values are retrieved or set with an indexer, with variables as arguments.
+
+    By default, the correlation is 0 between different stochasts and 1 between same stochasts. The correlation matrix
+    is symmetric, which is maintained automatically."""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1288,6 +1478,8 @@ class CorrelationMatrix(FrozenObject):
 
 	@property
 	def variables(self) -> list[Stochast]:
+		"""List of variables for which correlations are defined.
+        The variables are retrieved automatically when this correlation matrix is part of a project."""
 		return self._variables
 
 	def _set_variables(self, variables):
@@ -1307,7 +1499,15 @@ class CorrelationMatrix(FrozenObject):
 				update_variables.append(Stochast(stochast_id))
 		self._variables = FrozenList(update_variables)
 
-	def __getitem__(self, stochasts) -> float:
+	def __getitem__(self, stochasts : list[Stochast|str]|tuple[Stochast|str,Stochast|str]) -> float:
+		"""Gets the correlation value between stochasts
+
+        Parameters
+        ----------
+        stochasts: list[Stochast|str]|tuple[Stochast|str,Stochast|str]
+            Stochasts between which the correlation value is returned. In case of a list, the length
+            of the list must be 2."""
+
 		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
 			raise ArgumentError('Expected 2 arguments')
 
@@ -1321,6 +1521,17 @@ class CorrelationMatrix(FrozenObject):
 		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id)
 
 	def __setitem__(self, stochasts, value):
+		"""Sets the correlation value between stochasts
+
+        Parameters
+        ----------
+        stochasts: list[Stochast|str]|tuple[Stochast|str,Stochast|str]
+            Stochasts between which the correlation value is returned. In case of a list, the length
+            of the list must be 2.
+
+        value: float
+            The correlation value, must be between -1 and 1 (inclusive)"""
+
 		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
 			raise ArgumentError('Expected 2 arguments')
 
@@ -1334,6 +1545,13 @@ class CorrelationMatrix(FrozenObject):
 		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
 
 class SelfCorrelationMatrix(FrozenObject):
+	"""Defines the correlation values of a stochast with another stochast, both corresponding with the same
+    parameter.
+
+    This is used for upscaling, which is used when a design point is applicable for a certain section of a system
+    (e.g. a section of 50 m in a trajectory of 500 m). When upscaling the design point to the trajectory, it is combined
+    with itself. But stochasts do not have full correlation with stochasts of another section. The self correlation
+    matrix defines these correlations."""
 
 	def __init__(self):
 		self._id = interface.Create('self_correlation_matrix')
@@ -1347,6 +1565,13 @@ class SelfCorrelationMatrix(FrozenObject):
 		self._variables = FrozenList(variables)
 
 	def __getitem__(self, stochast : str | Stochast) -> float:
+		"""Gets the self correlation value of a stochast
+
+        Parameters
+        ----------
+        stochasts: Stochast|str
+            Stochast for which the correlation value is defined"""
+
 		stochast_obj = stochast
 		if isinstance(stochast_obj, str):
 			stochast_obj = self._variables[str(stochast_obj)]
@@ -1354,6 +1579,16 @@ class SelfCorrelationMatrix(FrozenObject):
 		return interface.GetIntArgValue(self._id, stochast_obj._id, 'rho')
 
 	def __setitem__(self, stochast : str | Stochast, value : float):
+		"""Sets the self correlation value of a stochast
+
+        Parameters
+        ----------
+        stochasts: Stochast|str
+            Stochast for which the correlation value is defined
+
+        value: float
+            The correlation value, must be between -1 and 1 (inclusive)"""
+
 		stochast_obj = stochast
 		if isinstance(stochast_obj, str):
 			stochast_obj = self._variables[str(stochast_obj)]
@@ -1361,6 +1596,9 @@ class SelfCorrelationMatrix(FrozenObject):
 		interface.SetIntArgValue(self._id, stochast_obj._id, 'rho', value)
 
 class Scenario(FrozenObject):
+	"""Defines the contribution of a design point, when it is combined with other design point points in an exclusive way
+
+    A scenario corresponds with a design point. They will be combined by an EcludingCombineProject."""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1381,6 +1619,7 @@ class Scenario(FrozenObject):
 
 	@property
 	def name(self) -> str:
+		"""Defines the name of a scenario"""
 		return interface.GetStringValue(self._id, 'name')
 
 	@name.setter
@@ -1389,6 +1628,8 @@ class Scenario(FrozenObject):
 
 	@property
 	def probability(self) -> float:
+		"""Defines the fraction of the design point
+        The fractions of all scenarios to be combined must add up to 1."""
 		return interface.GetValue(self._id, 'probability')
 
 	@probability.setter
