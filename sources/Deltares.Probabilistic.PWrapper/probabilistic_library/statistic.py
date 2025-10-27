@@ -33,18 +33,14 @@ if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
 class ConstantParameterType(Enum):
+	"""Enumeration which defines which stochast parameter should remain unchanged when the stochast properties are updated"""
 	deviation = 'deviation'
 	variation = 'variation'
 	def __str__(self):
 		return str(self.value)
 
-class VariableType(Enum):
-	properties = 'properties'
-	mean_and_deviation = 'mean_and_deviation'
-	def __str__(self):
-		return str(self.value)
-
 class DistributionType(Enum):
+	"""Enumeration which defines the stochast distribution type"""
 	deterministic = 'deterministic'
 	normal = 'normal'
 	log_normal = 'log_normal'
@@ -179,8 +175,9 @@ class Stochast(FrozenObject):
 
     The stochastic variable is definied by the following properties: distribution, location, scale, shape, shape_b, shift, shift_b,
     minimum, maximum, observations, truncated and inverted. Depending on the distribution, a selection of these properties are used.
-    For some distributions, the list of histogram_values, discrete_values or fragility_values is used. Composite stochasts are supported,
-    where a stochast consists of several other stochasts, each with a certain fraction.
+    To find out which properties are used by a distribution, print the variable, which only prints the properties in use. For some
+    distributions, the list of histogram_values, discrete_values or fragility_values is used. Composite stochasts are supported, where
+    a stochast consists of several other stochasts, each with a certain fraction. 
 
     A number of characteristics can be derived. They can also be set and then stochast properties are updated. These characteristics are:
     mean, (standard) deviation, variation (coefficient) and design_value. The design_value needs the input values design_factor and
@@ -198,8 +195,7 @@ class Stochast(FrozenObject):
     To define an array, use is_array and array_size.
 
     Printing and plotting are supported with methods print, plot_get_plot, get_series and get_special_values. Validation is supported by
-    is_valid and validate.
-    """
+    is_valid and validate."""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -636,7 +632,13 @@ class Stochast(FrozenObject):
 			interface.SetArrayIntValue(self._id, 'array_variables', [array_variable._id for array_variable in self._array_variables])
 
 	def get_quantile(self, quantile : float) -> float:
-		"""Gets the value belonging to a given quantile"""
+		"""Gets the value belonging to a given quantile
+
+        Parameters
+        ----------
+        quantile : float
+            Quantile for which the x-value is requested, must be between 0 and 1 (exclusive)"""
+
 		return interface.GetArgValue(self._id, 'quantile', quantile)
 
 	def get_x_from_u(self, u : float) -> float:
@@ -645,11 +647,8 @@ class Stochast(FrozenObject):
         Parameters
         ----------
         u : float
-            U-value for which the x-value is requested
-        Returns
-        -------
-            Requested x-value
-        """
+            U-value for which the x-value is requested"""
+
 		return interface.GetArgValue(self._id, 'x_from_u', u)
 
 	def get_u_from_x(self, x : float) -> float:
@@ -658,11 +657,8 @@ class Stochast(FrozenObject):
         Parameters
         ----------
         x : float
-            X-value for which the u-value is requested
-        Returns
-        -------
-            Requested u-value
-        """
+            X-value for which the u-value is requested"""
+
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
 	def get_pdf(self, x : float) -> float:
@@ -671,8 +667,8 @@ class Stochast(FrozenObject):
         Parameters
         ----------
         x : float
-            X-value for which the PDF or PMF is requested
-        """
+            X-value for which the PDF or PMF is requested"""
+
 		return interface.GetArgValue(self._id, 'pdf', x)
 
 	def get_cdf(self, x : float) -> float:
@@ -681,8 +677,8 @@ class Stochast(FrozenObject):
         Parameters
         ----------
         x : float
-            X-value for which the CDF is requested
-        """
+            X-value for which the CDF is requested"""
+
 		return interface.GetArgValue(self._id, 'cdf', x)
 
 	def get_x_from_u_and_source(self, u : float, x: float) -> float:
@@ -766,7 +762,7 @@ class Stochast(FrozenObject):
 				message.print()
 
 	def get_ks_test(self, values) -> float:
-		"""Generates the Kolmogoriv-Smirnov statistic, which indicates the goodness of fit.
+		"""Generates the Kolmogorov-Smirnov statistic, which indicates the goodness of fit.
         A value of 1 indicates a perfect fit, a value of 0 indicates the worst possible fit.
 
         Parameters
@@ -807,7 +803,14 @@ class Stochast(FrozenObject):
 			validation_report.print()
 
 	def print(self, decimals = 4):
-		"""Prints this stochast"""
+		"""Prints this stochast
+        Only properties in use will be printed
+
+        Parameters
+        ----------
+        decimals : int, optional
+            The number of decimals to apply"""
+
 		pre = '  '
 		if self.name == '':
 			print(f'Variable:')
