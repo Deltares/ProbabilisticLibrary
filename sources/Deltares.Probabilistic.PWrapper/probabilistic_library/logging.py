@@ -30,6 +30,7 @@ if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
 class MessageType(Enum):
+	"""Enumeration which defines the severity of a message"""
 	debug = 'debug'
 	info = 'info'
 	warning = 'warning'
@@ -38,6 +39,8 @@ class MessageType(Enum):
 		return str(self.value)
 
 class Message(FrozenObject):
+	"""Defines a message, which will be presented to the user
+    A message may be the result of a validation request or an informative message of an algorithm"""
 
 	def __init__(self, id = None):
 		if id == None:
@@ -70,23 +73,28 @@ class Message(FrozenObject):
 
 	@property
 	def type(self) -> MessageType:
+		"""Gets the message type, which indicates the severity of the message"""
 		return MessageType[interface.GetStringValue(self._id, 'type')]
 		
 	@property
 	def subject(self) -> str:
+		"""Gets the subject, the object to which hte message applies"""
 		return interface.GetStringValue(self._id, 'subject')
 
 	@property
 	def text(self) -> str:
+		"""Gets the message text"""
 		return interface.GetStringValue(self._id, 'text')
 
 	def print(self):
+		"""Prints the message"""
 		text = str(self)
 		if len(text) > 0:
 			text = text[0].capitalize() + text[1:]
 		print(text)
 
 class ValidationReport(FrozenObject):
+	"""Result of a validation analysis, consists of a number of validation messages"""
 
 	def __init__(self, id = None):
 		if id == None:
@@ -104,12 +112,13 @@ class ValidationReport(FrozenObject):
 		        'messages',
 		        'print']
 
-
 	def is_valid(self) -> bool:
+		"""Indicates whether ths validation report should be interpreted as valid or non-valid"""
 		return interface.GetBoolValue(self._id, 'is_valid')
 
 	@property   
 	def messages(self) -> FrozenList[Message]:
+		"""List of all validation messages"""
 		if self._messages is None:
 			message_ids = interface.GetArrayIdValue(self._id, 'messages')
 			messages = []
@@ -119,7 +128,8 @@ class ValidationReport(FrozenObject):
 			self._messages = FrozenList(messages)
 		return self._messages
 
-	def print(self) -> void:
+	def print(self):
+		"""Prints all validation messages or an indication in case of no validation messages"""
 		if len(self.messages) == 0:
 			print('ok')
 		else:
@@ -128,6 +138,7 @@ class ValidationReport(FrozenObject):
 
 		
 class Evaluation(FrozenObject):
+	"""Registers a sample and execution results of a model"""
 		
 	def __init__(self, id = None):
 		if id == None:
@@ -153,26 +164,32 @@ class Evaluation(FrozenObject):
 	
 	@property   
 	def iteration(self) -> int:
+		"""Iteration index in a reliability, uncertainty or sensitivity algorithm"""
 		return interface.GetIntValue(self._id, 'iteration')
 		
 	@property   
 	def quantile(self) -> float:
+		"""Quantile to which the sample belongs in an uncertainty algorithm"""
 		return interface.GetValue(self._id, 'quantile')
 		
 	@property   
 	def z(self) -> float:
+		"""Z-value, indicating failure or non-failure, used by a reliability algorithm"""
 		return interface.GetValue(self._id, 'z')
 		
 	@property   
 	def beta(self) -> float:
+		"""Distance of the sample to the origin in u-space"""
 		return interface.GetValue(self._id, 'beta')
 		
 	@property   
 	def weight(self) -> float:
+		"""Weight of the sample in the reliability or uncertainty algorithm"""
 		return interface.GetValue(self._id, 'weight')
 
 	@property   
 	def input_values(self) -> FrozenList[float]:
+		"""List of input values for the model"""
 		if self._input_values is None:
 			input_values = interface.GetArrayValue(self._id, 'input_values')
 			self._input_values = FrozenList(input_values)
@@ -180,12 +197,20 @@ class Evaluation(FrozenObject):
 		
 	@property   
 	def output_values(self) -> FrozenList[float]:
+		"""List of output values produced by the model"""
 		if self._output_values is None:
 			output_values = interface.GetArrayValue(self._id, 'output_values')
 			self._output_values = FrozenList(output_values)
 		return self._output_values
 
 	def print(self, decimals = 4):
+		"""Prints the evaluation
+
+        Parameters
+        ----------
+        decimals : int, optional
+            The number of decimals to print"""
+
 		self._print(0, decimals)
 
 	def _print(self, indent, decimals = 4):
