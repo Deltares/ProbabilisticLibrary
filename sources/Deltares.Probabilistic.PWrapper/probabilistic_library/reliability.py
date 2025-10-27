@@ -231,6 +231,7 @@ class Settings(FrozenObject):
         will have to be executed, for example a crude monte carlo analysis with different limit state
         definitions. But when a modification to the model is made, which is beyond the scope of the
         model definition, this leads to undesired results"""
+
 		return interface.GetBoolValue(self._id, 'reuse_calculations')
 
 	@reuse_calculations.setter
@@ -889,7 +890,7 @@ class DesignPoint(FrozenObject):
         Parameters
         ----------
         decimals : int, optional
-            The number of decimals to apply"""
+            The number of decimals to print"""
 
 		self._print(0, decimals)
 
