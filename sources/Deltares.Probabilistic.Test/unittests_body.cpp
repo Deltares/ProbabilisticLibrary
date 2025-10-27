@@ -204,6 +204,11 @@ TEST(reliability_method_test, testCrudeMCReliability)
     testReliabilityMethods::testCrudeMonteCarloReliability();
 }
 
+TEST(reliability_method_test, testAdaptiveImportanceSampling)
+{
+    testReliabilityMethods::testAdaptiveImportanceSampling();
+}
+
 TEST(reliability_method_test, testClustersAdpImpSampling)
 {
     testReliabilityMethods::testClustersAdpImpSampling();

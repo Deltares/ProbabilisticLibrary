@@ -336,7 +336,9 @@ namespace Deltares
             }
             else
             {
-                std::shared_ptr<Sample> newSample = designPoint->convergenceReport->FailedSamples > 0 ? designPoint->getSample() : designPoint->convergenceReport->NearestSample;
+                std::shared_ptr<Sample> newSample = designPoint->convergenceReport->FailedSamples > 0
+                                                        ? modelRunner->getSampleFromStochastPoint(designPoint)
+                                                        : designPoint->convergenceReport->NearestSample;
 
                 if (Settings->StartPointOnLimitState)
                 {
@@ -346,7 +348,7 @@ namespace Deltares
 
                     const std::shared_ptr<DesignPoint> directionDesignPoint = direction->getDesignPoint(modelRunner);
 
-                    newSample = directionDesignPoint->getSample();
+                    newSample = modelRunner->getSampleFromStochastPoint(directionDesignPoint);
                 }
                 else if (Settings->StartValueStepSize > 0 && this->lastStartPoint != nullptr)
                 {

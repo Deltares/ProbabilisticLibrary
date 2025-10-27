@@ -143,11 +143,27 @@ namespace Deltares::Probabilistic::Test
     std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist) const
     {
         auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
-            { return zfuncWithDeterminist(v); });
+        { return zfuncWithDeterminist(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         stochast.push_back(getNormalStochast(0.0, 1.0));
         stochast.push_back(getDeterministicStochast(valueDeterminist));
         stochast.push_back(getNormalStochast(0.0, 1.0));
+        auto corr = std::make_shared<CorrelationMatrix>();
+        auto uConverter = std::make_shared<UConverter>(stochast, corr);
+        uConverter->initializeForRun();
+        auto m = std::make_shared<ModelRunner>(z, uConverter);
+        return m;
+    }
+
+    std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithPolynome() const
+    {
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
+        { return zfuncPolynome(v); });
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        stochast.push_back(getDeterministicStochast(1.0));
+        stochast.push_back(getDeterministicStochast(1.0));
+        stochast.push_back(getLogNormalStochast(1.0, 0.5));
+        stochast.push_back(getLogNormalStochast(1.0, 0.5));
         auto corr = std::make_shared<CorrelationMatrix>();
         auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
@@ -255,6 +271,18 @@ namespace Deltares::Probabilistic::Test
         {
             std::cout << "u, z = " << sample->Values[0] << " , " << sample->Values[1] << " , " << sample->Z << std::endl;
         }
+    }
+
+    void projectBuilder::zfuncPolynome(std::shared_ptr<ModelSample> sample) const
+    {
+        double x = sample->Values[0];
+        double y = sample->Values[1];
+        double z = sample->Values[2];
+        double u = sample->Values[3];
+
+        double p = x + 0.3 * y * y + 0.2 * z * z * z + 0.125 * u * u * u * u;
+
+        sample->Z = 24 - p;
     }
 
     void projectBuilder::zfuncTwoBranches(std::shared_ptr<ModelSample> sample) const

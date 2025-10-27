@@ -99,6 +99,7 @@ namespace Deltares
             void setShouldInvertFunction(ShouldInvertLambda shouldInvertFunction) { this->shouldInvertFunction = shouldInvertFunction; }
             void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
             void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
+            std::shared_ptr<Sample> getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
             void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
             Evaluation getEvaluationFromType(Statistics::RunValuesType type);
