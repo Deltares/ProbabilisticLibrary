@@ -310,6 +310,17 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
             }
 
+            void testReliabilityMethods::testAdaptiveImportanceSampling()
+            {
+                auto calculator = AdaptiveImportanceSampling();
+                auto modelRunner = projectBuilder().BuildProjectWithPolynome();
+                calculator.Settings->importanceSamplingSettings->MinimumSamples = 100;
+                calculator.Settings->importanceSamplingSettings->MaximumSamples = 100;
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+                ASSERT_EQ(designPoint->Alphas.size(), 4);
+                EXPECT_NEAR(designPoint->Beta, 2.85, 0.01);
+            }
+
             void testReliabilityMethods::testClustersAdpImpSampling()
             {
                 auto expectedBetas = std::vector<double>({ 0.80438, 0.753699, 0.78369, 0.7956208, 0.754192 });

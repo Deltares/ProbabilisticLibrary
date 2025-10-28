@@ -517,6 +517,7 @@ namespace Deltares
         {
             std::shared_ptr<Sample> sample = std::make_shared<Sample>(this->getVaryingStochastCount());
 
+            // only select the varying stochasts
             for (size_t i = 0; i < pureVaryingStochastIndex.size(); i++)
             {
                 sample->Values[i] = stochastPoint->Alphas[pureVaryingStochastIndex[i]]->U;
