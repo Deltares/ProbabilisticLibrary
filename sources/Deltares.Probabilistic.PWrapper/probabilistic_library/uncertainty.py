@@ -130,7 +130,7 @@ class UncertaintySettings(FrozenObject):
 
 	@property
 	def reuse_calculations(self) -> bool:
-		"""Indicates whether prior model results will be reused by the reliability analysis.
+		"""Indicates whether prior model results will be reused by the uncertainty analysis.
 
         This will speed up calculations when several analyses are performed, for which the same realizations
         will have to be executed, for example a crude monte carlo analysis for different output parameters.
