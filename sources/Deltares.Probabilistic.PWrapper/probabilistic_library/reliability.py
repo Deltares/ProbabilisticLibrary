@@ -19,6 +19,35 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+
+"""
+This module contains all reliability related functionality.
+
+The entry point for performing a reliability analysis is ReliabilityProject. A model can be attached to a reliability project, then
+stochastic variables, correlation matrix and settings are provided. When the reliabity project is run, a design point is generated,
+which contains the results of the reliability analysis.
+
+```mermaid
+classDiagram
+    class ModelProject{
+        +model ZModel
+        +variables list[Stochast]
+        +correlation_matrix CorrelationMatrix
+    }
+    class ReliabilityProject{
+        +design_point DesignPoint
+    }
+    class Stochast{}
+    class CorrelationMatrix{}
+    class DesignPoint{}
+
+    ReliabilityProject <|-- ModelProject
+    Stochast <-- ModelProject
+    CorrelationMatrix <-- ModelProject
+    DesignPoint <-- ReliabilityProject
+```
+"""
+
 from __future__ import annotations
 from math import isnan
 import matplotlib.pyplot as plt
@@ -128,7 +157,7 @@ class Settings(FrozenObject):
 	"""Settings of a reliability algorithm
 
     Settings of all reliability algorithms are combined in this class. Often settings only apply to
-    a selected number of algorithms. Settings per variable are listed in 'stochast_settings'.
+    a selected number of algorithms. Settings per variable are listed in `stochast_settings`.
 
     The settings are divided into the following categories:
 

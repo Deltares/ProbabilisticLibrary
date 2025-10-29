@@ -19,6 +19,29 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+
+"""
+This module contains all statistics related functionality.
+
+The most important class in this modue is Stochast. It defines the stochastic properties of a
+stochastic variable, which is part of a project (which is the main entry point for performing
+a reliability, uncertainty or sensitivity analysis). 
+
+```mermaid
+classDiagram
+    class Stochast{
+        +distribution DistributionType
+    }
+    class HistogramValue{
+    }
+    class DiscreteValue{
+    }
+    HistogramValue <-- Stochast
+    DiscreteValue <-- Stochast
+```
+"""
+
+
 from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum

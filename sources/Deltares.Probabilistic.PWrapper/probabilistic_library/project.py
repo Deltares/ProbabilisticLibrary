@@ -66,9 +66,9 @@ class ZModelContainer:
 class ZModel(FrozenObject):
 	"""Wrapper around a python function or method.
 
-    This class is created by a 'ModelProject' when the model is set.
+    This class is created by a `ModelProject` when the model is set.
 
-    The ZModel provides additional infoamtion about its input and output parameters.
+    The ZModel provides additional information about its input and output parameters.
     This is based on reflection when the ZModel is created."""
 
 	_callback = None
@@ -327,7 +327,7 @@ class ZModel(FrozenObject):
 class ModelParameter(FrozenObject):
 	"""Input or output parameter of a model
 
-    A model parameter is part of a 'ZModel', as one of its input or output parameters. It is generated when a
+    A model parameter is part of a `ZModel`, as one of its input or output parameters. It is generated when a
     ZModel is created. By reflection and type hints as much as possible information about the parameter is
     provided."""
 
@@ -399,7 +399,7 @@ class ModelParameter(FrozenObject):
 class ModelProject(FrozenObject):
 	"""Base class for projects, which contain a model
 
-    When a model is set to 'model', the model input parameters and output parameters are updated. Based on
+    When a model is set to `model`, the model input parameters and output parameters are updated. Based on
     these parameters, variables, correlation matrix and settings and settings per variable are generated in
     this class."""
 
@@ -477,7 +477,7 @@ class ModelProject(FrozenObject):
         a string defining a function is accepted too. The model should accept an array of input
         values (floats) and returns a single value (float), an array of floats or a tuple of floats.
 
-        When set, the function/method/string is wrapped in a 'ZModel'. The ZModel has information
+        When set, the function/method/string is wrapped in a `ZModel`. The ZModel has information
         about its input and output parameters (derived from the function signature). When the model
         is retrieved, the ZModel object is returned."""
 
@@ -622,10 +622,10 @@ class RunProjectSettings(FrozenObject):
 class RunProject(ModelProject):
 	"""Project for a running a model. This is the main entry point for running a model.
 
-    This class is based on the 'ModelProject' class. The model to use is defined in this class in 'ModelProject.model'.
+    This class is based on the `ModelProject` class. The model to use is defined in this class in 'ModelProject.model'.
     When a model is set, variables and settingsare generated.
 
-    To run the model, use the 'run' method. This results are stored in 'realization'."""
+    To run the model, use the `run` method. This results are stored in `realization`."""
 
 	def __init__(self):
 		super().__init__()
@@ -655,7 +655,7 @@ class RunProject(ModelProject):
 		return self._settings
 
 	def run(self):
-		"""Performs the model run and puts the result in 'realization'"""
+		"""Performs the model run and puts the result in `realization`"""
 		self._realization = None
 		self._run()
 
@@ -672,11 +672,11 @@ class RunProject(ModelProject):
 class SensitivityProject(ModelProject):
 	"""Project for a sensitivity analysis. This is the main entry point for performing a sensitivity analysis.
 
-    This class is based on the 'ModelProject' class. The model to use is defined in this class in 'ModelProject.model'.
+    This class is based on the `ModelProject` class. The model to use is defined in this class in `ModelProject.model`.
     When a model is set, variables, correlation matrix and settings and settings per variable are generated.
 
-    To run a sensitivity analysis, use the 'run' method. This results are stored in a list of 'results', where each
-    result corresponds with an output parameter. A shortcut is provided in 'result', which corresponds with the
+    To run a sensitivity analysis, use the `run` method. This results are stored in a list of `results`, where each
+    result corresponds with an output parameter. A shortcut is provided in `result`, which corresponds with the
     first output parameter."""
 
 	def __init__(self):
@@ -724,7 +724,7 @@ class SensitivityProject(ModelProject):
 
 	def run(self):
 		"""Performs the sensitivity analysis
-        Results will be stored in 'results', for the first output 'parameter' in 'result'."""
+        Results will be stored in `results`, for the first output `parameter` in `result`."""
 		self._result = None
 		self._results = None
 
@@ -762,19 +762,19 @@ class SensitivityProject(ModelProject):
 class UncertaintyProject(ModelProject):
 	"""Project for an uncertainty analysis. This is the main entry point for performing an uncertainty analysis.
 
-    This class is based on the 'ModelProject' class. The model to use is defined in this class in 'ModelProject.model'.
+    This class is based on the `ModelProject` class. The model to use is defined in this class in 'ModelProject.model'.
     When a model is set, variables, correlation matrix and settings and settings per variable are generated.
 
     The uncertainty analysis calculates the uncertainty for the output parameter selected in 'parameter'. If left blank,
     uncertinty analyses are performed for each output parameter.
 
-    To run an uncertainty analysis, use the 'run' method. This results in a list of 'results'. Each result contains the
+    To run an uncertainty analysis, use the `run` method. This results in a list of `results`. Each result contains the
     uncertainty for a certain output parameter. Part of the result is a stochast, which contains the distribution
-    of the output parameter. A shortcut to the stochasts is available via 'stochasts'. The first output parameter
-    result can also be accessed by 'result' and 'stochast'.
+    of the output parameter. A shortcut to the stochasts is available via `stochasts`. The first output parameter
+    result can also be accessed by `result` and `stochast`.
 
-    If correlation between output parameters is requested via the 'settings', the resulting correlation matrix can be found
-    in 'output_correlation_matrix'."""
+    If correlation between output parameters is requested via the `settings`, the resulting correlation matrix can be found
+    in `output_correlation_matrix`."""
 
 	def __init__(self):
 		super().__init__()
@@ -827,8 +827,8 @@ class UncertaintyProject(ModelProject):
 
 	def run(self):
 		"""Performs the uncertainty analysis
-        Results will be stored in 'results', for the first output 'parameter' in 'result'. The stochasts in
-        the results are available in 'stochasts' and 'stochast'"""
+        Results will be stored in `results`, for the first output `parameter` in `result`. The stochasts in
+        the results are available in `stochasts` and `stochast`"""
 
 		self._stochast = None
 		self._stochasts = None
@@ -840,7 +840,7 @@ class UncertaintyProject(ModelProject):
 
 	@property
 	def stochast(self) -> Stochast:
-		"""Stochast distribution of the first output 'parameter'"""
+		"""Stochast distribution of the first output `parameter`"""
 		if self._stochast is None:
 			if not self.result is None:
 				self._stochast = self.result.variable
@@ -885,8 +885,8 @@ class UncertaintyProject(ModelProject):
 	@property
 	def output_correlation_matrix(self) -> CorrelationMatrix:
 		"""Correlation matrix between output parameters and possibly with input parameters
-        Depends on settings 'UncertaintySettings.calculate_correlations' and
-        'UncertaintySettings.calculate_input_correlations' whether this correlation matrix is generated"""
+        Depends on settings `UncertaintySettings.calculate_correlations` and
+        `UncertaintySettings.calculate_input_correlations` whether this correlation matrix is generated"""
 
 		if self._output_correlation_matrix is None:
 			correlationMatrixId = interface.GetIdValue(self._id, 'output_correlation_matrix')
@@ -904,10 +904,10 @@ class UncertaintyProject(ModelProject):
 class ReliabilityProject(ModelProject):
 	"""Project for reliability analysis. This is the main entry point for performing a reliability analysis.
 
-    This class is based on the 'ModelProject' class. The model to use is defined in this class in 'ModelProject.model'.
+    This class is based on the `ModelProject` class. The model to use is defined in this class in `ModelProject.model`.
     When a model is set, variables, correlation matrix and settings and settings per variable are generated.
 
-    To run a reliability analysis, use the 'run' method. This results in a 'design_point', where the reliability
+    To run a reliability analysis, use the `run` method. This results in a `design_point`, where the reliability
     index, alpha values and, if specified in the settings, an overview of performed realizations and generated messages."""
 
 	def __init__(self):
@@ -957,7 +957,7 @@ class ReliabilityProject(ModelProject):
 
 	def run(self):
 		"""Performs the reliability analysis
-        Results in a design point, which is part of this project. When failed, the 'design_point' is empty."""
+        Results in a `design_point`, which is part of this project. When failed, the `design_point` is empty."""
 
 		self._design_point = None
 		self._fragility_curve = None
@@ -966,7 +966,7 @@ class ReliabilityProject(ModelProject):
 
 	@property
 	def design_point(self) -> DesignPoint:
-		"""The resulting design point of a reliability anaysis, invoked by 'run'
+		"""The resulting design point of a reliability anaysis, invoked by `run`
         Is empty when the run failed"""
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
@@ -1007,13 +1007,13 @@ class ReliabilityProject(ModelProject):
 		return interface.GetIntValue(self._id, 'total_model_runs')
 
 class CombineProject(FrozenObject):
-	"""Project for combining design points. This is the main entry point for performing combinnig design points.
+	"""Project for combining design points. This is the main entry point for performing combining design points.
 
-    The design points to be combined should be added to the list of 'design_points'. 
+    The design points to be combined should be added to the list of `design_points`. 
 
-    To run the combination, use the 'run' method. This results in a 'design_point', where the reliability
-    index reflects the combined reliability index. The original 'design_points' are added to the
-    'contributing_design_points' of the resulting design point."""
+    To run the combination, use the `run` method. This results in a `design_point`, where the reliability
+    index reflects the combined reliability index. The original `design_points` are added to the
+    `DesignPoint.contributing_design_points` of the resulting design point."""
 
 	def __init__(self):
 		self._id = interface.Create('combine_project')
@@ -1079,7 +1079,7 @@ class CombineProject(FrozenObject):
 
 	def run(self):
 		"""Performs the combination of the design point
-        Results in a design point, which is part of this project. When failed, the 'design_point' is empty."""
+        Results in a `design_point`, which is part of this project. When failed, the `design_point` is empty."""
 		self._design_point = None
 		# update performed by is_valid
 		if (self.is_valid()):
@@ -1089,8 +1089,8 @@ class CombineProject(FrozenObject):
 
 	@property
 	def design_point(self) -> DesignPoint:
-		"""The resulting combined design point, invoked by 'run'
-        Is empty when the run failed. The original 'design_points' are added to the 'contributing_design_point'"""
+		"""The resulting combined design point, invoked by `run`
+        Is empty when the run failed. The original `design_points` are added to the `DesignPoint.contributing_design_point`"""
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
@@ -1107,12 +1107,12 @@ class ExcludingCombineProject(FrozenObject):
     Excluding design points refer to design points generated for a scenario. Each scenario has a probability
     too, but scenarios have no overlap. Probabilities of scenarios should add up to 1.
 
-    The design points to be combined should be added to the list of 'design_points'. The list of 'scenarios'
-    should correspond with the list of 'design_points'.
+    The design points to be combined should be added to the list of `design_points`. The list of `scenarios`
+    should correspond with the list of `design_points`.
 
-    To run the combination, use the 'run' method. This results in a 'design_point', where the reliability
-    index reflects the combined reliability index. The original 'design_points' are added to the
-    'contributing_design_points' of the resulting design point."""
+    To run the combination, use the `run` method. This results in a `design_point`, where the reliability
+    index reflects the combined reliability index. The original `design_points` are added to the
+    `DesignPoint.contributing_design_points` of the resulting design point."""
 
 	def __init__(self):
 		self._id = interface.Create('excluding_combine_project')
@@ -1222,9 +1222,9 @@ class LengthEffectProject(FrozenObject):
     Each input variable as a valialidt for a certain length. These lengths are stored in the 'correlation_length'
     list. The length effect applied design point is calculated for a requested 'length'.
 
-    To run the combination, use the 'run' method. This results in a 'design_point', where the reliability
-    index reflects the length effect applied reliability index. The original 'design_points' are added to the
-    'contributing_design_points' of the resulting design point."""
+    To run the combination, use the `run` method. This results in a `design_point`, where the reliability
+    index reflects the length effect applied reliability index. The original `design_points` are added to the
+    `DesignPoint.contributing_design_points` of the resulting design point."""
 
 	def __init__(self):
 		self._id = interface.Create('length_effect_project')
@@ -1246,7 +1246,7 @@ class LengthEffectProject(FrozenObject):
 
 	@property
 	def design_point_cross_section(self) -> DesignPoint:
-		"""The design point to which the length effect should be applied"""
+		"""The design point to which the length effect will be applied"""
 		return self._design_point_cross_section
 
 	@design_point_cross_section.setter
@@ -1279,8 +1279,8 @@ class LengthEffectProject(FrozenObject):
 		interface.SetValue(self._id, 'length', value)
 
 	def run(self):
-		"""Applies the length effect to the 'design_point_cross_section'
-        Results in a design point, which is part of this project. When failed, the 'design_point' is empty."""
+		"""Applies the length effect to the `design_point_cross_section`
+        Results in a design point, which is part of this project. When failed, the `design_point` is empty."""
 		self._design_point = None
 		interface.SetIntValue(self._id, 'design_point_cross_section', self._design_point_cross_section._id)
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
@@ -1288,8 +1288,8 @@ class LengthEffectProject(FrozenObject):
 
 	@property
 	def design_point(self) -> DesignPoint:
-		"""The length effect applied design point, invoked by 'run'
-        Is empty when the run failed. The original 'design_point_cross_section' is added to the 'contributing_design_point'"""
+		"""The length effect applied design point, invoked by `run`
+        Is empty when the run failed. The original `design_point_cross_section` is added to the `DesignPoint.contributing_design_point`"""
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
