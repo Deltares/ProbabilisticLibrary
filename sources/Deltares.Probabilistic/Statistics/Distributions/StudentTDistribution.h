@@ -53,6 +53,7 @@ namespace Deltares
             class StudentTValue
             {
             public:
+                StudentTValue() = default;
                 StudentTValue(int N, double P0_100, double P0_050, double P0_025, double P0_010, double P0_005)
                 {
                     this->N = N;
@@ -80,8 +81,8 @@ namespace Deltares
                 std::vector<double> getPValues(double maxP);
             };
 
-            std::shared_ptr<StudentTDistribution::StudentTValue> GetStudentValue(int degreesOfFreedom);
-            std::vector<std::shared_ptr<StudentTDistribution::StudentTValue>> studentValues;
+            StudentTValue GetStudentValue(int degreesOfFreedom, bool& success);
+            std::vector<StudentTValue> studentValues;
             void loadValues();
 
             const double minXDelta = 0.00001;
