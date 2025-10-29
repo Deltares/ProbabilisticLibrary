@@ -186,6 +186,8 @@ After the merge the branch must be deleted.
 
 # Documentation
 Algorithms are described in the scientific background.
+This document uses the Deltares corporate identity, and may be hard to generate.
+The body of the manual is plain latex, so that can be updated by externals.
 
 Python code is documented with examples in a notebook.
 
