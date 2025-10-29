@@ -16,13 +16,14 @@ V. New code should not lead to new dependencies.
 If you think a new dependency is needed, contact us before making your changes.
 The current dependencies are given in:
 [wiki PL](https://github.com/Deltares/ProbabilisticLibrary/wiki/Tools-and-other-software).
-In short : C++ code follows the C++-20 standard ; the python version is 3.11.
+In short : C++ code follows the C++-20 standard; the python version is 3.11.
 
 VI. New code should be complete, no TODO's.
-That means include a python wrapper, and if you add an new distribution,
+That means: include a python wrapper, and if you add an new distribution,
 all methods for distributions must be implemented.
 
 VII. **No** Boy Scout Rule: if you change an existing file, make only the necessary changes for your issue.
+This makes reviewing and merging easier.
 If you think the file does not comply to our guidelines, make an issue for that.
 
 VIII. Make a pull request for your contribution, or create a issue with your suggestion.
@@ -30,11 +31,13 @@ VIII. Make a pull request for your contribution, or create a issue with your sug
 
 # Code guidelines
 
-We follow a part of the guidelines
+For C++ we follow a part of the guidelines
 of [AirSim](https://github.com/microsoft/AirSim/blob/main/docs/coding_guidelines.md)
-with a few exceptions :
+with a few exceptions.
 
-## Naming Conventions
+For Python will follow [PEP8 - Style guide for Python Code](https://peps.python.org/pep-0008/).
+
+## Naming Conventions for C++
 
 Avoid using any sort of Hungarian notation on names and "_ptr" on pointers.
 
@@ -58,19 +61,22 @@ Notice that curlies are also required if you have a single statement, except for
 ```
 int main(int argc, char* argv[])
 {
+    ...
+
+    if (x == 0.0) return -1
+
     while (x == y)
     {
         foo();
         bar();
     }
+    
 }
 ```
 
 ## Const and References
 
-Religiously review all non-scalar parameters you declare to be candidate for const and references.
-If you are coming from languages such as C#/Java/Python,
-the most often mistake you would make is to pass parameters by value instead of `const T&;`
+Review all non-scalar parameters you declare to be candidate for const and references.
 Especially most of the strings, vectors and maps you want to 
 pass as `const T&;` (if they are readonly) or `T&` (if they are writable). Also add `const` suffix to methods as much as possible.
 
@@ -81,43 +87,68 @@ When overriding a virtual method, use override suffix.
 
 ## Pointers
 
-This is really about memory management.
-A kernel has much performance critical code, so we try and avoid overloading the memory manager
+The Probabilistic Library has much performance critical code, so we try and avoid overloading the memory manager
 with lots of calls to new/delete.
 We also want to avoid too much copying of things on the stack, so we pass things by reference when ever possible.
 But when the object really needs to live longer than the call stack you often need to allocate that object on
-the heap, and so you have a pointer.  Now, if management of the lifetime of that object is going to be tricky we recommend using 
-[C++ 11 smart pointers](https://cppstyle.wordpress.com/c11-smart-pointers/). 
-But smart pointers do have a cost, so don’t use them blindly everywhere.  For private code 
-where performance is paramount, raw pointers can be used.  Raw pointers are also often needed when interfacing with legacy systems
-that only accept pointer types, for example, sockets API.  But we try to wrap those legacy interfaces as
-much as possible and avoid that style of programming from leaking into the larger code base.  
+the heap, and so you have a pointer. In that case we use unique pointers or shared pointers, both implementations of smart pointers.
+But smart pointers do have a cost, so use them only where needed.
 
-Religiously check if you can use const everywhere, for example, `const float * const xP`.
-Avoid using prefix or suffix to indicate pointer types in variable names,
-i.e. use `my_obj` instead of `myobj_ptr` except in cases where it might make sense to differentiate variables better, for example,
-`int mynum = 5; int* mynum_ptr = mynum;`
-
-Don't do:
+Don't do this:
 ```
+        auto distribution = std::make_shared<LogNormalDistribution>();
+        auto properties = std::make_shared<StochastProperties>();
+        distribution->initialize(properties, {1.0, 2.0});
+        ...
         void LogNormalDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
             stochast->Shift = values[2];
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
+        void LogNormalDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        {
+                ...
+                double p = deviation / (mean - stochast->Shift);
+                stochast->Scale = sqrt(log(1 + p * p));
+                stochast->Location = log(mean - stochast->Shift) - 0.5 * stochast->Scale * stochast->Scale;
+        }
+
 ```
 But do this:
 ```
+        auto distribution1 = std::make_shared<LogNormalDistribution>();
+        auto properties1 = std::make_shared<StochastProperties>();
+        distribution1->initialize(*properties1, {1.0, 2.0});
+        ...
+        // will not work in situation above
+        auto distribution2 = std::make_unique<LogNormalDistribution>();
+        auto properties2 = std::make_unique<StochastProperties>();
+        distribution2->initialize(*properties2, {1.0, 2.0});
+        ...
+        // prefered situation; will not work in situation above
+        auto distribution3 = LogNormalDistribution();
+        auto properties3 = StochastProperties();
+        distribution3.initialize(properties3, {1.0, 2.0});
+        ...
         void LogNormalDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
             stochast.Shift = values[2];
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
+        void LogNormalDistribution::setMeanAndDeviation(StochastProperties& stochast,
+            const double mean, const double deviation)
+        {
+                ...
+                double p = deviation / (mean - stochast.Shift);
+                stochast.Scale = sqrt(log(1.0 + p * p));
+                stochast.Location = log(mean - stochast.Shift) - 0.5 * stochast.Scale * stochast.Scale;
+        }
 ```
 Now it is clear that the stochast is updated by the initialize, but the values remain unchanged.
-And the caller of this initialize is not forced to use a shared pointer for the stochast, but still has that possibility. 
+And the caller of this initialize is not forced to use a shared pointer for the stochast, but still has that possibility.
+When at a deep level (in this case setMeanAndDeviation) one of the arguments is in a shared pointer, also a level higher should use a shared pointer.
 
 ## Indentation
 
@@ -127,7 +158,6 @@ Both Python and C++ code base uses four spaces for indentation (not tabs).
 
 - the maximum line length is 120 characters; maximum file size is 750 lines.
 Long lines are inconvenient when doing a side-by-side diff.
-- TODO's are allowed to identify corner cases.
 - use 0.0, 1.0 etc if they are floats/doubles; use 0, 1 etc if they are integers.
 - in principle no abbreviations in names of methods, members and variables.
 
@@ -137,13 +167,13 @@ Long lines are inconvenient when doing a side-by-side diff.
 - do not use ` auto ` for basic types as int, double and string.
 - use ` auto ` to avoid a classname left and right of the assignment,
 especially in combination with an unique or shared pointer declaration.
-- when throwing an exception, use the exception class in probLibException.h,
+- when throwing an exception, use the exception class in Deltares::Probabilistic::Utils,
 so that we can distinguish between exceptions from our own library or the system libraries.
 - when using std::format provide fall back code for compilers that do not support it.
 Besides this, all features of C++20 are allowed. We do not use the Boost library.
 - counters may be i,j,k , but loops are preferable of the form : for( const auto& o : listOfObjects) {}
 
-# Finishing your work
+## Finishing your work
 
 After your pull request (PR) is approved, merge your changes into the master.
 That can be done using a merge commit or a squash commit.
