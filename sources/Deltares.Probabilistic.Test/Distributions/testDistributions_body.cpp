@@ -28,8 +28,6 @@ namespace Deltares::Probabilistic::Test
 {
     void testDistributions::allDistributionsTests()
     {
-        testStudentTwithInterpolation();
-        testStudentT();
         testConditionalWeibull();
         testConditionalWeibullNonIntegerShape();
         testConditionalWeibullMeanDeviation();
@@ -44,6 +42,8 @@ namespace Deltares::Probabilistic::Test
         testVariationCoefficient();
         testPoisson();
         testGamma();
+        testStudentT();
+        testStudentTwithInterpolation();
         testFitNormal();
         testFitLogNormal();
         testFitBernoulli();

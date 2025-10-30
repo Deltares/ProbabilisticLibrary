@@ -102,6 +102,7 @@ namespace Deltares
             int degreesOfFreedom = stochast->Observations - 1;
 
             bool success;
+            // NB : studentValue must be pointer to ensure the bisection function is const
             auto studentValue = std::make_shared<StudentTValue>(GetStudentValue(degreesOfFreedom, success));
 
             if ( ! success)
@@ -221,13 +222,13 @@ namespace Deltares
                 loadValues();
             }
 
-            success = true;
             for (size_t i = 0; i < studentValues.size(); i++)
             {
                 auto studentValue = studentValues[i];
 
                 if (studentValue.N >= degreesOfFreedom)
                 {
+                    success = true;
                     if (studentValue.N == degreesOfFreedom || studentValue.N == std::numeric_limits<int>::max())
                     {
                         return studentValue;
@@ -235,15 +236,15 @@ namespace Deltares
                     else
                     {
                         // linear interpolation
-                        double fraction = static_cast<double>(degreesOfFreedom - studentValues[i - 1].N) / static_cast<double>(studentValues[i].N - studentValues[i - 1].N);
-
+                        double fraction = NumericSupport::Divide(degreesOfFreedom - studentValues[i - 1].N,
+                                                            studentValues[i].N - studentValues[i - 1].N);
                         auto newStudentValue = StudentTValue(
                             degreesOfFreedom,
-                            (1 - fraction) * studentValues[i - 1].P0_100 + fraction * studentValues[i].P0_100,
-                            (1 - fraction) * studentValues[i - 1].P0_050 + fraction * studentValues[i].P0_050,
-                            (1 - fraction) * studentValues[i - 1].P0_025 + fraction * studentValues[i].P0_025,
-                            (1 - fraction) * studentValues[i - 1].P0_010 + fraction * studentValues[i].P0_010,
-                            (1 - fraction) * studentValues[i - 1].P0_005 + fraction * studentValues[i].P0_005);
+                            (1.0 - fraction) * studentValues[i - 1].P0_100 + fraction * studentValues[i].P0_100,
+                            (1.0 - fraction) * studentValues[i - 1].P0_050 + fraction * studentValues[i].P0_050,
+                            (1.0 - fraction) * studentValues[i - 1].P0_025 + fraction * studentValues[i].P0_025,
+                            (1.0 - fraction) * studentValues[i - 1].P0_010 + fraction * studentValues[i].P0_010,
+                            (1.0 - fraction) * studentValues[i - 1].P0_005 + fraction * studentValues[i].P0_005);
 
                         return newStudentValue;
                     }
