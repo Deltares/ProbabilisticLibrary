@@ -52,7 +52,7 @@ namespace Deltares
             return isValid(stochast);
         }
 
-        double ConditionalWeibullDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double ConditionalWeibullDistribution::getMean(StochastProperties& stochast)
         {
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }
@@ -134,25 +134,23 @@ namespace Deltares
             return StandardNormal::getPFromU(u);
         }
 
-        void ConditionalWeibullDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void ConditionalWeibullDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            if (stochast->Shape != 1.0 || stochast->ShapeB != 1.0)
+            if (stochast.Shape != 1.0 || stochast.ShapeB != 1.0)
             {
                 constexpr double toleranceBisection = 0.00001;
                 auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
-                Distribution* distribution = this;
-
-                Numeric::RootFinderMethod method = [stochast, distribution](double s)
+                Numeric::RootFinderMethod method = [&stochast, this](double s)
                 {
-                    stochast->Scale = s;
-                    return distribution->getMean(stochast);
+                    stochast.Scale = s;
+                    return getMean(stochast);
                 };
 
-                double minStart = 0.5 * stochast->Scale;
-                double maxStart = 1.5 * stochast->Scale;
+                double minStart = 0.5 * stochast.Scale;
+                double maxStart = 1.5 * stochast.Scale;
 
-                stochast->Scale = bisection.CalculateValue(minStart, maxStart, mean, method);
+                stochast.Scale = bisection.CalculateValue(minStart, maxStart, mean, method);
             }
         }
 

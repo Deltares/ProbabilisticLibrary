@@ -36,7 +36,7 @@ namespace Deltares
     {
         void BetaDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            this->setMeanAndDeviation(stochast, values[0], values[1]);
+            this->setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         bool BetaDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -44,9 +44,9 @@ namespace Deltares
             return stochast->Shape > 0 && stochast->ShapeB > 0;
         }
 
-        double BetaDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double BetaDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Shape / (stochast->Shape + stochast->ShapeB);
+            return stochast.Shape / (stochast.Shape + stochast.ShapeB);
         }
 
         double BetaDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
@@ -56,15 +56,15 @@ namespace Deltares
             return sqrt(variance);
         }
 
-        void BetaDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void BetaDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
             // see https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
 
             double sigma = deviation;
             double variance = sigma * sigma;
 
-            stochast->Shape = ((1 - mean) / variance - 1 / mean) * mean * mean;
-            stochast->ShapeB = stochast->Shape * (1 / mean - 1);
+            stochast.Shape = ((1 - mean) / variance - 1 / mean) * mean * mean;
+            stochast.ShapeB = stochast.Shape * (1 / mean - 1);
         }
 
         double BetaDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
@@ -146,7 +146,7 @@ namespace Deltares
             double mean = Numeric::NumericSupport::getMean(values);
             double sigma = Numeric::NumericSupport::getStandardDeviation(mean, values);
 
-            setMeanAndDeviation(stochast, mean, sigma);
+            setMeanAndDeviation(*stochast, mean, sigma);
 
             stochast->Observations = static_cast<int>(values.size());
         }

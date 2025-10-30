@@ -27,7 +27,6 @@
 #include "../../Math/SpecialFunctions.h"
 #include "../../Math/RootFinders/BisectionRootFinder.h"
 #include <cmath>
-#include <numbers>
 
 #include "DistributionSupport.h"
 
@@ -37,7 +36,7 @@ namespace Deltares
     {
         void WeibullDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            setMeanAndDeviation(stochast, values[0], values[1]);
+            setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         bool WeibullDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -45,10 +44,10 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        double WeibullDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double WeibullDistribution::getMean(StochastProperties& stochast)
         {
-            double gamma1km = Numeric::SpecialFunctions::getGamma(1 + 1 / stochast->Shape);
-            return stochast->Scale * gamma1km + stochast->Shift;
+            double gamma1km = Numeric::SpecialFunctions::getGamma(1.0 + 1.0 / stochast.Shape);
+            return stochast.Scale * gamma1km + stochast.Shift;
         }
 
         double WeibullDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
@@ -122,9 +121,9 @@ namespace Deltares
             }
         }
 
-        void WeibullDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void WeibullDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            mean = mean - stochast->Shift;
+            mean = mean - stochast.Shift;
 
             // the quotient deviation / mean is only dependent from the shape parameter, so this will be determined first
             double u = deviation / mean;
@@ -146,8 +145,8 @@ namespace Deltares
             double minStart = std::max(0.01, kGuess - 0.1);
             double maxStart = kGuess + 0.1;
 
-            stochast->Shape = bisection.CalculateValue(minStart, maxStart, u, method);
-            stochast->Scale = mean / Numeric::SpecialFunctions::getGamma(1 + 1 / stochast->Shape);
+            stochast.Shape = bisection.CalculateValue(minStart, maxStart, u, method);
+            stochast.Scale = mean / Numeric::SpecialFunctions::getGamma(1.0 + 1.0 / stochast.Shape);
         }
 
         void WeibullDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
@@ -168,9 +167,9 @@ namespace Deltares
                     return distribution->getXFromU(stochast, u);
                 };
 
-                double mean = bisection.CalculateValue(x, this->getMean(stochast), x, method);
+                double mean = bisection.CalculateValue(x, this->getMean(*stochast), x, method);
 
-                this->setMeanAndDeviation(stochast, mean, deviation);
+                this->setMeanAndDeviation(*stochast, mean, deviation);
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {

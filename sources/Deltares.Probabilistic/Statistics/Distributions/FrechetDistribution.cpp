@@ -37,7 +37,7 @@ namespace Deltares
     {
         void FrechetDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            setMeanAndDeviation(stochast, values[0], values[1]);
+            setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         bool FrechetDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -45,10 +45,10 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        double FrechetDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double FrechetDistribution::getMean(StochastProperties& stochast)
         {
-            double gamma1km = Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
-            return stochast->Shift + stochast->Scale * gamma1km;
+            double gamma1km = Numeric::SpecialFunctions::getGamma(1.0 - 1.0 / stochast.Shape);
+            return stochast.Shift + stochast.Scale * gamma1km;
         }
 
         double FrechetDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
@@ -126,7 +126,7 @@ namespace Deltares
             }
         }
 
-        void FrechetDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void FrechetDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
             Numeric::RootFinderMethod method = [](double k)
             {
@@ -137,7 +137,7 @@ namespace Deltares
             };
 
             // the quotient deviation / mean is only dependent from the shape parameter, so this will be determined first
-            double u = deviation / (mean - stochast->Shift);
+            double u = deviation / (mean - stochast.Shift);
 
             constexpr double toleranceBisection = 0.00001;
             auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
@@ -146,9 +146,9 @@ namespace Deltares
             double minStart = 2.4;
             double maxStart = 2.6;
 
-            stochast->Shape = bisection.CalculateValue(minStart, maxStart, u, method);
+            stochast.Shape = bisection.CalculateValue(minStart, maxStart, u, method);
 
-            stochast->Scale = (mean - stochast->Shift) / Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
+            stochast.Scale = (mean - stochast.Shift) / Numeric::SpecialFunctions::getGamma(1.0 - 1.0 / stochast.Shape);
         }
 
         void FrechetDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)

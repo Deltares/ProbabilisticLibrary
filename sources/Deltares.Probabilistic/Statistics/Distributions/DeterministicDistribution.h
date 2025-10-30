@@ -32,9 +32,9 @@ namespace Deltares
             void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
             double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
-            double getMean(std::shared_ptr<StochastProperties> stochast) override;
+            double getMean(StochastProperties& stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
-            void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
+            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;

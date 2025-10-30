@@ -37,7 +37,7 @@ namespace Deltares
     {
         void RayleighNDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            setMeanAndDeviation(stochast, values[0], values[1]);
+            setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         bool RayleighNDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -45,7 +45,7 @@ namespace Deltares
             return stochast->Scale > 0 && stochast->Shape > 0;
         }
 
-        double RayleighNDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double RayleighNDistribution::getMean(StochastProperties& stochast)
         {
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }
@@ -132,28 +132,26 @@ namespace Deltares
             }
         }
 
-        void RayleighNDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void RayleighNDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Scale = deviation / std::sqrt((4 - std::numbers::pi) / 2);
-            stochast->Shift = mean - stochast->Scale * std::sqrt(std::numbers::pi / 2);
+            stochast.Scale = deviation / std::sqrt((4.0 - std::numbers::pi) / 2.0);
+            stochast.Shift = mean - stochast.Scale * std::sqrt(std::numbers::pi / 2.0);
 
-            if (stochast->Shape != 1.0) 
+            if (stochast.Shape != 1.0)
             {
                 constexpr double toleranceBisection = 0.00001;
                 auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
-                Distribution* distribution = this;
-
-                Numeric::RootFinderMethod method = [stochast, distribution](double s)
+                Numeric::RootFinderMethod method = [&stochast, this](double s)
                 {
-                    stochast->Scale = s;
-                    return distribution->getMean(stochast);
+                    stochast.Scale = s;
+                    return getMean(stochast);
                 };
 
-                double minStart = 0.5 * stochast->Scale;
-                double maxStart = 1.5 * stochast->Scale;
+                double minStart = 0.5 * stochast.Scale;
+                double maxStart = 1.5 * stochast.Scale;
 
-                stochast->Scale = bisection.CalculateValue(minStart, maxStart, mean, method);
+                stochast.Scale = bisection.CalculateValue(minStart, maxStart, mean, method);
             }
         }
 

@@ -26,6 +26,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <numbers>
 
 #include "DistributionSupport.h"
 
@@ -33,11 +34,11 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void UniformDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void UniformDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            double diff = sqrt(3) * deviation;
-            stochast->Minimum = mean - diff;
-            stochast->Maximum = mean + diff;
+            double diff = std::numbers::sqrt3 * deviation;
+            stochast.Minimum = mean - diff;
+            stochast.Maximum = mean + diff;
         }
 
         void UniformDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
@@ -58,9 +59,9 @@ namespace Deltares
             return stochast->Maximum > stochast->Minimum;
         }
 
-        double UniformDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double UniformDistribution::getMean(StochastProperties& stochast)
         {
-            return (stochast->Minimum + stochast->Maximum) / 2;
+            return (stochast.Minimum + stochast.Maximum) / 2.0;
         }
 
         double UniformDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)

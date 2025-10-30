@@ -25,7 +25,6 @@
 #include "../../Math/NumericSupport.h"
 
 #include <cmath>
-#include <algorithm>
 
 #include "DistributionSupport.h"
 
@@ -44,7 +43,7 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        double GeneralizedParetoDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double GeneralizedParetoDistribution::getMean(StochastProperties& stochast)
         {
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }

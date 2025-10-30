@@ -23,7 +23,6 @@
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
 #include "../../Math/NumericSupport.h"
-#include "../../Math/RootFinders/BisectionRootFinder.h"
 
 #include <cmath>
 #include <algorithm>
@@ -36,7 +35,7 @@ namespace Deltares
     {
         void ParetoDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            this->setMeanAndDeviation(stochast, values[0], values[1]);
+            this->setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         void ParetoDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
@@ -50,10 +49,10 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        double ParetoDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double ParetoDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Shape > 1
-                ? stochast->Shape * stochast->Scale / (stochast->Shape - 1)
+            return stochast.Shape > 1.0
+                ? stochast.Shape * stochast.Scale / (stochast.Shape - 1.0)
                 : std::numeric_limits<double>::infinity();
         }
 
@@ -69,11 +68,11 @@ namespace Deltares
             }
         }
 
-        void ParetoDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void ParetoDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            if (deviation <= 0)
+            if (deviation <= 0.0)
             {
-                stochast->Scale = 0;
+                stochast.Scale = 0.0;
             }
             else
             {
@@ -81,17 +80,17 @@ namespace Deltares
                 double vc = mean / deviation;
                 if (std::fabs(vc) > 1.0E150)
                 {
-                    stochast->Scale = 0;
+                    stochast.Scale = 0.0;
                 }
                 else
                 {
                     double v = vc * vc;
 
                     // abc-formula
-                    double d = 4 + 4 * v;
+                    double d = 4.0 + 4.0 * v;
 
-                    stochast->Shape = (2 + std::sqrt(d)) / 2;
-                    stochast->Scale = mean * (stochast->Shape - 1) / stochast->Shape;
+                    stochast.Shape = (2.0 + std::sqrt(d)) / 2.0;
+                    stochast.Scale = mean * (stochast.Shape - 1.0) / stochast.Shape;
                 }
             }
         }

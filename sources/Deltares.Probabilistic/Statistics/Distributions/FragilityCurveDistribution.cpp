@@ -32,22 +32,23 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void FragilityCurveDistribution::initializeForRun(std::shared_ptr<StochastProperties> stochast)
+        void FragilityCurveDistribution::initializeForRun(StochastProperties& stochast)
         {
-            std::sort(stochast->FragilityValues.begin(), stochast->FragilityValues.end(), [](std::shared_ptr<FragilityValue> val1, std::shared_ptr<FragilityValue> val2) {return val1->X < val2->X; });
+            std::sort(stochast.FragilityValues.begin(), stochast.FragilityValues.end(),
+                [](const std::shared_ptr<FragilityValue>& val1, const std::shared_ptr<FragilityValue>& val2) {return val1->X < val2->X; });
 
 
-            Utils::SetDirtyLambda setDirtyFunction = [stochast]()
+            Utils::SetDirtyLambda setDirtyFunction = [&stochast]()
             {
-                stochast->dirty = true;
+                stochast.dirty = true;
             };
 
-            for (std::shared_ptr<FragilityValue> fragilityValue : stochast->FragilityValues)
+            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
             {
                 fragilityValue->setDirtyFunction(setDirtyFunction);
             }
 
-            stochast->dirty = false;
+            stochast.dirty = false;
         }
 
         bool FragilityCurveDistribution::isHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
@@ -93,7 +94,7 @@ namespace Deltares
             }
         }
 
-        double FragilityCurveDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double FragilityCurveDistribution::getMean(StochastProperties& stochast)
         {
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }
@@ -107,7 +108,7 @@ namespace Deltares
         {
             if (stochast->dirty)
             {
-                initializeForRun(stochast);
+                initializeForRun(*stochast);
             }
 
             if (stochast->FragilityValues.empty())
@@ -166,7 +167,7 @@ namespace Deltares
         {
             if (stochast->dirty)
             {
-                initializeForRun(stochast);
+                initializeForRun(*stochast);
             }
 
             if (stochast->FragilityValues.empty())
@@ -177,7 +178,7 @@ namespace Deltares
             std::vector<double> xValues;
             std::vector<double> bValues;
 
-            for (std::shared_ptr<FragilityValue> fragilityValue : stochast->FragilityValues)
+            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast->FragilityValues)
             {
                 xValues.push_back(fragilityValue->X);
                 bValues.push_back(fragilityValue->Reliability);
@@ -190,7 +191,7 @@ namespace Deltares
         {
             if (stochast->dirty)
             {
-                initializeForRun(stochast);
+                initializeForRun(*stochast);
             }
 
             if (stochast->FragilityValues.empty())
@@ -201,7 +202,7 @@ namespace Deltares
             std::vector<double> xValues;
             std::vector<double> bValues;
 
-            for (std::shared_ptr<FragilityValue> fragilityValue : stochast->FragilityValues)
+            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast->FragilityValues)
             {
                 xValues.push_back(fragilityValue->X);
                 bValues.push_back(fragilityValue->Reliability);
@@ -216,7 +217,7 @@ namespace Deltares
         {
             if (stochast->dirty)
             {
-                initializeForRun(stochast);
+                initializeForRun(*stochast);
             }
 
             if (stochast->FragilityValues.empty())

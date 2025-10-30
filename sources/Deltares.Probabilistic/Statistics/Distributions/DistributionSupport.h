@@ -51,6 +51,7 @@ namespace Deltares::Statistics
          * \remarks To be used when analytical solution is not possible
          */
         static double getMeanByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast);
+        static double getMeanByIteration(Distribution& distribution, const StochastProperties& stochast);
 
         /**
          * \brief Gets the deviation of a stochast by iteration
@@ -78,7 +79,8 @@ namespace Deltares::Statistics
         static std::vector<std::shared_ptr<Numeric::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
 
     private:
-        static  std::vector<double> getValuesForIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast);
+        static std::vector<double> getValuesForIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast);
+        static std::vector<double> getValuesForIteration(Distribution& distribution, const StochastProperties& stochast);
     };
 }
 

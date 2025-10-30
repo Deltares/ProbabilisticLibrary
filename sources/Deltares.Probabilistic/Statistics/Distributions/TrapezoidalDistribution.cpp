@@ -71,10 +71,10 @@ namespace Deltares
         }
 
 
-        double TrapezoidalDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double TrapezoidalDistribution::getMean(StochastProperties& stochast)
         {
-            double a = stochast->Minimum;
-            double b = stochast->Maximum;
+            double a = stochast.Minimum;
+            double b = stochast.Maximum;
 
             if (a == b)
             {
@@ -82,12 +82,12 @@ namespace Deltares
             }
             else
             {
-                double c = stochast->Shift;
-                double d = stochast->ShiftB;
+                double c = stochast.Shift;
+                double d = stochast.ShiftB;
 
-                double length = (b + d - a - c) / 2;
+                double length = (b + d - a - c) / 2.0;
 
-                return (getExponentDifference(d, b, 3) - getExponentDifference(c, a, 3)) / (6 * length);
+                return (getExponentDifference(d, b, 3) - getExponentDifference(c, a, 3)) / (6.0 * length);
             }
         }
 
@@ -107,59 +107,59 @@ namespace Deltares
 
                 double length = (b + d - a - c) / 2;
 
-                double m = this->getMean(stochast);
+                double m = this->getMean(*stochast);
                 double s2 = (getExponentDifference(d, b, 4) - getExponentDifference(c, a, 4)) / (12 * length);
                 return sqrt(s2 - m * m);
             }
         }
 
-        void TrapezoidalDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void TrapezoidalDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
             // set mean value
-            if (this->isValid(stochast))
+            if (isValid(stochast))
             {
                 double currentValue = this->getMean(stochast);
                 double diff = mean - currentValue;
 
-                stochast->Minimum += diff;
-                stochast->Shift += diff;
-                stochast->ShiftB += diff;
-                stochast->Maximum += diff;
+                stochast.Minimum += diff;
+                stochast.Shift += diff;
+                stochast.ShiftB += diff;
+                stochast.Maximum += diff;
             }
             else
             {
-                stochast->Minimum = mean;
-                stochast->Shift = mean;
-                stochast->ShiftB = mean;
-                stochast->Maximum = mean;
+                stochast.Minimum = mean;
+                stochast.Shift = mean;
+                stochast.ShiftB = mean;
+                stochast.Maximum = mean;
             }
 
             // set deviation
             if (deviation <= 0)
             {
-                stochast->Minimum = mean;
-                stochast->Shift = mean;
-                stochast->ShiftB = mean;
-                stochast->Maximum = mean;
+                stochast.Minimum = mean;
+                stochast.Shift = mean;
+                stochast.ShiftB = mean;
+                stochast.Maximum = mean;
             }
             else
             {
-                if (stochast->Minimum == stochast->Maximum)
+                if (stochast.Minimum == stochast.Maximum)
                 {
-                    stochast->Minimum = mean - deviation;
-                    stochast->Maximum = mean + deviation;
-                    stochast->Shift = mean - 0.5 * deviation;
-                    stochast->ShiftB = mean + 0.5 * deviation;
+                    stochast.Minimum = mean - deviation;
+                    stochast.Maximum = mean + deviation;
+                    stochast.Shift = mean - 0.5 * deviation;
+                    stochast.ShiftB = mean + 0.5 * deviation;
                 }
 
-                std::shared_ptr<StochastProperties> copiedStochast = stochast->clone();
+                std::shared_ptr<StochastProperties> copiedStochast = stochast.clone();
 
                 Numeric::RootFinderMethod method = [this, copiedStochast, stochast](double x)
                 {
-                    copiedStochast->Minimum = x * stochast->Minimum;
-                    copiedStochast->Shift = x * stochast->Shift;
-                    copiedStochast->ShiftB = x * stochast->ShiftB;
-                    copiedStochast->Maximum = x * stochast->Maximum;
+                    copiedStochast->Minimum = x * stochast.Minimum;
+                    copiedStochast->Shift = x * stochast.Shift;
+                    copiedStochast->ShiftB = x * stochast.ShiftB;
+                    copiedStochast->Maximum = x * stochast.Maximum;
 
                     return this->getDeviation(copiedStochast);
                 };
@@ -172,19 +172,19 @@ namespace Deltares
 
                 double factor = bisection.CalculateValue(minStart, maxStart, deviation, method);
 
-                stochast->Minimum *= factor;
-                stochast->Shift *= factor;
-                stochast->ShiftB *= factor;
-                stochast->Maximum *= factor;
+                stochast.Minimum *= factor;
+                stochast.Shift *= factor;
+                stochast.ShiftB *= factor;
+                stochast.Maximum *= factor;
 
                 // set mean value again
                 double currentValue = this->getMean(stochast);
                 double diff = mean - currentValue;
 
-                stochast->Minimum += diff;
-                stochast->Shift += diff;
-                stochast->ShiftB += diff;
-                stochast->Maximum += diff;
+                stochast.Minimum += diff;
+                stochast.Shift += diff;
+                stochast.ShiftB += diff;
+                stochast.Maximum += diff;
             }
         }
 

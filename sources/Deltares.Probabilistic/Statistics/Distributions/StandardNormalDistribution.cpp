@@ -33,7 +33,7 @@ namespace Deltares
             return true;
         }
 
-        double StandardNormalDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double StandardNormalDistribution::getMean(StochastProperties& stochast)
         {
             return standardNormalMean;
         }

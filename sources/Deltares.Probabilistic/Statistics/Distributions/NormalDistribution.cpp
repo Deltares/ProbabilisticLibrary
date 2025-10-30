@@ -33,15 +33,15 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void NormalDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void NormalDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Location = mean;
-            stochast->Scale = deviation;
+            stochast.Location = mean;
+            stochast.Scale = deviation;
         }
 
         void NormalDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            setMeanAndDeviation(stochast, values[0], values[1]);
+            setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         bool NormalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -49,9 +49,9 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        double NormalDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double NormalDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
         double NormalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)

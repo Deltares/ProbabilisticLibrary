@@ -42,9 +42,9 @@ namespace Deltares
             Logging::ValidationSupport::checkMinimum(report, 0, stochast->Location, "location", subject);
         }
 
-        double PoissonDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double PoissonDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
         double PoissonDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
@@ -52,9 +52,9 @@ namespace Deltares
             return sqrt(stochast->Location);
         }
 
-        void PoissonDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void PoissonDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Location = mean;
+            stochast.Location = mean;
         }
 
         double PoissonDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)

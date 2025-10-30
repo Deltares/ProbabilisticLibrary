@@ -31,15 +31,15 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void ExponentialDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void ExponentialDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Scale = deviation;
-            stochast->Shift = mean - stochast->Scale;
+            stochast.Scale = deviation;
+            stochast.Shift = mean - stochast.Scale;
         }
 
         void ExponentialDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
         {
-            double oldMean = this->getMean(stochast);
+            double oldMean = this->getMean(*stochast);
 
             if (inverted)
             {
@@ -70,9 +70,9 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        double ExponentialDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double ExponentialDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Scale + stochast->Shift;
+            return stochast.Scale + stochast.Shift;
         }
 
         double ExponentialDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)

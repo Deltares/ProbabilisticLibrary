@@ -29,13 +29,13 @@ namespace Deltares
     {
         class FragilityCurveDistribution : public Distribution
         {
-            double getMean(std::shared_ptr<StochastProperties> stochast) override;
+            double getMean(StochastProperties& stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
             double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
             double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override { return true; }
             bool maintainMeanAndDeviation(std::shared_ptr<StochastProperties> stochast) override { return false; }
-            void initializeForRun(std::shared_ptr<StochastProperties> stochast) override;
+            void initializeForRun(StochastProperties& stochast) override;
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool canFit() override { return false; }

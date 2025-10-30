@@ -45,9 +45,9 @@ namespace Deltares
             Distribution::validate(report, stochast, subject);
         }
 
-        double BernoulliDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double BernoulliDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
         double BernoulliDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
@@ -55,9 +55,9 @@ namespace Deltares
             return sqrt(stochast->Location * (1 - stochast->Location));
         }
 
-        void BernoulliDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void BernoulliDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Location = mean;
+            stochast.Location = mean;
         }
 
         double BernoulliDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)

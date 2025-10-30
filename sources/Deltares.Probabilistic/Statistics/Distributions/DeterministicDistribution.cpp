@@ -32,10 +32,10 @@ namespace Deltares
             return false;
         }
 
-        void DeterministicDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void DeterministicDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Location = mean;
-            stochast->Scale = deviation;
+            stochast.Location = mean;
+            stochast.Scale = deviation;
         }
 
         void DeterministicDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
@@ -43,9 +43,9 @@ namespace Deltares
             stochast->Location = values[0];
         }
 
-        double DeterministicDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double DeterministicDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
         double DeterministicDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)

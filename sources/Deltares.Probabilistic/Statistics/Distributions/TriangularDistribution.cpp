@@ -49,7 +49,7 @@ namespace Deltares
             Logging::ValidationSupport::checkMaximum(report, stochast->Maximum, stochast->Shift, "shift", subject);
         }
 
-        void TriangularDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void TriangularDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
             // set mean value
             if (this->isValid(stochast))
@@ -57,45 +57,44 @@ namespace Deltares
                 double currentValue = this->getMean(stochast);
                 double diff = mean - currentValue;
 
-                stochast->Minimum += diff;
-                stochast->Shift += diff;
-                stochast->Maximum += diff;
+                stochast.Minimum += diff;
+                stochast.Shift += diff;
+                stochast.Maximum += diff;
             }
             else
             {
-                stochast->Minimum = mean;
-                stochast->Shift = mean;
-                stochast->Maximum = mean;
+                stochast.Minimum = mean;
+                stochast.Shift = mean;
+                stochast.Maximum = mean;
             }
 
             // set deviation
             if (deviation <= 0)
             {
-                stochast->Minimum = mean;
-                stochast->Shift = mean;
-                stochast->Maximum = mean;
+                stochast.Minimum = mean;
+                stochast.Shift = mean;
+                stochast.Maximum = mean;
             }
             else
             {
-                if (stochast->Minimum == stochast->Maximum)
+                if (stochast.Minimum == stochast.Maximum)
                 {
-                    stochast->Minimum = mean - deviation;
-                    stochast->Maximum = mean + deviation;
+                    stochast.Minimum = mean - deviation;
+                    stochast.Maximum = mean + deviation;
                 }
 
-                std::shared_ptr<StochastProperties> copiedStochast = stochast->clone();
+                std::shared_ptr<StochastProperties> copiedStochast = stochast.clone();
 
-                Numeric::RootFinderMethod method = [this, copiedStochast, stochast](double x)
+                Numeric::RootFinderMethod method = [this, copiedStochast, &stochast](double x)
                 {
-                    double min = stochast->Shift - stochast->Minimum;
-                    double max = stochast->Maximum - stochast->Shift;
+                    double min = stochast.Shift - stochast.Minimum;
+                    double max = stochast.Maximum - stochast.Shift;
 
-                    copiedStochast->Minimum = stochast->Shift - x * min;
-                    copiedStochast->Maximum = stochast->Shift + x * max;
+                    copiedStochast->Minimum = stochast.Shift - x * min;
+                    copiedStochast->Maximum = stochast.Shift + x * max;
 
                     return this->getDeviation(copiedStochast);
                 };
-
 
                 const double minStart = 0.0;
                 const double maxStart = 32.0;
@@ -104,16 +103,16 @@ namespace Deltares
 
                 double factor = bisection.CalculateValue(minStart, maxStart, deviation, method);
 
-                stochast->Minimum = stochast->Shift - factor * (stochast->Shift - stochast->Minimum);
-                stochast->Maximum = stochast->Shift + factor * (stochast->Maximum - stochast->Shift);
+                stochast.Minimum = stochast.Shift - factor * (stochast.Shift - stochast.Minimum);
+                stochast.Maximum = stochast.Shift + factor * (stochast.Maximum - stochast.Shift);
 
                 // set mean value again
-                double currentValue = this->getMean(stochast);
+                double currentValue = getMean(stochast);
                 double diff = mean - currentValue;
 
-                stochast->Minimum += diff;
-                stochast->Shift += diff;
-                stochast->Maximum += diff;
+                stochast.Minimum += diff;
+                stochast.Shift += diff;
+                stochast.Maximum += diff;
 
             }
         }
@@ -123,9 +122,9 @@ namespace Deltares
             return stochast->Maximum > stochast->Minimum;
         }
 
-        double TriangularDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double TriangularDistribution::getMean(StochastProperties& stochast)
         {
-            return (stochast->Minimum + stochast->Shift + stochast->Maximum) / 3;
+            return (stochast.Minimum + stochast.Shift + stochast.Maximum) / 3.0;
         }
 
         double TriangularDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)

@@ -36,7 +36,7 @@ namespace Deltares
     {
         void GammaDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            this->setMeanAndDeviation(stochast, values[0], values[1]);
+            this->setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         bool GammaDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -44,9 +44,9 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        double GammaDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double GammaDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Scale * stochast->Shape;
+            return stochast.Scale * stochast.Shape;
         }
 
         double GammaDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
@@ -54,10 +54,10 @@ namespace Deltares
             return stochast->Scale * sqrt(stochast->Shape);
         }
 
-        void GammaDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void GammaDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Scale = deviation * deviation / mean;
-            stochast->Shape = mean / stochast->Scale;
+            stochast.Scale = deviation * deviation / mean;
+            stochast.Shape = mean / stochast.Scale;
         }
 
         double GammaDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)

@@ -35,15 +35,15 @@ namespace Deltares
         class HistogramDistribution : public Distribution
         {
         public:
-            void initializeForRun(std::shared_ptr<StochastProperties> stochast) override;
+            void initializeForRun(StochastProperties& stochast) override;
             double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
             double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
             bool canFit() override { return true; }
-            double getMean(std::shared_ptr<StochastProperties> stochast) override;
+            double getMean(StochastProperties& stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
-            void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
+            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;

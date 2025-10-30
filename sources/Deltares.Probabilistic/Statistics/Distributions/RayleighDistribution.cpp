@@ -35,7 +35,7 @@ namespace Deltares
     {
         void RayleighDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            setMeanAndDeviation(stochast, values[0], values[1]);
+            setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         bool RayleighDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -43,9 +43,9 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        double RayleighDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double RayleighDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Shift + stochast->Scale * std::sqrt(std::numbers::pi / 2);
+            return stochast.Shift + stochast.Scale * std::sqrt(std::numbers::pi / 2.0);
         }
 
         double RayleighDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
@@ -112,10 +112,10 @@ namespace Deltares
             }
         }
 
-        void RayleighDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void RayleighDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Scale = deviation / std::sqrt((4 - std::numbers::pi) / 2);
-            stochast->Shift = mean - stochast->Scale * std::sqrt(std::numbers::pi / 2);
+            stochast.Scale = deviation / std::sqrt((4.0 - std::numbers::pi) / 2.0);
+            stochast.Shift = mean - stochast.Scale * std::sqrt(std::numbers::pi / 2.0);
         }
 
         void RayleighDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)

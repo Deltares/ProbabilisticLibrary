@@ -40,7 +40,7 @@ namespace Deltares
 
         void StudentTDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
         {
-            setMeanAndDeviation(stochast, values[0], values[1]);
+            setMeanAndDeviation(*stochast, values[0], values[1]);
         }
 
         bool StudentTDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -66,14 +66,14 @@ namespace Deltares
             }
         }
 
-        void StudentTDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void StudentTDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Location = mean;
+            stochast.Location = mean;
 
-            if (stochast->Observations > 3)
+            if (stochast.Observations > 3)
             {
-                double observationFactor = sqrt(Numeric::NumericSupport::Divide(stochast->Observations - 1, stochast->Observations - 3));
-                stochast->Scale = deviation / observationFactor;
+                double observationFactor = sqrt(Numeric::NumericSupport::Divide(stochast.Observations - 1, stochast.Observations - 3));
+                stochast.Scale = deviation / observationFactor;
             }
         }
 

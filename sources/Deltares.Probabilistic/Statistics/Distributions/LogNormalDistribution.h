@@ -35,9 +35,9 @@ namespace Deltares
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
             bool canTruncate() override { return true; }
             bool canInvert() override { return true; }
-            double getMean(std::shared_ptr<StochastProperties> stochast) override;
+            double getMean(StochastProperties& stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
-            void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
+            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
             void setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted) override;
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;

@@ -60,7 +60,11 @@ namespace Deltares::Statistics
          * \param u u-value (Standard normal value)
          * \return x-value
          */
-        virtual double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) { return 0; }
+        virtual double getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        {
+            return getXFromU(*stochast, u);
+        }
+        virtual double getXFromU(const StochastProperties& stochast, double u) { return 0; }
 
         /**
          * \brief Gets the u-value (standard normal value) for a physical value (x-value)
@@ -122,7 +126,11 @@ namespace Deltares::Statistics
          * \param stochast Stochast to which the mean value applies
          * \return Mean value
          */
-        virtual double getMean(std::shared_ptr<StochastProperties> stochast) { return 0; }
+        virtual double getMean(std::shared_ptr<StochastProperties> stochast)
+        {
+            return getMean(*stochast);
+        }
+        virtual double getMean(StochastProperties& stochast) { return 0; }
 
         /**
          * \brief Gets the standard deviation value for a stochast
@@ -144,7 +152,11 @@ namespace Deltares::Statistics
          * \param mean Given mean value
          * \param deviation Given standard deviation
          */
-        virtual void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) {}
+        virtual void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        {
+            setMeanAndDeviation(*stochast, mean, deviation);
+        }
+        virtual void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) {}
 
         /**
          * \brief Sets the shift value and maintains mean and deviation
@@ -158,7 +170,11 @@ namespace Deltares::Statistics
          * \brief Initializes a stochast for fast u->x conversions during probabilistic analysis
          * \param stochast Stochast to be initialized
          */
-        virtual void initializeForRun(std::shared_ptr<StochastProperties> stochast) {}
+        virtual void initializeForRun(std::shared_ptr<StochastProperties> stochast)
+        {
+            initializeForRun(*stochast);
+        }
+        virtual void initializeForRun(StochastProperties& stochast) {}
 
         /**
          * \brief Gets the Probability Density Function (PDF) of a stochast and given x-value
@@ -230,6 +246,7 @@ namespace Deltares::Statistics
          * \return Indication valid parameters
          */
         bool isValid(std::shared_ptr<StochastProperties> stochast);
+        bool isValid(StochastProperties& stochast);
 
         /**
          * \brief Validates the stochastic parameters and puts the results in a report
@@ -239,6 +256,7 @@ namespace Deltares::Statistics
          * \remark Only parameters which are used by the distribution are evaluated
          */
         virtual void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject);
+        virtual void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject);
 
         /**
          * \brief Gets the log likelihood of a stochast at a given x-value
