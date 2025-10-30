@@ -28,6 +28,8 @@ namespace Deltares::Probabilistic::Test
 {
     void testDistributions::allDistributionsTests()
     {
+        testStudentTwithInterpolation();
+        testStudentT();
         testConditionalWeibull();
         testConditionalWeibullNonIntegerShape();
         testConditionalWeibullMeanDeviation();
@@ -394,6 +396,34 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(0.0, dist.getCDF(-1.0), margin) << "x <= 0 should give 0";
         EXPECT_NEAR(0.0, dist.getCDF(0.0), margin) << "x <= 0 should give 0";
         EXPECT_NEAR(0.00175162254855, dist.getCDF(1.0), margin);
+    }
+
+    void testDistributions::testStudentT()
+    {
+        constexpr double margin = 1e-12;
+        auto prop = std::make_shared<StochastProperties>();
+        prop->Observations = 5;
+        prop->Scale = 1.0;
+        prop->Location = 0.0;
+        auto dist = Stochast(DistributionType::StudentT, prop);
+        EXPECT_NEAR(0.5, dist.getCDF(0.0), margin);
+        EXPECT_NEAR(0.375, dist.getPDF(0.0), margin);
+        EXPECT_NEAR(sqrt(2.0), dist.getDeviation(), margin);
+    }
+
+    void testDistributions::testStudentTwithInterpolation()
+    {
+        constexpr double margin = 1e-6;
+        auto prop = std::make_shared<StochastProperties>();
+        prop->Observations = 90;
+        prop->Scale = 1.0;
+        prop->Location = 0.0;
+        auto dist = Stochast(DistributionType::StudentT, prop);
+        EXPECT_NEAR(0.16073543, dist.getCDF(-1.0), margin);
+        EXPECT_NEAR(0.5,        dist.getCDF(0.0), margin);
+        EXPECT_NEAR(0.83926457, dist.getCDF(1.0), margin);
+        EXPECT_NEAR(0.39782325, dist.getPDF(0.0), margin);
+        EXPECT_NEAR(1.01142894, dist.getDeviation(), margin);
     }
 
     void testDistributions::testFitNormal()
