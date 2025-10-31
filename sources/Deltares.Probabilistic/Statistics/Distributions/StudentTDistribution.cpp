@@ -102,8 +102,7 @@ namespace Deltares
             int degreesOfFreedom = stochast->Observations - 1;
 
             bool success;
-            // NB : studentValue must be pointer to ensure the bisection function is const
-            auto studentValue = std::make_shared<StudentTValue>(GetStudentValue(degreesOfFreedom, success));
+            auto studentValue = GetStudentValue(degreesOfFreedom, success);
 
             if ( ! success)
             {
@@ -112,10 +111,10 @@ namespace Deltares
 
             auto bisection = Numeric::BisectionRootFinder(margin);
 
-            Numeric::RootFinderMethod function = [this, stochast, studentValue](double u)
+            Numeric::RootFinderMethod function = [stochast, &studentValue](double u)
             {
                 double p = StandardNormal::getPFromU(u);
-                double c = studentValue->getCoefficient(p);
+                double c = studentValue.getCoefficient(p);
 
                 return stochast->Location - c * stochast->Scale;
             };
