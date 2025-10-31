@@ -34,7 +34,7 @@ namespace Deltares
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
             double getMean(StochastProperties& stochast) override;
             double getDeviation(StochastProperties& stochast) override;
-            double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
+            double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;

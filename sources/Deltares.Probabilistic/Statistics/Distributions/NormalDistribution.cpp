@@ -69,13 +69,13 @@ namespace Deltares
             return (x - stochast.Location) / stochast.Scale;
         }
 
-        double NormalDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double NormalDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            double x0 = x - stochast->Location;
-            double sigma = stochast->Scale;
+            const double x0 = x - stochast.Location;
+            const double sigma = stochast.Scale;
 
-            double normalFactor = 1 / (sigma * sqrt(2 * std::numbers::pi));
-            double distance = -x0 * x0 / (2 * sigma * sigma);
+            const double normalFactor = 1.0 / (sigma * sqrt(2.0 * std::numbers::pi));
+            const double distance = -x0 * x0 / (2.0 * sigma * sigma);
 
             return normalFactor * exp(distance);
         }

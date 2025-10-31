@@ -66,7 +66,7 @@ namespace Deltares
 
             for (int k = 0; k < kMax; k++)
             {
-                pdf += getPDF(stochast.clone(), k); // TODO
+                pdf += getPDF(stochast, k);
                 if (pdf > p - delta || pdf > maxP)
                 {
                     return k;
@@ -95,13 +95,13 @@ namespace Deltares
         }
 
 
-        double PoissonDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double PoissonDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            int k = static_cast<int>(std::floor(x));
+            const int k = static_cast<int>(std::floor(x));
 
             if (k >= 0 && Numeric::NumericSupport::areEqual(k, x, delta))
             {
-                return getPowerFactorial(stochast->Location, k) * std::exp(-stochast->Location);
+                return getPowerFactorial(stochast.Location, k) * std::exp(-stochast.Location);
             }
             else
             {
@@ -116,7 +116,7 @@ namespace Deltares
             double cdf = 0.0;
             for (int i = 0; i <= k; i++)
             {
-                cdf += getPDF(stochast, i);
+                cdf += getPDF(*stochast, i);
             }
 
             return cdf;
@@ -143,7 +143,7 @@ namespace Deltares
             {
                 discontinuityPoints.push_back(k);
 
-                double pdf = getPDF(stochastPtr, k);
+                double pdf = getPDF(*stochastPtr, k);
                 cdf += pdf;
 
                 k++;
@@ -168,7 +168,7 @@ namespace Deltares
                 specialPoints.push_back(k);
                 specialPoints.push_back(k + offset);
 
-                double pdf = getPDF(stochast, k);
+                double pdf = getPDF(*stochast, k);
                 cdf += pdf;
 
                 k++;

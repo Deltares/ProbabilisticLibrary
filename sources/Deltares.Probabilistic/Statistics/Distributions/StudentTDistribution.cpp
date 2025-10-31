@@ -139,15 +139,15 @@ namespace Deltares
             }
         }
 
-        double StudentTDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double StudentTDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            int degreesOfFreedom = stochast->Observations - 1;
+            const int degreesOfFreedom = stochast.Observations - 1;
 
-            double xmu = (x - stochast->Location) / stochast->Scale;
+            const double xmu = (x - stochast.Location) / stochast.Scale;
 
-            double gamma = Numeric::SpecialFunctions::getGamma(0.5 * stochast->Observations);
-            double factor = std::sqrt(std::numbers::pi * degreesOfFreedom) * Numeric::SpecialFunctions::getGamma(0.5 * degreesOfFreedom) * stochast->Scale;
-            double exp = std::pow(1 + xmu * xmu / degreesOfFreedom, -0.5 * stochast->Observations);
+            const double gamma = Numeric::SpecialFunctions::getGamma(0.5 * stochast.Observations);
+            const double factor = std::sqrt(std::numbers::pi * degreesOfFreedom) * Numeric::SpecialFunctions::getGamma(0.5 * degreesOfFreedom) * stochast.Scale;
+            const double exp = std::pow(1.0 + xmu * xmu / degreesOfFreedom, -0.5 * stochast.Observations);
 
             return gamma * exp / factor;
         }

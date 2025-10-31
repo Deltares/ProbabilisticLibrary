@@ -58,9 +58,9 @@ namespace Deltares
             return stochast.Location;
         }
 
-        double DeterministicDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double DeterministicDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            return x == stochast->Location ? 1 : 0;
+            return x == stochast.Location ? 1.0 : 0.0;
         }
 
         double DeterministicDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)

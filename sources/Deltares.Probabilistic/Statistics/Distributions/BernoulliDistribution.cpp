@@ -80,15 +80,15 @@ namespace Deltares
             return StandardNormal::getUFromP(cdf);
         }
 
-        double BernoulliDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double BernoulliDistribution::getPDF(StochastProperties& stochast, double x)
         {
             if (Numeric::NumericSupport::areEqual(x, 1.0, delta))
             {
-                return stochast->Location;
+                return stochast.Location;
             }
             else if (Numeric::NumericSupport::areEqual(x, 0.0, delta))
             {
-                return 1.0 - stochast->Location;
+                return 1.0 - stochast.Location;
             }
             else
             {

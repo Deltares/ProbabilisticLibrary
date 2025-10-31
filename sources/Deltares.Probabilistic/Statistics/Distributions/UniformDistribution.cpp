@@ -94,19 +94,19 @@ namespace Deltares
             }
         }
 
-        double UniformDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double UniformDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (stochast->Minimum == stochast->Maximum)
+            if (stochast.Minimum == stochast.Maximum)
             {
-                return x == stochast->Minimum ? 1 : 0;
+                return x == stochast.Minimum ? 1.0 : 0.0;
             }
-            else if (x >= stochast->Minimum && x <= stochast->Maximum)
+            else if (x >= stochast.Minimum && x <= stochast.Maximum)
             {
-                return 1 / (stochast->Maximum - stochast->Minimum);
+                return 1.0 / (stochast.Maximum - stochast.Minimum);
             }
             else
             {
-                return 0;
+                return 0.0;
             }
         }
 

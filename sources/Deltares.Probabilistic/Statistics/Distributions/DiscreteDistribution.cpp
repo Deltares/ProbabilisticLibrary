@@ -230,30 +230,29 @@ namespace Deltares
             }
         }
 
-        double DiscreteDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double DiscreteDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            const double delta = 0.0000001;
+            constexpr double delta = 0.0000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            if (stochast->DiscreteValues.empty())
+            if (stochast.DiscreteValues.empty())
             {
                 return std::nan("");
             }
 
-            for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+            for (const auto& discreteValue : stochast.DiscreteValues)
             {
-                if (Numeric::NumericSupport::areEqual(stochast->DiscreteValues[i]->X, x, delta))
+                if (Numeric::NumericSupport::areEqual(discreteValue->X, x, delta))
                 {
-                    return stochast->DiscreteValues[i]->NormalizedAmount;
+                    return discreteValue->NormalizedAmount;
                 }
             }
 
-            return 0;
-
+            return 0.0;
         }
 
         double DiscreteDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)

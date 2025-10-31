@@ -136,30 +136,30 @@ namespace Deltares
             return sqrt((a * a + b * b + c * c - (a * b + a * c + b * c)) / 18.0);
         }
 
-        double TriangularDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double TriangularDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (stochast->Minimum == stochast->Maximum)
+            if (stochast.Minimum == stochast.Maximum)
             {
-                return x == stochast->Minimum ? 1 : 0;
+                return x == stochast.Minimum ? 1.0 : 0.0;
             }
-            else if (x <= stochast->Minimum || x >= stochast->Maximum)
+            else if (x <= stochast.Minimum || x >= stochast.Maximum)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                double maxHeight = 2 / (stochast->Maximum - stochast->Minimum);
-                if (x <= stochast->Minimum || x >= stochast->Maximum)
+                const double maxHeight = 2.0 / (stochast.Maximum - stochast.Minimum);
+                if (x <= stochast.Minimum || x >= stochast.Maximum)
                 {
                     return 0;
                 }
-                else if (x < stochast->Shift)
+                else if (x < stochast.Shift)
                 {
-                    return maxHeight * (x - stochast->Minimum) / (stochast->Shift - stochast->Minimum);
+                    return maxHeight * (x - stochast.Minimum) / (stochast.Shift - stochast.Minimum);
                 }
                 else
                 {
-                    return maxHeight * (1 - (x - stochast->Shift) / (stochast->Maximum - stochast->Shift));
+                    return maxHeight * (1.0 - (x - stochast.Shift) / (stochast.Maximum - stochast.Shift));
                 }
             }
         }

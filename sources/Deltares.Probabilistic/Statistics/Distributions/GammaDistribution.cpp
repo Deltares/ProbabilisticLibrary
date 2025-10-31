@@ -60,18 +60,18 @@ namespace Deltares
             stochast.Shape = mean / stochast.Scale;
         }
 
-        double GammaDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GammaDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (stochast->Shape <= 0.0 || stochast->Scale <= 0.0)
+            if (stochast.Shape <= 0.0 || stochast.Scale <= 0.0)
             {
                 return x == 0.0 ? 1.0 : 0.0;
             }
 
             if (x >= 0.0)
             {
-                const double denominator = std::pow(stochast->Scale, stochast->Shape) *
-                    Numeric::SpecialFunctions::getGamma(stochast->Shape);
-                const double pdf = std::pow(x, stochast->Shape - 1.0) * std::exp(-x / stochast->Scale) / denominator;
+                const double denominator = std::pow(stochast.Scale, stochast.Shape) *
+                    Numeric::SpecialFunctions::getGamma(stochast.Shape);
+                const double pdf = std::pow(x, stochast.Shape - 1.0) * std::exp(-x / stochast.Scale) / denominator;
                 return std::max(0.0, pdf);
             }
 

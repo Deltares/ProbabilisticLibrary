@@ -89,21 +89,22 @@ namespace Deltares
             }
         }
 
-        double FrechetDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double FrechetDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            double z = (x - stochast->Shift) / stochast->Scale;
+            const double z = (x - stochast.Shift) / stochast.Scale;
 
-            if (stochast->Scale == 0)
+            if (stochast.Scale == 0.0)
             {
-                return x == stochast->Shift ? 1 : 0;
+                return x == stochast.Shift ? 1.0 : 0.0;
             }
-            else if (z <= 0)
+            else if (z <= 0.0)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return (stochast->Shape / stochast->Scale) * std::pow(z, -1 - stochast->Shape) * getCDF(stochast, x);
+                // TODO:
+                return (stochast.Shape / stochast.Scale) * std::pow(z, -1.0 - stochast.Shape) * getCDF(stochast.clone(), x);
             }
         }
 

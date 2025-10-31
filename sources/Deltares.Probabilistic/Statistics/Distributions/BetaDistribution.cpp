@@ -67,19 +67,20 @@ namespace Deltares
             stochast.ShapeB = stochast.Shape * (1 / mean - 1);
         }
 
-        double BetaDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double BetaDistribution::getPDF(StochastProperties& stochast, double x)
         {
             if (!isValid(stochast))
             {
-                return x == 0 ? 1 : 0;
+                return x == 0.0 ? 1.0 : 0.0;
             }
-            else if (x < 0 || x > 1)
+            else if (x < 0.0 || x > 1.0)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return std::pow(x, stochast->Shape - 1) * std::pow(1 - x, stochast->ShapeB - 1) / Numeric::SpecialFunctions::getBeta (stochast->Shape, stochast->ShapeB);
+                return std::pow(x, stochast.Shape - 1.0) * std::pow(1.0 - x, stochast.ShapeB - 1.0)
+                / Numeric::SpecialFunctions::getBeta (stochast.Shape, stochast.ShapeB);
             }
         }
 

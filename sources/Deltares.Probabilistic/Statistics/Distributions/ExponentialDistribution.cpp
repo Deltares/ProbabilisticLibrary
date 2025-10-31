@@ -92,15 +92,15 @@ namespace Deltares
             return StandardNormal::getUFromQ(q);
         }
 
-        double ExponentialDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double ExponentialDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (x < stochast->Shift)
+            if (x < stochast.Shift)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return exp(-(x - stochast->Shift) / stochast->Scale) / stochast->Scale;
+                return exp(-(x - stochast.Shift) / stochast.Scale) / stochast.Scale;
             }
         }
 

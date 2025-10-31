@@ -190,7 +190,11 @@ namespace Deltares::Statistics
          * \param x Given x-value
          * \return PDF value
          */
-        virtual double getPDF(std::shared_ptr<StochastProperties> stochast, double x) { return 0; }
+        virtual double getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            return getPDF(*stochast, x);
+        }
+        virtual double getPDF(StochastProperties& stochast, double x) { return 0.0; }
 
         /**
          * \brief Gets the Cumulative Density Function (CDF) of a stochast and given x-value

@@ -93,17 +93,17 @@ namespace Deltares
             }
         }
 
-        double GumbelDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GumbelDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (stochast->Scale == 0.0)
+            if (stochast.Scale == 0.0)
             {
-                return x == stochast->Shift ? 1.0 : 0.0;
+                return x == stochast.Shift ? 1.0 : 0.0;
             }
             else
             {
-                x = (x - stochast->Shift) / stochast->Scale;
+                x = (x - stochast.Shift) / stochast.Scale;
 
-                return (1.0 / stochast->Scale) * exp(-(x + exp(-x)));
+                return (1.0 / stochast.Scale) * exp(-(x + exp(-x)));
             }
         }
 

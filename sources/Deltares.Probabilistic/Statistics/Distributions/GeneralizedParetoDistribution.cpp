@@ -53,27 +53,27 @@ namespace Deltares
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
-        double GeneralizedParetoDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GeneralizedParetoDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            double k = stochast->Shape;
-            double s = stochast->Scale;
-            double m = stochast->Shift;
+            const double k = stochast.Shape;
+            const double s = stochast.Scale;
+            const double m = stochast.Shift;
 
-            if (x >= m && std::fabs(k) <= epsilon && s > 0)
+            if (x >= m && std::fabs(k) <= epsilon && s > 0.0)
             {
                 return std::exp(-(x - m) / s) / s;
             }
             else if (x >= m && (k * x < s + k * m) && k > epsilon)
             {
-                return std::pow(1 - k * (x - m) / s, 1 / k - 1) / s;
+                return std::pow(1.0 - k * (x - m) / s, 1.0 / k - 1.0) / s;
             }
-            else if (x >= m && (k < epsilon) && s > 0)
+            else if (x >= m && (k < epsilon) && s > 0.0)
             {
-                return std::pow(1 - k * (x - m) / s, 1 / k - 1) / s;
+                return std::pow(1.0 - k * (x - m) / s, 1.0 / k - 1.0) / s;
             }
             else
             {
-                return 0;
+                return 0.0;
             }
         }
 

@@ -95,15 +95,15 @@ namespace Deltares
             }
         }
 
-        double ParetoDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double ParetoDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Scale)
+            if (x <= stochast.Scale)
             {
                 return 0;
             }
             else
             {
-                return stochast->Shape * std::pow(stochast->Scale, stochast->Shape) / std::pow(x, stochast->Shape + 1);
+                return stochast.Shape * std::pow(stochast.Scale, stochast.Shape) / std::pow(x, stochast.Shape + 1.0);
             }
         }
 

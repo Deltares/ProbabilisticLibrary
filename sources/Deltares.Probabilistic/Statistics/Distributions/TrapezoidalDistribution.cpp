@@ -188,18 +188,18 @@ namespace Deltares
             }
         }
 
-        double TrapezoidalDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double TrapezoidalDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            double a = stochast->Minimum;
-            double b = stochast->Maximum;
-            double c = stochast->Shift;
-            double d = stochast->ShiftB;
+            const double a = stochast.Minimum;
+            const double b = stochast.Maximum;
+            const double c = stochast.Shift;
+            const double d = stochast.ShiftB;
 
-            double length = (b + d - a - c) / 2;
+            const double length = (b + d - a - c) / 2.0;
 
             if (x < a)
             {
-                return 0;
+                return 0.0;
             }
             else if (x < c)
             {
@@ -207,7 +207,7 @@ namespace Deltares
             }
             else if (x < d)
             {
-                return 1 / length;
+                return 1.0 / length;
             }
             else if (x < b)
             {
@@ -215,7 +215,7 @@ namespace Deltares
             }
             else
             {
-                return 0;
+                return 0.0;
             }
         }
 

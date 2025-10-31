@@ -89,19 +89,21 @@ namespace Deltares
             }
         }
 
-        double WeibullDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double WeibullDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Shift)
+            if (x <= stochast.Shift)
             {
                 return 0;
             }
-            else if (stochast->Scale == 0)
+            else if (stochast.Scale == 0.0)
             {
-                return x == stochast->Shift ? 1 : 0;
+                return x == stochast.Shift ? 1.0 : 0.0;
             }
             else
             {
-                return (stochast->Shape / stochast->Scale) * std::pow((x - stochast->Shift) / stochast->Scale, stochast->Shape - 1) * (1 - getCDF(stochast, x));
+                // TODO:
+                return (stochast.Shape / stochast.Scale) * std::pow((x - stochast.Shift)
+                    / stochast.Scale, stochast.Shape - 1.0) * (1.0 - getCDF(stochast.clone(), x));
             }
         }
 

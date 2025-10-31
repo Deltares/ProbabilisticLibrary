@@ -36,7 +36,7 @@ namespace Deltares
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override { return true; }
             bool maintainMeanAndDeviation(std::shared_ptr<StochastProperties> stochast) override { return false; }
             void initializeForRun(StochastProperties& stochast) override;
-            double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
+            double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool canFit() override { return false; }
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;

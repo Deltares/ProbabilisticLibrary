@@ -37,7 +37,7 @@ namespace Deltares
             double getUFromX(StochastProperties& stochast, double x) override;
             double getMean(StochastProperties& stochast) override;
             double getDeviation(StochastProperties& stochast) override;
-            double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
+            double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
         private:
             const double standardNormalMean = 0.0;

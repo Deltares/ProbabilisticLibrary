@@ -213,35 +213,35 @@ namespace Deltares
             return StandardNormal::getPFromU(interpolatedReliability);
         }
 
-        double FragilityCurveDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double FragilityCurveDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            if (stochast->FragilityValues.empty())
+            if (stochast.FragilityValues.empty())
             {
                 return std::nan("");
             }
 
             double delta = std::numeric_limits<double>::max();
-            if (stochast->FragilityValues.size() == 1)
+            if (stochast.FragilityValues.size() == 1)
             {
-                delta = std::max(1.0, std::fabs(stochast->FragilityValues[0]->X) / 10);
+                delta = std::max(1.0, std::fabs(stochast.FragilityValues[0]->X) / 10.0);
             }
             else
             {
-                for (size_t i = 0; i < stochast->FragilityValues.size() - 1; i++)
+                for (size_t i = 0; i < stochast.FragilityValues.size() - 1; i++)
                 {
-                    delta = std::min(delta, stochast->FragilityValues[i + 1]->X - stochast->FragilityValues[i]->X);
+                    delta = std::min(delta, stochast.FragilityValues[i + 1]->X - stochast.FragilityValues[i]->X);
                 }
 
-                delta /= 10;
+                delta /= 10.0;
             }
 
-            double cdfLow = this->getCDF(stochast, x - delta / 2);
-            double cdfHigh = this->getCDF(stochast, x + delta / 2);
+            const double cdfLow = getCDF(stochast.clone(), x - delta / 2.0); // TODO
+            const double cdfHigh = getCDF(stochast.clone(), x + delta / 2.0); // TODO
 
             return (cdfHigh - cdfLow) / delta;
         }

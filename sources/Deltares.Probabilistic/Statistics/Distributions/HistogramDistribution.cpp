@@ -215,11 +215,11 @@ namespace Deltares
             return StandardNormal::getUFromP(cdf);
         }
 
-        double HistogramDistribution::getSizeForEmptySizedRange(std::shared_ptr<StochastProperties> stochast)
+        double HistogramDistribution::getSizeForEmptySizedRange(const StochastProperties& stochast)
         {
             double max = std::numeric_limits<double>::infinity();
 
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast->HistogramValues)
+            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
             {
                 const double size = histogramValue->getSize();
                 if (size < max && size > 0)
@@ -234,22 +234,22 @@ namespace Deltares
             }
             else
             {
-                return 1;
+                return 1.0;
             }
         }
 
-        double HistogramDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double HistogramDistribution::getPDF(StochastProperties& stochast, double x)
         {
             constexpr double delta = 0.0000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
             getSizeForEmptySizedRange(stochast);
 
-            for (const auto& histogram_value : stochast->HistogramValues)
+            for (const auto& histogram_value : stochast.HistogramValues)
             {
                 if (Numeric::NumericSupport::areEqual(histogram_value->LowerBound, histogram_value->UpperBound, delta) &&
                     Numeric::NumericSupport::areEqual(histogram_value->LowerBound, x, delta))
@@ -265,7 +265,7 @@ namespace Deltares
                 }
             }
 
-            return 0;
+            return 0.0;
         }
 
         double HistogramDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)

@@ -93,23 +93,23 @@ namespace Deltares
             }
         }
 
-        double RayleighNDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double RayleighNDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            x = x - stochast->Shift;
+            x = x - stochast.Shift;
 
-            if (stochast->Scale == 0 || stochast->Shape == 0)
+            if (stochast.Scale == 0.0 || stochast.Shape == 0.0)
             {
-                return x == 0 ? 1 : 0;
+                return x == 0.0 ? 1.0 : 0.0;
             }
-            else if (x <= 0)
+            else if (x <= 0.0)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                const double rayleighExp = std::exp(-x * x / (2 * stochast->Scale * stochast->Scale));
+                const double rayleighExp = std::exp(-x * x / (2.0 * stochast.Scale * stochast.Scale));
 
-                return (x * stochast->Shape / (stochast->Scale * stochast->Scale)) * pow(1 - rayleighExp, stochast->Shape - 1) * rayleighExp;
+                return (x * stochast.Shape / (stochast.Scale * stochast.Scale)) * pow(1.0 - rayleighExp, stochast.Shape - 1.0) * rayleighExp;
             }
         }
 

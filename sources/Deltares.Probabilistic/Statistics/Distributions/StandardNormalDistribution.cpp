@@ -53,9 +53,9 @@ namespace Deltares
             return x;
         }
 
-        double StandardNormalDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double StandardNormalDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            double distance = -x * x / 2;
+            const double distance = -x * x / 2.0;
             return normalFactor * exp(distance);
         }
 

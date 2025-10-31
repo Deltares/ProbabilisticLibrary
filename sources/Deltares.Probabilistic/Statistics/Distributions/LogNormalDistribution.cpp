@@ -141,20 +141,20 @@ namespace Deltares
             }
         }
 
-        double LogNormalDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double LogNormalDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Shift)
+            if (x <= stochast.Shift)
             {
                 return 0;
             }
             else
             {
-                double sigma = stochast->Scale;
-                double mu = stochast->Location;
+                double sigma = stochast.Scale;
+                double mu = stochast.Location;
 
-                double logFactor = 1 / ((x - stochast->Shift) * sigma * sqrt(2 * std::numbers::pi));
-                double logDistance = log(x - stochast->Shift) - mu;
-                double logDistancePower = -(logDistance * logDistance) / (2 * sigma * sigma);
+                double logFactor = 1.0 / ((x - stochast.Shift) * sigma * sqrt(2.0 * std::numbers::pi));
+                double logDistance = log(x - stochast.Shift) - mu;
+                double logDistancePower = -(logDistance * logDistance) / (2.0 * sigma * sigma);
 
                 return logFactor * exp(logDistancePower);
             }
