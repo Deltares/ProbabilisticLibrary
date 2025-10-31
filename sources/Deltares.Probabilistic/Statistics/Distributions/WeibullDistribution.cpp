@@ -57,22 +57,22 @@ namespace Deltares
             return stochast->Scale * std::sqrt(gamma2k - gamma1k * gamma1k);
         }
 
-        double WeibullDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double WeibullDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double q = StandardNormal::getQFromU(u);
+            const double q = StandardNormal::getQFromU(u);
 
-            if (q == 1)
+            if (q == 1.0)
             {
                 // handle special case for exceeding probability of 1
                 // note that q can be exactly 1 due to numerical limitations in getQFromU
-                return stochast->Shift;
+                return stochast.Shift;
             }
             else
             {
                 const double log = std::log(q);
-                const double xScale = std::pow(-log, 1 / stochast->Shape);
-                const double x = xScale * stochast->Scale;
-                return x + stochast->Shift;
+                const double xScale = std::pow(-log, 1.0 / stochast.Shape);
+                const double x = xScale * stochast.Scale;
+                return x + stochast.Shift;
             }
         }
 

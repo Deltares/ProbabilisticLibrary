@@ -185,18 +185,18 @@ namespace Deltares
             }
         }
 
-        double TriangularDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double TriangularDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double p = StandardNormal::getPFromU(u);
+            const double p = StandardNormal::getPFromU(u);
 
-            if (p < (stochast->Shift - stochast->Minimum) / (stochast->Maximum - stochast->Minimum))
+            if (p < (stochast.Shift - stochast.Minimum) / (stochast.Maximum - stochast.Minimum))
             {
-                return stochast->Minimum + std::sqrt(p * (stochast->Shift - stochast->Minimum) * (stochast->Maximum - stochast->Minimum));
+                return stochast.Minimum + std::sqrt(p * (stochast.Shift - stochast.Minimum) * (stochast.Maximum - stochast.Minimum));
             }
             else
             {
-                double q = 1 - p;
-                return stochast->Maximum - std::sqrt(q * (stochast->Maximum - stochast->Shift) * (stochast->Maximum - stochast->Minimum));
+                const double q = 1.0 - p;
+                return stochast.Maximum - std::sqrt(q * (stochast.Maximum - stochast.Shift) * (stochast.Maximum - stochast.Minimum));
             }
         }
 
@@ -229,7 +229,7 @@ namespace Deltares
                 }
                 else
                 {
-                    double currentValue = this->getXFromU(stochast, u);
+                    double currentValue = this->getXFromU(*stochast, u);
                     double diff = x - currentValue;
 
                     stochast->Minimum += diff;

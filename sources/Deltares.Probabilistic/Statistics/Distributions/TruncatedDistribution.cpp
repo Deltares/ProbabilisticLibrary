@@ -40,14 +40,14 @@ namespace Deltares
             double Factor = 1;
         };
 
-        Truncated TruncatedDistribution::getTruncatedValue(std::shared_ptr<StochastProperties> stochast)
+        Truncated TruncatedDistribution::getTruncatedValue(StochastProperties& stochast) const
         {
             // detect exceeding probability of limits if it were a normal standard distribution
-            double p = getProbability(stochast, true);
-            double q = getProbability(stochast, false);
+            const double p = getProbability(stochast, true);
+            const double q = getProbability(stochast, false);
 
             // the shape of the distribution must be multiplied with a factor, so that the truncated shape has a total area of 1
-            double factor = 1.0 / (1 - p - q);
+            const double factor = 1.0 / (1.0 - p - q);
 
             Truncated truncated;
             truncated.LowerProbability = p;
@@ -57,9 +57,9 @@ namespace Deltares
             return truncated;
         }
 
-        double TruncatedDistribution::getProbability(std::shared_ptr<StochastProperties> stochast, bool isMinimum)
+        double TruncatedDistribution::getProbability(StochastProperties& stochast, bool isMinimum) const
         {
-            double value = isMinimum ? stochast->Minimum : stochast->Maximum;
+            double value = isMinimum ? stochast.Minimum : stochast.Maximum;
 
             if (std::isnan(value) || std::isinf(value))
             {
@@ -67,7 +67,7 @@ namespace Deltares
             }
             else
             {
-                double u = this->innerDistribution->getUFromX(stochast, value);
+                double u = this->innerDistribution->getUFromX(stochast.clone(), value); // TODO
                 if (std::isnan(u))
                 {
                     return 0;
@@ -79,7 +79,7 @@ namespace Deltares
             }
         }
 
-        double TruncatedDistribution::getUntruncatedU(double u, std::shared_ptr<StochastProperties> stochast)
+        double TruncatedDistribution::getUntruncatedU(double u, StochastProperties& stochast)
         {
             double p = StandardNormal::getPFromU(u);
             double q = StandardNormal::getQFromU(u);
@@ -133,23 +133,23 @@ namespace Deltares
             this->innerDistribution->setShift(stochast, shift, inverted);
         }
 
-        double TruncatedDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double TruncatedDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            if (stochast->Minimum == stochast->Maximum)
+            if (stochast.Minimum == stochast.Maximum)
             {
-                return stochast->Minimum;
+                return stochast.Minimum;
             }
             else
             {
                 double x = this->innerDistribution->getXFromU(stochast, getUntruncatedU(u, stochast));
 
-                if (!std::isinf(stochast->Maximum) && !std::isnan(stochast->Maximum) && x > stochast->Maximum)
+                if (!std::isinf(stochast.Maximum) && !std::isnan(stochast.Maximum) && x > stochast.Maximum)
                 {
-                    x = stochast->Maximum;
+                    x = stochast.Maximum;
                 }
-                else if (!std::isinf(stochast->Minimum) && !std::isnan(stochast->Minimum) && x < stochast->Minimum)
+                else if (!std::isinf(stochast.Minimum) && !std::isnan(stochast.Minimum) && x < stochast.Minimum)
                 {
-                    x = stochast->Minimum;
+                    x = stochast.Minimum;
                 }
 
                 return x;
@@ -172,7 +172,7 @@ namespace Deltares
             }
             else
             {
-                Truncated truncated = getTruncatedValue(stochast);
+                Truncated truncated = getTruncatedValue(*stochast);
 
                 double u = this->innerDistribution->getUFromX(stochast, x);
                 double q = StandardNormal::getQFromU(u);
@@ -194,7 +194,7 @@ namespace Deltares
                 return 0;
             }
 
-            Truncated truncated = getTruncatedValue(stochast);
+            Truncated truncated = getTruncatedValue(*stochast);
             return truncated.Factor * this->innerDistribution->getPDF(stochast, x);
         }
 
@@ -216,7 +216,7 @@ namespace Deltares
 
         void TruncatedDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            this->innerDistribution->setXAtU(stochast, x, getUntruncatedU(u, stochast), constantType);
+            this->innerDistribution->setXAtU(stochast, x, getUntruncatedU(u, *stochast), constantType);
         }
 
         void TruncatedDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
@@ -325,7 +325,7 @@ namespace Deltares
 
         double TruncatedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            Truncated truncated = getTruncatedValue(stochast);
+            Truncated truncated = getTruncatedValue(*stochast);
 
             if (truncated.Factor == 0 || std::isinf(truncated.Factor) || std::isnan(truncated.Factor))
             {

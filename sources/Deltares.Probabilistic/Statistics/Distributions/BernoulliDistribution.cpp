@@ -60,17 +60,17 @@ namespace Deltares
             stochast.Location = mean;
         }
 
-        double BernoulliDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double BernoulliDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             double q = StandardNormal::getQFromU(u);
 
-            if (q > stochast->Location)
+            if (q > stochast.Location)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return 1;
+                return 1.0;
             }
         }
 

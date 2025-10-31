@@ -123,20 +123,20 @@ namespace Deltares
             }
         }
 
-        double ParetoDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double ParetoDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double p = StandardNormal::getPFromU(u);
+            const double p = StandardNormal::getPFromU(u);
 
-            if (p == 0)
+            if (p == 0.0)
             {
-                return stochast->Scale;
+                return stochast.Scale;
             }
             else
             {
-                double q = 1 - p;
-                double scaleX = std::pow(q, 1 / stochast->Shape);
+                double q = 1.0 - p;
+                double scaleX = std::pow(q, 1.0 / stochast.Shape);
 
-                double x = stochast->Scale / scaleX;
+                double x = stochast.Scale / scaleX;
                 return x;
             }
         }

@@ -57,16 +57,16 @@ namespace Deltares
             stochast.Location = mean;
         }
 
-        double PoissonDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double PoissonDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double p = StandardNormal::getPFromU(u);
+            const double p = StandardNormal::getPFromU(u);
 
-            double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
+            const double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
             double pdf = 0;
 
             for (int k = 0; k < kMax; k++)
             {
-                pdf += getPDF(stochast, k);
+                pdf += getPDF(stochast.clone(), k); // TODO
                 if (pdf > p - delta || pdf > maxP)
                 {
                     return k;

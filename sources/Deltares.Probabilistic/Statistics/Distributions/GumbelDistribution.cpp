@@ -60,21 +60,21 @@ namespace Deltares
             return std::numbers::pi * stochast->Scale / sqrt(6);
         }
 
-        double GumbelDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double GumbelDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double p = StandardNormal::getPFromU(u);
+            const double p = StandardNormal::getPFromU(u);
 
             if (p == 0.0)
             {
-                return stochast->Shift;
+                return stochast.Shift;
             }
             else
             {
-                double logp = -log(p);
-                double xscale = -log(logp);
-                double x = xscale * stochast->Scale;
+                const double logp = -log(p);
+                const double xScale = -log(logp);
+                const double x = xScale * stochast.Scale;
 
-                return x + stochast->Shift;
+                return x + stochast.Shift;
             }
         }
 
@@ -124,7 +124,7 @@ namespace Deltares
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                double current = this->getXFromU(stochast, u);
+                double current = this->getXFromU(*stochast, u);
                 double diff = x - current;
 
                 stochast->Shift += diff;

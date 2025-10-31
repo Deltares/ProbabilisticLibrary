@@ -101,21 +101,21 @@ namespace Deltares
             }
         }
 
-        double GeneralizedParetoDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double GeneralizedParetoDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double q = StandardNormal::getQFromU(u);
+            const double q = StandardNormal::getQFromU(u);
 
-            double k = stochast->Shape;
-            double s = stochast->Scale;
-            double m = stochast->Shift;
+            const double k = stochast.Shape;
+            const double s = stochast.Scale;
+            const double m = stochast.Shift;
 
-            if (std::fabs(k) <= epsilon && s > 0)
+            if (std::fabs(k) <= epsilon && s > 0.0)
             {
                 return m - s * std::log(q);
             }
-            else if (std::fabs(k) > epsilon && s > 0)
+            else if (std::fabs(k) > epsilon && s > 0.0)
             {
-                return m + s * (1 - std::pow(q, k)) / k;
+                return m + s * (1.0 - std::pow(q, k)) / k;
             }
             else
             {

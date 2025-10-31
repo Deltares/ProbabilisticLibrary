@@ -111,11 +111,11 @@ namespace Deltares
             }
         }
 
-        double BetaDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double BetaDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             if (!isValid(stochast))
             {
-                return 0;
+                return 0.0;
             }
             else
             {

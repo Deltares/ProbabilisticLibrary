@@ -58,21 +58,21 @@ namespace Deltares
             return stochast->Scale * std::sqrt(gamma2k - gamma1k * gamma1k);
         }
 
-        double FrechetDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double FrechetDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double p = StandardNormal::getPFromU(u);
+            const double p = StandardNormal::getPFromU(u);
 
-            if (p == 0)
+            if (p == 0.0)
             {
-                return stochast->Shift;
+                return stochast.Shift;
             }
             else
             {
                 double pow = -std::log(p);
-                double xScale = std::pow(pow, -1 / stochast->Shape);
-                double x = xScale * stochast->Scale;
+                double xScale = std::pow(pow, -1.0 / stochast.Shape);
+                double x = xScale * stochast.Scale;
 
-                return x + stochast->Shift;
+                return x + stochast.Shift;
             }
         }
 

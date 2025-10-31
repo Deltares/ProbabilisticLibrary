@@ -80,10 +80,10 @@ namespace Deltares
             return stochast->Scale;
         }
 
-        double ExponentialDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double ExponentialDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             double qu = StandardNormal::getQFromU(u);
-            return stochast->Shift - log(qu) * stochast->Scale;
+            return stochast.Shift - log(qu) * stochast.Scale;
         }
 
         double ExponentialDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
@@ -120,7 +120,7 @@ namespace Deltares
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                double current = getXFromU(stochast, u);
+                double current = getXFromU(*stochast, u);
                 double diff = x - current;
 
                 stochast->Shift += diff;

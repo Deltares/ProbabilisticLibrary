@@ -55,28 +55,28 @@ namespace Deltares
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
-        double RayleighNDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double RayleighNDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             double p; double q;
             StandardNormal::getPQfromU(u, p, q);
 
-            if (stochast->Scale == 0 || stochast->Shape == 0)
+            if (stochast.Scale == 0.0 || stochast.Shape == 0.0)
             {
-                return stochast->Shift;
+                return stochast.Shift;
             }
-            else if (p == 0)
+            else if (p == 0.0)
             {
-                return stochast->Shift;
+                return stochast.Shift;
             }
             else if (q <= 1e-6)
             {
-                double qn = std::max(q / stochast->Shape, 1e-300);
-                return std::sqrt(-2 * stochast->Scale * stochast->Scale * std::log(qn)) + stochast->Shift;
+                double qn = std::max(q / stochast.Shape, 1e-300);
+                return std::sqrt(-2.0 * stochast.Scale * stochast.Scale * std::log(qn)) + stochast.Shift;
             }
             else
             {
-                double qn = 1 - pow(p, 1 / stochast->Shape);
-                return std::sqrt(-2 * stochast->Scale * stochast->Scale * std::log(qn)) + stochast->Shift;
+                double qn = 1.0 - pow(p, 1.0 / stochast.Shape);
+                return std::sqrt(-2.0 * stochast.Scale * stochast.Scale * std::log(qn)) + stochast.Shift;
             }
         }
 

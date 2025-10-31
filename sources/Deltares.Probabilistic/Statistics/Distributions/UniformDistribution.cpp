@@ -70,11 +70,11 @@ namespace Deltares
             return sqrt(diff * diff / 12);
         }
 
-        double UniformDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double UniformDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double p = StandardNormal::getPFromU(u);
+            const double p = StandardNormal::getPFromU(u);
 
-            return stochast->Minimum + p * (stochast->Maximum - stochast->Minimum);
+            return stochast.Minimum + p * (stochast.Maximum - stochast.Minimum);
         }
 
         double UniformDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
@@ -137,7 +137,7 @@ namespace Deltares
                 }
                 else
                 {
-                    double currentValue = this->getXFromU(stochast, u);
+                    double currentValue = this->getXFromU(*stochast, u);
                     double diff = x - currentValue;
 
                     stochast->Minimum += diff;

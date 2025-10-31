@@ -258,29 +258,29 @@ namespace Deltares
             }
         }
 
-        double TrapezoidalDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double TrapezoidalDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double a = stochast->Minimum;
-            double b = stochast->Maximum;
-            double c = stochast->Shift;
-            double d = stochast->ShiftB;
+            const double a = stochast.Minimum;
+            const double b = stochast.Maximum;
+            const double c = stochast.Shift;
+            const double d = stochast.ShiftB;
 
-            double length = (b + d - a - c) / 2;
+            const double length = (b + d - a - c) / 2.0;
 
-            double p = StandardNormal::getPFromU(u);
+            const double p = StandardNormal::getPFromU(u);
 
-            if (p < (c - a) / (2 * length))
+            if (p < (c - a) / (2.0 * length))
             {
-                return a + sqrt(p * 2 * length * (c - a));
+                return a + sqrt(p * 2.0 * length * (c - a));
             }
-            else if (p < (2 * d - a - c) / (2 * length))
+            else if (p < (2.0 * d - a - c) / (2.0 * length))
             {
-                return (p * 2 * length + a + c) / 2;
+                return (p * 2.0 * length + a + c) / 2.0;
             }
             else
             {
-                double q = 1 - p;
-                return b - sqrt(q * 2 * length * (b - d));
+                const double q = 1.0 - p;
+                return b - sqrt(q * 2.0 * length * (b - d));
             }
         }
 
@@ -313,7 +313,7 @@ namespace Deltares
                 }
                 else
                 {
-                    double currentValue = this->getXFromU(stochast, u);
+                    double currentValue = this->getXFromU(*stochast, u);
                     double diff = x - currentValue;
 
                     stochast->Minimum += diff;

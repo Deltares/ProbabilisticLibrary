@@ -174,33 +174,33 @@ namespace Deltares
             }
         }
 
-        double HistogramDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double HistogramDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            double p = StandardNormal::getPFromU(u);
+            const double p = StandardNormal::getPFromU(u);
 
-            if (stochast->HistogramValues.empty())
+            if (stochast.HistogramValues.empty())
             {
                 return std::nan("");
             }
 
-            for (size_t i = 0; i < stochast->HistogramValues.size(); i++)
+            for (size_t i = 0; i < stochast.HistogramValues.size(); i++)
             {
-                if (stochast->HistogramValues[i]->CumulativeNormalizedAmount >= p)
+                if (stochast.HistogramValues[i]->CumulativeNormalizedAmount >= p)
                 {
-                    double previousCumulativeAmount = i > 0 ? stochast->HistogramValues[i - 1]->CumulativeNormalizedAmount : 0;
-                    double offset = (p - previousCumulativeAmount) / (stochast->HistogramValues[i]->CumulativeNormalizedAmount - previousCumulativeAmount);
+                    double previousCumulativeAmount = i > 0 ? stochast.HistogramValues[i - 1]->CumulativeNormalizedAmount : 0;
+                    double offset = (p - previousCumulativeAmount) / (stochast.HistogramValues[i]->CumulativeNormalizedAmount - previousCumulativeAmount);
 
                     // linear interpolation within range
-                    return offset * stochast->HistogramValues[i]->UpperBound + (1 - offset) * stochast->HistogramValues[i]->LowerBound;
+                    return offset * stochast.HistogramValues[i]->UpperBound + (1.0 - offset) * stochast.HistogramValues[i]->LowerBound;
                 }
             }
 
-            return stochast->HistogramValues.back()->UpperBound;
+            return stochast.HistogramValues.back()->UpperBound;
         }
 
         double HistogramDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)

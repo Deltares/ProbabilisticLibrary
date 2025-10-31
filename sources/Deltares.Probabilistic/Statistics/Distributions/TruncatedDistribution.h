@@ -38,7 +38,7 @@ namespace Deltares
                 this->innerDistribution = innerDistribution;
             }
 
-            double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
+            double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
             bool canTruncate() override { return true; }
@@ -62,9 +62,9 @@ namespace Deltares
         private:
             std::shared_ptr<Distribution> innerDistribution = nullptr;
 
-            Truncated getTruncatedValue(std::shared_ptr<StochastProperties> stochast);
-            double getProbability(std::shared_ptr<StochastProperties> stochast, bool isMinimum);
-            double getUntruncatedU(double u, std::shared_ptr<StochastProperties> stochast);
+            Truncated getTruncatedValue(StochastProperties& stochast) const;
+            double getProbability(StochastProperties& stochast, bool isMinimum) const;
+            double getUntruncatedU(double u, StochastProperties& stochast);
             void fitMinMax(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values);
         };
     }

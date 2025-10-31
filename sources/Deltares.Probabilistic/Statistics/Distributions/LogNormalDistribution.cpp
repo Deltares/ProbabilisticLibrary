@@ -124,9 +124,9 @@ namespace Deltares
             this->setMeanAndDeviation(*stochast, oldMean, oldDeviation);
         }
 
-        double LogNormalDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double LogNormalDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            return exp(stochast->Location + u * stochast->Scale) + stochast->Shift;
+            return exp(stochast.Location + u * stochast.Scale) + stochast.Shift;
         }
 
         double LogNormalDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)

@@ -53,17 +53,17 @@ namespace Deltares
             return stochast->Scale * std::sqrt((4 - std::numbers::pi) / 2);
         }
 
-        double RayleighDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double RayleighDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             double q = StandardNormal::getQFromU(u);
 
-            if (q == 1)
+            if (q == 1.0)
             {
-                return stochast->Shift;
+                return stochast.Shift;
             }
             else 
             {
-                return std::sqrt(-2 * stochast->Scale * stochast->Scale * std::log(q)) + stochast->Shift;
+                return std::sqrt(-2.0 * stochast.Scale * stochast.Scale * std::log(q)) + stochast.Shift;
             }
         }
 

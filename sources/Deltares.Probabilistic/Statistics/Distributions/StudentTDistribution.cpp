@@ -77,9 +77,9 @@ namespace Deltares
             }
         }
 
-        double StudentTDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double StudentTDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            int degreesOfFreedom = stochast->Observations - 1;
+            int degreesOfFreedom = stochast.Observations - 1;
 
             bool success;
             auto studentValue = GetStudentValue(degreesOfFreedom, success);
@@ -92,7 +92,7 @@ namespace Deltares
             double p = StandardNormal::getPFromU(u);
             double c = studentValue.getCoefficient(p);
 
-            return stochast->Location - c * stochast->Scale;
+            return stochast.Location - c * stochast.Scale;
         }
 
         double StudentTDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
@@ -128,8 +128,8 @@ namespace Deltares
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                double current = getXFromU(stochast, u);
-                double diff = x - current;
+                const double current = getXFromU(*stochast, u);
+                const double diff = x - current;
 
                 stochast->Location += diff;
             }

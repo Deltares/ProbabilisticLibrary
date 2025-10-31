@@ -72,6 +72,12 @@ namespace Deltares::Statistics
         }
     }
 
+    double DistributionSupport::getXFromUByIteration(Distribution& distribution, StochastProperties& stochast, double u)
+    {
+        auto clone = stochast.clone();
+        return getXFromUByIteration(distribution, clone, u);
+    }
+
     double DistributionSupport::getXFromUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double u)
     {
         // check whether the cdf value is at a discontinuity
