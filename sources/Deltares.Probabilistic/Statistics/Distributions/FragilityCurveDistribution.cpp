@@ -104,26 +104,26 @@ namespace Deltares
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
-        double FragilityCurveDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double FragilityCurveDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            if (stochast->FragilityValues.empty())
+            if (stochast.FragilityValues.empty())
             {
                 return std::nan("");
             }
 
-            if (stochast->FragilityValues.size() == 1)
+            if (stochast.FragilityValues.size() == 1)
             {
-                return stochast->FragilityValues[0]->X;
+                return stochast.FragilityValues[0]->X;
             }
 
-            if (this->isHorizontal(stochast->FragilityValues))
+            if (this->isHorizontal(stochast.FragilityValues))
             {
-                if (u > stochast->FragilityValues[0]->Reliability)
+                if (u > stochast.FragilityValues[0]->Reliability)
                 {
                     return -std::numeric_limits<double>::infinity();
                 }
@@ -132,19 +132,19 @@ namespace Deltares
                     return std::numeric_limits<double>::infinity();
                 }
             }
-            else if (startsHorizontal(stochast->FragilityValues) && u > stochast->FragilityValues[0]->Reliability && isDescending(stochast->FragilityValues))
+            else if (startsHorizontal(stochast.FragilityValues) && u > stochast.FragilityValues[0]->Reliability && isDescending(stochast.FragilityValues))
             {
                 return -std::numeric_limits<double>::infinity();
             }
-            else if (startsHorizontal(stochast->FragilityValues) && u < stochast->FragilityValues[0]->Reliability && isAscending(stochast->FragilityValues))
+            else if (startsHorizontal(stochast.FragilityValues) && u < stochast.FragilityValues[0]->Reliability && isAscending(stochast.FragilityValues))
             {
                 return -std::numeric_limits<double>::infinity();
             }
-            else if (endsHorizontal(stochast->FragilityValues) && u < stochast->FragilityValues.back()->Reliability && isDescending(stochast->FragilityValues))
+            else if (endsHorizontal(stochast.FragilityValues) && u < stochast.FragilityValues.back()->Reliability && isDescending(stochast.FragilityValues))
             {
                 return std::numeric_limits<double>::infinity();
             }
-            else if (endsHorizontal(stochast->FragilityValues) && u > stochast->FragilityValues.back()->Reliability && isAscending(stochast->FragilityValues))
+            else if (endsHorizontal(stochast.FragilityValues) && u > stochast.FragilityValues.back()->Reliability && isAscending(stochast.FragilityValues))
             {
                 return std::numeric_limits<double>::infinity();
             }
@@ -153,7 +153,7 @@ namespace Deltares
                 std::vector<double> xValues;
                 std::vector<double> bValues;
 
-                for (std::shared_ptr<FragilityValue> fragilityValue : stochast->FragilityValues)
+                for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
                 {
                     xValues.push_back(fragilityValue->X);
                     bValues.push_back(fragilityValue->Reliability);

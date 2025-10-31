@@ -64,7 +64,7 @@ namespace Deltares::Statistics
         {
             return getXFromU(*stochast, u);
         }
-        virtual double getXFromU(const StochastProperties& stochast, double u) { return 0; }
+        virtual double getXFromU(StochastProperties& stochast, double u) { return 0; }
 
         /**
          * \brief Gets the u-value (standard normal value) for a physical value (x-value)

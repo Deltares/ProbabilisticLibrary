@@ -106,7 +106,7 @@ namespace Deltares::Statistics
         return x;
     }
 
-    double DistributionSupport::getMeanByIteration(Distribution& distribution, const StochastProperties& stochast)
+    double DistributionSupport::getMeanByIteration(Distribution& distribution, StochastProperties& stochast)
     {
         std::vector<double> values = getValuesForIteration(distribution, stochast);
         return Numeric::NumericSupport::getMean(values);
@@ -128,7 +128,7 @@ namespace Deltares::Statistics
         return getValuesForIteration(distribution, *stochast);
     }
 
-    std::vector<double> DistributionSupport::getValuesForIteration(Distribution& distribution, const StochastProperties& stochast)
+    std::vector<double> DistributionSupport::getValuesForIteration(Distribution& distribution, StochastProperties& stochast)
     {
         constexpr int steps = 1000;
 

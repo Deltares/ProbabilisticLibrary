@@ -62,7 +62,7 @@ namespace Deltares
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
-        double ConditionalWeibullDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double ConditionalWeibullDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             const double qMin = 1.0e-300;
 
@@ -70,7 +70,7 @@ namespace Deltares
 
             if (pq.q == 1.0)
             {
-                return stochast->Shift;
+                return stochast.Shift;
             }
 
             double f; // Exceeding frequency
@@ -85,12 +85,12 @@ namespace Deltares
                 f = -log(pd);
             }
 
-            const double logF = std::log(f / stochast->ShapeB);
-            const double xlog = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - logF;
+            const double logF = std::log(f / stochast.ShapeB);
+            const double xlog = std::pow(stochast.Shift / stochast.Scale, stochast.Shape) - logF;
             if (xlog <= 0.0) return 0.0;
-            const double xScale = pow(xlog, 1.0 / stochast->Shape);
+            const double xScale = pow(xlog, 1.0 / stochast.Shape);
 
-            return xScale * stochast->Scale;
+            return xScale * stochast.Scale;
         }
 
         double ConditionalWeibullDistribution::getExponent(std::shared_ptr<StochastProperties> stochast, double x)
