@@ -53,12 +53,12 @@ namespace Deltares
             return stochast->Location;
         }
 
-        double StudentTDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double StudentTDistribution::getDeviation(StochastProperties& stochast)
         {
-            if (stochast->Observations > 3)
+            if (stochast.Observations > 3)
             {
-                double observationFactor = sqrt(Numeric::NumericSupport::Divide(stochast->Observations - 1, stochast->Observations - 3));
-                return stochast->Scale * observationFactor;
+                double observationFactor = sqrt(Numeric::NumericSupport::Divide(stochast.Observations - 1, stochast.Observations - 3));
+                return stochast.Scale * observationFactor;
             }
             else
             {

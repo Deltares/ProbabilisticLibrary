@@ -65,19 +65,19 @@ namespace Deltares
             }
         }
 
-        double LogNormalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double LogNormalDistribution::getDeviation(StochastProperties& stochast)
         {
-            if (std::isinf(stochast->Location) && !std::isnan(this->requestedDeviation))
+            if (std::isinf(stochast.Location) && !std::isnan(requestedDeviation))
             {
-                return this->requestedDeviation;
+                return requestedDeviation;
             }
             else
             {
-                double p = sqrt(exp(stochast->Scale * stochast->Scale) - 1);
+                double p = sqrt(exp(stochast.Scale * stochast.Scale) - 1.0);
 
-                double mean = getMean(*stochast);
+                double mean = getMean(stochast);
 
-                return p * (mean - stochast->Shift);
+                return p * (mean - stochast.Shift);
             }
         }
 
@@ -107,7 +107,7 @@ namespace Deltares
             bool useRequestedValues = std::isinf(stochast->Location) && !std::isnan(this->requestedMean);
 
             double oldMean = useRequestedValues ? this->requestedMean : this->getMean(*stochast);
-            double oldDeviation = useRequestedValues ? this->requestedDeviation : this->getDeviation(stochast);
+            double oldDeviation = useRequestedValues ? this->requestedDeviation : this->getDeviation(*stochast);
 
             if (inverted)
             {
@@ -278,7 +278,7 @@ namespace Deltares
                 // reset the prior so that a valid shift is applied
                 fitPrior = prior->clone();
                 fitPrior->Shift = fitShift;
-                setMeanAndDeviation(*fitPrior, getMean(*prior), getDeviation(prior));
+                setMeanAndDeviation(*fitPrior, getMean(*prior), getDeviation(*prior));
             }
 
             std::vector<double> logValues = Numeric::NumericSupport::select(values, [fitShift](double v) {return log(v - fitShift); });

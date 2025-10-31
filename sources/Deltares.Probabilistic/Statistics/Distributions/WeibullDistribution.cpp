@@ -50,11 +50,11 @@ namespace Deltares
             return stochast.Scale * gamma1km + stochast.Shift;
         }
 
-        double WeibullDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double WeibullDistribution::getDeviation(StochastProperties& stochast)
         {
-            double gamma1k = Numeric::SpecialFunctions::getGamma(1 + 1 / stochast->Shape);
-            double gamma2k = Numeric::SpecialFunctions::getGamma(1 + 2 / stochast->Shape);
-            return stochast->Scale * std::sqrt(gamma2k - gamma1k * gamma1k);
+            const double gamma1k = Numeric::SpecialFunctions::getGamma(1.0 + 1.0 / stochast.Shape);
+            const double gamma2k = Numeric::SpecialFunctions::getGamma(1.0 + 2.0 / stochast.Shape);
+            return stochast.Scale * std::sqrt(gamma2k - gamma1k * gamma1k);
         }
 
         double WeibullDistribution::getXFromU(StochastProperties& stochast, double u)
@@ -158,7 +158,7 @@ namespace Deltares
 
                 auto bisection = Numeric::BisectionRootFinder(margin);
 
-                double deviation = this->getDeviation(stochast);
+                double deviation = this->getDeviation(*stochast);
                 Distribution* distribution = this;
 
                 Numeric::RootFinderMethod method = [distribution, stochast, deviation, u](double mean)

@@ -185,14 +185,14 @@ namespace Deltares
             return sumX / sumAmounts;
         }
 
-        double DiscreteDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double DiscreteDistribution::getDeviation(StochastProperties& stochast)
         {
-            double mean = getMean(*stochast);
+            double mean = getMean(stochast);
 
             double sumVariances = 0;
             double sumWeights = 0;
 
-            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
             {
                 const double diff = discreteValue->X - mean;
 
@@ -200,17 +200,17 @@ namespace Deltares
                 sumWeights += discreteValue->Amount;
             }
 
-            if (sumWeights == 0)
+            if (sumWeights == 0.0)
             {
                 return 0;
             }
-            else if (sumWeights <= 1)
+            else if (sumWeights <= 1.0)
             {
                 return sqrt(sumVariances / sumWeights);
             }
             else
             {
-                return sqrt(sumVariances / (sumWeights - 1));
+                return sqrt(sumVariances / (sumWeights - 1.0));
             }
         }
 

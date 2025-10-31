@@ -64,10 +64,10 @@ namespace Deltares
             return (stochast.Minimum + stochast.Maximum) / 2.0;
         }
 
-        double UniformDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double UniformDistribution::getDeviation(StochastProperties& stochast)
         {
-            double diff = stochast->Maximum - stochast->Minimum;
-            return sqrt(diff * diff / 12);
+            const double diff = stochast.Maximum - stochast.Minimum;
+            return sqrt(diff * diff / 12.0);
         }
 
         double UniformDistribution::getXFromU(StochastProperties& stochast, double u)

@@ -125,6 +125,12 @@ namespace Deltares::Statistics
 
     double DistributionSupport::getDeviationByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast)
     {
+        std::vector<double> values = getValuesForIteration(distribution, *stochast);
+        return Numeric::NumericSupport::getStandardDeviation(values);
+    }
+
+    double DistributionSupport::getDeviationByIteration(Distribution& distribution, StochastProperties& stochast)
+    {
         std::vector<double> values = getValuesForIteration(distribution, stochast);
         return Numeric::NumericSupport::getStandardDeviation(values);
     }

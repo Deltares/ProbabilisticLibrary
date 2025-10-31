@@ -47,9 +47,9 @@ namespace Deltares
             return stochast.Location;
         }
 
-        double PoissonDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double PoissonDistribution::getDeviation(StochastProperties& stochast)
         {
-            return sqrt(stochast->Location);
+            return sqrt(stochast.Location);
         }
 
         void PoissonDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)

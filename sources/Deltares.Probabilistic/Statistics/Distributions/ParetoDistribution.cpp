@@ -56,11 +56,11 @@ namespace Deltares
                 : std::numeric_limits<double>::infinity();
         }
 
-        double ParetoDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double ParetoDistribution::getDeviation(StochastProperties& stochast)
         {
-            if (stochast->Shape > 2)
+            if (stochast.Shape > 2.0)
             {
-                return std::sqrt(stochast->Shape * stochast->Scale * stochast->Scale / ((stochast->Shape - 1) * (stochast->Shape - 1) * (stochast->Shape - 2)));
+                return std::sqrt(stochast.Shape * stochast.Scale * stochast.Scale / ((stochast.Shape - 1.0) * (stochast.Shape - 1.0) * (stochast.Shape - 2.0)));
             }
             else
             {

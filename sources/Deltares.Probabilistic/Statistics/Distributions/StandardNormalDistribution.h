@@ -36,7 +36,7 @@ namespace Deltares
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getMean(StochastProperties& stochast) override;
-            double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
+            double getDeviation(StochastProperties& stochast) override;
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
         private:

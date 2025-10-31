@@ -60,6 +60,7 @@ namespace Deltares::Statistics
          * \remarks To be used when analytical solution is not possible
          */
         static double getDeviationByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast);
+        static double getDeviationByIteration(Distribution& distribution, StochastProperties& stochast);
 
         /**
          * \brief Gets the x-value at a certain u-value by iteration

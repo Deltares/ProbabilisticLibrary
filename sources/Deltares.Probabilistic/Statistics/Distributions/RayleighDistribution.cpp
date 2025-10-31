@@ -48,9 +48,9 @@ namespace Deltares
             return stochast.Shift + stochast.Scale * std::sqrt(std::numbers::pi / 2.0);
         }
 
-        double RayleighDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double RayleighDistribution::getDeviation(StochastProperties& stochast)
         {
-            return stochast->Scale * std::sqrt((4 - std::numbers::pi) / 2);
+            return stochast.Scale * std::sqrt((4.0 - std::numbers::pi) / 2.0);
         }
 
         double RayleighDistribution::getXFromU(StochastProperties& stochast, double u)

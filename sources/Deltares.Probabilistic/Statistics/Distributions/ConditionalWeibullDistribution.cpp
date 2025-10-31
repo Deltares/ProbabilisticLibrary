@@ -57,7 +57,7 @@ namespace Deltares
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
-        double ConditionalWeibullDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double ConditionalWeibullDistribution::getDeviation(StochastProperties& stochast)
         {
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }

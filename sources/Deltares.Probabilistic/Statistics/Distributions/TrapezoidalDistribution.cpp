@@ -91,24 +91,24 @@ namespace Deltares
             }
         }
 
-        double TrapezoidalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double TrapezoidalDistribution::getDeviation(StochastProperties& stochast)
         {
-            double a = stochast->Minimum;
-            double b = stochast->Maximum;
+            const double a = stochast.Minimum;
+            const double b = stochast.Maximum;
 
             if (a == b)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                double c = stochast->Shift;
-                double d = stochast->ShiftB;
+                const double c = stochast.Shift;
+                const double d = stochast.ShiftB;
 
-                double length = (b + d - a - c) / 2;
+                const double length = (b + d - a - c) / 2.0;
 
-                double m = this->getMean(*stochast);
-                double s2 = (getExponentDifference(d, b, 4) - getExponentDifference(c, a, 4)) / (12 * length);
+                const double m = this->getMean(stochast);
+                const double s2 = (getExponentDifference(d, b, 4) - getExponentDifference(c, a, 4)) / (12.0 * length);
                 return sqrt(s2 - m * m);
             }
         }
@@ -161,7 +161,7 @@ namespace Deltares
                     copiedStochast->ShiftB = x * stochast.ShiftB;
                     copiedStochast->Maximum = x * stochast.Maximum;
 
-                    return this->getDeviation(copiedStochast);
+                    return this->getDeviation(*copiedStochast);
                 };
 
                 constexpr double toleranceBisection = 0.00001;

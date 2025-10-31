@@ -48,9 +48,9 @@ namespace Deltares
             return stochast.Location;
         }
 
-        double DeterministicDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double DeterministicDistribution::getDeviation(StochastProperties& stochast)
         {
-            return 0;
+            return 0.0;
         }
 
         double DeterministicDistribution::getXFromU(StochastProperties& stochast, double u)

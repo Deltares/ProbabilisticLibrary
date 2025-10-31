@@ -49,10 +49,10 @@ namespace Deltares
             return stochast.Shape / (stochast.Shape + stochast.ShapeB);
         }
 
-        double BetaDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double BetaDistribution::getDeviation(StochastProperties& stochast)
         {
-            double sum = stochast->Shape + stochast->ShapeB;
-            double variance = stochast->Shape * stochast->ShapeB / (sum * sum * (sum + 1));
+            const double sum = stochast.Shape + stochast.ShapeB;
+            const double variance = stochast.Shape * stochast.ShapeB / (sum * sum * (sum + 1.0));
             return sqrt(variance);
         }
 

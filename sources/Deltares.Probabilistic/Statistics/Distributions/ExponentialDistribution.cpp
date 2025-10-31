@@ -75,9 +75,9 @@ namespace Deltares
             return stochast.Scale + stochast.Shift;
         }
 
-        double ExponentialDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double ExponentialDistribution::getDeviation(StochastProperties& stochast)
         {
-            return stochast->Scale;
+            return stochast.Scale;
         }
 
         double ExponentialDistribution::getXFromU(StochastProperties& stochast, double u)

@@ -55,9 +55,9 @@ namespace Deltares
             return stochast.Shift + stochast.Scale * std::numbers::egamma;
         }
 
-        double GumbelDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double GumbelDistribution::getDeviation(StochastProperties& stochast)
         {
-            return std::numbers::pi * stochast->Scale / sqrt(6);
+            return std::numbers::pi * stochast.Scale / sqrt(6.0);
         }
 
         double GumbelDistribution::getXFromU(StochastProperties& stochast, double u)

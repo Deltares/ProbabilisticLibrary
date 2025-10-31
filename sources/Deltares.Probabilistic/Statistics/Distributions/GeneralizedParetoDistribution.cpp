@@ -48,7 +48,7 @@ namespace Deltares
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
-        double GeneralizedParetoDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double GeneralizedParetoDistribution::getDeviation(StochastProperties& stochast)
         {
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }

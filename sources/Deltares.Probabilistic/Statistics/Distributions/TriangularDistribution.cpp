@@ -93,7 +93,7 @@ namespace Deltares
                     copiedStochast->Minimum = stochast.Shift - x * min;
                     copiedStochast->Maximum = stochast.Shift + x * max;
 
-                    return this->getDeviation(copiedStochast);
+                    return this->getDeviation(*copiedStochast);
                 };
 
                 const double minStart = 0.0;
@@ -127,13 +127,13 @@ namespace Deltares
             return (stochast.Minimum + stochast.Shift + stochast.Maximum) / 3.0;
         }
 
-        double TriangularDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double TriangularDistribution::getDeviation(StochastProperties& stochast)
         {
-            double a = stochast->Minimum;
-            double b = stochast->Maximum;
-            double c = stochast->Shift;
+            const double a = stochast.Minimum;
+            const double b = stochast.Maximum;
+            const double c = stochast.Shift;
 
-            return sqrt((a * a + b * b + c * c - (a * b + a * c + b * c)) / 18);
+            return sqrt((a * a + b * b + c * c - (a * b + a * c + b * c)) / 18.0);
         }
 
         double TriangularDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)

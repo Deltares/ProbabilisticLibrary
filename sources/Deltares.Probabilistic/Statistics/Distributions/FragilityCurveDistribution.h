@@ -30,7 +30,7 @@ namespace Deltares
         class FragilityCurveDistribution : public Distribution
         {
             double getMean(StochastProperties& stochast) override;
-            double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
+            double getDeviation(StochastProperties& stochast) override;
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override { return true; }

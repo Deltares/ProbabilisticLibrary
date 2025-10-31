@@ -137,7 +137,11 @@ namespace Deltares::Statistics
          * \param stochast Stochast to which the standard deviation applies
          * \return Standard deviation
          */
-        virtual double getDeviation(std::shared_ptr<StochastProperties> stochast) { return 0; }
+        virtual double getDeviation(std::shared_ptr<StochastProperties> stochast)
+        {
+            return getDeviation(*stochast);
+        }
+        virtual double getDeviation(StochastProperties& stochast) { return 0.0; }
 
         /**
          * \brief Indicates whether mean and deviation should be maintained when the distribution type of a stochast is changed to this distribution

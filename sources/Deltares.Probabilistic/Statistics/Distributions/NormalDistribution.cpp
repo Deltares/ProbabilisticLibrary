@@ -54,9 +54,9 @@ namespace Deltares
             return stochast.Location;
         }
 
-        double NormalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double NormalDistribution::getDeviation(StochastProperties& stochast)
         {
-            return stochast->Scale;
+            return stochast.Scale;
         }
 
         double NormalDistribution::getXFromU(StochastProperties& stochast, double u)

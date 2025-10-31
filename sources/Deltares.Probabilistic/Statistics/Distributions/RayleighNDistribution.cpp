@@ -50,7 +50,7 @@ namespace Deltares
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
-        double RayleighNDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double RayleighNDistribution::getDeviation(StochastProperties& stochast)
         {
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }

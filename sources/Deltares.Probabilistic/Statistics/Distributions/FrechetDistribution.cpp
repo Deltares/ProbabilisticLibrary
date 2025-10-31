@@ -47,15 +47,15 @@ namespace Deltares
 
         double FrechetDistribution::getMean(StochastProperties& stochast)
         {
-            double gamma1km = Numeric::SpecialFunctions::getGamma(1.0 - 1.0 / stochast.Shape);
+            const double gamma1km = Numeric::SpecialFunctions::getGamma(1.0 - 1.0 / stochast.Shape);
             return stochast.Shift + stochast.Scale * gamma1km;
         }
 
-        double FrechetDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double FrechetDistribution::getDeviation(StochastProperties& stochast)
         {
-            double gamma1k = Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
-            double gamma2k = Numeric::SpecialFunctions::getGamma(1 - 2 / stochast->Shape);
-            return stochast->Scale * std::sqrt(gamma2k - gamma1k * gamma1k);
+            const double gamma1k = Numeric::SpecialFunctions::getGamma(1.0 - 1.0 / stochast.Shape);
+            const double gamma2k = Numeric::SpecialFunctions::getGamma(1.0 - 2.0 / stochast.Shape);
+            return stochast.Scale * std::sqrt(gamma2k - gamma1k * gamma1k);
         }
 
         double FrechetDistribution::getXFromU(StochastProperties& stochast, double u)

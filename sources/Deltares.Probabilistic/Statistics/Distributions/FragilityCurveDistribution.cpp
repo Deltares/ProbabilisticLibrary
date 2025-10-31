@@ -99,7 +99,7 @@ namespace Deltares
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
-        double FragilityCurveDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double FragilityCurveDistribution::getDeviation(StochastProperties& stochast)
         {
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }

@@ -49,9 +49,9 @@ namespace Deltares
             return stochast.Scale * stochast.Shape;
         }
 
-        double GammaDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double GammaDistribution::getDeviation(StochastProperties& stochast)
         {
-            return stochast->Scale * sqrt(stochast->Shape);
+            return stochast.Scale * sqrt(stochast.Shape);
         }
 
         void GammaDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)

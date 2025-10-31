@@ -38,7 +38,7 @@ namespace Deltares
             return standardNormalMean;
         }
 
-        double StandardNormalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double StandardNormalDistribution::getDeviation(StochastProperties& stochast)
         {
             return standardNormalDeviation;
         }

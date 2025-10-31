@@ -145,14 +145,14 @@ namespace Deltares
             return sum / sumWeights;
         }
 
-        double HistogramDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double HistogramDistribution::getDeviation(StochastProperties& stochast)
         {
-            double mean = getMean(*stochast);
+            const double mean = getMean(stochast);
 
             double sumVariances = 0.0;
             double sumWeights = 0.0;
 
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast->HistogramValues)
+            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
             {
                 const double diff = histogramValue->getCenter() - mean;
 
@@ -162,7 +162,7 @@ namespace Deltares
 
             if (sumWeights == 0.0)
             {
-                return 0;
+                return 0.0;
             }
             else if (sumWeights <= 1.0)
             {
