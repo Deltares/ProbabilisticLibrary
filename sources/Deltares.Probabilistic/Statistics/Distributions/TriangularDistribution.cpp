@@ -200,19 +200,19 @@ namespace Deltares
             }
         }
 
-        double TriangularDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double TriangularDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Minimum)
+            if (x <= stochast.Minimum)
             {
                 return -StandardNormal::UMax;
             }
-            else if (x >= stochast->Maximum)
+            else if (x >= stochast.Maximum)
             {
                 return StandardNormal::UMax;
             }
             else
             {
-                double cdf = this->getCDF(stochast, x);
+                const double cdf = getCDF(stochast.clone(), x); // TODO
                 return StandardNormal::getUFromP(cdf);
             }
         }

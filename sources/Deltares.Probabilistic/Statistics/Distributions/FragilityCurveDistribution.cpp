@@ -163,14 +163,14 @@ namespace Deltares
             }
         }
 
-        double FragilityCurveDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double FragilityCurveDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            if (stochast->FragilityValues.empty())
+            if (stochast.FragilityValues.empty())
             {
                 return std::nan("");
             }
@@ -178,7 +178,7 @@ namespace Deltares
             std::vector<double> xValues;
             std::vector<double> bValues;
 
-            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast->FragilityValues)
+            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
             {
                 xValues.push_back(fragilityValue->X);
                 bValues.push_back(fragilityValue->Reliability);

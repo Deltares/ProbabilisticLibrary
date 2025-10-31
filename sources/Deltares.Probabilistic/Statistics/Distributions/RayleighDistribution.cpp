@@ -67,15 +67,15 @@ namespace Deltares
             }
         }
 
-        double RayleighDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double RayleighDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (stochast->Scale == 0)
+            if (stochast.Scale == 0.0)
             {
-                return x < stochast->Shift ? -StandardNormal::UMax : StandardNormal::UMax;
+                return x < stochast.Shift ? -StandardNormal::UMax : StandardNormal::UMax;
             }
             else
             {
-                double cdf = getCDF(stochast, x);
+                const double cdf = getCDF(stochast.clone(), x); // TODO
                 return StandardNormal::getUFromP(cdf);
             }
         }

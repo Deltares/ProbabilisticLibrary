@@ -95,11 +95,11 @@ namespace Deltares
             return stochast.Location - c * stochast.Scale;
         }
 
-        double StudentTDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double StudentTDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            double margin = std::min(minXDelta, std::fabs(x / 1000000));
+            double margin = std::min(minXDelta, std::fabs(x / 1000000.0));
 
-            int degreesOfFreedom = stochast->Observations - 1;
+            int degreesOfFreedom = stochast.Observations - 1;
 
             bool success;
             auto studentValue = GetStudentValue(degreesOfFreedom, success);
@@ -116,7 +116,7 @@ namespace Deltares
                 double p = StandardNormal::getPFromU(u);
                 double c = studentValue.getCoefficient(p);
 
-                return stochast->Location - c * stochast->Scale;
+                return stochast.Location - c * stochast.Scale;
             };
 
             double result = bisection.CalculateValue(-1, 1, x, function);
@@ -154,7 +154,7 @@ namespace Deltares
 
         double StudentTDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            double u = this->getUFromX(stochast, x);
+            double u = this->getUFromX(*stochast, x);
 
             return StandardNormal::getPFromU(u);
         }

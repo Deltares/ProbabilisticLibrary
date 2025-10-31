@@ -141,15 +141,15 @@ namespace Deltares
             }
         }
 
-        double ParetoDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double ParetoDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Scale)
+            if (x <= stochast.Scale)
             {
                 return -StandardNormal::UMax;
             }
             else
             {
-                double cdf = this->getCDF(stochast, x);
+                const double cdf = getCDF(stochast.clone(), x); // TODO
                 return StandardNormal::getUFromP(cdf);
             }
         }

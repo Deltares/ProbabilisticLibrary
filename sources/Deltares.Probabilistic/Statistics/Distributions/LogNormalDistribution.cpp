@@ -129,15 +129,15 @@ namespace Deltares
             return exp(stochast.Location + u * stochast.Scale) + stochast.Shift;
         }
 
-        double LogNormalDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double LogNormalDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (!this->isVarying(stochast))
+            if (!this->isVarying(stochast.clone() )) // TODO
             {
                 return 0;
             }
             else
             {
-                return (log(x - stochast->Shift) - stochast->Location) / stochast->Scale;
+                return (log(x - stochast.Shift) - stochast.Location) / stochast.Scale;
             }
         }
 
@@ -168,7 +168,7 @@ namespace Deltares
             }
             else
             {
-                double u = this->getUFromX(stochast, x);
+                double u = this->getUFromX(*stochast, x);
 
                 return StandardNormal::getPFromU(u);
             }

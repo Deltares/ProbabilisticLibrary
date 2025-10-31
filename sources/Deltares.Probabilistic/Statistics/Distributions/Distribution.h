@@ -72,7 +72,11 @@ namespace Deltares::Statistics
          * \param x x-value (Physical value)
          * \return u-value
          */
-        virtual double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) { return 0; }
+        virtual double getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            return getUFromX(*stochast, x);
+        }
+        virtual double getUFromX(StochastProperties& stochast, double x) { return 0.0; }
 
         /**
          * \brief Indicates whether the stochast can lead to different x-values

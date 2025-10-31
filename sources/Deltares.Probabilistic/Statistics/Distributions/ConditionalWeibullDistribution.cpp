@@ -93,18 +93,18 @@ namespace Deltares
             return xScale * stochast.Scale;
         }
 
-        double ConditionalWeibullDistribution::getExponent(std::shared_ptr<StochastProperties> stochast, double x)
+        double ConditionalWeibullDistribution::getExponent(const StochastProperties& stochast, double x)
         {
-            x /= stochast->Scale;
+            x /= stochast.Scale;
             if (x <= 0.0) return -StandardNormal::BetaMax;
-            double xlog = pow(x, stochast->Shape);
-            double logF = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - xlog;
-            double f = stochast->ShapeB * exp(logF);
+            const double xLog = pow(x, stochast.Shape);
+            const double logF = std::pow(stochast.Shift / stochast.Scale, stochast.Shape) - xLog;
+            const double f = stochast.ShapeB * exp(logF);
 
             return f;
         }
 
-        double ConditionalWeibullDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double ConditionalWeibullDistribution::getUFromX(StochastProperties& stochast, double x)
         {
             double f = getExponent(stochast, x);
 
@@ -123,14 +123,14 @@ namespace Deltares
 
         double ConditionalWeibullDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            double pdf = this->getCDF(stochast, x) * getExponent(stochast, x) * stochast->Shape * pow(x / stochast->Scale, stochast->Shape - 1) / stochast->Scale;
+            double pdf = this->getCDF(stochast, x) * getExponent(*stochast, x) * stochast->Shape * pow(x / stochast->Scale, stochast->Shape - 1) / stochast->Scale;
 
             return pdf;
         }
 
         double ConditionalWeibullDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            double u = getUFromX(stochast, x);
+            double u = getUFromX(*stochast, x);
             return StandardNormal::getPFromU(u);
         }
 

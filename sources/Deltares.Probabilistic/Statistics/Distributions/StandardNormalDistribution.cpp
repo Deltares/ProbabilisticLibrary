@@ -48,7 +48,7 @@ namespace Deltares
             return u;
         }
 
-        double StandardNormalDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double StandardNormalDistribution::getUFromX(StochastProperties& stochast, double x)
         {
             return x;
         }

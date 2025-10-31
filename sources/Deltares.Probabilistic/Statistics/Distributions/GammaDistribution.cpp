@@ -113,9 +113,9 @@ namespace Deltares
             }
         }
 
-        double GammaDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double GammaDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            double cdf = this->getCDF(stochast, x);
+            const double cdf = getCDF(stochast.clone(), x); // TODO
             return StandardNormal::getUFromP(cdf);
         }
 

@@ -64,9 +64,9 @@ namespace Deltares
             return stochast.Location + u * stochast.Scale;
         }
 
-        double NormalDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double NormalDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            return (x - stochast->Location) / stochast->Scale;
+            return (x - stochast.Location) / stochast.Scale;
         }
 
         double NormalDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
@@ -82,7 +82,7 @@ namespace Deltares
 
         double NormalDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            double u = this->getUFromX(stochast, x);
+            double u = this->getUFromX(*stochast, x);
 
             return StandardNormal::getPFromU(u);
         }

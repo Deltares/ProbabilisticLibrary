@@ -86,9 +86,9 @@ namespace Deltares
             return stochast.Shift - log(qu) * stochast.Scale;
         }
 
-        double ExponentialDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double ExponentialDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            double q = exp((stochast->Shift - x) / stochast->Scale);
+            const double q = exp((stochast.Shift - x) / stochast.Scale);
             return StandardNormal::getUFromQ(q);
         }
 

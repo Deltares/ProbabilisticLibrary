@@ -108,31 +108,31 @@ namespace Deltares
             return stochast.DiscreteValues.back()->X;
         }
 
-        double DiscreteDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double DiscreteDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            if (stochast->DiscreteValues.empty())
+            if (stochast.DiscreteValues.empty())
             {
                 return std::nan("");
             }
 
-            double prev = 0;
+            double prev = 0.0;
 
-            for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+            for (const auto& discreteValue : stochast.DiscreteValues)
             {
-                double cum = stochast->DiscreteValues[i]->CumulativeNormalizedAmount;
+                const double cum = discreteValue->CumulativeNormalizedAmount;
 
-                if (x < stochast->DiscreteValues[i]->X)
+                if (x < discreteValue->X)
                 {
                     return StandardNormal::getUFromP(prev);
                 }
-                else if (x == stochast->DiscreteValues[i]->X)
+                else if (x == discreteValue->X)
                 {
-                    double p = (prev + cum) / 2;
+                    double p = (prev + cum) / 2.0;
                     return StandardNormal::getUFromP(p);
                 }
                 else
@@ -161,7 +161,7 @@ namespace Deltares
         double DiscreteDistribution::getRepresentativeU(std::shared_ptr<StochastProperties> stochast, double u)
         {
             double x = this->getXFromU(*stochast, u);
-            double uRepresentative = this->getUFromX(stochast, x);
+            double uRepresentative = this->getUFromX(*stochast, x);
 
             return uRepresentative;
         }

@@ -77,19 +77,19 @@ namespace Deltares
             return stochast.Minimum + p * (stochast.Maximum - stochast.Minimum);
         }
 
-        double UniformDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double UniformDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Minimum)
+            if (x <= stochast.Minimum)
             {
                 return -StandardNormal::UMax;
             }
-            else if (x >= stochast->Maximum)
+            else if (x >= stochast.Maximum)
             {
                 return StandardNormal::UMax;
             }
             else
             {
-                double cdf = 1 - (stochast->Maximum - x) / (stochast->Maximum - stochast->Minimum);
+                const double cdf = 1.0 - (stochast.Maximum - x) / (stochast.Maximum - stochast.Minimum);
                 return StandardNormal::getUFromP(cdf);
             }
         }

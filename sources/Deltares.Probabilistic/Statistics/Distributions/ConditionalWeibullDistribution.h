@@ -36,7 +36,7 @@ namespace Deltares
             void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
             double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
+            double getUFromX(StochastProperties& stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
             bool canTruncate() override { return true; }
             bool canInvert() override { return true; }
@@ -51,7 +51,7 @@ namespace Deltares
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale, Shape, ShapeB }; }
         private:
-            double getExponent(std::shared_ptr<StochastProperties> stochast, double x);
+            static double getExponent(const StochastProperties& stochast, double x);
             const double tresholdF = 3.34e-8;
         };
     }

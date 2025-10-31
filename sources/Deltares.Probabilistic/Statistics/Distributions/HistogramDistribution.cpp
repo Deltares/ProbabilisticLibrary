@@ -203,14 +203,14 @@ namespace Deltares
             return stochast.HistogramValues.back()->UpperBound;
         }
 
-        double HistogramDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double HistogramDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            double cdf = this->getCDF(stochast, x);
+            const double cdf = getCDF(stochast.clone(), x); // TODO
 
             return StandardNormal::getUFromP(cdf);
         }
