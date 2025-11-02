@@ -32,9 +32,9 @@ namespace Deltares
             stochast.Location = values[0];
         }
 
-        bool PoissonDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool PoissonDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Location > 0.0;
+            return stochast.Location > 0.0;
         }
 
         void PoissonDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)

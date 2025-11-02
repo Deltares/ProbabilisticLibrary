@@ -38,9 +38,9 @@ namespace Deltares
             Logging::ValidationSupport::checkMinimum(report, 0, stochast.Scale, "scale", subject);
         }
 
-        bool GeneralizedParetoDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool GeneralizedParetoDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double GeneralizedParetoDistribution::getMean(StochastProperties& stochast)

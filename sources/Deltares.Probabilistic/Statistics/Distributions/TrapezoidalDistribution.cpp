@@ -52,9 +52,9 @@ namespace Deltares
             Logging::ValidationSupport::checkMaximum(report, stochast.Maximum, stochast.ShiftB, "shift B", subject);
         }
 
-        bool TrapezoidalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool TrapezoidalDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Maximum > stochast->Minimum;
+            return stochast.Maximum > stochast.Minimum;
         }
 
         double TrapezoidalDistribution::getExponentDifference(double x, double y, int exp)

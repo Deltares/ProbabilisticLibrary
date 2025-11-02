@@ -76,9 +76,9 @@ namespace Deltares
             }
         }
 
-        bool DiscreteDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool DiscreteDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->DiscreteValues.size() > 1;
+            return stochast.DiscreteValues.size() > 1;
         }
 
         double DiscreteDistribution::getXFromU(StochastProperties& stochast, double u)

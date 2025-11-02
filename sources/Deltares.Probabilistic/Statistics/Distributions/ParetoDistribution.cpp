@@ -44,9 +44,9 @@ namespace Deltares
             Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Shape, "shape", subject);
         }
 
-        bool ParetoDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool ParetoDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double ParetoDistribution::getMean(StochastProperties& stochast)

@@ -32,7 +32,7 @@ namespace Deltares
         class StandardNormalDistribution : public Distribution
         {
         public:
-            bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
+            bool isVarying(StochastProperties& stochast) override;
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(StochastProperties& stochast, double x) override;
             double getMean(StochastProperties& stochast) override;

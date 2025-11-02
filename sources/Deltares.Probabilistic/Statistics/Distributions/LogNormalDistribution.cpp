@@ -40,9 +40,9 @@ namespace Deltares
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool LogNormalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool LogNormalDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double LogNormalDistribution::getMean(StochastProperties& stochast)
@@ -131,7 +131,7 @@ namespace Deltares
 
         double LogNormalDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (!this->isVarying(stochast.clone() )) // TODO
+            if (!this->isVarying(stochast))
             {
                 return 0;
             }

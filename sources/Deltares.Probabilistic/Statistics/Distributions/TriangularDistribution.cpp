@@ -117,9 +117,9 @@ namespace Deltares
             }
         }
 
-        bool TriangularDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool TriangularDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Maximum > stochast->Minimum;
+            return stochast.Maximum > stochast.Minimum;
         }
 
         double TriangularDistribution::getMean(StochastProperties& stochast)

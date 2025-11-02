@@ -54,9 +54,9 @@ namespace Deltares
             Logging::ValidationSupport::checkMinimum(report, stochast.Minimum, stochast.Maximum, "maximum", subject);
         }
 
-        bool UniformDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool UniformDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Maximum > stochast->Minimum;
+            return stochast.Maximum > stochast.Minimum;
         }
 
         double UniformDistribution::getMean(StochastProperties& stochast)

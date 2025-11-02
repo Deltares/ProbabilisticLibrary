@@ -87,7 +87,11 @@ namespace Deltares::Statistics
          * \param stochast Stochast which is or is not varying
          * \return Indication
          */
-        virtual bool isVarying(std::shared_ptr<StochastProperties> stochast) { return false; }
+        virtual bool isVarying(std::shared_ptr<StochastProperties> stochast)
+        {
+            return isVarying(*stochast);
+        }
+        virtual bool isVarying(StochastProperties& stochast) { return false; }
 
         /**
          * \brief Indicates whether th stochast can be truncated

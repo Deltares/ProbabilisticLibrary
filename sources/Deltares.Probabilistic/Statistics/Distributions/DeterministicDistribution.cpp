@@ -27,7 +27,7 @@ namespace Deltares
 {
     namespace Statistics
     {
-        bool DeterministicDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool DeterministicDistribution::isVarying(StochastProperties& stochast)
         {
             return false;
         }

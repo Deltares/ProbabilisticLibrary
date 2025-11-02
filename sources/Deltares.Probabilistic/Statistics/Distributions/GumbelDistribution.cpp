@@ -45,9 +45,9 @@ namespace Deltares
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool GumbelDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool GumbelDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double GumbelDistribution::getMean(StochastProperties& stochast)

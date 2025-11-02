@@ -65,9 +65,9 @@ namespace Deltares
             }
         }
 
-        bool ExponentialDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool ExponentialDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double ExponentialDistribution::getMean(StochastProperties& stochast)

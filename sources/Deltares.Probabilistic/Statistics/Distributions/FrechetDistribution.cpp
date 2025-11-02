@@ -40,9 +40,9 @@ namespace Deltares
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool FrechetDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool FrechetDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double FrechetDistribution::getMean(StochastProperties& stochast)

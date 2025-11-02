@@ -32,7 +32,7 @@ namespace Deltares
         {
         public:
             double getXFromU(StochastProperties& stochast, double u) override;
-            bool isVarying(std::shared_ptr<StochastProperties> stochast) override { return true; }
+            bool isVarying(StochastProperties& stochast) override { return true; }
 
             void setExternalFunction(UXLambda uxFunction)
             {

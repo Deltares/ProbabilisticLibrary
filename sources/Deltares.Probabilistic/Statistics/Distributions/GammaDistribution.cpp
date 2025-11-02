@@ -39,9 +39,9 @@ namespace Deltares
             this->setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool GammaDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool GammaDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double GammaDistribution::getMean(StochastProperties& stochast)

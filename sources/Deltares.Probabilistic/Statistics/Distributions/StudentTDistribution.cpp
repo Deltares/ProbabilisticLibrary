@@ -43,9 +43,9 @@ namespace Deltares
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool StudentTDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool StudentTDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double StudentTDistribution::getMean(std::shared_ptr<StochastProperties> stochast)

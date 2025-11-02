@@ -33,9 +33,9 @@ namespace Deltares
             stochast.Location = values[0];
         }
 
-        bool BernoulliDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool BernoulliDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Location > 0.0 && stochast->Location < 1.0;
+            return stochast.Location > 0.0 && stochast.Location < 1.0;
         }
 
         void BernoulliDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)

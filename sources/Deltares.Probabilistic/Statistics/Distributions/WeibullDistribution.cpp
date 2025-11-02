@@ -39,9 +39,9 @@ namespace Deltares
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool WeibullDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool WeibullDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
         double WeibullDistribution::getMean(StochastProperties& stochast)

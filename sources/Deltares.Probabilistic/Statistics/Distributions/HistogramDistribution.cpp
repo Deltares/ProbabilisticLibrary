@@ -121,9 +121,9 @@ namespace Deltares
         }
 
 
-        bool HistogramDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool HistogramDistribution::isVarying(StochastProperties& stochast)
         {
-            return !stochast->HistogramValues.empty();
+            return !stochast.HistogramValues.empty();
         }
 
         double HistogramDistribution::getMean(StochastProperties& stochast)
