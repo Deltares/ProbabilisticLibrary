@@ -160,15 +160,15 @@ namespace Deltares
             }
         }
 
-        double LogNormalDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double LogNormalDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Shift)
+            if (x <= stochast.Shift)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                double u = this->getUFromX(*stochast, x);
+                const double u = this->getUFromX(stochast, x);
 
                 return StandardNormal::getPFromU(u);
             }

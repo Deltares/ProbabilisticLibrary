@@ -255,35 +255,35 @@ namespace Deltares
             return 0.0;
         }
 
-        double DiscreteDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double DiscreteDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            const double delta = 0.0000001;
+            constexpr double delta = 0.0000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            if (stochast->DiscreteValues.empty())
+            if (stochast.DiscreteValues.empty())
             {
                 return std::nan("");
             }
 
-            double p = 0;
+            double p = 0.0;
 
-            for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+            for (const auto& discreteValue : stochast.DiscreteValues)
             {
-                if (Numeric::NumericSupport::areEqual(stochast->DiscreteValues[i]->X, x, delta))
+                if (Numeric::NumericSupport::areEqual(discreteValue->X, x, delta))
                 {
-                    double pLow = p;
-                    double pHigh = p + stochast->DiscreteValues[i]->NormalizedAmount;
-                    double pAverage = (pLow + pHigh) / 2;
+                    const double pLow = p;
+                    const double pHigh = p + discreteValue->NormalizedAmount;
+                    const double pAverage = (pLow + pHigh) / 2.0;
 
                     return pAverage;
                 }
-                else if (Numeric::NumericSupport::isLess(stochast->DiscreteValues[i]->X, x, delta))
+                else if (Numeric::NumericSupport::isLess(discreteValue->X, x, delta))
                 {
-                    p += stochast->DiscreteValues[i]->NormalizedAmount;
+                    p += discreteValue->NormalizedAmount;
                 }
             }
 

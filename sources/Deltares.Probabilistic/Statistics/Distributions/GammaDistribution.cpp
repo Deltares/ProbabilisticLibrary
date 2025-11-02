@@ -78,13 +78,13 @@ namespace Deltares
             return 0.0;
         }
 
-        double GammaDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GammaDistribution::getCDF(StochastProperties& stochast, double x)
         {
             if (x <= 0.0)
             {
                 return 0.0;
             }
-            else if (stochast->Shape <= 0 || stochast->Scale <= 0)
+            else if (stochast.Shape <= 0.0 || stochast.Scale <= 0.0)
             {
                 return 1.0;
             }
@@ -92,7 +92,7 @@ namespace Deltares
             {
                 try
                 {
-                    return Numeric::SpecialFunctions::getGammaLowerRegularized(stochast->Shape, x / stochast->Scale);
+                    return Numeric::SpecialFunctions::getGammaLowerRegularized(stochast.Shape, x / stochast.Scale);
                 }
                 catch (const std::exception&)
                 {
@@ -115,7 +115,7 @@ namespace Deltares
 
         double GammaDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            const double cdf = getCDF(stochast.clone(), x); // TODO
+            const double cdf = getCDF(stochast, x);
             return StandardNormal::getUFromP(cdf);
         }
 

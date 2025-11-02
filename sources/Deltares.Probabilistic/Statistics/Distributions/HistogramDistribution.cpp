@@ -210,7 +210,7 @@ namespace Deltares
                 initializeForRun(stochast);
             }
 
-            const double cdf = getCDF(stochast.clone(), x); // TODO
+            const double cdf = getCDF(stochast, x);
 
             return StandardNormal::getUFromP(cdf);
         }
@@ -268,21 +268,21 @@ namespace Deltares
             return 0.0;
         }
 
-        double HistogramDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double HistogramDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            if (stochast->HistogramValues.empty())
+            if (stochast.HistogramValues.empty())
             {
                 return std::nan("");
             }
 
-            double p = 0;
+            double p = 0.0;
 
-            for (const auto& histogram_value : stochast->HistogramValues)
+            for (const auto& histogram_value : stochast.HistogramValues)
             {
                 if (histogram_value->LowerBound < x)
                 {

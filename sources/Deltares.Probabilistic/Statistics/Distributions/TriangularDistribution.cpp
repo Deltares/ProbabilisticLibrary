@@ -164,24 +164,24 @@ namespace Deltares
             }
         }
 
-        double TriangularDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double TriangularDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x < stochast->Minimum)
+            if (x < stochast.Minimum)
             {
-                return 0;
+                return 0.0;
             }
-            else if (x < stochast->Shift)
+            else if (x < stochast.Shift)
             {
-                return (x - stochast->Minimum) * (x - stochast->Minimum) / ((stochast->Shift - stochast->Minimum) * (stochast->Maximum - stochast->Minimum));
+                return (x - stochast.Minimum) * (x - stochast.Minimum) / ((stochast.Shift - stochast.Minimum) * (stochast.Maximum - stochast.Minimum));
             }
-            else if (x < stochast->Maximum)
+            else if (x < stochast.Maximum)
             {
-                double q = (stochast->Maximum - x) * (stochast->Maximum - x) / ((stochast->Maximum - stochast->Shift) * (stochast->Maximum - stochast->Minimum));
-                return 1 - q;
+                const double q = (stochast.Maximum - x) * (stochast.Maximum - x) / ((stochast.Maximum - stochast.Shift) * (stochast.Maximum - stochast.Minimum));
+                return 1.0 - q;
             }
             else
             {
-                return 1;
+                return 1.0;
             }
         }
 
@@ -212,7 +212,7 @@ namespace Deltares
             }
             else
             {
-                const double cdf = getCDF(stochast.clone(), x); // TODO
+                const double cdf = getCDF(stochast, x);
                 return StandardNormal::getUFromP(cdf);
             }
         }

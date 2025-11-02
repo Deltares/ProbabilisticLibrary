@@ -80,9 +80,9 @@ namespace Deltares
             return normalFactor * exp(distance);
         }
 
-        double NormalDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double NormalDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            double u = this->getUFromX(*stochast, x);
+            const double u = this->getUFromX(stochast, x);
 
             return StandardNormal::getPFromU(u);
         }

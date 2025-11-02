@@ -219,42 +219,42 @@ namespace Deltares
             }
         }
 
-        double TrapezoidalDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double TrapezoidalDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            double a = stochast->Minimum;
-            double b = stochast->Maximum;
-            double c = stochast->Shift;
-            double d = stochast->ShiftB;
+            const double a = stochast.Minimum;
+            const double b = stochast.Maximum;
+            const double c = stochast.Shift;
+            const double d = stochast.ShiftB;
 
-            double length = (b + d - a - c) / 2;
+            const double length = (b + d - a - c) / 2.0;
 
             if (x < a)
             {
-                return 0;
+                return 0.0;
             }
             else if (x < c)
             {
-                return (x - a) * (x - a) / (2 * length * (c - a));
+                return (x - a) * (x - a) / (2.0 * length * (c - a));
             }
             else if (x == c)
             {
-                return (c - a) / (2 * length);
+                return (c - a) / (2.0 * length);
             }
             else if (x < d)
             {
-                return (2 * x - a - c) / (2 * length);
+                return (2.0 * x - a - c) / (2.0 * length);
             }
             else if (x == d)
             {
-                return (2 * d - a - c) / (2 * length);
+                return (2.0 * d - a - c) / (2.0 * length);
             }
             else if (x < b)
             {
-                return 1 - (b - x) * (b - x) / (2 * length * (b - d));
+                return 1.0 - (b - x) * (b - x) / (2.0 * length * (b - d));
             }
             else
             {
-                return 1;
+                return 1.0;
             }
         }
 
@@ -296,7 +296,7 @@ namespace Deltares
             }
             else
             {
-                const double cdf = getCDF(stochast.clone(), x); // TODO
+                const double cdf = getCDF(stochast, x);
                 return StandardNormal::getUFromP(cdf);
             }
         }

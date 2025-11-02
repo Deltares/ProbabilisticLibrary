@@ -76,7 +76,7 @@ namespace Deltares
 
         double BernoulliDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            double cdf = getCDF(stochast.clone(), x); // TODO
+            const double cdf = getCDF(stochast, x);
             return StandardNormal::getUFromP(cdf);
         }
 
@@ -96,11 +96,11 @@ namespace Deltares
             }
         }
 
-        double BernoulliDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double BernoulliDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x < 0)
+            if (x < 0.0)
             {
-                return 0;
+                return 0.0;
             }
             else if (x >= 1.0)
             {
@@ -108,7 +108,7 @@ namespace Deltares
             }
             else
             {
-                return 1.0 - stochast->Location;
+                return 1.0 - stochast.Location;
             }
         }
 

@@ -202,7 +202,11 @@ namespace Deltares::Statistics
          * \param x Given x-value
          * \return CDF value
          */
-        virtual double getCDF(std::shared_ptr<StochastProperties> stochast, double x) { return 0; }
+        virtual double getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            return getCDF(*stochast, x);
+        }
+        virtual double getCDF(StochastProperties& stochast, double x) { return 0.0; }
 
         /**
          * \brief Modifies the stochast properties so that a given x-value is returned for a given u-value

@@ -107,19 +107,19 @@ namespace Deltares
             }
         }
 
-        double ParetoDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double ParetoDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Scale)
+            if (x <= stochast.Scale)
             {
                 return 0.0;
             }
-            else if (stochast->Scale <= 0)
+            else if (stochast.Scale <= 0.0)
             {
                 return 1.0;
             }
             else
             {
-                return 1 - std::pow(stochast->Scale / x, stochast->Shape);
+                return 1.0 - std::pow(stochast.Scale / x, stochast.Shape);
             }
         }
 
@@ -149,7 +149,7 @@ namespace Deltares
             }
             else
             {
-                const double cdf = getCDF(stochast.clone(), x); // TODO
+                const double cdf = getCDF(stochast, x);
                 return StandardNormal::getUFromP(cdf);
             }
         }

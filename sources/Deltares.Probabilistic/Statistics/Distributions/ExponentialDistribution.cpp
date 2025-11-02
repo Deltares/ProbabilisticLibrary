@@ -104,15 +104,15 @@ namespace Deltares
             }
         }
 
-        double ExponentialDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double ExponentialDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x < stochast->Shift)
+            if (x < stochast.Shift)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return 1 - exp(-(x - stochast->Shift) / stochast->Scale);
+                return 1.0 - exp(-(x - stochast.Shift) / stochast.Scale);
             }
         }
 

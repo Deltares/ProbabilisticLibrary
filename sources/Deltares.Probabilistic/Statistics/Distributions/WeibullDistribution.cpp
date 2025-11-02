@@ -84,7 +84,7 @@ namespace Deltares
             }
             else
             {
-                const double cdf = getCDF(stochast.clone(), x); // TODO
+                const double cdf = getCDF(stochast, x);
                 return StandardNormal::getUFromP(cdf);
             }
         }
@@ -101,25 +101,24 @@ namespace Deltares
             }
             else
             {
-                // TODO:
                 return (stochast.Shape / stochast.Scale) * std::pow((x - stochast.Shift)
-                    / stochast.Scale, stochast.Shape - 1.0) * (1.0 - getCDF(stochast.clone(), x));
+                    / stochast.Scale, stochast.Shape - 1.0) * (1.0 - getCDF(stochast, x));
             }
         }
 
-        double WeibullDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double WeibullDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Shift)
+            if (x <= stochast.Shift)
             {
-                return 0;
+                return 0.0;
             }
-            else if (stochast->Scale == 0)
+            else if (stochast.Scale == 0.0)
             {
-                return x < stochast->Shape ? 0 : 1;
+                return x < stochast.Shape ? 0.0 : 1.0;
             }
             else
             {
-                return 1 - std::exp(-std::pow((x - stochast->Shift) / stochast->Scale, stochast->Shape));
+                return 1.0 - std::exp(-std::pow((x - stochast.Shift) / stochast.Scale, stochast.Shape));
             }
         }
 

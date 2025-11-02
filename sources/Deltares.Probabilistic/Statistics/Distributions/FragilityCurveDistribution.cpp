@@ -187,14 +187,14 @@ namespace Deltares
             return Numeric::NumericSupport::interpolate(x, xValues, bValues, true);
         }
 
-        double FragilityCurveDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double FragilityCurveDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
-            if (stochast->FragilityValues.empty())
+            if (stochast.FragilityValues.empty())
             {
                 return std::nan("");
             }
@@ -202,7 +202,7 @@ namespace Deltares
             std::vector<double> xValues;
             std::vector<double> bValues;
 
-            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast->FragilityValues)
+            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
             {
                 xValues.push_back(fragilityValue->X);
                 bValues.push_back(fragilityValue->Reliability);
@@ -240,8 +240,8 @@ namespace Deltares
                 delta /= 10.0;
             }
 
-            const double cdfLow = getCDF(stochast.clone(), x - delta / 2.0); // TODO
-            const double cdfHigh = getCDF(stochast.clone(), x + delta / 2.0); // TODO
+            const double cdfLow = getCDF(stochast, x - delta / 2.0);
+            const double cdfHigh = getCDF(stochast, x + delta / 2.0);
 
             return (cdfHigh - cdfLow) / delta;
         }

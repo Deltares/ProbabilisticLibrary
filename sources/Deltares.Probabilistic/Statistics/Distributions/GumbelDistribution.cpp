@@ -107,16 +107,16 @@ namespace Deltares
             }
         }
 
-        double GumbelDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GumbelDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (stochast->Scale == 0.0)
+            if (stochast.Scale == 0.0)
             {
-                return x < stochast->Shift ? 0.0 : 1.0;
+                return x < stochast.Shift ? 0.0 : 1.0;
             }
             else
             {
-                x -= stochast->Shift;
-                return exp(-exp(-x / stochast->Scale));
+                x -= stochast.Shift;
+                return exp(-exp(-x / stochast.Scale));
             }
         }
 

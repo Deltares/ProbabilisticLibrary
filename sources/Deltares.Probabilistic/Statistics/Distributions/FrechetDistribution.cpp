@@ -84,7 +84,7 @@ namespace Deltares
             }
             else
             {
-                const double cdf = getCDF(stochast.clone(), x); // TODO
+                const double cdf = getCDF(stochast, x);
                 return StandardNormal::getUFromP(cdf);
             }
         }
@@ -103,26 +103,25 @@ namespace Deltares
             }
             else
             {
-                // TODO:
-                return (stochast.Shape / stochast.Scale) * std::pow(z, -1.0 - stochast.Shape) * getCDF(stochast.clone(), x);
+                return (stochast.Shape / stochast.Scale) * std::pow(z, -1.0 - stochast.Shape) * getCDF(stochast, x);
             }
         }
 
-        double FrechetDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double FrechetDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            double z = (x - stochast->Shift) / stochast->Scale;
+            double z = (x - stochast.Shift) / stochast.Scale;
 
-            if (stochast->Scale == 0)
+            if (stochast.Scale == 0.0)
             {
-                return x < stochast->Shift ? 0 : 1;
+                return x < stochast.Shift ? 0.0 : 1.0;
             }
-            else if (z <= 0)
+            else if (z <= 0.0)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                double pow = std::pow(z, -stochast->Shape);
+                double pow = std::pow(z, -stochast.Shape);
                 return std::exp(-pow);
             }
         }

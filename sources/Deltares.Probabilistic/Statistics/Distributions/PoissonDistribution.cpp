@@ -78,7 +78,7 @@ namespace Deltares
 
         double PoissonDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            const double cdf = getCDF(stochast.clone(), x); // TODO
+            const double cdf = getCDF(stochast, x);
             return StandardNormal::getUFromP(cdf);
         }
 
@@ -109,14 +109,14 @@ namespace Deltares
             }
         }
 
-        double PoissonDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double PoissonDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            int k = static_cast<int>(std::floor(x));
+            const int k = static_cast<int>(std::floor(x));
 
             double cdf = 0.0;
             for (int i = 0; i <= k; i++)
             {
-                cdf += getPDF(*stochast, i);
+                cdf += getPDF(stochast, i);
             }
 
             return cdf;

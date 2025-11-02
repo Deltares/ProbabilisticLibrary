@@ -63,15 +63,15 @@ namespace Deltares
             return x == stochast.Location ? 1.0 : 0.0;
         }
 
-        double DeterministicDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double DeterministicDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x < stochast->Location)
+            if (x < stochast.Location)
             {
-                return 0;
+                return 0.0;
             }
-            else if (x > stochast->Location)
+            else if (x > stochast.Location)
             {
-                return 1;
+                return 1.0;
             }
             else
             {

@@ -75,7 +75,7 @@ namespace Deltares
             }
             else
             {
-                const double cdf = getCDF(stochast.clone(), x); // TODO
+                const double cdf = getCDF(stochast, x);
                 return StandardNormal::getUFromP(cdf);
             }
         }
@@ -92,23 +92,23 @@ namespace Deltares
             }
             else
             {
-                return ((x - stochast.Shift) / (stochast.Scale * stochast.Scale)) * (1.0 - getCDF(stochast.clone(), x)); // TODO
+                return ((x - stochast.Shift) / (stochast.Scale * stochast.Scale)) * (1.0 - getCDF(stochast, x));
             }
         }
 
-        double RayleighDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double RayleighDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (stochast->Scale == 0)
+            if (stochast.Scale == 0.0)
             {
-                return x < stochast->Shift ? 0 : 1;
+                return x < stochast.Shift ? 0.0 : 1.0;
             }
-            else if (x < stochast->Shift)
+            else if (x < stochast.Shift)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return 1 - std::exp(-(x - stochast->Shift) * (x - stochast->Shift) / (2 * stochast->Scale * stochast->Scale));
+                return 1.0 - std::exp(-(x - stochast.Shift) * (x - stochast.Shift) / (2.0 * stochast.Scale * stochast.Scale));
             }
         }
 

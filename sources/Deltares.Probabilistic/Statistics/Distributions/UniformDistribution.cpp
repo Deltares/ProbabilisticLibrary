@@ -110,19 +110,19 @@ namespace Deltares
             }
         }
 
-        double UniformDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double UniformDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Minimum)
+            if (x <= stochast.Minimum)
             {
-                return 0;
+                return 0.0;
             }
-            else if (x >= stochast->Maximum)
+            else if (x >= stochast.Maximum)
             {
-                return 1;
+                return 1.0;
             }
             else
             {
-                return 1 - ((stochast->Maximum - x) / (stochast->Maximum - stochast->Minimum));
+                return 1.0 - ((stochast.Maximum - x) / (stochast.Maximum - stochast.Minimum));
             }
         }
 

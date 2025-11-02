@@ -123,16 +123,15 @@ namespace Deltares
 
         double ConditionalWeibullDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            // TODO:
-            const double pdf = this->getCDF(stochast.clone(), x)
+            const double pdf = this->getCDF(stochast, x)
                 * getExponent(stochast, x) * stochast.Shape * pow(x / stochast.Scale, stochast.Shape - 1.0) / stochast.Scale;
 
             return pdf;
         }
 
-        double ConditionalWeibullDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double ConditionalWeibullDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            double u = getUFromX(*stochast, x);
+            const double u = getUFromX(stochast, x);
             return StandardNormal::getPFromU(u);
         }
 
