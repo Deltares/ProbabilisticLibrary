@@ -102,26 +102,26 @@ namespace Deltares
             }
         }
 
-        void LogNormalDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
+        void LogNormalDistribution::setShift(StochastProperties& stochast, const double shift, bool inverted)
         {
-            bool useRequestedValues = std::isinf(stochast->Location) && !std::isnan(this->requestedMean);
+            bool useRequestedValues = std::isinf(stochast.Location) && !std::isnan(requestedMean);
 
-            double oldMean = useRequestedValues ? this->requestedMean : this->getMean(*stochast);
-            double oldDeviation = useRequestedValues ? this->requestedDeviation : this->getDeviation(*stochast);
-
-            if (inverted)
-            {
-                oldMean = 2 * stochast->Shift - oldMean;
-            }
-
-            stochast->Shift = shift;
+            double oldMean = useRequestedValues ? requestedMean : getMean(stochast);
+            double oldDeviation = useRequestedValues ? requestedDeviation : getDeviation(stochast);
 
             if (inverted)
             {
-                oldMean = 2 * stochast->Shift - oldMean;
+                oldMean = 2.0 * stochast.Shift - oldMean;
             }
 
-            this->setMeanAndDeviation(*stochast, oldMean, oldDeviation);
+            stochast.Shift = shift;
+
+            if (inverted)
+            {
+                oldMean = 2.0 * stochast.Shift - oldMean;
+            }
+
+            this->setMeanAndDeviation(stochast, oldMean, oldDeviation);
         }
 
         double LogNormalDistribution::getXFromU(StochastProperties& stochast, double u)

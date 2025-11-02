@@ -486,7 +486,7 @@ namespace Deltares
 
         void Stochast::setShift(double shift) const
         {
-            distribution->setShift(properties, shift, false);
+            distribution->setShift(*properties, shift, false);
         }
 
         void Stochast::initializeForRun()

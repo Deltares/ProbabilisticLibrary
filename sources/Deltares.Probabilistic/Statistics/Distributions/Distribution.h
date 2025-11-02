@@ -180,7 +180,7 @@ namespace Deltares::Statistics
          * \param shift Given shift value
          * \param inverted Inverted value
          */
-        virtual void setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted) { stochast->Shift = shift; }
+        virtual void setShift(StochastProperties& stochast, const double shift, bool inverted) { stochast.Shift = shift; }
 
         /**
          * \brief Initializes a stochast for fast u->x conversions during probabilistic analysis

@@ -66,7 +66,7 @@ namespace Deltares
             copyFromInverted(stochast, invertedStochast);
         }
 
-        void InvertedDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
+        void InvertedDistribution::setShift(StochastProperties& stochast, const double shift, bool inverted)
         {
             this->innerDistribution->setShift(stochast, shift, true);
         }

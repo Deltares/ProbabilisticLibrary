@@ -37,23 +37,23 @@ namespace Deltares
             stochast.Shift = mean - stochast.Scale;
         }
 
-        void ExponentialDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
+        void ExponentialDistribution::setShift(StochastProperties& stochast, const double shift, bool inverted)
         {
-            double oldMean = this->getMean(*stochast);
+            double oldMean = getMean(stochast);
 
             if (inverted)
             {
-                oldMean = 2 * stochast->Shift - oldMean;
+                oldMean = 2.0 * stochast.Shift - oldMean;
             }
 
-            stochast->Shift = shift;
+            stochast.Shift = shift;
 
             if (inverted)
             {
-                oldMean = 2 * stochast->Shift - oldMean;
+                oldMean = 2.0 * stochast.Shift - oldMean;
             }
 
-            stochast->Scale = oldMean - shift;
+            stochast.Scale = oldMean - shift;
         }
 
         void ExponentialDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)

@@ -128,7 +128,7 @@ namespace Deltares
             this->innerDistribution->setMeanAndDeviation(stochast, mean, deviation);
         }
 
-        void TruncatedDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
+        void TruncatedDistribution::setShift(StochastProperties& stochast, const double shift, bool inverted)
         {
             this->innerDistribution->setShift(stochast, shift, inverted);
         }
