@@ -65,11 +65,6 @@ namespace Deltares
             return log(this->getPDF(stochast, x));
         }
 
-        bool Distribution::isValid(std::shared_ptr<StochastProperties> stochast)
-        {
-            return isValid(*stochast);
-        }
-
         bool Distribution::isValid(StochastProperties& stochast)
         {
             std::string empty_subject;

@@ -84,7 +84,7 @@ namespace Deltares
                 this->stochast->applyValue(properties[i], sample->Values[i]);
             }
 
-            if (distribution->isValid(stochast))
+            if (distribution->isValid(*stochast))
             {
                 sample->Z = - this->getSumLogLikelihood();
             }

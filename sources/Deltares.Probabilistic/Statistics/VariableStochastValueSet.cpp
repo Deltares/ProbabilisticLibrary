@@ -115,7 +115,7 @@ namespace Deltares
             for (auto stochastValue : StochastValues)
             {
                 std::shared_ptr<StochastProperties> properties = this->getInterpolatedStochast(stochastValue->X);
-                if (!distribution->isValid(properties))
+                if (!distribution->isValid(*properties))
                 {
                     return false;
                 }

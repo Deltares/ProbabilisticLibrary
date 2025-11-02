@@ -261,7 +261,6 @@ namespace Deltares::Statistics
          * \param stochast Stochast having the parameters
          * \return Indication valid parameters
          */
-        bool isValid(std::shared_ptr<StochastProperties> stochast);
         bool isValid(StochastProperties& stochast);
 
         /**

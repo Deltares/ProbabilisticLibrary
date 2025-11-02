@@ -49,7 +49,7 @@ namespace Deltares
 
         bool ConditionalWeibullDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
         {
-            return isValid(stochast);
+            return isValid(*stochast);
         }
 
         double ConditionalWeibullDistribution::getMean(StochastProperties& stochast)
