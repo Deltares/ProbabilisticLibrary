@@ -56,12 +56,12 @@ namespace Deltares
             stochast->Scale = oldMean - shift;
         }
 
-        void ExponentialDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void ExponentialDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Scale = 1.0 / values[0];
+            stochast.Scale = 1.0 / values[0];
             if (values.size() > 1)
             {
-                stochast->Shift = values[1];
+                stochast.Shift = values[1];
             }
         }
 

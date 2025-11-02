@@ -34,11 +34,11 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void TriangularDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void TriangularDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Minimum = values[0];
-            stochast->Shift = values[1];
-            stochast->Maximum = values[2];
+            stochast.Minimum = values[0];
+            stochast.Shift = values[1];
+            stochast.Maximum = values[2];
         }
 
         void TriangularDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)

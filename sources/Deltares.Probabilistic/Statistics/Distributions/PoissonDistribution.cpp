@@ -27,9 +27,9 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void PoissonDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void PoissonDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Location = values[0];
+            stochast.Location = values[0];
         }
 
         bool PoissonDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

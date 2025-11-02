@@ -35,9 +35,9 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void FrechetDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void FrechetDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            setMeanAndDeviation(*stochast, values[0], values[1]);
+            setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
         bool FrechetDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

@@ -33,7 +33,7 @@ namespace Deltares
         /// </summary>
         class ConditionalWeibullDistribution : public Distribution
         {
-            void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
+            void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(StochastProperties& stochast, double x) override;

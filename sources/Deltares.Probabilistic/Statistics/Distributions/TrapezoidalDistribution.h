@@ -29,7 +29,7 @@ namespace Deltares
         class TrapezoidalDistribution : public Distribution
         {
         public:
-            void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
+            void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(StochastProperties& stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;

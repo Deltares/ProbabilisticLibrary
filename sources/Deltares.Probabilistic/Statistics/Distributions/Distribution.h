@@ -52,7 +52,11 @@ namespace Deltares::Statistics
          * \param stochast Stochast to be initialized
          * \param values Values by which the stochast is initialized
          */
-        virtual void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) {}
+        virtual void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        {
+            initialize(*stochast, values);
+        }
+        virtual void initialize(StochastProperties& stochast, const std::vector<double>& values) {}
 
         /**
          * \brief Gets the x-value (physical value) for a standard normal value (u-value)

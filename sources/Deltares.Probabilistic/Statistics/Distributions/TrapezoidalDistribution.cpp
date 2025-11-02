@@ -35,12 +35,12 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void TrapezoidalDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void TrapezoidalDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Minimum = values[0];
-            stochast->Shift = values[1];
-            stochast->ShiftB = values[2];
-            stochast->Maximum = values[3];
+            stochast.Minimum = values[0];
+            stochast.Shift = values[1];
+            stochast.ShiftB = values[2];
+            stochast.Maximum = values[3];
         }
 
         void TrapezoidalDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)

@@ -35,7 +35,7 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void ConditionalWeibullDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void ConditionalWeibullDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
             // not supported
         }

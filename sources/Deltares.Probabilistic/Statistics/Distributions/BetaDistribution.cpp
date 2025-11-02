@@ -34,9 +34,9 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void BetaDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void BetaDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            this->setMeanAndDeviation(*stochast, values[0], values[1]);
+            this->setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
         bool BetaDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

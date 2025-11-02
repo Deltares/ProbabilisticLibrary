@@ -28,9 +28,9 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void BernoulliDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void BernoulliDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Location = values[0];
+            stochast.Location = values[0];
         }
 
         bool BernoulliDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

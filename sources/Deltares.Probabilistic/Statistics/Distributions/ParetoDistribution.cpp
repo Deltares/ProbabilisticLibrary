@@ -33,9 +33,9 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void ParetoDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void ParetoDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            this->setMeanAndDeviation(*stochast, values[0], values[1]);
+            this->setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
         void ParetoDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)

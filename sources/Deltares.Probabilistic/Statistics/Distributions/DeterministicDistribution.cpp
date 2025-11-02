@@ -38,9 +38,9 @@ namespace Deltares
             stochast.Scale = deviation;
         }
 
-        void DeterministicDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void DeterministicDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Location = values[0];
+            stochast.Location = values[0];
         }
 
         double DeterministicDistribution::getMean(StochastProperties& stochast)
