@@ -131,7 +131,7 @@ namespace Deltares::Statistics
          * \param u Given u-value
          * \return Representative u-value
          */
-        virtual double getRepresentativeU(std::shared_ptr<StochastProperties> stochast, double u) { return u; }
+        virtual double getRepresentativeU(StochastProperties& stochast, double u) { return u; }
 
         /**
          * \brief Gets the mean value for a stochast

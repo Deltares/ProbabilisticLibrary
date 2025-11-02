@@ -412,7 +412,7 @@ namespace Deltares
 
         double Stochast::getRepresentativeU(double u) const
         {
-            return distribution->getRepresentativeU(properties, u);
+            return distribution->getRepresentativeU(*properties, u);
         }
 
         double Stochast::getMean()

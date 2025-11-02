@@ -158,10 +158,10 @@ namespace Deltares
             return discontinuityPoints;
         }
 
-        double DiscreteDistribution::getRepresentativeU(std::shared_ptr<StochastProperties> stochast, double u)
+        double DiscreteDistribution::getRepresentativeU(StochastProperties& stochast, double u)
         {
-            double x = this->getXFromU(*stochast, u);
-            double uRepresentative = this->getUFromX(*stochast, x);
+            const double x = getXFromU(stochast, u);
+            const double uRepresentative = getUFromX(stochast, x);
 
             return uRepresentative;
         }
