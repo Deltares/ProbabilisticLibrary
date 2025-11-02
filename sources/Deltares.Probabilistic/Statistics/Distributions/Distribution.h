@@ -283,7 +283,11 @@ namespace Deltares::Statistics
          * \param x given x-value
          * \return Log likelihood
          */
-        virtual double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x);
+        virtual double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            return getLogLikelihood(*stochast, x);
+        }
+        virtual double getLogLikelihood(StochastProperties& stochast, double x);
 
         /**
          * \brief Gets a list of x values where the CDF-value is discontinuous
@@ -302,7 +306,7 @@ namespace Deltares::Statistics
         {
             return getSpecialPoints(*stochast);
         }
-        virtual std::vector<double> getSpecialPoints(StochastProperties& stochast) { return std::vector<double>(0.0); }
+        virtual std::vector<double> getSpecialPoints(StochastProperties& stochast) { return std::vector<double>(0); }
 
         /**
          * \brief Gets the parameters of a stochast used by the distribution

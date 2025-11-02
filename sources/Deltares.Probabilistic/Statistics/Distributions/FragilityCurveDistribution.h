@@ -39,7 +39,7 @@ namespace Deltares
             double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(StochastProperties& stochast, double x) override;
             bool canFit() override { return false; }
-            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
+            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
         private:
             const double precision = 0.00001;

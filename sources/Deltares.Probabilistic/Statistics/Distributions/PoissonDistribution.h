@@ -34,7 +34,7 @@ namespace Deltares
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(StochastProperties& stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
-            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
+            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
             double getMean(StochastProperties& stochast) override;
             double getDeviation(StochastProperties& stochast) override;
             void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;

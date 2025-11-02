@@ -46,12 +46,12 @@ namespace Deltares
             bool canFitPrior() override { return this->innerDistribution->canFitPrior(); }
             double getMean(std::shared_ptr<StochastProperties> stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
-            void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
+            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
             void setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted) override;
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
-            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
+            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
             double getMaxShiftValue(std::vector<double>& values) override;
@@ -60,9 +60,9 @@ namespace Deltares
             std::vector<DistributionPropertyType> getParameters() override;
         private:
             std::shared_ptr<Distribution> innerDistribution = nullptr;
-            double getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value) const;
-            std::shared_ptr<StochastProperties> getInvertedStochast(std::shared_ptr<StochastProperties> stochast) const;
-            void copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source) const;
+            double getInvertedValue(StochastProperties& stochast, double value) const;
+            StochastProperties getInvertedStochast(StochastProperties& stochast) const;
+            void copyFromInverted(StochastProperties& target, StochastProperties& source) const;
             bool isShiftUsed() const;
         };
     }

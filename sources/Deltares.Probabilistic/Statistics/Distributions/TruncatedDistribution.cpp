@@ -323,9 +323,9 @@ namespace Deltares
             return parameters;
         }
 
-        double TruncatedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+        double TruncatedDistribution::getLogLikelihood(StochastProperties& stochast, double x)
         {
-            Truncated truncated = getTruncatedValue(*stochast);
+            Truncated truncated = getTruncatedValue(stochast);
 
             if (truncated.Factor == 0 || std::isinf(truncated.Factor) || std::isnan(truncated.Factor))
             {

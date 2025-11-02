@@ -41,12 +41,12 @@ namespace Deltares
             stochast.Maximum = values[2];
         }
 
-        void TriangularDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void TriangularDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            Logging::ValidationSupport::checkFinite(report, stochast->Minimum, "minimum", subject);
-            Logging::ValidationSupport::checkFinite(report, stochast->Maximum, "maximum", subject);
-            Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Shift, "shift", subject);
-            Logging::ValidationSupport::checkMaximum(report, stochast->Maximum, stochast->Shift, "shift", subject);
+            Logging::ValidationSupport::checkFinite(report, stochast.Minimum, "minimum", subject);
+            Logging::ValidationSupport::checkFinite(report, stochast.Maximum, "maximum", subject);
+            Logging::ValidationSupport::checkMinimum(report, stochast.Minimum, stochast.Shift, "shift", subject);
+            Logging::ValidationSupport::checkMaximum(report, stochast.Maximum, stochast.Shift, "shift", subject);
         }
 
         void TriangularDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)

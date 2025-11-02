@@ -38,10 +38,10 @@ namespace Deltares
             return stochast->Location > 0.0 && stochast->Location < 1.0;
         }
 
-        void BernoulliDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void BernoulliDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            Logging::ValidationSupport::checkMinimum(report, 0, stochast->Location, "location", subject);
-            Logging::ValidationSupport::checkMaximum(report, 1, stochast->Location, "location", subject);
+            Logging::ValidationSupport::checkMinimum(report, 0, stochast.Location, "location", subject);
+            Logging::ValidationSupport::checkMaximum(report, 1, stochast.Location, "location", subject);
             Distribution::validate(report, stochast, subject);
         }
 

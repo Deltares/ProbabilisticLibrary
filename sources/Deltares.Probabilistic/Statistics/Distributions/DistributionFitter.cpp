@@ -109,7 +109,7 @@ namespace Deltares
                 }
                 else
                 {
-                    double log = this->distribution->getLogLikelihood(this->stochast, x);
+                    double log = this->distribution->getLogLikelihood(*stochast, x);
                     if (std::isnan(log))
                     {
                         return log;

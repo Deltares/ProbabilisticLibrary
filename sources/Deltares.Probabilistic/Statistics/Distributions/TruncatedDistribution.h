@@ -56,7 +56,7 @@ namespace Deltares
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
             double getMaxShiftValue(std::vector<double>& values) override;
-            double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
+            double getLogLikelihood(StochastProperties& stochast, double x) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override;
         private:

@@ -38,10 +38,10 @@ namespace Deltares
             this->setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        void ParetoDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void ParetoDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            Logging::ValidationSupport::checkMinimum(report, 0, stochast->Scale, "scale", subject);
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->Shape, "shape", subject);
+            Logging::ValidationSupport::checkMinimum(report, 0, stochast.Scale, "scale", subject);
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Shape, "shape", subject);
         }
 
         bool ParetoDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

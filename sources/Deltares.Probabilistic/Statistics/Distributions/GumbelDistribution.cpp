@@ -160,11 +160,11 @@ namespace Deltares
             stochast->Observations = static_cast<int>(values.size());
         }
 
-        double GumbelDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+        double GumbelDistribution::getLogLikelihood(StochastProperties& stochast, double x)
         {
-            x = (x - stochast->Shift) / stochast->Scale;
+            x = (x - stochast.Shift) / stochast.Scale;
 
-            return -(log(stochast->Scale) + (x + exp(-x)));
+            return -(log(stochast.Scale) + (x + exp(-x)));
         }
 
         std::vector<double> GumbelDistribution::getSpecialPoints(StochastProperties& stochast)

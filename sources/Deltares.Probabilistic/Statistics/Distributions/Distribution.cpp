@@ -60,7 +60,7 @@ namespace Deltares
             return min - add;
         }
 
-        double Distribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+        double Distribution::getLogLikelihood(StochastProperties& stochast, double x)
         {
             return log(this->getPDF(stochast, x));
         }
