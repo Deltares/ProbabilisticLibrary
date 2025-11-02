@@ -34,7 +34,7 @@ namespace Deltares
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(StochastProperties& stochast, double x) override;
             bool isVarying(StochastProperties& stochast) override { return true; }
-            bool maintainMeanAndDeviation(std::shared_ptr<StochastProperties> stochast) override { return false; }
+            bool maintainMeanAndDeviation(const StochastProperties& stochast) override { return false; }
             void initializeForRun(StochastProperties& stochast) override;
             double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(StochastProperties& stochast, double x) override;

@@ -32,7 +32,7 @@ namespace Deltares
             bool isVarying(StochastProperties& stochast) override;
             double getMean(StochastProperties& stochast) override;
             double getDeviation(StochastProperties& stochast) override;
-            bool maintainMeanAndDeviation(std::shared_ptr<StochastProperties> stochast) override { return false; }
+            bool maintainMeanAndDeviation(const StochastProperties& stochast) override { return false; }
             void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
             void initializeForRun(StochastProperties& stochast) override;
             double getRepresentativeU(StochastProperties& stochast, double u) override;

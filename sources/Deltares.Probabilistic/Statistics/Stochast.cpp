@@ -261,7 +261,7 @@ namespace Deltares
                 distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
                 properties->dirty = true;
 
-                if (distribution->maintainMeanAndDeviation(properties))
+                if (distribution->maintainMeanAndDeviation(*properties))
                 {
                     if (distributionChangingType == DistributionChangeType::Nothing)
                     {

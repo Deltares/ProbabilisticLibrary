@@ -160,7 +160,7 @@ namespace Deltares::Statistics
          * \param stochast Stochast of which the distribution type is changed
          * \return Indication
          */
-        virtual bool maintainMeanAndDeviation(std::shared_ptr<StochastProperties> stochast) { return true; }
+        virtual bool maintainMeanAndDeviation(const StochastProperties& stochast) { return true; }
 
         /**
          * \brief Modifies the stochast parameters so that the given mean and deviation are achieved
