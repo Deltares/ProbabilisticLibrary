@@ -319,21 +319,21 @@ namespace Deltares
             initializeForRun(*stochast);
         }
 
-        std::vector<double> DiscreteDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> DiscreteDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             constexpr double offset = 0.000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
             std::vector<double> specialPoints;
 
-            if (!stochast->DiscreteValues.empty())
+            if (!stochast.DiscreteValues.empty())
             {
-                double min = stochast->DiscreteValues[0]->X;
-                double max = stochast->DiscreteValues.back()->X;
+                double min = stochast.DiscreteValues[0]->X;
+                double max = stochast.DiscreteValues.back()->X;
 
                 double bigOffset = (max - min) / 10;
 
@@ -342,13 +342,13 @@ namespace Deltares
                     bigOffset = 1;
                 }
 
-                specialPoints.push_back(stochast->DiscreteValues[0]->X - bigOffset);
+                specialPoints.push_back(stochast.DiscreteValues[0]->X - bigOffset);
 
                 std::shared_ptr<DiscreteValue> previousValue = nullptr;
 
-                for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+                for (size_t i = 0; i < stochast.DiscreteValues.size(); i++)
                 {
-                    std::shared_ptr<DiscreteValue> value = stochast->DiscreteValues[i];
+                    std::shared_ptr<DiscreteValue> value = stochast.DiscreteValues[i];
                     if (previousValue != nullptr && Numeric::NumericSupport::areEqual(value->X, previousValue->X, offset))
                     {
                         double lastValueStochastValue = specialPoints[specialPoints.size() - 2];
@@ -370,7 +370,7 @@ namespace Deltares
                     previousValue = value;
                 }
 
-                specialPoints.push_back(stochast->DiscreteValues[stochast->DiscreteValues.size() - 1]->X + bigOffset);
+                specialPoints.push_back(stochast.DiscreteValues[stochast.DiscreteValues.size() - 1]->X + bigOffset);
             }
 
             return specialPoints;

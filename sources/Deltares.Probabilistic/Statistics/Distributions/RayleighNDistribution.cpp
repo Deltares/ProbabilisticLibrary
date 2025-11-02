@@ -189,9 +189,9 @@ namespace Deltares
             return *std::ranges::min_element(values);
         }
 
-        std::vector<double> RayleighNDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> RayleighNDistribution::getSpecialPoints(StochastProperties& stochast)
         {
-            std::vector<double> specialPoints{ stochast->Shift };
+            std::vector<double> specialPoints{ stochast.Shift };
             return specialPoints;
         }
     }

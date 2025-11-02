@@ -143,9 +143,9 @@ namespace Deltares
             return Numeric::NumericSupport::getMean(values);
         }
 
-        std::vector<double> ExponentialDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> ExponentialDistribution::getSpecialPoints(StochastProperties& stochast)
         {
-            std::vector<double> specialPoints{ stochast->Shift };
+            std::vector<double> specialPoints{ stochast.Shift };
             return specialPoints;
         }
     }

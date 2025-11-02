@@ -141,11 +141,11 @@ namespace Deltares
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        std::vector<double> GeneralizedParetoDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> GeneralizedParetoDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             std::vector<double> specialPoints;
 
-            specialPoints.push_back(stochast->Scale);
+            specialPoints.push_back(stochast.Scale);
 
             return specialPoints;
         }

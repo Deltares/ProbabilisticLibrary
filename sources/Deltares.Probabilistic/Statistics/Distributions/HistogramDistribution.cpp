@@ -317,32 +317,32 @@ namespace Deltares
             return discontinuityPoints;
         }
 
-        std::vector<double> HistogramDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> HistogramDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             constexpr double delta = 0.0000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
-                initializeForRun(*stochast);
+                initializeForRun(stochast);
             }
 
             std::vector<double> x;
 
-            for (const std::shared_ptr<HistogramValue>& range : stochast->HistogramValues)
+            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
             {
-                if (range->UpperBound - delta > range->LowerBound + delta)
+                if (histogramValue->UpperBound - delta > histogramValue->LowerBound + delta)
                 {
-                    x.push_back(range->LowerBound - delta);
-                    x.push_back(range->LowerBound + delta);
+                    x.push_back(histogramValue->LowerBound - delta);
+                    x.push_back(histogramValue->LowerBound + delta);
 
-                    x.push_back(range->UpperBound - delta);
-                    x.push_back(range->UpperBound + delta);
+                    x.push_back(histogramValue->UpperBound - delta);
+                    x.push_back(histogramValue->UpperBound + delta);
                 }
                 else
                 {
-                    x.push_back(range->LowerBound - delta);
-                    x.push_back((range->LowerBound + range->UpperBound) / 2);
-                    x.push_back(range->UpperBound + delta);
+                    x.push_back(histogramValue->LowerBound - delta);
+                    x.push_back((histogramValue->LowerBound + histogramValue->UpperBound) / 2);
+                    x.push_back(histogramValue->UpperBound + delta);
                 }
             }
 

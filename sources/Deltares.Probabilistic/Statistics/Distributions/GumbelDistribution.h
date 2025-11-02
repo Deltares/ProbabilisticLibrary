@@ -43,7 +43,7 @@ namespace Deltares
             bool canFit() override { return true; }
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
-            std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
+            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale }; }
         };
     }

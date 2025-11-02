@@ -42,7 +42,7 @@ namespace Deltares
             bool canFit() override { return true; }
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
-            std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
+            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Minimum, Maximum, Shift, ShiftB }; }
         private:
             double getExponentDifference(double x, double y, int exp);

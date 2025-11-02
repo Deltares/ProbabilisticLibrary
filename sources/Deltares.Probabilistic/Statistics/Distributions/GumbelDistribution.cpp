@@ -167,9 +167,9 @@ namespace Deltares
             return -(log(stochast->Scale) + (x + exp(-x)));
         }
 
-        std::vector<double> GumbelDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> GumbelDistribution::getSpecialPoints(StochastProperties& stochast)
         {
-            std::vector<double> specialPoints{ stochast->Shift };
+            std::vector<double> specialPoints{ stochast.Shift };
             return specialPoints;
         }
     }

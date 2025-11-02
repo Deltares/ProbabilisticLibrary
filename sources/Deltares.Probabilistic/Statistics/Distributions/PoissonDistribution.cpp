@@ -152,7 +152,7 @@ namespace Deltares
             return discontinuityPoints;
         }
 
-        std::vector<double> PoissonDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> PoissonDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             double offset = 10 * delta;
             double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
@@ -168,7 +168,7 @@ namespace Deltares
                 specialPoints.push_back(k);
                 specialPoints.push_back(k + offset);
 
-                double pdf = getPDF(*stochast, k);
+                double pdf = getPDF(stochast, k);
                 cdf += pdf;
 
                 k++;

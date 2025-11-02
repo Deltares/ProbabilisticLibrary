@@ -169,11 +169,11 @@ namespace Deltares
             stochast->Observations = static_cast<int>(values.size());
         }
 
-        std::vector<double> ParetoDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> ParetoDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             std::vector<double> specialPoints;
 
-            specialPoints.push_back(stochast->Scale);
+            specialPoints.push_back(stochast.Scale);
 
             return specialPoints;
         }

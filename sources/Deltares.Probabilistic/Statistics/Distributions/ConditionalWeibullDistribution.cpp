@@ -182,9 +182,9 @@ namespace Deltares
             stochast->Observations = static_cast<int>(values.size());
         }
 
-        std::vector<double> ConditionalWeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> ConditionalWeibullDistribution::getSpecialPoints(StochastProperties& stochast)
         {
-            std::vector<double> specialPoints{ stochast->Shift };
+            std::vector<double> specialPoints{ stochast.Shift };
             return specialPoints;
         }
     }

@@ -337,25 +337,25 @@ namespace Deltares
             }
         }
 
-        std::vector<double> TruncatedDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> TruncatedDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             std::vector<double> specialPoints;
 
-            const bool hasMinimum = !std::isnan(stochast->Minimum) && !std::isinf(stochast->Minimum);
-            const bool hasMaximum = !std::isnan(stochast->Maximum) && !std::isinf(stochast->Maximum);
+            const bool hasMinimum = !std::isnan(stochast.Minimum) && !std::isinf(stochast.Minimum);
+            const bool hasMaximum = !std::isnan(stochast.Maximum) && !std::isinf(stochast.Maximum);
 
             if (hasMinimum)
             {
-                specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Minimum, -0.1));
-                specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Minimum, -0.000001));
-                specialPoints.push_back(stochast->Minimum);
+                specialPoints.push_back(stochast.Minimum + Numeric::NumericSupport::getFraction(stochast.Minimum, -0.1));
+                specialPoints.push_back(stochast.Minimum + Numeric::NumericSupport::getFraction(stochast.Minimum, -0.000001));
+                specialPoints.push_back(stochast.Minimum);
             }
 
             std::vector<double> innerPoints = this->innerDistribution->getSpecialPoints(stochast);
 
             for (double x : innerPoints)
             {
-                if ((!hasMinimum || x > stochast->Minimum) && (!hasMaximum || x < stochast->Maximum))
+                if ((!hasMinimum || x > stochast.Minimum) && (!hasMaximum || x < stochast.Maximum))
                 {
                     specialPoints.push_back(x);
                 }
@@ -363,9 +363,9 @@ namespace Deltares
 
             if (hasMaximum)
             {
-                specialPoints.push_back(stochast->Maximum);
-                specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.000001));
-                specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.1));
+                specialPoints.push_back(stochast.Maximum);
+                specialPoints.push_back(stochast.Maximum + Numeric::NumericSupport::getFraction(stochast.Maximum, 0.000001));
+                specialPoints.push_back(stochast.Maximum + Numeric::NumericSupport::getFraction(stochast.Maximum, 0.1));
             }
 
             return specialPoints;

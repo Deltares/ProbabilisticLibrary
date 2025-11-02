@@ -246,11 +246,11 @@ namespace Deltares
             return (cdfHigh - cdfLow) / delta;
         }
 
-        std::vector<double> FragilityCurveDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> FragilityCurveDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             std::vector<double> specialPoints;
 
-            for (std::shared_ptr<FragilityValue> fragilityValue : stochast->FragilityValues)
+            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
             {
                 specialPoints.push_back(fragilityValue->X);
             }

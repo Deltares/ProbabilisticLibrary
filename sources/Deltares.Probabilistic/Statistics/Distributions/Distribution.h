@@ -298,7 +298,11 @@ namespace Deltares::Statistics
          * \param stochast Stochast in use
          * \return List of x-values
          */
-        virtual std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) { return std::vector<double>(0); }
+        virtual std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        {
+            return getSpecialPoints(*stochast);
+        }
+        virtual std::vector<double> getSpecialPoints(StochastProperties& stochast) { return std::vector<double>(0.0); }
 
         /**
          * \brief Gets the parameters of a stochast used by the distribution
