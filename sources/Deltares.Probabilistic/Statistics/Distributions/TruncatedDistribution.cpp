@@ -219,7 +219,7 @@ namespace Deltares
             this->innerDistribution->setXAtU(stochast, x, getUntruncatedU(u, *stochast), constantType);
         }
 
-        void TruncatedDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void TruncatedDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             // perform the fit without truncation
             this->innerDistribution->fit(stochast, values, shift);
@@ -238,7 +238,7 @@ namespace Deltares
             return innerDistribution->getMaxShiftValue(values);
         }
 
-        void TruncatedDistribution::fitMinMax(StochastProperties& stochast, std::vector<double>& values)
+        void TruncatedDistribution::fitMinMax(StochastProperties& stochast, const std::vector<double>& values)
         {
             // sets minimum and maximum
             double min = *std::min_element(values.begin(), values.end());

@@ -42,8 +42,8 @@ namespace Deltares
             double getCDF(StochastProperties& stochast, double x) override;
             bool canFit() override { return true; }
             bool canFitPrior() override { return true; }
-            void fit(StochastProperties& stochast, std::vector<double>& values, const double shift) override;
-            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
+            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+            void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
             std::vector<double> getDiscontinuityPoints(const StochastProperties& stochast) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Location, Observations }; }

@@ -349,13 +349,13 @@ namespace Deltares
             return x;
         }
 
-        void HistogramDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void HistogramDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             auto weights = std::vector(values.size(), 1.0);
             return fitWeighted(stochast, values, weights);
         }
 
-        void HistogramDistribution::fitWeighted(StochastProperties& stochast, std::vector<double>& values, std::vector<double>& weights)
+        void HistogramDistribution::fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights)
         {
             constexpr int maxRanges = 100;
             constexpr double addFactor = 0.1;

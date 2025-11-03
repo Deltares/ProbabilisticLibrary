@@ -177,7 +177,7 @@ namespace Deltares
             }
         }
 
-        void WeibullDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void WeibullDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             stochast.Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
 

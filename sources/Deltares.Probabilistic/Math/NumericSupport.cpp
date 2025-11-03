@@ -580,7 +580,7 @@ namespace Deltares
             return reversedCombinations;
         }
 
-        double NumericSupport::getMean(std::vector<double>& values)
+        double NumericSupport::getMean(const std::vector<double>& values)
         {
             if (values.empty())
             {
@@ -598,7 +598,7 @@ namespace Deltares
             }
         }
 
-        double NumericSupport::getWeightedMean(std::vector<double>& values, std::vector<double>& weights)
+        double NumericSupport::getWeightedMean(const std::vector<double>& values, const std::vector<double>& weights)
         {
             if (values.size() != weights.size())
             {
@@ -624,7 +624,7 @@ namespace Deltares
             }
         }
 
-        double NumericSupport::getStandardDeviation(double mean, std::vector<double>& values)
+        double NumericSupport::getStandardDeviation(double mean, const std::vector<double>& values)
         {
             if (values.empty())
             {
@@ -646,7 +646,7 @@ namespace Deltares
             }
         }
 
-        double NumericSupport::getStandardDeviation(std::vector<double>& values)
+        double NumericSupport::getStandardDeviation(const std::vector<double>& values)
         {
             double mean = getMean(values);
 
@@ -687,7 +687,7 @@ namespace Deltares
             return values;
         }
 
-        std::vector<double> NumericSupport::zip(std::vector<double>& values1, std::vector<double>& values2, std::function<double(double, double)> function)
+        std::vector<double> NumericSupport::zip(const std::vector<double>& values1, const std::vector<double>& values2, std::function<double(double, double)> function)
         {
             if (values1.size() != values2.size())
             {
@@ -704,7 +704,7 @@ namespace Deltares
             return result;
         }
 
-        double NumericSupport::sum(std::vector<double>& values)
+        double NumericSupport::sum(const std::vector<double>& values)
         {
             double sum = 0;
 
@@ -716,7 +716,7 @@ namespace Deltares
             return sum;
         }
 
-        double NumericSupport::sum(std::vector<double>& values, std::function<double(double)> function)
+        double NumericSupport::sum(const std::vector<double>& values, std::function<double(double)> function)
         {
             double sum = 0;
 

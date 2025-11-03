@@ -53,7 +53,7 @@ namespace Deltares
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
-            void fit(StochastProperties& stochast, std::vector<double>& values, const double shift) override;
+            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
             double getMaxShiftValue(std::vector<double>& values) override;
             double getLogLikelihood(StochastProperties& stochast, double x) override;
@@ -65,7 +65,7 @@ namespace Deltares
             Truncated getTruncatedValue(StochastProperties& stochast) const;
             double getProbability(StochastProperties& stochast, bool isMinimum) const;
             double getUntruncatedU(double u, StochastProperties& stochast);
-            void fitMinMax(StochastProperties& stochast, std::vector<double>& values);
+            void fitMinMax(StochastProperties& stochast, const std::vector<double>& values);
         };
     }
 }

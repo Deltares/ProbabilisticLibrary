@@ -160,7 +160,7 @@ namespace Deltares
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void ConditionalWeibullDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void ConditionalWeibullDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             double minValue = Numeric::NumericSupport::getMinimum(values);
             double meanValue = Numeric::NumericSupport::getMean(values);

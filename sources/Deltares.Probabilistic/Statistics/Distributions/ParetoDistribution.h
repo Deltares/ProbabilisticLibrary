@@ -41,7 +41,7 @@ namespace Deltares
             bool canFit() override { return true; }
             bool canInvert() override { return true; }
             void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            void fit(StochastProperties& stochast, std::vector<double>& values, const double shift) override;
+            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Scale, Shape }; }
         };

@@ -197,7 +197,7 @@ namespace Deltares
             }
         }
 
-        double LogNormalDistribution::getFittedMinimum(std::vector<double>& values)
+        double LogNormalDistribution::getFittedMinimum(const std::vector<double>& values)
         {
             // see https://stats.stackexchange.com/questions/49495/robust-parameter-estimation-for-shifted-log-normal-distribution
 
@@ -240,7 +240,7 @@ namespace Deltares
             return shift;
         }
 
-        double LogNormalDistribution::getPartialAverage(std::vector<double>& sample, double gamma, int low, int high)
+        double LogNormalDistribution::getPartialAverage(const std::vector<double>& sample, double gamma, int low, int high)
         {
             double sum = 0;
             for (int i = low - 1; i < high; i++)
@@ -252,7 +252,7 @@ namespace Deltares
             return sum / n;
         }
 
-        void LogNormalDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void LogNormalDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             stochast.Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
@@ -264,22 +264,22 @@ namespace Deltares
             normal.fit(stochast, logValues, nan(""));
         }
 
-        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
+        void LogNormalDistribution::fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
             double shiftData = std::isnan(shift) ? getFittedMinimum(values) : shift;
-            double shiftPrior = prior->Shift;
+            double shiftPrior = prior.Shift;
 
             double fitShift = shiftPrior;
-            std::shared_ptr<StochastProperties> fitPrior = prior;
+            auto fitPrior = prior;
 
             if (shiftData < shiftPrior)
             {
                 fitShift = shiftData;
 
                 // reset the prior so that a valid shift is applied
-                fitPrior = prior->clone();
-                fitPrior->Shift = fitShift;
-                setMeanAndDeviation(*fitPrior, getMean(*prior), getDeviation(*prior));
+                fitPrior = prior;
+                fitPrior.Shift = fitShift;
+                setMeanAndDeviation(fitPrior, getMean(prior), getDeviation(prior));
             }
 
             std::vector<double> logValues = Numeric::NumericSupport::select(values, [fitShift](double v) {return log(v - fitShift); });
@@ -288,7 +288,7 @@ namespace Deltares
 
             normal.fitPrior(stochast, logValues, fitPrior, nan(""));
 
-            stochast->Shift = fitShift;
+            stochast.Shift = fitShift;
         }
 
         double LogNormalDistribution::getMaxShiftValue(std::vector<double>& values)

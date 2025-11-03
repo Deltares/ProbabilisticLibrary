@@ -235,7 +235,7 @@ namespace Deltares::Statistics
         {
             fit(*stochast, values, shift);
         }
-        virtual void fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        virtual void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             throw Reliability::probLibException("fit not supported");
         }
@@ -246,12 +246,7 @@ namespace Deltares::Statistics
          * \param values Given x-values
          * \param weights Given weights
          */
-        virtual void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
-        {
-            fitWeighted(*stochast, values, weights);
-        }
-        virtual void fitWeighted(StochastProperties& stochast, std::vector<double>& values,
-            std::vector<double>& weights) {
+        virtual void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) {
             fit(stochast, values, nan(""));
         }
 
@@ -263,6 +258,10 @@ namespace Deltares::Statistics
          * \param shift Shift value, if set the shift parameter will not be fitted (available for limited distributions)
          */
         virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
+        {
+            fitPrior(*stochast, values, *prior, shift);
+        }
+        virtual void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
             throw Reliability::probLibException("fit with prior not supported");
         }
@@ -330,7 +329,7 @@ namespace Deltares::Statistics
 
     protected:
 
-        virtual double getFittedMinimum(std::vector<double>& x);
+        virtual double getFittedMinimum(const std::vector<double>& x);
     };
 }
 

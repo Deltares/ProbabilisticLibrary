@@ -159,7 +159,7 @@ namespace Deltares
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void ParetoDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void ParetoDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             stochast.Scale = *std::min_element(values.begin(), values.end());
 

@@ -160,7 +160,7 @@ namespace Deltares
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void RayleighNDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void RayleighNDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             // first Rayleigh fit is done
 

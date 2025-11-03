@@ -156,7 +156,7 @@ namespace Deltares
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void FrechetDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void FrechetDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             int maxLoops = 100;
             double minValue = 0.001;

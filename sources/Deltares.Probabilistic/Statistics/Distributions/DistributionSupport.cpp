@@ -158,7 +158,7 @@ namespace Deltares::Statistics
         return values;
     }
 
-    std::vector<std::shared_ptr<Numeric::WeightedValue>> DistributionSupport::GetWeightedValues(std::vector<double>& values, std::vector<double>& weights)
+    std::vector<std::shared_ptr<Numeric::WeightedValue>> DistributionSupport::GetWeightedValues(const std::vector<double>& values, const std::vector<double>& weights)
     {
         std::vector<std::shared_ptr<Numeric::WeightedValue>> weightedValues;
 

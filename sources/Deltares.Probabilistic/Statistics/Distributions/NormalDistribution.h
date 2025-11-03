@@ -44,9 +44,9 @@ namespace Deltares
             double getCDF(StochastProperties& stochast, double x) override;
             void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
             double getLogLikelihood(StochastProperties& stochast, double x) override;
-            void fit(StochastProperties& stochast, std::vector<double>& values, const double shift) override;
-            void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights) override;
-            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
+            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+            void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
+            void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Location, Scale }; }
         };
     }

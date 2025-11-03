@@ -131,7 +131,7 @@ namespace Deltares
             }
         }
 
-        void ExponentialDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void ExponentialDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             stochast.Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
             stochast.Scale = Numeric::NumericSupport::getMean(values) - stochast.Shift;

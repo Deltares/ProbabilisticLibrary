@@ -142,7 +142,7 @@ namespace Deltares
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void BetaDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void BetaDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             double mean = Numeric::NumericSupport::getMean(values);
             double sigma = Numeric::NumericSupport::getStandardDeviation(mean, values);

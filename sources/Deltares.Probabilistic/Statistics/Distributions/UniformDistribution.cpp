@@ -150,7 +150,7 @@ namespace Deltares
             }
         }
 
-        void UniformDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void UniformDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             double min = *std::min_element(values.begin(), values.end());
             double max = *std::max_element(values.begin(), values.end());

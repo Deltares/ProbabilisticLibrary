@@ -608,7 +608,7 @@ namespace Deltares
 
         void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights) const
         {
-            distribution->fitWeighted(properties, values, weights);
+            distribution->fitWeighted(*properties, values, weights);
         }
 
         void Stochast::fitFromHistogramValues() const

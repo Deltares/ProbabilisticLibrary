@@ -49,7 +49,7 @@ namespace Deltares
             }
         }
 
-        double Distribution::getFittedMinimum(std::vector<double>& x)
+        double Distribution::getFittedMinimum(const std::vector<double>& x)
         {
             double min = Numeric::NumericSupport::getMinimum(x);
             double max = Numeric::NumericSupport::getMaximum(x);

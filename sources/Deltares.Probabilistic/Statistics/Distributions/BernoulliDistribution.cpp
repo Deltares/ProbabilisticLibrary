@@ -112,20 +112,20 @@ namespace Deltares
             }
         }
 
-        void BernoulliDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void BernoulliDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             stochast.Location = Numeric::NumericSupport::getMean(values);
             stochast.Observations = static_cast<int>(values.size());
         }
 
-        void BernoulliDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
+        void BernoulliDistribution::fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
             int n_data = static_cast<int>(values.size());
             double n_data_success = Numeric::NumericSupport::sum(values);
             double n_data_fail = n_data - n_data_success;
 
-            int n_prior = prior->Observations;
-            double n_prior_success = prior->Location * n_prior;
+            int n_prior = prior.Observations;
+            double n_prior_success = prior.Location * n_prior;
             double n_prior_fail = n_prior - n_prior_success;
 
             // assume a beta distribution, the shape properties can be set according to binomial experiments
@@ -137,8 +137,8 @@ namespace Deltares
 
             double postMean = postAlpha / (postAlpha + postBeta);
 
-            stochast->Location = postMean;
-            stochast->Observations = prior->Observations + n_data;
+            stochast.Location = postMean;
+            stochast.Observations = prior.Observations + n_data;
         }
 
         std::vector<double> BernoulliDistribution::getDiscontinuityPoints(const StochastProperties& stochast)

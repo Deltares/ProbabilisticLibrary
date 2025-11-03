@@ -124,7 +124,7 @@ namespace Deltares
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void GammaDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
+        void GammaDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             double mean = Numeric::NumericSupport::getMean(values);
 
