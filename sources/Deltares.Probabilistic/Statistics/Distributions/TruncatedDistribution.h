@@ -39,22 +39,22 @@ namespace Deltares
             }
 
             double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
-            bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
+            double getUFromX(StochastProperties& stochast, double x) override;
+            bool isVarying(StochastProperties& stochast) override;
             bool canTruncate() override { return true; }
             bool canInvert() override { return this->innerDistribution->canInvert(); }
             bool canFit() override { return this->innerDistribution->canFit(); }
             bool canFitPrior() override { return this->innerDistribution->canFitPrior(); }
-            double getMean(std::shared_ptr<StochastProperties> stochast) override;
-            double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
-            void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
+            double getMean(StochastProperties& stochast) override;
+            double getDeviation(StochastProperties& stochast) override;
+            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
             void setShift(StochastProperties& stochast, const double shift, bool inverted) override;
-            double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
-            double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
-            void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
-            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
+            double getPDF(StochastProperties& stochast, double x) override;
+            double getCDF(StochastProperties& stochast, double x) override;
+            void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
+            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
+            void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
             double getMaxShiftValue(std::vector<double>& values) override;
             double getLogLikelihood(StochastProperties& stochast, double x) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;

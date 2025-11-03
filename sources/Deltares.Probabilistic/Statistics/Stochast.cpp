@@ -654,7 +654,7 @@ namespace Deltares
 
         double Stochast::getKSTest(std::vector<double> values) const
         {
-            return KSCalculator::getGoodnessOfFit(values, distribution, properties);
+            return KSCalculator::getGoodnessOfFit(values, *distribution, *properties);
         }
 
         std::shared_ptr<Stochast> Stochast::getVariableStochast(double x)

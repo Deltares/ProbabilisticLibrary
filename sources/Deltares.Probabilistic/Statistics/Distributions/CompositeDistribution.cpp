@@ -29,10 +29,10 @@ namespace Deltares
 {
     namespace Statistics
     {
-        bool CompositeDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool CompositeDistribution::isVarying(StochastProperties& stochast)
         {
             std::vector<std::shared_ptr<ContributingStochast>> contributingStochasts;
-            for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
+            for (const std::shared_ptr<ContributingStochast>& contributingStochast : stochast.ContributingStochasts)
             {
                 if (contributingStochast->Probability > 0.0)
                 {
@@ -53,7 +53,7 @@ namespace Deltares
 
             // All non varying stochasts, but if they do not all lead to the same value, the composite stochast is varying
             double firstMean = contributingStochasts.front()->Stochast->getMean();
-            for (std::shared_ptr<ContributingStochast> contributingStochast : contributingStochasts)
+            for (const std::shared_ptr<ContributingStochast>& contributingStochast : contributingStochasts)
             {
                 if (contributingStochast != contributingStochasts.front() && contributingStochast->Stochast->getMean() != firstMean)
                 {
@@ -65,10 +65,10 @@ namespace Deltares
             return false;
         }
 
-        void CompositeDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void CompositeDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
             double sum = 0;
-            for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
+            for (const std::shared_ptr<ContributingStochast>& contributingStochast : stochast.ContributingStochasts)
             {
                 contributingStochast->validate(report);
 
@@ -81,12 +81,12 @@ namespace Deltares
             }
         }
 
-        double CompositeDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double CompositeDistribution::getMean(StochastProperties& stochast)
         {
             double sum = 0;
             double sumWeights = 0;
 
-            for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
+            for (const std::shared_ptr<ContributingStochast>& contributingStochast : stochast.ContributingStochasts)
             {
                 if (contributingStochast->Probability > 0)
                 {
@@ -98,28 +98,28 @@ namespace Deltares
             return sum / sumWeights;
         }
 
-        double CompositeDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double CompositeDistribution::getDeviation(StochastProperties& stochast)
         {
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
-        double CompositeDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double CompositeDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             return DistributionSupport::getXFromUByIteration(*this, stochast, u);
         }
 
-        double CompositeDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double CompositeDistribution::getUFromX(StochastProperties& stochast, double x)
         {
             double cdf = getCDF(stochast, x);
             return StandardNormal::getUFromP(cdf);
         }
 
-        double CompositeDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double CompositeDistribution::getPDF(StochastProperties& stochast, double x)
         {
             double sum = 0;
             double sumWeights = 0;
 
-            for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
+            for (const std::shared_ptr<ContributingStochast>& contributingStochast : stochast.ContributingStochasts)
             {
                 if (contributingStochast->Probability > 0)
                 {
@@ -131,12 +131,12 @@ namespace Deltares
             return sum / sumWeights;
         }
 
-        double CompositeDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double CompositeDistribution::getCDF(StochastProperties& stochast, double x)
         {
             double sum = 0;
             double sumWeights = 0;
 
-            for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
+            for (const std::shared_ptr<ContributingStochast>& contributingStochast : stochast.ContributingStochasts)
             {
                 if (contributingStochast->Probability > 0)
                 {
@@ -166,11 +166,11 @@ namespace Deltares
             return discontinuityPoints;
         }
 
-        std::vector<double> CompositeDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> CompositeDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             std::vector<double> specialPoints;
 
-            for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
+            for (const std::shared_ptr<ContributingStochast>& contributingStochast : stochast.ContributingStochasts)
             {
                 if (contributingStochast->Probability > 0)
                 {

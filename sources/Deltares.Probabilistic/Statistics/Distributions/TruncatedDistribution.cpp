@@ -102,35 +102,35 @@ namespace Deltares
             }
         }
 
-        bool TruncatedDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool TruncatedDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Minimum != stochast->Maximum && this->innerDistribution->isVarying(stochast);
+            return stochast.Minimum != stochast.Maximum && innerDistribution->isVarying(stochast);
         }
 
-        void TruncatedDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void TruncatedDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Maximum, "maximum", subject);
-            this->innerDistribution->validate(report, stochast, subject);
+            Logging::ValidationSupport::checkMinimum(report, stochast.Minimum, stochast.Maximum, "maximum", subject);
+            innerDistribution->validate(report, stochast, subject);
         }
 
-        double TruncatedDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double TruncatedDistribution::getMean(StochastProperties& stochast)
         {
-            return this->innerDistribution->getMean(stochast);
+            return innerDistribution->getMean(stochast);
         }
 
-        double TruncatedDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double TruncatedDistribution::getDeviation(StochastProperties& stochast)
         {
-            return this->innerDistribution->getDeviation(stochast);
+            return innerDistribution->getDeviation(stochast);
         }
 
-        void TruncatedDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void TruncatedDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            this->innerDistribution->setMeanAndDeviation(stochast, mean, deviation);
+            innerDistribution->setMeanAndDeviation(stochast, mean, deviation);
         }
 
         void TruncatedDistribution::setShift(StochastProperties& stochast, const double shift, bool inverted)
         {
-            this->innerDistribution->setShift(stochast, shift, inverted);
+            innerDistribution->setShift(stochast, shift, inverted);
         }
 
         double TruncatedDistribution::getXFromU(StochastProperties& stochast, double u)
@@ -156,25 +156,25 @@ namespace Deltares
             }
         }
 
-        double TruncatedDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double TruncatedDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (stochast->Minimum == stochast->Maximum)
+            if (stochast.Minimum == stochast.Maximum)
             {
                 return 0;
             }
-            else if (x <= stochast->Minimum)
+            else if (x <= stochast.Minimum)
             {
                 return -StandardNormal::UMax;
             }
-            else if (x >= stochast->Maximum)
+            else if (x >= stochast.Maximum)
             {
                 return StandardNormal::UMax;
             }
             else
             {
-                Truncated truncated = getTruncatedValue(*stochast);
+                Truncated truncated = getTruncatedValue(stochast);
 
-                double u = this->innerDistribution->getUFromX(stochast, x);
+                double u = innerDistribution->getUFromX(stochast, x);
                 double q = StandardNormal::getQFromU(u);
 
                 double qTruncated = (q - truncated.UpperProbability) * truncated.Factor;
@@ -183,54 +183,54 @@ namespace Deltares
             }
         }
 
-        double TruncatedDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double TruncatedDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (stochast->Minimum == stochast->Maximum)
+            if (stochast.Minimum == stochast.Maximum)
             {
-                return x == stochast->Minimum ? 1 : 0;
+                return x == stochast.Minimum ? 1 : 0;
             }
-            else if (x < stochast->Minimum || x > stochast->Maximum)
+            else if (x < stochast.Minimum || x > stochast.Maximum)
             {
                 return 0;
             }
 
-            Truncated truncated = getTruncatedValue(*stochast);
-            return truncated.Factor * this->innerDistribution->getPDF(stochast, x);
+            Truncated truncated = getTruncatedValue(stochast);
+            return truncated.Factor * innerDistribution->getPDF(stochast, x);
         }
 
-        double TruncatedDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double TruncatedDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x < stochast->Minimum)
+            if (x < stochast.Minimum)
             {
-                return 0;
+                return 0.0;
             }
-            else if (x > stochast->Maximum)
+            else if (x > stochast.Maximum)
             {
-                return 1;
+                return 1.0;
             }
 
-            double u = this->getUFromX(stochast, x);
+            double u = getUFromX(stochast, x);
 
             return StandardNormal::getPFromU(u);
         }
 
-        void TruncatedDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void TruncatedDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
-            this->innerDistribution->setXAtU(stochast, x, getUntruncatedU(u, *stochast), constantType);
+            this->innerDistribution->setXAtU(stochast, x, getUntruncatedU(u, stochast), constantType);
         }
 
         void TruncatedDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             // perform the fit without truncation
-            this->innerDistribution->fit(stochast, values, shift);
-            this->fitMinMax(stochast, values);
+            innerDistribution->fit(stochast, values, shift);
+            fitMinMax(stochast, values);
         }
 
-        void TruncatedDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
+        void TruncatedDistribution::fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
             // perform the fit without truncation
-            this->innerDistribution->fitPrior(stochast, values, prior, shift);
-            this->fitMinMax(*stochast, values);
+            innerDistribution->fitPrior(stochast, values, prior, shift);
+            fitMinMax(stochast, values);
         }
 
         double TruncatedDistribution::getMaxShiftValue(std::vector<double>& values)
