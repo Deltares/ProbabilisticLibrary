@@ -43,8 +43,14 @@ classDiagram
 
     class CorrelationMatrix{}
 
+    class LimitStateFunction{
+        +parameter ModelParameter,
+        +critical_value float
+    }
+
     class Settings{
         +method ReliabilityMethod
+        +limit_state_function LimitStateFunction
     }
     class StochastSettings{
         +variable Stochast
@@ -67,6 +73,8 @@ classDiagram
     Stochast "*" <-- ModelProject
     CorrelationMatrix <-- ModelProject
     Settings <-- ReliabilityProject
+    LimitStateFunction <-- Settings
+    ModelParameter "parameter, compare" <-- LimitStateFunction
     StochastSettings "*" <-- Settings
     Stochast <-- StochastSettings
     DesignPoint <-- ReliabilityProject
@@ -680,7 +688,7 @@ class LimitStateFunction(FrozenObject):
 
 	@property
 	def parameter(self) -> str:
-		"""The output parameter to be used"""
+		"""The output `probabilistic_library.project.ModelParameter` to be used"""
 		return interface.GetStringValue(self._id, 'parameter')
 		
 	@parameter.setter

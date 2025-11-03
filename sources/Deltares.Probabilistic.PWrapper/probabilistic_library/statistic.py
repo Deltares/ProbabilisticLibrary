@@ -78,6 +78,7 @@ from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
 from math import isnan, nan
+
 from .utils import FrozenObject, FrozenList, PrintUtils, NumericUtils, CallbackList
 from .logging import Evaluation, Message, ValidationReport
 from . import interface
@@ -1367,12 +1368,12 @@ class ContributingStochast(FrozenObject):
 			interface.SetIntValue(self._id, 'variable',  self._variable._id)
 
 class ConditionalValue(FrozenObject):
-	"""Defines the stochast properties at a certain value of a conditional_source, which is used when
-    a stochast is conditional
+	"""Defines the stochast properties at a certain value of a `Stochast.conditional_source`, which is used when
+    a stochast is `Stochast.conditional`
 
     Several conditional values form a list, which is used to derive stochast properties in case of a
     conditional stochast. The values in this conditional value are used for interpolation to retrieve
-    the stochast properties at a certain value assigned to the conditional_source of a stochast."""
+    the stochast properties at a certain value assigned to the `Stochast.conditional_source` of a stochast."""
 
 	def __init__(self, id = None):
 		if id is None:
