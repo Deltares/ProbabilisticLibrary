@@ -19,6 +19,43 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+"""
+This module contains all the base functionality for project.
+
+A project forms the basis for performing an analysis, being a reliability analysis, uncertainty analysis or sensitivity
+analysis. To reliability additinal analyses are available to combine or upscale reliability results.
+
+To a project a model can be assigned, being a python script of a PTK model (the ptk.whl is needed for that). When a model
+assigned, stochastic variables and a correlation matrix are automatically provided.
+
+```mermaid
+classDiagram
+    class ModelProject{
+        +model ZModel
+        +variables list[Stochast]
+        +correlation_matrix CorrelationMatrix
+    }
+    class Stochast{}
+    class CorrelationMatrix{}
+    class ZModel{
+        +name : string
+        +input_parameters : list[ModelParameter]
+        +output_parameters : list[ModelParameter]
+        ~run()
+        ~run_multiple()
+    }
+    class ModelParameter{
+        +name : string
+    }
+
+    ZModel <-- ModelProject
+    ModelParameter "*, input, output " <-- ModelProject
+    Stochast <-- ModelProject
+    CorrelationMatrix <-- ModelProject
+```
+"""
+
+
 from __future__ import annotations
 import sys
 from multiprocessing import Pool, cpu_count
@@ -66,7 +103,7 @@ class ZModelContainer:
 class ZModel(FrozenObject):
 	"""Wrapper around a python function or method.
 
-    This class is created by a `ModelProject` when the model is set.
+    This class is created by a `ModelProject` when its model is set.
 
     The ZModel provides additional information about its input and output parameters.
     This is based on reflection when the ZModel is created."""
@@ -176,6 +213,7 @@ class ZModel(FrozenObject):
 		return FrozenList(parameters)
 
 	def is_model_valid(self) -> bool:
+		"""Indicates whether the model is valid"""
 		if self._is_function:
 			return True
 		elif not self._model is None:
@@ -209,7 +247,7 @@ class ZModel(FrozenObject):
 			self._model.set_max_processes(value)
 
 	def initialize_for_run(self):
-		"""Method to be called before the first run"""
+		"""Method to be called before the first run (this method is used internally by `ModelProject`)"""
 		self._has_arrays = False
 		for parameter in self.input_parameters:
 			if parameter.is_array:
@@ -242,7 +280,7 @@ class ZModel(FrozenObject):
 				self._pool = None
 	
 	def update(self):
-		"""Update method, used internally"""
+		"""Updates input and output parameters (this method is used internally by `ModelProject`)"""
 		if not self._model is None:
 			if self._model.is_dirty():
 				self._model.update_model()
@@ -266,7 +304,7 @@ class ZModel(FrozenObject):
 		return args
 
 	def run_multiple(self, samples):
-		"""Performs the execution of multiple samples by the model"""
+		"""Performs the execution of multiple samples by the model (used internally)"""
 		if self._is_function and self._pool is None:
 			for sample in samples:
 				self.run(sample)
@@ -282,7 +320,7 @@ class ZModel(FrozenObject):
 			ZModel._multiple_callback(samples)
 
 	def run(self, sample):
-		"""Performs the execution of a sample by the model"""
+		"""Performs the execution of a sample by the model (used internally)"""
 		if self._is_function:
 			sample_input = self._get_input(sample)
 			z = ZModel._callback(*sample_input)
@@ -622,10 +660,35 @@ class RunProjectSettings(FrozenObject):
 class RunProject(ModelProject):
 	"""Project for a running a model. This is the main entry point for running a model.
 
-    This class is based on the `ModelProject` class. The model to use is defined in this class in 'ModelProject.model'.
-    When a model is set, variables and settingsare generated.
+    This class is based on the `ModelProject` class. The model to use is defined in
+    this class in `ModelProject.model`. When a model is set, variables and settings
+    are generated.
 
-    To run the model, use the `run` method. This results are stored in `realization`."""
+    To run the model, use the `run` method. This results are stored in `realization`.
+
+    ```mermaid
+    classDiagram
+        class ModelProject{
+            +model ZModel
+            +variables list[Stochast]
+            +correlation_matrix CorrelationMatrix
+        }
+        class RunProject{
+            +settings RunProjectSettings
+            +realization Evalution
+            +run()
+        }
+        class RunProjectSettings{}
+        class Stochast{}
+        class CorrelationMatrix{}
+        class Evaluation{}
+        RunProject <|-- ModelProject
+        Stochast <-- ModelProject
+        CorrelationMatrix <-- ModelProject
+        RunProjectSettings <-- RunProject
+        Evaluation <-- RunProject
+    ```
+    """
 
 	def __init__(self):
 		super().__init__()
@@ -1011,9 +1074,37 @@ class CombineProject(FrozenObject):
 
     The design points to be combined should be added to the list of `design_points`. 
 
-    To run the combination, use the `run` method. This results in a `design_point`, where the reliability
-    index reflects the combined reliability index. The original `design_points` are added to the
-    `DesignPoint.contributing_design_points` of the resulting design point."""
+    To run the combination, use the `run` method. This results in a `design_point`, where the
+    reliability index reflects the combined reliability index. The original `design_points` are
+    added to the `probabilistic_library.reliability.DesignPoint.contributing_design_points` of the
+    resulting design point.
+
+    ```mermaid
+    classDiagram
+        class CombineProject{
+            +design_points list[DesignPoint]
+            +design_point DesignPoint
+            +settings CombineSettings
+            +run()
+        }
+
+        class Stochast{}
+        class CombineSettings{
+            +combine_type CombineType
+            +combine_method CombineMethod
+        }
+        class CorrelationMatrix{}
+        class SelfCorrelationMatrix{}
+        class Stochast{}
+
+        DesignPoint "*, input" <-- CombineProject
+        DesignPoint "result" <-- CombineProject
+        CombineSettings <-- CombineProject
+        CorrelationMatrix <-- CombineProject
+        SelfCorrelationMatrix <-- CombineProject
+        Stochast "*" <-- SelfCorrelationMatrix
+    ```
+    """
 
 	def __init__(self):
 		self._id = interface.Create('combine_project')
@@ -1090,7 +1181,9 @@ class CombineProject(FrozenObject):
 	@property
 	def design_point(self) -> DesignPoint:
 		"""The resulting combined design point, invoked by `run`
-        Is empty when the run failed. The original `design_points` are added to the `DesignPoint.contributing_design_point`"""
+        Is empty when the run failed. The original `design_points` are added to the
+        `probabilistic_library..reliability.DesignPoint.contributing_design_point`
+        """
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
@@ -1104,15 +1197,33 @@ class ExcludingCombineProject(FrozenObject):
 	"""Project for combining design points exclusively or, otherwisely stated, design points calculated for a
     scenario. This is the main entry point for this operation.
 
-    Excluding design points refer to design points generated for a scenario. Each scenario has a probability
-    too, but scenarios have no overlap. Probabilities of scenarios should add up to 1.
+    Excluding design points refer to design points generated for a scenario. Each scenario has a
+    probability too, but scenarios have no overlap. Probabilities of scenarios should add up to 1.
 
-    The design points to be combined should be added to the list of `design_points`. The list of `scenarios`
-    should correspond with the list of `design_points`.
+    The design points to be combined should be added to the list of `design_points`. The list of
+    `scenarios` should correspond with the list of `design_points`.
 
-    To run the combination, use the `run` method. This results in a `design_point`, where the reliability
-    index reflects the combined reliability index. The original `design_points` are added to the
-    `DesignPoint.contributing_design_points` of the resulting design point."""
+    To run the combination, use the `run` method. This results in a `design_point`, where the
+    reliability index reflects the combined reliability index. The original `design_points` are
+    added to the `probabilistic_library.reliability.DesignPoint.contributing_design_points` of the resulting design point.
+
+    ```mermaid
+    classDiagram
+        class ExcludingCombineProject{
+            +design_points list[DesignPoint]
+            +scenarios list[float]
+            +settings ExcludingCombineSettings
+            +design_point DesignPoint
+            +run()
+        }
+
+        class ExcludingCombineSettings{}
+
+        DesignPoint "*, input" <-- ExcludingCombineProject
+        DesignPoint "result" <-- ExcludingCombineProject
+        ExcludingCombineSettings <-- ExcludingCombineProject
+    ```
+    """
 
 	def __init__(self):
 		self._id = interface.Create('excluding_combine_project')
@@ -1215,16 +1326,37 @@ class ExcludingCombineProject(FrozenObject):
 
 class LengthEffectProject(FrozenObject):
 	"""Project for applying the length effect to a design point, also known as upscaling. This is
-   the main entry point for applying the length effect.
+    the main entry point for applying the length effect.
 
     When a design point is valid for a certain section or cross section, it can be useful to make it
-    applicable to a longer section. This operation is taking into account the length effect or upscaling.
-    Each input variable as a valialidt for a certain length. These lengths are stored in the 'correlation_length'
-    list. The length effect applied design point is calculated for a requested 'length'.
+    applicable to a longer section. This operation is taking into account the length effect or
+    upscaling. Each input variable as a valialidt for a certain length. These lengths are stored in
+    the `correlation_lengths` list. The length effect applied design point is
+    calculated for a requested `length`.
 
-    To run the combination, use the `run` method. This results in a `design_point`, where the reliability
-    index reflects the length effect applied reliability index. The original `design_points` are added to the
-    `DesignPoint.contributing_design_points` of the resulting design point."""
+    To run the combination, use the `LengthEffectProject.run` method. This results in a `design_point`, where the
+    reliability index reflects the length effect applied reliability index. The original
+    `LengthEffectProject.design_point_cross_section` is added to the
+    `probabilistic_library.reliability.DesignPoint.contributing_design_points`  of the resulting design point.
+
+    ```mermaid
+    classDiagram
+        class LengthEffectProject{
+            +design_point_cross_section DesignPoint
+            +design_point DesignPoint
+            +run()
+        }
+
+        class Stochast{}
+        class SelfCorrelationMatrix{}
+        class Stochast{}
+
+        DesignPoint "input" <-- LengthEffectProject
+        DesignPoint "result" <-- LengthEffectProject
+        SelfCorrelationMatrix <-- LengthEffectProject
+        Stochast "*" <-- SelfCorrelationMatrix
+    ```
+    """
 
 	def __init__(self):
 		self._id = interface.Create('length_effect_project')

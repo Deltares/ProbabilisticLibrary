@@ -30,14 +30,46 @@ a reliability, uncertainty or sensitivity analysis).
 ```mermaid
 classDiagram
     class Stochast{
-        +distribution DistributionType
+        +distribution : DistributionType
+        +"defining properties" : float
+        +"derived properties" : float
+        +is_conditional : bool
+        +conditional_source : Stochast
     }
     class HistogramValue{
+        +lower_bound: float
+        +upper_bound: float
+        +amount: float
+        +reliability_index: float
     }
     class DiscreteValue{
+        +x: float
+        +amount: float
     }
-    HistogramValue <-- Stochast
-    DiscreteValue <-- Stochast
+    class FragilityValue{
+        +x: float
+        +reliability_index: float
+        +design_point : DesignPoint
+    }
+    class DesignPoint{
+    }
+    class ContributingStochast{
+        +probability float
+        +variable Stochast
+    }
+    class ConditionalValue{
+        +x: float
+        +"defining properties" 
+    }
+    HistogramValue "*" <-- Stochast
+    DiscreteValue "*" <-- Stochast
+    FragilityValue "*" <-- Stochast
+    Stochast "conditional source" <-- Stochast
+    Stochast "conditional source" <-- Stochast
+    ConditionalValue "*" <-- Stochast
+    Stochast <-- ContributingStochast
+    ContributingStochast "*" <-- Stochast
+    DesignPoint <-- FragilityValue
 ```
 """
 
@@ -199,8 +231,8 @@ class Stochast(FrozenObject):
     The stochastic variable is definied by the following properties: distribution, location, scale, shape, shape_b, shift, shift_b,
     minimum, maximum, observations, truncated and inverted. Depending on the distribution, a selection of these properties are used.
     To find out which properties are used by a distribution, print the variable, which only prints the properties in use. For some
-    distributions, the list of histogram_values, discrete_values or fragility_values is used. Composite stochasts are supported, where
-    a stochast consists of several other stochasts, each with a certain fraction. 
+    distributions, the list of `histogram_values`, `discrete_values` or `fragility_values` is used. Composite stochasts are supported,
+    where a stochast consists of several other stochasts, each with a certain fraction. 
 
     A number of characteristics can be derived. They can also be set and then stochast properties are updated. These characteristics are:
     mean, (standard) deviation, variation (coefficient) and design_value. The design_value needs the input values design_factor and
@@ -211,14 +243,14 @@ class Stochast(FrozenObject):
     fit_prior enable this feature. The goodness of fit can be retrieved by get_ks_test.
 
     Conditional stochasts are supported. The stochast properties depend on the value (or realization in a probabiistic analysis) of another
-    stochast, indicated by conditional_source. A table condiotnal_values is used to define the stochast properties for a certain value  of
+    stochast, indicated by `conditional_source`. A table condiotnal_values is used to define the stochast properties for a certain value  of
     the source stochast.
 
     A stochast can function as an array in a probabilstic analysis. The stochast will function as a number of uncorrelated stochastic variables.
     To define an array, use is_array and array_size.
 
-    Printing and plotting are supported with methods print, plot_get_plot, get_series and get_special_values. Validation is supported by
-    is_valid and validate."""
+    Printing and plotting are supported with methods print, plot, get_plot, get_series and get_special_values. Validation is supported by
+    `is_valid` and `validate`."""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1107,7 +1139,7 @@ class DiscreteValue(FrozenObject):
 		interface.SetValue(self._id, 'amount',  value)
 
 class FragilityValue(FrozenObject):
-	"""Defines a point in a CDF curve of a stochast in case of a cdf_curve distribution"""
+	"""Defines a point in a CDF curve of a `Stochast` in case of a cdf_curve distribution"""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1200,7 +1232,7 @@ class FragilityValue(FrozenObject):
 			interface.SetIntValue(self._id, 'design_point',  self._design_point._id)
 
 class HistogramValue(FrozenObject):
-	"""Defines a histogram value (or bin) of a stochast in case of a histogram distribution
+	"""Defines a histogram value (or bin) of a `Stochast` in case of a histogram distribution
 
     A histoogram value is defined by a lower bound and upper bound and contains an amount, which is the
     number of occurrences between these boundaries (the height of the bin). The difference between the lower
@@ -1624,7 +1656,7 @@ class SelfCorrelationMatrix(FrozenObject):
 class Scenario(FrozenObject):
 	"""Defines the contribution of a design point, when it is combined with other design point points in an exclusive way
 
-    A scenario corresponds with a design point. They will be combined by an EcludingCombineProject."""
+    A scenario corresponds with a design point. They will be combined by an `project.ExcludingCombineProject`."""
 
 	def __init__(self, id = None):
 		if id is None:

@@ -19,6 +19,54 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+"""
+This module contains all uncertainty related functionality.
+
+The entry point for performing an uncertainty analysis is UncertaintyProject. A model can be attached to an uncertainty project,
+then stochastic variables, correlation matrix and settings are provided. When the uncertainty project is run, an uncertainty
+result is generated, which contains a stochastic variable, which resembles the variation of the output of the model.
+
+```mermaid
+classDiagram
+    class ModelProject{
+        +model ZModel
+        +variables list[Stochast]
+        +correlation_matrix CorrelationMatrix
+    }
+    class UncertaintyProject{
+        +parameter ModelParameter
+        +settings UncertaintySettings
+        +results list[UncertaintyResult]
+        +result UncertaintyResult
+        +run()
+    }
+    class Stochast{}
+    class CorrelationMatrix{}
+    class UncertaintySettings{
+        +method UncertaintyMethod
+    }
+    class StochastSettings{
+        +variable Stochast
+    }
+    class UncertaintyResult{
+        +parameter ModelParameter
+        +variable Stochast
+        +realizations list[Evaluation]
+    }
+    class Evaluation{}
+
+    UncertaintyProject <|-- ModelProject
+    Stochast "*" <-- ModelProject
+    CorrelationMatrix <-- ModelProject
+    UncertaintySettings <-- UncertaintyProject
+    StochastSettings "*" <-- UncertaintySettings
+    Stochast <-- StochastSettings
+    UncertaintyResult "*" <-- UncertaintyProject
+    Stochast <-- UncertaintyResult
+    Evaluation "*" <-- UncertaintyResult
+```
+"""
+
 import sys
 from math import isnan
 from enum import Enum
