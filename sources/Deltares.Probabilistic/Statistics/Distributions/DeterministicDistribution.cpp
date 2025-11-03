@@ -79,9 +79,9 @@ namespace Deltares
             }
         }
 
-        void DeterministicDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void DeterministicDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
-            stochast->Location = x;
+            stochast.Location = x;
         }
 
         std::vector<double> DeterministicDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
@@ -103,10 +103,10 @@ namespace Deltares
             };
         }
 
-        void DeterministicDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void DeterministicDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Location = Numeric::NumericSupport::getMean(values);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Location = Numeric::NumericSupport::getMean(values);
+            stochast.Observations = static_cast<int>(values.size());
         }
     }
 }

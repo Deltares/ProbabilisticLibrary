@@ -491,7 +491,7 @@ namespace Deltares
 
         void Stochast::initializeForRun()
         {
-            distribution->initializeForRun(properties);
+            distribution->initializeForRun(*properties);
 
             if (IsVariableStochast)
             {

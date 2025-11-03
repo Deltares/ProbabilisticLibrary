@@ -186,10 +186,6 @@ namespace Deltares::Statistics
          * \brief Initializes a stochast for fast u->x conversions during probabilistic analysis
          * \param stochast Stochast to be initialized
          */
-        virtual void initializeForRun(std::shared_ptr<StochastProperties> stochast)
-        {
-            initializeForRun(*stochast);
-        }
         virtual void initializeForRun(StochastProperties& stochast) {}
 
         /**
@@ -223,7 +219,11 @@ namespace Deltares::Statistics
          * \param u Given u-value
          * \param constantType Value to be kept constant when modifying the stochast (variation coefficient or standard deviation) 
          */
-        virtual void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) {}
+        virtual void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        {
+            setXAtU(*stochast, x, u, constantType);
+        }
+        virtual void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) {}
 
         /**
          * \brief Updates parameters of a stochast, so that they fit best a number of given x-values
@@ -232,6 +232,10 @@ namespace Deltares::Statistics
          * \param shift Shift value, if set the shift parameter will not be fitted (available for limited distributions)
          */
         virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        {
+            fit(*stochast, values, shift);
+        }
+        virtual void fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             throw Reliability::probLibException("fit not supported");
         }
@@ -242,8 +246,14 @@ namespace Deltares::Statistics
          * \param values Given x-values
          * \param weights Given weights
          */
-        virtual void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values,
-                                 std::vector<double>& weights) { fit(stochast, values, nan("")); }
+        virtual void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        {
+            fitWeighted(*stochast, values, weights);
+        }
+        virtual void fitWeighted(StochastProperties& stochast, std::vector<double>& values,
+            std::vector<double>& weights) {
+            fit(stochast, values, nan(""));
+        }
 
         /**
          * \brief Updates parameters of a stochast with the use of a prior stochast, so that they fit best a number of given x-values

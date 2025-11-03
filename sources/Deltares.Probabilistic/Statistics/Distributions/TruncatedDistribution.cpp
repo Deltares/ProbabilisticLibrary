@@ -219,7 +219,7 @@ namespace Deltares
             this->innerDistribution->setXAtU(stochast, x, getUntruncatedU(u, *stochast), constantType);
         }
 
-        void TruncatedDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void TruncatedDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             // perform the fit without truncation
             this->innerDistribution->fit(stochast, values, shift);
@@ -230,7 +230,7 @@ namespace Deltares
         {
             // perform the fit without truncation
             this->innerDistribution->fitPrior(stochast, values, prior, shift);
-            this->fitMinMax(stochast, values);
+            this->fitMinMax(*stochast, values);
         }
 
         double TruncatedDistribution::getMaxShiftValue(std::vector<double>& values)
@@ -238,7 +238,7 @@ namespace Deltares
             return innerDistribution->getMaxShiftValue(values);
         }
 
-        void TruncatedDistribution::fitMinMax(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void TruncatedDistribution::fitMinMax(StochastProperties& stochast, std::vector<double>& values)
         {
             // sets minimum and maximum
             double min = *std::min_element(values.begin(), values.end());
@@ -247,8 +247,8 @@ namespace Deltares
             double diff = max - min;
             double add = diff / values.size();
 
-            stochast->Minimum = min - add;
-            stochast->Maximum = max + add;
+            stochast.Minimum = min - add;
+            stochast.Maximum = max + add;
 
             std::vector<DistributionPropertyType> properties = getParameters();
 
@@ -263,33 +263,33 @@ namespace Deltares
                 {
                 case DistributionPropertyType::Location:
                 {
-                    minValues.push_back(stochast->Location - 3 * stochast->Scale);
-                    maxValues.push_back(stochast->Location + 3 * stochast->Scale);
-                    initValues.push_back(stochast->Location);
+                    minValues.push_back(stochast.Location - 3.0 * stochast.Scale);
+                    maxValues.push_back(stochast.Location + 3.0 * stochast.Scale);
+                    initValues.push_back(stochast.Location);
                     fitProperties.push_back(property);
                     break;
                 }
                 case DistributionPropertyType::Scale:
                 {
-                    minValues.push_back(0.1 * stochast->Scale);
-                    maxValues.push_back(1.9 * stochast->Scale);
-                    initValues.push_back(stochast->Scale);
+                    minValues.push_back(0.1 * stochast.Scale);
+                    maxValues.push_back(1.9 * stochast.Scale);
+                    initValues.push_back(stochast.Scale);
                     fitProperties.push_back(property);
                     break;
                 }
                 case DistributionPropertyType::Shift:
                 {
-                    minValues.push_back(stochast->Shift - 3 * stochast->Scale);
-                    maxValues.push_back(stochast->Shift + 3 * stochast->Scale);
-                    initValues.push_back(stochast->Shift);
+                    minValues.push_back(stochast.Shift - 3.0 * stochast.Scale);
+                    maxValues.push_back(stochast.Shift + 3.0 * stochast.Scale);
+                    initValues.push_back(stochast.Shift);
                     fitProperties.push_back(property);
                     break;
                 }
                 case DistributionPropertyType::Shape:
                 {
-                    minValues.push_back(0.1 * stochast->Shape);
-                    maxValues.push_back(1.9 * stochast->Shape);
-                    initValues.push_back(stochast->Shape);
+                    minValues.push_back(0.1 * stochast.Shape);
+                    maxValues.push_back(1.9 * stochast.Shape);
+                    initValues.push_back(stochast.Shape);
                     fitProperties.push_back(property);
                     break;
                 }
@@ -310,7 +310,7 @@ namespace Deltares
                     value = std::max(0.0, value);
                 }
 
-                stochast->applyValue(fitProperties[i], value);
+                stochast.applyValue(fitProperties[i], value);
             }
         }
 

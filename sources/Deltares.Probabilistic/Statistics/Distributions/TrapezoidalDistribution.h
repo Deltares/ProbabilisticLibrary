@@ -38,10 +38,10 @@ namespace Deltares
             void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
             double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(StochastProperties& stochast, double x) override;
-            void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
+            void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
             bool canFit() override { return true; }
             void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
+            void fit(StochastProperties& stochast, std::vector<double>& values, const double shift) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Minimum, Maximum, Shift, ShiftB }; }
         private:

@@ -136,7 +136,7 @@ namespace Deltares
             }
         }
 
-        void GeneralizedParetoDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void GeneralizedParetoDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }

@@ -116,14 +116,14 @@ namespace Deltares
             }
         }
 
-        void ExponentialDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void ExponentialDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                double current = getXFromU(*stochast, u);
-                double diff = x - current;
+                const double current = getXFromU(stochast, u);
+                const double diff = x - current;
 
-                stochast->Shift += diff;
+                stochast.Shift += diff;
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
@@ -131,11 +131,11 @@ namespace Deltares
             }
         }
 
-        void ExponentialDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void ExponentialDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
-            stochast->Scale = Numeric::NumericSupport::getMean(values) - stochast->Shift;
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
+            stochast.Scale = Numeric::NumericSupport::getMean(values) - stochast.Shift;
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         double ExponentialDistribution::getMaxShiftValue(std::vector<double>& values)

@@ -349,13 +349,13 @@ namespace Deltares
             return x;
         }
 
-        void HistogramDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void HistogramDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             auto weights = std::vector(values.size(), 1.0);
             return fitWeighted(stochast, values, weights);
         }
 
-        void HistogramDistribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        void HistogramDistribution::fitWeighted(StochastProperties& stochast, std::vector<double>& values, std::vector<double>& weights)
         {
             constexpr int maxRanges = 100;
             constexpr double addFactor = 0.1;
@@ -372,7 +372,7 @@ namespace Deltares
 
             if (x.empty())
             {
-                stochast->HistogramValues.clear();
+                stochast.HistogramValues.clear();
                 return;
             }
 
@@ -452,7 +452,7 @@ namespace Deltares
             // Determine the width of a range
             double step = (max - min) / ranges;
 
-            stochast->HistogramValues.clear();
+            stochast.HistogramValues.clear();
 
             for (int i = 0; i < ranges; i++)
             {
@@ -462,13 +462,13 @@ namespace Deltares
 
                 if (range->Amount > 0)
                 {
-                    stochast->HistogramValues.push_back(range);
+                    stochast.HistogramValues.push_back(range);
                 }
             }
 
             // Loop which determines ranges until enough are found
 
-            bool enoughRanges = stochast->HistogramValues.size() >= requiredRanges / 2;
+            bool enoughRanges = stochast.HistogramValues.size() >= requiredRanges / 2;
             int counter = 0;
 
             while (!enoughRanges)
@@ -477,7 +477,7 @@ namespace Deltares
 
                 splitRanges(stochast, x);
 
-                enoughRanges = counter > maxSplitRanges || stochast->HistogramValues.size() >= requiredRanges / 2;
+                enoughRanges = counter > maxSplitRanges || stochast.HistogramValues.size() >= requiredRanges / 2;
                 counter++;
             }
 
@@ -487,19 +487,19 @@ namespace Deltares
 
                 minRange->Amount = getAmount(minRange, x);
 
-                if (!stochast->HistogramValues.empty())
+                if (!stochast.HistogramValues.empty())
                 {
-                    stochast->HistogramValues[0]->Amount -= minRange->Amount;
-                    if (stochast->HistogramValues[0]->Amount == 0)
+                    stochast.HistogramValues[0]->Amount -= minRange->Amount;
+                    if (stochast.HistogramValues[0]->Amount == 0)
                     {
-                        std::erase(stochast->HistogramValues, stochast->HistogramValues[0]);
+                        std::erase(stochast.HistogramValues, stochast.HistogramValues[0]);
                     }
 
-                    stochast->HistogramValues.insert(stochast->HistogramValues.begin(), minRange);
+                    stochast.HistogramValues.insert(stochast.HistogramValues.begin(), minRange);
                 }
                 else
                 {
-                    stochast->HistogramValues.push_back(minRange);
+                    stochast.HistogramValues.push_back(minRange);
                 }
             }
 
@@ -509,21 +509,21 @@ namespace Deltares
 
                 maxRange->Amount = getAmount(maxRange, x);
 
-                stochast->HistogramValues.push_back(maxRange);
+                stochast.HistogramValues.push_back(maxRange);
             }
 
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Observations = static_cast<int>(values.size());
 
-            initializeForRun(*stochast);
+            initializeForRun(stochast);
         }
 
-        void HistogramDistribution::splitRanges(std::shared_ptr<StochastProperties> stochast, std::vector < std::shared_ptr<Numeric::WeightedValue>> & values)
+        void HistogramDistribution::splitRanges(StochastProperties& stochast, std::vector < std::shared_ptr<Numeric::WeightedValue>> & values)
         {
-            std::vector<std::shared_ptr<HistogramValue>> existingRanges(stochast->HistogramValues);
+            std::vector<std::shared_ptr<HistogramValue>> existingRanges(stochast.HistogramValues);
 
-            stochast->HistogramValues.clear();
+            stochast.HistogramValues.clear();
 
-            for (auto range : existingRanges)
+            for (const auto& range : existingRanges)
             {
                 std::shared_ptr<HistogramValue> lowerRange = std::make_shared<HistogramValue>(range->LowerBound, (range->LowerBound + range->UpperBound) / 2);
                 std::shared_ptr<HistogramValue> upperRange = std::make_shared<HistogramValue>((range->LowerBound + range->UpperBound) / 2, range->UpperBound);
@@ -533,12 +533,12 @@ namespace Deltares
 
                 if (lowerRange->Amount > 0)
                 {
-                    stochast->HistogramValues.push_back(lowerRange);
+                    stochast.HistogramValues.push_back(lowerRange);
                 }
 
                 if (upperRange->Amount > 0)
                 {
-                    stochast->HistogramValues.push_back(upperRange);
+                    stochast.HistogramValues.push_back(upperRange);
                 }
             }
         }

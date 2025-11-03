@@ -653,7 +653,7 @@ namespace Deltares
             return getStandardDeviation(mean, values);
         }
 
-        std::vector<double> NumericSupport::select(std::vector<double>& values, std::function<double(double)> function)
+        std::vector<double> NumericSupport::select(const std::vector<double>& values, std::function<double(double)> function)
         {
             std::vector<double> result(values.size());
 

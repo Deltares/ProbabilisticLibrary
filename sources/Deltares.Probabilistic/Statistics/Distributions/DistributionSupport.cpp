@@ -30,7 +30,7 @@
 
 namespace Deltares::Statistics
 {
-    void DistributionSupport::setXAtUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+    void DistributionSupport::setXAtUByIteration(Distribution& distribution, StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
     {
         constexpr double delta = 0.00001;
         const double margin = std::min(delta, std::fabs(x / 1000000));
@@ -42,7 +42,7 @@ namespace Deltares::Statistics
 
         if (constantType == ConstantParameterType::Deviation)
         {
-            Numeric::RootFinderMethod function = [&distribution, stochast, currentDeviation, u](double mean)
+            Numeric::RootFinderMethod function = [&distribution, &stochast, currentDeviation, u](double mean)
             {
                 distribution.setMeanAndDeviation(stochast, mean, currentDeviation);
                 return distribution.getXFromU(stochast, u);
@@ -55,7 +55,7 @@ namespace Deltares::Statistics
         {
             double variationCoefficient = currentMean == 0.0 ? currentDeviation : std::fabs(currentDeviation / currentMean);
 
-            Numeric::RootFinderMethod function = [&distribution, stochast, variationCoefficient, u](double mean)
+            Numeric::RootFinderMethod function = [&distribution, &stochast, variationCoefficient, u](double mean)
             {
                 double deviation = std::fabs(mean * variationCoefficient);
                 distribution.setMeanAndDeviation(stochast, mean, deviation);

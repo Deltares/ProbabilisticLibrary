@@ -155,33 +155,33 @@ namespace Deltares
             }
         }
 
-        void RayleighNDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void RayleighNDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void RayleighNDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void RayleighNDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             // first Rayleigh fit is done
 
-            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
-            stochast->Shape = 1;
+            stochast.Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
+            stochast.Shape = 1;
 
-            double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });
-            stochast->Scale = std::sqrt(sum / (2 * values.size()));
+            double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast.Shift) * (p - stochast.Shift); });
+            stochast.Scale = std::sqrt(sum / (2 * values.size()));
 
             std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
 
-            std::vector<double> minValues = { 0.5 * stochast->Scale, 0.5 * stochast->Shift, 0.5 };
-            std::vector<double> maxValues = { 1.5 * stochast->Scale, 1.5 * stochast->Shift, 1.5 };
-            std::vector<double> initValues = { stochast->Scale, stochast->Shift, 1.0 };
+            std::vector<double> minValues = { 0.5 * stochast.Scale, 0.5 * stochast.Shift, 0.5 };
+            std::vector<double> maxValues = { 1.5 * stochast.Scale, 1.5 * stochast.Shift, 1.5 };
+            std::vector<double> initValues = { stochast.Scale, stochast.Shift, 1.0 };
             std::vector<DistributionPropertyType> properties = { DistributionPropertyType::Scale, DistributionPropertyType::Shift, DistributionPropertyType::Shape};
             std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
 
-            stochast->Scale = std::max(0.0, parameters[0]);
-            stochast->Shift = parameters[1];
-            stochast->Shape = std::max(0.0, parameters[2]);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Scale = std::max(0.0, parameters[0]);
+            stochast.Shift = parameters[1];
+            stochast.Shape = std::max(0.0, parameters[2]);
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         double RayleighNDistribution::getMaxShiftValue(std::vector<double>& values)

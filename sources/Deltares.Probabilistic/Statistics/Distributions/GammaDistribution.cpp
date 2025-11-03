@@ -119,12 +119,12 @@ namespace Deltares
             return StandardNormal::getUFromP(cdf);
         }
 
-        void GammaDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void GammaDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void GammaDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void GammaDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             double mean = Numeric::NumericSupport::getMean(values);
 
@@ -133,9 +133,9 @@ namespace Deltares
 
             double s = std::log(mean) - meanLog;
 
-            stochast->Shape = (3 - s + std::sqrt((s - 3) * (s - 3) + 24 * s)) / (12 * s);
-            stochast->Scale = mean / stochast->Shape;
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Shape = (3 - s + std::sqrt((s - 3) * (s - 3) + 24 * s)) / (12 * s);
+            stochast.Scale = mean / stochast.Shape;
+            stochast.Observations = static_cast<int>(values.size());
         }
     }
 }

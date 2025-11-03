@@ -29,7 +29,6 @@
 #include "../../Model/ZModel.h"
 #include "../../Math/NumericSupport.h"
 
-
 #include <memory>
 #include <vector>
 
@@ -37,12 +36,10 @@ namespace Deltares
 {
     namespace Statistics
     {
-        std::vector<double> DistributionFitter::fitByLogLikelihood(std::vector<double>& values, Distribution* distribution, std::shared_ptr<StochastProperties> stochast, std::vector<double>& minimum, std::vector<double>& maximum, std::vector<double>& initial, std::vector<DistributionPropertyType>& properties)
+        std::vector<double> DistributionFitter::fitByLogLikelihood(const std::vector<double>& values, Distribution* distribution, StochastProperties& stochast,
+            const std::vector<double>& minimum, const std::vector<double>& maximum, std::vector<double>& initial, const std::vector<DistributionPropertyType>& properties)
         {
-            this->stochast = stochast;
-            this->values = values;
             this->distribution = distribution;
-            this->properties = properties;
 
             constexpr int numberValues = 13;
             constexpr int numberRefinements = 10;
@@ -50,7 +47,7 @@ namespace Deltares
             std::shared_ptr<Optimization::GridSearch> gridSearch = std::make_shared<Optimization::GridSearch>();
 
             std::shared_ptr<Optimization::SearchParameterSettingsSet> searchArea = std::make_shared<Optimization::SearchParameterSettingsSet>();
-            for (int i = 0; i < properties.size(); i++)
+            for (size_t i = 0; i < properties.size(); i++)
             {
                 std::shared_ptr<Optimization::SearchParameterSettings> settings = std::make_shared<Optimization::SearchParameterSettings>();
                 settings->MinValue = minimum[i];
@@ -63,7 +60,8 @@ namespace Deltares
 
             DistributionFitter* fitter = this;
 
-            const std::shared_ptr<Models::ZModel> model(new Models::ZModel([fitter](std::shared_ptr<Models::ModelSample> sample) { return fitter->getLogLikelihood(sample); }));
+            const std::shared_ptr<Models::ZModel> model(new Models::ZModel([fitter, values, &stochast, properties](std::shared_ptr<Models::ModelSample> sample)
+                { return fitter->getLogLikelihood(sample, values, stochast, properties); }));
 
             const std::shared_ptr<Models::ModelSample> sample = gridSearch->getOptimizedSample(searchArea, model);
 
@@ -77,16 +75,17 @@ namespace Deltares
             }
         }
 
-        void DistributionFitter::getLogLikelihood(std::shared_ptr<Models::ModelSample> sample)
+        void DistributionFitter::getLogLikelihood(std::shared_ptr<Models::ModelSample> sample, const std::vector<double>& values,
+            StochastProperties& stochast, const std::vector<DistributionPropertyType>& properties) const
         {
-            for (int i = 0; i < properties.size(); i++)
+            for (size_t i = 0; i < properties.size(); i++)
             {
-                this->stochast->applyValue(properties[i], sample->Values[i]);
+                stochast.applyValue(properties[i], sample->Values[i]);
             }
 
-            if (distribution->isValid(*stochast))
+            if (distribution->isValid(stochast))
             {
-                sample->Z = - this->getSumLogLikelihood();
+                sample->Z = - getSumLogLikelihood(values, stochast);
             }
             else
             {
@@ -94,7 +93,7 @@ namespace Deltares
             }
         }
 
-        double DistributionFitter::getSumLogLikelihood()
+        double DistributionFitter::getSumLogLikelihood(const std::vector<double>& values, StochastProperties& stochast) const
         {
             double prevLog = NAN;
             double prevX = NAN;
@@ -109,7 +108,7 @@ namespace Deltares
                 }
                 else
                 {
-                    double log = this->distribution->getLogLikelihood(*stochast, x);
+                    double log = this->distribution->getLogLikelihood(stochast, x);
                     if (std::isnan(log))
                     {
                         return log;

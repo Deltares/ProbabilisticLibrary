@@ -118,18 +118,18 @@ namespace Deltares
             stochast.Shift = mean - stochast.Scale * std::sqrt(std::numbers::pi / 2.0);
         }
 
-        void RayleighDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void RayleighDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void RayleighDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
+            stochast.Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
-            double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });
-            stochast->Scale = std::sqrt( sum/ (2 * values.size()));
-            stochast->Observations = static_cast<int>(values.size());
+            double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast.Shift) * (p - stochast.Shift); });
+            stochast.Scale = std::sqrt( sum/ (2 * values.size()));
+            stochast.Observations = static_cast<int>(values.size());
 
             // Unbiased estimator, but cannot handle large sets:
             //stochast.Scale = s * SpecialFunctions.Gamma(x.Length) * Math.Sqrt(x.Length) / SpecialFunctions.Gamma(x.Length + 0.5);

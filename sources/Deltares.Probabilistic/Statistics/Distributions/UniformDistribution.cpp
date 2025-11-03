@@ -126,22 +126,22 @@ namespace Deltares
             }
         }
 
-        void UniformDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void UniformDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                if (stochast->Minimum == stochast->Maximum)
+                if (stochast.Minimum == stochast.Maximum)
                 {
-                    stochast->Minimum = x;
-                    stochast->Maximum = x;
+                    stochast.Minimum = x;
+                    stochast.Maximum = x;
                 }
                 else
                 {
-                    double currentValue = this->getXFromU(*stochast, u);
-                    double diff = x - currentValue;
+                    const double currentValue = getXFromU(stochast, u);
+                    const double diff = x - currentValue;
 
-                    stochast->Minimum += diff;
-                    stochast->Maximum += diff;
+                    stochast.Minimum += diff;
+                    stochast.Maximum += diff;
                 }
             }
             else
@@ -150,7 +150,7 @@ namespace Deltares
             }
         }
 
-        void UniformDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void UniformDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             double min = *std::min_element(values.begin(), values.end());
             double max = *std::max_element(values.begin(), values.end());
@@ -158,10 +158,10 @@ namespace Deltares
             double diff = max - min;
             double add = diff / values.size();
 
-            stochast->Minimum = min - add;
-            stochast->Maximum = max + add;
+            stochast.Minimum = min - add;
+            stochast.Maximum = max + add;
 
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> UniformDistribution::getSpecialPoints(StochastProperties& stochast)

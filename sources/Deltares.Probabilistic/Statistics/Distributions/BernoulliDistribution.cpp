@@ -112,10 +112,10 @@ namespace Deltares
             }
         }
 
-        void BernoulliDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void BernoulliDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Location = Numeric::NumericSupport::getMean(values);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Location = Numeric::NumericSupport::getMean(values);
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         void BernoulliDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)

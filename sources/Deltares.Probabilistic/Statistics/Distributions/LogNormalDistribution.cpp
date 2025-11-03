@@ -174,17 +174,17 @@ namespace Deltares
             }
         }
 
-        void LogNormalDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void LogNormalDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                if (stochast->Scale <= 0)
+                if (stochast.Scale <= 0.0)
                 {
-                    setMeanAndDeviation(*stochast, x, 0);
+                    setMeanAndDeviation(stochast, x, 0.0);
                 }
-                else if (x <= stochast->Shift)
+                else if (x <= stochast.Shift)
                 {
-                    setMeanAndDeviation(*stochast, x, 0);
+                    setMeanAndDeviation(stochast, x, 0.0);
                 }
                 else
                 {
@@ -252,11 +252,12 @@ namespace Deltares
             return sum / n;
         }
 
-        void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void LogNormalDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
+            stochast.Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
-            std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
+            std::vector<double> logValues = Numeric::NumericSupport::select(values,
+                [stochast](double v) {return log(v - stochast.Shift); });
 
             NormalDistribution normal;
 

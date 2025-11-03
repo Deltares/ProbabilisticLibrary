@@ -154,19 +154,19 @@ namespace Deltares
             }
         }
 
-        void ParetoDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void ParetoDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void ParetoDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void ParetoDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Scale = *std::min_element(values.begin(), values.end());
+            stochast.Scale = *std::min_element(values.begin(), values.end());
 
-            const double sum = Numeric::NumericSupport::sum(values, [stochast](double p) { return log(p) - log(stochast->Scale); });
+            const double sum = Numeric::NumericSupport::sum(values, [stochast](double p) { return log(p) - log(stochast.Scale); });
 
-            stochast->Shape = values.size() / sum;
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Shape = values.size() / sum;
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> ParetoDistribution::getSpecialPoints(StochastProperties& stochast)

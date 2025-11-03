@@ -120,14 +120,14 @@ namespace Deltares
             }
         }
 
-        void GumbelDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void GumbelDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                double current = this->getXFromU(*stochast, u);
-                double diff = x - current;
+                const double current = this->getXFromU(stochast, u);
+                const double diff = x - current;
 
-                stochast->Shift += diff;
+                stochast.Shift += diff;
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
@@ -135,7 +135,7 @@ namespace Deltares
             }
         }
 
-        void GumbelDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void GumbelDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             // https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
             double mean = Numeric::NumericSupport::getMean(values);
@@ -152,12 +152,12 @@ namespace Deltares
             double minStart = Numeric::NumericSupport::getMinValidValue(method);
             double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
 
-            stochast->Scale = bisection.CalculateValue(minStart, maxStart, 0, method);
+            stochast.Scale = bisection.CalculateValue(minStart, maxStart, 0, method);
 
-            double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast->Scale); });
+            double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast.Scale); });
 
-            stochast->Shift = -stochast->Scale * log(sum / values.size());
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Shift = -stochast.Scale * log(sum / values.size());
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         double GumbelDistribution::getLogLikelihood(StochastProperties& stochast, double x)

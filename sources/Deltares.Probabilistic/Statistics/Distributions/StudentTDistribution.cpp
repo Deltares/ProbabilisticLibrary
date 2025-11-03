@@ -124,14 +124,14 @@ namespace Deltares
             return result;
         }
 
-        void StudentTDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void StudentTDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                const double current = getXFromU(*stochast, u);
+                const double current = getXFromU(stochast, u);
                 const double diff = x - current;
 
-                stochast->Location += diff;
+                stochast.Location += diff;
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
@@ -159,7 +159,7 @@ namespace Deltares
             return StandardNormal::getPFromU(u);
         }
 
-        void StudentTDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void StudentTDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             const double minSigma = 1.0E-9;
             const double minRelativeSigma = 0.99;
@@ -168,7 +168,7 @@ namespace Deltares
 
             std::vector<double> weights = NumericSupport::select(values, [](double x) {return 1.0; });
 
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Observations = static_cast<int>(values.size());
 
             int nu = static_cast<int>(values.size()) - 1;
 
@@ -187,7 +187,7 @@ namespace Deltares
                     return ww * (xx - mean) * (xx - mean);
                 });
 
-                double sigma2 = NumericSupport::sum(sigma2Values) / stochast->Observations;
+                double sigma2 = NumericSupport::sum(sigma2Values) / stochast.Observations;
 
                 weights = NumericSupport::select(values, [nu, sigma2, mean](double xx)
                 {
@@ -196,8 +196,8 @@ namespace Deltares
 
                 if (sigma2 < minSigma || (prevSigma2 / sigma2 > minRelativeSigma && prevSigma2 / sigma2 < maxRelativeSigma) || count > maxIterations)
                 {
-                    stochast->Location = mean;
-                    stochast->Scale = std::sqrt(sigma2);
+                    stochast.Location = mean;
+                    stochast.Scale = std::sqrt(sigma2);
                     break;
                 }
                 else

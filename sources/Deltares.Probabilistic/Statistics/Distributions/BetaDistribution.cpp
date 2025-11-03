@@ -137,19 +137,19 @@ namespace Deltares
             }
         }
 
-        void BetaDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void BetaDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void BetaDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void BetaDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             double mean = Numeric::NumericSupport::getMean(values);
             double sigma = Numeric::NumericSupport::getStandardDeviation(mean, values);
 
-            setMeanAndDeviation(*stochast, mean, sigma);
+            setMeanAndDeviation(stochast, mean, sigma);
 
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> BetaDistribution::getSpecialPoints(StochastProperties& stochast)

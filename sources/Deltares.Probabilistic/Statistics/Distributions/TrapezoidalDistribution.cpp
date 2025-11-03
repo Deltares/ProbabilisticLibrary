@@ -301,25 +301,25 @@ namespace Deltares
             }
         }
 
-        void TrapezoidalDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void TrapezoidalDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                if (stochast->Minimum == stochast->Maximum)
+                if (stochast.Minimum == stochast.Maximum)
                 {
-                    stochast->Minimum = x;
-                    stochast->Shift = x;
-                    stochast->Maximum = x;
+                    stochast.Minimum = x;
+                    stochast.Shift = x;
+                    stochast.Maximum = x;
                 }
                 else
                 {
-                    double currentValue = this->getXFromU(*stochast, u);
-                    double diff = x - currentValue;
+                    const double currentValue = this->getXFromU(stochast, u);
+                    const double diff = x - currentValue;
 
-                    stochast->Minimum += diff;
-                    stochast->Shift += diff;
-                    stochast->ShiftB += diff;
-                    stochast->Maximum += diff;
+                    stochast.Minimum += diff;
+                    stochast.Shift += diff;
+                    stochast.ShiftB += diff;
+                    stochast.Maximum += diff;
                 }
             }
             else
@@ -328,7 +328,7 @@ namespace Deltares
             }
         }
 
-        void TrapezoidalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void TrapezoidalDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             double min = *std::min_element(values.begin(), values.end());
             double max = *std::max_element(values.begin(), values.end());
@@ -336,27 +336,27 @@ namespace Deltares
             double diff = max - min;
             double add = diff / values.size();
 
-            stochast->Minimum = min - add;
-            stochast->Maximum = max + add;
+            stochast.Minimum = min - add;
+            stochast.Maximum = max + add;
 
             double mean = Numeric::NumericSupport::getMean(values);
-            stochast->Shift = 3 * mean - (min + max);
+            stochast.Shift = 3 * mean - (min + max);
 
-            stochast->Shift = std::min(stochast->Shift, stochast->Maximum);
-            stochast->Shift = std::max(stochast->Shift, stochast->Minimum);
+            stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
+            stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
 
             std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
 
-            std::vector<double> minValues = { stochast->Minimum, stochast->Minimum };
-            std::vector<double> maxValues = { stochast->Maximum, stochast->Maximum };
-            std::vector<double> initValues = { stochast->Minimum + 0.3 * diff, stochast->Minimum + 0.7 * diff };
+            std::vector<double> minValues = { stochast.Minimum, stochast.Minimum };
+            std::vector<double> maxValues = { stochast.Maximum, stochast.Maximum };
+            std::vector<double> initValues = { stochast.Minimum + 0.3 * diff, stochast.Minimum + 0.7 * diff };
             std::vector<DistributionPropertyType> properties = { Shift, ShiftB };
 
             std::vector<double> parameters = fitter->fitByLogLikelihood(values,this, stochast,minValues,maxValues,initValues,properties);
 
-            stochast->Shift = std::max(stochast->Minimum, parameters[0]);
-            stochast->ShiftB = std::min(stochast->Maximum, parameters[1]);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Shift = std::max(stochast.Minimum, parameters[0]);
+            stochast.ShiftB = std::min(stochast.Maximum, parameters[1]);
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> TrapezoidalDistribution::getSpecialPoints(StochastProperties& stochast)

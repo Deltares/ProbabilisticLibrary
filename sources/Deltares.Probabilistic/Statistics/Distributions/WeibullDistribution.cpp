@@ -150,7 +150,7 @@ namespace Deltares
             stochast.Scale = mean / Numeric::SpecialFunctions::getGamma(1.0 + 1.0 / stochast.Shape);
         }
 
-        void WeibullDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void WeibullDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
@@ -159,18 +159,17 @@ namespace Deltares
 
                 auto bisection = Numeric::BisectionRootFinder(margin);
 
-                double deviation = this->getDeviation(*stochast);
-                Distribution* distribution = this;
+                double deviation = this->getDeviation(stochast);
 
-                Numeric::RootFinderMethod method = [distribution, stochast, deviation, u](double mean)
+                Numeric::RootFinderMethod method = [this, &stochast, deviation, u](double mean)
                 {
-                    distribution->setMeanAndDeviation(stochast, mean, deviation);
-                    return distribution->getXFromU(stochast, u);
+                    setMeanAndDeviation(stochast, mean, deviation);
+                    return getXFromU(stochast, u);
                 };
 
-                double mean = bisection.CalculateValue(x, this->getMean(*stochast), x, method);
+                double mean = bisection.CalculateValue(x, this->getMean(stochast), x, method);
 
-                this->setMeanAndDeviation(*stochast, mean, deviation);
+                this->setMeanAndDeviation(stochast, mean, deviation);
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
@@ -178,11 +177,11 @@ namespace Deltares
             }
         }
 
-        void WeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void WeibullDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
+            stochast.Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
 
-            std::vector<double> shiftedValues = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast->Shift; });
+            std::vector<double> shiftedValues = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast.Shift; });
 
             constexpr double tolerance = 0.001;
             auto bisection = Numeric::BisectionRootFinder(tolerance);
@@ -199,13 +198,13 @@ namespace Deltares
             double minStart = Numeric::NumericSupport::getMinValidValue(method);
             double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
 
-            stochast->Shape = bisection.CalculateValue(minStart, maxStart, 0, method);
+            stochast.Shape = bisection.CalculateValue(minStart, maxStart, 0, method);
 
-            double sum = Numeric::NumericSupport::sum(shiftedValues, [stochast](double p) {return std::pow(p, stochast->Shape); });
+            double sum = Numeric::NumericSupport::sum(shiftedValues, [stochast](double p) {return std::pow(p, stochast.Shape); });
 
-            stochast->Scale = std::pow(sum / shiftedValues.size(), 1 / stochast->Shape);
+            stochast.Scale = std::pow(sum / shiftedValues.size(), 1.0 / stochast.Shape);
 
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         double WeibullDistribution::getMaxShiftValue(std::vector<double>& values)

@@ -42,7 +42,7 @@ namespace Deltares::Statistics
          * \param u The u-value to which the x-value belongs
          * \param constantType Indicates whether the deviation or variation should be kept constant
          */
-        static void setXAtUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType);
+        static void setXAtUByIteration(Distribution& distribution, StochastProperties& stochast, double x, double u, ConstantParameterType constantType);
 
         /**
          * \brief Gets the mean of a stochast by iteration

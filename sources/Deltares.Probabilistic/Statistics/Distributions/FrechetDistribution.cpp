@@ -151,12 +151,12 @@ namespace Deltares
             stochast.Scale = (mean - stochast.Shift) / Numeric::SpecialFunctions::getGamma(1.0 - 1.0 / stochast.Shape);
         }
 
-        void FrechetDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void FrechetDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        void FrechetDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void FrechetDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             int maxLoops = 100;
             double minValue = 0.001;
@@ -167,7 +167,7 @@ namespace Deltares
 
             std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
-            stochast->Shift = 0;
+            stochast.Shift = 0;
 
             double alpha = 1;
             double beta = 1;
@@ -205,18 +205,18 @@ namespace Deltares
 
             double mean = Numeric::NumericSupport::getMean(values);
 
-            std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
+            auto fitter = DistributionFitter();
 
             std::vector<double> minValues = { minValue, minValue, 3 * newShift - 2 * mean };
             std::vector<double> maxValues = { 2 * alpha - minValue, 2 * beta - minValue, newShift };
             std::vector<double> initValues = { alpha, beta, newShift };
             std::vector<DistributionPropertyType> properties = { DistributionPropertyType::Shape, DistributionPropertyType::Scale, DistributionPropertyType::Shift };
-            std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
 
-            stochast->Shape = std::max(minValue, parameters[0]);
-            stochast->Scale = std::max(minValue, parameters[1]);
-            stochast->Shift = parameters[2];
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Shape = std::max(minValue, parameters[0]);
+            stochast.Scale = std::max(minValue, parameters[1]);
+            stochast.Shift = parameters[2];
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         double FrechetDistribution::getMaxShiftValue(std::vector<double>& values)

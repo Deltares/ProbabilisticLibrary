@@ -87,11 +87,11 @@ namespace Deltares
             return StandardNormal::getPFromU(u);
         }
 
-        void NormalDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void NormalDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                stochast->Location = x - u * stochast->Scale;
+                stochast.Location = x - u * stochast.Scale;
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
@@ -110,11 +110,11 @@ namespace Deltares
             return log(normalFactor) + distance;
         }
 
-        void NormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void NormalDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Location = Numeric::NumericSupport::getMean(values);
-            stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, values);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Location = Numeric::NumericSupport::getMean(values);
+            stochast.Scale = Numeric::NumericSupport::getStandardDeviation(stochast.Location, values);
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         void NormalDistribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
@@ -132,7 +132,7 @@ namespace Deltares
 
         void NormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
         {
-            fit(stochast, values, shift);
+            fit(*stochast, values, shift);
 
             int n = static_cast<int>(values.size());
 

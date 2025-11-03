@@ -217,24 +217,24 @@ namespace Deltares
             }
         }
 
-        void TriangularDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void TriangularDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                if (stochast->Minimum == stochast->Maximum)
+                if (stochast.Minimum == stochast.Maximum)
                 {
-                    stochast->Minimum = x;
-                    stochast->Shift = x;
-                    stochast->Maximum = x;
+                    stochast.Minimum = x;
+                    stochast.Shift = x;
+                    stochast.Maximum = x;
                 }
                 else
                 {
-                    double currentValue = this->getXFromU(*stochast, u);
-                    double diff = x - currentValue;
+                    const double currentValue = getXFromU(stochast, u);
+                    const double diff = x - currentValue;
 
-                    stochast->Minimum += diff;
-                    stochast->Shift += diff;
-                    stochast->Maximum += diff;
+                    stochast.Minimum += diff;
+                    stochast.Shift += diff;
+                    stochast.Maximum += diff;
                 }
             }
             else
@@ -243,7 +243,7 @@ namespace Deltares
             }
         }
 
-        void TriangularDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void TriangularDistribution::fit(StochastProperties& stochast, std::vector<double>& values, const double shift)
         {
             double min = *std::min_element(values.begin(), values.end());
             double max = *std::max_element(values.begin(), values.end());
@@ -251,16 +251,16 @@ namespace Deltares
             double diff = max - min;
             double add = diff / values.size();
 
-            stochast->Minimum = min - add;
-            stochast->Maximum = max + add;
+            stochast.Minimum = min - add;
+            stochast.Maximum = max + add;
 
             double mean = Numeric::NumericSupport::getMean(values);
-            stochast->Shift = 3 * mean - (min + max);
+            stochast.Shift = 3 * mean - (min + max);
 
-            stochast->Shift = std::min(stochast->Shift, stochast->Maximum);
-            stochast->Shift = std::max(stochast->Shift, stochast->Minimum);
+            stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
+            stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
 
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> TriangularDistribution::getSpecialPoints(StochastProperties& stochast)
