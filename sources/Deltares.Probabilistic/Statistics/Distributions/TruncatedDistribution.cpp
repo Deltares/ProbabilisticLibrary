@@ -67,7 +67,7 @@ namespace Deltares
             }
             else
             {
-                double u = this->innerDistribution->getUFromX(stochast.clone(), value); // TODO
+                double u = this->innerDistribution->getUFromX(stochast, value);
                 if (std::isnan(u))
                 {
                     return 0;

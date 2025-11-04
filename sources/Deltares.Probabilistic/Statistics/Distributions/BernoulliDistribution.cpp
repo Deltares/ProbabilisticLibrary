@@ -141,7 +141,7 @@ namespace Deltares
             stochast.Observations = prior.Observations + n_data;
         }
 
-        std::vector<double> BernoulliDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        std::vector<double> BernoulliDistribution::getDiscontinuityPoints(StochastProperties& stochast)
         {
             return { 0.0, 1.0 };
         }

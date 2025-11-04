@@ -128,7 +128,7 @@ namespace Deltares
             stochast.Observations = static_cast<int>(values.size());
         }
 
-        std::vector<double> PoissonDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        std::vector<double> PoissonDistribution::getDiscontinuityPoints(StochastProperties& stochast)
         {
             std::vector<double> discontinuityPoints;
 

@@ -78,7 +78,7 @@ namespace Deltares
              * \param distributionType Distribution type
              * \param values Initial values
              */
-            Stochast(DistributionType distributionType, std::vector<double> values);
+            Stochast(DistributionType distributionType, const std::vector<double>& values);
 
             /**
              * \brief Constructor with object containing the stochastic parameters

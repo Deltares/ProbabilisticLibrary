@@ -127,7 +127,7 @@ namespace Deltares
             double xInvert = this->getInvertedValue(stochast, x);
 
             auto invertedStochast = getInvertedStochast(stochast);
-            this->innerDistribution->setXAtU(invertedStochast.clone(), xInvert, -u, constantType); // TODO
+            this->innerDistribution->setXAtU(invertedStochast, xInvert, -u, constantType);
 
             copyFromInverted(stochast, invertedStochast);
         }
@@ -150,7 +150,7 @@ namespace Deltares
                 {return this->getInvertedValue(stochast, x); });
 
             auto invertedStochast = getInvertedStochast(stochast);
-            this->innerDistribution->fit(invertedStochast.clone(), invertedValues, -shift);
+            this->innerDistribution->fit(invertedStochast, invertedValues, -shift);
 
             copyFromInverted(stochast, invertedStochast);
         }
@@ -166,7 +166,7 @@ namespace Deltares
                 auto invertedStochast = getInvertedStochast(stochast);
                 auto invertedPrior = getInvertedStochast(prior);
 
-                this->innerDistribution->fitPrior(invertedStochast.clone(), zeroInvertedValues, invertedPrior.clone(), shift); // TODO
+                this->innerDistribution->fitPrior(invertedStochast, zeroInvertedValues, invertedPrior, shift);
 
                 stochast.Shift = -stochast.Shift;
             }
@@ -179,7 +179,7 @@ namespace Deltares
             auto invertedStochast = getInvertedStochast(stochast);
             auto invertedPrior = getInvertedStochast(prior);
 
-            this->innerDistribution->fitPrior(invertedStochast.clone(), invertedValues, invertedPrior.clone(), -shift); // TODO
+            this->innerDistribution->fitPrior(invertedStochast, invertedValues, invertedPrior, -shift);
 
             copyFromInverted(stochast, invertedStochast);
         }

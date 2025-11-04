@@ -21,31 +21,22 @@
 //
 #include "Distribution.h"
 
-#include <algorithm>
-
 #include "../../Math/NumericSupport.h"
-#include "../../Math/RootFinders/BisectionRootFinder.h"
-#include "../../Utils/probLibException.h"
-#include "../StandardNormal.h"
 #include "../../Logging/ValidationSupport.h"
-
-#include <numbers>
 
 namespace Deltares
 {
     namespace Statistics
     {
-        std::vector<double> Distribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        std::vector<double> Distribution::getDiscontinuityPoints(StochastProperties& stochast)
         {
-            std::shared_ptr<StochastProperties> stochastPtr = std::make_shared<StochastProperties>(stochast);
-
-            if (isVarying(stochastPtr))
+            if (isVarying(stochast))
             {
                 return {};
             }
             else
             {
-                return {getMean(stochastPtr)};
+                return {getMean(stochast)};
             }
         }
 
@@ -72,11 +63,6 @@ namespace Deltares
             Logging::ValidationReport report;
             this->validate(report, stochast, empty_subject);
             return report.isValid();
-        }
-
-        void Distribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
-        {
-            validate(report, *stochast, subject);
         }
 
         void Distribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)

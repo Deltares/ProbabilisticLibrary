@@ -301,7 +301,7 @@ namespace Deltares
             return p;
         }
 
-        std::vector<double> HistogramDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        std::vector<double> HistogramDistribution::getDiscontinuityPoints(StochastProperties& stochast)
         {
             constexpr double minDiff = 1E-6;
 

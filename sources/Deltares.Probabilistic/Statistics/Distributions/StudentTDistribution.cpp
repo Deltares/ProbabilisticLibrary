@@ -48,9 +48,9 @@ namespace Deltares
             return stochast.Scale > 0.0;
         }
 
-        double StudentTDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double StudentTDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
         double StudentTDistribution::getDeviation(StochastProperties& stochast)

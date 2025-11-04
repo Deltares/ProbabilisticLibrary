@@ -38,7 +38,7 @@ namespace Deltares
             double getDeviation(StochastProperties& stochast) override;
             double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(StochastProperties& stochast, double x) override;
-            std::vector<double> getDiscontinuityPoints(const StochastProperties&) override;
+            std::vector<double> getDiscontinuityPoints(StochastProperties&) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { }; }
         private:

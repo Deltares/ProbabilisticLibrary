@@ -42,7 +42,7 @@ namespace Deltares
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
             void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            std::vector<double> getDiscontinuityPoints(const StochastProperties& stochast) override;
+            std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
         };
     }

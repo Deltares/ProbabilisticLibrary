@@ -54,10 +54,6 @@ namespace Deltares::Statistics
          * \param stochast Stochast to be initialized
          * \param values Values by which the stochast is initialized
          */
-        virtual void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
-        {
-            initialize(*stochast, values);
-        }
         virtual void initialize(StochastProperties& stochast, const std::vector<double>& values) {}
 
         /**
@@ -66,10 +62,6 @@ namespace Deltares::Statistics
          * \param u u-value (Standard normal value)
          * \return x-value
          */
-        virtual double getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
-        {
-            return getXFromU(*stochast, u);
-        }
         virtual double getXFromU(StochastProperties& stochast, double u) { return 0.0; }
 
         /**
@@ -78,10 +70,6 @@ namespace Deltares::Statistics
          * \param x x-value (Physical value)
          * \return u-value
          */
-        virtual double getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
-        {
-            return getUFromX(*stochast, x);
-        }
         virtual double getUFromX(StochastProperties& stochast, double x) { return 0.0; }
 
         /**
@@ -89,10 +77,6 @@ namespace Deltares::Statistics
          * \param stochast Stochast which is or is not varying
          * \return Indication
          */
-        virtual bool isVarying(std::shared_ptr<StochastProperties> stochast)
-        {
-            return isVarying(*stochast);
-        }
         virtual bool isVarying(StochastProperties& stochast) { return false; }
 
         /**
@@ -140,10 +124,6 @@ namespace Deltares::Statistics
          * \param stochast Stochast to which the mean value applies
          * \return Mean value
          */
-        virtual double getMean(std::shared_ptr<StochastProperties> stochast)
-        {
-            return getMean(*stochast);
-        }
         virtual double getMean(StochastProperties& stochast) { return 0; }
 
         /**
@@ -151,10 +131,6 @@ namespace Deltares::Statistics
          * \param stochast Stochast to which the standard deviation applies
          * \return Standard deviation
          */
-        virtual double getDeviation(std::shared_ptr<StochastProperties> stochast)
-        {
-            return getDeviation(*stochast);
-        }
         virtual double getDeviation(StochastProperties& stochast) { return 0.0; }
 
         /**
@@ -170,10 +146,6 @@ namespace Deltares::Statistics
          * \param mean Given mean value
          * \param deviation Given standard deviation
          */
-        virtual void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
-        {
-            setMeanAndDeviation(*stochast, mean, deviation);
-        }
         virtual void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) {}
 
         /**
@@ -196,10 +168,6 @@ namespace Deltares::Statistics
          * \param x Given x-value
          * \return PDF value
          */
-        virtual double getPDF(std::shared_ptr<StochastProperties> stochast, double x)
-        {
-            return getPDF(*stochast, x);
-        }
         virtual double getPDF(StochastProperties& stochast, double x) { return 0.0; }
 
         /**
@@ -208,10 +176,6 @@ namespace Deltares::Statistics
          * \param x Given x-value
          * \return CDF value
          */
-        virtual double getCDF(std::shared_ptr<StochastProperties> stochast, double x)
-        {
-            return getCDF(*stochast, x);
-        }
         virtual double getCDF(StochastProperties& stochast, double x) { return 0.0; }
 
         /**
@@ -221,10 +185,6 @@ namespace Deltares::Statistics
          * \param u Given u-value
          * \param constantType Value to be kept constant when modifying the stochast (variation coefficient or standard deviation) 
          */
-        virtual void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
-        {
-            setXAtU(*stochast, x, u, constantType);
-        }
         virtual void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) {}
 
         /**
@@ -233,10 +193,6 @@ namespace Deltares::Statistics
          * \param values Given x-values
          * \param shift Shift value, if set the shift parameter will not be fitted (available for limited distributions)
          */
-        virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
-        {
-            fit(*stochast, values, shift);
-        }
         virtual void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             throw Reliability::probLibException("fit not supported");
@@ -259,10 +215,6 @@ namespace Deltares::Statistics
          * \param prior Prior stochast
          * \param shift Shift value, if set the shift parameter will not be fitted (available for limited distributions)
          */
-        virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
-        {
-            fitPrior(*stochast, values, *prior, shift);
-        }
         virtual void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
             throw Reliability::probLibException("fit with prior not supported");
@@ -289,7 +241,6 @@ namespace Deltares::Statistics
          * \param subject String representing the validated object
          * \remark Only parameters which are used by the distribution are evaluated
          */
-        virtual void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject);
         virtual void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject);
 
         /**
@@ -298,10 +249,6 @@ namespace Deltares::Statistics
          * \param x given x-value
          * \return Log likelihood
          */
-        virtual double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
-        {
-            return getLogLikelihood(*stochast, x);
-        }
         virtual double getLogLikelihood(StochastProperties& stochast, double x);
 
         /**
@@ -309,7 +256,7 @@ namespace Deltares::Statistics
          * \param stochast Stochast in use
          * \return List of x-values
          */
-        virtual std::vector<double> getDiscontinuityPoints(const StochastProperties& stochast);
+        virtual std::vector<double> getDiscontinuityPoints(StochastProperties& stochast);
 
         /**
          * \brief Gets interesting x-values of a stochast
@@ -317,17 +264,13 @@ namespace Deltares::Statistics
          * \param stochast Stochast in use
          * \return List of x-values
          */
-        virtual std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
-        {
-            return getSpecialPoints(*stochast);
-        }
         virtual std::vector<double> getSpecialPoints(StochastProperties& stochast) { return std::vector<double>(0); }
 
         /**
          * \brief Gets the parameters of a stochast used by the distribution
          * \return List of parameters
          */
-        virtual std::vector<DistributionPropertyType> getParameters() {    return {}; }
+        virtual std::vector<DistributionPropertyType> getParameters() {return {}; }
 
     protected:
 
