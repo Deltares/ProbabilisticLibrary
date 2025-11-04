@@ -44,7 +44,7 @@ namespace Deltares::Uncertainty
 
         std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
 
-        std::vector<double> gradient = gradientCalculator->getGradient(modelRunner, zeroSample);
+        std::vector<double> gradient = gradientCalculator->getGradient(*modelRunner, zeroSample);
         double length = Numeric::NumericSupport::GetLength(gradient);
         double z0 = zeroSample->Z;
 
@@ -52,7 +52,7 @@ namespace Deltares::Uncertainty
         if (length < 1E-6)
         {
             std::shared_ptr<Sample>  disturbedSample = std::make_shared<Sample>(Numeric::NumericSupport::select(zeroSample->Values, [](double p) { return 0.001; }));
-            gradient = gradientCalculator->getGradient(modelRunner, disturbedSample);
+            gradient = gradientCalculator->getGradient(*modelRunner, disturbedSample);
         }
 
         std::shared_ptr<Sample> nextSample = std::make_shared<Sample>(gradient);

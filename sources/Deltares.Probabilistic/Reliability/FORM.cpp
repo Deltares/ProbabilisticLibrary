@@ -95,7 +95,7 @@ namespace Deltares
                 }
             }
 
-            for (std::shared_ptr<DesignPoint> previousDesignPoint : previousDesignPoints)
+            for (const std::shared_ptr<DesignPoint>& previousDesignPoint : previousDesignPoints)
             {
                 designPoint->ContributingDesignPoints.push_back(previousDesignPoint);
             }
@@ -103,7 +103,7 @@ namespace Deltares
             return designPoint;
         }
 
-        std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> startPoint,
+        std::shared_ptr<DesignPoint> FORM::getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, std::shared_ptr<Sample> startPoint,
             const double relaxationFactor, const int relaxationIndex)
         {
             constexpr double minGradientLength = 1E-08;
@@ -136,7 +136,7 @@ namespace Deltares
             while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
             {
                 sample->IterationIndex = iteration;
-                zGradient = gradientCalculator->getGradient(modelRunner, sample);
+                zGradient = gradientCalculator->getGradient(*modelRunner, sample);
 
                 // check whether there are valid results
 
@@ -221,7 +221,7 @@ namespace Deltares
                     return modelRunner->getDesignPoint(sample, beta, convergenceReport);
                 }
 
-                convergenceReport->IsConverged = isConverged(modelRunner, sample, convergenceReport, beta, zGradientLength);
+                convergenceReport->IsConverged = isConverged(*modelRunner, *sample, *convergenceReport, beta, zGradientLength);
                 convergenceReport->ZMargin = zGradientLength * this->Settings->EpsilonBeta;
                 convergenceReport->TotalIterations = iteration + 1;
 
@@ -258,11 +258,11 @@ namespace Deltares
             return modelRunner->getDesignPoint(resultSample, beta, convergenceReport, "FORM");
         }
 
-        bool FORM::areAllResultsValid(std::vector<double> values)
+        bool FORM::areAllResultsValid(const std::vector<double>& values)
         {
-            for (size_t k = 0; k < values.size(); k++)
+            for (const double value : values)
             {
-                if (std::isnan(values[k]))
+                if (std::isnan(value))
                 {
                     return false;
                 }
@@ -271,27 +271,27 @@ namespace Deltares
             return true;
         }
 
-        bool FORM::isConverged(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample, std::shared_ptr<ConvergenceReport> convergenceReport, double beta, double zGradientLength)
+        bool FORM::isConverged(ModelRunner& modelRunner, const Sample& sample, ConvergenceReport& convergenceReport, double beta, double zGradientLength) const
         {
-            const double uSquared = NumericSupport::GetSquaredSum(sample->Values);
+            const double uSquared = NumericSupport::GetSquaredSum(sample.Values);
 
             const double fromZeroDiff = uSquared > 0 ? std::fabs(beta * beta - uSquared) / uSquared : 0;
-            const double localDiff = std::fabs(sample->Z / zGradientLength);
+            const double localDiff = std::fabs(sample.Z / zGradientLength);
             const double betaDiff = std::max(fromZeroDiff, localDiff);
 
-            convergenceReport->Convergence = betaDiff;
-            convergenceReport->IsConverged = betaDiff <= this->Settings->EpsilonBeta;
+            convergenceReport.Convergence = betaDiff;
+            convergenceReport.IsConverged = betaDiff <= this->Settings->EpsilonBeta;
 
-            std::shared_ptr<ReliabilityReport> report = getReport(sample->IterationIndex, beta);
+            std::shared_ptr<ReliabilityReport> report = getReport(sample.IterationIndex, beta);
             report->ConvBeta = betaDiff;
 
-            modelRunner->reportResult(report);
+            modelRunner.reportResult(report);
 
             //   check for convergence
-            return convergenceReport->IsConverged;
+            return convergenceReport.IsConverged;
         }
 
-        std::shared_ptr<ReliabilityReport> FORM::getReport(int iteration, double reliability)
+        std::shared_ptr<ReliabilityReport> FORM::getReport(int iteration, double reliability) const
         {
             std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
 
@@ -306,7 +306,7 @@ namespace Deltares
 
         std::pair<double, std::shared_ptr<Sample>> FORM::estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector<std::shared_ptr<Sample>>& last10u)
         {
-            const size_t nStochasts = last10u[0].get()->getSize();
+            const size_t nStochasts = last10u[0]->getSize();
             const size_t nIter = last10u.size();
             double rNIter = 1.0 / (double)nIter;
             double sumUk = 0.0;
@@ -316,7 +316,7 @@ namespace Deltares
                 uk[k] = 0.0;
                 for (size_t iter = 0; iter < nIter; iter++)
                 {
-                    uk[k] += last10u[iter].get()->Values[k];
+                    uk[k] += last10u[iter]->Values[k];
                 }
                 uk[k] *= rNIter;
                 sumUk += pow(uk[k], 2);
@@ -336,7 +336,7 @@ namespace Deltares
 
             for (size_t k = 0; k < nStochasts; k++)
             {
-                alpha.get()->Values[k] = uk[k];
+                alpha->Values[k] = uk[k];
             }
             return { beta, alpha };
         }
