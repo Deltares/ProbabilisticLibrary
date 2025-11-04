@@ -74,15 +74,9 @@ namespace Deltares::Statistics
 
     double DistributionSupport::getXFromUByIteration(Distribution& distribution, StochastProperties& stochast, double u)
     {
-        auto clone = stochast.clone();
-        return getXFromUByIteration(distribution, clone, u);
-    }
-
-    double DistributionSupport::getXFromUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double u)
-    {
         // check whether the cdf value is at a discontinuity
 
-        for (double x : distribution.getDiscontinuityPoints(*stochast))
+        for (double x : distribution.getDiscontinuityPoints(stochast))
         {
             constexpr double minDiff = 1E-6;
             constexpr double fractionDiff = 1E-10;
@@ -96,7 +90,7 @@ namespace Deltares::Statistics
 
         // not at a discontinuity, search by bisection
 
-        Numeric::RootFinderMethod function = [&distribution, stochast](double x)
+        Numeric::RootFinderMethod function = [&distribution, &stochast](double x)
         {
             return distribution.getCDF(stochast, x);
         };

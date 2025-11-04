@@ -69,7 +69,6 @@ namespace Deltares::Statistics
          * \param u The requested u-value
          * \remarks To be used when analytical solution is not possible
          */
-        static double getXFromUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double u);
         static double getXFromUByIteration(Distribution& distribution, StochastProperties& stochast, double u);
 
         /**

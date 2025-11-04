@@ -38,6 +38,7 @@ namespace Deltares::Probabilistic::Test
         testCompositeTruncatedStochast();
         testCompositeConditionalStochast();
         testCompositeConditionalTruncatedStochast();
+        testComposite();
         testDesignValue();
         testVariationCoefficient();
         testPoisson();
@@ -424,6 +425,27 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(0.83926457, dist.getCDF(1.0), margin);
         EXPECT_NEAR(0.39782325, dist.getPDF(0.0), margin);
         EXPECT_NEAR(1.01142894, dist.getDeviation(), margin);
+    }
+
+    void testDistributions::testComposite()
+    {
+        constexpr double margin = 1e-9;
+
+        auto prop = std::make_shared<StochastProperties>();
+        auto stochast1 = Stochast(DistributionType::Uniform, { 0.0, 8.0 });
+        auto stochast1sp = std::make_shared<Stochast>(stochast1);
+        auto contrStoc1 = std::make_shared<ContributingStochast>(0.4, stochast1sp);
+        auto stochast2 = Stochast(DistributionType::Uniform, { 6.0, 10.0 });
+        auto stochast2sp = std::make_shared<Stochast>(stochast2);
+        auto contrStoc2 = std::make_shared<ContributingStochast>(0.6, stochast2sp);
+
+        prop->ContributingStochasts.push_back(contrStoc1);
+        prop->ContributingStochasts.push_back(contrStoc2);
+        auto stochast = Stochast(DistributionType::Composite, prop);
+
+        EXPECT_NEAR(0.4 * 0.125 + 0.6 * 0, stochast.getCDF(1.0), margin);
+        EXPECT_NEAR(0.4 * 0.875 + 0.6 * 0.25, stochast.getCDF(7.0), margin);
+        EXPECT_NEAR(0.4 * 1 + 0.6 * 0.75, stochast.getCDF(9.0), margin);
     }
 
     void testDistributions::testFitNormal()
