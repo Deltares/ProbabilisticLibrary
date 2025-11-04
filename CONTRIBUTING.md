@@ -1,41 +1,57 @@
-# Contributing to the Probabilistic Library.
+# 🤝 Contributing to the Probabilistic Library.
 
-The Probabilistic Library is open source and we welcome contributions from everyone.
-However, we have some rules for that.
+The **Probabilistic Library** is open source, and we’re excited to welcome contributions from anyone interested!
+To keep things consistent and high quality, please take a moment to read through our guidelines below.
 
-I. It should fit in our primary focus: probabilistic, sensitivity and uncertainty analysis.
-It is up to Deltares to decide if it should be part of the main line.
+🧭 I. Scope
+We focus on **probabilistic**, **sensitivity**, and **uncertainty analysis**.
+Contributions should fit within this scope.
+Deltares will review and decide whether a contribution is included in the main branch.
 
-II. Code should follow our guidelines (see below).
+💻 II. Code Style
+Please make sure your code follows our coding guidelines (see below).
+Consistent style helps keep the library easy to read and maintain.
 
-III. New code should be tested with unit tests and documented (see below).
+🧪 III. Testing and Documentation
+All new code should include **unit tests** and **clear documentation**.
+If you’re adding something new, show how it works and how others can use it.
 
-IV. All contributions will get a header with (c) Deltares
+©️ IV. Copyright
+Every contribution will include a header with **(c) Deltares**.
 
-V. New code should not lead to new dependencies.
-If you think a new dependency is needed, contact us before making your changes.
-The current dependencies are given in:
-[wiki PL](https://github.com/Deltares/ProbabilisticLibrary/wiki/Tools-and-other-software).
-In short : C++ code follows the C++-20 standard; the python version is 3.11.
+📦 V. Dependencies
+New code should not lead to new dependencies.
+Try to avoid adding new dependencies.
+If you believe one is truly needed, please discuss it with us before starting your work.
+You can find our current dependencies here: [wiki PL](https://github.com/Deltares/ProbabilisticLibrary/wiki/Tools-and-other-software).
 
-VI. New code should be complete, no TODO's.
-That means: include a python wrapper, and if you add an new distribution,
-all methods for distributions must be implemented.
+Quick summary:
+- **C++** code follows the **C++-20** standard
+- **Python** code targets **Python 3.11**.
 
-VII. **No** Boy Scout Rule: if you change an existing file, make only the necessary changes for your issue.
-This makes reviewing and merging easier.
-If you think the file does not comply to our guidelines, make an issue for that.
+✅ VI. Completeness
+New code should be **ready to use** — no TODOs, please!
+That means including any required **Python wrappers** and, for new distributions, implementing **all necessary methods**.
 
-VIII. Make a pull request for your contribution, or create a issue with your suggestion.
+🧹 VII. **No** Boy Scout Rule
+When you’re fixing or improving something, focus **only on the changes related to your issue**.
+This keeps reviews and merges clean and simple.
+If you notice something else that needs cleanup, feel free to **open a new issue** for it.
+
+🚀 VIII. Submitting Your Work
+
+You can contribute in two ways:
+- Make a pull request with your changes.
+- Open an issue if you want to discuss an idea first.
+
+We’re happy to help guide you through the process — whether it’s your first contribution or your fiftieth!
 
 
 # Code guidelines
 
-For C++ we follow a part of the guidelines
-of [AirSim](https://github.com/microsoft/AirSim/blob/main/docs/coding_guidelines.md)
-with a few exceptions.
+For C++ we follow a part of the guidelines of [AirSim](https://github.com/microsoft/AirSim/blob/main/docs/coding_guidelines.md) with a few exceptions.
 
-For Python will follow [PEP8 - Style guide for Python Code](https://peps.python.org/pep-0008/).
+For Python we will follow [PEP8 - Style guide for Python Code](https://peps.python.org/pep-0008/).
 
 ## Naming Conventions for C++
 
@@ -94,62 +110,6 @@ But when the object really needs to live longer than the call stack you often ne
 the heap, and so you have a pointer. In that case we use unique pointers or shared pointers, both implementations of smart pointers.
 But smart pointers do have a cost, so use them only where needed.
 
-Don't do this:
-```
-        auto distribution = std::make_shared<LogNormalDistribution>();
-        auto properties = std::make_shared<StochastProperties>();
-        distribution->initialize(properties, {1.0, 2.0});
-        ...
-        void LogNormalDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
-        {
-            stochast->Shift = values[2];
-            setMeanAndDeviation(stochast, values[0], values[1]);
-        }
-
-        void LogNormalDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
-        {
-                ...
-                double p = deviation / (mean - stochast->Shift);
-                stochast->Scale = sqrt(log(1 + p * p));
-                stochast->Location = log(mean - stochast->Shift) - 0.5 * stochast->Scale * stochast->Scale;
-        }
-
-```
-But do this:
-```
-        auto distribution1 = std::make_shared<LogNormalDistribution>();
-        auto properties1 = std::make_shared<StochastProperties>();
-        distribution1->initialize(*properties1, {1.0, 2.0});
-        ...
-        // will not work in situation above
-        auto distribution2 = std::make_unique<LogNormalDistribution>();
-        auto properties2 = std::make_unique<StochastProperties>();
-        distribution2->initialize(*properties2, {1.0, 2.0});
-        ...
-        // prefered situation; will not work in situation above
-        auto distribution3 = LogNormalDistribution();
-        auto properties3 = StochastProperties();
-        distribution3.initialize(properties3, {1.0, 2.0});
-        ...
-        void LogNormalDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
-        {
-            stochast.Shift = values[2];
-            setMeanAndDeviation(stochast, values[0], values[1]);
-        }
-
-        void LogNormalDistribution::setMeanAndDeviation(StochastProperties& stochast,
-            const double mean, const double deviation)
-        {
-                ...
-                double p = deviation / (mean - stochast.Shift);
-                stochast.Scale = sqrt(log(1.0 + p * p));
-                stochast.Location = log(mean - stochast.Shift) - 0.5 * stochast.Scale * stochast.Scale;
-        }
-```
-Now it is clear that the stochast is updated by the initialize, but the values remain unchanged.
-And the caller of this initialize is not forced to use a shared pointer for the stochast, but still has that possibility.
-When at a deep level (in this case setMeanAndDeviation) one of the arguments is in a shared pointer, also a level higher should use a shared pointer.
-
 ## Indentation
 
 Both Python and C++ code base uses four spaces for indentation (not tabs).
@@ -175,23 +135,33 @@ Besides this, all features of C++20 are allowed. We do not use the Boost library
 
 ## Finishing your work
 
-After your pull request (PR) is approved, merge your changes into the master.
-That can be done using a merge commit or a squash commit.
-The last one keeps the history cleaner, but can give difficulties when another issue is based on this branch.
+Once your pull request (PR) has been approved — great job! 🎉
+You can now **merge your changes** into the ` master ` branch.
 
-Note that the release notes are generated using the title of the PR,
-so check the title for typos and make sure it is understandable for others.
+You can use either:
 
-After the merge the branch must be deleted.
+- a **merge commit**, or
+- a **squash commit** (this keeps the history cleaner, but can cause issues if another branch depends on your work).
+
+Before merging, double-check your **PR title**:
+
+- The title is used to automatically generate the release notes.
+Please make sure it’s free of typos and clearly describes your change.
+
+After merging, don’t forget to **delete your branch** — keeping things tidy helps everyone!
 
 # Documentation
-Algorithms are described in the scientific background.
-This document uses the Deltares corporate identity, and may be hard to generate.
-The body of the manual is plain latex, so that can be updated by externals.
+We aim to make both our code and our scientific background easy to understand and extend.
 
-Python code is documented with examples in a notebook.
-
-Code should have inline documentation for each class and all the public methods and members.
+- **Scientific background**:
+Algorithms are explained in the *Scientific Background* document, which follows the Deltares corporate identity.
+While generating this document can be complex, the main body is written in plain LaTeX, so external contributors can update it if needed.
+- **Python examples**:
+Python functionality should be demonstrated with **examples in a Jupyter notebook**.
+This helps users understand how to apply your code in real-world scenarios.
+- **Inline documentation**:
+Each **class**, and all **public methods and members**, should have clear inline documentation.
+A few well-written comments can save future contributors (including you!) a lot of time.
 
 Example:
 ```
