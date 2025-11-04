@@ -300,17 +300,17 @@ namespace Deltares
         {
             stochast.DiscreteValues.clear();
 
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = DistributionSupport::GetWeightedValues(values, weights);
+            auto x = DistributionSupport::GetWeightedValues(values, weights);
 
             for (size_t i = 0; i < x.size(); i++)
             {
-                if (stochast.DiscreteValues.empty() || x[i]->value != x[i-1]->value)
+                if (stochast.DiscreteValues.empty() || x[i].value != x[i-1].value)
                 {
-                    stochast.DiscreteValues.push_back(std::make_shared<DiscreteValue>(x[i]->value, x[i]->weight));
+                    stochast.DiscreteValues.push_back(std::make_shared<DiscreteValue>(x[i].value, x[i].weight));
                 }
                 else
                 {
-                    stochast.DiscreteValues.back()->Amount += x[i]->weight;
+                    stochast.DiscreteValues.back()->Amount += x[i].weight;
                 }
             }
 

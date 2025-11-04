@@ -368,7 +368,7 @@ namespace Deltares
             }
 
             // Build up list of weighted values
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = DistributionSupport::GetWeightedValues(values, weights);
+            auto x = DistributionSupport::GetWeightedValues(values, weights);
 
             if (x.empty())
             {
@@ -383,14 +383,14 @@ namespace Deltares
             bool isDistinctDistribution = distinctValuesCount < x.size() * distinctFraction && distinctValuesCount > 1;
 
             // Determine required number of ranges
-            double min = x[0]->value;
-            double max = x[x.size() - 1]->value;
+            double min = x[0].value;
+            double max = x[x.size() - 1].value;
 
             // Determine minimum distance between two points, if not zero
             double minWidth = std::numeric_limits<double>::max();
             for (size_t i = 0; i < x.size() - 1; i++)
             {
-                double diff = x[i + 1]->value - x[i]->value;
+                double diff = x[i + 1].value - x[i].value;
                 if (diff < minWidth && diff > accuracy)
                 {
                     minWidth = diff;
@@ -402,14 +402,14 @@ namespace Deltares
 
             if (extra < accuracy)
             {
-                if (std::fabs(x[0]->value) < accuracy)
+                if (std::fabs(x[0].value) < accuracy)
                 {
                     // probably x[0] is zero
                     extra = 0.5;
                 }
                 else
                 {
-                    extra = std::min(0.5, std::fabs(x[0]->value / 10));
+                    extra = std::min(0.5, std::fabs(x[0].value / 10));
                 }
             }
 
@@ -419,8 +419,8 @@ namespace Deltares
             }
 
             // when there are multiple equal values at the extremes, they are regarded as guard limits, which will not be exceeded in the fitted distribution
-            bool multipleAtMin = x.size() > 1 && x[0]->value == x[1]->value;
-            bool multipleAtMax = x.size() > 1 && x[x.size()-1]->value == x[x.size() - 2]->value;
+            bool multipleAtMin = x.size() > 1 && x[0].value == x[1].value;
+            bool multipleAtMax = x.size() > 1 && x[x.size()-1].value == x[x.size() - 2].value;
 
             int nMultiple = 0;
 
@@ -517,7 +517,7 @@ namespace Deltares
             initializeForRun(stochast);
         }
 
-        void HistogramDistribution::splitRanges(StochastProperties& stochast, std::vector < std::shared_ptr<Numeric::WeightedValue>> & values)
+        void HistogramDistribution::splitRanges(StochastProperties& stochast, const std::vector <Numeric::WeightedValue> & values)
         {
             std::vector<std::shared_ptr<HistogramValue>> existingRanges(stochast.HistogramValues);
 
@@ -543,27 +543,27 @@ namespace Deltares
             }
         }
 
-        double HistogramDistribution::getAmount(std::shared_ptr<HistogramValue> range, std::vector<std::shared_ptr<Numeric::WeightedValue>>& values)
+        double HistogramDistribution::getAmount(const std::shared_ptr<HistogramValue>& range, const std::vector<Numeric::WeightedValue>& values)
         {
             double amount = 0;
             for (size_t j = 0; j < values.size(); j++)
             {
-                if (range->contains(values[j]->value))
+                if (range->contains(values[j].value))
                 {
-                    amount += values[j]->weight;
+                    amount += values[j].weight;
                 }
             }
 
             return amount;
         }
 
-        size_t HistogramDistribution::getDistinctCount(std::vector<std::shared_ptr<Numeric::WeightedValue>>& values)
+        size_t HistogramDistribution::getDistinctCount(const std::vector<Numeric::WeightedValue>& values)
         {
             size_t count = 1;
 
             for (size_t i = 1; i < values.size(); i++)
             {
-                if (values[i]->value != values[i-1]->value)
+                if (values[i].value != values[i-1].value)
                 {
                     count++;
                 }
@@ -573,20 +573,20 @@ namespace Deltares
         }
 
 
-        void HistogramDistribution::mergeLowWeights(std::vector<std::shared_ptr<Numeric::WeightedValue>>& values)
+        void HistogramDistribution::mergeLowWeights(std::vector<Numeric::WeightedValue>& values)
         {
             constexpr double minWeightNormalized = 0.00001;
 
             double wSum = 0;
             for (size_t i = 0; i < values.size(); i++)
             {
-                wSum += values[i]->weight;
+                wSum += values[i].weight;
             }
 
             double weightedMean = 0;
             for (size_t i = 0; i < values.size(); i++)
             {
-                weightedMean += values[i]->value * values[i]->weight;
+                weightedMean += values[i].value * values[i].weight;
             }
 
             weightedMean /= wSum;
@@ -597,26 +597,26 @@ namespace Deltares
             {
                 changed = false;
 
-                std::vector<std::shared_ptr<Numeric::WeightedValue>> newWeightedValues;
+                std::vector<Numeric::WeightedValue> newWeightedValues;
 
                 for (size_t i = 0; i < values.size() - 1; i++)
                 {
-                    double combinedWeight = values[i]->weight + values[i + 1]->weight;
+                    double combinedWeight = values[i].weight + values[i + 1].weight;
 
                     if (combinedWeight < minWeight)
                     {
                         changed = true;
 
                         // add the weighted value nearest to the mean
-                        if (values[i]->value < weightedMean)
+                        if (values[i].value < weightedMean)
                         {
-                            values[i + 1]->weight += values[i]->weight;
+                            values[i + 1].weight += values[i].weight;
 
                             newWeightedValues.push_back(values[i + 1]);
                         }
                         else
                         {
-                            values[i]->weight += values[i + 1]->weight;
+                            values[i].weight += values[i + 1].weight;
 
                             newWeightedValues.push_back(values[i]);
                         }

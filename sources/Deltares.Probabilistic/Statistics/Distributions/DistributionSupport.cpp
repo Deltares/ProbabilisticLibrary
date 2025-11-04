@@ -136,21 +136,23 @@ namespace Deltares::Statistics
         return values;
     }
 
-    std::vector<std::shared_ptr<Numeric::WeightedValue>> DistributionSupport::GetWeightedValues(const std::vector<double>& values, const std::vector<double>& weights)
+    std::vector<Numeric::WeightedValue> DistributionSupport::GetWeightedValues(const std::vector<double>& values, const std::vector<double>& weights)
     {
-        std::vector<std::shared_ptr<Numeric::WeightedValue>> weightedValues;
+        std::vector<Numeric::WeightedValue> weightedValues;
 
         for (size_t i = 0; i < values.size(); i++)
         {
             if (!std::isnan(values[i]))
             {
-                weightedValues.push_back(std::make_shared<Numeric::WeightedValue>(values[i], weights[i]));
+                weightedValues.push_back(Numeric::WeightedValue(values[i], weights[i]));
             }
         }
 
         if (!weightedValues.empty())
         {
-            std::sort(weightedValues.begin(), weightedValues.end(), [](std::shared_ptr<Numeric::WeightedValue> val1, std::shared_ptr<Numeric::WeightedValue> val2) {return val1->value < val2->value; });
+            std::sort(weightedValues.begin(), weightedValues.end(),
+                [](const Numeric::WeightedValue& val1, const Numeric::WeightedValue& val2)
+                {return val1.value < val2.value; });
         }
 
         return weightedValues;

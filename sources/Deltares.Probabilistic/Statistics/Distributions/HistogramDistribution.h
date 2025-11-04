@@ -52,10 +52,10 @@ namespace Deltares
             std::vector<double> getDiscontinuityPoints(StochastProperties&) override;
         private:
             static double getSizeForEmptySizedRange(const StochastProperties& stochast);
-            void splitRanges(StochastProperties& stochast, std::vector<std::shared_ptr<Numeric::WeightedValue>>& values);
-            double getAmount(std::shared_ptr<HistogramValue> range, std::vector<std::shared_ptr<Numeric::WeightedValue>>& values);
-            void mergeLowWeights(std::vector<std::shared_ptr<Numeric::WeightedValue>>& values);
-            size_t getDistinctCount(std::vector<std::shared_ptr<Numeric::WeightedValue>>& values);
+            static void splitRanges(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& values);
+            static double getAmount(const std::shared_ptr<HistogramValue>& range, const std::vector<Numeric::WeightedValue>& values);
+            static void mergeLowWeights(std::vector<Numeric::WeightedValue>& values);
+            static size_t getDistinctCount(const std::vector<Numeric::WeightedValue>& values);
         };
     }
 }
