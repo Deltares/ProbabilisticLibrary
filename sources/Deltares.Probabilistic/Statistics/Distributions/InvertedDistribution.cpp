@@ -201,7 +201,7 @@ namespace Deltares
         {
             return std::ranges::any_of(this->innerDistribution->getParameters(), [](DistributionPropertyType parameter)
             {
-                return parameter == Shift;
+                return parameter == DistributionPropertyType::Shift;
             });
         }
 

@@ -46,7 +46,10 @@ namespace Deltares
             void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
             std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Location, Observations }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Location, DistributionPropertyType::Observations };
+            }
         private:
             const double delta = 0.0000001;
         };

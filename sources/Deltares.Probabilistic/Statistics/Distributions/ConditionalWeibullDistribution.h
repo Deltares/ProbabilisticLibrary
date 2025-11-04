@@ -49,7 +49,10 @@ namespace Deltares
             bool canFit() override { return true; }
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale, Shape, ShapeB }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Shift, DistributionPropertyType::Scale, DistributionPropertyType::Shape, DistributionPropertyType::ShapeB };
+            }
         private:
             static double getExponent(const StochastProperties& stochast, double x);
             const double tresholdF = 3.34e-8;

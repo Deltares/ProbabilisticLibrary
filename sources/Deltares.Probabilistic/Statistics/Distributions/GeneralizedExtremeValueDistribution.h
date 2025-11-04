@@ -52,7 +52,10 @@ namespace Deltares
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             double getMaxShiftValue(std::vector<double>& values) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale, Shape }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Shift, DistributionPropertyType::Scale, DistributionPropertyType::Shape };
+            }
         private:
             const std::shared_ptr<Distribution> gumbelDistribution = std::make_shared<GumbelDistribution>();
             const std::shared_ptr<Distribution> frechetDistribution = std::make_shared<FrechetDistribution>();

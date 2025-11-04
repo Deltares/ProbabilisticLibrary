@@ -48,7 +48,10 @@ namespace Deltares
             double getCDF(StochastProperties& stochast, double x) override;
             void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Location, Scale, Observations }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Location, DistributionPropertyType::Scale, DistributionPropertyType::Observations };
+            }
         private:
             class StudentTValue
             {

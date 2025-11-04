@@ -43,7 +43,10 @@ namespace Deltares
             void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Scale, Shape }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Scale, DistributionPropertyType::Shape };
+            }
         };
     }
 }

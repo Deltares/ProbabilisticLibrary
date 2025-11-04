@@ -350,7 +350,7 @@ namespace Deltares
             std::vector<double> minValues = { stochast.Minimum, stochast.Minimum };
             std::vector<double> maxValues = { stochast.Maximum, stochast.Maximum };
             std::vector<double> initValues = { stochast.Minimum + 0.3 * diff, stochast.Minimum + 0.7 * diff };
-            std::vector<DistributionPropertyType> properties = { Shift, ShiftB };
+            std::vector<DistributionPropertyType> properties = {DistributionPropertyType::Shift, DistributionPropertyType::ShiftB };
 
             std::vector<double> parameters = fitter->fitByLogLikelihood(values,this, stochast,minValues,maxValues,initValues,properties);
 

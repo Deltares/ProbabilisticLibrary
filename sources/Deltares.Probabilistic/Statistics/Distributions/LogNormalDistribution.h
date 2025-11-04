@@ -48,7 +48,10 @@ namespace Deltares
             void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
             double getMaxShiftValue(std::vector<double>& values) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Location, Scale, Shift }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Location, DistributionPropertyType::Scale, DistributionPropertyType::Shift };
+            }
         protected:
             double getFittedMinimum(const std::vector<double>& values) override;
         private:

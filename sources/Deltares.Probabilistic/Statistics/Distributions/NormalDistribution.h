@@ -47,7 +47,10 @@ namespace Deltares
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
             void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Location, Scale }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Location, DistributionPropertyType::Scale };
+            }
         };
     }
 }

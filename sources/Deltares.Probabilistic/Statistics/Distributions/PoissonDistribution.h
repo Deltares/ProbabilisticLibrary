@@ -44,7 +44,10 @@ namespace Deltares
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Location }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Location };
+            }
         private:
             const double kMax = 1000.0;
             const double delta = 0.0000001;

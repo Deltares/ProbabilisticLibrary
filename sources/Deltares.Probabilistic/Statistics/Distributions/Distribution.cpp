@@ -69,31 +69,31 @@ namespace Deltares
         {
             for (DistributionPropertyType property : this->getParameters())
             {
-                if (property == Location)
+                if (property == DistributionPropertyType::Location)
                 {
                     Logging::ValidationSupport::checkFinite(report, stochast.Location, "location", subject);
                 }
-                else if (property == Scale)
+                else if (property == DistributionPropertyType::Scale)
                 {
                     Logging::ValidationSupport::checkMinimum(report, 0, stochast.Scale, "scale", subject);
                 }
-                else if (property == Shape)
+                else if (property == DistributionPropertyType::Shape)
                 {
                     Logging::ValidationSupport::checkMinimum(report, 0, stochast.Shape, "shape", subject);
                 }
-                else if (property == ShapeB)
+                else if (property == DistributionPropertyType::ShapeB)
                 {
                     Logging::ValidationSupport::checkMinimum(report, 0, stochast.ShapeB, "shape B", subject);
                 }
-                else if (property == Maximum)
+                else if (property == DistributionPropertyType::Maximum)
                 {
                     Logging::ValidationSupport::checkMinimum(report, stochast.Minimum, stochast.Maximum, "maximum", subject);
                 }
-                else if (property == ShiftB)
+                else if (property == DistributionPropertyType::ShiftB)
                 {
                     Logging::ValidationSupport::checkMinimum(report, stochast.Shift, stochast.ShiftB, "shift B", subject);
                 }
-                else if (property == Observations)
+                else if (property == DistributionPropertyType::Observations)
                 {
                     Logging::ValidationSupport::checkMinimumInt(report, 2, stochast.Observations, "observations", subject);
                 }

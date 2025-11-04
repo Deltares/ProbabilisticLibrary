@@ -39,7 +39,10 @@ namespace Deltares
             void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
             void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Scale, Shape, Shift }; }
+            std::vector<DistributionPropertyType> getParameters() override
+            {
+                return {DistributionPropertyType::Scale, DistributionPropertyType::Shape, DistributionPropertyType::Shift };
+            }
         private:
             const double epsilon = 1.0e-4;
         };
