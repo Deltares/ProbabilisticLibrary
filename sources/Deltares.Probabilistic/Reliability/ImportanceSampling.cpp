@@ -510,11 +510,11 @@ namespace Deltares
 			}
 			else
 			{
-				const std::shared_ptr<StartPointCalculator> startPointCalculator = std::make_shared<StartPointCalculator>();
-				startPointCalculator->Settings = this->Settings->startPointSettings;
-				startPointCalculator->Settings->StochastSet = this->Settings->StochastSet;
+				auto startPointCalculator = StartPointCalculator();
+				startPointCalculator.Settings = this->Settings->startPointSettings;
+				startPointCalculator.Settings->StochastSet = this->Settings->StochastSet;
 
-				std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
+				std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(modelRunner);
 
 				if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
 				{
