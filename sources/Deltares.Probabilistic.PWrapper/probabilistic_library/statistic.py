@@ -342,7 +342,11 @@ class Stochast(FrozenObject):
 
 	@property
 	def distribution(self) -> DistributionType:
-		"""Distribution type of the stochast"""
+		"""Distribution type of the stochast
+
+        When the distribution type is changed, an effort will be made to maintain the mean and deviation. When
+        the distribution type is changed initially, before other properties have been set, this does not take place."""
+
 		return DistributionType[interface.GetStringValue(self._id, 'distribution')]
 
 	@distribution.setter

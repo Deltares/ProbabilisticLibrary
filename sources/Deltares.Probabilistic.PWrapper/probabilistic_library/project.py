@@ -44,11 +44,15 @@ classDiagram
         ~run()
         ~run_multiple()
     }
+    class ZModelContainer{
+        +get_model() : ZModel
+    }
     class ModelParameter{
         +name : string
     }
 
     ZModel <-- ModelProject
+    ZModel "get_model" <-- ZModelContainer
     ModelParameter "*, input, output " <-- ModelProject
     Stochast <-- ModelProject
     CorrelationMatrix <-- ModelProject
@@ -75,30 +79,6 @@ import inspect
 
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
-
-class Sample(FrozenObject):
-	"""Defines a sample, used internally"""
-	def __init__(self, input_values, output_values):
-		self.input_values = input_values
-		self.output_values = output_values
-		super()._freeze()
-
-class ZModelContainer:
-	"""Wrapper of a ZModel, used internally"""
-
-	def get_model(self):
-		"""Gets the ZModel"""
-		return None
-
-	def is_model_valid(self) -> bool:
-		"""Indicates whether the model is valid"""
-		return True
-
-	def is_dirty(self):
-		return False
-
-	def update_model(self):
-		pass
 
 class ZModel(FrozenObject):
 	"""Wrapper around a python function or method.
@@ -362,11 +342,28 @@ class ZModel(FrozenObject):
 			else: 
 				print(pre + f'{output_parameter.name}')
 
+class ZModelContainer:
+	"""Wrapper of a `ZModel`, used internally by ptk.whl to assign a PTK model to a `ModelProject`"""
+
+	def get_model(self) -> ZModel:
+		"""Gets a ZModel"""
+		return None
+
+	def is_model_valid(self) -> bool:
+		"""Indicates whether the model is valid"""
+		return True
+
+	def is_dirty(self):
+		return False
+
+	def update_model(self):
+		pass
+
 class ModelParameter(FrozenObject):
 	"""Input or output parameter of a model
 
     A model parameter is part of a `ZModel`, as one of its input or output parameters. It is generated when a
-    ZModel is created. By reflection and type hints as much as possible information about the parameter is
+    `ZModel` is created. By reflection and type hints as much as possible information about the parameter is
     provided."""
 
 	def __init__(self, id = None):
@@ -397,7 +394,7 @@ class ModelParameter(FrozenObject):
 
 	@property
 	def index(self) -> int:
-		"""Sequence number of the parameter in the list of input or output parameters of a ZModel"""
+		"""Sequence number of the parameter in the list of input or output parameters of a `ZModel`"""
 		return interface.GetIntValue(self._id, 'index')
 		
 	@index.setter
@@ -470,14 +467,14 @@ class ModelProject(FrozenObject):
 
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
-		sample = Sample(values[:size], output_values)
+		sample = _Sample(values[:size], output_values)
 		ModelProject._zmodel.run(sample)
 
 	@interface.MULTIPLE_CALLBACK
 	def _perform_multiple_callback(sample_count, values, input_size, output_values):
 		samples = []
 		for i in range(sample_count):
-			samples.append(Sample(values[i][:input_size], output_values[i]))
+			samples.append(_Sample(values[i][:input_size], output_values[i]))
 		ModelProject._zmodel.run_multiple(samples)
 
 	def is_valid(self) -> bool:
@@ -517,7 +514,10 @@ class ModelProject(FrozenObject):
 
         When set, the function/method/string is wrapped in a `ZModel`. The ZModel has information
         about its input and output parameters (derived from the function signature). When the model
-        is retrieved, the ZModel object is returned."""
+        is retrieved, the ZModel object is returned.
+
+        It is also possible to set a `ZModelContainer`, which can provide a `ZModel`. PTK models are 
+		set with a `ZModelContainer` (using ptk.whl)"""
 
 		if not self._model is None:
 			self._model._project = self
@@ -608,6 +608,13 @@ class RunValuesType(Enum):
 	design_values = 'design_values'
 	def __str__(self):
 		return str(self.value)
+
+class _Sample(FrozenObject):
+	"""Defines a sample, used internally"""
+	def __init__(self, input_values, output_values):
+		self.input_values = input_values
+		self.output_values = output_values
+		super()._freeze()
 
 class RunProjectSettings(FrozenObject):
 	"""Settings for a model run"""
@@ -713,7 +720,7 @@ class RunProject(ModelProject):
 
 	@property
 	def settings(self) -> RunProjectSettings:
-		"""Settings for the sensitivity algorithm"""
+		"""Settings for running a model"""
 		self._check_model()
 		return self._settings
 
