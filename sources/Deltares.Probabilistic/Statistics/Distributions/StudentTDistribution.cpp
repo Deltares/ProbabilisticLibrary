@@ -161,10 +161,10 @@ namespace Deltares
 
         void StudentTDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
-            const double minSigma = 1.0E-9;
-            const double minRelativeSigma = 0.99;
-            const double maxRelativeSigma = 1.01;
-            const int maxIterations = 25;
+            constexpr double minSigma = 1.0E-9;
+            constexpr double minRelativeSigma = 0.99;
+            constexpr double maxRelativeSigma = 1.01;
+            constexpr int maxIterations = 25;
 
             std::vector<double> weights = NumericSupport::select(values, [](double x) {return 1.0; });
 
@@ -208,17 +208,12 @@ namespace Deltares
             }
         }
 
-        StudentTDistribution::StudentTValue StudentTDistribution::GetStudentValue(int degreesOfFreedom, bool& success)
+        StudentTDistribution::StudentTValue StudentTDistribution::GetStudentValue(int degreesOfFreedom, bool& success) const
         {
             if (degreesOfFreedom <= 0)
             {
                 success = false;
                 return {};
-            }
-
-            if (studentValues.empty())
-            {
-                loadValues();
             }
 
             for (size_t i = 0; i < studentValues.size(); i++)

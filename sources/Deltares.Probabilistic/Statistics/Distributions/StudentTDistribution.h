@@ -35,6 +35,7 @@ namespace Deltares
         class StudentTDistribution : public Distribution
         {
         public:
+            StudentTDistribution() { loadValues(); }
             void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(StochastProperties& stochast, double x) override;
@@ -84,7 +85,7 @@ namespace Deltares
                 std::vector<double> getPValues(double maxP);
             };
 
-            StudentTValue GetStudentValue(int degreesOfFreedom, bool& success);
+            StudentTValue GetStudentValue(int degreesOfFreedom, bool& success) const;
             std::vector<StudentTValue> studentValues;
             void loadValues();
 
