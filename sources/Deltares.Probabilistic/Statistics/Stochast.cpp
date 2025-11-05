@@ -652,7 +652,7 @@ namespace Deltares
             distribution->fit(*properties, values, nan(""));
         }
 
-        double Stochast::getKSTest(std::vector<double> values) const
+        double Stochast::getKSTest(const std::vector<double>& values) const
         {
             return KSCalculator::getGoodnessOfFit(values, *distribution, *properties);
         }

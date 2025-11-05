@@ -61,8 +61,8 @@ namespace Deltares
         private:
             std::shared_ptr<Distribution> innerDistribution = nullptr;
             double getInvertedValue(const StochastProperties& stochast, double value) const;
-            StochastProperties getInvertedStochast(StochastProperties& stochast) const;
-            void copyFromInverted(StochastProperties& target, StochastProperties& source) const;
+            StochastProperties getInvertedStochast(const StochastProperties& stochast) const;
+            void copyFromInverted(StochastProperties& target, const StochastProperties& source) const;
             bool isShiftUsed() const;
         };
     }

@@ -35,14 +35,14 @@ namespace Deltares
             return 2.0 * center - value;
         }
 
-        StochastProperties InvertedDistribution::getInvertedStochast(StochastProperties& stochast) const
+        StochastProperties InvertedDistribution::getInvertedStochast(const StochastProperties& stochast) const
         {
             auto invertedStochast = StochastProperties();
             this->copyFromInverted(invertedStochast, stochast);
             return invertedStochast;
         }
 
-        void InvertedDistribution::copyFromInverted(StochastProperties& target, StochastProperties& source) const
+        void InvertedDistribution::copyFromInverted(StochastProperties& target, const StochastProperties& source) const
         {
             target.Location = source.Location;
             target.Scale = source.Scale;

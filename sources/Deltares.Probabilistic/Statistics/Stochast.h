@@ -391,7 +391,7 @@ namespace Deltares
              * \brief Calculates the Kolmogorov-Smirnov statistic, which is an indication how well data correspond with the stochast (0 = perfect, 1 = no correspondence at all)
              * \return Kolmogorov-Smirnov statistic
              */
-            double getKSTest(std::vector<double> values) const;
+            double getKSTest(const std::vector<double>& values) const;
 
             /**
              * \brief Gets a number of interesting x-values
