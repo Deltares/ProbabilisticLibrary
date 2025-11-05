@@ -54,7 +54,8 @@ namespace Deltares
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override
             {
-                return {DistributionPropertyType::Shift, DistributionPropertyType::Scale, DistributionPropertyType::Shape };
+                using enum DistributionPropertyType;
+                return {Shift, Scale, Shape };
             }
         private:
             const std::shared_ptr<Distribution> gumbelDistribution = std::make_shared<GumbelDistribution>();
@@ -63,8 +64,8 @@ namespace Deltares
 
             static DistributionType getExtremeDistributionType(const StochastProperties& stochast);
             std::shared_ptr<Distribution> getDistribution(const StochastProperties& stochast) const;
-            StochastProperties getStochast(StochastProperties& stochast);
-            void assign(StochastProperties& source, StochastProperties& target);
+            static StochastProperties getStochast(StochastProperties& stochast);
+            static void assign(const StochastProperties& source, StochastProperties& target);
         };
     }
 }

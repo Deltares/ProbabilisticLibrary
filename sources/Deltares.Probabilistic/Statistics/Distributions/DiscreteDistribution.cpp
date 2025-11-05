@@ -39,12 +39,12 @@ namespace Deltares
                 [](const std::shared_ptr<DiscreteValue>& val1, const std::shared_ptr<DiscreteValue>& val2) {return val1->X < val2->X; });
 
             double sum = 0;
-            for (std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
             {
                 sum += discreteValue->Amount;
             }
 
-            for (std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
             {
                 discreteValue->NormalizedAmount = discreteValue->Amount / sum;
             }
@@ -346,9 +346,8 @@ namespace Deltares
 
                 std::shared_ptr<DiscreteValue> previousValue = nullptr;
 
-                for (size_t i = 0; i < stochast.DiscreteValues.size(); i++)
+                for (const auto& value : stochast.DiscreteValues)
                 {
-                    std::shared_ptr<DiscreteValue> value = stochast.DiscreteValues[i];
                     if (previousValue != nullptr && Numeric::NumericSupport::areEqual(value->X, previousValue->X, offset))
                     {
                         double lastValueStochastValue = specialPoints[specialPoints.size() - 2];

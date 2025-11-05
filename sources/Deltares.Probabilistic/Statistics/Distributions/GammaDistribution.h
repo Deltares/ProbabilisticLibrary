@@ -43,7 +43,8 @@ namespace Deltares
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             std::vector<DistributionPropertyType> getParameters() override
             {
-                return {DistributionPropertyType::Scale, DistributionPropertyType::Shape };
+                using enum DistributionPropertyType;
+                return {Scale, Shape };
             }
         };
     }

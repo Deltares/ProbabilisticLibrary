@@ -35,6 +35,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        using enum DistributionPropertyType;
+
         void FrechetDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
             setMeanAndDeviation(stochast, values[0], values[1]);
@@ -171,7 +173,7 @@ namespace Deltares
 
             double alpha = 1;
             double beta = 1;
-            const double n = values0.size();
+            const double n = static_cast<double>(values0.size());
 
             int counter = 0;
 
@@ -207,11 +209,10 @@ namespace Deltares
 
             auto fitter = DistributionFitter();
 
-            std::vector<double> minValues = { minValue, minValue, 3 * newShift - 2 * mean };
-            std::vector<double> maxValues = { 2 * alpha - minValue, 2 * beta - minValue, newShift };
-            std::vector<double> initValues = { alpha, beta, newShift };
-            std::vector<DistributionPropertyType> properties = { DistributionPropertyType::Shape, DistributionPropertyType::Scale, DistributionPropertyType::Shift };
-            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+            std::vector minValues = { minValue, minValue, 3 * newShift - 2 * mean };
+            std::vector maxValues = { 2 * alpha - minValue, 2 * beta - minValue, newShift };
+            std::vector properties = { Shape, Scale, Shift };
+            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
 
             stochast.Shape = std::max(minValue, parameters[0]);
             stochast.Scale = std::max(minValue, parameters[1]);

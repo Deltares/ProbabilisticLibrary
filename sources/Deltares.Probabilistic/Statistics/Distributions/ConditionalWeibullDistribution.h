@@ -51,7 +51,8 @@ namespace Deltares
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override
             {
-                return {DistributionPropertyType::Shift, DistributionPropertyType::Scale, DistributionPropertyType::Shape, DistributionPropertyType::ShapeB };
+                using enum DistributionPropertyType;
+                return {Shift, Scale, Shape, ShapeB };
             }
         private:
             static double getExponent(const StochastProperties& stochast, double x);

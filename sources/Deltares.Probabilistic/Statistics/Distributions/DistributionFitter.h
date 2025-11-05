@@ -35,10 +35,10 @@ namespace Deltares
         public:
             std::vector<double> fitByLogLikelihood(const std::vector<double>& values, Distribution* distribution,
                 StochastProperties& stochast, const std::vector<double>& minimum, const std::vector<double>& maximum,
-                std::vector<double>& initial, const std::vector<DistributionPropertyType>& properties);
+                const std::vector<DistributionPropertyType>& properties);
         private:
-            Distribution* distribution = nullptr;
-            void getLogLikelihood(std::shared_ptr<Models::ModelSample> sample, const std::vector<double>& values,
+            Distribution* distributionObj = nullptr;
+            void getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,
                 StochastProperties& stochast, const std::vector<DistributionPropertyType>& properties) const;
             double getSumLogLikelihood(const std::vector<double>& values, StochastProperties& stochast) const;
         };

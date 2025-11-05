@@ -260,15 +260,8 @@ namespace Deltares
 
         bool FORM::areAllResultsValid(const std::vector<double>& values)
         {
-            for (const double value : values)
-            {
-                if (std::isnan(value))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            bool foundNaN = std::ranges::any_of(values, [](const double x) {return std::isnan(x); });
+            return !foundNaN;
         }
 
         bool FORM::isConverged(ModelRunner& modelRunner, const Sample& sample, ConvergenceReport& convergenceReport, double beta, double zGradientLength) const

@@ -28,6 +28,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        using enum DistributionPropertyType;
+
         std::vector<double> Distribution::getDiscontinuityPoints(StochastProperties& stochast)
         {
             if (isVarying(stochast))
@@ -46,7 +48,7 @@ namespace Deltares
             double max = Numeric::NumericSupport::getMaximum(x);
 
             double diff = max - min;
-            double add = diff / x.size();
+            double add = diff / static_cast<double>(x.size());
 
             return min - add;
         }
@@ -69,31 +71,31 @@ namespace Deltares
         {
             for (DistributionPropertyType property : this->getParameters())
             {
-                if (property == DistributionPropertyType::Location)
+                if (property == Location)
                 {
                     Logging::ValidationSupport::checkFinite(report, stochast.Location, "location", subject);
                 }
-                else if (property == DistributionPropertyType::Scale)
+                else if (property == Scale)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast.Scale, "scale", subject);
+                    Logging::ValidationSupport::checkMinimum(report, 0.0, stochast.Scale, "scale", subject);
                 }
-                else if (property == DistributionPropertyType::Shape)
+                else if (property == Shape)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast.Shape, "shape", subject);
+                    Logging::ValidationSupport::checkMinimum(report, 0.0, stochast.Shape, "shape", subject);
                 }
-                else if (property == DistributionPropertyType::ShapeB)
+                else if (property == ShapeB)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast.ShapeB, "shape B", subject);
+                    Logging::ValidationSupport::checkMinimum(report, 0.0, stochast.ShapeB, "shape B", subject);
                 }
-                else if (property == DistributionPropertyType::Maximum)
+                else if (property == Maximum)
                 {
                     Logging::ValidationSupport::checkMinimum(report, stochast.Minimum, stochast.Maximum, "maximum", subject);
                 }
-                else if (property == DistributionPropertyType::ShiftB)
+                else if (property == ShiftB)
                 {
                     Logging::ValidationSupport::checkMinimum(report, stochast.Shift, stochast.ShiftB, "shift B", subject);
                 }
-                else if (property == DistributionPropertyType::Observations)
+                else if (property == Observations)
                 {
                     Logging::ValidationSupport::checkMinimumInt(report, 2, stochast.Observations, "observations", subject);
                 }

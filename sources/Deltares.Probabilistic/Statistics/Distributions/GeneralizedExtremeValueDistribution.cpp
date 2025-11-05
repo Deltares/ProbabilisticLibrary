@@ -140,7 +140,7 @@ namespace Deltares
 
         void GeneralizedExtremeValueDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            auto gevStochast = this->getStochast(stochast);
+            auto gevStochast = getStochast(stochast);
             this->getDistribution(stochast)->setMeanAndDeviation(gevStochast, mean, deviation);
             this->assign(gevStochast, stochast);
         }
@@ -196,7 +196,7 @@ namespace Deltares
             return this->getDistribution(stochast)->getSpecialPoints(gevStochast);
         }
 
-        void GeneralizedExtremeValueDistribution::assign(StochastProperties& source, StochastProperties& target)
+        void GeneralizedExtremeValueDistribution::assign(const StochastProperties& source, StochastProperties& target)
         {
             switch (getExtremeDistributionType(target))
             {

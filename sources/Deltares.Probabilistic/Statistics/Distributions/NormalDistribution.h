@@ -49,7 +49,8 @@ namespace Deltares
             void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
             std::vector<DistributionPropertyType> getParameters() override
             {
-                return {DistributionPropertyType::Location, DistributionPropertyType::Scale };
+                using enum DistributionPropertyType;
+                return {Location, Scale };
             }
         };
     }

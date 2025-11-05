@@ -35,6 +35,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        using enum DistributionPropertyType;
+
         void RayleighNDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
             setMeanAndDeviation(stochast, values[0], values[1]);
@@ -170,13 +172,12 @@ namespace Deltares
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast.Shift) * (p - stochast.Shift); });
             stochast.Scale = std::sqrt(sum / (2 * values.size()));
 
-            std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
+            auto fitter = DistributionFitter();
 
-            std::vector<double> minValues = { 0.5 * stochast.Scale, 0.5 * stochast.Shift, 0.5 };
-            std::vector<double> maxValues = { 1.5 * stochast.Scale, 1.5 * stochast.Shift, 1.5 };
-            std::vector<double> initValues = { stochast.Scale, stochast.Shift, 1.0 };
-            std::vector<DistributionPropertyType> properties = { DistributionPropertyType::Scale, DistributionPropertyType::Shift, DistributionPropertyType::Shape};
-            std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+            std::vector minValues = { 0.5 * stochast.Scale, 0.5 * stochast.Shift, 0.5 };
+            std::vector maxValues = { 1.5 * stochast.Scale, 1.5 * stochast.Shift, 1.5 };
+            std::vector properties = { Scale, Shift, Shape};
+            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
 
             stochast.Scale = std::max(0.0, parameters[0]);
             stochast.Shift = parameters[1];

@@ -48,7 +48,8 @@ namespace Deltares
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override
             {
-                return {DistributionPropertyType::Location, DistributionPropertyType::Observations };
+                using enum DistributionPropertyType;
+                return {Location, Observations };
             }
         private:
             const double delta = 0.0000001;

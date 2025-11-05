@@ -35,6 +35,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        using enum DistributionPropertyType;
+
         void TrapezoidalDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
             stochast.Minimum = values[0];
@@ -345,14 +347,13 @@ namespace Deltares
             stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
             stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
 
-            std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
+            auto fitter = DistributionFitter();
 
-            std::vector<double> minValues = { stochast.Minimum, stochast.Minimum };
-            std::vector<double> maxValues = { stochast.Maximum, stochast.Maximum };
-            std::vector<double> initValues = { stochast.Minimum + 0.3 * diff, stochast.Minimum + 0.7 * diff };
-            std::vector<DistributionPropertyType> properties = {DistributionPropertyType::Shift, DistributionPropertyType::ShiftB };
+            std::vector minValues = { stochast.Minimum, stochast.Minimum };
+            std::vector maxValues = { stochast.Maximum, stochast.Maximum };
+            std::vector properties = {Shift, ShiftB };
 
-            std::vector<double> parameters = fitter->fitByLogLikelihood(values,this, stochast,minValues,maxValues,initValues,properties);
+            std::vector<double> parameters = fitter.fitByLogLikelihood(values,this, stochast,minValues,maxValues,properties);
 
             stochast.Shift = std::max(stochast.Minimum, parameters[0]);
             stochast.ShiftB = std::min(stochast.Maximum, parameters[1]);

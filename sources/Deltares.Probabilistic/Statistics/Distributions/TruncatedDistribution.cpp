@@ -33,6 +33,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        using enum DistributionPropertyType;
+
         struct Truncated
         {
             double LowerProbability = 0;
@@ -254,51 +256,46 @@ namespace Deltares
 
             std::vector<double> minValues;
             std::vector<double> maxValues;
-            std::vector<double> initValues;
             std::vector<DistributionPropertyType> fitProperties;
 
             for (DistributionPropertyType property : properties)
             {
                 switch (property)
                 {
-                case DistributionPropertyType::Location:
+                case Location:
                 {
                     minValues.push_back(stochast.Location - 3.0 * stochast.Scale);
                     maxValues.push_back(stochast.Location + 3.0 * stochast.Scale);
-                    initValues.push_back(stochast.Location);
                     fitProperties.push_back(property);
                     break;
                 }
-                case DistributionPropertyType::Scale:
+                case Scale:
                 {
                     minValues.push_back(0.1 * stochast.Scale);
                     maxValues.push_back(1.9 * stochast.Scale);
-                    initValues.push_back(stochast.Scale);
                     fitProperties.push_back(property);
                     break;
                 }
-                case DistributionPropertyType::Shift:
+                case Shift:
                 {
                     minValues.push_back(stochast.Shift - 3.0 * stochast.Scale);
                     maxValues.push_back(stochast.Shift + 3.0 * stochast.Scale);
-                    initValues.push_back(stochast.Shift);
                     fitProperties.push_back(property);
                     break;
                 }
-                case DistributionPropertyType::Shape:
+                case Shape:
                 {
                     minValues.push_back(0.1 * stochast.Shape);
                     maxValues.push_back(1.9 * stochast.Shape);
-                    initValues.push_back(stochast.Shape);
                     fitProperties.push_back(property);
                     break;
                 }
                 }
             }
 
-            std::shared_ptr<DistributionFitter> distributionFitter = std::make_shared<DistributionFitter>();
+            auto distributionFitter = DistributionFitter();
 
-            std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, fitProperties);
+            std::vector<double> parameters = distributionFitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, fitProperties);
 
             for (size_t i = 0; i < fitProperties.size(); i++)
             {

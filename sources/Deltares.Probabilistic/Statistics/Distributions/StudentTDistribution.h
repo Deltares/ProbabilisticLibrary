@@ -51,7 +51,8 @@ namespace Deltares
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             std::vector<DistributionPropertyType> getParameters() override
             {
-                return {DistributionPropertyType::Location, DistributionPropertyType::Scale, DistributionPropertyType::Observations };
+                using enum DistributionPropertyType;
+                return {Location, Scale, Observations };
             }
         private:
             class StudentTValue

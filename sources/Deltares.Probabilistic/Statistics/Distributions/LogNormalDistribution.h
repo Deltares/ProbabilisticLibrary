@@ -50,7 +50,8 @@ namespace Deltares
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override
             {
-                return {DistributionPropertyType::Location, DistributionPropertyType::Scale, DistributionPropertyType::Shift };
+                using enum DistributionPropertyType;
+                return {Location, Scale, Shift };
             }
         protected:
             double getFittedMinimum(const std::vector<double>& values) override;

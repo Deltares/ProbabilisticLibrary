@@ -35,6 +35,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        using enum DistributionPropertyType;
+
         void ConditionalWeibullDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
             // not supported
@@ -168,12 +170,11 @@ namespace Deltares
 
             auto fitter = DistributionFitter();
 
-            std::vector<double> minValues = { minValue, 0.5, 0.5, 0.5 };
-            std::vector<double> maxValues = { estimatedMaxValue, 1.5, 1.5, 1.5 };
-            std::vector<double> initValues = { meanValue, 1.0, 1.0, 1.0 };
-            std::vector<DistributionPropertyType> properties =
-            {DistributionPropertyType::Shift, DistributionPropertyType::Scale, DistributionPropertyType::Shape, DistributionPropertyType::ShapeB };
-            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+            std::vector minValues = { minValue, 0.5, 0.5, 0.5 };
+            std::vector maxValues = { estimatedMaxValue, 1.5, 1.5, 1.5 };
+            std::vector initValues = { meanValue, 1.0, 1.0, 1.0 };
+            std::vector properties = {Shift, Scale, Shape, ShapeB };
+            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
 
             stochast.Shift = std::max(minValue, parameters[0]);
             stochast.Scale = std::max(0.0, parameters[1]);
