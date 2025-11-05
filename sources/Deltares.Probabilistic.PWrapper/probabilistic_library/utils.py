@@ -25,8 +25,16 @@ from typing import Iterator, TypeVar, Generic
 T = TypeVar('T')
 
 class CallbackList(list):
+	"""List which invokes a callback after each list modification"""
 
 	def __init__(self, callback):
+		"""Constructor
+
+        Parameters
+        ----------
+        callback : method
+            Method to invoke after each list modification"""
+
 		self._callback = callback
 
 	def __setitem__(self, index, item):
@@ -59,7 +67,16 @@ class CallbackList(list):
 		self._callback()
 
 class FrozenList(Generic[T]):
+	"""Read-only list, items can also be retrieved by their string representation"""
+
 	def __init__(self, initial_list = None):
+		"""Constructor
+
+        Parameters
+        ----------
+        initial_list : list, optional
+            List which will be wrapped as a read-only list by this class"""
+
 		self._list : list[T] = []
 		self._dict : dict[str, T] = {}
 		if not initial_list is None:
@@ -93,6 +110,17 @@ class FrozenList(Generic[T]):
 		return str(self._list)
 
 	def index(self, item, start = 0, stop = sys.maxsize) -> int:
+		"""Gets the index of an item
+
+        Parameters
+        ----------
+        item : obj
+            Item to be found
+        start : int, optional
+            Start index
+        stop : int, optional
+            Stop index"""
+
 		if isinstance(item, str):
 			item = self[item]
 		if item != None:
@@ -101,14 +129,17 @@ class FrozenList(Generic[T]):
 			return -1
 
 	def count(self) -> int:
+		"""Gets the number of items in the list"""
 		return self._list.count()
 
 	def get_list(self) -> list[T]:
+		"""Gets a copy of the list with full access"""
 		getlist = []
 		getlist.extend(self._list)
 		return getlist
 
 class FrozenObject:
+	"""Object to which no members can be added. If members are added, an exception occurs."""
 	def __setattr__(self, key, value):
 		if hasattr(self, '_frozen'):
 			if key in self.__dir__() or hasattr(self, key):
@@ -125,24 +156,29 @@ class FrozenObject:
 		self._frozen = True
 
 class PrintUtils:
-    def get_space_from_indent(indent : int) -> str:
-        indent_str = ''
-        for i in range(indent):
-            indent_str += '  '
-        return indent_str
+	"""Utilities for printing"""
+	def get_space_from_indent(indent : int) -> str:
+		"""Converts indentation level to spaces"""
+		indent_str = ''
+		for i in range(indent):
+			indent_str += '  '
+		return indent_str
 
 class NumericUtils:
-    def order (value1 : float, value2 : float) -> tuple[float, float]:
-        if value1 > value2:
-            return value2, value1
-        else:
-            return value1, value2
+	"""Numeric utilities"""
+	def order (value1 : float, value2 : float) -> tuple[float, float]:
+		"""Returns floats ordered"""
+		if value1 > value2:
+			return value2, value1
+		else:
+			return value1, value2
 
-    def make_different(value1 : float, value2 : float) -> tuple[float, float]:
-        if value1 == value2:
-            diff = abs(value1) / 10
-            if diff == 0:
-                diff = 1
-            value1 = value1 - diff
-            value2 = value1 + diff
-        return value1, value2
+	def make_different(value1 : float, value2 : float) -> tuple[float, float]:
+		"""Guarantees that values are different"""
+		if value1 == value2:
+			diff = abs(value1) / 10
+			if diff == 0:
+				diff = 1
+			value1 = value1 - diff
+			value2 = value1 + diff
+		return value1, value2

@@ -22,7 +22,7 @@
 """
 This module contains all sensitivity related functionality.
 
-The entry point for performing a sensitivity analysis is SensitivityProject. A model can be attached to a sensitivity project,
+The entry point for performing a sensitivity analysis is `probabilistic_library.project.SensitivityProject`. A model can be attached to a sensitivity project,
 then stochastic variables, correlation matrix and settings are provided. When the sensitivity project is run, a sensitivity
 result is generated.
 
@@ -91,7 +91,7 @@ class SensitivitySettings(FrozenObject):
 	"""Settings of a sensitivity algorithm
 
     Settings of all sensitivity algorithms are combined in this class. Often settings only apply to
-    a selected number of algorithms. Settings per variable are listed in 'stochast_settings'.
+    a selected number of algorithms. Settings per variable are listed in `stochast_settings`.
 
     The settings are divided into the following categories:
 

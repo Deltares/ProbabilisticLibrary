@@ -22,9 +22,10 @@
 """
 This module contains all uncertainty related functionality.
 
-The entry point for performing an uncertainty analysis is UncertaintyProject. A model can be attached to an uncertainty project,
-then stochastic variables, correlation matrix and settings are provided. When the uncertainty project is run, an uncertainty
-result is generated, which contains a stochastic variable, which resembles the variation of the output of the model.
+The entry point for performing an uncertainty analysis is `probabilistic_library.project.UncertaintyProject`. A model
+can be attached to an uncertainty project, then stochastic variables, correlation matrix and settings are provided. When
+the uncertainty project is run, an uncertainty result is generated, which contains a stochastic variable, which resembles
+the variation of the output of the model.
 
 ```mermaid
 classDiagram
@@ -42,8 +43,10 @@ classDiagram
     }
     class Stochast{}
     class CorrelationMatrix{}
+    class ProbabilityValue{}
     class UncertaintySettings{
         +method UncertaintyMethod
+        +quantiles list[ProbabilityValue]
     }
     class StochastSettings{
         +variable Stochast
@@ -60,6 +63,7 @@ classDiagram
     CorrelationMatrix <-- ModelProject
     UncertaintySettings <-- UncertaintyProject
     StochastSettings "*" <-- UncertaintySettings
+    ProbabilityValue "*" <-- UncertaintySettings
     Stochast <-- StochastSettings
     UncertaintyResult "*" <-- UncertaintyProject
     Stochast <-- UncertaintyResult
@@ -96,7 +100,7 @@ class UncertaintySettings(FrozenObject):
 	"""Settings of an uncertainty algorithm
 
     Settings of all uncertainty algorithms are combined in this class. Often settings only apply to
-    a selected number of algorithms. Settings per variable are listed in 'stochast_settings'.
+    a selected number of algorithms. Settings per variable are listed in `stochast_settings`.
 
     The settings are divided into the following categories:
 

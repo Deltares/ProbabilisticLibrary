@@ -23,7 +23,7 @@
 """
 This module contains all statistics related functionality.
 
-The most important class in this modue is Stochast. It defines the stochastic properties of a
+The most important class in this module is `Stochast`. It defines the stochastic properties of a
 stochastic variable, which is part of a project (which is the main entry point for performing
 a reliability, uncertainty or sensitivity analysis). 
 
@@ -1245,7 +1245,11 @@ class HistogramValue(FrozenObject):
     be zero.
 
     When the histogram values are the result of an operation (fit of the stochast or an uncertainty analysis),
-    all histogram values have the same width for clarity for the user and understandability of a plot."""
+    all histogram values have the same width for clarity for the user and understandability of a plot.
+
+    When the minimum or maximum values appear multiple times in the fit set, they are regarded as
+    non-exceedable minimum and maximum values and histogram value boundaries do not exceed these values. Instead,
+    a boundary histogram value is added with width zero."""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1522,11 +1526,30 @@ class ConditionalValue(FrozenObject):
 class CorrelationMatrix(FrozenObject):
 	"""Correlation matrix for stochastic variables
 
-    The correlation is edfined as the Pearson correlation value. The correlation value must be between
-    -1 and 1 (inclusive). The correlation values are retrieved or set with an indexer, with variables as arguments.
+    The correlation is defined as the Pearson correlation value. The correlation value must be between
+    -1 and 1 (inclusive). 
 
     By default, the correlation is 0 between different stochasts and 1 between same stochasts. The correlation matrix
-    is symmetric, which is maintained automatically."""
+    is symmetric, which is maintained automatically.
+
+    The correlation values are retrieved or set with an indexer, with variables as arguments.
+
+    ```mermaid
+    classDiagram
+        class Stochast{
+            +distribution : DistributionType
+            +"defining properties" : float
+        }
+        class CorrelationMatrix{
+            +variables : list[Stochast]
+        }
+        class SelfCorrelationMatrix{
+            +variables : list[Stochast]
+        }
+        Stochast "*" <-- CorrelationMatrix
+        Stochast "*" <-- SelfCorrelationMatrix
+    ```
+    """
 
 	def __init__(self, id = None):
 		if id is None:
@@ -1611,10 +1634,12 @@ class SelfCorrelationMatrix(FrozenObject):
 	"""Defines the correlation values of a stochast with another stochast, both corresponding with the same
     parameter.
 
-    This is used for upscaling, which is used when a design point is applicable for a certain section of a system
+    This is used for upscaling in a `probabilistic_library.project.LengthEffectProject`, which is used when a design point is applicable for a certain section of a system
     (e.g. a section of 50 m in a trajectory of 500 m). When upscaling the design point to the trajectory, it is combined
     with itself. But stochasts do not have full correlation with stochasts of another section. The self correlation
-    matrix defines these correlations."""
+    matrix defines these correlations.
+
+    The correlation values are retrieved or set with an indexer, with a variable as argument"""
 
 	def __init__(self):
 		self._id = interface.Create('self_correlation_matrix')
@@ -1661,7 +1686,8 @@ class SelfCorrelationMatrix(FrozenObject):
 class Scenario(FrozenObject):
 	"""Defines the contribution of a design point, when it is combined with other design point points in an exclusive way
 
-    A scenario corresponds with a design point. They will be combined by an `project.ExcludingCombineProject`."""
+    A scenario corresponds with a `probabilistic_library.reliability.DesignPoint`. They will be combined by an
+    `probabilistic_library.project.ExcludingCombineProject`."""
 
 	def __init__(self, id = None):
 		if id is None:

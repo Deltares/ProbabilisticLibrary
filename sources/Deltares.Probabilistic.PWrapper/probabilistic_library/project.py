@@ -509,15 +509,16 @@ class ModelProject(FrozenObject):
         to physical processes and is deterministic (it does not use uncertainty)
 
         When a model is set, it accepts a python function or python class method. Alternatiavely,
-        a string defining a function is accepted too. The model should accept an array of input
-        values (floats) and returns a single value (float), an array of floats or a tuple of floats.
+        a string defining a function is accepted too. The model should accept a number of input
+        values (floats) or array of input values and returns a single value (float), an array of
+        floats or a tuple of floats.
 
         When set, the function/method/string is wrapped in a `ZModel`. The ZModel has information
         about its input and output parameters (derived from the function signature). When the model
         is retrieved, the ZModel object is returned.
 
-        It is also possible to set a `ZModelContainer`, which can provide a `ZModel`. PTK models are 
-		set with a `ZModelContainer` (using ptk.whl)"""
+        It is also possible to set a `ZModelContainer`, which can provide a `ZModel`. PTK models
+        are set with a `ZModelContainer` (using ptk.whl)"""
 
 		if not self._model is None:
 			self._model._project = self
@@ -1109,6 +1110,7 @@ class CombineProject(FrozenObject):
         CombineSettings <-- CombineProject
         CorrelationMatrix <-- CombineProject
         SelfCorrelationMatrix <-- CombineProject
+        Stochast "*" <-- CorrelationMatrix
         Stochast "*" <-- SelfCorrelationMatrix
     ```
     """
@@ -1218,14 +1220,17 @@ class ExcludingCombineProject(FrozenObject):
     classDiagram
         class ExcludingCombineProject{
             +design_points list[DesignPoint]
-            +scenarios list[float]
+            +scenarios list[Scenario]
             +settings ExcludingCombineSettings
             +design_point DesignPoint
             +run()
         }
 
+        class DesignPoint{}
+        class Scenario{}
         class ExcludingCombineSettings{}
 
+        Scenario "*" <-- ExcludingCombineProject
         DesignPoint "*, input" <-- ExcludingCombineProject
         DesignPoint "result" <-- ExcludingCombineProject
         ExcludingCombineSettings <-- ExcludingCombineProject
@@ -1396,7 +1401,7 @@ class LengthEffectProject(FrozenObject):
 
 	@property
 	def correlation_matrix(self) -> SelfCorrelationMatrix:
-		"""Auto correlation matrix, holds correlations between same named variables in the 'design_points'"""
+		"""Auto correlation matrix, holds correlations of variables in the `design_point_cross_section`"""
 		return self._correlation_matrix
 
 	@property
