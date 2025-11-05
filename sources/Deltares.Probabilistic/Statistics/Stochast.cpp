@@ -584,7 +584,7 @@ namespace Deltares
             return report;
         }
 
-        void Stochast::fit(std::vector<double> values, const double shift) const
+        void Stochast::fit(std::vector<double>& values, const double shift) const
         {
             Logging::ValidationReport report = getFitValidationReport(values, nullptr, shift);
             if (!report.isValid())
@@ -595,7 +595,7 @@ namespace Deltares
             distribution->fit(*properties, values, shift);
         }
 
-        void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift) const
+        void Stochast::fitPrior(std::vector<double>& values, std::shared_ptr<Stochast> prior, const double shift) const
         {
             Logging::ValidationReport report = getFitValidationReport(values, prior, shift);
             if (!report.isValid())
@@ -606,7 +606,7 @@ namespace Deltares
             distribution->fitPrior(*properties, values, *prior->getProperties(), shift);
         }
 
-        void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights) const
+        void Stochast::fitWeighted(const std::vector<double>& values, std::vector<double> weights) const
         {
             distribution->fitWeighted(*properties, values, weights);
         }
@@ -622,14 +622,14 @@ namespace Deltares
             double minWeight = 1.0;
             double totalWeight = 0.0;
 
-            for (size_t i = 0; i < properties->HistogramValues.size(); i++)
+            for (const auto& histogramValue : properties->HistogramValues)
             {
-                if (properties->HistogramValues[i]->Amount > 0 && properties->HistogramValues[i]->Amount < minWeight)
+                if (histogramValue->Amount > 0 && histogramValue->Amount < minWeight)
                 {
-                    minWeight = properties->HistogramValues[i]->Amount;
+                    minWeight = histogramValue->Amount;
                 }
 
-                totalWeight += properties->HistogramValues[i]->Amount;
+                totalWeight += histogramValue->Amount;
             }
 
             double factor = 1.0;
@@ -641,7 +641,7 @@ namespace Deltares
             }
 
             // TODO: PROBL-42 Use fitWeighted when this has been implemented for all distributions
-            for (std::shared_ptr<HistogramValue> bin : properties->HistogramValues)
+            for (const std::shared_ptr<HistogramValue>& bin : properties->HistogramValues)
             {
                 for (int i = 0; i < std::round(factor * bin->Amount); i++)
                 {

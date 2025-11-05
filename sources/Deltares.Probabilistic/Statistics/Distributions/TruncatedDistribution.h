@@ -64,7 +64,7 @@ namespace Deltares
 
             Truncated getTruncatedValue(StochastProperties& stochast) const;
             double getProbability(StochastProperties& stochast, bool isMinimum) const;
-            double getUntruncatedU(double u, StochastProperties& stochast);
+            double getUntruncatedU(double u, StochastProperties& stochast) const;
             void fitMinMax(StochastProperties& stochast, const std::vector<double>& values);
         };
     }

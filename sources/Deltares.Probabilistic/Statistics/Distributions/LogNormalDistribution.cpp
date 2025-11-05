@@ -208,7 +208,7 @@ namespace Deltares
 
             auto bisection = Numeric::BisectionRootFinder(0.001);
 
-            Numeric::RootFinderMethod method = [this, &values](double shift)
+            Numeric::RootFinderMethod method = [&values](double shift)
             {
                 int n = values.size();
                 int n3 = n / 3;

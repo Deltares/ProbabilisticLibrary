@@ -56,7 +56,7 @@ namespace Deltares
             }
         }
 
-        StochastProperties GeneralizedExtremeValueDistribution::getStochast(StochastProperties& stochast)
+        StochastProperties GeneralizedExtremeValueDistribution::getStochast(const StochastProperties& stochast)
         {
             switch (getExtremeDistributionType(stochast))
             {
@@ -141,15 +141,15 @@ namespace Deltares
         void GeneralizedExtremeValueDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
             auto gevStochast = getStochast(stochast);
-            this->getDistribution(stochast)->setMeanAndDeviation(gevStochast, mean, deviation);
-            this->assign(gevStochast, stochast);
+            getDistribution(stochast)->setMeanAndDeviation(gevStochast, mean, deviation);
+            assign(gevStochast, stochast);
         }
 
         void GeneralizedExtremeValueDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             auto gevStochast = getStochast(stochast);
-            this->getDistribution(stochast)->setXAtU(gevStochast, x, u, constantType);
-            this->assign(gevStochast, stochast);
+            getDistribution(stochast)->setXAtU(gevStochast, x, u, constantType);
+            assign(gevStochast, stochast);
         }
 
         void GeneralizedExtremeValueDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
@@ -182,7 +182,7 @@ namespace Deltares
 
             stochast.Shape = bestShape;
 
-            this->assign(bestStochast, stochast);
+            assign(bestStochast, stochast);
         }
 
         double GeneralizedExtremeValueDistribution::getMaxShiftValue(std::vector<double>& values)
@@ -192,8 +192,8 @@ namespace Deltares
 
         std::vector<double> GeneralizedExtremeValueDistribution::getSpecialPoints(StochastProperties& stochast)
         {
-            auto gevStochast = this->getStochast(stochast);
-            return this->getDistribution(stochast)->getSpecialPoints(gevStochast);
+            auto gevStochast = getStochast(stochast);
+            return getDistribution(stochast)->getSpecialPoints(gevStochast);
         }
 
         void GeneralizedExtremeValueDistribution::assign(const StochastProperties& source, StochastProperties& target)

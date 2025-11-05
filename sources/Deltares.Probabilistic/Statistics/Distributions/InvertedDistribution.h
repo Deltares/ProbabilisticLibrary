@@ -60,7 +60,7 @@ namespace Deltares
             std::vector<DistributionPropertyType> getParameters() override;
         private:
             std::shared_ptr<Distribution> innerDistribution = nullptr;
-            double getInvertedValue(StochastProperties& stochast, double value) const;
+            double getInvertedValue(const StochastProperties& stochast, double value) const;
             StochastProperties getInvertedStochast(StochastProperties& stochast) const;
             void copyFromInverted(StochastProperties& target, StochastProperties& source) const;
             bool isShiftUsed() const;

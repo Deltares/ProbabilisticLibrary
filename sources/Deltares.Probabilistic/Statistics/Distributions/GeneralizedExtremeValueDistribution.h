@@ -64,7 +64,7 @@ namespace Deltares
 
             static DistributionType getExtremeDistributionType(const StochastProperties& stochast);
             std::shared_ptr<Distribution> getDistribution(const StochastProperties& stochast) const;
-            static StochastProperties getStochast(StochastProperties& stochast);
+            static StochastProperties getStochast(const StochastProperties& stochast);
             static void assign(const StochastProperties& source, StochastProperties& target);
         };
     }

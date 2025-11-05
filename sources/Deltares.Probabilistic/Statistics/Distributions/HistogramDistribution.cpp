@@ -442,7 +442,7 @@ namespace Deltares
                 nMultiple++;
             }
 
-            double rangeReductionFactor = isDistinctDistribution ? 1 : 0.9;
+            double rangeReductionFactor = isDistinctDistribution ? 1.0 : 0.9;
 
             int requiredRanges = isDistinctDistribution ? std::round((max - min) / minWidth) + 1 - nMultiple : std::round(distinctValuesCount * rangeReductionFactor);
             requiredRanges = std::min(requiredRanges, maxRanges);

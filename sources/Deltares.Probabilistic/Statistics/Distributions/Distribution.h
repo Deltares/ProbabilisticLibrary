@@ -54,7 +54,10 @@ namespace Deltares::Statistics
          * \param stochast Stochast to be initialized
          * \param values Values by which the stochast is initialized
          */
-        virtual void initialize(StochastProperties& stochast, const std::vector<double>& values) {}
+        virtual void initialize(StochastProperties& stochast, const std::vector<double>& values)
+        {
+            // empty; must be implemented within implementing class
+        }
 
         /**
          * \brief Gets the x-value (physical value) for a standard normal value (u-value)
@@ -146,7 +149,10 @@ namespace Deltares::Statistics
          * \param mean Given mean value
          * \param deviation Given standard deviation
          */
-        virtual void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) {}
+        virtual void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+        {
+            // empty; must be implemented within implementing class
+        }
 
         /**
          * \brief Sets the shift value and maintains mean and deviation
@@ -160,7 +166,10 @@ namespace Deltares::Statistics
          * \brief Initializes a stochast for fast u->x conversions during probabilistic analysis
          * \param stochast Stochast to be initialized
          */
-        virtual void initializeForRun(StochastProperties& stochast) {}
+        virtual void initializeForRun(StochastProperties& stochast)
+        {
+            // empty; must be implemented within implementing class
+        }
 
         /**
          * \brief Gets the Probability Density Function (PDF) of a stochast and given x-value
@@ -185,7 +194,10 @@ namespace Deltares::Statistics
          * \param u Given u-value
          * \param constantType Value to be kept constant when modifying the stochast (variation coefficient or standard deviation) 
          */
-        virtual void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) {}
+        virtual void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
+        {
+            // empty; must be implemented within implementing class
+        }
 
         /**
          * \brief Updates parameters of a stochast, so that they fit best a number of given x-values

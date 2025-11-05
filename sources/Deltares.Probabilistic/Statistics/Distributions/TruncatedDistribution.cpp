@@ -81,7 +81,7 @@ namespace Deltares
             }
         }
 
-        double TruncatedDistribution::getUntruncatedU(double u, StochastProperties& stochast)
+        double TruncatedDistribution::getUntruncatedU(double u, StochastProperties& stochast) const
         {
             double p = StandardNormal::getPFromU(u);
             double q = StandardNormal::getQFromU(u);

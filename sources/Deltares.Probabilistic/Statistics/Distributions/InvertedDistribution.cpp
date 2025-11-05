@@ -29,10 +29,10 @@ namespace Deltares
 {
     namespace Statistics
     {
-        double InvertedDistribution::getInvertedValue(StochastProperties& stochast, double value) const
+        double InvertedDistribution::getInvertedValue(const StochastProperties& stochast, double value) const
         {
             double center = isShiftUsed() ? stochast.Shift : 0.0;
-            return 2 * center - value;
+            return 2.0 * center - value;
         }
 
         StochastProperties InvertedDistribution::getInvertedStochast(StochastProperties& stochast) const
