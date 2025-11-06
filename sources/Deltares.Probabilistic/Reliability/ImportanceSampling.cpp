@@ -165,7 +165,7 @@ namespace Deltares
 
 						combinedCluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
 
-						for (std::shared_ptr<ImportanceSamplingCluster>& cluster : clusterResults)
+						for (const std::shared_ptr<ImportanceSamplingCluster>& cluster : clusterResults)
 						{
 							cluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
 						}
@@ -198,7 +198,7 @@ namespace Deltares
 
 					combinedCluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
 
-					for (std::shared_ptr<ImportanceSamplingCluster>& cluster : clusterResults)
+					for (const std::shared_ptr<ImportanceSamplingCluster>& cluster : clusterResults)
 					{
 						cluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
 					}

@@ -144,7 +144,7 @@ namespace Deltares
         std::shared_ptr<Sample> StartPointCalculator::getSensitivityStartPoint(Models::ModelRunner& modelRunner) const
         {
             int nStochasts = modelRunner.getVaryingStochastCount();
-            std::shared_ptr<Sample> startPoint = std::make_shared<Sample>(nStochasts);;
+            std::shared_ptr<Sample> startPoint = std::make_shared<Sample>(nStochasts);
 
             std::vector<double> gradient = getGradient(modelRunner, startPoint);
 
