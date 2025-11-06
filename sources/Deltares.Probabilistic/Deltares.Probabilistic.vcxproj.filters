@@ -42,9 +42,7 @@
     <ClCompile Include="Reliability\ReliabilityReport.cpp" />
     <ClCompile Include="Model\RandomSampleGenerator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
-    <ClCompile Include="Math\Random.cpp" />
-    <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
-    <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
+    <ClCompile Include="Math\RandomValueGenerator.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Reliability\StochastSettings.cpp" />
@@ -249,6 +247,8 @@
     <ClCompile Include="Logging\ValidationReport.cpp" />
     <ClCompile Include="Logging\ValidationSupport.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionSupport.cpp" />
+    <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
+    <ClCompile Include="Model\Validatable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -301,9 +301,7 @@
     <ClInclude Include="Reliability\ReliabilityReport.h" />
     <ClInclude Include="Model\RandomSampleGenerator.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
-    <ClInclude Include="Math\Random.h" />
-    <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
-    <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
+    <ClInclude Include="Math\RandomValueGenerator.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
     <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Reliability\StochastSettings.h" />
@@ -527,6 +525,8 @@
     <ClInclude Include="Logging\ValidationSupport.h" />
     <ClInclude Include="Model\ModelProjectSettings.h" />
     <ClInclude Include="Statistics\Distributions\DistributionSupport.h" />
+    <ClInclude Include="Reliability\ImportanceSamplingSupport.h" />
+    <ClInclude Include="Model\Validatable.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

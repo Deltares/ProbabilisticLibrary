@@ -21,7 +21,7 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Math/Randomizers/MersenneTwisterRandomValueGenerator.h"
+#include "../../Deltares.Probabilistic/Math/RandomValueGenerator.h"
 #include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
@@ -33,12 +33,12 @@ namespace Deltares
             public ref class RandomValueGenerator
             {
             private:
-                SharedPointerProvider<Deltares::Numeric::MersenneTwisterRandomValueGenerator>* shared = nullptr;
+                SharedPointerProvider<Deltares::Numeric::RandomValueGenerator>* shared = nullptr;
 
             public:
                 RandomValueGenerator()
                 {
-                    shared = new SharedPointerProvider(new Deltares::Numeric::MersenneTwisterRandomValueGenerator());
+                    shared = new SharedPointerProvider(new Deltares::Numeric::RandomValueGenerator());
                 }
 
                 void Initialize(bool repeatable, int seed)

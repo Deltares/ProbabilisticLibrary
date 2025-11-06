@@ -20,21 +20,38 @@
 // All rights reserved.
 //
 #pragma once
-#include <random>
-#include "RandomValueGenerator.h"
+#include "RunSettings.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Numeric
+    class Validatable
     {
-        class MersenneTwisterRandomValueGenerator : public RandomValueGenerator
+    public:
+        /**
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        virtual void validate(Logging::ValidationReport& report) const { /* implemented by inheritors */ }
+
+        /**
+         * \brief Validates the project and puts the result in a validation report
+         * \returns Validation report
+         */
+        Logging::ValidationReport getValidationReport() const
         {
-        public:
-            void initialize(bool repeatable, int seed, time_t timeStamp = 0) override;
-            double next() override;
-        private:
-            std::mt19937_64 generator;
-        };
-    }
+            Logging::ValidationReport report;
+            validate(report);
+
+            return report;
+        }
+
+        /**
+         * \brief Indicates whether a run can be performed
+         */
+        bool isValid() const
+        {
+            return getValidationReport().isValid();
+        }
+    };
 }
 

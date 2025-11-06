@@ -21,10 +21,11 @@
 //
 #pragma once
 #include "RunSettings.h"
+#include "Validatable.h"
 
 namespace Deltares::Models
 {
-    class ModelProjectSettings
+    class ModelProjectSettings : public Validatable
     {
     public:
         /**
@@ -32,31 +33,6 @@ namespace Deltares::Models
          */
         std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
-        /**
-         * \brief Reports whether these settings have valid values
-         * \param report Report in which the validity is reported
-         */
-        virtual void validate(Logging::ValidationReport& report) const { /* implemented by inheritors */ }
-
-        /**
-         * \brief Validates the project and puts the result in a validation report
-         * \returns Validation report
-         */
-        Logging::ValidationReport getValidationReport() const
-        {
-            Logging::ValidationReport report;
-            validate(report);
-
-            return report;
-        }
-
-        /**
-         * \brief Indicates whether a run can be performed
-         */
-        bool isValid() const
-        {
-            return getValidationReport().isValid();
-        }
     };
 }
 

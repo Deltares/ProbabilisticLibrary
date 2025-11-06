@@ -169,7 +169,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             FORMThenDirectionalSampling fdir = new FORMThenDirectionalSampling();
             fdir.Settings.MinimumDirections = 10000;
             fdir.Settings.MaximumDirections = 50000;
-            fdir.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             project.ReliabilityMethod = fdir;
             DesignPoint designPoint = project.GetDesignPoint();
 
@@ -397,7 +396,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             fdir.Settings.MinimumDirections = 10000;
             fdir.Settings.MaximumDirections = 50000;
             fdir.Settings.VariationCoefficient = 0.04;
-            fdir.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             fdir.Settings.RandomSettings.Seed = 1234;
             project.ReliabilityMethod = fdir;
 

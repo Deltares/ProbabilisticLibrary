@@ -48,6 +48,11 @@ namespace Deltares
         public:
             std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+
+            bool isValid() override
+            {
+                return Settings->isValid();
+            }
         };
     }
 }

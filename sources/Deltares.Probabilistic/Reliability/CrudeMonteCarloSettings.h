@@ -23,6 +23,7 @@
 
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
+#include "../Model/Validatable.h"
 #include "DesignPointBuilder.h"
 #include "StochastSettingsSet.h"
 
@@ -30,7 +31,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        class CrudeMonteCarloSettings
+        class CrudeMonteCarloSettings : public Models::Validatable
         {
         public:
             /**
@@ -73,7 +74,7 @@ namespace Deltares
              * \param report Report in which the validity is reported
              * \return Indication
              */
-            void validate(Logging::ValidationReport& report) const
+            void validate(Logging::ValidationReport& report) const override
             {
                 Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
                 Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");

@@ -36,7 +36,6 @@ namespace Deltares::Reliability
         Logging::ValidationSupport::checkMinimum(report, 1, MaximumLengthU, "maximum length u");
     }
 
-
     int DirectionReliabilitySettings::SectionCount() const
     {
         int sectionsCount = static_cast<int>(MaximumLengthU / Dsdu);

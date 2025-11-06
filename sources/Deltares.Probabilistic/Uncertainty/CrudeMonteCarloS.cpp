@@ -56,7 +56,9 @@ namespace Deltares::Uncertainty
 
         bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
 
-        int requiredSamples = std::min(this->Settings->getRequiredSamples(), this->Settings->MaximumSamples);
+        int requiredSamples = this->Settings->getRequiredSamples();
+        requiredSamples = std::min(requiredSamples, this->Settings->MaximumSamples);
+        requiredSamples = std::max(requiredSamples, this->Settings->MinimumSamples);
 
         for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
         {

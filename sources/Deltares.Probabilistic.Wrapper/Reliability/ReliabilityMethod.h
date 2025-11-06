@@ -43,8 +43,22 @@ namespace Deltares
                 DesignPoint^ GetDesignPoint(Wrappers::ModelRunner^ modelRunner);
 
                 virtual System::Object^ GetSettings() { return nullptr; }
-                virtual bool IsValid() { return false; }
+
+                virtual bool IsValid()
+                {
+                    std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethod = GetReliabilityMethod();
+                    if (reliabilityMethod != nullptr)
+                    {
+                        return reliabilityMethod->isValid();
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
                 virtual void Stop()    { }
+
                 virtual bool IsStopped() { return false; }
             };
         }

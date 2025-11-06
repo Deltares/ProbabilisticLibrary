@@ -39,6 +39,10 @@ namespace Deltares
 
             public ref class Sample
             {
+            private:
+                SharedPointerProvider<Models::Sample>* shared = nullptr;
+                array<double>^ values = nullptr;
+                bool dirty = false;
             public:
                 Sample(std::shared_ptr<Models::Sample> sample)
                 {
@@ -117,7 +121,21 @@ namespace Deltares
                     return shared->object;
                 }
 
-                // TODO: PROBL-42 next methods and properties should be removed after after c++ conversion
+                void UpdateValues()
+                {
+                    if (values != nullptr)
+                    {
+                        // synchronize values
+                        for (int i = 0; i < values->Length; i++)
+                        {
+                            shared->object->Values[i] = values[i];
+                        }
+                    }
+
+                    dirty = false;
+                }
+
+                // TODO: Next methods and properties should be removed proxies have been converted
 
                 Sample(SpaceType spaceType, int count) : Sample(spaceType, -1, count)
                 {
@@ -142,108 +160,11 @@ namespace Deltares
                 /// </summary>
                 SpaceType SpaceType = SpaceType::U;
 
-                double Factor = 0;
-
-                Sample^ GetSampleAtBeta(double beta)
-                {
-                    UpdateValues();
-                    return gcnew Sample(shared->object->getSampleAtBeta(beta));
-                }
-
-                Sample^ GetNormalizedSample()
-                {
-                    UpdateValues();
-                    return gcnew Sample(shared->object->getNormalizedSample());
-                }
-
-                Sample^ GetMultipliedSample(double factor)
-                {
-                    UpdateValues();
-                    return gcnew Sample(shared->object->getMultipliedSample(factor));
-                }
-
                 Sample^ Clone()
                 {
                     UpdateValues();
                     return gcnew Sample(shared->object->clone());
                 }
-
-                int ScenarioIndex = -1;
-
-                void UpdateValues()
-                {
-                    if (values != nullptr)
-                    {
-                        // synchronize values
-                        for (int i = 0; i < values->Length; i++)
-                        {
-                            shared->object->Values[i] = values[i];
-                        }
-                    }
-
-                    dirty = false;
-                }
-
-                // TODO: PROBL-42 remove after c++ conversion
-                property double Beta
-                {
-                    double get()
-                    {
-                        UpdateValues();
-                        return shared->object->getBeta();
-                    }
-                }
-
-                /// <summary>
-                /// Gets the squared distance to another sample
-                /// </summary>
-                /// <param name="other"></param>
-                /// <returns></returns>
-                double GetDistance2(Sample^ other, bool hasWeighting)
-                {
-                    double sum = 0;
-                    for (int j = 0; j < other->Values->Length; ++j)
-                    {
-                        double weight = 1;
-                        if (hasWeighting) weight = other->Weight;
-                        double diff = (this->Values[j] - other->Values[j]) * weight;
-                        sum += diff * diff;
-                    }
-
-                    return sum;
-                }
-
-                bool AreValuesEqual(Sample^ other)
-                {
-                    if (this == other)
-                    {
-                        return true;
-                    }
-
-                    if (this->Values->Length != this->Values->Length)
-                    {
-                        return false;
-                    }
-
-                    for (int i = 0; i < this->Values->Length; i++)
-                    {
-                        if (!isnan(this->Values[i]) || !isnan(other->Values[i]))
-                        {
-                            if (this->Values[i] != other->Values[i])
-                            {
-                                return false;
-                            }
-                        }
-                    }
-
-                    return true;
-                }
-
-            private:
-                array<double>^ values = nullptr;
-                System::Object^ tag = nullptr;
-                SharedPointerProvider<Models::Sample>* shared = nullptr;
-                bool dirty = false;
             };
         }
     }

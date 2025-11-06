@@ -26,12 +26,13 @@
 #include "DesignPointBuilder.h"
 #include "StartPointCalculatorSettings.h"
 #include "StochastSettingsSet.h"
+#include "../Model/Validatable.h"
 
 namespace Deltares
 {
     namespace Reliability
     {
-        class ImportanceSamplingSettings
+        class ImportanceSamplingSettings : public Models::Validatable
         {
         public:
             /**
@@ -98,7 +99,7 @@ namespace Deltares
              * \param report Report in which the validity is reported
              * \return Indication
              */
-            void validate(Logging::ValidationReport& report) const
+            void validate(Logging::ValidationReport& report) const override
             {
                 Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
                 Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");

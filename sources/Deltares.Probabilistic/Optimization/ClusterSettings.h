@@ -21,7 +21,6 @@
 //
 #pragma once
 
-#include "../Math/Random.h"
 #include "../Logging/ValidationReport.h"
 #include "../Logging/ValidationSupport.h"
 
@@ -95,11 +94,6 @@ namespace Deltares
             {
                 Logging::ValidationSupport::checkMinimumInt(report, 1, MaxClusters, "max clusters");
             }
-
-            /**
-             * \brief The type of random number generator to be used.
-             */
-            Numeric::RandomValueGeneratorType generatorType = Numeric::RandomValueGeneratorType::MersenneTwister;
         };
     }
 }

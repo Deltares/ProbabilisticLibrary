@@ -35,6 +35,12 @@ namespace Deltares
 
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Statistics::Stochast> parameter, std::shared_ptr<Statistics::Stochast> fragilityCurve, std::shared_ptr<Statistics::Stochast> fragilityCurveNormalized = nullptr);
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+
+            bool isValid() override
+            {
+                return Settings->isValid();
+            }
+
         private:
             class UStep
             {

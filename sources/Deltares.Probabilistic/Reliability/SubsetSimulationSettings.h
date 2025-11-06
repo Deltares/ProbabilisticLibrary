@@ -25,6 +25,7 @@
 #include "StochastSettingsSet.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
+#include "../Model/Validatable.h"
 
 namespace Deltares
 {
@@ -35,7 +36,7 @@ namespace Deltares
         /**
          * \brief Settings for the subset simulation algorithm
          */
-        class SubsetSimulationSettings
+        class SubsetSimulationSettings : public Models::Validatable
         {
         public:
             /**
@@ -92,7 +93,7 @@ namespace Deltares
              * \brief Reports whether the settings have valid values
              * \param report Report in which the validity is reported
              */
-            void validate(Logging::ValidationReport& report) const
+            void validate(Logging::ValidationReport& report) const override
             {
                 Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
                 Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");

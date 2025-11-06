@@ -277,7 +277,7 @@ namespace Deltares::Reliability
 
             if (std::isnan(resultRootFinder.X))
             {
-                constexpr double xTolerance = 0.01;
+                constexpr double xTolerance = 0.001;
                 auto bisectionCalculation = BisectionRootFinder(zTolerance, xTolerance);
                 resultRootFinder = bisectionCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
             }
