@@ -46,6 +46,7 @@ namespace Deltares
             bool canFitPrior() override { return true; }
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
+            void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
             double getMaxShiftValue(std::vector<double>& values) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override

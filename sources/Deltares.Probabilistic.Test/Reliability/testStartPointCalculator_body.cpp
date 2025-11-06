@@ -53,7 +53,7 @@ namespace Deltares
                 calculator.Settings->StartMethod = StartMethodType::FixedValue;
                 calculator.Settings->startVector = { 1.0, 1.0 };
 
-                auto r = calculator.getStartPoint(modelRunner);
+                auto r = calculator.getStartPoint(*modelRunner);
 
                 ASSERT_EQ(r->Values.size(), 2);
                 EXPECT_EQ(r->Values[0], 1.0);
@@ -70,7 +70,7 @@ namespace Deltares
                 calculator.Settings->MaximumLengthStartPoint = 20.0;
                 calculator.Settings->dsdu = 3.0;
 
-                auto r = calculator.getStartPoint(modelRunner);
+                auto r = calculator.getStartPoint(*modelRunner);
 
                 ASSERT_EQ(r->Values.size(), 2);
                 EXPECT_NEAR(r->Values[0], 12.0, margin);
@@ -85,7 +85,7 @@ namespace Deltares
                 modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
                 calculator.Settings->StartMethod = StartMethodType::SphereSearch;
 
-                auto r = calculator.getStartPoint(modelRunner);
+                auto r = calculator.getStartPoint(*modelRunner);
 
                 ASSERT_EQ(r->Values.size(), 2);
                 auto z = modelRunner->getZValue(r);
@@ -104,7 +104,7 @@ namespace Deltares
                 calculator.Settings->allQuadrants = true;
                 calculator.Settings->maxStepsSphereSearch = 16;
 
-                auto r = calculator.getStartPoint(modelRunner);
+                auto r = calculator.getStartPoint(*modelRunner);
 
                 ASSERT_EQ(r->Values.size(), 2);
                 auto z = modelRunner->getZValue(r);
@@ -121,7 +121,7 @@ namespace Deltares
                 modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
                 calculator.Settings->StartMethod = StartMethodType::SphereSearch;
 
-                auto r = calculator.getStartPoint(modelRunner);
+                auto r = calculator.getStartPoint(*modelRunner);
 
                 ASSERT_EQ(r->Values.size(), 2);
                 EXPECT_NEAR(r->Values[1], 2.4, margin);

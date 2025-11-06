@@ -158,7 +158,7 @@ namespace Deltares::Statistics
         return weightedValues;
     }
 
-    std::vector<double> DistributionSupport::getExpandedValues(std::vector<double>& values, std::vector<double>& weights)
+    std::vector<double> DistributionSupport::getExpandedValues(const std::vector<double>& values, const std::vector<double>& weights)
     {
         // if all low amounts, make amounts bigger to get a useful set to perform fit
         double minWeight = 1.0;

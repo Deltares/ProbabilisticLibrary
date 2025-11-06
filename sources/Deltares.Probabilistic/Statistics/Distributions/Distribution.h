@@ -216,9 +216,7 @@ namespace Deltares::Statistics
          * \param values Given x-values
          * \param weights Given weights
          */
-        virtual void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) {
-            fit(stochast, values, nan(""));
-        }
+        virtual void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights);
 
         /**
          * \brief Updates parameters of a stochast with the use of a prior stochast, so that they fit best a number of given x-values

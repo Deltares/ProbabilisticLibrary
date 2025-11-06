@@ -83,7 +83,7 @@ namespace Deltares::Statistics
          * \param weights List of weights
          * \return List reflecting list with weights
          */
-        static std::vector<double> getExpandedValues(std::vector<double>& values, std::vector<double>& weights);
+        static std::vector<double> getExpandedValues(const std::vector<double>& values, const std::vector<double>& weights);
 
     private:
         static std::vector<double> getValuesForIteration(Distribution& distribution, StochastProperties& stochast);
