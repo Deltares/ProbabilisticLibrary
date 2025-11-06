@@ -26,6 +26,7 @@
 #include "Distributions/InvertedDistribution.h"
 #include "Distributions/ExternalDistribution.h"
 #include "Distributions/KSCalculator.h"
+#include "../Math/NumericSupport.h"
 
 namespace Deltares
 {
@@ -613,43 +614,16 @@ namespace Deltares
 
         void Stochast::fitFromHistogramValues() const
         {
-            const int maxValues = 1000;
-
             std::vector<double> values;
+            std::vector<double> weights;
 
-            // if all low amounts, make amounts bigger to get a useful set to perform fit
-
-            double minWeight = 1.0;
-            double totalWeight = 0.0;
-
-            for (size_t i = 0; i < properties->HistogramValues.size(); i++)
-            {
-                if (properties->HistogramValues[i]->Amount > 0 && properties->HistogramValues[i]->Amount < minWeight)
-                {
-                    minWeight = properties->HistogramValues[i]->Amount;
-                }
-
-                totalWeight += properties->HistogramValues[i]->Amount;
-            }
-
-            double factor = 1.0;
-            if (minWeight < 1.0)
-            {
-                factor = 1.0 / minWeight;
-                factor = std::min(maxValues / totalWeight, factor);
-                factor = std::max(1.0, factor);
-            }
-
-            // TODO: PROBL-42 Use fitWeighted when this has been implemented for all distributions
             for (std::shared_ptr<HistogramValue> bin : properties->HistogramValues)
             {
-                for (int i = 0; i < std::round(factor * bin->Amount); i++)
-                {
-                    values.push_back(bin->getCenter());
-                }
+                values.push_back(bin->getCenter());
+                weights.push_back(bin->Amount);
             }
 
-            distribution->fit(properties, values, nan(""));
+            distribution->fitWeighted(properties, values, weights);
         }
 
         double Stochast::getKSTest(std::vector<double> values) const

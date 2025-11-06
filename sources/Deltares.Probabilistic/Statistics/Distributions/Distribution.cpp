@@ -20,16 +20,9 @@
 // All rights reserved.
 //
 #include "Distribution.h"
-
-#include <algorithm>
-
+#include "DistributionSupport.h"
 #include "../../Math/NumericSupport.h"
-#include "../../Math/RootFinders/BisectionRootFinder.h"
-#include "../../Utils/probLibException.h"
-#include "../StandardNormal.h"
 #include "../../Logging/ValidationSupport.h"
-
-#include <numbers>
 
 namespace Deltares
 {
@@ -45,8 +38,15 @@ namespace Deltares
             }
             else
             {
-                return {getMean(stochastPtr)};
+                return { getMean(stochastPtr) };
             }
+        }
+
+        void Distribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        {
+            std::vector<double> newValues = DistributionSupport::getExpandedValues(values, weights);
+
+            fit(stochast, newValues, std::nan(""));
         }
 
         double Distribution::getFittedMinimum(std::vector<double>& x)

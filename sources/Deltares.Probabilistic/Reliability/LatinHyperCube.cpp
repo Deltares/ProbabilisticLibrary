@@ -24,6 +24,7 @@
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Math/NumericSupport.h"
+#include "../Math/RandomValueGenerator.h"
 
 using namespace Deltares::Models;
 using namespace Deltares::Statistics;
@@ -77,9 +78,9 @@ namespace Deltares
                 double Sequence = 0.0;
             };
 
-            Random random;
-            random.initialize(Settings->randomSettings->RandomGeneratorType, Settings->randomSettings->IsRepeatableRandom,
-                Settings->randomSettings->Seed, Settings->randomSettings->getTimeStamp());
+            RandomValueGenerator random;
+            random.initialize(Settings->randomSettings->IsRepeatableRandom, Settings->randomSettings->Seed,
+                              Settings->randomSettings->getTimeStamp());
 
             std::vector<std::pair<int, std::vector<double>>> list;
             for (int i = 0; i < Settings->MinimumSamples; i++)

@@ -19,26 +19,14 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "Random.h"
-#include "Randomizers/MersenneTwisterRandomValueGenerator.h"
+#include "RandomValueGenerator.h"
 #include "../Utils/probLibException.h"
 #include <ctime>
 
 namespace Deltares::Numeric
 {
-    using enum RandomValueGeneratorType;
-
-    void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed, time_t fixedTimeStamp)
+    void RandomValueGenerator::initialize(bool repeatable, int seed, time_t fixedTimeStamp)
     {
-        if (generatorType == MersenneTwister)
-        {
-            randomValueGenerator = std::make_unique<MersenneTwisterRandomValueGenerator>();
-        }
-        else
-        {
-            throw Reliability::probLibException("Generator type not supported");
-        }
-
         repeatable_ = repeatable;
         seed_ = seed;
 
@@ -46,41 +34,45 @@ namespace Deltares::Numeric
         {
             if (fixedTimeStamp == 0)
             {
-                this->timeStamp = time(nullptr);
-                if (this->timeStamp <= lastGeneratedTimeStamp)
+                timeStamp = time(nullptr);
+                if (timeStamp <= lastGeneratedTimeStamp)
                 {
-                    this->timeStamp = lastGeneratedTimeStamp + 1;
+                    timeStamp = lastGeneratedTimeStamp + 1;
                 }
 
                 lastGeneratedTimeStamp = this->timeStamp;
             }
             else
             {
-                this->timeStamp = fixedTimeStamp;
+                timeStamp = fixedTimeStamp;
             }
         }
 
-        randomValueGenerator->initialize(repeatable, seed, timeStamp);
+        initializeGenerator(repeatable, seed, timeStamp);
     }
 
-    double Random::next() const
+    double RandomValueGenerator::next()
     {
-        return randomValueGenerator->next();
+        std::uniform_real_distribution<double> distribution(0.0, 1.0);
+        double ri = distribution(generator);
+        return ri;
     }
 
-    void Random::restart() const
+    void RandomValueGenerator::restart()
     {
-        return randomValueGenerator->initialize(repeatable_, seed_, timeStamp);
+        initializeGenerator(repeatable_, seed_, timeStamp);
     }
 
-    std::string Random::getRandomGeneratorTypeString([[maybe_unused]] RandomValueGeneratorType method)
+    void RandomValueGenerator::initializeGenerator(bool repeatable, int seed, time_t timeStamp)
     {
-        return "mersenne_twister";
-    }
-
-    RandomValueGeneratorType Random::getRandomGeneratorType([[maybe_unused]] const std::string& method)
-    {
-        return MersenneTwister;
+        if (repeatable)
+        {
+            generator.seed(seed);
+        }
+        else
+        {
+            generator.seed(timeStamp);
+        }
     }
 }
 

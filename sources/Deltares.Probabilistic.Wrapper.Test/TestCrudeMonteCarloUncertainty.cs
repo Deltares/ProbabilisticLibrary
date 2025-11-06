@@ -38,7 +38,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetAddOneProject());
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -56,7 +55,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -73,7 +71,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -93,7 +90,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Settings.MaxParallelProcesses = 4;
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -110,8 +106,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Settings.SaveMessages = false;
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.Samples = 100000;
+            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.MaximumSamples = 100000;
 
             Stochast stochast = project.GetStochast();
 
@@ -133,7 +128,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Settings.SaveMessages = false;
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.DeriveSamplesFromVariationCoefficient = true;
 
             ClassicAssert.AreEqual(7600, ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.GetRequiredSamples());
@@ -149,7 +143,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearFullyCorrelatedProject());
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -167,7 +160,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearNegativeFullyCorrelatedProject());
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -180,7 +172,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearPartialCorrelatedProject());
             project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -193,7 +184,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             CrudeMonteCarloS sensitivityMethod = new CrudeMonteCarloS();
 
-            sensitivityMethod.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             sensitivityMethod.Settings.CalculateCorrelations = true;
 
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());

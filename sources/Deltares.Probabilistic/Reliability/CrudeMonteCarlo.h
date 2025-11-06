@@ -32,6 +32,12 @@ namespace Deltares
         public:
             std::shared_ptr<CrudeMonteCarloSettings> Settings = std::make_shared<CrudeMonteCarloSettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+
+            bool isValid() override
+            {
+                return Settings->isValid();
+            }
+
         private:
             std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<SampleProvider> sampleProvider, double zRemainder, double qRange);
             bool checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, int samples, int nmaal);

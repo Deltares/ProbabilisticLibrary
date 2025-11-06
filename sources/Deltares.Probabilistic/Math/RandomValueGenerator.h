@@ -20,54 +20,46 @@
 // All rights reserved.
 //
 #pragma once
-#include "Randomizers/RandomValueGenerator.h"
-#include <string>
-#include <memory>
+#include <random>
 
 namespace Deltares::Numeric
 {
-    /**
-     * MersenneTwister : default for all languages
-     */
-    enum class RandomValueGeneratorType { MersenneTwister };
-
-    class Random
+    class RandomValueGenerator
     {
     private:
         bool repeatable_ = true;
         int seed_ = 0;
         time_t timeStamp = 0;
-        std::unique_ptr<RandomValueGenerator> randomValueGenerator = nullptr;
         time_t lastGeneratedTimeStamp = 0;
+
+        std::mt19937_64 generator;
+
+        void initializeGenerator(bool repeatable, int seed, time_t timeStamp);
+
     public:
         /**
          * \brief Initializes the random value generator
-         * \param generatorType The algorithm which produces random values
          * \param repeatable Indicates whether each time this method is called, subsequent calls to the random generator produces equal results
          * \param seed Seed value needed for random generation
          * \param fixedTimeStamp The time stamp to be used if not repeatable, 0 will generate a new time stamp 
          */
-        void initialize(RandomValueGeneratorType generatorType, bool repeatable = true, int seed = 0, time_t fixedTimeStamp = 0);
+        void initialize(bool repeatable = true, int seed = 0, time_t fixedTimeStamp = 0);
 
         /**
          * \brief Retrieves the next random value
          * \returns Random value
          */
-        double next() const;
+        double next();
 
         /**
          * \brief Restarts the random value generator, so that same random values are generated (even if repeatable is false)
          */
-        void restart() const;
+        void restart();
 
         /**
          * \brief Restarts the random value generator, so that same random values are generated (even if repeatable is false)
          */
         void fixateInitialize() {}
-
-
-        static std::string getRandomGeneratorTypeString(RandomValueGeneratorType method);
-        static RandomValueGeneratorType getRandomGeneratorType(const std::string& method);
     };
 }
 

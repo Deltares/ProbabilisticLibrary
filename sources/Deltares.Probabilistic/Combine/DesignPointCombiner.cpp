@@ -39,7 +39,6 @@ namespace Deltares
             case CombinerType::ImportanceSampling:
             {
                 auto impSamplingCombiner = std::make_shared<ImportanceSamplingCombiner>();
-                impSamplingCombiner->randomGeneratorType = generator;
                 return impSamplingCombiner;
             }
             case CombinerType::Hohenbichler:
@@ -47,7 +46,6 @@ namespace Deltares
             case CombinerType::DirectionalSampling:
             {
                 auto directionalSamplingCombiner = std::make_shared<DirectionalSamplingCombiner>();
-                directionalSamplingCombiner->randomGeneratorType = generator;
                 return directionalSamplingCombiner;
             }
             case CombinerType::HohenbichlerForm:

@@ -34,7 +34,7 @@ namespace Deltares
          */
         void RandomSampleGenerator::initialize()
         {
-            random.initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->getTimeStamp());
+            random.initialize(this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->getTimeStamp());
 
             if (sampleProvider == nullptr)
             {
@@ -55,7 +55,7 @@ namespace Deltares
          * \brief Gets a random sample
          * \returns Random sample
          */
-        std::shared_ptr<Sample> RandomSampleGenerator::getRandomSample() const
+        std::shared_ptr<Sample> RandomSampleGenerator::getRandomSample()
         {
             const int size = this->getSampleSize();
 
@@ -78,14 +78,14 @@ namespace Deltares
             return sample;
         }
 
-        void RandomSampleGenerator::proceed(int nSamples) const
+        void RandomSampleGenerator::proceed(int nSamples)
         {
             const int size = getSampleSize();
             for (int i = 0; i < nSamples; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    (void) random.next();
+                    double _ = random.next();
                 }
             }
         }

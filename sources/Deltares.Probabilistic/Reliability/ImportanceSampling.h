@@ -38,17 +38,17 @@ namespace Deltares
 			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 			void setSampleLambda(RegisterSampleLambda sampleFunction);
 			void setBreakLoopLambda(BreakLoopLambda breakFunction);
+            bool isValid() override
+            {
+                return this->Settings->isValid();
+            }
+
 		private:
 			RegisterSampleLambda sampleFunction = nullptr;
 			BreakLoopLambda breakFunction = nullptr;
 			std::vector<std::shared_ptr<ImportanceSamplingCluster>> getClusters(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<DesignPoint>& startDesignPoint);
 			bool checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, double minWeight, int samples, int nmaal);
-			double getConvergence(double pf, double minWeight, int samples);
-			double getDimensionality(std::vector<double> factors);
-			double getSampleWeight(std::shared_ptr<Sample> sample, std::shared_ptr<Sample> center, double dimensionality, std::vector<double> factors);
-			double getWeight(std::shared_ptr<Sample> modifiedSample, std::shared_ptr<Sample> sample, double dimensionality);
 			std::vector<double> getFactors(std::shared_ptr<StochastSettingsSet> stochastSettings);
-			std::shared_ptr<Sample> getOriginalSample(std::shared_ptr<Sample> sample, std::shared_ptr<Sample> center, std::vector<double> factors);
 			double getProbabilityOfFailure(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);
 
 			bool prematureExit(std::shared_ptr<ImportanceSamplingSettings> settings, int samples, int runs);

@@ -65,11 +65,6 @@ class StartMethod(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class RandomType(Enum):
-	mersenne_twister = 'mersenne_twister'
-	def __str__(self):
-		return str(self.value)
-
 class GradientType(Enum):
 	single = 'single'
 	double = 'double'
@@ -135,7 +130,6 @@ class Settings(FrozenObject):
 				'start_method',
 				'all_quadrants',
 				'max_steps_sphere_search',
-				'random_type',
 				'is_repeatable_random',
 				'random_seed',
 				'sample_method'
@@ -237,14 +231,6 @@ class Settings(FrozenObject):
 	@max_steps_sphere_search.setter
 	def max_steps_sphere_search(self, value : int):
 		interface.SetIntValue(self._id, 'max_steps_sphere_search', value)
-
-	@property
-	def random_type(self) -> RandomType:
-		return RandomType[interface.GetStringValue(self._id, 'random_type')]
-
-	@random_type.setter
-	def random_type(self, value : RandomType):
-		interface.SetStringValue(self._id, 'random_type', str(value))
 
 	@property
 	def is_repeatable_random(self) -> bool:

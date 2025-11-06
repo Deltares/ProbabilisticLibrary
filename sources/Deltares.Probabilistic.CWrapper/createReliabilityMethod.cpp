@@ -41,7 +41,6 @@ using namespace Deltares::Statistics;
 std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSettings& bs)
 {
     auto rnd = std::make_shared<RandomSettings>();
-    rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
     rnd->Seed = bs.seed;
     rnd->IsRepeatableRandom = bs.isRepeatableRandom != 0;
     return rnd;

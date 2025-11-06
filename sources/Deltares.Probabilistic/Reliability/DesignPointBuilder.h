@@ -21,6 +21,8 @@
 //
 #pragma once
 
+#include <stack>
+
 #include "../Model/Sample.h"
 #include "../Model/ModelRunner.h"
 
@@ -50,11 +52,13 @@ namespace Deltares
             std::shared_ptr<Sample> cosSample = nullptr;
             bool sampleAdded = false;
             bool weightedSampleAdded = false;
+            std::vector<std::shared_ptr<Sample>> nearestSamples;
 
             std::vector<int> qualitativeIndices;
             int qualitativeCount = 0;
             std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
+            void handleSample(const std::shared_ptr<Sample>& sample, double weight);
             void initializeSamples(int count, DesignPointMethod method);
             void initializeTotals();
 
@@ -62,8 +66,9 @@ namespace Deltares
             DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet = nullptr);
             DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
 
-            void initialize(double beta);
-            void addSample(std::shared_ptr<Sample> sample);
+            void initialize(double beta) const;
+            void addSample(const std::shared_ptr<Sample>& sample);
+            void removeSample(const std::shared_ptr<Sample>& sample);
             std::shared_ptr<Sample> getSample();
 
             static std::string getDesignPointMethodString(DesignPointMethod method);

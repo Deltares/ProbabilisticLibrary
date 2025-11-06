@@ -33,6 +33,12 @@ namespace Deltares
         public:
             std::shared_ptr<FORMSettings> Settings = std::make_shared<FORMSettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+
+            bool isValid() override
+            {
+                return Settings->isValid();
+            }
+
         private:
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> startSample,
                 const double relaxationFactor, const int relaxationIndex);

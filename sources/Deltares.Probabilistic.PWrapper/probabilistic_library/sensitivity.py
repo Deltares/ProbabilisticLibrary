@@ -27,7 +27,7 @@ import numpy as np
 
 from .utils import FrozenObject, FrozenList, PrintUtils
 from .statistic import Stochast, ProbabilityValue
-from .reliability import StochastSettings, RandomType, GradientType
+from .reliability import StochastSettings, GradientType
 from .logging import Evaluation, Message, ValidationReport
 from . import interface
 

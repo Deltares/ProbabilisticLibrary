@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "ImportanceSampling.h"
+#include "ImportanceSamplingSupport.h"
 #include <vector>
 #include <cmath>
 #if __has_include(<format>)
@@ -28,7 +29,6 @@
 #include "../Utils/probLibString.h"
 #endif
 #include <memory>
-#include <numbers>
 
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
@@ -95,7 +95,7 @@ namespace Deltares
 
 			std::vector<double> factors = this->getFactors(Settings->StochastSet);
 
-			double dimensionality = getDimensionality(factors);
+			double dimensionality = ImportanceSamplingSupport::getDimensionality(factors);
 
 			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
@@ -149,7 +149,7 @@ namespace Deltares
 							modifiedSample->Values[k] = factors[k] * sample->Values[k] + cluster->Center->Values[k];
 						}
 
-						modifiedSample->Weight = getWeight(modifiedSample, sample, dimensionality);
+						modifiedSample->Weight = ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
 
 						samples.push_back(modifiedSample);
 						clusters.push_back(cluster);
@@ -248,8 +248,8 @@ namespace Deltares
 				{
 					std::shared_ptr<Sample> designPoint = combinedCluster->DesignPointBuilder->getSample();
 
-					std::shared_ptr<ImportanceSamplingCluster> mostContributingCLuster = findMostContributingCluster(clusterResults);
-					double designPointWeight = getSampleWeight(designPoint, mostContributingCLuster->Center, dimensionality, factors);
+					std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = findMostContributingCluster(clusterResults);
+					double designPointWeight = ImportanceSamplingSupport::getSampleWeight(designPoint, mostContributingCluster->Center, dimensionality, factors);
 
 					convergenceReport->IsConverged = checkConvergence(modelRunner, probFailure, designPointWeight, combinedCluster->TotalCount, sampleIndex);
 					convergenceReport->FailWeight = combinedCluster->FailWeight;
@@ -272,8 +272,8 @@ namespace Deltares
 			std::shared_ptr<Sample> minSample = combinedCluster->DesignPointBuilder->getSample();
 
 			std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = findMostContributingCluster(clusterResults);
-			double designPointWeight = this->getSampleWeight(minSample, mostContributingCluster->Center, dimensionality, factors);
-			convergenceReport->Convergence = getConvergence(probFailure, designPointWeight, combinedCluster->TotalCount);
+			double designPointWeight = ImportanceSamplingSupport::getSampleWeight(minSample, mostContributingCluster->Center, dimensionality, factors);
+			convergenceReport->Convergence = ImportanceSamplingSupport::getConvergence(probFailure, designPointWeight, combinedCluster->TotalCount);
 			convergenceReport->NearestSample = combinedCluster->NearestSample;
 
 			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(minSample, beta, convergenceReport);
@@ -304,35 +304,6 @@ namespace Deltares
 			return designPoint;
 		}
 
-        /// <summary>
-        /// return the weight for the sample.
-        /// This is given by: dimensionality * pdf / pdfOriginal, with pdf = normalFactor * std::exp(-SquaredSum/2).
-        /// Rewritten to avoid a possible division by zero.
-        /// </summary>
-        /// <param name="modifiedSample"> the scaled sample </param>
-        /// <param name="sample"> the original sample </param>
-        /// <param name="dimensionality"> constant dependent on the number of stochasts </param>
-        /// <returns> the weight </returns>
-        double ImportanceSampling::getWeight(std::shared_ptr<Sample> modifiedSample, std::shared_ptr<Sample> sample, double dimensionality)
-        {
-            double sumSquared = Numeric::NumericSupport::GetSquaredSum(modifiedSample->Values);
-            double sumSquaredOrg = Numeric::NumericSupport::GetSquaredSum(sample->Values);
-            double ratioPdf = std::exp( 0.5 * (sumSquaredOrg - sumSquared) );
-            return dimensionality * ratioPdf;
-        }
-
-		double ImportanceSampling::getDimensionality(std::vector<double> factors)
-		{
-			double dimensionality = 1; // correction for the dimensionality effect
-
-			for (int k = 0; k < factors.size(); k++)
-			{
-				dimensionality *= factors[k];
-			}
-
-			return dimensionality;
-		}
-
 		std::vector<double> ImportanceSampling::getFactors(std::shared_ptr<StochastSettingsSet> stochastSettings)
 		{
 			std::vector<double> factors(stochastSettings->getVaryingStochastCount());
@@ -345,25 +316,6 @@ namespace Deltares
 			return factors;
 		}
 
-
-		std::shared_ptr<Sample> ImportanceSampling::getOriginalSample(std::shared_ptr<Sample> sample, std::shared_ptr<Sample> center, std::vector<double> factors)
-		{
-			std::shared_ptr<Sample> original = std::make_shared<Sample>(sample->Values.size());
-
-			for (int k = 0; k < sample->Values.size(); k++)
-			{
-				original->Values[k] = (sample->Values[k] - center->Values[k]) / factors[k];
-			}
-
-			return original;
-		}
-
-		double ImportanceSampling::getSampleWeight(std::shared_ptr<Sample> sample, std::shared_ptr<Sample> center, double dimensionality, std::vector<double> factors)
-		{
-			std::shared_ptr<Sample> originalSample = getOriginalSample(sample, center, factors);
-			return this->getWeight(sample, originalSample, dimensionality);
-		}
-
 		bool ImportanceSampling::checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, double minWeight, int samples, int nmaal)
 		{
 			std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
@@ -372,36 +324,19 @@ namespace Deltares
 
 			if (pf > 0 && pf < 1)
 			{
-				double convergence = getConvergence(pf, minWeight, samples);
+				double convergence = ImportanceSamplingSupport::getConvergence(pf, minWeight, samples);
 				report->Reliability = Statistics::StandardNormal::getUFromQ(pf);
 				report->Variation = convergence;
 
 				modelRunner->reportResult(report);
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+
 				return enoughSamples && convergence < Settings->VariationCoefficient;
 			}
 			else
 			{
 				modelRunner->reportResult(report);
 				return false;
-			}
-		}
-
-		double ImportanceSampling::getConvergence(double pf, double minWeight, int samples)
-		{
-			if (pf > 0 && pf < 1)
-			{
-				if (pf > 0.5)
-				{
-					pf = 1 - pf;
-				}
-
-				double varPf = sqrt(std::max(0.0, (minWeight - pf) / (samples * pf)));
-				return varPf;
-			}
-			else
-			{
-				return nan("");
 			}
 		}
 

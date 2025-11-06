@@ -21,7 +21,6 @@
 //
 #pragma once
 
-#include "../Math/Random.h"
 #include "../Reliability/StochastSettingsSet.h"
 #include <ctime>
 
@@ -44,11 +43,6 @@ namespace Deltares
              * \brief Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
              */
             bool IsStochastRepeatableRandom = false;
-
-            /**
-             * \brief Type of random generator algorithm
-             */
-            Numeric::RandomValueGeneratorType RandomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
 
             /**
              * \brief Seed for random generator
@@ -100,7 +94,6 @@ namespace Deltares
 
                 copy->IsRepeatableRandom = this->IsRepeatableRandom;
                 copy->IsStochastRepeatableRandom = this->IsStochastRepeatableRandom;
-                copy->RandomGeneratorType = this->RandomGeneratorType;
                 copy->Seed = this->Seed;
                 copy->StochastSet = this->StochastSet;
 

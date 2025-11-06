@@ -44,11 +44,6 @@ namespace Deltares
             {
                 this->combinerType = combinerType;
             }
-            DesignPointCombiner(CombinerType combinerType, Numeric::RandomValueGeneratorType randomGenerator)
-            {
-                this->combinerType = combinerType;
-                this->generator = randomGenerator;
-            }
 
             /**
              * \brief Specifies the combiner algorithm
@@ -98,7 +93,6 @@ namespace Deltares
         private:
             std::shared_ptr<Combiner> getCombiner() const;
             std::unique_ptr<ExcludingCombiner> getExcludingCombiner() const;
-            Numeric::RandomValueGeneratorType generator = Numeric::RandomValueGeneratorType::MersenneTwister;
 
             void applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
                                   std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,

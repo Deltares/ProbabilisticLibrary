@@ -25,6 +25,7 @@
 #include "StochastSettingsSet.h"
 #include "../Model/GradientSettings.h"
 #include "../Model/RunSettings.h"
+#include "../Model/Validatable.h"
 
 namespace Deltares
 {
@@ -33,7 +34,7 @@ namespace Deltares
         /**
          * \brief Settings for FORM algorithm
          */
-        class FORMSettings
+        class FORMSettings : public Models::Validatable
         {
         public:
             /**
@@ -86,18 +87,7 @@ namespace Deltares
              */
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
-            /**
-             * \brief Indicates whether these settings have valid values
-             * \return Indication
-             */
-            bool isValid() const
-            {
-                Logging::ValidationReport report;
-                this->validate(report);
-                return report.isValid();
-            }
-
-            void validate(Logging::ValidationReport& report) const
+            void validate(Logging::ValidationReport& report) const override
             {
                 Logging::ValidationSupport::checkMinimumInt(report, 1, RelaxationLoops, "relaxation loops");
                 Logging::ValidationSupport::checkMinimum(report, 0.01, RelaxationFactor, "relaxation factor");
