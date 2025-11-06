@@ -2,6 +2,8 @@ add_subdirectory(Deltares.Probabilistic)
 
 add_subdirectory(Deltares.Probabilistic.CWrapper)
 
+add_subdirectory(Deltares.Probabilistic.Interface)
+
 if(WIN32)
   if ( NOT TARGET tools)
     add_subdirectory(Deltares.Probabilistic.Wrapper)

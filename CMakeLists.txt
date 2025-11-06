@@ -15,7 +15,7 @@ else()
 endif()
 
 # project name and language
-project(probabilisticLibrary LANGUAGES CXX)
+project(probabilisticLibrary LANGUAGES CXX CSharp)
 
 if ( NOT TARGET tools)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
@@ -54,3 +54,5 @@ option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 enable_testing()
 
 add_subdirectory(sources)
+
+add_subdirectory(examples)
