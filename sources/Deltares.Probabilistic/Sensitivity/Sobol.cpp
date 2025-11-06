@@ -44,6 +44,8 @@ namespace Deltares::Sensitivity
 
         SobolSequenceProvider sequenceProvider(2 * nStochasts);
 
+        SensitivityResult sensitivityStochast = modelRunner->getSensitivityResult();
+
         // step 1
 
         std::vector<std::shared_ptr<Sample>> samplesA;
@@ -71,8 +73,18 @@ namespace Deltares::Sensitivity
         std::vector<double> zA = modelRunner->getZValues(samplesA);
         modelRunner->reportProgress(++iteration * nSamples, nIterations * nSamples);
 
+        if (isStopped())
+        {
+            return sensitivityStochast;
+        }
+
         std::vector<double> zB = modelRunner->getZValues(samplesB);
         modelRunner->reportProgress(++iteration * nSamples, nIterations * nSamples);
+
+        if (isStopped())
+        {
+            return sensitivityStochast;
+        }
 
         std::vector<double> zC = NumericSupport::combine(zA, zB);
 
@@ -91,8 +103,18 @@ namespace Deltares::Sensitivity
             std::vector<double> zABi = modelRunner->getZValues(samplesAB);
             modelRunner->reportProgress(++iteration * nSamples, nIterations * nSamples);
 
+            if (isStopped())
+            {
+                return sensitivityStochast;
+            }
+
             std::vector<double> zBAi = modelRunner->getZValues(samplesBA);
             modelRunner->reportProgress(++iteration * nSamples, nIterations * nSamples);
+
+            if (isStopped())
+            {
+                return sensitivityStochast;
+            }
 
             zAB[index] = zABi;
             zBA[index] = zBAi;
@@ -102,8 +124,6 @@ namespace Deltares::Sensitivity
         double variance = NumericSupport::sum(zC, [](double p) { return p * p; });
         variance /= static_cast<double>(zC.size());
         variance -= zCMean * zCMean;
-
-        SensitivityResult sensitivityStochast = modelRunner->getSensitivityResult();
 
         // Compute sobol indices
 
