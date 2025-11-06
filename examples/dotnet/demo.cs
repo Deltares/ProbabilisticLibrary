@@ -57,6 +57,7 @@ namespace Deltares.Examples.dotnet
             d.Add(a);
             d.Add(a);
             var r = ProbCalc.Calc(m, d.ToArray(), SimpleZ, progressForm);
+            ProbCalc.DumpResults(r);
         }
 
         internal static void testImpSampling()
@@ -77,6 +78,7 @@ namespace Deltares.Examples.dotnet
             d.Add(a);
             d.Add(a);
             var r = ProbCalc.Calc(m, d.ToArray(), SimpleZ, progressSampling);
+            ProbCalc.DumpResults(r);
         }
     }
 }

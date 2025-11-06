@@ -154,12 +154,12 @@ namespace Deltares.ProbabilisticLibrary.Interface
         public tError error;
         public double beta;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] alpha;
-        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] x;
-        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public int[] iPoint;
         public int stepsNeeded;
         public int samplesNeeded;
         public bool convergence;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] x;
     }
+
     public struct tError
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PbSizes.errorMsgLength)]
@@ -230,18 +230,38 @@ namespace Deltares.ProbabilisticLibrary.Interface
             ids.nrStochasts = n;
             ids.nrCorrelations = nrCorrelations;
             double[] x = new double[n];
-            int[] iPoint = new int[n];
-            for (int i = 0; i < n; i++)
-            {
-                iPoint[i] = i;
-            }
             probcalcf2c(ref method, c, correlations, f, pc, ids, x, out tResult r);
             if (r.error.errorCode != 0)
             {
                 var s = r.error.message;
                 throw new Exception(s);
             }
+            r.x = x;
             return r;
+        }
+
+        public static void DumpResults(tResult result)
+        {
+            Console.WriteLine("beta = " + result.beta);
+            Console.Write("alpha = ");
+            for (int i = 0; i < result.x.Length; i++)
+            {
+                Console.Write(result.alpha[i]);
+                Console.Write(",");
+            }
+            Console.WriteLine();
+
+            Console.Write("x = ");
+            foreach (var x in result.x)
+            {
+                Console.Write(x);
+                Console.Write(",");
+            }
+            Console.WriteLine();
+            Console.WriteLine("convergence: " + result.convergence);
+            Console.WriteLine("samplesNeeded: " + result.samplesNeeded);
+            Console.WriteLine("stepsNeeded: " + result.stepsNeeded);
+            Console.WriteLine();
         }
 
         [DllImport("Deltares.Probabilistic.CWrapper.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "probcalcf2c")]
