@@ -21,7 +21,7 @@
 //
 #include "progressWrapper.h"
 
-void progressWrapper::FPgDelegate(Deltares::Models::ProgressType pt, std::string s)
+void progressWrapper::FPgDelegate(Deltares::Models::ProgressType pt, const std::string& s) const
 {
     auto cancel = externalProgressFunc(pt, s.c_str());
     if (cancel)

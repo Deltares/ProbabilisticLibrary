@@ -32,7 +32,7 @@ class progressWrapper
 public:
     progressWrapper(progressFuncExt func, Deltares::Reliability::ReliabilityMethod* relMethod) :
         externalProgressFunc(func), pntrToReliabilityMethod(relMethod) {;}
-    void FPgDelegate(Deltares::Models::ProgressType pt, std::string s);
+    void FPgDelegate(Deltares::Models::ProgressType pt, const std::string& s) const;
 private:
     progressFuncExt externalProgressFunc;
     Deltares::Reliability::ReliabilityMethod* pntrToReliabilityMethod;

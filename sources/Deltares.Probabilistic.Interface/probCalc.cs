@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Deltares.ProbabilisticLibrary.Interface
 {
@@ -171,11 +172,13 @@ namespace Deltares.ProbabilisticLibrary.Interface
         public int errorCode;
     }
 
+    public enum ProgressType { Global, Detailed };
+
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate double DelegateZFunction(IntPtr x, int[] i, ref tError error);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate bool DelegateProgressCancel(int iter, double beta, double convergenceIndicator);
+    public delegate bool DelegateProgressCancel(ProgressType progress, StringBuilder s);
 
     public class ProbCalc
     {

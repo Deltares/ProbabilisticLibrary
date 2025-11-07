@@ -2,6 +2,7 @@
 using Deltares.ProbabilisticLibrary.Interface;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Deltares.Examples.dotnet
 {
@@ -14,22 +15,21 @@ namespace Deltares.Examples.dotnet
         {
             testForm();
             testImpSampling();
+            testAdaptiveImportanceSampling();
         }
 
-        internal static bool progressForm(int i, double x, double y)
+        internal static bool progressForm(ProgressType progress, StringBuilder s)
         {
-            if (i % 2 == 0)
-            {
-                Console.WriteLine(string.Format("iter = {0}, beta = {1}, conv = {2}", i, x, y));
-            }
+            // print everything
+            Console.WriteLine(s);
             return false;
         }
 
-        internal static bool progressSampling(int i, double x, double y)
+        internal static bool progressSampling(ProgressType progress, StringBuilder s)
         {
-            if (i % 1000 == 0)
+            if (progress == ProgressType.Global)
             {
-                Console.WriteLine(string.Format("samples = {0}, Pf = {1}, conv = {2}", i, x, y));
+                Console.WriteLine(s);
             }
             return false;
         }
@@ -76,6 +76,28 @@ namespace Deltares.Examples.dotnet
             p4[0] = 0.0;
             p4[1] = 1.0;
             var a = new fdistribs { distId = EnumDistributions.normal, p4=p4 };
+            d.Add(a);
+            d.Add(a);
+            var x = new XandAlpha[2];
+            var r = ProbCalc.Calc(m, d.ToArray(), SimpleZ, progressSampling, x);
+            ProbCalc.DumpResults(r, x);
+        }
+
+        internal static void testAdaptiveImportanceSampling()
+        {
+            var m = new basicSettings();
+            ProbCalc.SetDefaults(ref m);
+            m.methodId = ProbMethod.AdaptiveIM;
+            m.numThreads = 1;
+            m.tolA = 0.03;
+            m.tolB = 0.03;
+            m.tolC = 0.03;
+            m.progressInterval = 2500;
+            var d = new List<fdistribs>();
+            var p4 = new double[4];
+            p4[0] = 0.0;
+            p4[1] = 1.0;
+            var a = new fdistribs { distId = EnumDistributions.normal, p4 = p4 };
             d.Add(a);
             d.Add(a);
             var x = new XandAlpha[2];

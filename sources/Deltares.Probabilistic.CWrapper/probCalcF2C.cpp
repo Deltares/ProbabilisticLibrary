@@ -164,7 +164,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
-        auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
+        auto textualProgress = TextualProgressLambda([&pw](ProgressType p, const std::string& s) {pw.FPgDelegate(p, s); });
         auto progress = std::make_shared<ProgressIndicator>(progressDelegate, detailedProgressDelegate, textualProgress);
         auto modelRunner = std::make_shared<ModelRunner>(zModel, uConverter, progress);
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
