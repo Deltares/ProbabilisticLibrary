@@ -132,7 +132,7 @@ namespace Deltares.ProbabilisticLibrary.Interface
         public int numExtraInt2;
         public double numExtraReal1;
         public double numExtraReal2;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double [] startVector;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] startVector;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] offsets;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] varianceFactors;
         public bool allQuadrants;
@@ -153,11 +153,15 @@ namespace Deltares.ProbabilisticLibrary.Interface
     {
         public tError error;
         public double beta;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] alpha;
         public int stepsNeeded;
         public int samplesNeeded;
         public bool convergence;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] x;
+    }
+
+    public struct XandAlpha
+    {
+        public double X;
+        public double Alpha;
     }
 
     public struct tError
@@ -207,54 +211,58 @@ namespace Deltares.ProbabilisticLibrary.Interface
         };
 
         public static tResult Calc(basicSettings method, fdistribs[] c,
-            DelegateZFunction f, DelegateProgressCancel pc)
+            DelegateZFunction f, DelegateProgressCancel pc, XandAlpha[] dp)
         {
             tCompIds ids = new tCompIds();
             var correlations = new corrStruct[0];
-            return Calc(method, c, correlations, f, pc, ids);
+            return Calc(method, c, correlations, f, pc, ids, dp);
         }
 
         public static tResult Calc(basicSettings method, fdistribs[] c, corrStruct[] correlations,
-            DelegateZFunction f, DelegateProgressCancel pc)
+            DelegateZFunction f, DelegateProgressCancel pc, XandAlpha[] dp)
         {
             tCompIds ids = new tCompIds();
-            return Calc(method, c, correlations, f, pc, ids);
+            return Calc(method, c, correlations, f, pc, ids, dp);
         }
 
         public static tResult Calc(basicSettings method, fdistribs[] c, corrStruct[] correlations,
-            DelegateZFunction f, DelegateProgressCancel pc, tCompIds ids)
+            DelegateZFunction f, DelegateProgressCancel pc, tCompIds ids, XandAlpha[] dp)
         {
             int n = c.Length;
             int nrCorrelations = correlations.Length;
             ids.id = 0;
             ids.nrStochasts = n;
             ids.nrCorrelations = nrCorrelations;
-            double[] x = new double[n];
+            var x = new double[2*n];
             probcalcf2c(ref method, c, correlations, f, pc, ids, x, out tResult r);
+            for (int i = 0; i < n; i++)
+            {
+                dp[i].X = x[2*i];
+                dp[i].Alpha = x[2 * i + 1];
+            }
             if (r.error.errorCode != 0)
             {
                 var s = r.error.message;
                 throw new Exception(s);
             }
-            r.x = x;
             return r;
         }
 
-        public static void DumpResults(tResult result)
+        public static void DumpResults(tResult result, XandAlpha[] dp)
         {
             Console.WriteLine("beta = " + result.beta);
             Console.Write("alpha = ");
-            for (int i = 0; i < result.x.Length; i++)
+            foreach (var x in dp)
             {
-                Console.Write(result.alpha[i]);
+                Console.Write(x.Alpha);
                 Console.Write(",");
             }
             Console.WriteLine();
 
             Console.Write("x = ");
-            foreach (var x in result.x)
+            foreach (var x in dp)
             {
-                Console.Write(x);
+                Console.Write(x.X);
                 Console.Write(",");
             }
             Console.WriteLine();

@@ -25,7 +25,6 @@
 
 #include "basicSettings.h"
 #include "createDistribution.h"
-#include "../Deltares.Probabilistic/Utils/probLibException.h"
 #include "../Deltares.Probabilistic/Math/vector1D.h"
 
 #include "funcWrapper.h"
@@ -48,10 +47,15 @@ struct tResult
 {
     tError error;
     double beta;
-    double alpha[maxActiveStochast];
     int stepsNeeded;
     int samplesNeeded;
     bool convergence;
+};
+
+struct XandAlpha
+{
+    double x;
+    double alpha;
 };
 
 struct tCompIds
@@ -61,8 +65,7 @@ struct tCompIds
     int nrCorrelations;
 };
 
-void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
-    double x[], funcWrapper fw)
+void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, const DPoptions option, tResult & r, const DesignPoint& newResult, XandAlpha x[])
 {
     if (alpha.size() <= maxActiveStochast)
     {
@@ -71,7 +74,7 @@ void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, con
         {
             for (size_t i = 0; i < alpha.size(); i++)
             {
-                x[i] = 0.0;
+                x[i].x = 0.0;
             }
         }
         break;
@@ -79,7 +82,7 @@ void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, con
         {
             for (size_t i = 0; i < alpha.size(); i++)
             {
-                x[i] = newResult->Alphas[i]->X;
+                x[i].x = newResult.Alphas[i]->X;
             }
         }
         }
@@ -106,7 +109,7 @@ void copyConvergence(tResult& r, const DesignPoint& designPoint, const ProbMetho
     }
     else if (r.samplesNeeded < 0 && failFraction > 0.0)
     {
-        r.samplesNeeded = (int)round(failedSamples / failFraction);
+        r.samplesNeeded = static_cast<int>(round(failedSamples / failFraction));
     }
 }
 
@@ -126,18 +129,18 @@ extern "C"
 void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlations[],
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
-    const tCompIds* compIds, double x[], tResult* result)
+    const tCompIds* compIds, XandAlpha* x, tResult* result)
 {
     try
     {
-        auto nStoch = (size_t)compIds->nrStochasts;
+        auto nStoch = static_cast<size_t>(compIds->nrStochasts);
         auto fw = funcWrapper(compIds->id, fx);
         auto nrCorrelations = compIds->nrCorrelations;
 
-        auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
+        auto stochasts = std::vector<std::shared_ptr<Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
         {
-            auto distHR = (EnumDistributions)c[i].distId;
+            auto distHR = static_cast<EnumDistributions>(c[i].distId);
             auto s = createDistribution::createValid(distHR, c[i].params);
             stochasts.push_back(s);
         }
@@ -151,7 +154,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
         {
-            corr->init((int)nStoch);
+            corr->init(static_cast<int>(nStoch));
             for (int i = 0; i < nrCorrelations; i++)
             {
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
@@ -202,10 +205,10 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         result->beta = newResult->Beta;
         for (size_t i = 0; i < nStoch; i++)
         {
-            result->alpha[i] = newResult->Alphas[i]->Alpha;
+            x[i].alpha = newResult->Alphas[i]->Alpha;
         }
 
-        updateX(newResult->Alphas, method->designPointOptions, *result, newResult, x, fw);
+        updateX(newResult->Alphas, method->designPointOptions, *result, *newResult, x);
 
         copyConvergence(*result, *newResult, method->methodId);
     }

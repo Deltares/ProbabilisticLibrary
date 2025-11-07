@@ -56,8 +56,9 @@ namespace Deltares.Examples.dotnet
             var a = new fdistribs{distId = EnumDistributions.normal, p4=p4};
             d.Add(a);
             d.Add(a);
-            var r = ProbCalc.Calc(m, d.ToArray(), SimpleZ, progressForm);
-            ProbCalc.DumpResults(r);
+            var x = new XandAlpha[2];
+            var r = ProbCalc.Calc(m, d.ToArray(), SimpleZ, progressForm, x);
+            ProbCalc.DumpResults(r, x);
         }
 
         internal static void testImpSampling()
@@ -77,8 +78,9 @@ namespace Deltares.Examples.dotnet
             var a = new fdistribs { distId = EnumDistributions.normal, p4=p4 };
             d.Add(a);
             d.Add(a);
-            var r = ProbCalc.Calc(m, d.ToArray(), SimpleZ, progressSampling);
-            ProbCalc.DumpResults(r);
+            var x = new XandAlpha[2];
+            var r = ProbCalc.Calc(m, d.ToArray(), SimpleZ, progressSampling, x);
+            ProbCalc.DumpResults(r, x);
         }
     }
 }

@@ -100,7 +100,6 @@ module interface_typedefs
   type, public, bind(c) :: tResult
     type(tError)         :: error
     real(kind=c_double)  :: beta
-    real(kind=c_double)  :: alpha(maxActiveStochast)
     integer              :: stepsNeeded
     integer              :: samplesNeeded
     logical(kind=c_bool) :: convergence

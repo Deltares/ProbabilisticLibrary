@@ -191,7 +191,7 @@ subroutine calculateLimitStateFunction(probDb, fx, dp, convergenceData, CpData, 
 
     method%designPointOption = probDb%method%dpOption
     method%numThreads        = probDb%method%maxParallelThreads
-    call realloc_check(xDense, nStochActive, "xDense")
+    call realloc_check(xDense, 2*nStochActive, "xDense")
     call realloc_check(cpData%iPoint, nStochActive, "ipoint in cpData" )
     cpData%iPoint = iPoint(1:nStochActive)
 
@@ -210,12 +210,8 @@ subroutine calculateLimitStateFunction(probDb, fx, dp, convergenceData, CpData, 
             call probCalcF2C(method, distribs, probDb%basic_correlation, fx, textualProgress, compIds, xDense, rn)
         end if
 
-        call cpData%copyDense2Full(xDense, dp%x)
+        call cpData%copyDense2DesignPoint(xDense, dp)
         dp%beta = rn%beta
-        dp%alpha = 0.0_wp
-        do k = 1, nStochActive
-            dp%alpha(CpData%iPoint(k)) = rn%alpha(k)
-        end do
         if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
             ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)
             convergenceData%conv = .false.

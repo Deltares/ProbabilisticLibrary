@@ -21,6 +21,7 @@
 !
 module mTpXData
 use precision, only : wp
+use interface_typedefs
 implicit none
 
 private
@@ -32,6 +33,7 @@ type, public :: tCpData
 contains
     procedure :: copyDense2Full => cpDense2Full
     procedure :: copyFull2Dense => cpFull2Dense
+    procedure :: copyDense2DesignPoint => cpDense2DesignPoint
 end type tCpData
 
 contains
@@ -62,6 +64,23 @@ subroutine cpDense2Full(this, xDense, xFull)
         xFull(this%iPoint(i)) = xDense(i)
     end do
 end subroutine cpDense2Full
+
+!> copy vector from problib to Hydra-Ring
+subroutine cpDense2DesignPoint(this, xDense, xFull)
+    class(tCpData),    intent(inout) :: this
+    real(kind=wp),     intent(in)    :: xDense(2 * this%nStochActive)
+    type(designPoint), intent(inout) :: xFull
+
+    integer :: i
+
+    do i = 1, size(this%xHR)
+        xFull%x(i) = this%xHR(i)
+    end do
+    do i = 1, this%nStochActive
+        xFull%X(this%iPoint(i))     = xDense(2*i-1)
+        xFull%Alpha(this%iPoint(i)) = xDense(2*i)
+    end do
+end subroutine cpDense2DesignPoint
 
 
 end module mTpXData
