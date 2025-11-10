@@ -666,7 +666,7 @@ class LimitStateFunction(FrozenObject):
     an output parameter and compare it against a critical value.
 
     A limit state function should be added to a reliability project. If not added, the reliability
-    algorithm uses the first value if the model output array and interprets it as the z-value."""
+    algorithm uses the first value of the model output array and interprets it as the z-value."""
 		
 	def __init__(self, id = None):
 		if id is None:
