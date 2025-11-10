@@ -91,6 +91,7 @@ module interface_typedefs
     real(kind=c_double)  :: offsets(maxActiveStochast)
     real(kind=c_double)  :: varianceFactors(maxActiveStochast)
     logical(kind=c_bool) :: allQuadrants = .false.
+    logical(kind=c_bool) :: saveEvaluations = .false.
     type(tpNumericalBisectionSettings) :: numericalBisectionSettings
     type(tpLatinHypercubeSettings)     :: latinHypercubeSettings
     type(tpCobylaReliability)          :: cobylaReliability

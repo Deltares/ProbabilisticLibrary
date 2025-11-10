@@ -136,7 +136,8 @@ namespace Deltares.Probabilistic.Interface
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] startVector;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] offsets;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = PbSizes.maxActiveStochast)] public double[] varianceFactors;
-        public bool allQuadrants;
+        [MarshalAs(UnmanagedType.I1)] public bool allQuadrants;
+        [MarshalAs(UnmanagedType.I1)] public bool saveEvaluations;
         public numericalBisectionSettings numerical_bisection_settings;
         public latinHypercubeSettings latin_hypercube_settings;
         public cobylaReliabilitySettings cobyla_reliability_settings;
@@ -204,6 +205,7 @@ namespace Deltares.Probabilistic.Interface
             method.numExtraInt = 100;
             method.numExtraReal1 = -5.0;
             method.numExtraReal2 = 5.0;
+            method.saveEvaluations = true;
         }
 
         public struct tCompIds

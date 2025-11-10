@@ -151,6 +151,7 @@ namespace Deltares {
             double             offsets[maxActiveStochast];
             double             varianceFactors[maxActiveStochast];
             bool               allQuadrants = false;
+            bool               saveEvaluations = false;
             numericalBisectionSettings numerical_bisection_settings;
             latinHypercubeSettings latin_hypercube_settings;
             cobylaReliabilitySettings cobyla_reliability_settings;

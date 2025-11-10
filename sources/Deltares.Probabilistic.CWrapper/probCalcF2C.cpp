@@ -31,6 +31,12 @@
 #include "progressWrapper.h"
 #include "createReliabilityMethod.h"
 
+#ifdef __GNUC__
+#define DLL_PUBLIC __attribute__ ((visibility("default")))
+#else
+#define DLL_PUBLIC __declspec(dllexport)
+#endif
+
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
@@ -125,7 +131,7 @@ bool shouldRunAtDesignPoint(const DPoptions dpOption)
     }
 }
 
-extern "C"
+extern "C" DLL_PUBLIC
 void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlations[],
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
@@ -172,6 +178,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         modelRunner->Settings->SaveMessages = true;
         modelRunner->Settings->RunAtDesignPoint = shouldRunAtDesignPoint(method->designPointOptions);
         modelRunner->Settings->ExtendedLoggingAtDesignPoint = true;
+        modelRunner->Settings->SaveEvaluations = method->saveEvaluations;
 
         modelRunner->initializeForRun();
         auto newResult = relMethod->getDesignPoint(modelRunner);
