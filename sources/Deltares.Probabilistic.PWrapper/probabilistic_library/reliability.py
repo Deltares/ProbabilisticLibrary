@@ -1005,7 +1005,7 @@ class DesignPoint(FrozenObject):
 
 	def plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
 		"""Shows a scatter-plot of realizations performed by the reliability analysis. The color
-        indicates failure or non-failure. The x-y coordinates correspond with relaization input
+        indicates failure or non-failure. The x-y coordinates correspond with realization input
         values. Only available when 'save_realizations' was set in the settings.
 
         Parameters
