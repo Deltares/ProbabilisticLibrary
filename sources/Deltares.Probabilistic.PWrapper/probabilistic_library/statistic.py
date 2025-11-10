@@ -244,7 +244,7 @@ class Stochast(FrozenObject):
     fit_prior enable this feature. The goodness of fit can be retrieved by get_ks_test.
 
     Conditional stochasts are supported. The stochast properties depend on the value (or realization in a probabiistic analysis) of another
-    stochast, indicated by `conditional_source`. A table condiotnal_values is used to define the stochast properties for a certain value  of
+    stochast, indicated by `conditional_source`. A table conditional_values is used to define the stochast properties for a certain value  of
     the source stochast.
 
     A stochast can function as an array in a probabilstic analysis. The stochast will function as a number of uncorrelated stochastic variables.
