@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Deltares.ProbabilisticLibrary.Interface
+namespace Deltares.Probabilistic.Interface
 {
     public class PbSizes
     {

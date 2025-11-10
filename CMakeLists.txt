@@ -15,7 +15,11 @@ else()
 endif()
 
 # project name and language
-project(probabilisticLibrary LANGUAGES CXX CSharp)
+if(WIN32)
+    project(probabilisticLibrary LANGUAGES CXX CSharp)
+else()
+    project(probabilisticLibrary LANGUAGES CXX)
+endif()
 
 if ( NOT TARGET tools)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
@@ -55,4 +59,6 @@ enable_testing()
 
 add_subdirectory(sources)
 
-add_subdirectory(examples)
+if(WIN32)
+    add_subdirectory(examples)
+endif()

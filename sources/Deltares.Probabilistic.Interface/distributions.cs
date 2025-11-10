@@ -1,5 +1,5 @@
 
-namespace Deltares.ProbabilisticLibrary.Interface
+namespace Deltares.Probabilistic.Interface
 {
     public enum EnumDistributions
     {

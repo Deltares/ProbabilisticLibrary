@@ -1,5 +1,5 @@
 ﻿using System;
-using Deltares.ProbabilisticLibrary.Interface;
+using Deltares.Probabilistic.Interface;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
