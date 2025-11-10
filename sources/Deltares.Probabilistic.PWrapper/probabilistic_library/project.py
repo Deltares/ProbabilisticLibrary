@@ -1424,7 +1424,7 @@ class LengthEffectProject(FrozenObject):
 
 	def run(self):
 		"""Applies the length effect to the `design_point_cross_section`
-        Results in a design point, which is part of this project. When failed, the `design_point` is empty."""
+        Results is a design point, which is part of this project. When failed, the `design_point` is empty."""
 		self._design_point = None
 		interface.SetIntValue(self._id, 'design_point_cross_section', self._design_point_cross_section._id)
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
