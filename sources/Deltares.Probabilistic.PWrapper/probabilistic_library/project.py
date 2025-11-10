@@ -1017,7 +1017,7 @@ class ReliabilityProject(ModelProject):
 
 	@property
 	def limit_state_function(self) -> LimitStateFunction:
-		"""Defines the transformation of he model output to a z-value
+		"""Defines the transformation of the model output to a z-value
         By default, the first value in the model output is used as z-value"""
 
 		if self._limit_state_function is None:
