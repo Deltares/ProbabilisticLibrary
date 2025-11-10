@@ -343,7 +343,7 @@ class UncertaintySettings(FrozenObject):
 		"""Probability to which the convergence applies
 
         The convergence is calculated as if it were a reliability analysis. The reliability analysis is tuned
-        in such a way (by modofocation of the failure definition) that it produces the given probability."""
+        in such a way (by modification of the failure definition) that it produces the given probability."""
         
 		return interface.GetValue(self._id, 'probability_for_convergence')
 		
