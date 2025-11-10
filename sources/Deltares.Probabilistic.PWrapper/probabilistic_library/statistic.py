@@ -653,7 +653,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def is_array(self) -> bool:
-		"""Indicates whether this stopchast should be used as a list of stochasts in a probabilistic analysis"""
+		"""Indicates whether this stochast should be used as a list of stochasts in a probabilistic analysis"""
 		return interface.GetBoolValue(self._id, 'is_array')
 		
 	@is_array.setter
