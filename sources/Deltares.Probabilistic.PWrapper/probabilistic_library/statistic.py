@@ -247,7 +247,7 @@ class Stochast(FrozenObject):
     stochast, indicated by `conditional_source`. A table conditional_values is used to define the stochast properties for a certain value  of
     the source stochast.
 
-    A stochast can function as an array in a probabilstic analysis. The stochast will function as a number of uncorrelated stochastic variables.
+    A stochast can function as an array in a probabilistic analysis. The stochast will function as a number of uncorrelated stochastic variables.
     To define an array, use is_array and array_size.
 
     Printing and plotting are supported with methods print, plot, get_plot, get_series and get_special_values. Validation is supported by
