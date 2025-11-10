@@ -508,7 +508,7 @@ class ModelProject(FrozenObject):
         results based on real world input data (or is an academic function). It often relates
         to physical processes and is deterministic (it does not use uncertainty)
 
-        When a model is set, it accepts a python function or python class method. Alternatiavely,
+        When a model is set, it accepts a python function or python class method. Alternatively,
         a string defining a function is accepted too. The model should accept a number of input
         values (floats) or array of input values and returns a single value (float), an array of
         floats or a tuple of floats.
