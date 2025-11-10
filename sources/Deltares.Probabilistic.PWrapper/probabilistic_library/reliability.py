@@ -332,7 +332,7 @@ class Settings(FrozenObject):
 
 	@property
 	def all_quadrants(self) -> bool:
-		"""Indicates whether all quadrants should be evaluated, only for numerical bisection"""
+		"""Indicates whether all quadrants should be evaluated, only used by sphere search"""
 		return interface.GetBoolValue(self._id, 'all_quadrants')
 
 	@all_quadrants.setter
@@ -589,7 +589,7 @@ class StochastSettings(FrozenObject):
 
 	@property
 	def min_value(self) -> float:
-		"""The minimum value which will be assigned to the stochastic variable"""
+		"""The minimum value which will be assigned to the stochastic variable in an analysis"""
 		return interface.GetValue(self._id, 'min_value')
 		
 	@min_value.setter
@@ -598,7 +598,7 @@ class StochastSettings(FrozenObject):
 
 	@property
 	def max_value(self) -> float:
-		"""The maximum value which will be assigned to the stochastic variable"""
+		"""The maximum value which will be assigned to the stochastic variable in an analysis"""
 		return interface.GetValue(self._id, 'max_value')
 		
 	@max_value.setter
@@ -607,7 +607,7 @@ class StochastSettings(FrozenObject):
 
 	@property
 	def start_value(self) -> float:
-		"""The value of the starting point for this stochastic variable"""
+		"""The value of the starting point for this stochastic variable in an analysis"""
 		return interface.GetValue(self._id, 'start_value')
 		
 	@start_value.setter
@@ -1015,7 +1015,7 @@ class DesignPoint(FrozenObject):
             influence factor is used
 
         var_y : str | Stochast, optional
-            The stochastic variable to use for the x-axis, if omitted the variable with the one but
+            The stochastic variable to use for the y-axis, if omitted the variable with the one but
             greatest influence factor is used"""
 
 		self.get_plot_realizations(var_x, var_y).show()
@@ -1032,7 +1032,7 @@ class DesignPoint(FrozenObject):
             influence factor is used
 
         var_y : str | Stochast, optional
-            The stochastic variable to use for the x-axis, if omitted the variable with the one but
+            The stochastic variable to use for the y-axis, if omitted the variable with the one but
             greatest influence factor is used"""
 
 		if len(self.realizations) == 0:

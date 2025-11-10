@@ -345,7 +345,7 @@ class ZModel(FrozenObject):
 class ZModelContainer:
 	"""Wrapper of a `ZModel`, used internally by ptk.whl to assign a PTK model to a `ModelProject`"""
 
-	def get_model(self) -> ZModel:
+	def get_model(self) -> ZModel|None:
 		"""Gets a ZModel"""
 		return None
 
@@ -644,7 +644,7 @@ class RunProjectSettings(FrozenObject):
 
 	@property
 	def reuse_calculations(self) -> bool:
-		"""Indicates whether prior model results will be reused by the model run."""
+		"""Indicates whether previous model results will be reused by the model run."""
 		return interface.GetBoolValue(self._id, 'reuse_calculations')
 
 	@reuse_calculations.setter
@@ -1055,23 +1055,6 @@ class ReliabilityProject(ModelProject):
 					variables.append(array_variable)
 		return variables
 
-	# @property
-	# def fragility_curve(self) -> FragilityCurve:
-	# 	if self._fragility_curve is None:
-	# 		fragilityCurveId = interface.GetIntValue(self._id, 'fragility_curve')
-	# 		if fragilityCurveId > 0:
-	# 			self._fragility_curve = Stochast(fragilityCurveId)
-	# 			ReliabilityProject.update_fragility_value(self._fragility_curve, self.variables)
-
-	# 	return self._fragility_curve
-
-	# def update_fragility_curve(stochast: Stochast, variables):
-	# 	for fragility_value in stochast.fragility_values:
-	# 		if fragility_value.design_point == None:
-	# 			id_ = interface.GetIdValue(fragility_value._id, 'design_point')
-	# 			if id_ > 0:
-	# 				fragility_value.design_point = DesignPoint(id_, variables)
-
 	@property
 	def total_model_runs(self) -> int:
 		"""Total model runs performed by the last 'run'"""
@@ -1341,10 +1324,9 @@ class LengthEffectProject(FrozenObject):
     the main entry point for applying the length effect.
 
     When a design point is valid for a certain section or cross section, it can be useful to make it
-    applicable to a longer section. This operation is taking into account the length effect or
-    upscaling. Each input variable as a valialidt for a certain length. These lengths are stored in
-    the `correlation_lengths` list. The length effect applied design point is
-    calculated for a requested `length`.
+    applicable to a longer section. This operation takes into account the length effect or upscaling.
+    Each input variable is valid for a certain length. These lengths are stored in the `correlation_lengths`
+    list. The length effect applied to the design point results in a design point valid for the requested `length`.
 
     To run the combination, use the `LengthEffectProject.run` method. This results in a `design_point`, where the
     reliability index reflects the length effect applied reliability index. The original
