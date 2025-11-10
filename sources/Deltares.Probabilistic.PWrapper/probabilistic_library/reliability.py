@@ -661,7 +661,7 @@ class LimitStateFunction(FrozenObject):
 	"""Defines how model output is transformed to a z-value, which is used by reliability analyses.
 
     A reliabilty algorithm only uses a z-value, where a value < 0 indicates failure and a value >= 0
-    indicates no failure. A model produces several output valuesin the form of an array, where each
+    indicates no failure. A model produces several output values in the form of an array, where each
     array value is related to an output parameter of the model. This class allows the user select
     an output parameter and compare it against a critical value.
 
