@@ -78,7 +78,7 @@ class Message(FrozenObject):
 		
 	@property
 	def subject(self) -> str:
-		"""Gets the subject, the object to which hte message applies"""
+		"""Gets the subject, the object to which the message applies"""
 		return interface.GetStringValue(self._id, 'subject')
 
 	@property
