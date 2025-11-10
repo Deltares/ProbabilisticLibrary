@@ -1337,7 +1337,7 @@ class ExcludingCombineProject(FrozenObject):
 		return self._design_point
 
 class LengthEffectProject(FrozenObject):
-	"""Project for applying the length effect to a design point, also known as upscaling. This is
+	"""Project for applying the length effect to a design point, also known as upscaling in space. This is
     the main entry point for applying the length effect.
 
     When a design point is valid for a certain section or cross section, it can be useful to make it
