@@ -23,7 +23,7 @@
 This module contains all the base functionality for project.
 
 A project forms the basis for performing an analysis, being a reliability analysis, uncertainty analysis or sensitivity
-analysis. To reliability additinal analyses are available to combine or upscale reliability results.
+analysis. To reliability additional analyses are available to combine or upscale reliability results.
 
 To a project a model can be assigned, being a python script of a PTK model (the ptk.whl is needed for that). When a model
 assigned, stochastic variables and a correlation matrix are automatically provided.
