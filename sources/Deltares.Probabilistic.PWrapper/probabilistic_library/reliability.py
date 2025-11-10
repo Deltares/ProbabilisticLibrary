@@ -739,7 +739,7 @@ class DesignPoint(FrozenObject):
     Convergence information, number of samples, iterations or directions are given too. Depending on
     settings, samples, messages and convergence information during the calcualtion are reported too.
     If intermediate design points were generated, for example by adaptive importance sampling, they
-    are reported in the contributing dsign points list.
+    are reported in the contributing design points list.
 
     The design point can further be used to combine it with other design points or upscale it to make
     a section design point applicable to a system"""
