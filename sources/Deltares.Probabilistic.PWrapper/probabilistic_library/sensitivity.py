@@ -155,7 +155,7 @@ class SensitivitySettings(FrozenObject):
 
 	@property
 	def reuse_calculations(self) -> bool:
-		"""Indicates whether prior model results will be reused by the reliability analysis.
+		"""Indicates whether prior model results will be reused by the sensitivity analysis.
 
         This will speed up calculations when several analyses are performed, for which the same realizations
         will have to be executed, for example calculate the sensitivity of several output parameters. But
