@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Deltares.Examples": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

@@ -145,7 +145,7 @@ namespace Deltares.Probabilistic.Interface
 
     }
 
-    public struct fdistribs
+    public struct fDistribs
     {
         public EnumDistributions distId;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public double[] p4;
@@ -215,7 +215,7 @@ namespace Deltares.Probabilistic.Interface
             public int nrCorrelations;
         };
 
-        public static tResult Calc(basicSettings method, fdistribs[] c,
+        public static tResult Calc(basicSettings method, fDistribs[] c,
             DelegateZFunction f, DelegateProgressCancel pc, XandAlpha[] dp)
         {
             tCompIds ids = new tCompIds();
@@ -223,14 +223,14 @@ namespace Deltares.Probabilistic.Interface
             return Calc(method, c, correlations, f, pc, ids, dp);
         }
 
-        public static tResult Calc(basicSettings method, fdistribs[] c, corrStruct[] correlations,
+        public static tResult Calc(basicSettings method, fDistribs[] c, corrStruct[] correlations,
             DelegateZFunction f, DelegateProgressCancel pc, XandAlpha[] dp)
         {
             tCompIds ids = new tCompIds();
             return Calc(method, c, correlations, f, pc, ids, dp);
         }
 
-        public static tResult Calc(basicSettings method, fdistribs[] c, corrStruct[] correlations,
+        public static tResult Calc(basicSettings method, fDistribs[] c, corrStruct[] correlations,
             DelegateZFunction f, DelegateProgressCancel pc, tCompIds ids, XandAlpha[] dp)
         {
             int n = c.Length;
@@ -239,7 +239,15 @@ namespace Deltares.Probabilistic.Interface
             ids.nrStochasts = n;
             ids.nrCorrelations = nrCorrelations;
             var x = new double[2*n];
-            probcalcf2c(ref method, c, correlations, f, pc, ids, x, out tResult r);
+            var r = new tResult();
+            if (OperatingSystem.IsWindows())
+            {
+                probcalc_windows(ref method, c, correlations, f, pc, ids, x, out r);
+            }
+            else
+            {
+                probcalc_linux(ref method, c, correlations, f, pc, ids, x, out r);
+            }
             for (int i = 0; i < n; i++)
             {
                 dp[i].X = x[2*i];
@@ -278,7 +286,13 @@ namespace Deltares.Probabilistic.Interface
         }
 
         [DllImport("Deltares.Probabilistic.CWrapper.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "probcalcf2c")]
-        private static extern void probcalcf2c(ref basicSettings method, fdistribs[] c, corrStruct[] correlations,
+        private static extern void probcalc_windows(ref basicSettings method, fDistribs[] c, corrStruct[] correlations,
+            [MarshalAs(UnmanagedType.FunctionPtr)] DelegateZFunction fx,
+            [MarshalAs(UnmanagedType.FunctionPtr)] DelegateProgressCancel pc,
+            tCompIds compIds, double[] x, out tResult r);
+
+        [DllImport("Deltares.Probabilistic.CWrapper.so", CallingConvention = CallingConvention.Cdecl, EntryPoint = "probcalcf2c")]
+        private static extern void probcalc_linux(ref basicSettings method, fDistribs[] c, corrStruct[] correlations,
             [MarshalAs(UnmanagedType.FunctionPtr)] DelegateZFunction fx,
             [MarshalAs(UnmanagedType.FunctionPtr)] DelegateProgressCancel pc,
             tCompIds compIds, double[] x, out tResult r);
