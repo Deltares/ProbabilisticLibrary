@@ -662,7 +662,7 @@ class LimitStateFunction(FrozenObject):
 
     A reliabilty algorithm only uses a z-value, where a value < 0 indicates failure and a value >= 0
     indicates no failure. A model produces several output values in the form of an array, where each
-    array value is related to an output parameter of the model. This class allows the user select
+    array value is related to an output parameter of the model. This class allows the user to select
     an output parameter and compare it against a critical value.
 
     A limit state function should be added to a reliability project. If not added, the reliability
