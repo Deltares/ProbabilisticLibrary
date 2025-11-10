@@ -244,10 +244,10 @@ class Stochast(FrozenObject):
     fit_prior enable this feature. The goodness of fit can be retrieved by get_ks_test.
 
     Conditional stochasts are supported. The stochast properties depend on the value (or realization in a probabiistic analysis) of another
-    stochast, indicated by `conditional_source`. A table condiotnal_values is used to define the stochast properties for a certain value  of
+    stochast, indicated by `conditional_source`. A table conditional_values is used to define the stochast properties for a certain value  of
     the source stochast.
 
-    A stochast can function as an array in a probabilstic analysis. The stochast will function as a number of uncorrelated stochastic variables.
+    A stochast can function as an array in a probabilistic analysis. The stochast will function as a number of uncorrelated stochastic variables.
     To define an array, use is_array and array_size.
 
     Printing and plotting are supported with methods print, plot, get_plot, get_series and get_special_values. Validation is supported by
@@ -570,7 +570,7 @@ class Stochast(FrozenObject):
 		"""Indicates whether the stochast is conditional, which means that the defining stochast properties depend on the value
         of the conditional_source
 
-        Within a probabilistic analysis, all stochastic variables get realizations, which means the a value is assigned to them.
+        Within a probabilistic analysis, all stochastic variables get realizations, which means that a value is assigned to them.
         The value assigned to the conditional_source is used to look up the defining properties of this stochast. Therefore the list
         conditional_values is used, where these values are defined for some values of the conditional_source"""
 		return interface.GetBoolValue(self._id, 'conditional')

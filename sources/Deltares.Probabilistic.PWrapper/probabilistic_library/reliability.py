@@ -666,7 +666,7 @@ class LimitStateFunction(FrozenObject):
     an output parameter and compare it against a critical value.
 
     A limit state function should be added to a reliability project. If not added, the reliability
-    algorithm uses the first value if the model output array and interprets it as the z-value."""
+    algorithm uses the first value of the model output array and interprets it as the z-value."""
 		
 	def __init__(self, id = None):
 		if id is None:
@@ -739,7 +739,7 @@ class DesignPoint(FrozenObject):
     Convergence information, number of samples, iterations or directions are given too. Depending on
     settings, samples, messages and convergence information during the calcualtion are reported too.
     If intermediate design points were generated, for example by adaptive importance sampling, they
-    are reported in the contributing dsign points list.
+    are reported in the contributing design points list.
 
     The design point can further be used to combine it with other design points or upscale it to make
     a section design point applicable to a system"""
@@ -864,7 +864,7 @@ class DesignPoint(FrozenObject):
         The alphas indicate the contribution of the uncertainty of the stochastic variable to the design point.
         They also contain the value of the variable in the design point.
 
-        For each variable in the reliability project variables an alpha variable is present in this lits. In case
+        For each variable in the reliability project variables an alpha variable is present in this list. In case
         of an array variable, for each array entry an alpha value is present."""
 
 		if self._alphas is None:
@@ -1005,7 +1005,7 @@ class DesignPoint(FrozenObject):
 
 	def plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
 		"""Shows a scatter-plot of realizations performed by the reliability analysis. The color
-        indicates failure or non-failure. The x-y coordinates correspond with relaization input
+        indicates failure or non-failure. The x-y coordinates correspond with realization input
         values. Only available when 'save_realizations' was set in the settings.
 
         Parameters
@@ -1022,7 +1022,7 @@ class DesignPoint(FrozenObject):
 
 	def get_plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None) -> plt:
 		"""Gets a plot object of a scatter-plot of realizations performed by the reliability analysis. The color
-        indicates failure or non-failure. The x-y coordinates correspond with relaization input
+        indicates failure or non-failure. The x-y coordinates correspond with realization input
         values. Only available when 'save_realizations' was set in the settings.
 
         Parameters

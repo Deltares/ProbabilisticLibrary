@@ -155,7 +155,7 @@ class SensitivitySettings(FrozenObject):
 
 	@property
 	def reuse_calculations(self) -> bool:
-		"""Indicates whether prior model results will be reused by the reliability analysis.
+		"""Indicates whether prior model results will be reused by the sensitivity analysis.
 
         This will speed up calculations when several analyses are performed, for which the same realizations
         will have to be executed, for example calculate the sensitivity of several output parameters. But
@@ -229,7 +229,7 @@ class SensitivityValue(FrozenObject):
 	"""Contains the result of a sensitivity analysis for a specific input variable
 
     Several sensitivity values (one for each input variable) are listed in a sensitivity result, which
-    contains the sensitivity results fo a specific output parameter of a model."""
+    contains the sensitivity results for a specific output parameter of a model."""
 
 	def __init__(self, id, known_variables = None):
 		self._id = id
