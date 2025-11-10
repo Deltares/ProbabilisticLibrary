@@ -26,7 +26,7 @@ A project forms the basis for performing an analysis, being a reliability analys
 analysis. To reliability additional analyses are available to combine or upscale reliability results.
 
 To a project a model can be assigned, being a python script of a PTK model (the ptk.whl is needed for that). When a model
-assigned, stochastic variables and a correlation matrix are automatically provided.
+is assigned, stochastic variables and a correlation matrix are automatically provided.
 
 ```mermaid
 classDiagram
