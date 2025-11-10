@@ -1191,7 +1191,7 @@ class CombineProject(FrozenObject):
 	def design_point(self) -> DesignPoint:
 		"""The resulting combined design point, invoked by `run`
         Is empty when the run failed. The original `design_points` are added to the
-        `probabilistic_library..reliability.DesignPoint.contributing_design_point`
+        `probabilistic_library.reliability.DesignPoint.contributing_design_point`
         """
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
