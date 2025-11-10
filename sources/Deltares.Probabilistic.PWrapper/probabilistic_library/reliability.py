@@ -864,7 +864,7 @@ class DesignPoint(FrozenObject):
         The alphas indicate the contribution of the uncertainty of the stochastic variable to the design point.
         They also contain the value of the variable in the design point.
 
-        For each variable in the reliability project variables an alpha variable is present in this lits. In case
+        For each variable in the reliability project variables an alpha variable is present in this list. In case
         of an array variable, for each array entry an alpha value is present."""
 
 		if self._alphas is None:
