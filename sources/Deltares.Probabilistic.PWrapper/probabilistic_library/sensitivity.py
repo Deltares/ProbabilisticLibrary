@@ -229,7 +229,7 @@ class SensitivityValue(FrozenObject):
 	"""Contains the result of a sensitivity analysis for a specific input variable
 
     Several sensitivity values (one for each input variable) are listed in a sensitivity result, which
-    contains the sensitivity results fo a specific output parameter of a model."""
+    contains the sensitivity results for a specific output parameter of a model."""
 
 	def __init__(self, id, known_variables = None):
 		self._id = id
