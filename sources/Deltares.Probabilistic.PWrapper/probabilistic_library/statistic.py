@@ -674,7 +674,7 @@ class Stochast(FrozenObject):
 		"""Optional list of stochasts which are used when this stochast is an array
 
         If not filled, this stochast definition is used for each member in the array. If filled, the items in this list are used
-        in the array, where the firts item in this list corresponds with the first array stochast, the second list item to the second
+        in the array, where the first item in this list corresponds with the first array stochast, the second list item to the second
         array stochast, etc. When this list is exhausted, this stochast definition is used for the remaining array stochasts."""
 
 		if self._array_variables is None:
