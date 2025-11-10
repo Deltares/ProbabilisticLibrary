@@ -570,7 +570,7 @@ class Stochast(FrozenObject):
 		"""Indicates whether the stochast is conditional, which means that the defining stochast properties depend on the value
         of the conditional_source
 
-        Within a probabilistic analysis, all stochastic variables get realizations, which means the a value is assigned to them.
+        Within a probabilistic analysis, all stochastic variables get realizations, which means that a value is assigned to them.
         The value assigned to the conditional_source is used to look up the defining properties of this stochast. Therefore the list
         conditional_values is used, where these values are defined for some values of the conditional_source"""
 		return interface.GetBoolValue(self._id, 'conditional')
