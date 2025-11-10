@@ -1015,7 +1015,7 @@ class DesignPoint(FrozenObject):
             influence factor is used
 
         var_y : str | Stochast, optional
-            The stochastic variable to use for the x-axis, if omitted the variable with the one but
+            The stochastic variable to use for the y-axis, if omitted the variable with the one but
             greatest influence factor is used"""
 
 		self.get_plot_realizations(var_x, var_y).show()
