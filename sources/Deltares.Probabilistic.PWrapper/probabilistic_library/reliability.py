@@ -466,7 +466,7 @@ class Settings(FrozenObject):
 
 	@property
 	def relaxation_factor(self) -> float:
-		"""Relaxation afctor, used by FORM"""
+		"""Relaxation factor, used by FORM"""
 		return interface.GetValue(self._id, 'relaxation_factor')
 
 	@relaxation_factor.setter
