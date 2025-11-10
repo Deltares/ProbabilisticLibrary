@@ -606,7 +606,7 @@ class Stochast(FrozenObject):
 		"""The list of conditional values if this stochast is conditional
 
         In a probabilistic analysis, the defining properties of are derived from this list. By interpolation against
-        the value assigned to the conditional_source the defining properties are determined. No extrapoloation takes
+        the value assigned to the conditional_source the defining properties are determined. No extrapolation takes
         place, but the values belonging to the most extreme conditional_source values are used."""
 
 		if self._conditional_values is None:
