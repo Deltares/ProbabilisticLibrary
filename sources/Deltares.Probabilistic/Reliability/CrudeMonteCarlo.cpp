@@ -95,7 +95,7 @@ namespace Deltares
 
             int nParameters = modelRunner->getVaryingStochastCount();
             std::vector<double> zValues; // copy of z for all parallel threads as double
-            const std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
+            auto designPointBuilder = DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
 
             std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
             double rmin = std::numeric_limits<double>::infinity();
@@ -144,7 +144,7 @@ namespace Deltares
                     {
                         z0Fac = getZFactor(zValues[0]);
                         uMin->setInitialValues(z0Fac * Statistics::StandardNormal::BetaMax);
-                        designPointBuilder->initialize(z0Fac * Statistics::StandardNormal::BetaMax);
+                        designPointBuilder.initialize(z0Fac * Statistics::StandardNormal::BetaMax);
                     }
 
                     if (modelRunner->shouldExitPrematurely(samples))
@@ -193,7 +193,7 @@ namespace Deltares
 
                 if (z * z0Fac < 0)
                 {
-                    designPointBuilder->addSample(u);
+                    designPointBuilder.addSample(u);
                     double rbeta = u->getBeta();
                     if (rbeta < rmin)
                     {
@@ -213,7 +213,7 @@ namespace Deltares
             }
 
             double beta = Statistics::StandardNormal::getUFromQ(pf);
-            uMin = designPointBuilder->getSample();
+            uMin = designPointBuilder.getSample();
 
             convergenceReport->Convergence = getConvergence(pf, nSamples);
 

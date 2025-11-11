@@ -136,12 +136,12 @@ namespace Deltares
                 std::sort(designPoints.begin(), designPoints.end(), [](std::shared_ptr<DesignPoint> val1, std::shared_ptr<DesignPoint> val2) {return val1->Beta < val2->Beta; });
 
                 // administration for design point
-                std::shared_ptr<DesignPointBuilder> builder = std::make_shared<DesignPointBuilder>(stochasts.size(), DesignPointMethod::CenterOfGravity);
+                auto builder = DesignPointBuilder(stochasts.size(), DesignPointMethod::CenterOfGravity);
 
                 // add first realization to design point
                 const std::shared_ptr<Sample> firstDesignPointSample = designPoints[0]->getSampleForStochasts(stochasts);
                 firstDesignPointSample->Weight = designPoints[0]->getFailureProbability();
-                builder->addSample(firstDesignPointSample);
+                builder.addSample(firstDesignPointSample);
 
                 double probability = StandardNormal::getQFromU(designPoints[0]->Beta);
                 double reliabilityIndex = designPoints[0]->Beta;
@@ -168,7 +168,7 @@ namespace Deltares
                     // add to design point
                     const std::shared_ptr<Sample> designPointSample = currentDesignPoint->getSampleForStochasts(stochasts);
                     designPointSample->Weight = currentDesignPoint->getFailureProbability();
-                    builder->addSample(designPointSample);
+                    builder.addSample(designPointSample);
 
                     // calculate contributing probability for the stochast
                     const std::shared_ptr<DesignPoint> contributingRealization = getSeriesProbability(selfCorrelationMatrix, currentDesignPoint, previousRealizations, currentDesignPoint, stochasts, progress);
@@ -210,7 +210,7 @@ namespace Deltares
                 combinedRealization->Beta = Statistics::StandardNormal::getUFromQ(probability);
 
                 // create alpha values for final design point
-                const std::shared_ptr<Sample> designPointSample = builder->getSample();
+                const std::shared_ptr<Sample> designPointSample = builder.getSample();
                 const std::shared_ptr<Sample> combinedSample = designPointSample->getSampleAtBeta(combinedRealization->Beta);
 
                 for (size_t i = 0; i < stochasts.size(); i++)

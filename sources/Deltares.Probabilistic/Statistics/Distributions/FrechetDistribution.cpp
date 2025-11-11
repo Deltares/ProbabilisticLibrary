@@ -167,8 +167,6 @@ namespace Deltares
 
             std::vector<double> values0 = Numeric::NumericSupport::select(values, [newShift](double p) { return p - newShift; });
 
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
-
             stochast.Shift = 0;
 
             double alpha = 1;
