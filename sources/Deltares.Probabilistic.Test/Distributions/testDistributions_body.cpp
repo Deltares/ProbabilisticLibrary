@@ -45,6 +45,7 @@ namespace Deltares::Probabilistic::Test
         testGamma();
         testStudentT();
         testStudentTwithInterpolation();
+        testStudentTwithInterpolationLargeNoObservations();
         testFitNormal();
         testFitLogNormal();
         testFitBernoulli();
@@ -425,6 +426,21 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(0.83926457, dist.getCDF(1.0), margin);
         EXPECT_NEAR(0.39782325, dist.getPDF(0.0), margin);
         EXPECT_NEAR(1.01142894, dist.getDeviation(), margin);
+    }
+
+    void testDistributions::testStudentTwithInterpolationLargeNoObservations()
+    {
+        constexpr double margin = 1e-6;
+        auto prop = std::make_shared<StochastProperties>();
+        prop->Observations = 200;
+        prop->Scale = 1.0;
+        prop->Location = 0.0;
+        auto dist = Stochast(DistributionType::StudentT, prop);
+        EXPECT_NEAR(0.15953513, dist.getCDF(-1.0), margin);
+        EXPECT_NEAR(0.5, dist.getCDF(0.0), margin);
+        EXPECT_NEAR(0.84046487, dist.getCDF(1.0), margin);
+        EXPECT_NEAR(0.39844141, dist.getPDF(0.0), margin);
+        EXPECT_NEAR(1.00506332, dist.getDeviation(), margin);
     }
 
     void testDistributions::testComposite()

@@ -79,15 +79,14 @@ namespace Deltares
 
         double StudentTDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            int degreesOfFreedom = stochast.Observations - 1;
+            const int degreesOfFreedom = stochast.Observations - 1;
 
-            bool success;
-            auto studentValue = GetStudentValue(degreesOfFreedom, success);
-
-            if ( ! success)
+            if (degreesOfFreedom <= 0)
             {
                 return std::nan("");
             }
+
+            auto studentValue = GetStudentValue(degreesOfFreedom);
 
             double p = StandardNormal::getPFromU(u);
             double c = studentValue.getCoefficient(p);
@@ -97,17 +96,16 @@ namespace Deltares
 
         double StudentTDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            double margin = std::min(minXDelta, std::fabs(x / 1000000.0));
+            const double margin = std::min(minXDelta, std::fabs(x / 1000000.0));
 
-            int degreesOfFreedom = stochast.Observations - 1;
+            const int degreesOfFreedom = stochast.Observations - 1;
 
-            bool success;
-            auto studentValue = GetStudentValue(degreesOfFreedom, success);
-
-            if ( ! success)
+            if (degreesOfFreedom <= 0)
             {
                 return std::nan("");
             }
+
+            auto studentValue = GetStudentValue(degreesOfFreedom);
 
             auto bisection = Numeric::BisectionRootFinder(margin);
 
@@ -208,45 +206,49 @@ namespace Deltares
             }
         }
 
-        StudentTDistribution::StudentTValue StudentTDistribution::GetStudentValue(int degreesOfFreedom, bool& success) const
+        // get the (interpolated) StudentT value;
+        // degreesOfFreedom must be > 0.
+        StudentTDistribution::StudentTValue StudentTDistribution::GetStudentValue(int degreesOfFreedom) const
         {
-            if (degreesOfFreedom <= 0)
-            {
-                success = false;
-                return {};
-            }
-
-            for (size_t i = 0; i < studentValues.size(); i++)
+            for (size_t i = 0; i < studentValues.size() - 1; i++)
             {
                 auto studentValue = studentValues[i];
 
-                if (studentValue.N >= degreesOfFreedom)
+                if (studentValue.N == degreesOfFreedom)
                 {
-                    success = true;
-                    if (studentValue.N == degreesOfFreedom || studentValue.N == std::numeric_limits<int>::max())
-                    {
-                        return studentValue;
-                    }
-                    else
-                    {
-                        // linear interpolation
-                        double fraction = NumericSupport::Divide(degreesOfFreedom - studentValues[i - 1].N,
-                                                            studentValues[i].N - studentValues[i - 1].N);
-                        auto newStudentValue = StudentTValue(
-                            degreesOfFreedom,
-                            (1.0 - fraction) * studentValues[i - 1].P0_100 + fraction * studentValues[i].P0_100,
-                            (1.0 - fraction) * studentValues[i - 1].P0_050 + fraction * studentValues[i].P0_050,
-                            (1.0 - fraction) * studentValues[i - 1].P0_025 + fraction * studentValues[i].P0_025,
-                            (1.0 - fraction) * studentValues[i - 1].P0_010 + fraction * studentValues[i].P0_010,
-                            (1.0 - fraction) * studentValues[i - 1].P0_005 + fraction * studentValues[i].P0_005);
+                    return studentValue;
+                }
+                else if (studentValue.N >= degreesOfFreedom)
+                {
+                    // linear interpolation
+                    double fraction = NumericSupport::Divide(degreesOfFreedom - studentValues[i - 1].N,
+                                                        studentValues[i].N - studentValues[i - 1].N);
+                    auto newStudentValue = StudentTValue(
+                        degreesOfFreedom,
+                        (1.0 - fraction) * studentValues[i - 1].P0_100 + fraction * studentValues[i].P0_100,
+                        (1.0 - fraction) * studentValues[i - 1].P0_050 + fraction * studentValues[i].P0_050,
+                        (1.0 - fraction) * studentValues[i - 1].P0_025 + fraction * studentValues[i].P0_025,
+                        (1.0 - fraction) * studentValues[i - 1].P0_010 + fraction * studentValues[i].P0_010,
+                        (1.0 - fraction) * studentValues[i - 1].P0_005 + fraction * studentValues[i].P0_005);
 
-                        return newStudentValue;
-                    }
+                    return newStudentValue;
                 }
             }
 
-            success = false;
-            return {};
+            // now degreesOfFreedom is between the last two values of studentValues.N
+            // use Harmonic interpolation to get the new StudentValue.
+            const auto N = studentValues.size();
+            const std::vector xValues = { static_cast<double>(studentValues[N - 2].N), static_cast<double>(studentValues[N - 1].N) };
+            auto newStudentValue = StudentTValue(
+                degreesOfFreedom,
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_100, studentValues[N - 1].P0_100 }, false, Numeric::Harmonic),
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_050, studentValues[N - 1].P0_050 }, false, Numeric::Harmonic),
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_025, studentValues[N - 1].P0_025 }, false, Numeric::Harmonic),
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_010, studentValues[N - 1].P0_010 }, false, Numeric::Harmonic),
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_005, studentValues[N - 1].P0_005 }, false, Numeric::Harmonic)
+                );
+
+            return newStudentValue;
         }
 
         double StudentTDistribution::StudentTValue::getCoefficient(double p)
@@ -355,7 +357,4 @@ namespace Deltares
         }
     }
 }
-
-
-
 

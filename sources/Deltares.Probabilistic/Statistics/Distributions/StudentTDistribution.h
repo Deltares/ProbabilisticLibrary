@@ -86,7 +86,7 @@ namespace Deltares
                 std::vector<double> getPValues(double maxP);
             };
 
-            StudentTValue GetStudentValue(int degreesOfFreedom, bool& success) const;
+            StudentTValue GetStudentValue(int degreesOfFreedom) const;
             std::vector<StudentTValue> studentValues;
             void loadValues();
 
