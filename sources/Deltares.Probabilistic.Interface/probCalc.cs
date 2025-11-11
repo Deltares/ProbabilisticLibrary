@@ -291,7 +291,7 @@ namespace Deltares.Probabilistic.Interface
             [MarshalAs(UnmanagedType.FunctionPtr)] DelegateProgressCancel pc,
             tCompIds compIds, double[] x, out tResult r);
 
-        [DllImport("Deltares.Probabilistic.CWrapper.so", CallingConvention = CallingConvention.Cdecl, EntryPoint = "probcalcf2c")]
+        [DllImport("libDeltares.Probabilistic.CWrapper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "probcalcf2c")]
         private static extern void probcalc_linux(ref basicSettings method, fDistribs[] c, corrStruct[] correlations,
             [MarshalAs(UnmanagedType.FunctionPtr)] DelegateZFunction fx,
             [MarshalAs(UnmanagedType.FunctionPtr)] DelegateProgressCancel pc,
