@@ -39,7 +39,7 @@ namespace Deltares
 
         private:
             double getStochastProbability(int stochastIndex, Sample& parentSample, double density, double& totalDensity, int nSamples);
-            std::shared_ptr<DesignPointBuilder> designPointBuilder;
+            DesignPointBuilder designPointBuilder = DesignPointBuilder();
             std::shared_ptr<Models::ModelRunner> modelRunner;
             double z0Fac;
         };

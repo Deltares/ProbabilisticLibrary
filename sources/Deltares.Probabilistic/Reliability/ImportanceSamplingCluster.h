@@ -36,7 +36,7 @@ namespace Deltares
         {
         public:
             std::shared_ptr<Models::Sample> Center = nullptr;
-            std::shared_ptr<Reliability::DesignPointBuilder> DesignPointBuilder = nullptr;
+            DesignPointBuilder designPointBuilder = DesignPointBuilder();
 
             double ProbFailure = 0.0;
             int TotalCount = 0;
