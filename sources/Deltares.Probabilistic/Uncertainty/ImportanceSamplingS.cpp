@@ -41,11 +41,11 @@ namespace Deltares::Uncertainty
         std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
 
-        const std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
-        randomSampleGenerator->Settings = this->Settings->randomSettings;
-        randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
-        randomSampleGenerator->sampleProvider = sampleProvider;
-        randomSampleGenerator->initialize();
+        auto randomSampleGenerator = RandomSampleGenerator();
+        randomSampleGenerator.Settings = this->Settings->randomSettings;
+        randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
+        randomSampleGenerator.sampleProvider = sampleProvider;
+        randomSampleGenerator.initialize();
 
         int nParameters = modelRunner->getVaryingStochastCount();
 
@@ -88,7 +88,7 @@ namespace Deltares::Uncertainty
 
                 for (int i = 0; i < runs; i++)
                 {
-                    std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                    std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
                     std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
                     samples.push_back(modifiedSample);
                 }
@@ -188,10 +188,10 @@ namespace Deltares::Uncertainty
             if (quantileIndex >= 0)
             {
                 // perform the sampling again and recalculate
-                randomSampleGenerator->restart();
-                randomSampleGenerator->proceed(quantileIndex);
+                randomSampleGenerator.restart();
+                randomSampleGenerator.proceed(quantileIndex);
 
-                std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
                 std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
                 std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(modifiedSample));
                 evaluation->Quantile = p;

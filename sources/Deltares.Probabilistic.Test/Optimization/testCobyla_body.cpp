@@ -40,7 +40,7 @@ namespace Deltares
             void testCobyla::test_no_constraints1()
             {
                 auto cb = CobylaOptimization();
-                auto model = std::make_shared<testModel>();
+                auto model = testModel();
                 auto searchArea = SearchArea();
                 searchArea.Dimensions = std::vector<SearchDimension>(2);
                 auto result = cb.GetCalibrationPoint(searchArea, model);
@@ -54,7 +54,7 @@ namespace Deltares
             void testCobyla::test_no_constraints2()
             {
                 auto cb = CobylaOptimization();
-                auto model = std::make_shared<testModel>(2, 3);
+                auto model = testModel(2, 3);
                 auto searchArea = SearchArea();
                 searchArea.Dimensions = std::vector<SearchDimension>(2);
                 auto result = cb.GetCalibrationPoint(searchArea, model);
@@ -68,7 +68,7 @@ namespace Deltares
             void testCobyla::test_with_constraint1()
             {
                 auto cb = CobylaOptimization();
-                auto model = std::make_shared<testModelWithConstraint>();
+                auto model = testModelWithConstraint();
                 auto searchArea = SearchArea();
                 searchArea.Dimensions = std::vector<SearchDimension>(2);
                 searchArea.Dimensions[0].StartValue = 1.0;

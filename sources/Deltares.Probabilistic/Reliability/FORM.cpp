@@ -127,8 +127,8 @@ namespace Deltares
             std::shared_ptr<Sample> sample = startPoint->clone();
             std::shared_ptr<Sample> resultSample = startPoint->clone();
 
-            const std::shared_ptr <Models::GradientCalculator> gradientCalculator = std::make_shared<Models::GradientCalculator>();
-            gradientCalculator->Settings = this->Settings->GradientSettings;
+            auto gradientCalculator = Models::GradientCalculator();
+            gradientCalculator.Settings = this->Settings->GradientSettings;
 
             auto lastBetas = std::vector<double>();
             auto lastSamples = std::vector<std::shared_ptr<Sample>>();
@@ -136,7 +136,7 @@ namespace Deltares
             while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
             {
                 sample->IterationIndex = iteration;
-                zGradient = gradientCalculator->getGradient(*modelRunner, sample);
+                zGradient = gradientCalculator.getGradient(*modelRunner, sample);
 
                 // check whether there are valid results
 

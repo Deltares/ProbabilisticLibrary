@@ -87,11 +87,11 @@ namespace Deltares
 
         std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<SampleProvider> sampleProvider, double zRemainder, double qRange)
         {
-            const std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
-            randomSampleGenerator->Settings = this->Settings->randomSettings;
-            randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
-            randomSampleGenerator->sampleProvider = sampleProvider;
-            randomSampleGenerator->initialize();
+            auto randomSampleGenerator = RandomSampleGenerator();
+            randomSampleGenerator.Settings = this->Settings->randomSettings;
+            randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
+            randomSampleGenerator.sampleProvider = sampleProvider;
+            randomSampleGenerator.initialize();
 
             int nParameters = modelRunner->getVaryingStochastCount();
             std::vector<double> zValues; // copy of z for all parallel threads as double
@@ -129,7 +129,7 @@ namespace Deltares
 
                     for (int i = 0; i < runs; i++)
                     {
-                        std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                        std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
                         if (qRange < 1)
                         {
                             applyLimits(sample);

@@ -23,7 +23,6 @@
 
 #include "DirectionReliability.h"
 #include "../Utils/probLibException.h"
-#include "../Model/GradientCalculator.h"
 #include "../Math/NumericSupport.h"
 #include "SphereTasks.h"
 

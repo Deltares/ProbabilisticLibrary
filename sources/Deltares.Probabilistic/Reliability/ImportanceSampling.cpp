@@ -66,11 +66,11 @@ namespace Deltares
             std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
-			std::shared_ptr<RandomSampleGenerator> sampleCreator = std::make_shared<RandomSampleGenerator>();
-			sampleCreator->Settings = this->Settings->randomSettings;
-			sampleCreator->Settings->StochastSet = this->Settings->StochastSet;
-            sampleCreator->sampleProvider = sampleProvider;
-			sampleCreator->initialize();
+            auto sampleCreator = RandomSampleGenerator();
+            sampleCreator.Settings = this->Settings->randomSettings;
+            sampleCreator.Settings->StochastSet = this->Settings->StochastSet;
+            sampleCreator.sampleProvider = sampleProvider;
+            sampleCreator.initialize();
 
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -140,7 +140,7 @@ namespace Deltares
 
 						std::shared_ptr<ImportanceSamplingCluster> cluster = clusterResults[clusterIndex];
 
-						const std::shared_ptr<Sample> sample = sampleCreator->getRandomSample();
+						const std::shared_ptr<Sample> sample = sampleCreator.getRandomSample();
 
 						std::shared_ptr<Sample> modifiedSample = sample->clone();
 

@@ -55,9 +55,9 @@ namespace Deltares::Optimization
     class optimizationModel
     {
     public:
-        virtual double GetZValue(const std::shared_ptr<Models::Sample> sample) const { return -1; };
-        virtual double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) const { return -1; };
-        virtual unsigned GetNumberOfConstraints() const { return 0; };
+        virtual double GetZValue(const std::shared_ptr<Models::Sample> sample) const { return -1; }
+        virtual double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) const { return -1; }
+        virtual unsigned GetNumberOfConstraints() const { return 0; }
     };
 
     /**
@@ -68,7 +68,7 @@ namespace Deltares::Optimization
     {
     public:
         CobylaOptimizationSettings settings;
-        OptimizationSample GetCalibrationPoint(const SearchArea& searchArea, std::shared_ptr<optimizationModel> model) const;
+        OptimizationSample GetCalibrationPoint(const SearchArea& searchArea, const optimizationModel& model) const;
     };
 }
 
