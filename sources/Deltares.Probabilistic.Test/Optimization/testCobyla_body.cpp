@@ -92,7 +92,7 @@ namespace Deltares
                 return Z;
             }
 
-            double testModelWithConstraint::GetConstraintValue(const std::shared_ptr<Models::Sample> sample) const
+            double testModelWithConstraint::GetConstraintValue(const std::shared_ptr<Models::Sample> sample)
             {   // constraint: point lies on unit sphere
                 double C = 1.0 - hypot(sample->Values[0], sample->Values[1]);
                 return std::abs(C);
