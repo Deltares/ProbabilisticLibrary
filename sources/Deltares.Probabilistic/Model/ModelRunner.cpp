@@ -54,7 +54,7 @@ namespace Deltares
         void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
         {
             this->uConverter->updateStochastSettings(settings);
-            this->sampleProvider = std::make_shared<SampleProvider>(settings);
+            this->sampleProvider = std::make_shared<SampleProvider>(*settings);
         }
 
         void ModelRunner::setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider)

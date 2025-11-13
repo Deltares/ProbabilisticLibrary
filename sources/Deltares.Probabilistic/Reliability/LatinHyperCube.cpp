@@ -38,7 +38,7 @@ namespace Deltares
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
+            auto sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
             double qRange = 1.0;

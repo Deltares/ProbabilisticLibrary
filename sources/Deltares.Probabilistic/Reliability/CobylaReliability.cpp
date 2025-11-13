@@ -35,7 +35,7 @@ namespace Deltares
 
             const int nStochasts = modelRunner->getVaryingStochastCount();
 
-            auto sampleProvider = SampleProvider(Settings->StochastSet);
+            auto sampleProvider = SampleProvider(*Settings->StochastSet);
             auto initialSample = sampleProvider.getSample();
             double z0Fac = getZFactor(modelRunner->getZValue(initialSample));
 

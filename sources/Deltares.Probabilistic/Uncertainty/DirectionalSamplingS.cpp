@@ -60,7 +60,7 @@ namespace Deltares::Uncertainty
 
         std::set<double> handledReliabilities;
 
-        for (const std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
         {
             if (!handledReliabilities.contains(quantile->Reliability))
             {
@@ -79,7 +79,7 @@ namespace Deltares::Uncertainty
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        for (std::shared_ptr<Statistics::ProbabilityValue> &quantile : this->Settings->RequestedQuantiles)
         {
             if (this->evaluations.contains(quantile))
             {
@@ -101,7 +101,7 @@ namespace Deltares::Uncertainty
 
         // Step 3: Calculate n samples in random directions, all at the same distance d of the origin
 
-        auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
+        auto sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
 
         auto randomSampleGenerator = RandomSampleGenerator();

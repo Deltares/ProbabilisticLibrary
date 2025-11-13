@@ -21,7 +21,6 @@
 //
 #include "SingleVariation.h"
 
-#include <algorithm>
 #include <memory>
 
 #include "SensitivityValue.h"
