@@ -829,7 +829,7 @@ class SensitivityProject(ModelProject):
 
 	@property
 	def total_model_runs(self) -> int:
-		"""Total model runs performed by the last 'run'"""
+		"""Total model runs performed by the last `run`"""
 		return interface.GetIntValue(self._id, 'total_model_runs')
 
 class UncertaintyProject(ModelProject):
@@ -971,7 +971,7 @@ class UncertaintyProject(ModelProject):
 
 	@property
 	def total_model_runs(self) -> int:
-		"""Total model runs performed by the last 'run'"""
+		"""Total model runs performed by the last `run`"""
 		return interface.GetIntValue(self._id, 'total_model_runs')
 
 class ReliabilityProject(ModelProject):
@@ -1059,7 +1059,7 @@ class ReliabilityProject(ModelProject):
 
 	@property
 	def total_model_runs(self) -> int:
-		"""Total model runs performed by the last 'run'"""
+		"""Total model runs performed by the last `run`"""
 		return interface.GetIntValue(self._id, 'total_model_runs')
 
 class CombineProject(FrozenObject):
@@ -1192,7 +1192,7 @@ class ExcludingCombineProject(FrozenObject):
     scenario. This is the main entry point for this operation.
 
     Excluding design points refer to design points generated for a scenario. Each scenario has a
-    probability too, but scenarios are mutualley exclusive. Probabilities of scenarios should add up to 1.
+    probability too, but scenarios are mutually exclusive. Probabilities of scenarios should add up to 1.
 
     The design points to be combined should be added to the list of `design_points`. The list of
     `scenarios` should correspond with the list of `design_points`.
@@ -1298,8 +1298,8 @@ class ExcludingCombineProject(FrozenObject):
 			validation_report.print()
 
 	def run(self):
-		"""Performs the excluding combination of the design point
-        Results in a design point, which is part of this project. When failed, the 'design_point' is empty."""
+		"""Performs the excluding combination of the design point.
+        Results in a design point, which is part of this project. When failed, the `design_point` is empty."""
 		self._update()
 		self._design_point = None
 		if (self.is_valid()):
@@ -1310,8 +1310,8 @@ class ExcludingCombineProject(FrozenObject):
 
 	@property
 	def design_point(self):
-		"""The resulting excluding combined design point, invoked by 'run'
-        Is empty when the run failed. The original 'design_points' are added to the 'contributing_design_point'"""
+		"""The resulting excluding combined design point, invoked by `run`.
+        Is empty when the run failed. The original `design_points` are added to the `contributing_design_points`"""
 		if self._design_point is None:
 			design_point_id = interface.GetIdValue(self._id, 'design_point')
 			if design_point_id > 0:
