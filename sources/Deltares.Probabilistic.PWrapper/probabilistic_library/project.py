@@ -20,13 +20,15 @@
 # All rights reserved.
 #
 """
-This module contains all the base functionality for project.
+This module contains all the basic functionality for a project.
 
-A project forms the basis for performing an analysis, being a reliability analysis, uncertainty analysis or sensitivity
-analysis. To reliability additional analyses are available to combine or upscale reliability results.
+A project forms the foundation for performing analyses — such as reliability, uncertainty or
+sensitivity analyses. In addition to reliability analyses, additional functionalities are
+available to combine or upscale reliability results.
 
-To a project a model can be assigned, being a python script of a PTK model (the ptk.whl is needed for that). When a model
-is assigned, stochastic variables and a correlation matrix are automatically provided.
+A model can be assigned to a project, which can be either a Python script or a PTK model
+(the ptk wheel is required for this). When a model is assigned, stochastic variables and
+a correlation matrix are automatically generated.
 
 ```mermaid
 classDiagram
@@ -837,7 +839,7 @@ class UncertaintyProject(ModelProject):
     When a model is set, variables, correlation matrix and settings and settings per variable are generated.
 
     The uncertainty analysis calculates the uncertainty for the output parameter selected in 'parameter'. If left blank,
-    uncertinty analyses are performed for each output parameter.
+    uncertainty analyses are performed for each output parameter.
 
     To run an uncertainty analysis, use the `run` method. This results in a list of `results`. Each result contains the
     uncertainty for a certain output parameter. Part of the result is a stochast, which contains the distribution
@@ -899,7 +901,7 @@ class UncertaintyProject(ModelProject):
 	def run(self):
 		"""Performs the uncertainty analysis
         Results will be stored in `results`, for the first output `parameter` in `result`. The stochasts in
-        the results are available in `stochasts` and `stochast`"""
+        the results are available directly in `stochasts` and `stochast`"""
 
 		self._stochast = None
 		self._stochasts = None
@@ -919,7 +921,7 @@ class UncertaintyProject(ModelProject):
 
 	@property
 	def stochasts(self) -> list[Stochast]:
-		"""List of stochast distributions, corresponding with the output parameters"""
+		"""List of probability distributions, corresponding with the output parameters"""
 		if self._stochasts is None:
 			stochasts = []
 			for result in self.results:
@@ -1011,7 +1013,7 @@ class ReliabilityProject(ModelProject):
 
 	@property
 	def settings(self) -> Settings:
-		"""Settings for the algorithm performing the reliability anaysis"""
+		"""Settings for the algorithm performing the reliability analysis"""
 		self._check_model()
 		return self._settings
 
@@ -1037,7 +1039,7 @@ class ReliabilityProject(ModelProject):
 
 	@property
 	def design_point(self) -> DesignPoint:
-		"""The resulting design point of a reliability anaysis, invoked by `run`
+		"""The resulting design point of a reliability analysis, invoked by `run`
         Is empty when the run failed"""
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
@@ -1138,7 +1140,7 @@ class CombineProject(FrozenObject):
 
 	@property
 	def correlation_matrix(self) -> SelfCorrelationMatrix:
-		"""Auto correlation matrix, holds correlations between same named variables in the 'design_points'"""
+		"""Auto correlation matrix, holds correlations between same named variables in the `design_points`"""
 		return self._correlation_matrix
 
 	def _update(self):
@@ -1161,7 +1163,7 @@ class CombineProject(FrozenObject):
 			validation_report.print()
 
 	def run(self):
-		"""Performs the combination of the design point
+		"""Performs the combination of the design point.
         Results in a `design_point`, which is part of this project. When failed, the `design_point` is empty."""
 		self._design_point = None
 		# update performed by is_valid
@@ -1186,11 +1188,11 @@ class CombineProject(FrozenObject):
 		return self._design_point
 
 class ExcludingCombineProject(FrozenObject):
-	"""Project for combining design points exclusively or, otherwisely stated, design points calculated for a
+	"""Project for combining design points exclusively or, otherwise stated, design points calculated for a
     scenario. This is the main entry point for this operation.
 
     Excluding design points refer to design points generated for a scenario. Each scenario has a
-    probability too, but scenarios have no overlap. Probabilities of scenarios should add up to 1.
+    probability too, but scenarios are mutualley exclusive. Probabilities of scenarios should add up to 1.
 
     The design points to be combined should be added to the list of `design_points`. The list of
     `scenarios` should correspond with the list of `design_points`.
@@ -1405,7 +1407,7 @@ class LengthEffectProject(FrozenObject):
 		interface.SetValue(self._id, 'length', value)
 
 	def run(self):
-		"""Applies the length effect to the `design_point_cross_section`
+		"""Applies the length effect to the `design_point_cross_section`.
         Results is a design point, which is part of this project. When failed, the `design_point` is empty."""
 		self._design_point = None
 		interface.SetIntValue(self._id, 'design_point_cross_section', self._design_point_cross_section._id)
