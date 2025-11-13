@@ -22,7 +22,7 @@
 """
 This module contains all the basic functionality for a project.
 
-A project forms the foundation for performing analyses — such as reliability, uncertainty or
+A project forms the foundation for performing analyses, such as reliability, uncertainty or
 sensitivity analyses. In addition to reliability analyses, additional functionalities are
 available to combine or upscale reliability results.
 
