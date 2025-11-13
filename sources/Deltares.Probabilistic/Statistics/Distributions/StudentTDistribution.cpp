@@ -220,34 +220,27 @@ namespace Deltares
                 }
                 else if (studentValue.N >= degreesOfFreedom)
                 {
-                    // linear interpolation
-                    double fraction = NumericSupport::Divide(degreesOfFreedom - studentValues[i - 1].N,
-                                                        studentValues[i].N - studentValues[i - 1].N);
-                    auto newStudentValue = StudentTValue(
-                        degreesOfFreedom,
-                        (1.0 - fraction) * studentValues[i - 1].P0_100 + fraction * studentValues[i].P0_100,
-                        (1.0 - fraction) * studentValues[i - 1].P0_050 + fraction * studentValues[i].P0_050,
-                        (1.0 - fraction) * studentValues[i - 1].P0_025 + fraction * studentValues[i].P0_025,
-                        (1.0 - fraction) * studentValues[i - 1].P0_010 + fraction * studentValues[i].P0_010,
-                        (1.0 - fraction) * studentValues[i - 1].P0_005 + fraction * studentValues[i].P0_005);
-
-                    return newStudentValue;
+                    return GetInterpolatedStudentValue(degreesOfFreedom, static_cast<int>(i));
                 }
             }
 
             // now degreesOfFreedom is between the last two values of studentValues.N
             // use Harmonic interpolation to get the new StudentValue.
-            const auto N = studentValues.size();
-            const std::vector xValues = { static_cast<double>(studentValues[N - 2].N), static_cast<double>(studentValues[N - 1].N) };
+            return GetInterpolatedStudentValue(degreesOfFreedom, static_cast<int>(studentValues.size())-1);
+        }
+
+        StudentTDistribution::StudentTValue StudentTDistribution::GetInterpolatedStudentValue(int degreesOfFreedom, int N) const
+        {
+            const std::vector xValues = { static_cast<double>(studentValues[N - 1].N), static_cast<double>(studentValues[N].N) };
+            constexpr Numeric::InterpolationType type = Numeric::Harmonic;
             auto newStudentValue = StudentTValue(
                 degreesOfFreedom,
-                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_100, studentValues[N - 1].P0_100 }, false, Numeric::Harmonic),
-                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_050, studentValues[N - 1].P0_050 }, false, Numeric::Harmonic),
-                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_025, studentValues[N - 1].P0_025 }, false, Numeric::Harmonic),
-                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_010, studentValues[N - 1].P0_010 }, false, Numeric::Harmonic),
-                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 2].P0_005, studentValues[N - 1].P0_005 }, false, Numeric::Harmonic)
-                );
-
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 1].P0_100, studentValues[N].P0_100 }, false, type),
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 1].P0_050, studentValues[N].P0_050 }, false, type),
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 1].P0_025, studentValues[N].P0_025 }, false, type),
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 1].P0_010, studentValues[N].P0_010 }, false, type),
+                NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 1].P0_005, studentValues[N].P0_005 }, false, type)
+            );
             return newStudentValue;
         }
 

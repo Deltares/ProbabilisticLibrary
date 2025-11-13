@@ -421,9 +421,9 @@ namespace Deltares::Probabilistic::Test
         prop->Scale = 1.0;
         prop->Location = 0.0;
         auto dist = Stochast(DistributionType::StudentT, prop);
-        EXPECT_NEAR(0.16073543, dist.getCDF(-1.0), margin);
+        EXPECT_NEAR(0.16051490, dist.getCDF(-1.0), margin);
         EXPECT_NEAR(0.5,        dist.getCDF(0.0), margin);
-        EXPECT_NEAR(0.83926457, dist.getCDF(1.0), margin);
+        EXPECT_NEAR(0.83948510, dist.getCDF(1.0), margin);
         EXPECT_NEAR(0.39782325, dist.getPDF(0.0), margin);
         EXPECT_NEAR(1.01142894, dist.getDeviation(), margin);
     }

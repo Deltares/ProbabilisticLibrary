@@ -87,6 +87,7 @@ namespace Deltares
             };
 
             StudentTValue GetStudentValue(int degreesOfFreedom) const;
+            StudentTValue GetInterpolatedStudentValue(int degreesOfFreedom, int N) const;
             std::vector<StudentTValue> studentValues;
             void loadValues();
 
