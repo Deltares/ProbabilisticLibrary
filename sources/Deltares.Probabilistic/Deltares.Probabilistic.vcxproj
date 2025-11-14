@@ -165,6 +165,7 @@
     <ClInclude Include="Combine\WeightedSumCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
     <ClInclude Include="Model\Validatable.h" />
+    <ClInclude Include="Proxies\ProxySettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSupport.h" />
     <ClInclude Include="Logging\ValidationSupport.h" />
     <ClInclude Include="Model\ComputationalStochast.h" />
@@ -398,6 +399,7 @@
     <ClCompile Include="Combine\WeightedSumCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
     <ClCompile Include="Model\Validatable.cpp" />
+    <ClCompile Include="Proxies\ProxySettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
     <ClCompile Include="Logging\ValidationSupport.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
