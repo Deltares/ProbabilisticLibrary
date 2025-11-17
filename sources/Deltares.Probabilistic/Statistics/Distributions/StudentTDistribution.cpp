@@ -210,7 +210,7 @@ namespace Deltares
         // degreesOfFreedom must be > 0.
         StudentTDistribution::StudentTValue StudentTDistribution::GetStudentValue(int degreesOfFreedom) const
         {
-            for (size_t i = 0; i < studentValues.size() - 1; i++)
+            for (size_t i = 0; i < studentValues.size(); i++)
             {
                 auto studentValue = studentValues[i];
 
@@ -218,15 +218,12 @@ namespace Deltares
                 {
                     return studentValue;
                 }
-                else if (studentValue.N >= degreesOfFreedom)
+                else if (studentValue.N > degreesOfFreedom)
                 {
                     return GetInterpolatedStudentValue(degreesOfFreedom, static_cast<int>(i));
                 }
             }
-
-            // now degreesOfFreedom is between the last two values of studentValues.N
-            // use Harmonic interpolation to get the new StudentValue.
-            return GetInterpolatedStudentValue(degreesOfFreedom, static_cast<int>(studentValues.size())-1);
+            throw Reliability::probLibException("unexpected fall through in GetStudentValue");
         }
 
         StudentTDistribution::StudentTValue StudentTDistribution::GetInterpolatedStudentValue(int degreesOfFreedom, int N) const
@@ -246,7 +243,7 @@ namespace Deltares
 
         double StudentTDistribution::StudentTValue::getCoefficient(double p)
         {
-            if (Numeric::NumericSupport::areEqual(p, 0.5, pDelta))
+            if (NumericSupport::areEqual(p, 0.5, pDelta))
             {
                 return 0;
             }
@@ -254,29 +251,29 @@ namespace Deltares
             {
                 return -getCoefficient(1 - p);
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.1, pDelta))
+            else if (NumericSupport::areEqual(p, 0.1, pDelta))
             {
                 return P0_100;
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.05, pDelta))
+            else if (NumericSupport::areEqual(p, 0.05, pDelta))
             {
                 return P0_050;
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.025, pDelta))
+            else if (NumericSupport::areEqual(p, 0.025, pDelta))
             {
                 return P0_025;
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.010, pDelta))
+            else if (NumericSupport::areEqual(p, 0.010, pDelta))
             {
                 return P0_010;
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.005, pDelta))
+            else if (NumericSupport::areEqual(p, 0.005, pDelta))
             {
                 return P0_005;
             }
             else
             {
-                double c = Numeric::NumericSupport::interpolate(StandardNormal::getUFromP(p), getPValues(p), cValues);
+                double c = NumericSupport::interpolate(StandardNormal::getUFromP(p), getPValues(p), cValues);
                 return c;
             }
         }
@@ -285,8 +282,10 @@ namespace Deltares
         {
             if (pValues.empty() || pValues[0] > StandardNormal::getUFromP(maxP))
             {
-                std::vector<double> p = { StandardNormal::getUFromP(0.5), StandardNormal::getUFromP(0.1), StandardNormal::getUFromP(0.05), StandardNormal::getUFromP(0.025), StandardNormal::getUFromP(0.01), StandardNormal::getUFromP(0.005) };
-                std::vector<double> n = { 0.5, 0.1, 0.05, 0.025, 0.01, 0.005 };
+                std::vector p = { StandardNormal::getUFromP(0.5), StandardNormal::getUFromP(0.1),
+                                  StandardNormal::getUFromP(0.05), StandardNormal::getUFromP(0.025),
+                                  StandardNormal::getUFromP(0.01), StandardNormal::getUFromP(0.005) };
+                std::vector n = { 0.5, 0.1, 0.05, 0.025, 0.01, 0.005 };
 
                 while (n[n.size() - 1] > maxP)
                 {
@@ -295,10 +294,12 @@ namespace Deltares
                     p.push_back(StandardNormal::getUFromP(newN));
                 }
 
-                std::vector<double> c = { 0.0, P0_100, P0_050, P0_025, P0_010, P0_005 };
+                std::vector c = { 0.0, P0_100, P0_050, P0_025, P0_010, P0_005 };
                 while (c.size() < n.size())
                 {
-                    c.push_back(Numeric::NumericSupport::interpolate(p[c.size()], { p[c.size() - 1], p[c.size() - 2] }, { c[c.size() - 1], c[c.size() - 2] }, true));
+                    c.push_back(Numeric::NumericSupport::interpolate(p[c.size()],
+                        { p[c.size() - 1], p[c.size() - 2] },
+                        { c[c.size() - 1], c[c.size() - 2] }, true));
                 }
 
                 std::reverse(p.begin(), p.end());
