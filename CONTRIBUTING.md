@@ -3,23 +3,23 @@
 The **Probabilistic Library** is open source, and we’re excited to welcome contributions from anyone interested!
 To keep things consistent and high quality, please take a moment to read through our guidelines below.
 
-🧭 I. Scope
+🧭 I. Scope  
 We focus on **probabilistic**, **sensitivity**, **statistical analysis** and **uncertainty analysis**.
 Contributions should fit within this scope.
 Deltares will review and decide whether a contribution is included in the main branch.
 
-💻 II. Code Style
+💻 II. Code Style  
 Please make sure your code follows our coding guidelines (see below).
 Consistent style helps keep the library easy to read and maintain.
 
-🧪 III. Testing and Documentation
+🧪 III. Testing and Documentation  
 All new code should include **unit tests** and **clear documentation**.
 If you’re adding something new, show how it works and how others can use it.
 
-©️ IV. Copyright
+©️ IV. Copyright  
 Every contribution will include a header with **(c) Deltares**.
 
-📦 V. Dependencies
+📦 V. Dependencies  
 New code should not lead to new dependencies.
 New dependencies are not allowed.
 If you believe one is truly needed, please discuss it with us before starting your work.
@@ -29,27 +29,25 @@ Quick summary:
 - **C++** code follows the **C++-20** standard
 - **Python** code targets **Python 3.11**.
 
-✅ VI. Completeness
+✅ VI. Completeness  
 New code should be **ready to use** — no TODOs, please!
 That means including any required **Python wrappers** and,
 always implement all needed and less needed functionality.
 E.g. for new distributions, implementing **all necessary methods**.
 
-🧹 VII. **No** Boy Scout Rule
+🧹 VII. **No** Boy Scout Rule  
 When you’re fixing or improving something, focus **only on the changes related to your issue**.
 This keeps reviews and merges clean and simple.
 If you notice something else that needs cleanup, feel free to **open a new issue** for it.
 
-🚀 VIII. Submitting Your Work
-
+🚀 VIII. Submitting Your Work  
 You can contribute in two ways:
 - Make a pull request with your changes. This pull request will be reviewed by Deltares.
 - Open an issue if you want to discuss an idea first.
 
 We’re happy to help guide you through the process — whether it’s your first contribution or your fiftieth!
 
-🏁 IV. Finishing your work
-
+🏁 IV. Finishing your work  
 Once your pull request (PR) has been approved — great job! 🎉
 You can now **merge your changes** into the ` master ` branch.
 
@@ -136,10 +134,10 @@ In cases where an object must outlive the current call stack, allocate it on the
 Be aware that smart pointers introduce a small amount of overhead. Use them judiciously—only when the object’s lifetime or ownership semantics justify their cost.
 
 *rules*
-1 Prefer to use locally instantiated objects and pass them by reference in functions
-2 If the object can live longer than the callstack (starting at creation of the object, can be a class where it is owned), use smart pointers
-3 If the object is passed outside the C++ scope, new/delete is allowed if no other option applies
-4 Factories should return an object
+1 Prefer to use locally instantiated objects and pass them by reference in functions  
+2 If the object can live longer than the callstack (starting at creation of the object, can be a class where it is owned), use smart pointers  
+3 If the object is passed outside the C++ scope, new/delete is allowed if no other option applies  
+4 Factories should return an object  
 
 ## Indentation
 
@@ -157,6 +155,7 @@ Long lines are inconvenient when doing a side-by-side diff.
 - we use ` #pragma once ` in header files to protect against multiple inclusion.
 - code in header files only if very short (at most 3 lines) and trivial
 - `using namespace` is not allowed in header files
+
 *sources files*
 - do not use ` auto ` for basic types as int, double and string.
 - use ` auto ` to avoid a classname left and right of the assignment,
