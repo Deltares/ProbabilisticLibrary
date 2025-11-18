@@ -152,7 +152,7 @@ class UncertaintySettings(FrozenObject):
 		
 	@property
 	def max_parallel_processes(self) -> int:
-		"""The number of parallel excutions of model evaluations"""
+		"""The number of parallel executions of model evaluations"""
 		return interface.GetIntValue(self._id, 'max_parallel_processes')
 
 	@max_parallel_processes.setter
@@ -184,7 +184,7 @@ class UncertaintySettings(FrozenObject):
 		"""Indicates whether prior model results will be reused by the uncertainty analysis.
 
         This will speed up calculations when several analyses are performed, for which the same realizations
-        will have to be executed, for example a crude monte carlo analysis for different output parameters.
+        will have to be executed, for example a Crude Monte Carlo analysis for different output parameters.
         But when a modification to the model is made, which is beyond the scope of the  model definition,
         this leads to undesired results"""
 

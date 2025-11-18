@@ -96,7 +96,7 @@ class ConstantParameterType(Enum):
 		return str(self.value)
 
 class DistributionType(Enum):
-	"""Enumeration which defines the stochast distribution type"""
+	"""Enumeration which defines the probability distribution type"""
 	deterministic = 'deterministic'
 	normal = 'normal'
 	log_normal = 'log_normal'
@@ -169,7 +169,7 @@ class StandardNormal(FrozenObject):
 		return interface.GetArgValue(StandardNormal._id(), 'u_from_t', t)
 
 class ProbabilityValue(FrozenObject):
-	"""Contains a probability in several interchangable definitions"""
+	"""Contains a probability in several interchangeable definitions"""
 
 	def __init__(self, id = None):
 		if id is None:
@@ -229,28 +229,28 @@ class ProbabilityValue(FrozenObject):
 class Stochast(FrozenObject):
 	"""Contains the definition of a stochastic variable
 
-    The stochastic variable is definied by the following properties: distribution, location, scale, shape, shape_b, shift, shift_b,
-    minimum, maximum, observations, truncated and inverted. Depending on the distribution, a selection of these properties are used.
-    To find out which properties are used by a distribution, print the variable, which only prints the properties in use. For some
+    The stochastic variable is defined by the following properties: `distribution`, `location`, `scale`, `shape`, `shape_b`, `shift`, `shift_b`,
+    `minimum`, `maximum`, `observations`, `truncated` and `inverted`. Depending on the distribution, a selection of these properties is used.
+    To find out which properties are used by a distribution, `print` the variable, which only prints the properties in use. For some
     distributions, the list of `histogram_values`, `discrete_values` or `fragility_values` is used. Composite stochasts are supported,
     where a stochast consists of several other stochasts, each with a certain fraction. 
 
     A number of characteristics can be derived. They can also be set and then stochast properties are updated. These characteristics are:
-    mean, (standard) deviation, variation (coefficient) and design_value. The design_value needs the input values design_factor and
-    design_quantile to be calculated. The following characteristic features needing an x-value are available: get_cdf, get_pdf, get_u_at_x,
-    get_x_at_u and get_quantile.
+    `mean`, (standard) `deviation`, `variation` (coefficient) and `design_value`. The design_value needs the input values `design_factor` and
+    `design_quantile` to be calculated. The following characteristic features needing an x-value are available: `get_cdf`, `get_pdf`, `get_u_at_x`,
+    `get_x_at_u` and `get_quantile`.
 
-    The stochast properties can be estimated by providing a number of values from which the properties will be fitted. The methods fit and
-    fit_prior enable this feature. The goodness of fit can be retrieved by get_ks_test.
+    The stochast properties can be estimated by providing a number of values from which the properties will be fitted. The methods `fit` and
+    `fit_prior` enable this feature. The goodness of fit can be retrieved by `get_ks_test`.
 
-    Conditional stochasts are supported. The stochast properties depend on the value (or realization in a probabiistic analysis) of another
+    Conditional stochasts are supported. The stochast properties depend on the value (or realization in a probabilistic analysis) of another
     stochast, indicated by `conditional_source`. A table conditional_values is used to define the stochast properties for a certain value  of
     the source stochast.
 
     A stochast can function as an array in a probabilistic analysis. The stochast will function as a number of uncorrelated stochastic variables.
-    To define an array, use is_array and array_size.
+    To define an array, use `is_array` and `array_size`.
 
-    Printing and plotting are supported with methods print, plot, get_plot, get_series and get_special_values. Validation is supported by
+    Printing and plotting are supported with methods `print`, `plot`, `get_plot`, `get_series` and `get_special_values`. Validation is supported by
     `is_valid` and `validate`."""
 
 	def __init__(self, id = None):
@@ -355,7 +355,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def inverted(self) -> bool:
-		"""Indicates whether the stochast is inverted, i.e. mirrored in the shift"""
+		"""Indicates whether the stochast is inverted, i.e. mirrored in the `shift`"""
 		return interface.GetBoolValue(self._id, 'inverted')
 
 	@inverted.setter
@@ -364,8 +364,8 @@ class Stochast(FrozenObject):
 
 	@property
 	def truncated(self) -> bool:
-		"""Indicates whether the stochast is truncated
-        The truncation takes place at the minimum and maximum value"""
+		"""Indicates whether the stochast is truncated. 
+        The truncation takes place at the `minimum` and `maximum` value"""
 		return interface.GetBoolValue(self._id, 'truncated')
 
 	@truncated.setter
@@ -374,8 +374,8 @@ class Stochast(FrozenObject):
 
 	@property
 	def mean(self) -> float:
-		"""Mean value of the stochast
-        When set, defining properties are modified in such a way that the set value and deviation are maintained"""
+		"""Mean value of the stochast. 
+        When set, defining properties are modified in such a way that the set value and `deviation` are maintained"""
 		return interface.GetValue(self._id, 'mean')
 
 	@mean.setter
@@ -384,8 +384,8 @@ class Stochast(FrozenObject):
 
 	@property
 	def deviation(self) -> float:
-		"""Standard deviation of the stochast
-        When set, defining properties are modified in such a way that the set value and mean are maintained"""
+		"""Standard deviation of the stochast. 
+        When set, defining properties are modified in such a way that the set value and `mean` are maintained"""
 		return interface.GetValue(self._id, 'deviation')
 
 	@deviation.setter
@@ -395,8 +395,8 @@ class Stochast(FrozenObject):
 
 	@property
 	def variation(self) -> float:
-		"""Variation coefficient of the stochast
-        When set, defining properties are modified in such a way that the set value and mean are maintained"""
+		"""Variation coefficient of the stochast. 
+        When set, defining properties are modified in such a way that the set value and `mean` are maintained"""
 		return interface.GetValue(self._id, 'variation')
 
 	@variation.setter
@@ -643,7 +643,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def design_value(self) -> float:
-		"""The design value, which is a representable calculation value based on the stochastic definition
+		"""The design value, which is a representable calculation value based on the stochastic definition. 
         When set, defining properties are adapted while keeping the variation property value unchanged"""
 		return interface.GetValue(self._id, 'design_value')
 
@@ -696,7 +696,7 @@ class Stochast(FrozenObject):
 
         Parameters
         ----------
-        quantile : float
+        quantile : float.
             Quantile for which the x-value is requested, must be between 0 and 1 (exclusive)"""
 
 		return interface.GetArgValue(self._id, 'quantile', quantile)
@@ -716,7 +716,7 @@ class Stochast(FrozenObject):
 
         Parameters
         ----------
-        x : float
+        x : float.
             X-value for which the u-value is requested"""
 
 		return interface.GetArgValue(self._id, 'u_from_x', x)
@@ -736,7 +736,7 @@ class Stochast(FrozenObject):
 
         Parameters
         ----------
-        x : float
+        x : float.
             X-value for which the CDF is requested"""
 
 		return interface.GetArgValue(self._id, 'cdf', x)
@@ -746,9 +746,9 @@ class Stochast(FrozenObject):
 
         Parameters
         ----------
-        u : float
+        u : float.
             U-value for which the x-value is requested
-        x : float
+        x : float.
             The conditional value on which the distribution of this conditional stochast is based
         Returns
         -------
@@ -760,14 +760,14 @@ class Stochast(FrozenObject):
 
 	def fit(self, values : list[float], shift : float = nan):
 		"""Fits the stochast parameters from a list of values.
-        Validates first whether fit can be performed, if not an error message is printed and no fit is performed.
+        Validates first whether the fit can be performed, if not an error message is printed and no fit is performed.
 
         Parameters
         ----------
-        values : list[float]
+        values : list[float].
             The list of values from which is fitted
 
-        shift : float, optional
+        shift : float, optional.
             If set, the shift value is not fitted, but taken from this value
         """
 
@@ -791,17 +791,17 @@ class Stochast(FrozenObject):
 
 	def fit_prior(self, prior : str | Stochast, values : list[float], shift : float = nan):
 		"""Fits the stochast parameters from a list of values.
-        Validates first whether fit can be performed, if not aerror messagse a reprinted and no fit is performed.
+        Validates first whether the fit can be performed, if not an error message is printed and no fit is performed.
 
         Parameters
         ----------
-        values : list[float]
+        values : list[float].
             The list of values from which is fitted
 
-        prior : Stochast | str
+        prior : Stochast | str.
             Prior stochast, Bayesian updating is used to perform fitting with prior
 
-        shift : float, optional
+        shift : float, optional.
             If set, the shift value is not fitted, but taken from this value
         """
 		if type(prior) == str:
@@ -1239,7 +1239,7 @@ class FragilityValue(FrozenObject):
 class HistogramValue(FrozenObject):
 	"""Defines a histogram value (or bin) of a `Stochast` in case of a histogram distribution
 
-    A histoogram value is defined by a lower bound and upper bound and contains an amount, which is the
+    A histogram value is defined by a lower bound and upper bound and contains an amount, which is the
     number of occurrences between these boundaries (the height of the bin). The difference between the lower
     and upper bound (the width of the bin) may vary between the histogram values of a stochast and can even
     be zero.
@@ -1338,10 +1338,10 @@ class ContributingStochast(FrozenObject):
 
         Parameters
         ----------
-        probability: float
+        probability: float.
             Fraction of the contributing stochast
 
-        variable: Stochast
+        variable: Stochast.
             Stochast definition of the contributing stochast"""
 		contributingStochast = ContributingStochast();
 		contributingStochast.probability = probability
@@ -1421,7 +1421,7 @@ class ConditionalValue(FrozenObject):
 		"""Optional mean value of the conditional value
 
         When retrieved, the value set by the user is returned and nan if not set. When set, other
-        properties in this conditional values are modified in such a way that the set value and
+        properties in this conditional value are modified in such a way that the set value and
         deviation are maintained. The same distribution type is assumed as the parent stochast"""
 		return interface.GetValue(self._id, 'mean')
 
@@ -1434,7 +1434,7 @@ class ConditionalValue(FrozenObject):
 		"""Optional standard deviation value of the conditional value
 
         When retrieved, the value set by the user is returned and nan if not set. When set, other
-        properties in this conditional values are modified in such a way that the set value and mean
+        properties in this conditional value are modified in such a way that the set value and mean
         are maintained. The same distribution type is assumed as the parent stochast"""
 		return interface.GetValue(self._id, 'deviation')
 
@@ -1529,7 +1529,7 @@ class CorrelationMatrix(FrozenObject):
     The correlation is defined as the Pearson correlation value. The correlation value must be between
     -1 and 1 (inclusive). 
 
-    By default, the correlation is 0 between different stochasts and 1 between same stochasts. The correlation matrix
+    By default, the correlation is 0 between different stochasts and 1 between the same stochasts. The correlation matrix
     is symmetric, which is maintained automatically.
 
     The correlation values are retrieved or set with an indexer, with variables as arguments.
@@ -1634,10 +1634,10 @@ class SelfCorrelationMatrix(FrozenObject):
 	"""Defines the correlation values of a stochast with another stochast, both corresponding with the same
     parameter.
 
-    This is used for upscaling in a `probabilistic_library.project.LengthEffectProject`, which is used when a design point is applicable for a certain section of a system
-    (e.g. a section of 50 m in a trajectory of 500 m). When upscaling the design point to the trajectory, it is combined
-    with itself. But stochasts do not have full correlation with stochasts of another section. The self correlation
-    matrix defines these correlations.
+    This is used for upscaling in a `probabilistic_library.project.LengthEffectProject`, which is used when a design point
+    is applicable for a certain section of a system (e.g. a section of 50 m in a trajectory of 500 m). When upscaling the
+    design point to the system, it is combined with itself. But stochasts do not have full correlation with stochasts of
+    another section. The self correlation matrix defines these correlations.
 
     The correlation values are retrieved or set with an indexer, with a variable as argument"""
 
@@ -1717,7 +1717,7 @@ class Scenario(FrozenObject):
 
 	@property
 	def probability(self) -> float:
-		"""Defines the fraction of the design point
+		"""Defines the fraction of the design point.
         The fractions of all scenarios to be combined must add up to 1."""
 		return interface.GetValue(self._id, 'probability')
 
