@@ -383,8 +383,9 @@ namespace Deltares
             bool isDistinctDistribution = distinctValuesCount < x.size() * distinctFraction && distinctValuesCount > 1;
 
             // Determine required number of ranges
-            double min = x[0].value;
-            double max = x[x.size() - 1].value;
+            multipleInExtremes multiples;
+            multiples.min = x[0].value;
+            multiples.max = x[x.size() - 1].value;
 
             // Determine minimum distance between two points, if not zero
             double minWidth = std::numeric_limits<double>::max();
@@ -398,7 +399,7 @@ namespace Deltares
             }
 
             // Determine additional offset beyond range of physical values
-            double extra = isDistinctDistribution ? minWidth / 2 : (max - min) * addFactor;
+            double extra = isDistinctDistribution ? minWidth / 2 : (multiples.max - multiples.min) * addFactor;
 
             if (extra < accuracy)
             {
@@ -419,23 +420,23 @@ namespace Deltares
             }
 
             // when there are multiple equal values at the extremes, they are regarded as guard limits, which will not be exceeded in the fitted distribution
-            bool multipleAtMin = x.size() > 1 && x[0].value == x[1].value;
-            bool multipleAtMax = x.size() > 1 && x[x.size()-1].value == x[x.size() - 2].value;
+            multiples.multipleAtMin = x.size() > 1 && x[0].value == x[1].value;
+            multiples.multipleAtMax = x.size() > 1 && x[x.size()-1].value == x[x.size() - 2].value;
 
             int nMultiple = 0;
 
-            if (!multipleAtMin)
+            if (!multiples.multipleAtMin)
             {
-                min -= extra;
+                multiples.min -= extra;
             }
             else
             {
                 nMultiple++;
             }
 
-            if (!multipleAtMax)
+            if (!multiples.multipleAtMax)
             {
-                max += extra;
+                multiples.max += extra;
             }
             else
             {
@@ -444,19 +445,20 @@ namespace Deltares
 
             double rangeReductionFactor = isDistinctDistribution ? 1.0 : 0.9;
 
-            int requiredRanges = isDistinctDistribution ? std::round((max - min) / minWidth) + 1 - nMultiple : std::round(distinctValuesCount * rangeReductionFactor);
+            int requiredRanges = isDistinctDistribution ? std::round((multiples.max - multiples.min) / minWidth) + 1 - nMultiple :
+                std::round(distinctValuesCount * rangeReductionFactor);
             requiredRanges = std::min(requiredRanges, maxRanges);
 
             int ranges = requiredRanges;
 
             // Determine the width of a range
-            double step = (max - min) / ranges;
+            const double step = (multiples.max - multiples.min) / ranges;
 
             stochast.HistogramValues.clear();
 
             for (int i = 0; i < ranges; i++)
             {
-                std::shared_ptr<HistogramValue> range = std::make_shared<HistogramValue>(min + i * step, min + (i + 1) * step);
+                auto range = std::make_shared<HistogramValue>(multiples.min + i * step, multiples.min + (i + 1) * step);
 
                 range->Amount = getAmount(range, x);
 
@@ -467,7 +469,16 @@ namespace Deltares
             }
 
             // Loop which determines ranges until enough are found
+            determineRangesLoop(stochast, x, requiredRanges, multiples);
 
+            stochast.Observations = static_cast<int>(values.size());
+
+            initializeForRun(stochast);
+        }
+
+        void HistogramDistribution::determineRangesLoop(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& x,
+            int requiredRanges, const multipleInExtremes& multiples)
+        {
             bool enoughRanges = stochast.HistogramValues.size() >= requiredRanges / 2;
             int counter = 0;
 
@@ -481,9 +492,9 @@ namespace Deltares
                 counter++;
             }
 
-            if (multipleAtMin)
+            if (multiples.multipleAtMin)
             {
-                std::shared_ptr<HistogramValue> minRange = std::make_shared<HistogramValue>(min, min);
+                auto minRange = std::make_shared<HistogramValue>(multiples.min, multiples.min);
 
                 minRange->Amount = getAmount(minRange, x);
 
@@ -503,18 +514,15 @@ namespace Deltares
                 }
             }
 
-            if (multipleAtMax && min != max)
+            if (multiples.multipleAtMax && multiples.min != multiples.max)
             {
-                std::shared_ptr<HistogramValue> maxRange = std::make_shared<HistogramValue>(max,max);
+                auto maxRange = std::make_shared<HistogramValue>(multiples.max, multiples.max);
 
                 maxRange->Amount = getAmount(maxRange, x);
 
                 stochast.HistogramValues.push_back(maxRange);
             }
 
-            stochast.Observations = static_cast<int>(values.size());
-
-            initializeForRun(stochast);
         }
 
         void HistogramDistribution::splitRanges(StochastProperties& stochast, const std::vector <Numeric::WeightedValue> & values)

@@ -35,24 +35,18 @@ namespace Deltares
         class SampleProvider
         {
         public:
-            SampleProvider(int varyingStochastCount, int stochastCount)
-            {
-                sampleSize = varyingStochastCount;
-                modelSampleSize = stochastCount;
-            }
+            SampleProvider(int varyingStochastCount, int stochastCount) :
+                sampleSize(varyingStochastCount), modelSampleSize(stochastCount) {}
 
-            SampleProvider(const Reliability::StochastSettingsSet& stochastSettings)
-            {
-                sampleSize = stochastSettings.getVaryingStochastCount();
-                modelSampleSize = stochastSettings.getStochastCount();
-            }
+            SampleProvider(const Reliability::StochastSettingsSet& stochastSettings) :
+                sampleSize(stochastSettings.getVaryingStochastCount()), modelSampleSize(stochastSettings.getStochastCount()) {}
 
             std::shared_ptr<Sample> getSample()
             {
                 return std::make_shared<Sample>(sampleSize);
             }
 
-            std::shared_ptr<ModelSample> getModelSample(std::vector<double>& values)
+            static std::shared_ptr<ModelSample> getModelSample(std::vector<double>& values)
             {
                 return std::make_shared<ModelSample>(values);
             }

@@ -199,7 +199,7 @@ namespace Deltares
             if (distributionType == DistributionType::Composite)
             {
                 std::shared_ptr<StochastProperties> compositeProperties = std::make_shared<StochastProperties>();
-                for (auto& compositeStochast : properties->ContributingStochasts)
+                for (const auto& compositeStochast : properties->ContributingStochasts)
                 {
                     if (compositeStochast->Stochast->isVariable())
                     {

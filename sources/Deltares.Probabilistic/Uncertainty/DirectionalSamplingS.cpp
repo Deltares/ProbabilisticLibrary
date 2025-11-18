@@ -79,7 +79,7 @@ namespace Deltares::Uncertainty
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (std::shared_ptr<Statistics::ProbabilityValue> &quantile : this->Settings->RequestedQuantiles)
+        for (const std::shared_ptr<Statistics::ProbabilityValue> &quantile : this->Settings->RequestedQuantiles)
         {
             if (this->evaluations.contains(quantile))
             {

@@ -22,16 +22,20 @@
 #pragma once
 
 #include "Distribution.h"
-
-namespace Deltares::Numeric
-{
-    class WeightedValue;
-}
+#include "../../Math/NumericSupport.h"
 
 namespace Deltares
 {
     namespace Statistics
     {
+        struct multipleInExtremes
+        {
+            bool multipleAtMin;
+            bool multipleAtMax;
+            double min;
+            double max;
+        };
+
         class HistogramDistribution : public Distribution
         {
         public:
@@ -56,6 +60,8 @@ namespace Deltares
             static double getAmount(const std::shared_ptr<HistogramValue>& range, const std::vector<Numeric::WeightedValue>& values);
             static void mergeLowWeights(std::vector<Numeric::WeightedValue>& values);
             static size_t getDistinctCount(const std::vector<Numeric::WeightedValue>& values);
+            static void determineRangesLoop(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& x,
+                int requiredRanges, const multipleInExtremes& multiples);
         };
     }
 }
