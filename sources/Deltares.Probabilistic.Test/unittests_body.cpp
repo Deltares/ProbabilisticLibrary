@@ -36,6 +36,7 @@
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
 #include "Statistics/testStandardNormal.h"
+#include "Statistics/testCopula.h"
 #include "Distributions/testDistributions.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
@@ -247,6 +248,18 @@ TEST(unittst, testStandardNormal)
 {
     auto tstStdNormal = testStandardNormal();
     tstStdNormal.allStandardNormalTests();
+}
+
+TEST(unittst, testClaytonCopula)
+{
+    auto tstCopula = testCopula();
+    tstCopula.testClayton();
+}
+
+TEST(unittst, testFrankCopula)
+{
+    auto tstCopula = testCopula();
+    tstCopula.testFrank();
 }
 
 TEST(unittst, testUncertainty)
