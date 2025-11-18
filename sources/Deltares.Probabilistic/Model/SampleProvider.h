@@ -38,7 +38,7 @@ namespace Deltares
             SampleProvider(int varyingStochastCount, int stochastCount) :
                 sampleSize(varyingStochastCount), modelSampleSize(stochastCount) {}
 
-            SampleProvider(const Reliability::StochastSettingsSet& stochastSettings) :
+            explicit SampleProvider(const Reliability::StochastSettingsSet& stochastSettings) :
                 sampleSize(stochastSettings.getVaryingStochastCount()), modelSampleSize(stochastSettings.getStochastCount()) {}
 
             std::shared_ptr<Sample> getSample()

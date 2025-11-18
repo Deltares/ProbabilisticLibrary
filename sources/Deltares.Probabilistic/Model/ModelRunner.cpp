@@ -108,12 +108,12 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<ModelSample> ModelRunner::getModelSample(std::shared_ptr<Sample> sample)
+        std::shared_ptr<ModelSample> ModelRunner::getModelSample(std::shared_ptr<Sample> sample) const
         {
             std::vector<double> xValues = this->uConverter->getXValues(sample);
 
             // create a sample with values in x-space
-            std::shared_ptr<ModelSample> xSample = sampleProvider->getModelSample(xValues);
+            std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
 
             xSample->AllowProxy = sample->AllowProxy;
             xSample->IterationIndex = sample->IterationIndex;
@@ -125,12 +125,12 @@ namespace Deltares
             return xSample;
         }
 
-        std::shared_ptr<ModelSample> ModelRunner::getModelSampleFromType(Statistics::RunValuesType type)
+        std::shared_ptr<ModelSample> ModelRunner::getModelSampleFromType(Statistics::RunValuesType type) const
         {
             std::vector<double> xValues = this->uConverter->getValuesFromType(type);
 
             // create a sample with values in x-space
-            std::shared_ptr<ModelSample> xSample = sampleProvider->getModelSample(xValues);
+            std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
 
             return xSample;
         }
@@ -194,7 +194,7 @@ namespace Deltares
             return evaluation;
         }
 
-        std::shared_ptr<Sample> ModelRunner::getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
+        std::shared_ptr<Sample> ModelRunner::getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint) const
         {
             return this->uConverter->getSampleFromStochastPoint(stochastPoint);
         }
