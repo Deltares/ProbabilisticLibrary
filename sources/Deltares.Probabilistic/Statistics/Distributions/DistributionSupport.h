@@ -42,7 +42,7 @@ namespace Deltares::Statistics
          * \param u The u-value to which the x-value belongs
          * \param constantType Indicates whether the deviation or variation should be kept constant
          */
-        static void setXAtUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType);
+        static void setXAtUByIteration(Distribution& distribution, StochastProperties& stochast, double x, double u, ConstantParameterType constantType);
 
         /**
          * \brief Gets the mean of a stochast by iteration
@@ -50,7 +50,7 @@ namespace Deltares::Statistics
          * \param stochast Stochast properties
          * \remarks To be used when analytical solution is not possible
          */
-        static double getMeanByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast);
+        static double getMeanByIteration(Distribution& distribution, StochastProperties& stochast);
 
         /**
          * \brief Gets the deviation of a stochast by iteration
@@ -58,7 +58,7 @@ namespace Deltares::Statistics
          * \param stochast Stochast properties
          * \remarks To be used when analytical solution is not possible
          */
-        static double getDeviationByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast);
+        static double getDeviationByIteration(Distribution& distribution, StochastProperties& stochast);
 
         /**
          * \brief Gets the x-value at a certain u-value by iteration
@@ -67,7 +67,7 @@ namespace Deltares::Statistics
          * \param u The requested u-value
          * \remarks To be used when analytical solution is not possible
          */
-        static double getXFromUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double u);
+        static double getXFromUByIteration(Distribution& distribution, StochastProperties& stochast, double u);
 
         /**
          * \brief Converts a list of values and weights to weighted values
@@ -75,7 +75,7 @@ namespace Deltares::Statistics
          * \param weights Weights
          * \returns Weighted values
          */
-        static std::vector<std::shared_ptr<Numeric::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
+        static std::vector<Numeric::WeightedValue> GetWeightedValues(const std::vector<double>& values, const std::vector<double>& weights);
 
         /**
          * \brief Gets a list which reflects as much as possible a list with weights
@@ -83,10 +83,10 @@ namespace Deltares::Statistics
          * \param weights List of weights
          * \return List reflecting list with weights
          */
-        static std::vector<double> getExpandedValues(std::vector<double>& values, std::vector<double>& weights);
+        static std::vector<double> getExpandedValues(const std::vector<double>& values, const std::vector<double>& weights);
 
     private:
-        static  std::vector<double> getValuesForIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast);
+        static std::vector<double> getValuesForIteration(Distribution& distribution, StochastProperties& stochast);
     };
 }
 

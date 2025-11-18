@@ -49,9 +49,9 @@ namespace Deltares
 
             if (!std::isnan(this->mean) || !std::isnan(this->deviation))
             {
-                double requiredMean = std::isnan(this->mean) ? distribution->getMean(source) : this->mean;
-                double requiredDeviation = std::isnan(this->deviation) ? distribution->getDeviation(source) : this->deviation;
-                distribution->setMeanAndDeviation(source, requiredMean, requiredDeviation);
+                double requiredMean = std::isnan(this->mean) ? distribution->getMean(*source) : this->mean;
+                double requiredDeviation = std::isnan(this->deviation) ? distribution->getDeviation(*source) : this->deviation;
+                distribution->setMeanAndDeviation(*source, requiredMean, requiredDeviation);
             }
 
             return source;

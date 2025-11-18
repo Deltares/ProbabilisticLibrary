@@ -63,14 +63,14 @@ namespace Deltares
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
+            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
-			std::shared_ptr<RandomSampleGenerator> sampleCreator = std::make_shared<RandomSampleGenerator>();
-			sampleCreator->Settings = this->Settings->randomSettings;
-			sampleCreator->Settings->StochastSet = this->Settings->StochastSet;
-            sampleCreator->sampleProvider = sampleProvider;
-			sampleCreator->initialize();
+            auto sampleCreator = RandomSampleGenerator();
+            sampleCreator.Settings = this->Settings->randomSettings;
+            sampleCreator.Settings->StochastSet = this->Settings->StochastSet;
+            sampleCreator.sampleProvider = sampleProvider;
+            sampleCreator.initialize();
 
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -84,16 +84,16 @@ namespace Deltares
 
 			// list of all clusters
 			std::shared_ptr<DesignPoint> startDesignPoint = nullptr;
-			std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusterResults = getClusters(modelRunner, startDesignPoint);
+			std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusterResults = getClusters(*modelRunner, startDesignPoint);
 
 			// holds the clusters corresponding to the samples
 			int clusterIndex = -1;
 			std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters;
 
 			std::shared_ptr<ImportanceSamplingCluster> combinedCluster = std::make_shared<ImportanceSamplingCluster>();
-			combinedCluster->Center = this->Settings->StochastSet->getStartPoint();
+			combinedCluster->Center = Settings->StochastSet->getStartPoint();
 
-			std::vector<double> factors = this->getFactors(Settings->StochastSet);
+			std::vector<double> factors = getFactors(*Settings->StochastSet);
 
 			double dimensionality = ImportanceSamplingSupport::getDimensionality(factors);
 
@@ -140,7 +140,7 @@ namespace Deltares
 
 						std::shared_ptr<ImportanceSamplingCluster> cluster = clusterResults[clusterIndex];
 
-						const std::shared_ptr<Sample> sample = sampleCreator->getRandomSample();
+						const std::shared_ptr<Sample> sample = sampleCreator.getRandomSample();
 
 						std::shared_ptr<Sample> modifiedSample = sample->clone();
 
@@ -160,12 +160,12 @@ namespace Deltares
 
 					if (initial)
 					{
-						z0Fac = this->getZFactor(zValues[0]);
+						z0Fac = getZFactor(zValues[0]);
 						z0Ignore = std::isnan(zValues[0]);
 
 						combinedCluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
 
-						for (std::shared_ptr<ImportanceSamplingCluster> cluster : clusterResults)
+						for (const std::shared_ptr<ImportanceSamplingCluster>& cluster : clusterResults)
 						{
 							cluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
 						}
@@ -174,7 +174,7 @@ namespace Deltares
 					if (modelRunner->shouldExitPrematurely(samples))
 					{
 						// return the result so far
-						std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(combinedCluster->DesignPointBuilder->getSample(), Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure), convergenceReport);
+						std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(combinedCluster->designPointBuilder.getSample(), Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure), convergenceReport);
 						if (startDesignPoint != nullptr)
 						{
 							designPoint->ContributingDesignPoints.push_back(startDesignPoint);
@@ -193,12 +193,12 @@ namespace Deltares
 				// determine multiplication factor for z (z<0), if u = 0
 				if (initial)
 				{
-					z0Fac = this->getZFactor(z);
+					z0Fac = getZFactor(z);
 					z0Ignore = std::isnan(z);
 
 					combinedCluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
 
-					for (std::shared_ptr<ImportanceSamplingCluster> cluster : clusterResults)
+					for (const std::shared_ptr<ImportanceSamplingCluster>& cluster : clusterResults)
 					{
 						cluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
 					}
@@ -209,9 +209,9 @@ namespace Deltares
 
 				if (std::isnan(z))
 				{
-					if (prematureExit(Settings, sampleCluster->TotalCount, sampleIndex))
+					if (prematureExit(*Settings, sampleCluster->TotalCount, sampleIndex))
 					{
-						this->report(modelRunner, sampleIndex);
+						this->report(*modelRunner, sampleIndex);
 
 						// assume no failure can be calculated
 						breakLoop = true;
@@ -225,7 +225,7 @@ namespace Deltares
 
 				std::shared_ptr<Sample> sample = samples[zIndex];
 				sample->Z = z;
-				sample->Z = getCorrectionForOverlappingClusters(sample, sampleCluster, clusterResults);
+				sample->Z = getCorrectionForOverlappingClusters(*sample, sampleCluster, clusterResults);
 
 				combinedCluster->addSample(sample);
 				sampleCluster->addSample(sample);
@@ -246,21 +246,21 @@ namespace Deltares
 				// if there is at least one failure and at least one non-failure observed
 				if (probFailure > 0)
 				{
-					std::shared_ptr<Sample> designPoint = combinedCluster->DesignPointBuilder->getSample();
+					std::shared_ptr<Sample> designPoint = combinedCluster->designPointBuilder.getSample();
 
 					std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = findMostContributingCluster(clusterResults);
 					double designPointWeight = ImportanceSamplingSupport::getSampleWeight(designPoint, mostContributingCluster->Center, dimensionality, factors);
 
-					convergenceReport->IsConverged = checkConvergence(modelRunner, probFailure, designPointWeight, combinedCluster->TotalCount, sampleIndex);
+					convergenceReport->IsConverged = checkConvergence(*modelRunner, probFailure, designPointWeight, combinedCluster->TotalCount, sampleIndex);
 					convergenceReport->FailWeight = combinedCluster->FailWeight;
 					convergenceReport->MaxWeight = combinedCluster->MaxFailWeight;
 
-					breakLoop = breakLoopWithFailureObs(Settings, enoughSamples, convergenceReport->IsConverged, combinedCluster);
+					breakLoop = breakLoopWithFailureObs(enoughSamples, convergenceReport->IsConverged, combinedCluster);
 				}
 				else
 				{
 					// TODO: 
-					breakLoop = breakLoopWithNoFailureObs(modelRunner, Settings, sampleIndex, reported);
+					breakLoop = breakLoopWithNoFailureObs(*modelRunner, *Settings, sampleIndex, reported);
 				}
 			}
 
@@ -269,7 +269,7 @@ namespace Deltares
 			double probFailure = getProbabilityOfFailure(clusterResults);
 			double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-			std::shared_ptr<Sample> minSample = combinedCluster->DesignPointBuilder->getSample();
+			std::shared_ptr<Sample> minSample = combinedCluster->designPointBuilder.getSample();
 
 			std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = findMostContributingCluster(clusterResults);
 			double designPointWeight = ImportanceSamplingSupport::getSampleWeight(minSample, mostContributingCluster->Center, dimensionality, factors);
@@ -294,7 +294,7 @@ namespace Deltares
 #endif
 
 					double clusterBeta = Statistics::StandardNormal::getUFromQ(clusterResults[i]->ProbFailure);
-					std::shared_ptr<Sample> clusterSample = clusterResults[i]->DesignPointBuilder->getSample();
+					std::shared_ptr<Sample> clusterSample = clusterResults[i]->designPointBuilder.getSample();
 					std::shared_ptr<DesignPoint> clusterDesignPoint = modelRunner->getDesignPoint(clusterSample, clusterBeta, convergenceReport, clusterIdentifier);
 
 					designPoint->ContributingDesignPoints.push_back(clusterDesignPoint);
@@ -304,19 +304,19 @@ namespace Deltares
 			return designPoint;
 		}
 
-		std::vector<double> ImportanceSampling::getFactors(std::shared_ptr<StochastSettingsSet> stochastSettings)
+		std::vector<double> ImportanceSampling::getFactors(StochastSettingsSet& stochastSettings)
 		{
-			std::vector<double> factors(stochastSettings->getVaryingStochastCount());
+			std::vector<double> factors(stochastSettings.getVaryingStochastCount());
 
-			for (int k = 0; k < factors.size(); k++)
+			for (size_t k = 0; k < factors.size(); k++)
 			{
-				factors[k] = stochastSettings->VaryingStochastSettings[k]->VarianceFactor;
+				factors[k] = stochastSettings.VaryingStochastSettings[k]->VarianceFactor;
 			}
 
 			return factors;
 		}
 
-		bool ImportanceSampling::checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, double minWeight, int samples, int nmaal)
+		bool ImportanceSampling::checkConvergence(Models::ModelRunner& modelRunner, double pf, double minWeight, int samples, int nmaal) const
 		{
 			std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
 			report->Step = nmaal;
@@ -328,38 +328,38 @@ namespace Deltares
 				report->Reliability = Statistics::StandardNormal::getUFromQ(pf);
 				report->Variation = convergence;
 
-				modelRunner->reportResult(report);
+				modelRunner.reportResult(report);
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
 
 				return enoughSamples && convergence < Settings->VariationCoefficient;
 			}
 			else
 			{
-				modelRunner->reportResult(report);
+				modelRunner.reportResult(report);
 				return false;
 			}
 		}
 
-		bool ImportanceSampling::prematureExit(std::shared_ptr<ImportanceSamplingSettings> settings, int samples, int runs)
+		bool ImportanceSampling::prematureExit(const ImportanceSamplingSettings& settings, int samples, int runs)
 		{
-			return samples == 0 && runs > settings->MaximumSamplesNoResult;
+			return samples == 0 && runs > settings.MaximumSamplesNoResult;
 		}
 
-		double ImportanceSampling::getCorrectionForOverlappingClusters(std::shared_ptr<Sample> sample, std::shared_ptr<ImportanceSamplingCluster> clusterResult, std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusterResults)
+		double ImportanceSampling::getCorrectionForOverlappingClusters(const Sample& sample, const std::shared_ptr<ImportanceSamplingCluster>& clusterResult, std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusterResults)
 		{
 			std::shared_ptr<ImportanceSamplingCluster> nearestCluster = getNearestCluster(sample, clusterResults);
 
 			if (nearestCluster != clusterResult)
 			{
-				return 0;
+				return 0.0;
 			}
 			else
 			{
-				return sample->Z;
+				return sample.Z;
 			}
 		}
 
-		std::shared_ptr<ImportanceSamplingCluster> ImportanceSampling::getNearestCluster(std::shared_ptr<Sample> sample, std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters)
+		std::shared_ptr<ImportanceSamplingCluster> ImportanceSampling::getNearestCluster(const Sample& sample, std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters)
 		{
 			if (clusters.size() == 1)
 			{
@@ -370,9 +370,9 @@ namespace Deltares
 				std::shared_ptr<ImportanceSamplingCluster> nearestCluster = nullptr;
 				double minDistance = std::numeric_limits<double>::max();
 
-				for (auto cluster : clusters)
+				for (const auto& cluster : clusters)
 				{
-					double distance = sample->getDistance2(cluster->Center);
+					double distance = sample.getDistance2(cluster->Center);
 					if (nearestCluster == nullptr || distance < minDistance)
 					{
 						nearestCluster = cluster;
@@ -384,16 +384,16 @@ namespace Deltares
 			}
 		}
 
-		void ImportanceSampling::report(std::shared_ptr<ModelRunner> modelRunner, int sampleIndex)
+		void ImportanceSampling::report(ModelRunner& modelRunner, int sampleIndex) const
 		{
 			std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
 			report->Index = sampleIndex;
-			report->MaxSteps = this->Settings->MaximumSamples;
+			report->MaxSteps = Settings->MaximumSamples;
 
-			modelRunner->reportResult(report);
+			modelRunner.reportResult(report);
 		}
 
-		bool ImportanceSampling::breakLoopWithNoFailureObs(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<ImportanceSamplingSettings> settings, int sampleIndex, bool& reported)
+		bool ImportanceSampling::breakLoopWithNoFailureObs(ModelRunner& modelRunner, const ImportanceSamplingSettings& settings, int sampleIndex, bool& reported) const
 		{
 			if (!reported)
 			{
@@ -401,7 +401,7 @@ namespace Deltares
 				reported = true;
 			}
 
-			if (sampleIndex > settings->MaximumSamplesNoResult)
+			if (sampleIndex > settings.MaximumSamplesNoResult)
 			{
 				// assume no failure can be calculated
 				report(modelRunner, sampleIndex);
@@ -411,7 +411,7 @@ namespace Deltares
 			return false;
 		}
 
-		bool ImportanceSampling::breakLoopWithFailureObs(std::shared_ptr<ImportanceSamplingSettings> settings, bool enoughSamples, bool smallEnough, std::shared_ptr<ImportanceSamplingCluster> results)
+		bool ImportanceSampling::breakLoopWithFailureObs(bool enoughSamples, bool smallEnough, const std::shared_ptr<ImportanceSamplingCluster>& results) const
 		{
 			if (enoughSamples && smallEnough)
 			{
@@ -426,40 +426,40 @@ namespace Deltares
 			return false;
 		}
 
-		std::vector<std::shared_ptr<ImportanceSamplingCluster>> ImportanceSampling::getClusters(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<DesignPoint>& startDesignPoint)
+		std::vector<std::shared_ptr<ImportanceSamplingCluster>> ImportanceSampling::getClusters(ModelRunner& modelRunner, std::shared_ptr<DesignPoint>& startDesignPoint) const
 		{
 			startDesignPoint = nullptr;
 
 			std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters;
 
-			if (this->Settings->Clusters.size() > 0)
+			if ( ! Settings->Clusters.empty())
 			{
 				for (size_t i = 0; i < this->Settings->Clusters.size(); i++)
 				{
 					std::shared_ptr<ImportanceSamplingCluster> cluster = std::make_shared<ImportanceSamplingCluster>();
 					cluster->Center = this->Settings->Clusters[i];
-					cluster->DesignPointBuilder = std::make_shared<DesignPointBuilder>(this->Settings->StochastSet->getVaryingStochastCount(), this->Settings->designPointMethod, this->Settings->StochastSet);
+					cluster->designPointBuilder = DesignPointBuilder(this->Settings->StochastSet->getVaryingStochastCount(), this->Settings->designPointMethod, this->Settings->StochastSet);
 
 					clusters.push_back(cluster);
 				}
 			}
 			else
 			{
-				const std::shared_ptr<StartPointCalculator> startPointCalculator = std::make_shared<StartPointCalculator>();
-				startPointCalculator->Settings = this->Settings->startPointSettings;
-				startPointCalculator->Settings->StochastSet = this->Settings->StochastSet;
+				auto startPointCalculator = StartPointCalculator();
+				startPointCalculator.Settings = this->Settings->startPointSettings;
+				startPointCalculator.Settings->StochastSet = this->Settings->StochastSet;
 
-				std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
+				std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(modelRunner);
 
 				if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
 				{
-					startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
+					startDesignPoint = modelRunner.getDesignPoint(startPoint, startPoint->getBeta());
 					startDesignPoint->Identifier = "Start point";
 				}
 
 				std::shared_ptr<ImportanceSamplingCluster> cluster = std::make_shared<ImportanceSamplingCluster>();
 				cluster->Center = startPoint;
-				cluster->DesignPointBuilder = std::make_shared<DesignPointBuilder>(this->Settings->StochastSet->getVaryingStochastCount(), this->Settings->designPointMethod, this->Settings->StochastSet);
+				cluster->designPointBuilder = DesignPointBuilder(this->Settings->StochastSet->getVaryingStochastCount(), this->Settings->designPointMethod, this->Settings->StochastSet);
 
 				clusters.push_back(cluster);
 			}
@@ -471,7 +471,7 @@ namespace Deltares
 		{
 			double sumProbabilities = 0;
 
-			for (std::shared_ptr<ImportanceSamplingCluster> cluster : clusters)
+			for (const std::shared_ptr<ImportanceSamplingCluster>& cluster : clusters)
 			{
 				sumProbabilities += cluster->ProbFailure;
 			}
@@ -479,7 +479,7 @@ namespace Deltares
 			return sumProbabilities;
 		}
 
-		std::shared_ptr<ImportanceSamplingCluster> ImportanceSampling::findMostContributingCluster(std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters)
+		std::shared_ptr<ImportanceSamplingCluster> ImportanceSampling::findMostContributingCluster(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters)
 		{
 			if (clusters.empty())
 			{
@@ -492,7 +492,7 @@ namespace Deltares
 			else
 			{
 				std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = clusters[0];
-				for (int i = 1; i < clusters.size(); i++)
+				for (size_t i = 1; i < clusters.size(); i++)
 				{
 					if (clusters[i]->ProbFailure > mostContributingCluster->ProbFailure)
 					{

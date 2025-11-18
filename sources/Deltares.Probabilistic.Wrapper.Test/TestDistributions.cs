@@ -263,8 +263,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             // interpolation
             stochast.Observations = 91;
-            ClassicAssert.AreEqual(3 - 2 * 1.2925, stochast.GetXFromP(0.1), margin);
-            ClassicAssert.AreEqual(3 + 2 * 1.2925, stochast.GetXFromP(0.9), margin);
+            ClassicAssert.AreEqual(3 - 2 * 1.291333, stochast.GetXFromP(0.1), margin);
+            ClassicAssert.AreEqual(3 + 2 * 1.291333, stochast.GetXFromP(0.9), margin);
 
             // interpolation
             stochast.Observations = 5;

@@ -27,51 +27,51 @@ namespace Deltares
 {
     namespace Statistics
     {
-        bool DeterministicDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool DeterministicDistribution::isVarying(StochastProperties& stochast)
         {
             return false;
         }
 
-        void DeterministicDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void DeterministicDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Location = mean;
-            stochast->Scale = deviation;
+            stochast.Location = mean;
+            stochast.Scale = deviation;
         }
 
-        void DeterministicDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void DeterministicDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Location = values[0];
+            stochast.Location = values[0];
         }
 
-        double DeterministicDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double DeterministicDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
-        double DeterministicDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double DeterministicDistribution::getDeviation(StochastProperties& stochast)
         {
-            return 0;
+            return 0.0;
         }
 
-        double DeterministicDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double DeterministicDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
-        double DeterministicDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double DeterministicDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            return x == stochast->Location ? 1 : 0;
+            return x == stochast.Location ? 1.0 : 0.0;
         }
 
-        double DeterministicDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double DeterministicDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x < stochast->Location)
+            if (x < stochast.Location)
             {
-                return 0;
+                return 0.0;
             }
-            else if (x > stochast->Location)
+            else if (x > stochast.Location)
             {
-                return 1;
+                return 1.0;
             }
             else
             {
@@ -79,34 +79,34 @@ namespace Deltares
             }
         }
 
-        void DeterministicDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void DeterministicDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
-            stochast->Location = x;
+            stochast.Location = x;
         }
 
-        std::vector<double> DeterministicDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        std::vector<double> DeterministicDistribution::getDiscontinuityPoints(StochastProperties& stochast)
         {
             return { stochast.Location };
         }
 
-        std::vector<double> DeterministicDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> DeterministicDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             constexpr double offset = 0.000001;
             constexpr double bigOffset = 10;
 
             return {
-                stochast->Location - bigOffset,
-                stochast->Location - offset,
-                stochast->Location,
-                stochast->Location + offset,
-                stochast->Location + bigOffset
+                stochast.Location - bigOffset,
+                stochast.Location - offset,
+                stochast.Location,
+                stochast.Location + offset,
+                stochast.Location + bigOffset
             };
         }
 
-        void DeterministicDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void DeterministicDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
-            stochast->Location = Numeric::NumericSupport::getMean(values);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Location = Numeric::NumericSupport::getMean(values);
+            stochast.Observations = static_cast<int>(values.size());
         }
     }
 }

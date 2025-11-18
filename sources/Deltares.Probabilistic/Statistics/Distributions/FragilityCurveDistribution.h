@@ -29,18 +29,18 @@ namespace Deltares
     {
         class FragilityCurveDistribution : public Distribution
         {
-            double getMean(std::shared_ptr<StochastProperties> stochast) override;
-            double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
-            double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
-            double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
-            bool isVarying(std::shared_ptr<StochastProperties> stochast) override { return true; }
-            bool maintainMeanAndDeviation(std::shared_ptr<StochastProperties> stochast) override { return false; }
-            void initializeForRun(std::shared_ptr<StochastProperties> stochast) override;
-            double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
-            double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
+            double getMean(StochastProperties& stochast) override;
+            double getDeviation(StochastProperties& stochast) override;
+            double getXFromU(StochastProperties& stochast, double u) override;
+            double getUFromX(StochastProperties& stochast, double x) override;
+            bool isVarying(StochastProperties& stochast) override { return true; }
+            bool maintainMeanAndDeviation(const StochastProperties& stochast) override { return false; }
+            void initializeForRun(StochastProperties& stochast) override;
+            double getPDF(StochastProperties& stochast, double x) override;
+            double getCDF(StochastProperties& stochast, double x) override;
             bool canFit() override { return false; }
-            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
-            std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
+            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
         private:
             const double precision = 0.00001;
 

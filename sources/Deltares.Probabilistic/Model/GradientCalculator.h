@@ -49,7 +49,7 @@ namespace Deltares
              * \return Gradient, vector with size of sample size
              * \remarks The z-value of the given sample is calculated too and stored in sample->Z
              */
-            std::vector<double> getGradient(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample);
+            std::vector<double> getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const;
         };
     }
 }

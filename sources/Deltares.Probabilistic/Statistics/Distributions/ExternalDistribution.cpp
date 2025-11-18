@@ -26,7 +26,7 @@ namespace Deltares
 {
     namespace Statistics
     {
-        double ExternalDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double ExternalDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             if (uxFunction != nullptr)
             {

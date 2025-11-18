@@ -30,16 +30,16 @@ namespace Deltares
         class CompositeDistribution : public Distribution
         {
         public:
-            double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
-            double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
-            bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
-            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
-            double getMean(std::shared_ptr<StochastProperties> stochast) override;
-            double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
-            double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
-            double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
-            std::vector<double> getDiscontinuityPoints(const StochastProperties&) override;
-            std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
+            double getXFromU(StochastProperties& stochast, double u) override;
+            double getUFromX(StochastProperties& stochast, double x) override;
+            bool isVarying(StochastProperties& stochast) override;
+            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+            double getMean(StochastProperties& stochast) override;
+            double getDeviation(StochastProperties& stochast) override;
+            double getPDF(StochastProperties& stochast, double x) override;
+            double getCDF(StochastProperties& stochast, double x) override;
+            std::vector<double> getDiscontinuityPoints(StochastProperties&) override;
+            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { }; }
         private:
             const double delta = 0.0000001;

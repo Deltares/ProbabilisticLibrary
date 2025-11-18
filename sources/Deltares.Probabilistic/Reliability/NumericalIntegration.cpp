@@ -74,7 +74,7 @@ namespace Deltares
             constexpr double density = 1.0; // joint probability density
             constexpr int stochastIndex = 0; // number of the stochastic parameter
 
-            designPointBuilder = std::make_shared<DesignPointBuilder>(nStochasts, Settings.designPointMethod, Settings.StochastSet);
+            designPointBuilder = DesignPointBuilder(nStochasts, Settings.designPointMethod, Settings.StochastSet);
             double totalDensity = 0;
 
             // Call to the recursive part of the numerical integration computation
@@ -91,7 +91,7 @@ namespace Deltares
             // distance from the design point to the origin.
             const double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-            const auto designPoint = designPointBuilder->getSample();
+            const auto designPoint = designPointBuilder.getSample();
 
             return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
         }
@@ -192,7 +192,7 @@ namespace Deltares
                         // it is possible that a new design point is computed. Then also the alpha values are computed.
                         if (zValues[j] * z0Fac < 0)
                         {
-                            designPointBuilder->addSample(sample);
+                            designPointBuilder.addSample(sample);
                         }
                     }
                 }

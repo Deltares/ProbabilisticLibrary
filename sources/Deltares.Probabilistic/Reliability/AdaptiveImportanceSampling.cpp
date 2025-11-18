@@ -57,11 +57,11 @@ namespace Deltares
             std::vector<std::shared_ptr<DesignPoint>> previousDesignPoints = std::vector<std::shared_ptr<DesignPoint>>();
 
             // initialize
-            const std::shared_ptr<StartPointCalculator> startPointCalculator = std::make_shared<StartPointCalculator>();
-            startPointCalculator->Settings = this->Settings->startPointSettings;
-            startPointCalculator->Settings->StochastSet = importanceSampling->Settings->StochastSet;
+            auto startPointCalculator = StartPointCalculator();
+            startPointCalculator.Settings = this->Settings->startPointSettings;
+            startPointCalculator.Settings->StochastSet = importanceSampling->Settings->StochastSet;
 
-            const std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
+            const std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
             this->lastStartPoint = startPoint;
 
             if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)

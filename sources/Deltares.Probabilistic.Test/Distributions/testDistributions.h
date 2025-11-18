@@ -43,6 +43,10 @@ namespace Deltares::Probabilistic::Test
         static void testVariationCoefficient();
         static void testPoisson();
         static void testGamma();
+        static void testStudentT();
+        static void testStudentTwithInterpolation();
+        static void testStudentTwithInterpolationLargeNoObservations();
+        static void testComposite();
         static void testFitNormal();
         static void testFitLogNormal();
         static void testFitBernoulli();

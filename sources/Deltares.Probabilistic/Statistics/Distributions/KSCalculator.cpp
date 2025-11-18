@@ -22,7 +22,6 @@
 #include "KSCalculator.h"
 #include <cmath>
 #include <algorithm>
-#include <memory>
 #include <vector>
 
 #include "Distribution.h"
@@ -31,7 +30,11 @@ namespace Deltares
 {
     namespace Statistics
     {
-        double KSCalculator::getGoodnessOfFit(std::vector<double>& xValues, std::shared_ptr<Distribution> distribution, std::shared_ptr<StochastProperties> stochast)
+        /// @param xValues input values xValues are intentionally copied because they are sorted in this method
+        /// @param distribution the distribution object
+        /// @param stochast the stochast properties
+        /// @return the goodness of fit
+        double KSCalculator::getGoodnessOfFit(std::vector<double> xValues, Distribution& distribution, StochastProperties& stochast)
         {
             if (xValues.empty())
             {
@@ -45,9 +48,9 @@ namespace Deltares
 
                 double ks = 0;
 
-                for (int i = 0; i < xValues.size(); i++)
+                for (int i = 0; i < static_cast<int>(xValues.size()); i++)
                 {
-                    double cdf = distribution->getCDF(stochast, xValues[i]);
+                    double cdf = distribution.getCDF(stochast, xValues[i]);
 
                     double diff1 = std::fabs(cdf - i / size);
                     double diff2 = std::fabs(cdf - (i + 1) / size);

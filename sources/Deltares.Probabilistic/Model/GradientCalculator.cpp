@@ -34,9 +34,9 @@ namespace Deltares
 {
     namespace Models
     {
-        std::vector<double> GradientCalculator::getGradient(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample)
+        std::vector<double> GradientCalculator::getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const
         {
-            int nStochasts = modelRunner->getVaryingStochastCount();
+            int nStochasts = modelRunner.getVaryingStochastCount();
 
             std::vector<std::shared_ptr<Sample>> samples;
             std::vector<double> gradient(nStochasts);
@@ -55,7 +55,7 @@ namespace Deltares
                     samples.push_back(uNew);
                 }
 
-                std::vector<double> zValues = modelRunner->getZValues(samples);
+                std::vector<double> zValues = modelRunner.getZValues(samples);
 
                 double z = zValues[0];
                 for (int k = 0; k < nStochasts; k++)
@@ -77,7 +77,7 @@ namespace Deltares
                     samples.push_back(u2);
                 }
 
-                std::vector<double> zValues = modelRunner->getZValues(samples);
+                std::vector<double> zValues = modelRunner.getZValues(samples);
 
                 for (int k = 0; k < nStochasts; k++)
                 {

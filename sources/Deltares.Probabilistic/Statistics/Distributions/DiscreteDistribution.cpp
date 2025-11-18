@@ -33,28 +33,29 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void DiscreteDistribution::initializeForRun(std::shared_ptr<StochastProperties> stochast)
+        void DiscreteDistribution::initializeForRun(StochastProperties& stochast)
         {
-            std::sort(stochast->DiscreteValues.begin(), stochast->DiscreteValues.end(), [](std::shared_ptr<DiscreteValue> val1, std::shared_ptr<DiscreteValue> val2) {return val1->X < val2->X; });
+            std::sort(stochast.DiscreteValues.begin(), stochast.DiscreteValues.end(),
+                [](const std::shared_ptr<DiscreteValue>& val1, const std::shared_ptr<DiscreteValue>& val2) {return val1->X < val2->X; });
 
             double sum = 0;
-            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
             {
                 sum += discreteValue->Amount;
             }
 
-            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
             {
                 discreteValue->NormalizedAmount = discreteValue->Amount / sum;
             }
 
-            Utils::SetDirtyLambda setDirtyFunction = [stochast]()
+            Utils::SetDirtyLambda setDirtyFunction = [&stochast]()
             {
-                stochast->dirty = true;
+                stochast.dirty = true;
             };
 
             double cumulative = 0;
-            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
             {
                 cumulative += discreteValue->NormalizedAmount;
                 discreteValue->CumulativeNormalizedAmount = cumulative;
@@ -62,76 +63,76 @@ namespace Deltares
                 discreteValue->setDirtyFunction(setDirtyFunction);
             }
 
-            stochast->dirty = false;
+            stochast.dirty = false;
         }
 
-        void DiscreteDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void DiscreteDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            Logging::ValidationSupport::checkNotEmpty(report, stochast->DiscreteValues.size(), "discrete values", subject);
+            Logging::ValidationSupport::checkNotEmpty(report, stochast.DiscreteValues.size(), "discrete values", subject);
 
-            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
             {
                 discreteValue->validate(report, subject);
             }
         }
 
-        bool DiscreteDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool DiscreteDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->DiscreteValues.size() > 1;
+            return stochast.DiscreteValues.size() > 1;
         }
 
-        double DiscreteDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double DiscreteDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            const double delta = 0.0000001;
+            constexpr double delta = 0.0000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
                 initializeForRun(stochast);
             }
 
-            if (stochast->DiscreteValues.empty())
+            if (stochast.DiscreteValues.empty())
             {
                 return std::nan("");
             }
 
             const double p = StandardNormal::getPFromU(u);
 
-            for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+            for (const auto& discreteValue : stochast.DiscreteValues)
             {
-                if (stochast->DiscreteValues[i]->CumulativeNormalizedAmount >= p - delta)
+                if (discreteValue->CumulativeNormalizedAmount >= p - delta)
                 {
-                    return stochast->DiscreteValues[i]->X;
+                    return discreteValue->X;
                 }
             }
 
-            return stochast->DiscreteValues.back()->X;
+            return stochast.DiscreteValues.back()->X;
         }
 
-        double DiscreteDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double DiscreteDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
                 initializeForRun(stochast);
             }
 
-            if (stochast->DiscreteValues.empty())
+            if (stochast.DiscreteValues.empty())
             {
                 return std::nan("");
             }
 
-            double prev = 0;
+            double prev = 0.0;
 
-            for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+            for (const auto& discreteValue : stochast.DiscreteValues)
             {
-                double cum = stochast->DiscreteValues[i]->CumulativeNormalizedAmount;
+                const double cum = discreteValue->CumulativeNormalizedAmount;
 
-                if (x < stochast->DiscreteValues[i]->X)
+                if (x < discreteValue->X)
                 {
                     return StandardNormal::getUFromP(prev);
                 }
-                else if (x == stochast->DiscreteValues[i]->X)
+                else if (x == discreteValue->X)
                 {
-                    double p = (prev + cum) / 2;
+                    double p = (prev + cum) / 2.0;
                     return StandardNormal::getUFromP(p);
                 }
                 else
@@ -143,7 +144,7 @@ namespace Deltares
             return StandardNormal::getUFromP(prev);
         }
 
-        std::vector<double> DiscreteDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        std::vector<double> DiscreteDistribution::getDiscontinuityPoints(StochastProperties& stochast)
         {
             std::vector<double> discontinuityPoints;
             for (const std::shared_ptr<DiscreteValue> & discreteValue : stochast.DiscreteValues)
@@ -157,17 +158,17 @@ namespace Deltares
             return discontinuityPoints;
         }
 
-        double DiscreteDistribution::getRepresentativeU(std::shared_ptr<StochastProperties> stochast, double u)
+        double DiscreteDistribution::getRepresentativeU(StochastProperties& stochast, double u)
         {
-            double x = this->getXFromU(stochast, u);
-            double uRepresentative = this->getUFromX(stochast, x);
+            const double x = getXFromU(stochast, u);
+            const double uRepresentative = getUFromX(stochast, x);
 
             return uRepresentative;
         }
 
-        double DiscreteDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double DiscreteDistribution::getMean(StochastProperties& stochast)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
                 initializeForRun(stochast);
             }
@@ -175,7 +176,7 @@ namespace Deltares
             double sumX = 0;
             double sumAmounts = 0;
 
-            for (std::shared_ptr<DiscreteValue> val : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& val : stochast.DiscreteValues)
             {
                 sumX += val->X * val->Amount;
                 sumAmounts += val->Amount;
@@ -184,14 +185,14 @@ namespace Deltares
             return sumX / sumAmounts;
         }
 
-        double DiscreteDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double DiscreteDistribution::getDeviation(StochastProperties& stochast)
         {
             double mean = getMean(stochast);
 
             double sumVariances = 0;
             double sumWeights = 0;
 
-            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& discreteValue : stochast.DiscreteValues)
             {
                 const double diff = discreteValue->X - mean;
 
@@ -199,23 +200,23 @@ namespace Deltares
                 sumWeights += discreteValue->Amount;
             }
 
-            if (sumWeights == 0)
+            if (sumWeights == 0.0)
             {
                 return 0;
             }
-            else if (sumWeights <= 1)
+            else if (sumWeights <= 1.0)
             {
                 return sqrt(sumVariances / sumWeights);
             }
             else
             {
-                return sqrt(sumVariances / (sumWeights - 1));
+                return sqrt(sumVariances / (sumWeights - 1.0));
             }
         }
 
-        void DiscreteDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void DiscreteDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
                 initializeForRun(stochast);
             }
@@ -223,117 +224,116 @@ namespace Deltares
             double currentMean = getMean(stochast);
             double diff = mean - currentMean;
 
-            for (std::shared_ptr<DiscreteValue> val : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue>& val : stochast.DiscreteValues)
             {
                 val->X += diff;
             }
         }
 
-        double DiscreteDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double DiscreteDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            const double delta = 0.0000001;
+            constexpr double delta = 0.0000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
                 initializeForRun(stochast);
             }
 
-            if (stochast->DiscreteValues.empty())
+            if (stochast.DiscreteValues.empty())
             {
                 return std::nan("");
             }
 
-            for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+            for (const auto& discreteValue : stochast.DiscreteValues)
             {
-                if (Numeric::NumericSupport::areEqual(stochast->DiscreteValues[i]->X, x, delta))
+                if (Numeric::NumericSupport::areEqual(discreteValue->X, x, delta))
                 {
-                    return stochast->DiscreteValues[i]->NormalizedAmount;
+                    return discreteValue->NormalizedAmount;
                 }
             }
 
-            return 0;
-
+            return 0.0;
         }
 
-        double DiscreteDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double DiscreteDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            const double delta = 0.0000001;
+            constexpr double delta = 0.0000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
                 initializeForRun(stochast);
             }
 
-            if (stochast->DiscreteValues.empty())
+            if (stochast.DiscreteValues.empty())
             {
                 return std::nan("");
             }
 
-            double p = 0;
+            double p = 0.0;
 
-            for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+            for (const auto& discreteValue : stochast.DiscreteValues)
             {
-                if (Numeric::NumericSupport::areEqual(stochast->DiscreteValues[i]->X, x, delta))
+                if (Numeric::NumericSupport::areEqual(discreteValue->X, x, delta))
                 {
-                    double pLow = p;
-                    double pHigh = p + stochast->DiscreteValues[i]->NormalizedAmount;
-                    double pAverage = (pLow + pHigh) / 2;
+                    const double pLow = p;
+                    const double pHigh = p + discreteValue->NormalizedAmount;
+                    const double pAverage = (pLow + pHigh) / 2.0;
 
                     return pAverage;
                 }
-                else if (Numeric::NumericSupport::isLess(stochast->DiscreteValues[i]->X, x, delta))
+                else if (Numeric::NumericSupport::isLess(discreteValue->X, x, delta))
                 {
-                    p += stochast->DiscreteValues[i]->NormalizedAmount;
+                    p += discreteValue->NormalizedAmount;
                 }
             }
 
             return p;
         }
 
-        void DiscreteDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void DiscreteDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             std::vector<double> weights = Numeric::NumericSupport::select(values, [](double x) {return 1.0; });
             return fitWeighted(stochast, values, weights);
         }
 
-        void DiscreteDistribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        void DiscreteDistribution::fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights)
         {
-            stochast->DiscreteValues.clear();
+            stochast.DiscreteValues.clear();
 
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = DistributionSupport::GetWeightedValues(values, weights);
+            auto x = DistributionSupport::GetWeightedValues(values, weights);
 
             for (size_t i = 0; i < x.size(); i++)
             {
-                if (stochast->DiscreteValues.empty() || x[i]->value != x[i-1]->value)
+                if (stochast.DiscreteValues.empty() || x[i].value != x[i-1].value)
                 {
-                    stochast->DiscreteValues.push_back(std::make_shared<DiscreteValue>(x[i]->value, x[i]->weight));
+                    stochast.DiscreteValues.push_back(std::make_shared<DiscreteValue>(x[i].value, x[i].weight));
                 }
                 else
                 {
-                    stochast->DiscreteValues.back()->Amount += x[i]->weight;
+                    stochast.DiscreteValues.back()->Amount += x[i].weight;
                 }
             }
 
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Observations = static_cast<int>(values.size());
 
             initializeForRun(stochast);
         }
 
-        std::vector<double> DiscreteDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> DiscreteDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             constexpr double offset = 0.000001;
 
-            if (stochast->dirty)
+            if (stochast.dirty)
             {
                 initializeForRun(stochast);
             }
 
             std::vector<double> specialPoints;
 
-            if (!stochast->DiscreteValues.empty())
+            if (!stochast.DiscreteValues.empty())
             {
-                double min = stochast->DiscreteValues[0]->X;
-                double max = stochast->DiscreteValues.back()->X;
+                double min = stochast.DiscreteValues[0]->X;
+                double max = stochast.DiscreteValues.back()->X;
 
                 double bigOffset = (max - min) / 10;
 
@@ -342,13 +342,12 @@ namespace Deltares
                     bigOffset = 1;
                 }
 
-                specialPoints.push_back(stochast->DiscreteValues[0]->X - bigOffset);
+                specialPoints.push_back(stochast.DiscreteValues[0]->X - bigOffset);
 
                 std::shared_ptr<DiscreteValue> previousValue = nullptr;
 
-                for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+                for (const auto& value : stochast.DiscreteValues)
                 {
-                    std::shared_ptr<DiscreteValue> value = stochast->DiscreteValues[i];
                     if (previousValue != nullptr && Numeric::NumericSupport::areEqual(value->X, previousValue->X, offset))
                     {
                         double lastValueStochastValue = specialPoints[specialPoints.size() - 2];
@@ -370,7 +369,7 @@ namespace Deltares
                     previousValue = value;
                 }
 
-                specialPoints.push_back(stochast->DiscreteValues[stochast->DiscreteValues.size() - 1]->X + bigOffset);
+                specialPoints.push_back(stochast.DiscreteValues[stochast.DiscreteValues.size() - 1]->X + bigOffset);
             }
 
             return specialPoints;

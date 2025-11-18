@@ -31,99 +31,99 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void ExponentialDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void ExponentialDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Scale = deviation;
-            stochast->Shift = mean - stochast->Scale;
+            stochast.Scale = deviation;
+            stochast.Shift = mean - stochast.Scale;
         }
 
-        void ExponentialDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
+        void ExponentialDistribution::setShift(StochastProperties& stochast, const double shift, bool inverted)
         {
-            double oldMean = this->getMean(stochast);
+            double oldMean = getMean(stochast);
 
             if (inverted)
             {
-                oldMean = 2 * stochast->Shift - oldMean;
+                oldMean = 2.0 * stochast.Shift - oldMean;
             }
 
-            stochast->Shift = shift;
+            stochast.Shift = shift;
 
             if (inverted)
             {
-                oldMean = 2 * stochast->Shift - oldMean;
+                oldMean = 2.0 * stochast.Shift - oldMean;
             }
 
-            stochast->Scale = oldMean - shift;
+            stochast.Scale = oldMean - shift;
         }
 
-        void ExponentialDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void ExponentialDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Scale = 1.0 / values[0];
+            stochast.Scale = 1.0 / values[0];
             if (values.size() > 1)
             {
-                stochast->Shift = values[1];
+                stochast.Shift = values[1];
             }
         }
 
-        bool ExponentialDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool ExponentialDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
-        double ExponentialDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double ExponentialDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Scale + stochast->Shift;
+            return stochast.Scale + stochast.Shift;
         }
 
-        double ExponentialDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double ExponentialDistribution::getDeviation(StochastProperties& stochast)
         {
-            return stochast->Scale;
+            return stochast.Scale;
         }
 
-        double ExponentialDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double ExponentialDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             double qu = StandardNormal::getQFromU(u);
-            return stochast->Shift - log(qu) * stochast->Scale;
+            return stochast.Shift - log(qu) * stochast.Scale;
         }
 
-        double ExponentialDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double ExponentialDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            double q = exp((stochast->Shift - x) / stochast->Scale);
+            const double q = exp((stochast.Shift - x) / stochast.Scale);
             return StandardNormal::getUFromQ(q);
         }
 
-        double ExponentialDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double ExponentialDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            if (x < stochast->Shift)
+            if (x < stochast.Shift)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return exp(-(x - stochast->Shift) / stochast->Scale) / stochast->Scale;
+                return exp(-(x - stochast.Shift) / stochast.Scale) / stochast.Scale;
             }
         }
 
-        double ExponentialDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double ExponentialDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x < stochast->Shift)
+            if (x < stochast.Shift)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return 1 - exp(-(x - stochast->Shift) / stochast->Scale);
+                return 1.0 - exp(-(x - stochast.Shift) / stochast.Scale);
             }
         }
 
-        void ExponentialDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void ExponentialDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                double current = getXFromU(stochast, u);
-                double diff = x - current;
+                const double current = getXFromU(stochast, u);
+                const double diff = x - current;
 
-                stochast->Shift += diff;
+                stochast.Shift += diff;
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
@@ -131,11 +131,11 @@ namespace Deltares
             }
         }
 
-        void ExponentialDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void ExponentialDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
-            stochast->Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
-            stochast->Scale = Numeric::NumericSupport::getMean(values) - stochast->Shift;
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Shift = std::isnan(shift) ? this->getFittedMinimum(values) : shift;
+            stochast.Scale = Numeric::NumericSupport::getMean(values) - stochast.Shift;
+            stochast.Observations = static_cast<int>(values.size());
         }
 
         double ExponentialDistribution::getMaxShiftValue(std::vector<double>& values)
@@ -143,9 +143,9 @@ namespace Deltares
             return Numeric::NumericSupport::getMean(values);
         }
 
-        std::vector<double> ExponentialDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> ExponentialDistribution::getSpecialPoints(StochastProperties& stochast)
         {
-            std::vector<double> specialPoints{ stochast->Shift };
+            std::vector<double> specialPoints{ stochast.Shift };
             return specialPoints;
         }
     }

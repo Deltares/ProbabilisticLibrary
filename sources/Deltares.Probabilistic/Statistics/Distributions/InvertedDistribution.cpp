@@ -29,110 +29,110 @@ namespace Deltares
 {
     namespace Statistics
     {
-        double InvertedDistribution::getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value) const
+        double InvertedDistribution::getInvertedValue(const StochastProperties& stochast, double value) const
         {
-            double center = isShiftUsed() ? stochast->Shift : 0;
-            return 2 * center - value;
+            double center = isShiftUsed() ? stochast.Shift : 0.0;
+            return 2.0 * center - value;
         }
 
-        std::shared_ptr<StochastProperties> InvertedDistribution::getInvertedStochast(std::shared_ptr<StochastProperties> stochast) const
+        StochastProperties InvertedDistribution::getInvertedStochast(const StochastProperties& stochast) const
         {
-            std::shared_ptr<StochastProperties> invertedStochast = std::make_shared<StochastProperties>();
+            auto invertedStochast = StochastProperties();
             this->copyFromInverted(invertedStochast, stochast);
             return invertedStochast;
         }
 
-        void InvertedDistribution::copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source) const
+        void InvertedDistribution::copyFromInverted(StochastProperties& target, const StochastProperties& source) const
         {
-            target->Location = source->Location;
-            target->Scale = source->Scale;
-            target->Shape = source->Shape;
-            target->ShapeB = source->ShapeB;
-            target->Shift = source->Shift;
-            target->ShiftB = source->ShiftB;
-            target->Observations = source->Observations;
+            target.Location = source.Location;
+            target.Scale = source.Scale;
+            target.Shape = source.Shape;
+            target.ShapeB = source.ShapeB;
+            target.Shift = source.Shift;
+            target.ShiftB = source.ShiftB;
+            target.Observations = source.Observations;
 
-            target->Minimum = getInvertedValue(source, source->Maximum);
-            target->Maximum = getInvertedValue(source, source->Minimum);
+            target.Minimum = getInvertedValue(source, source.Maximum);
+            target.Maximum = getInvertedValue(source, source.Minimum);
         }
 
-        void InvertedDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void InvertedDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
             const double invertedMean = this->getInvertedValue(stochast, mean);
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
 
             this->innerDistribution->setMeanAndDeviation(invertedStochast, invertedMean, deviation);
 
             copyFromInverted(stochast, invertedStochast);
         }
 
-        void InvertedDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
+        void InvertedDistribution::setShift(StochastProperties& stochast, const double shift, bool inverted)
         {
             this->innerDistribution->setShift(stochast, shift, true);
         }
 
-        bool InvertedDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool InvertedDistribution::isVarying(StochastProperties& stochast)
         {
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
 
             return this->innerDistribution->isVarying(invertedStochast);
         }
 
-        double InvertedDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double InvertedDistribution::getMean(StochastProperties& stochast)
         {
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             return this->getInvertedValue(stochast, this->innerDistribution->getMean(invertedStochast));
         }
 
-        double InvertedDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double InvertedDistribution::getDeviation(StochastProperties& stochast)
         {
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             return this->innerDistribution->getDeviation(invertedStochast);
         }
 
-        double InvertedDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double InvertedDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             const double xInvert = this->innerDistribution->getXFromU(invertedStochast, -u);
 
             return this->getInvertedValue(stochast, xInvert);
         }
 
-        double InvertedDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double InvertedDistribution::getUFromX(StochastProperties& stochast, double x)
         {
             const double xInvert = this->getInvertedValue(stochast, x);
 
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             return - this->innerDistribution->getUFromX(invertedStochast, xInvert);
         }
 
-        double InvertedDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double InvertedDistribution::getPDF(StochastProperties& stochast, double x)
         {
             const double xInvert = this->getInvertedValue(stochast, x);
 
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             return this->innerDistribution->getPDF(invertedStochast, xInvert);
         }
 
-        double InvertedDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double InvertedDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            const double xInvert = this->getInvertedValue(stochast, x);
+            const double xInvert = getInvertedValue(stochast, x);
 
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
-            return 1 - this->innerDistribution->getCDF(invertedStochast, xInvert);
+            auto invertedStochast = getInvertedStochast(stochast);
+            return 1.0 - innerDistribution->getCDF(invertedStochast, xInvert);
         }
 
-        void InvertedDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void InvertedDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             double xInvert = this->getInvertedValue(stochast, x);
 
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             this->innerDistribution->setXAtU(invertedStochast, xInvert, -u, constantType);
 
             copyFromInverted(stochast, invertedStochast);
         }
 
-        void InvertedDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void InvertedDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
@@ -140,21 +140,22 @@ namespace Deltares
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
-                const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+                auto invertedStochast = getInvertedStochast(stochast);
                 this->innerDistribution->fit(invertedStochast, zeroInvertedValues, shift);
 
-                stochast->Shift = -stochast->Shift;
+                stochast.Shift = -stochast.Shift;
             }
 
-            std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, stochast](double x) {return this->getInvertedValue(stochast, x); });
+            std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, &stochast](double x)
+                {return this->getInvertedValue(stochast, x); });
 
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             this->innerDistribution->fit(invertedStochast, invertedValues, -shift);
 
             copyFromInverted(stochast, invertedStochast);
         }
 
-        void InvertedDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
+        void InvertedDistribution::fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
@@ -162,21 +163,21 @@ namespace Deltares
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
-                const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
-                const std::shared_ptr<StochastProperties> invertedPrior = getInvertedStochast(prior);
+                auto invertedStochast = getInvertedStochast(stochast);
+                auto invertedPrior = getInvertedStochast(prior);
 
                 this->innerDistribution->fitPrior(invertedStochast, zeroInvertedValues, invertedPrior, shift);
 
-                stochast->Shift = -stochast->Shift;
+                stochast.Shift = -stochast.Shift;
             }
 
-            std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, stochast](double x)
+            std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, &stochast](double x)
             {
                 return this->getInvertedValue(stochast, x);
             });
 
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
-            const std::shared_ptr<StochastProperties> invertedPrior = getInvertedStochast(prior);
+            auto invertedStochast = getInvertedStochast(stochast);
+            auto invertedPrior = getInvertedStochast(prior);
 
             this->innerDistribution->fitPrior(invertedStochast, invertedValues, invertedPrior, -shift);
 
@@ -190,9 +191,9 @@ namespace Deltares
             return - innerDistribution->getMaxShiftValue(zeroInvertedValues);
         }
 
-        void InvertedDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void InvertedDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             this->innerDistribution->validate(report, invertedStochast, subject);
         }
 
@@ -200,24 +201,25 @@ namespace Deltares
         {
             return std::ranges::any_of(this->innerDistribution->getParameters(), [](DistributionPropertyType parameter)
             {
-                return parameter == Shift;
+                return parameter == DistributionPropertyType::Shift;
             });
         }
 
-        double InvertedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+        double InvertedDistribution::getLogLikelihood(StochastProperties& stochast, double x)
         {
             const double xInvert = this->getInvertedValue(stochast, x);
 
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             return this->innerDistribution->getLogLikelihood(invertedStochast, xInvert);
         }
 
-        std::vector<double> InvertedDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> InvertedDistribution::getSpecialPoints(StochastProperties& stochast)
         {
-            const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+            auto invertedStochast = getInvertedStochast(stochast);
             std::vector<double> specialPoints = this->innerDistribution->getSpecialPoints(invertedStochast);
 
-            return Numeric::NumericSupport::select(specialPoints, [this, stochast](double x) {return this->getInvertedValue(stochast, x); });
+            return Numeric::NumericSupport::select(specialPoints, [this, &stochast](double x)
+                {return this->getInvertedValue(stochast, x); });
         }
 
         std::vector<DistributionPropertyType> InvertedDistribution::getParameters()

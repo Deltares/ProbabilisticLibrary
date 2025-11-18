@@ -35,12 +35,12 @@ namespace Deltares
 
             const int nStochasts = modelRunner->getVaryingStochastCount();
 
-            auto sampleProvider = SampleProvider(Settings->StochastSet);
+            auto sampleProvider = SampleProvider(*Settings->StochastSet);
             auto initialSample = sampleProvider.getSample();
             double z0Fac = getZFactor(modelRunner->getZValue(initialSample));
 
-            auto optModel = std::make_shared<wrappedOptimizationModel>(modelRunner, z0Fac);
-            optModel->uMean = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
+            auto optModel = wrappedOptimizationModel(modelRunner, z0Fac);
+            optModel.uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
             auto optimizer = CobylaOptimization();
             optimizer.settings.EpsilonBeta = Settings->EpsilonBeta;
@@ -64,7 +64,7 @@ namespace Deltares
             }
             beta = z0Fac * std::sqrt(beta);
 
-            auto uMin = optModel->uMean->getSample();
+            auto uMin = optModel.uMean.getSample();
             std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
             convergenceReport->IsConverged = result.success;
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Cobyla Reliability");
@@ -72,13 +72,13 @@ namespace Deltares
             return designPoint;
         };
 
-        double wrappedOptimizationModel::GetConstraintValue(const std::shared_ptr<Sample> sample) const
+        double wrappedOptimizationModel::GetConstraintValue(const std::shared_ptr<Sample> sample)
         {
             auto z = modelRunner->getZValue(sample);
 
             if (z * z0Fac < 0.0)
             {
-                uMean->addSample(sample);
+                uMean.addSample(sample);
             }
             return std::abs(z);
         }

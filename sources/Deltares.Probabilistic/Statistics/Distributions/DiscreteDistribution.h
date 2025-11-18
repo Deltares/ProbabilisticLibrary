@@ -27,23 +27,23 @@ namespace Deltares
     {
         class DiscreteDistribution : public Distribution
         {
-            double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
-            double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
-            bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
-            double getMean(std::shared_ptr<StochastProperties> stochast) override;
-            double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
-            bool maintainMeanAndDeviation(std::shared_ptr<StochastProperties> stochast) override { return false; }
-            void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
-            void initializeForRun(std::shared_ptr<StochastProperties> stochast) override;
-            double getRepresentativeU(std::shared_ptr<StochastProperties> stochast, double u) override;
-            double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
-            double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
+            double getXFromU(StochastProperties& stochast, double u) override;
+            double getUFromX(StochastProperties& stochast, double x) override;
+            bool isVarying(StochastProperties& stochast) override;
+            double getMean(StochastProperties& stochast) override;
+            double getDeviation(StochastProperties& stochast) override;
+            bool maintainMeanAndDeviation(const StochastProperties& stochast) override { return false; }
+            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+            void initializeForRun(StochastProperties& stochast) override;
+            double getRepresentativeU(StochastProperties& stochast, double u) override;
+            double getPDF(StochastProperties& stochast, double x) override;
+            double getCDF(StochastProperties& stochast, double x) override;
             bool canFit() override { return true; }
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
-            void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights) override;
-            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
-            std::vector<double> getDiscontinuityPoints(const StochastProperties& stochast) override;
-            std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
+            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+            void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
+            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+            std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;
+            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
         };
     }
 }

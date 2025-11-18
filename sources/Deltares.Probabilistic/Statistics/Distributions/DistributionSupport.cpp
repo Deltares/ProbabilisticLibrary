@@ -30,7 +30,7 @@
 
 namespace Deltares::Statistics
 {
-    void DistributionSupport::setXAtUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+    void DistributionSupport::setXAtUByIteration(Distribution& distribution, StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
     {
         constexpr double delta = 0.00001;
         const double margin = std::min(delta, std::fabs(x / 1000000));
@@ -42,7 +42,7 @@ namespace Deltares::Statistics
 
         if (constantType == ConstantParameterType::Deviation)
         {
-            Numeric::RootFinderMethod function = [&distribution, stochast, currentDeviation, u](double mean)
+            Numeric::RootFinderMethod function = [&distribution, &stochast, currentDeviation, u](double mean)
             {
                 distribution.setMeanAndDeviation(stochast, mean, currentDeviation);
                 return distribution.getXFromU(stochast, u);
@@ -55,7 +55,7 @@ namespace Deltares::Statistics
         {
             double variationCoefficient = currentMean == 0.0 ? currentDeviation : std::fabs(currentDeviation / currentMean);
 
-            Numeric::RootFinderMethod function = [&distribution, stochast, variationCoefficient, u](double mean)
+            Numeric::RootFinderMethod function = [&distribution, &stochast, variationCoefficient, u](double mean)
             {
                 double deviation = std::fabs(mean * variationCoefficient);
                 distribution.setMeanAndDeviation(stochast, mean, deviation);
@@ -72,11 +72,11 @@ namespace Deltares::Statistics
         }
     }
 
-    double DistributionSupport::getXFromUByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast, double u)
+    double DistributionSupport::getXFromUByIteration(Distribution& distribution, StochastProperties& stochast, double u)
     {
         // check whether the cdf value is at a discontinuity
 
-        for (double x : distribution.getDiscontinuityPoints(*stochast))
+        for (double x : distribution.getDiscontinuityPoints(stochast))
         {
             constexpr double minDiff = 1E-6;
             constexpr double fractionDiff = 1E-10;
@@ -90,7 +90,7 @@ namespace Deltares::Statistics
 
         // not at a discontinuity, search by bisection
 
-        Numeric::RootFinderMethod function = [&distribution, stochast](double x)
+        Numeric::RootFinderMethod function = [&distribution, &stochast](double x)
         {
             return distribution.getCDF(stochast, x);
         };
@@ -106,21 +106,21 @@ namespace Deltares::Statistics
         return x;
     }
 
-    double DistributionSupport::getMeanByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast)
+    double DistributionSupport::getMeanByIteration(Distribution& distribution, StochastProperties& stochast)
     {
         std::vector<double> values = getValuesForIteration(distribution, stochast);
         return Numeric::NumericSupport::getMean(values);
     }
 
-    double DistributionSupport::getDeviationByIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast)
+    double DistributionSupport::getDeviationByIteration(Distribution& distribution, StochastProperties& stochast)
     {
         std::vector<double> values = getValuesForIteration(distribution, stochast);
         return Numeric::NumericSupport::getStandardDeviation(values);
     }
 
-    std::vector<double> DistributionSupport::getValuesForIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast)
+    std::vector<double> DistributionSupport::getValuesForIteration(Distribution& distribution, StochastProperties& stochast)
     {
-        const int steps = 1000;
+        constexpr int steps = 1000;
 
         std::vector<double> values(steps);
 
@@ -136,27 +136,29 @@ namespace Deltares::Statistics
         return values;
     }
 
-    std::vector<std::shared_ptr<Numeric::WeightedValue>> DistributionSupport::GetWeightedValues(std::vector<double>& values, std::vector<double>& weights)
+    std::vector<Numeric::WeightedValue> DistributionSupport::GetWeightedValues(const std::vector<double>& values, const std::vector<double>& weights)
     {
-        std::vector<std::shared_ptr<Numeric::WeightedValue>> weightedValues;
+        std::vector<Numeric::WeightedValue> weightedValues;
 
         for (size_t i = 0; i < values.size(); i++)
         {
             if (!std::isnan(values[i]))
             {
-                weightedValues.push_back(std::make_shared<Numeric::WeightedValue>(values[i], weights[i]));
+                weightedValues.push_back(Numeric::WeightedValue(values[i], weights[i]));
             }
         }
 
         if (!weightedValues.empty())
         {
-            std::sort(weightedValues.begin(), weightedValues.end(), [](std::shared_ptr<Numeric::WeightedValue> val1, std::shared_ptr<Numeric::WeightedValue> val2) {return val1->value < val2->value; });
+            std::sort(weightedValues.begin(), weightedValues.end(),
+                [](const Numeric::WeightedValue& val1, const Numeric::WeightedValue& val2)
+                {return val1.value < val2.value; });
         }
 
         return weightedValues;
     }
 
-    std::vector<double> DistributionSupport::getExpandedValues(std::vector<double>& values, std::vector<double>& weights)
+    std::vector<double> DistributionSupport::getExpandedValues(const std::vector<double>& values, const std::vector<double>& weights)
     {
         // if all low amounts, make amounts bigger to get a useful set to perform fit
         double minWeight = 1.0;

@@ -20,11 +20,8 @@
 // All rights reserved.
 //
 #pragma once
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
-    {
-        enum DistributionPropertyType { Location, Scale, Minimum, Maximum, Shift, ShiftB, Shape, ShapeB, Observations };
-    }
+    enum class DistributionPropertyType { Location, Scale, Minimum, Maximum, Shift, ShiftB, Shape, ShapeB, Observations };
 }
 

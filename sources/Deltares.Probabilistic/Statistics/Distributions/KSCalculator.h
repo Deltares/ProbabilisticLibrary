@@ -39,7 +39,7 @@ namespace Deltares
              * \param stochast Stochastic variable
              * \return Kolmogorov-Smirnov statistic (0 = perfect match, 1 = worst possible match)) 
              */
-            static double getGoodnessOfFit(std::vector<double>& xValues, std::shared_ptr<Distribution> distribution, std::shared_ptr<StochastProperties> stochast);
+            static double getGoodnessOfFit(std::vector<double> xValues, Distribution& distribution, StochastProperties& stochast);
         };
     }
 }

@@ -28,38 +28,38 @@ namespace Deltares
 {
     namespace Statistics
     {
-        bool StandardNormalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool StandardNormalDistribution::isVarying(StochastProperties& stochast)
         {
             return true;
         }
 
-        double StandardNormalDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double StandardNormalDistribution::getMean(StochastProperties& stochast)
         {
             return standardNormalMean;
         }
 
-        double StandardNormalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double StandardNormalDistribution::getDeviation(StochastProperties& stochast)
         {
             return standardNormalDeviation;
         }
 
-        double StandardNormalDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double StandardNormalDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             return u;
         }
 
-        double StandardNormalDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double StandardNormalDistribution::getUFromX(StochastProperties& stochast, double x)
         {
             return x;
         }
 
-        double StandardNormalDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double StandardNormalDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            double distance = -x * x / 2;
+            const double distance = -x * x / 2.0;
             return normalFactor * exp(distance);
         }
 
-        double StandardNormalDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double StandardNormalDistribution::getCDF(StochastProperties& stochast, double x)
         {
             return StandardNormal::getPFromU(x);
         }

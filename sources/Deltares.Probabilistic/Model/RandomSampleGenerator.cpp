@@ -38,7 +38,7 @@ namespace Deltares
 
             if (sampleProvider == nullptr)
             {
-                sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
+                sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
             }
         }
 

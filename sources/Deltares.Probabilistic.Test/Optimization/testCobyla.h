@@ -43,7 +43,7 @@ namespace Deltares
             {
             public:
                 double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
-                double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) const override;
+                double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) override;
                 unsigned GetNumberOfConstraints() const override { return 1; }
             };
 

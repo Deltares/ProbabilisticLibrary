@@ -33,65 +33,65 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void NormalDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void NormalDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Location = mean;
-            stochast->Scale = deviation;
+            stochast.Location = mean;
+            stochast.Scale = deviation;
         }
 
-        void NormalDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void NormalDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool NormalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool NormalDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
-        double NormalDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double NormalDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
-        double NormalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double NormalDistribution::getDeviation(StochastProperties& stochast)
         {
-            return stochast->Scale;
+            return stochast.Scale;
         }
 
-        double NormalDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double NormalDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            return stochast->Location + u * stochast->Scale;
+            return stochast.Location + u * stochast.Scale;
         }
 
-        double NormalDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double NormalDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            return (x - stochast->Location) / stochast->Scale;
+            return (x - stochast.Location) / stochast.Scale;
         }
 
-        double NormalDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double NormalDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            double x0 = x - stochast->Location;
-            double sigma = stochast->Scale;
+            const double x0 = x - stochast.Location;
+            const double sigma = stochast.Scale;
 
-            double normalFactor = 1 / (sigma * sqrt(2 * std::numbers::pi));
-            double distance = -x0 * x0 / (2 * sigma * sigma);
+            const double normalFactor = 1.0 / (sigma * sqrt(2.0 * std::numbers::pi));
+            const double distance = -x0 * x0 / (2.0 * sigma * sigma);
 
             return normalFactor * exp(distance);
         }
 
-        double NormalDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double NormalDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            double u = this->getUFromX(stochast, x);
+            const double u = this->getUFromX(stochast, x);
 
             return StandardNormal::getPFromU(u);
         }
 
-        void NormalDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void NormalDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             if (constantType == ConstantParameterType::Deviation)
             {
-                stochast->Location = x - u * stochast->Scale;
+                stochast.Location = x - u * stochast.Scale;
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
@@ -99,51 +99,52 @@ namespace Deltares
             }
         }
 
-        double NormalDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+        double NormalDistribution::getLogLikelihood(StochastProperties& stochast, double x)
         {
-            double x0 = x - stochast->Location;
-            double sigma = stochast->Scale;
+            const double x0 = x - stochast.Location;
+            const double sigma = stochast.Scale;
 
-            double normalFactor = 1 / (sigma * sqrt(2 * std::numbers::pi));
-            double distance = -x0 * x0 / (2 * sigma * sigma);
+            const double normalFactor = 1.0 / (sigma * sqrt(2.0 * std::numbers::pi));
+            const double distance = -x0 * x0 / (2.0 * sigma * sigma);
 
             return log(normalFactor) + distance;
         }
 
-        void NormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void NormalDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
-            stochast->Location = Numeric::NumericSupport::getMean(values);
-            stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, values);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Location = Numeric::NumericSupport::getMean(values);
+            stochast.Scale = Numeric::NumericSupport::getStandardDeviation(stochast.Location, values);
+            stochast.Observations = static_cast<int>(values.size());
         }
 
-        void NormalDistribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        void NormalDistribution::fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights)
         {
             double location = Numeric::NumericSupport::getWeightedMean(values, weights);
-            stochast->Location = location;
+            stochast.Location = location;
 
-            std::vector<double> variances = Numeric::NumericSupport::zip(values, weights, [location](double value, double weight) { return weight * (value - location) * (value - location); });
+            std::vector<double> variances = Numeric::NumericSupport::zip(values, weights,
+                [location](double value, double weight) { return weight * (value - location) * (value - location); });
             double sumVariances = Numeric::NumericSupport::sum(variances);
             double sumWeights = Numeric::NumericSupport::sum(weights);
 
-            stochast->Scale = std::sqrt(sumVariances / sumWeights);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Scale = std::sqrt(sumVariances / sumWeights);
+            stochast.Observations = static_cast<int>(values.size());
         }
 
-        void NormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
+        void NormalDistribution::fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
             fit(stochast, values, shift);
 
             int n = static_cast<int>(values.size());
 
-            double sigma2 = 1 / (prior->Scale * prior->Scale) + n / (stochast->Scale * stochast->Scale);
-            sigma2 = 1 / sigma2;
+            double sigma2 = 1.0 / (prior.Scale * prior.Scale) + n / (stochast.Scale * stochast.Scale);
+            sigma2 = 1.0 / sigma2;
 
-            double mu = sigma2 * (prior->Location / (prior->Scale * prior->Scale) + n * stochast->Location / (stochast->Scale * stochast->Scale));
+            double mu = sigma2 * (prior.Location / (prior.Scale * prior.Scale) + n * stochast.Location / (stochast.Scale * stochast.Scale));
 
-            stochast->Location = mu;
-            stochast->Scale = sqrt(sigma2);
-            stochast->Observations = prior->Observations + static_cast<int>(values.size());
+            stochast.Location = mu;
+            stochast.Scale = sqrt(sigma2);
+            stochast.Observations = prior.Observations + static_cast<int>(values.size());
         }
     }
 }

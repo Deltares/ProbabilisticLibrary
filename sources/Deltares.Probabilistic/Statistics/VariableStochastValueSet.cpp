@@ -99,7 +99,7 @@ namespace Deltares
             for (auto stochastValue : StochastValues)
             {
                 std::shared_ptr<StochastProperties> properties = this->getInterpolatedStochast(stochastValue->X);
-                distribution->validate(report, properties, subject);
+                distribution->validate(report, *properties, subject);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Deltares
             for (auto stochastValue : StochastValues)
             {
                 std::shared_ptr<StochastProperties> properties = this->getInterpolatedStochast(stochastValue->X);
-                if (!distribution->isValid(properties))
+                if (!distribution->isValid(*properties))
                 {
                     return false;
                 }
@@ -131,7 +131,7 @@ namespace Deltares
             for (size_t i = 0; i < StochastValues.size(); i++)
             {
                 std::shared_ptr<StochastProperties> mergedStochast = defaultStochast != nullptr ?  StochastValues[i]->getMergedStochast(distribution, defaultStochast) : StochastValues[i]->Stochast;
-                if (distribution->isVarying(mergedStochast))
+                if (distribution->isVarying(*mergedStochast))
                 {
                     return true;
                 }

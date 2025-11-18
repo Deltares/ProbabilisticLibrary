@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "Distribution.h"
+
 #include "DistributionSupport.h"
 #include "../../Math/NumericSupport.h"
 #include "../../Logging/ValidationSupport.h"
@@ -28,44 +29,44 @@ namespace Deltares
 {
     namespace Statistics
     {
-        std::vector<double> Distribution::getDiscontinuityPoints(const StochastProperties& stochast)
-        {
-            std::shared_ptr<StochastProperties> stochastPtr = std::make_shared<StochastProperties>(stochast);
+        using enum DistributionPropertyType;
 
-            if (isVarying(stochastPtr))
+        std::vector<double> Distribution::getDiscontinuityPoints(StochastProperties& stochast)
+        {
+            if (isVarying(stochast))
             {
                 return {};
             }
             else
             {
-                return { getMean(stochastPtr) };
+                return {getMean(stochast)};
             }
         }
 
-        void Distribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        void Distribution::fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights)
         {
             std::vector<double> newValues = DistributionSupport::getExpandedValues(values, weights);
 
             fit(stochast, newValues, std::nan(""));
         }
 
-        double Distribution::getFittedMinimum(std::vector<double>& x)
+        double Distribution::getFittedMinimum(const std::vector<double>& x)
         {
             double min = Numeric::NumericSupport::getMinimum(x);
             double max = Numeric::NumericSupport::getMaximum(x);
 
             double diff = max - min;
-            double add = diff / x.size();
+            double add = diff / static_cast<double>(x.size());
 
             return min - add;
         }
 
-        double Distribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+        double Distribution::getLogLikelihood(StochastProperties& stochast, double x)
         {
             return log(this->getPDF(stochast, x));
         }
 
-        bool Distribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        bool Distribution::isValid(StochastProperties& stochast)
         {
             std::string empty_subject;
 
@@ -74,37 +75,37 @@ namespace Deltares
             return report.isValid();
         }
 
-        void Distribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void Distribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
             for (DistributionPropertyType property : this->getParameters())
             {
                 if (property == Location)
                 {
-                    Logging::ValidationSupport::checkFinite(report, stochast->Location, "location", subject);
+                    Logging::ValidationSupport::checkFinite(report, stochast.Location, "location", subject);
                 }
                 else if (property == Scale)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->Scale, "scale", subject);
+                    Logging::ValidationSupport::checkMinimum(report, 0.0, stochast.Scale, "scale", subject);
                 }
                 else if (property == Shape)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->Shape, "shape", subject);
+                    Logging::ValidationSupport::checkMinimum(report, 0.0, stochast.Shape, "shape", subject);
                 }
                 else if (property == ShapeB)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->ShapeB, "shape B", subject);
+                    Logging::ValidationSupport::checkMinimum(report, 0.0, stochast.ShapeB, "shape B", subject);
                 }
                 else if (property == Maximum)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Maximum, "maximum", subject);
+                    Logging::ValidationSupport::checkMinimum(report, stochast.Minimum, stochast.Maximum, "maximum", subject);
                 }
                 else if (property == ShiftB)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, stochast->Shift, stochast->ShiftB, "shift B", subject);
+                    Logging::ValidationSupport::checkMinimum(report, stochast.Shift, stochast.ShiftB, "shift B", subject);
                 }
                 else if (property == Observations)
                 {
-                    Logging::ValidationSupport::checkMinimumInt(report, 2, stochast->Observations, "observations", subject);
+                    Logging::ValidationSupport::checkMinimumInt(report, 2, stochast.Observations, "observations", subject);
                 }
             }
         }
