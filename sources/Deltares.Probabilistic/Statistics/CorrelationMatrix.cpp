@@ -219,9 +219,12 @@ namespace Deltares
             return false;
         }
 
-        void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
+        void CorrelationMatrix::filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index)
         {
-            if (m->dim == 0) return;
+            if (m->getDimension() == 0) return;
+            auto corrM = std::dynamic_pointer_cast<CorrelationMatrix> (m);
+            if (corrM == nullptr) throw probLibException("error casting a correlation matrix in filter method.");
+
             auto nrAllStochasts = index.size();
 
             for (size_t i = 0; i < nrAllStochasts; i++)
@@ -232,7 +235,7 @@ namespace Deltares
                     auto jj = findNewIndex(index, j);
                     if (index[i] >= 0 && index[j] >= 0)
                     {
-                        SetCorrelation(ii, jj, m->matrix(i, j));
+                        SetCorrelation(ii, jj, corrM->matrix(i, j));
                     }
                 }
             }

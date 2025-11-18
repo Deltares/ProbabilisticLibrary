@@ -37,7 +37,7 @@ namespace Deltares
 {
     namespace Models
     {
-        UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> stochastCorrelationMatrix)
+        UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::BaseCorrelation> stochastCorrelationMatrix)
         {
             this->stochasts.clear();
 
@@ -319,7 +319,12 @@ namespace Deltares
 
             if (settings->AreStartValuesCorrelated)
             {
-                const std::vector<double> uncorrelatedStartValues = varyingCorrelationMatrix->InverseCholesky(startValues);
+                auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
+                if (corrM == nullptr)
+                {
+                    throw Reliability::probLibException("not implemented yet");
+                }
+                const std::vector<double> uncorrelatedStartValues = corrM->InverseCholesky(startValues);
 
                 for (size_t i = 0; i < settings->VaryingStochastSettings.size(); i++)
                 {
@@ -393,7 +398,12 @@ namespace Deltares
 
         std::vector<double> UConverter::getUValues(std::shared_ptr<Sample> sample)
         {
-            return varyingCorrelationMatrix->Cholesky(sample->Values);
+            auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
+            if (corrM == nullptr)
+            {
+                throw Reliability::probLibException("not implemented yet");
+            }
+            return corrM->Cholesky(sample->Values);
         }
 
         std::vector<double> UConverter::getExpandedUValues(std::shared_ptr<Sample> sample)
@@ -409,7 +419,12 @@ namespace Deltares
                 }
             }
 
-            std::vector<double> uCorrelated = varyingCorrelationMatrix->Cholesky(unexpandedUValues);
+            auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
+            if (corrM == nullptr)
+            {
+                throw Reliability::probLibException("not implemented yet");
+            }
+            std::vector<double> uCorrelated = corrM->Cholesky(unexpandedUValues);
 
             std::vector<double> expandedUValues = getExpandedValues(uCorrelated);
 
@@ -635,7 +650,12 @@ namespace Deltares
                     count = static_cast<int>(uValuesNew.size());
                 }
 
-                auto uCorrelated = varyingCorrelationMatrix->Cholesky(uValues);
+                auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
+                if (corrM == nullptr)
+                {
+                    throw Reliability::probLibException("not implemented yet");
+                }
+                auto uCorrelated = corrM->Cholesky(uValues);
 
                 auto alphaCorrelated = std::vector<double>(count);
                 for (int i = 0; i < count; i++)
