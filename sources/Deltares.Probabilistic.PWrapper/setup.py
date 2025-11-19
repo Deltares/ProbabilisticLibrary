@@ -33,7 +33,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    package_data={'probabilistic_library':['bin/*Deltares.Probabilistic.*.*']},    
+    package_data={'probabilistic_library':['bin/*Deltares.Probabilistic.*.*', 'bin/*.dll']},    
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: LGPL License",

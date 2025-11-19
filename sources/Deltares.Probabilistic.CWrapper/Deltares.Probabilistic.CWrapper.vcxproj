@@ -138,7 +138,9 @@
     </CustomBuildStep>
     <PostBuildEvent>
       <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\probabilistic_library\bin"
-copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\probabilistic_library\bin\$(TargetName).dll"</Command>
+copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\probabilistic_library\bin\$(TargetName).dll"
+copy /Y "$(ProjectDir)..\..\lib\VC++\*.dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\probabilistic_library\bin"
+copy /Y "$(ProjectDir)..\..\lib\VC++\*.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
