@@ -19,5 +19,27 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #include "BaseCorrelation.h"
+
+namespace Deltares::Statistics
+{
+    int BaseCorrelation::findNewIndex(const std::vector<int>& index, const size_t i)
+    {
+        if (index[i] == -1)
+        {
+            return -1;
+        }
+        else
+        {
+            int newIndex = 0;
+            for (size_t j = 0; j < i; j++)
+            {
+                if (index[j] >= 0) newIndex++;
+            }
+
+            return newIndex;
+        }
+    }
+}
 

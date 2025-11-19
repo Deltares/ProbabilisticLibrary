@@ -33,14 +33,22 @@ namespace Deltares::Statistics
         double correlation;
     };
 
+    enum class correlationType
+    {
+        Gaussian,
+        Frank,
+        Clayton,
+        Gumbel
+    };
+
     class BaseCorrelation
     {
     public:
         virtual void init(const int maxStochasts) {}
         virtual void init(std::vector<std::shared_ptr<Stochast>> stochasts) {}
 
-        virtual void SetCorrelation(const int i, const int j, double value) {}
-        virtual void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value) {}
+        virtual void SetCorrelation(const int i, const int j, double value, correlationType type = correlationType::Gaussian) {}
+        virtual void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type = correlationType::Gaussian) {}
 
         virtual double GetCorrelation(const int i, const int j) const { return -1; }
         virtual double GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) { return -1; }
@@ -51,11 +59,14 @@ namespace Deltares::Statistics
         virtual std::shared_ptr<Stochast> getStochast(int index) { return nullptr; }
         virtual bool HasConflictingCorrelations() const { return false; }
         virtual void resolveConflictingCorrelations() {}
+        virtual std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) { return {}; }
         virtual void CholeskyDecomposition() {}
         virtual void InverseCholeskyDecomposition() {}
         virtual bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const { return false; }
         virtual void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) {}
         virtual indexWithCorrelation findDependent(const int i) const { return indexWithCorrelation(); }
+    protected:
+        static int findNewIndex(const std::vector<int>& index, const size_t i);
     };
 }
 

@@ -52,11 +52,12 @@ namespace Deltares
             void init(const int maxStochasts) override;
             void init(std::vector<std::shared_ptr<Stochast>> stochasts) override;
 
-            std::vector<double> Cholesky(const std::vector<double>& uValues);
+            std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
 
-            void SetCorrelation(const int i, const int j, double value) override;
-            void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value) override;
+            void SetCorrelation(const int i, const int j, double value, correlationType type=correlationType::Gaussian) override;
+            void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2,
+                double value, correlationType type=correlationType::Gaussian) override;
 
             double GetCorrelation(const int i, const int j) const override;
             double GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) override;
@@ -76,7 +77,6 @@ namespace Deltares
             Deltares::Numeric::Matrix matrix = Deltares::Numeric::Matrix(0, 0);
             Deltares::Numeric::Matrix choleskyMatrix = Deltares::Numeric::Matrix(0, 0);
             Deltares::Numeric::Matrix inverseCholeskyMatrix = Deltares::Numeric::Matrix(0, 0);
-            static int findNewIndex(const std::vector<int> index, const size_t i);
             std::map<std::shared_ptr<Stochast>, int> stochastIndex;
             std::vector<std::shared_ptr<Stochast>> stochasts;
             std::vector<indexWithCorrelation> indexer;

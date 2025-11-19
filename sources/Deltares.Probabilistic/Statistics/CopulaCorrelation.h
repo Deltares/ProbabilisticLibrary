@@ -25,33 +25,53 @@
 #include <vector>
 #include "Stochast.h"
 #include "BaseCorrelation.h"
+#include "BaseCopula.h"
 
 namespace Deltares::Statistics
 {
+    struct copulaPair
+    {
+        int i;
+        int j;
+        std::shared_ptr<BaseCopula> copula;
+    };
 
-    class CorrelationMatrix : public BaseCorrelation
+    class CopulaCorrelation : public BaseCorrelation
     {
     public:
-        void init(const int maxStochasts) override;
-        void init(std::vector<std::shared_ptr<Stochast>> stochasts) override;
+        void init(const int maxStochastsCnt) override
+        {
+            maxStochasts = maxStochastsCnt;
+        }
 
-        void SetCorrelation(const int i, const int j, double value) override;
-        void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value) override;
+        void init(std::vector<std::shared_ptr<Stochast>> stochastList) override
+        {
+            maxStochasts = static_cast<int>(stochastList.size());
+            stochasts = stochastList;
+        }
 
-        double GetCorrelation(const int i, const int j) const override;
-        double GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) override;
+        void SetCorrelation(const int i, const int j, double value, correlationType type) override;
+        void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type = correlationType::Gaussian) override{}
 
-        bool IsIdentity() const override;
-        int CountCorrelations() const override;
-        int getDimension() override;
-        std::shared_ptr<Statistics::Stochast> getStochast(int index) override;
-        bool HasConflictingCorrelations() const override;
-        void resolveConflictingCorrelations() override;
-        void CholeskyDecomposition() override;
-        void InverseCholeskyDecomposition() override;
-        bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const override;
+        double GetCorrelation(const int i, const int j) const override { return -1; }
+        double GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) override { return -1; }
+
+        bool IsIdentity() const override {return false;}
+        int CountCorrelations() const override { return -1; }
+        int getDimension() override { return -1; }
+        std::shared_ptr<Stochast> getStochast(int index) override { return nullptr; }
+        bool HasConflictingCorrelations() const override {return false;}
+        void resolveConflictingCorrelations() override {}
+        std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
+        void CholeskyDecomposition() override {}
+        void InverseCholeskyDecomposition() override {}
+        bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const override {return false;}
         void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
-        indexWithCorrelation findDependent(const int i) const override;
+        indexWithCorrelation findDependent(const int i) const override { return indexWithCorrelation(); }
+    private:
+        int maxStochasts = -1;
+        std::vector<copulaPair> copulas;
+        std::vector<std::shared_ptr<Stochast>> stochasts;
     };
 }
 

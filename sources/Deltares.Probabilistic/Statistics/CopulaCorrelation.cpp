@@ -22,8 +22,57 @@
 
 #include "CopulaCorrelation.h"
 
+#include "ClaytonCopula.h"
+#include "FrankCopula.h"
+//#include "GumbelCopula.h"
+
 namespace Deltares::Statistics
 {
+    void CopulaCorrelation::SetCorrelation(const int i, const int j, double value, correlationType type)
+    {
+        auto pair = copulaPair();
+        pair.i = i;
+        pair.j = j;
+        switch (type)
+        {
+        case correlationType::Clayton:
+            pair.copula = std::make_shared<ClaytonCopula>(value);
+            break;
+        case correlationType::Frank:
+            pair.copula = std::make_shared<FrankCopula>(value);
+            break;
+        case correlationType::Gumbel:
+        case correlationType::Gaussian:
+            throw Reliability::probLibException("not implemented yet");
+        }
+        copulas.push_back(pair);
+    }
+
+    void CopulaCorrelation::filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index)
+    {
+        auto src = std::dynamic_pointer_cast<CopulaCorrelation> (m);
+        for (auto copula : src->copulas)
+        {
+            auto ii = findNewIndex(index, copula.i);
+            auto jj = findNewIndex(index, copula.j);
+            if (ii >= 0 && jj >= 0)
+            {
+                copula.i = ii;
+                copula.j = jj;
+                copulas.push_back(copula);
+            }
+        }
+    }
+
+    std::vector<double> CopulaCorrelation::ApplyCorrelation(const std::vector<double>& uValues)
+    {
+        auto newUvalues = uValues;
+        for (const auto& copula : copulas)
+        {
+            copula.copula->update_uspace(newUvalues[copula.i], newUvalues[copula.j]);
+        }
+        return newUvalues;
+    }
 
 }
 

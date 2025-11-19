@@ -25,6 +25,7 @@
 
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
+#include "../Statistics/CopulaCorrelation.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
 #include "../Utils/probLibException.h"
@@ -97,7 +98,7 @@ namespace Deltares
                         if (k_i != k_j)
                         {
                             double correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
-                            this->correlationMatrix->SetCorrelation(i, j, correlationValue);
+                            this->correlationMatrix->SetCorrelation(i, j, correlationValue, Statistics::correlationType::Gaussian);
                         }
                     }
                 }
@@ -137,9 +138,17 @@ namespace Deltares
                 this->variableStochastList = getVariableStochastIndex();
             }
 
+            auto copulaCorrelation = std::dynamic_pointer_cast<Statistics::CopulaCorrelation> (correlationMatrix);
+
             if (stochasts.size() == varyingStochasts.size())
             {
                 varyingCorrelationMatrix = correlationMatrix;
+            }
+            else if (copulaCorrelation != nullptr)
+            {
+                varyingCorrelationMatrix = std::make_shared<Statistics::CopulaCorrelation>();
+                varyingCorrelationMatrix->init(static_cast<int>(varyingStochasts.size()));
+                varyingCorrelationMatrix->filter(correlationMatrix, varyingStochastIndex);
             }
             else
             {
@@ -317,14 +326,10 @@ namespace Deltares
                 }
             }
 
-            if (settings->AreStartValuesCorrelated)
+            auto correlation = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
+            if (settings->AreStartValuesCorrelated && correlation != nullptr)
             {
-                auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
-                if (corrM == nullptr)
-                {
-                    throw Reliability::probLibException("not implemented yet");
-                }
-                const std::vector<double> uncorrelatedStartValues = corrM->InverseCholesky(startValues);
+                const std::vector<double> uncorrelatedStartValues = correlation->InverseCholesky(startValues);
 
                 for (size_t i = 0; i < settings->VaryingStochastSettings.size(); i++)
                 {
@@ -403,7 +408,7 @@ namespace Deltares
             {
                 throw Reliability::probLibException("not implemented yet");
             }
-            return corrM->Cholesky(sample->Values);
+            return corrM->ApplyCorrelation(sample->Values);
         }
 
         std::vector<double> UConverter::getExpandedUValues(std::shared_ptr<Sample> sample)
@@ -419,12 +424,7 @@ namespace Deltares
                 }
             }
 
-            auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
-            if (corrM == nullptr)
-            {
-                throw Reliability::probLibException("not implemented yet");
-            }
-            std::vector<double> uCorrelated = corrM->Cholesky(unexpandedUValues);
+            std::vector<double> uCorrelated = varyingCorrelationMatrix->ApplyCorrelation(unexpandedUValues);
 
             std::vector<double> expandedUValues = getExpandedValues(uCorrelated);
 
@@ -650,12 +650,7 @@ namespace Deltares
                     count = static_cast<int>(uValuesNew.size());
                 }
 
-                auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
-                if (corrM == nullptr)
-                {
-                    throw Reliability::probLibException("not implemented yet");
-                }
-                auto uCorrelated = corrM->Cholesky(uValues);
+                auto uCorrelated = varyingCorrelationMatrix->ApplyCorrelation(uValues);
 
                 auto alphaCorrelated = std::vector<double>(count);
                 for (int i = 0; i < count; i++)

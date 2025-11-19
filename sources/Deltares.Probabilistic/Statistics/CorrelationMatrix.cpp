@@ -33,7 +33,7 @@ namespace Deltares
         using namespace Deltares::Reliability;
         using namespace Deltares::Numeric;
 
-        std::vector<double> CorrelationMatrix::Cholesky(const std::vector<double>& uValues)
+        std::vector<double> CorrelationMatrix::ApplyCorrelation(const std::vector<double>& uValues)
         {
             auto count = uValues.size();
             auto correlatedValues = std::vector<double>(count);
@@ -156,7 +156,7 @@ namespace Deltares
             }
         }
 
-        void CorrelationMatrix::SetCorrelation(const int i, const int j, double value)
+        void CorrelationMatrix::SetCorrelation(const int i, const int j, double value, correlationType type)
         {
             if (std::max(i, j) >= (int)dim)
             {
@@ -180,14 +180,14 @@ namespace Deltares
             inputCorrelations.push_back(p);
         }
 
-        void CorrelationMatrix::SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value)
+        void CorrelationMatrix::SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type)
         {
             if (stochastIndex.contains(stochast1) && stochastIndex.contains(stochast2))
             {
                 const int index1 = stochastIndex.at(stochast1);
                 const int index2 = stochastIndex.at(stochast2);
 
-                SetCorrelation(index1, index2, value);
+                SetCorrelation(index1, index2, value, type);
             }
         }
 
@@ -267,24 +267,6 @@ namespace Deltares
                 }
             }
             indexer = newIndexer;
-        }
-
-        int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
-        {
-            if (index[i] == -1)
-            {
-                return -1;
-            }
-            else
-            {
-                int newIndex = 0;
-                for (size_t j = 0; j < i; j++)
-                {
-                    if (index[j] >= 0) newIndex++;
-                }
-
-                return newIndex;
-            }
         }
 
         indexWithCorrelation CorrelationMatrix::findDependent(const int j) const

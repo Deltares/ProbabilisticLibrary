@@ -310,6 +310,17 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
             }
 
+            void testReliabilityMethods::testCrudeMonteCarloWithCopulaReliability()
+            {
+                auto calculator = CrudeMonteCarlo();
+                auto modelRunner = projectBuilder().BuildProjectWithDeterministAndCopula(0.0);
+                calculator.Settings->MinimumSamples = 10000;
+                calculator.Settings->MaximumSamples = 100000;
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+                ASSERT_EQ(designPoint->Alphas.size(), 3);
+                EXPECT_NEAR(designPoint->Beta, -0.390996, 1e-5);
+            }
+
             void testReliabilityMethods::testAdaptiveImportanceSampling()
             {
                 auto calculator = AdaptiveImportanceSampling();
