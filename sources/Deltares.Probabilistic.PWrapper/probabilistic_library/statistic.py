@@ -1606,7 +1606,7 @@ class CorrelationMatrix(FrozenObject):
 
 		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id)
 
-	def __setitem__(self, stochasts, value):
+	def __setitem__(self, stochasts, value, correlationType=None):
 		"""Sets the correlation value between stochasts
 
         Parameters
@@ -1616,7 +1616,11 @@ class CorrelationMatrix(FrozenObject):
             of the list must be 2.
 
         value: float
-            The correlation value, must be between -1 and 1 (inclusive)"""
+            The correlation value, must be between -1 and 1 (inclusive)
+
+        correlationType: optional
+            TODO define enum
+            The correlation type, Default 0: Gaussian (Pierson), also possible 1-3 for Clayton, Frank and Gumbel copulas"""
 
 		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
 			raise ArgumentError('Expected 2 arguments')
@@ -1629,6 +1633,8 @@ class CorrelationMatrix(FrozenObject):
 				stochast_list.append(stochasts[i])
 
 		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
+		if (correlationType is not None):
+			interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, correlationType)
 
 class SelfCorrelationMatrix(FrozenObject):
 	"""Defines the correlation values of a stochast with another stochast, both corresponding with the same

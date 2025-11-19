@@ -436,6 +436,11 @@ namespace Deltares
             this->Send("set_indexed_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index1) + ":" + std::to_string(index2) + ":" + std::to_string(value), false);
         }
 
+        void ExternalServerHandler::SetIndexedIndexedIntValue(int id, std::string property, int index1, int index2, int value)
+        {
+            this->Send("set_indexed_indexed_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index1) + ":" + std::to_string(index2) + ":" + std::to_string(value), false);
+        }
+
         void ExternalServerHandler::Execute(int id, std::string method)
         {
             this->Send("execute:" + std::to_string(id) + ":" + method, false);

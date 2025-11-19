@@ -236,6 +236,9 @@ def GetIndexedIndexedValue(id_, property_, index1_, index2_):
 def SetIndexedIndexedValue(id_, property_, index1_, index2_, value_):
 	lib.SetIndexedIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_), ctypes.c_double(value_))
 
+def SetIndexedIndexedIntValue(id_, property_, index1_, index2_, value_):
+	lib.SetIndexedIndexedIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_), ctypes.c_int(value_))
+
 def SetCallBack(id_, property_, callBack_):
 	try:
 		lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)

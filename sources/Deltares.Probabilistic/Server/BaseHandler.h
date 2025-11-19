@@ -59,6 +59,7 @@ namespace Deltares
             virtual void SetIndexedValue(int id, std::string property_, int index, double value) {}
             virtual double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) { return 0; }
             virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) {}
+            virtual void SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value) {}
             virtual int GetIndexedIntValue(int id, std::string property_, int index) { return 0; }
             virtual int GetIdValue(int id, std::string property_, int newId) { return GetIntValue(id, property_); }
             virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }

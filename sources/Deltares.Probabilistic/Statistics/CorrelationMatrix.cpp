@@ -173,10 +173,11 @@ namespace Deltares
                 {
                     c.correlation = value;
                     c.isFullyCorrelated = fully;
+                    c.type = type;
                     return;
                 }
             }
-            auto p = correlationPair({ i, j, value, fully });
+            auto p = correlationPair({ i, j, value, fully, type });
             inputCorrelations.push_back(p);
         }
 

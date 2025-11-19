@@ -1967,6 +1967,23 @@ namespace Deltares
             }
         }
 
+        void ProjectHandler::SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+
+                if (property_ == "correlation")
+                {
+                    auto curValue = correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]);
+                    auto type = static_cast<correlationType>(value);
+                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], curValue, type);
+                }
+            }
+        }
+
         int ProjectHandler::GetIndexedIntValue(int id, std::string property_, int index)
         {
             return 0;
