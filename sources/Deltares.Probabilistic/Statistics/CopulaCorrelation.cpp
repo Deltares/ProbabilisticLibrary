@@ -64,6 +64,22 @@ namespace Deltares::Statistics
         }
     }
 
+    void CopulaCorrelation::copyFrom(BaseCorrelation& source)
+    {
+        init(source.getDimension());
+        for (int j = 0; j < maxStochasts; j++ )
+        {
+            for (int i = 0 ; i < j; i++)
+            {
+                auto corr = source.GetCorrelation(i, j);
+                if (corr.type != correlationType::Gaussian || corr.value != 0.0)
+                {
+                    SetCorrelation(i, j, corr.value, corr.type);
+                }
+            }
+        }
+    }
+
     std::vector<double> CopulaCorrelation::ApplyCorrelation(const std::vector<double>& uValues)
     {
         auto newUvalues = uValues;

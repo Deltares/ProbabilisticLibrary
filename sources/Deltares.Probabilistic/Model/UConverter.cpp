@@ -74,6 +74,14 @@ namespace Deltares
                 }
             }
 
+            if ( ! stochastCorrelationMatrix->isValid())
+            {
+                // correlation matrix is filled with one or more copulas.
+                auto copulaCorrelation = std::make_shared<Statistics::CopulaCorrelation>();
+                copulaCorrelation->copyFrom(*stochastCorrelationMatrix);
+                stochastCorrelationMatrix = copulaCorrelation;
+            }
+
             if (!hasArrayStochasts)
             {
                 this->correlationMatrix = stochastCorrelationMatrix;

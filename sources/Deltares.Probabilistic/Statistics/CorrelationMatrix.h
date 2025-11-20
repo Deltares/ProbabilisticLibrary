@@ -53,6 +53,8 @@ namespace Deltares
             void init(const int maxStochasts) override;
             void init(std::vector<std::shared_ptr<Stochast>> stochasts) override;
 
+            bool isValid() override;
+
             std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
 

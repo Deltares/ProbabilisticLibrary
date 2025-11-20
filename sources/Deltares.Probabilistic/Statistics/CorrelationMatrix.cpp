@@ -33,6 +33,15 @@ namespace Deltares
         using namespace Deltares::Reliability;
         using namespace Deltares::Numeric;
 
+        bool CorrelationMatrix::isValid()
+        {
+            for (auto& c : inputCorrelations)
+            {
+                if (c.type != correlationType::Gaussian) return false;
+            }
+            return true;
+        }
+
         std::vector<double> CorrelationMatrix::ApplyCorrelation(const std::vector<double>& uValues)
         {
             auto count = uValues.size();
