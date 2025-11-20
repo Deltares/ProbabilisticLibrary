@@ -28,7 +28,6 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         static void allDistributionsTests();
-    private:
         static void testConditionalWeibull();
         static void testConditionalWeibullNonIntegerShape();
         static void testConditionalWeibullMeanDeviation();
@@ -41,17 +40,32 @@ namespace Deltares::Probabilistic::Test
         static void testCompositeConditionalTruncatedStochast();
         static void testDesignValue();
         static void testVariationCoefficient();
+        static void testNormal();
+        static void testLogNormal();
+        static void testUniform();
+        static void testTriangular();
+        static void testTrapezoidal();
+        static void testExponential();
+        static void testGumbel();
+        static void testFrechet();
+        static void testWeibull();
+        static void testGEV();
+        static void testPareto();
+        static void testGeneralizedPareto();
+        static void testRayleigh();
+        static void testRayleighN();
+        static void testBernoulli();
         static void testPoisson();
         static void testGamma();
+        static void testBeta();
         static void testStudentT();
         static void testStudentTwithInterpolation();
         static void testStudentTwithInterpolationLargeNoObservations();
         static void testComposite();
-        static void testFitNormal();
-        static void testFitLogNormal();
-        static void testFitBernoulli();
         static void testValidation();
+    private:
         static double getPdfNumerical(Statistics::Stochast& s, const double x);
+        static void testFit(Statistics::Stochast& stochast, const double margin = 0.1, const int number = 1000);
     };
 }
 

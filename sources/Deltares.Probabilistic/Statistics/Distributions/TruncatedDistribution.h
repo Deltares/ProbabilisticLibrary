@@ -53,6 +53,7 @@ namespace Deltares
             double getCDF(StochastProperties& stochast, double x) override;
             void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
             void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+            bool useShiftForInversion() override { return innerDistribution->useShiftForInversion(); }
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
             double getMaxShiftValue(std::vector<double>& values) override;

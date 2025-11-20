@@ -42,6 +42,7 @@ namespace Deltares
             void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
             bool canFit() override { return true; }
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+            bool useShiftForInversion() override { return false; }
             double getLogLikelihood(StochastProperties& stochast, double x) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
             std::vector<DistributionPropertyType> getParameters() override

@@ -31,7 +31,7 @@ namespace Deltares
     {
         double InvertedDistribution::getInvertedValue(const StochastProperties& stochast, double value) const
         {
-            double center = isShiftUsed() ? stochast.Shift : 0.0;
+            double center = innerDistribution->useShiftForInversion() ? stochast.Shift : 0.0;
             return 2.0 * center - value;
         }
 
@@ -136,14 +136,14 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (isShiftUsed())
+            if (innerDistribution->useShiftForInversion())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
                 auto invertedStochast = getInvertedStochast(stochast);
                 this->innerDistribution->fit(invertedStochast, zeroInvertedValues, shift);
 
-                stochast.Shift = -stochast.Shift;
+                stochast.Shift = -invertedStochast.Shift;
             }
 
             std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, &stochast](double x)
@@ -159,7 +159,7 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (isShiftUsed())
+            if (innerDistribution->useShiftForInversion())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
@@ -195,14 +195,6 @@ namespace Deltares
         {
             auto invertedStochast = getInvertedStochast(stochast);
             this->innerDistribution->validate(report, invertedStochast, subject);
-        }
-
-        bool InvertedDistribution::isShiftUsed() const
-        {
-            return std::ranges::any_of(this->innerDistribution->getParameters(), [](DistributionPropertyType parameter)
-            {
-                return parameter == DistributionPropertyType::Shift;
-            });
         }
 
         double InvertedDistribution::getLogLikelihood(StochastProperties& stochast, double x)
