@@ -452,6 +452,14 @@ namespace Deltares::Probabilistic::Test
 
         stochast.setInverted(true);
         testFit(stochast);
+
+        Stochast stochast2 = Stochast();
+        stochast2.setDistributionType(DistributionType::Gumbel);
+
+        std::vector<double> values = { 12.18, 12.32, 12.00, 12.09, 12.25, 11.93, 12.15, 12.03, 12.04, 12.12, 12.21, 12.2, 12.12, 11.98, 12.15, 12.17 };
+        stochast2.fit(values);
+        EXPECT_NEAR(0.1, stochast2.getProperties()->Scale, 0.01);
+        EXPECT_NEAR(12.07, stochast2.getProperties()->Shift, 0.01);
     }
 
     void testDistributions::testFrechet()
