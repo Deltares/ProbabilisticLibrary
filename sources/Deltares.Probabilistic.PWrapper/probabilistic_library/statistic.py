@@ -1530,6 +1530,10 @@ class CorrelationType(Enum):
     frank_copula = 'frank_copula'
     gumbel_copula = 'gumbel_copula'
 
+    @classmethod
+    def get_index(cls, type):
+        return list(cls).index(type)
+	
 class CorrelationMatrix(FrozenObject):
 	"""Correlation matrix for stochastic variables
 
@@ -1638,7 +1642,8 @@ class CorrelationMatrix(FrozenObject):
 
 		if type(value) is tuple:
 			interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value[0])
-			interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value[1])
+			corr_type = CorrelationType.get_index(value[1])
+			interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, corr_type)
 		else:
 			interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
 
