@@ -30,6 +30,7 @@ namespace Deltares::Statistics
     public:
         FrankCopula(const double alpha) : alpha(alpha) {}
         void update(const double& u, double& t) const override;
+        correlationValueAndType getCorrelation() const override { return { alpha, correlationType::Frank }; }
     private:
         const double alpha;
     };

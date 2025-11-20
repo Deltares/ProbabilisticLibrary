@@ -22,31 +22,17 @@
 
 #pragma once
 
-#include "correlationValueAndType.h"
-
-namespace Deltares::Statistics
+enum class correlationType
 {
-    ///
-    /// base class for Archimedean type Copulas.
-    ///
-    class BaseCopula
-    {
-    public:
-        /// <summary>
-        /// update a pair of correlated stochastic variables
-        /// </summary>
-        /// <param name="a"> value of first stochast in u-space </param>
-        /// <param name="b"> value of second stochast in u-space </param>
-        void update_uspace(const double& a, double& b) const;
+    Gaussian,
+    Frank,
+    Clayton,
+    Gumbel
+};
 
-        /// <summary>
-        /// update a pair of correlated stochastic variables
-        /// </summary>
-        /// <param name="u"> probability of failure of first stochast </param>
-        /// <param name="t"> probability of failure of second stochast </param>
-        virtual void update(const double& u, double& t) const {}
-
-        virtual correlationValueAndType getCorrelation() const { return { 0.0, correlationType::Gaussian }; }
-    };
-}
+struct correlationValueAndType
+{
+    double value;
+    correlationType type;
+};
 

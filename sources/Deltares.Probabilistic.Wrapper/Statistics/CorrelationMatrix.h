@@ -81,12 +81,12 @@ namespace Deltares
 
                 double GetCorrelation(const int i, const int j)
                 {
-                    return shared->object->GetCorrelation(i, j);
+                    return shared->object->GetCorrelation(i, j).value;
                 }
 
                 double GetCorrelation(Stochast^ stochast1, Stochast^ stochast2)
                 {
-                    return shared->object->GetCorrelation(stochast1->GetStochast(), stochast2->GetStochast());
+                    return shared->object->GetCorrelation(stochast1->GetStochast(), stochast2->GetStochast()).value;
                 }
 
                 virtual bool IsIdentity()

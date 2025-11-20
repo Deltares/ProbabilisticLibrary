@@ -136,12 +136,20 @@ namespace Deltares
         }
 
 
-        double CorrelationMatrix::GetCorrelation(const int i, const int j) const
+        correlationValueAndType CorrelationMatrix::GetCorrelation(const int i, const int j) const
         {
-            return matrix(i, j);
+            auto type = correlationType::Gaussian;
+            for (auto& c : inputCorrelations)
+            {
+                if ((c.index1 == i && c.index2 == j) || (c.index1 == j && c.index2 == i))
+                {
+                    type = c.type;
+                }
+            }
+            return { matrix(i, j), type };
         }
 
-        double CorrelationMatrix::GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
+        correlationValueAndType CorrelationMatrix::GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
         {
             if (stochastIndex.contains(stochast1) && stochastIndex.contains(stochast2))
             {
@@ -152,7 +160,7 @@ namespace Deltares
             }
             else
             {
-                return 0;
+                return { 0, correlationType::Gaussian };
             }
         }
 
@@ -333,10 +341,10 @@ namespace Deltares
                             // find the stochasts which are not the linking values
                             auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
 
-                            double correlationValue = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
+                            auto correlationWithType = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
                             double expectedCorrelation = correlation.correlation * otherCorrelation.correlation;
 
-                            if (correlationValue != expectedCorrelation)
+                            if (correlationWithType.value != expectedCorrelation)
                             {
                                 return true;
                             }
@@ -373,10 +381,10 @@ namespace Deltares
                             {
                                 auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
 
-                                double correlationValue = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
+                                auto correlationWithType = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
                                 double expectedCorrelation = correlation.correlation * otherCorrelation.correlation;
 
-                                if (correlationValue != expectedCorrelation)
+                                if (correlationWithType.value != expectedCorrelation)
                                 {
                                     SetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1], expectedCorrelation);
                                     modified = true;

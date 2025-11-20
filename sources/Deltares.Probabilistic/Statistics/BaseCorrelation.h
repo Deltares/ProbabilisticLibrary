@@ -23,6 +23,8 @@
 
 #include <memory>
 #include <vector>
+
+#include "correlationValueAndType.h"
 #include "Stochast.h"
 
 namespace Deltares::Statistics
@@ -33,25 +35,25 @@ namespace Deltares::Statistics
         double correlation;
     };
 
-    enum class correlationType
-    {
-        Gaussian,
-        Frank,
-        Clayton,
-        Gumbel
-    };
-
     class BaseCorrelation
     {
     public:
         virtual void init(const int maxStochasts) {}
         virtual void init(std::vector<std::shared_ptr<Stochast>> stochasts) {}
 
+        virtual bool isValid() {return false;}
+
         virtual void SetCorrelation(const int i, const int j, double value, correlationType type = correlationType::Gaussian) {}
         virtual void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type = correlationType::Gaussian) {}
 
-        virtual double GetCorrelation(const int i, const int j) const { return -1; }
-        virtual double GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) { return -1; }
+        virtual correlationValueAndType GetCorrelation(const int i, const int j) const
+        {
+            return { -1, correlationType::Gaussian };
+        }
+        virtual correlationValueAndType GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
+        {
+            return { -1, correlationType::Gaussian };
+        }
 
         virtual bool IsIdentity() const { return false; }
         virtual int CountCorrelations() const { return -1; }

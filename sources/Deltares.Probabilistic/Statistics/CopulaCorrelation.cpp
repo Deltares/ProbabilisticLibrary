@@ -74,6 +74,37 @@ namespace Deltares::Statistics
         return newUvalues;
     }
 
+    correlationValueAndType CopulaCorrelation::GetCorrelation(const int i, const int j) const
+    {
+        for(const auto& p : copulas)
+        {
+            if (p.i == i && p.j == j) return { p.copula->getCorrelation() };
+            if (p.i == j && p.j == i) return { p.copula->getCorrelation() };
+        }
+        return { 0, correlationType::Gaussian };
+    }
+
+    correlationValueAndType CopulaCorrelation::GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
+    {
+        size_t index1 = std::numeric_limits<size_t>::max();
+        size_t index2 = std::numeric_limits<size_t>::max();
+        for (size_t i = 0; i < stochasts.size(); i++)
+        {
+            if (stochasts[i] == stochast1) index1 = i;
+            if (stochasts[i] == stochast2) index2 = i;
+        }
+
+        if (index1 < stochasts.size() && index2 < stochasts.size())
+        {
+            return GetCorrelation(static_cast<int>(index1), static_cast<int>(index2));
+        }
+        else
+        {
+            return { 0, correlationType::Gaussian };
+        }
+
+    }
+
 }
 
 

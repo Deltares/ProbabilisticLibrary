@@ -28,6 +28,7 @@ namespace Deltares::Probabilistic::Test
     public:
         static void testClayton();
         static void testFrank();
+        static void testGaussian();
     };
 }
 

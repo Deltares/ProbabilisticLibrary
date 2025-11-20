@@ -257,14 +257,17 @@ TEST(unittst, testStandardNormal)
 
 TEST(unittst, testClaytonCopula)
 {
-    auto tstCopula = testCopula();
-    tstCopula.testClayton();
+    testCopula::testClayton();
 }
 
 TEST(unittst, testFrankCopula)
 {
-    auto tstCopula = testCopula();
-    tstCopula.testFrank();
+    testCopula::testFrank();
+}
+
+TEST(unittst, testGaussianCorrelation)
+{
+    testCopula::testGaussian();
 }
 
 TEST(unittst, testUncertainty)

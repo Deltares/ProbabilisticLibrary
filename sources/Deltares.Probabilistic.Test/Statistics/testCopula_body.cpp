@@ -22,6 +22,7 @@
 #include "testCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/ClaytonCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/FrankCopula.h"
+#include "../../Deltares.Probabilistic/Statistics/CorrelationMatrix.h"
 #include <gtest/gtest.h>
 
 namespace Deltares::Probabilistic::Test
@@ -36,7 +37,7 @@ namespace Deltares::Probabilistic::Test
         double a = 1.0;
         double b = 1.0;
         claytonCopula.update_uspace(a, b);
-        ASSERT_NEAR(b, 1.23779153247, margin);
+        EXPECT_NEAR(b, 1.23779153247, margin);
     }
 
     void testCopula::testFrank()
@@ -47,7 +48,18 @@ namespace Deltares::Probabilistic::Test
         double a = 1.0;
         double b = 1.0;
         frankCopula.update_uspace(a, b);
-        ASSERT_NEAR(b, 1.4845704558, margin);
+        EXPECT_NEAR(b, 1.4845704558, margin);
+    }
+
+    void testCopula::testGaussian()
+    {
+        constexpr double margin = 1e-12;
+
+        auto correlation = CorrelationMatrix();
+        correlation.init(2);
+        correlation.SetCorrelation(0, 1, 0.5, correlationType::Gaussian);
+        auto correlationWithType = correlation.GetCorrelation(0, 1);
+        EXPECT_NEAR(0.5, correlationWithType.value, margin);
     }
 }
 

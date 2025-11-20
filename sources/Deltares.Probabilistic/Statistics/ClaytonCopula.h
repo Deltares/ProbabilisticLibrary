@@ -30,6 +30,7 @@ namespace Deltares::Statistics
     public:
         ClaytonCopula(const double theta) : theta(theta) {}
         void update(const double& u, double& t) const override;
+        correlationValueAndType getCorrelation() const override { return { theta, correlationType::Clayton }; }
     private:
         const double theta;
     };

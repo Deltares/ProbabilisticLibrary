@@ -97,8 +97,8 @@ namespace Deltares
 
                         if (k_i != k_j)
                         {
-                            double correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
-                            this->correlationMatrix->SetCorrelation(i, j, correlationValue, Statistics::correlationType::Gaussian);
+                            auto correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
+                            this->correlationMatrix->SetCorrelation(i, j, correlationValue.value, correlationValue.type);
                         }
                     }
                 }

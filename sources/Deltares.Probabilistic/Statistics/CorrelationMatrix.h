@@ -60,8 +60,8 @@ namespace Deltares
             void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2,
                 double value, correlationType type=correlationType::Gaussian) override;
 
-            double GetCorrelation(const int i, const int j) const override;
-            double GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) override;
+            correlationValueAndType GetCorrelation(const int i, const int j) const override;
+            correlationValueAndType GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) override;
 
             bool IsIdentity() const override;
             int CountCorrelations() const override;

@@ -1945,7 +1945,7 @@ namespace Deltares
 
                 if (property_ == "correlation")
                 {
-                    return correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]);
+                    return correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]).value;
                 }
             }
 
@@ -1979,7 +1979,7 @@ namespace Deltares
                 {
                     auto curValue = correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]);
                     auto type = static_cast<correlationType>(value);
-                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], curValue, type);
+                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], curValue.value, type);
                 }
             }
         }
