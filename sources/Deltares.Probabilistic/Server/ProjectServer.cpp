@@ -183,6 +183,11 @@ namespace Deltares
             handlersTable[id]->SetIndexedIndexedValue(id, property_, index1, index2, value);
         }
 
+        void ProjectServer::SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value)
+        {
+            handlersTable[id]->SetIndexedIndexedIntValue(id, property_, index1, index2, value);
+        }
+
         int ProjectServer::GetIndexedIntValue(int id, std::string property_, int index)
         {
             return handlersTable[id]->GetIndexedIntValue(id, property_, index);

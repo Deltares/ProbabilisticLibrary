@@ -1613,7 +1613,7 @@ class CorrelationMatrix(FrozenObject):
 
 		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id)
 
-	def __setitem__(self, stochasts, value, correlationType=None):
+	def __setitem__(self, stochasts, value):
 		"""Sets the correlation value between stochasts
 
         Parameters
@@ -1622,11 +1622,9 @@ class CorrelationMatrix(FrozenObject):
             Stochasts between which the correlation value is returned. In case of a list, the length
             of the list must be 2.
 
-        value: float
+        value: float | (float, correlationType)
             The correlation value, must be between -1 and 1 (inclusive)
-
-        correlationType: CorrelationType, optional
-            The correlation type, Default Gaussian (Pearson), also possible: Clayton, Frank and Gumbel copulas"""
+			Can also contain the correlation type, Default Gaussian (Pearson), also possible: Clayton, Frank and Gumbel copulas"""
 
 		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
 			raise ArgumentError('Expected 2 arguments')
@@ -1638,9 +1636,11 @@ class CorrelationMatrix(FrozenObject):
 			else:
 				stochast_list.append(stochasts[i])
 
-		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
-		if (correlationType is not None):
-			interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, correlationType)
+		if type(value) is tuple:
+			interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value[0])
+			interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value[1])
+		else:
+			interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
 
 class SelfCorrelationMatrix(FrozenObject):
 	"""Defines the correlation values of a stochast with another stochast, both corresponding with the same
