@@ -1523,6 +1523,13 @@ class ConditionalValue(FrozenObject):
 	def observations(self, value : int):
 		interface.SetIntValue(self._id, 'observations', value)
 
+class CorrelationType(Enum):
+    """Enumeration which defines the type of correlation"""
+    gaussian = 'gaussian'
+    clayton_copula = 'clayton_copula'
+    frank_copula = 'frank_copula'
+    gumbel_copula = 'gumbel_copula'
+
 class CorrelationMatrix(FrozenObject):
 	"""Correlation matrix for stochastic variables
 
@@ -1618,9 +1625,8 @@ class CorrelationMatrix(FrozenObject):
         value: float
             The correlation value, must be between -1 and 1 (inclusive)
 
-        correlationType: optional
-            TODO define enum
-            The correlation type, Default 0: Gaussian (Pierson), also possible 1-3 for Clayton, Frank and Gumbel copulas"""
+        correlationType: CorrelationType, optional
+            The correlation type, Default Gaussian (Pearson), also possible: Clayton, Frank and Gumbel copulas"""
 
 		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
 			raise ArgumentError('Expected 2 arguments')
