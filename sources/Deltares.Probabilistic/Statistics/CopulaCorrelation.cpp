@@ -24,7 +24,7 @@
 
 #include "ClaytonCopula.h"
 #include "FrankCopula.h"
-//#include "GumbelCopula.h"
+#include "GumbelCopula.h"
 
 namespace Deltares::Statistics
 {
@@ -42,6 +42,8 @@ namespace Deltares::Statistics
             pair.copula = std::make_shared<FrankCopula>(value);
             break;
         case correlationType::Gumbel:
+            pair.copula = std::make_shared<GumbelCopula>(value);
+            break;
         case correlationType::Gaussian:
             throw Reliability::probLibException("not implemented yet");
         }

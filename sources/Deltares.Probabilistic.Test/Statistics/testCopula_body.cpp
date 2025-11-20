@@ -22,6 +22,7 @@
 #include "testCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/ClaytonCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/FrankCopula.h"
+#include "../../Deltares.Probabilistic/Statistics/GumbelCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/CorrelationMatrix.h"
 #include <gtest/gtest.h>
 
@@ -61,5 +62,17 @@ namespace Deltares::Probabilistic::Test
         auto correlationWithType = correlation.GetCorrelation(0, 1);
         EXPECT_NEAR(0.5, correlationWithType.value, margin);
     }
+
+    void testCopula::testGumbel()
+    {
+        constexpr double margin = 1e-9;
+
+        auto gumbelCopula = GumbelCopula(0.7);
+        double a = 1.0;
+        double b = 1.0;
+        gumbelCopula.update_uspace(a, b);
+        EXPECT_NEAR(b, 0.5057196397, margin);
+    }
+
 }
 

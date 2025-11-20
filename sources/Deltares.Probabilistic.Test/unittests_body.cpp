@@ -270,6 +270,11 @@ TEST(unittst, testGaussianCorrelation)
     testCopula::testGaussian();
 }
 
+TEST(unittst, testGumbelCorrelation)
+{
+    testCopula::testGumbel();
+}
+
 TEST(unittst, testUncertainty)
 {
     auto tstUncertainty = TestUncertainty();
