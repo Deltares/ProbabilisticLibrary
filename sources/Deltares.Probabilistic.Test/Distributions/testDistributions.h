@@ -66,6 +66,7 @@ namespace Deltares::Probabilistic::Test
     private:
         static double getPdfNumerical(Statistics::Stochast& s, const double x);
         static void testFit(Statistics::Stochast& stochast, const double margin = 0.1, const int number = 1000);
+        static void testInvert(Statistics::Stochast& stochast, const double margin = 0.01);
     };
 }
 

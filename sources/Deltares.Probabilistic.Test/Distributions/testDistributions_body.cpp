@@ -428,12 +428,14 @@ namespace Deltares::Probabilistic::Test
     {
         Stochast stochastForFit = Stochast(DistributionType::Exponential, { 2.5 });
         testFit(stochastForFit);
+        testInvert(stochastForFit);
 
         stochastForFit.setInverted(true);
         testFit(stochastForFit);
 
         Stochast stochastForFitShift = Stochast(DistributionType::Exponential, { 2.5, 0.5 });
         testFit(stochastForFitShift);
+        testInvert(stochastForFitShift);
 
         stochastForFitShift.setInverted(true);
         testFit(stochastForFitShift);
@@ -447,6 +449,8 @@ namespace Deltares::Probabilistic::Test
         stochast.getProperties()->Shift = 3.0;
 
         EXPECT_NEAR(3.0 + 2.0 * std::numbers::egamma, stochast.getMean(), 0.01);
+
+        testInvert(stochast);
 
         testFit(stochast);
 
@@ -469,6 +473,8 @@ namespace Deltares::Probabilistic::Test
         stochast.getProperties()->Scale = 2;
         stochast.getProperties()->Shape = 3;
 
+        testInvert(stochast);
+
         testFit(stochast, 1.1);
 
         stochast.setInverted(true);
@@ -482,6 +488,8 @@ namespace Deltares::Probabilistic::Test
         stochast.getProperties()->Scale = 2.0;
         stochast.getProperties()->Shape = 3.0;
         stochast.getProperties()->Shift = 0.5;
+
+        testInvert(stochast);
 
         testFit(stochast, 0.4);
 
@@ -523,6 +531,8 @@ namespace Deltares::Probabilistic::Test
         stochast.getProperties()->Scale = 2.0;
         stochast.getProperties()->Shape = 3.0;
 
+        testInvert(stochast);
+
         testFit(stochast);
 
         stochast.setInverted(true);
@@ -548,6 +558,8 @@ namespace Deltares::Probabilistic::Test
         stochast.getProperties()->Scale = 2.0;
         stochast.getProperties()->Shift = 2.0;
 
+        testInvert(stochast);
+
         testFit(stochast);
 
         stochast.setInverted(true);
@@ -561,6 +573,8 @@ namespace Deltares::Probabilistic::Test
         stochast.getProperties()->Scale = 1.1;
         stochast.getProperties()->Shape = 2.0;
 
+        testInvert(stochast);
+
         testFit(stochast);
 
         stochast.setInverted(true);
@@ -573,6 +587,9 @@ namespace Deltares::Probabilistic::Test
         stochast.setDistributionType(DistributionType::Beta);
         stochast.getProperties()->Shape = 3.0;
         stochast.getProperties()->ShapeB = 4.0;
+
+        testInvert(stochast);
+
         testFit(stochast);
 
         stochast.setInverted(true);
@@ -585,6 +602,9 @@ namespace Deltares::Probabilistic::Test
         stochast.setDistributionType(DistributionType::Gamma);
         stochast.getProperties()->Scale = 2.0;
         stochast.getProperties()->Shape = 3.0;
+
+        testInvert(stochast);
+
         testFit(stochast);
 
         stochast.setInverted(true);
@@ -704,6 +724,7 @@ namespace Deltares::Probabilistic::Test
         constexpr double margin = 1e-3;
 
         Stochast stochastForFit = Stochast(DistributionType::LogNormal, { 3.0, 1.0, 0.0 });
+        testInvert(stochastForFit);
         testFit(stochastForFit);
 
         stochastForFit.setInverted(true);
@@ -868,6 +889,42 @@ namespace Deltares::Probabilistic::Test
         }
 
         EXPECT_EQ(static_cast<int>(values.size()), fittedStochast.getProperties()->Observations);
+    }
+
+    void testDistributions::testInvert(Statistics::Stochast& stochast, const double margin)
+    {
+        std::vector<double> values = { -7, -6, -5, -4, -3, -2, -1.5, -1, -0.5, -0.1, 0, 0.1, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7 };
+
+        double shift = 0;
+        if (stochast.hasParameter(DistributionPropertyType::Shift))
+        {
+            shift = stochast.getProperties()->Shift;
+        }
+
+        for (double uu : values)
+        {
+            stochast.setInverted(false);
+
+            double x = stochast.getXFromU(uu);
+            double u = stochast.getUFromX(x);
+            double cdf = stochast.getCDF(x);
+            double pdf = stochast.getPDF(x);
+
+            stochast.setInverted(true);
+
+            double xInverted = stochast.getXFromU(-uu);
+            double uInverted = stochast.getUFromX(xInverted);
+            double cdfInverted = stochast.getCDF(xInverted);
+            double pdfInverted = stochast.getPDF(xInverted);
+
+            EXPECT_NEAR(2 * shift - x, xInverted, margin);
+            EXPECT_NEAR(-u, uInverted, margin);
+            EXPECT_NEAR(1 - cdf, cdfInverted, margin);
+            EXPECT_NEAR(pdf, pdfInverted, margin);
+        }
+
+        // reset for further tests
+        stochast.setInverted(false);
     }
 }
 
