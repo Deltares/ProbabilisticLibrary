@@ -21,19 +21,18 @@
 //
 
 #pragma once
+#include "BaseCopula.h"
 
-enum class correlationType
+namespace Deltares::Statistics
 {
-    Gaussian,
-    Frank,
-    Clayton,
-    Gumbel,
-    DiagonalBand,
-};
-
-struct correlationValueAndType
-{
-    double value;
-    correlationType type;
-};
+    class DiagonalBandCopula : public BaseCopula
+    {
+    public:
+        DiagonalBandCopula(const double alpha) : alpha(alpha) {}
+        void update(const double& u, double& t) const override;
+        correlationValueAndType getCorrelation() const override { return { alpha, correlationType::DiagonalBand }; }
+    private:
+        const double alpha;
+    };
+}
 

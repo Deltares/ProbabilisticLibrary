@@ -355,6 +355,7 @@
     <ClInclude Include="Statistics\BaseCopula.h" />
     <ClInclude Include="Statistics\ClaytonCopula.h" />
     <ClInclude Include="Statistics\FrankCopula.h" />
+    <ClInclude Include="Statistics\DiagonalBandCopula.h" />
     <ClInclude Include="Statistics\GumbelCopula.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Math\NumericSupport.h" />
@@ -582,6 +583,7 @@
     <ClCompile Include="Statistics\BaseCopula.cpp" />
     <ClCompile Include="Statistics\ClaytonCopula.cpp" />
     <ClCompile Include="Statistics\FrankCopula.cpp" />
+    <ClCompile Include="Statistics\DiagonalBandCopula.cpp" />
     <ClCompile Include="Statistics\GumbelCopula.cpp" />
     <ClCompile Include="Math\NumericSupport.cpp" />
     <ClCompile Include="Model\RandomSettings.cpp" />

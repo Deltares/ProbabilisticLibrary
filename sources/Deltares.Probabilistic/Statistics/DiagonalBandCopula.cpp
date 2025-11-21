@@ -20,20 +20,27 @@
 // All rights reserved.
 //
 
-#pragma once
+#include "DiagonalBandCopula.h"
 
-enum class correlationType
+namespace Deltares::Statistics
 {
-    Gaussian,
-    Frank,
-    Clayton,
-    Gumbel,
-    DiagonalBand,
-};
+    void DiagonalBandCopula::update(const double& u, double& t) const
+    {
+        double Finv;
+        if (u < 1.0 - alpha and t < 1.0 - u / (1.0 - alpha))
+        {
+            Finv = (1.0 - alpha) * t;
 
-struct correlationValueAndType
-{
-    double value;
-    correlationType type;
-};
+        }
+        else if (u > alpha and t > (1.0 - u) / (1.0 - alpha))
+        {
+            Finv = (1.0 - alpha) * t + alpha;
+        }
+        else
+        {
+            Finv = 2.0 * (1.0 - alpha) * t + u - 1.0 + alpha;
+        }
+        t = Finv;
+    }
+}
 

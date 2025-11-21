@@ -1529,6 +1529,7 @@ class CorrelationType(Enum):
     clayton_copula = 'clayton_copula'
     frank_copula = 'frank_copula'
     gumbel_copula = 'gumbel_copula'
+    diagonal_band_copula = 'diagonal_band_copula'
 
     @classmethod
     def get_index(cls, type):
