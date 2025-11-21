@@ -480,7 +480,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             TestSetXAtU(stochast, 3.5, 0.05);
 
-            TestInvert(stochast, false);
+            TestInvert(stochast, true);
 
             stochast.Inverted = false;
             stochast.Truncated = true;
@@ -489,7 +489,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             TestMinMax(stochast);
 
-            TestInvert(stochast, false);
+            TestInvert(stochast, true);
 
             stochast.Inverted = false;
             stochast.Truncated = false;
@@ -516,7 +516,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Shape = 3;
             stochast.Shift = 0.5;
 
-            TestInvert(stochast, false);
+            TestInvert(stochast, true);
             TestFit(stochast, 0.4);
 
             stochast.Inverted = true;
@@ -568,7 +568,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Scale = 2;
             stochast.Shape = 3;
 
-            TestInvert(stochast, false);
+            TestInvert(stochast, true);
             TestFit(stochast, 1.1);
 
             stochast.Inverted = true;
@@ -589,7 +589,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Shape = 0;
             stochast.Shift = 3;
 
-            TestInvert(stochast, false);
+            TestInvert(stochast, true);
             TestFit(stochast, 1);
 
             // frechet
@@ -598,7 +598,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Shape = 0.2;
             stochast.Shift = 0;
 
-            TestInvert(stochast, false);
+            TestInvert(stochast, true);
             TestFit(stochast, 5);
 
             // weibull
@@ -607,7 +607,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Shape = -0.5;
             stochast.Shift = 0;
 
-            TestInvert(stochast, false);
+            TestInvert(stochast, true);
             TestFit(stochast, 1);
 
             stochast.Inverted = true;
