@@ -211,17 +211,6 @@ namespace Deltares::Statistics
         }
 
         /**
-         * \brief Indicates whether values should be mirrored in the shift value when stochast is inverted
-         */
-        virtual bool useShiftForInversion()
-        {
-            return std::ranges::any_of(this->getParameters(), [](DistributionPropertyType parameter)
-            {
-                return parameter == DistributionPropertyType::Shift;
-            });
-        }
-
-        /**
          * \brief Updates parameters of a stochast, so that they fit best a number of given x-values and their weights
          * \param stochast Stochast to be updated
          * \param values Given x-values

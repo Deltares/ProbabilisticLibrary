@@ -63,6 +63,7 @@ namespace Deltares
             double getInvertedValue(const StochastProperties& stochast, double value) const;
             StochastProperties getInvertedStochast(const StochastProperties& stochast) const;
             void copyFromInverted(StochastProperties& target, const StochastProperties& source) const;
+            bool usesShift() const;
         };
     }
 }
