@@ -21,10 +21,10 @@
 //
 #pragma once
 
-#include "../Model/GradientSettings.h"
 #include "../Model/RunSettings.h"
 #include "../Model/Validatable.h"
 #include "../Model/ModelSample.h"
+#include "../Utils/probLibException.h"
 
 namespace Deltares::Proxies
 {
@@ -46,6 +46,13 @@ namespace Deltares::Proxies
         GPR
     };
 
+    enum class QualitativeValue
+    {
+        Low,
+        Medium,
+        High
+    };
+
     /**
      * \brief Settings for FORM algorithm
      */
@@ -58,22 +65,56 @@ namespace Deltares::Proxies
         double  VarianceFactor = 1.0;
 
         /**
-         * \brief Maximum number of guessed design points in one FORM loop
+         * \brief Indicates whether training samples should have a small deviation
          */
         bool Disturbed = true;
 
         /**
-         * \brief Maximum number of FORM loops when no convergence is reached
+         * \brief Maximum number of proxy loops when no convergence is reached
          */
         int NumberOfRuns = 10;
 
         /**
-         * \brief Increase factor of Maximum iterations when a new FORM loop is applied
+         * \brief Random generator seed
          */
         int Seed = 0;
 
         /**
-         * \brief The FORM loop stops when the next guessed design point is less than this value away from the current guessed design point
+         * \brief Indicates in a single variation training set whether a full factorial combination should be added
+         */
+        bool AddFullFactorial = false;
+
+        /**
+         * \brief Indicates the direction where initial values should be retrieved
+         */
+        QualitativeValue Direction = QualitativeValue::Low;
+
+        /**
+         * \brief Gets the u-value corresponding to the low qualitative definition
+         */
+        double LowDefinition = 0.1;
+
+        /**
+         * \brief Gets the u-value corresponding to the high qualitative definition
+         */
+        double HighDefinition = 0.9;
+
+        /**
+         * \brief Gets the u-value corresponding to a qualitative value
+         */
+        double GetQualitativeValue(QualitativeValue qualitativeValue)
+        {
+            switch (qualitativeValue)
+            {
+            case QualitativeValue::Low: return LowDefinition;
+            case QualitativeValue::High: return HighDefinition;
+            case QualitativeValue::Medium: return 0.5;
+            default: throw Reliability::probLibException("Qualitative value");
+            }
+        }
+
+        /**
+         * \brief Indicates how initial training samples are generated
          */
         ProxyInitializationType InitializationType = ProxyInitializationType::Double;
 

@@ -250,6 +250,11 @@
     <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
     <ClCompile Include="Model\Validatable.cpp" />
     <ClCompile Include="Proxies\ProxySettings.cpp" />
+    <ClCompile Include="Proxies\ProxyModel.cpp" />
+    <ClCompile Include="Proxies\ProxyMethod.cpp" />
+    <ClCompile Include="Proxies\LinearProxyMethod.cpp" />
+    <ClCompile Include="Proxies\ProxyTrainer.cpp" />
+    <ClCompile Include="Proxies\SingleProxyTrainer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -529,6 +534,11 @@
     <ClInclude Include="Reliability\ImportanceSamplingSupport.h" />
     <ClInclude Include="Model\Validatable.h" />
     <ClInclude Include="Proxies\ProxySettings.h" />
+    <ClInclude Include="Proxies\ProxyModel.h" />
+    <ClInclude Include="Proxies\ProxyMethod.h" />
+    <ClInclude Include="Proxies\LinearProxyMethod.h" />
+    <ClInclude Include="Proxies\ProxyTrainer.h" />
+    <ClInclude Include="Proxies\SingleProxyTrainer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

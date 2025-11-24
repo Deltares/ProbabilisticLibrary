@@ -85,7 +85,7 @@ namespace Deltares
             /**
              * \brief Makes the model ready for invocations
              */
-            void initializeForRun();
+            virtual void initializeForRun();
 
             void setRunMethod(EmptyCallBack runMethod)
             {
@@ -118,12 +118,12 @@ namespace Deltares
             /**
              * \brief Calculates a sample
              */
-            void invoke(std::shared_ptr<ModelSample> sample);
+            virtual void invoke(std::shared_ptr<ModelSample> sample);
 
             /**
              * \brief Calculates a number of samples
              */
-            void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
+            virtual void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
 
             double getBeta(std::shared_ptr<ModelSample> sample, double beta);
 
