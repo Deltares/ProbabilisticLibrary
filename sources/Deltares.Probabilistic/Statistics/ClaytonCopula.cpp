@@ -28,15 +28,7 @@ namespace Deltares::Statistics
 {
     void ClaytonCopula ::update(const double& u, double& t) const
     {
-        double limitValue = (pow(t, -theta) - 1.0) / theta;
-        if (t <= limitValue)
-        {
-            t = 0.0; // TODO check if really needed.
-        }
-        else
-        {
-            t = pow ( ( pow(  pow(t,(1.0/(1.0+theta))) * u, (-theta))+1.0-pow(u,(-theta))) ,(-1.0/theta));
-        }
+        t = pow (pow(pow(t,1.0/(1.0+theta)) * u, -theta)+1.0-pow(u,-theta) ,-1.0/theta);
     }
 }
 

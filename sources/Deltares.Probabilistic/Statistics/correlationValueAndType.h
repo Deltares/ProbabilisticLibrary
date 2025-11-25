@@ -24,10 +24,10 @@
 
 enum class correlationType
 {
-    Gaussian,
-    Frank,
     Clayton,
+    Frank,
     Gumbel,
+    Gaussian,
     DiagonalBand,
 };
 
