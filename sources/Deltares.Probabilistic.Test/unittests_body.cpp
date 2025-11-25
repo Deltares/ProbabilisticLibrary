@@ -270,7 +270,7 @@ TEST(unittst, testGaussianCorrelation)
     testCopula::testGaussian();
 }
 
-TEST(unittst, testGumbelCorrelation)
+TEST(unittst, testGumbelCopula)
 {
     testCopula::testGumbel();
 }

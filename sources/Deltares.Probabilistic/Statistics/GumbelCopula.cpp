@@ -32,7 +32,10 @@ namespace Deltares::Statistics
         const double vt = -log(v);
         const double k = alpha;
 
-        double out1 = (pow(v, (-1))*pow(exp(-(pow(ut , k) + pow( vt, k))), (1 / k)))*pow(1 + pow(ut / vt, k), (1 / k - 1));
+        double factor1 = exp( -pow( pow(ut, k) + pow(vt, k), (1.0 / k)));
+        double factor2 = pow(1.0 + pow(ut / vt, k), (1.0 / k - 1.0));
+
+        double out1 = factor1 * factor2 / v;
         out1 = out1 - t;
         return out1;
     }
@@ -41,7 +44,7 @@ namespace Deltares::Statistics
     {
         Numeric::RootFinderMethod method = [this, u, t](double v)
             {
-                return copulaC(u, t, v);
+                return copulaC(v, u, t);
             };
 
         constexpr double toleranceBisection = 0.00001;

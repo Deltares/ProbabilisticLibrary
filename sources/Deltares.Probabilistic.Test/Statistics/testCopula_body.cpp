@@ -65,13 +65,13 @@ namespace Deltares::Probabilistic::Test
 
     void testCopula::testGumbel()
     {
-        constexpr double margin = 1e-9;
+        constexpr double margin = 1e-4;
 
-        auto gumbelCopula = GumbelCopula(0.7);
-        double a = 1.0;
-        double b = 1.0;
-        gumbelCopula.update_uspace(a, b);
-        EXPECT_NEAR(b, 0.5057196397, margin);
+        auto gumbelCopula = GumbelCopula(5.0);
+        double a = 0.2;
+        double b = 0.2;
+        gumbelCopula.update(a, b);
+        EXPECT_NEAR(b, 0.1355, margin) << "comparison with Matlab fails";
     }
 
 }
