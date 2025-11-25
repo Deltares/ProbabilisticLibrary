@@ -1526,15 +1526,24 @@ class ConditionalValue(FrozenObject):
 class CorrelationType(Enum):
     """Enumeration which defines the type of correlation"""
     gaussian = 'gaussian'
-    clayton_copula = 'clayton_copula'
-    frank_copula = 'frank_copula'
-    gumbel_copula = 'gumbel_copula'
-    diagonal_band_copula = 'diagonal_band_copula'
+    copulas = 'copulas'
 
     @classmethod
     def get_index(cls, type):
         return list(cls).index(type)
-	
+
+class CopulaType(Enum):
+    """Enumeration which defines the type of copula correlation"""
+    clayton = 'clayton'
+    frank = 'frank'
+    gumbel = 'gumbel'
+    gaussian = 'gaussian'
+    diagonal_band = 'diagonal_band'
+
+    @classmethod
+    def get_index(cls, type):
+        return list(cls).index(type)
+
 class CorrelationMatrix(FrozenObject):
 	"""Correlation matrix for stochastic variables
 
@@ -1627,7 +1636,7 @@ class CorrelationMatrix(FrozenObject):
             Stochasts between which the correlation value is returned. In case of a list, the length
             of the list must be 2.
 
-        value: float | (float, correlationType)
+        value: float | (float, copulaType)
             The correlation value, must be between -1 and 1 (inclusive)
 			Can also contain the correlation type, Default Gaussian (Pearson), also possible: Clayton, Frank and Gumbel copulas"""
 
@@ -1643,8 +1652,8 @@ class CorrelationMatrix(FrozenObject):
 
 		if type(value) is tuple:
 			interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value[0])
-			corr_type = CorrelationType.get_index(value[1])
-			interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, corr_type)
+			copula_type = CopulaType.get_index(value[1])
+			interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, copula_type)
 		else:
 			interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
 

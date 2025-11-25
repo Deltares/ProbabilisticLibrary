@@ -69,7 +69,7 @@ from typing import FrozenSet
 from types import FunctionType, MethodType
 from enum import Enum
 
-from .statistic import Stochast, DistributionType, CorrelationMatrix, SelfCorrelationMatrix, Scenario
+from .statistic import Stochast, DistributionType, CorrelationMatrix, SelfCorrelationMatrix, Scenario, CorrelationType
 from .reliability import DesignPoint, ReliabilityMethod, Settings, CombineSettings, ExcludingCombineSettings, LimitStateFunction
 from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings, SensitivityMethod
 from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
@@ -448,9 +448,11 @@ class ModelProject(FrozenObject):
 		self._known_variables = []
 		self._variables = FrozenList()
 		self._correlation_matrix = CorrelationMatrix()
+		self._copulas = None
 		self._output_parameters = FrozenList()
 		self._settings = None
 		self._model = None
+		self._correlation_type = CorrelationType.gaussian
 		# do not freeze, this will be done by inheritors
 
 	def _initialize_callbacks(self, project_id):
@@ -499,10 +501,33 @@ class ModelProject(FrozenObject):
 		return self._variables
 
 	@property
+	def correlation_type(self) -> CorrelationType:
+		return self._correlation_type
+
+	@correlation_type.setter
+	def correlation_type(self, value):
+		# if the type changes, create an new correlation class for the type now in use, and make the other inaccessable
+		if (value != self._correlation_type):
+			if (value == CorrelationType.gaussian):
+				self._correlation_matrix = CorrelationMatrix()
+				self._copulas = None
+			else:
+				self._copulas = CorrelationMatrix()
+				self._copulas._set_variables(self._correlation_matrix._variables)
+				self._correlation_matrix = None
+			self._correlation_type = value
+
+	@property
 	def correlation_matrix(self) -> CorrelationMatrix:
 		"""Correlation matrix based on the input parameters of the model"""
 		self._check_model()
 		return self._correlation_matrix
+
+	@property
+	def copulas(self) -> CorrelationMatrix:
+		"""Correlation copula based on the input parameters of the model"""
+		self._check_model()
+		return self._copulas
 
 	@property
 	def model(self) -> ZModel:
@@ -577,7 +602,10 @@ class ModelProject(FrozenObject):
 			variables.append(variable)
 		self._variables = FrozenList(variables)
 
-		self._correlation_matrix._set_variables(variables)
+		if (self._correlation_type == CorrelationType.gaussian):
+			self._correlation_matrix._set_variables(variables)
+		else:
+			self._copulas._set_variables(variables)
 		self._settings._set_variables(variables)
 		for var in self._variables:
 			var._set_variables(self._variables)
@@ -587,7 +615,10 @@ class ModelProject(FrozenObject):
 	def _update(self):
 		self._check_model()
 
-		interface.SetIntValue(self._project_id, 'correlation_matrix', self._correlation_matrix._id)
+		if (self._correlation_type == CorrelationType.gaussian):
+			interface.SetIntValue(self._project_id, 'correlation_matrix', self._correlation_matrix._id)
+		else:
+			interface.SetIntValue(self._project_id, 'correlation_matrix', self._copulas._id)
 		interface.SetIntValue(self._project_id, 'settings', self._settings._id)
 		if hasattr(self.settings, 'stochast_settings'):
 			interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
