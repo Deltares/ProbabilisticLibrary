@@ -1230,12 +1230,12 @@ Alpha values:
         project.settings.reliability_method = ReliabilityMethod.form
 
         project.correlation_type = CorrelationType.copulas
-        project.copulas[(project.variables[0], project.variables[1])] = (0.5, CopulaType.diagonal_band)
+        project.copulas[(project.variables[0], project.variables[1])] = (5.0, CopulaType.gumbel)
         project.run()
 
         dp = project.design_point
 
-        self.assertAlmostEqual(1.9376, dp.reliability_index, delta=margin)
+        self.assertAlmostEqual(1.654, dp.reliability_index, delta=margin)
 
 
 if __name__ == '__main__':

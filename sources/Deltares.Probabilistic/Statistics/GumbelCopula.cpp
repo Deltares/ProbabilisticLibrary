@@ -22,6 +22,7 @@
 
 #include <cmath>
 #include "GumbelCopula.h"
+
 #include "../Math/RootFinders/BisectionRootFinder.h"
 
 namespace Deltares::Statistics
@@ -54,7 +55,6 @@ namespace Deltares::Statistics
         double maxStart = 1-1e-4;
 
         t = bisection.CalculateValue(minStart, maxStart, 0.0, method);
-
     }
 }
 
