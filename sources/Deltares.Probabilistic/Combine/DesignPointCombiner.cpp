@@ -60,7 +60,7 @@ namespace Deltares
         std::shared_ptr<DesignPoint> DesignPointCombiner::combineDesignPoints(combineAndOr combineMethodType,
             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
             std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
+            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix,
             std::shared_ptr<ProgressIndicator> progress)
         {
             const std::shared_ptr<Combiner> combiner = getCombiner();
@@ -85,7 +85,7 @@ namespace Deltares
         }
 
         void DesignPointCombiner::applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                                                   std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
+                                                   std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix,
                                                    DesignPoint* combinedDesignPoint)
         {
             if (correlationMatrix != nullptr && !correlationMatrix->IsIdentity())
