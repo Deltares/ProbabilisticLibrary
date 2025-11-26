@@ -81,12 +81,15 @@ namespace Deltares
             {
                 stochast->validate(report);
             }
-            if (! correlationMatrix->isValid())
+            if ( correlationMatrix != nullptr)
             {
-                auto msg = std::make_shared<Logging::Message>();
-                msg->Text = "correlations are not valid";
-                msg->Type = Logging::MessageType::Error;
-                report.messages.push_back(msg);
+                if (!correlationMatrix->isValid())
+                {
+                    auto msg = std::make_shared<Logging::Message>();
+                    msg->Text = "correlations are not valid";
+                    msg->Type = Logging::MessageType::Error;
+                    report.messages.push_back(msg);
+                }
             }
         }
 
