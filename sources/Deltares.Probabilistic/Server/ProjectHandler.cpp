@@ -93,7 +93,7 @@ namespace Deltares
             else if (object_type == "contributing_stochast") return ObjectType::ContributingStochast;
             else if (object_type == "conditional_value") return ObjectType::ConditionalValue;
             else if (object_type == "correlation_matrix") return ObjectType::CorrelationMatrix;
-            else if (object_type == "copulas_correlation") return ObjectType::CopulaCorrelation;
+            else if (object_type == "copula_correlation") return ObjectType::CopulaCorrelation;
             else if (object_type == "scenario") return ObjectType::Scenario;
             else if (object_type == "settings") return ObjectType::Settings;
             else if (object_type == "stochast_settings") return  ObjectType::StochastSettings;

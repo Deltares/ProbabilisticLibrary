@@ -29,6 +29,7 @@ enum class correlationType
     Gumbel,
     Gaussian,
     DiagonalBand,
+    UnknownYet,
 };
 
 struct correlationValueAndType

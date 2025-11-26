@@ -180,7 +180,7 @@ namespace Deltares
                 throw probLibException("dimension mismatch in SetCorrelation");
             }
 
-            // value = std::min(std::max(value, -1.0), 1.0);
+            value = std::min(std::max(value, -1.0), 1.0);
             matrix(i, j) = value;
             matrix(j, i) = value;
             bool fully = (std::fabs(value) == 1.0);

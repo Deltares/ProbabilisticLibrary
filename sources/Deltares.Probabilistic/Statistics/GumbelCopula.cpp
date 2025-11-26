@@ -53,7 +53,6 @@ namespace Deltares::Statistics
         double minStart = 1e-4;
         double maxStart = 1.0-1e-4;
 
-        double tOld = t;
         t = bisection.CalculateValue(minStart, maxStart, 0.0, method);
         if (t < minStart)
         {

@@ -43,8 +43,8 @@ namespace Deltares::Statistics
 
         virtual bool isValid() {return false;}
 
-        virtual void SetCorrelation(const int i, const int j, double value, correlationType type = correlationType::Gaussian) {}
-        virtual void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type = correlationType::Gaussian) {}
+        virtual void SetCorrelation(const int i, const int j, double value, correlationType type = correlationType::UnknownYet) {}
+        virtual void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type = correlationType::UnknownYet) {}
 
         virtual correlationValueAndType GetCorrelation(const int i, const int j) const
         {

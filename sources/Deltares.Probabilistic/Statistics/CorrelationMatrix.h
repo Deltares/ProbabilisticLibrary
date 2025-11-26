@@ -58,9 +58,9 @@ namespace Deltares
             std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
 
-            void SetCorrelation(const int i, const int j, double value, correlationType type=correlationType::Gaussian) override;
+            void SetCorrelation(const int i, const int j, double value, correlationType type=correlationType::UnknownYet) override;
             void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2,
-                double value, correlationType type=correlationType::Gaussian) override;
+                double value, correlationType type=correlationType::UnknownYet) override;
 
             correlationValueAndType GetCorrelation(const int i, const int j) const override;
             correlationValueAndType GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) override;

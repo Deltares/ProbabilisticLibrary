@@ -48,11 +48,31 @@ namespace Deltares::Statistics
         case correlationType::DiagonalBand:
             pair.copula = std::make_shared<DiagonalBandCopula>(value);
             break;
+        case correlationType::UnknownYet:
+            lastValue = value;
+            return;
         case correlationType::Gaussian:
             throw Reliability::probLibException("not implemented yet");
         }
         copulas.push_back(pair);
     }
+
+    void CopulaCorrelation::SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2 , double value, correlationType type)
+    {
+        size_t index1 = std::numeric_limits<size_t>::max();
+        size_t index2 = std::numeric_limits<size_t>::max();
+        for (size_t i = 0; i < stochasts.size(); i++)
+        {
+            if (stochasts[i] == stochast1) index1 = i;
+            if (stochasts[i] == stochast2) index2 = i;
+        }
+
+        if (index1 < stochasts.size() && index2 < stochasts.size())
+        {
+            SetCorrelation(static_cast<int>(index1), static_cast<int>(index2), value, type);
+        }
+    }
+
 
     void CopulaCorrelation::filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index)
     {
@@ -103,7 +123,7 @@ namespace Deltares::Statistics
             if (p.i == i && p.j == j) return { p.copula->getCorrelation() };
             if (p.i == j && p.j == i) return { p.copula->getCorrelation() };
         }
-        return { 0, correlationType::Gaussian };
+        return { lastValue, correlationType::Gaussian };
     }
 
     correlationValueAndType CopulaCorrelation::GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)

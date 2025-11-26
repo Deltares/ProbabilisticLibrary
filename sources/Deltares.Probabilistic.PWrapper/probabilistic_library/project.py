@@ -69,7 +69,7 @@ from typing import FrozenSet
 from types import FunctionType, MethodType
 from enum import Enum
 
-from .statistic import Stochast, DistributionType, CorrelationMatrix, SelfCorrelationMatrix, Scenario, CorrelationType
+from .statistic import Stochast, DistributionType, CorrelationMatrix, CopulaCorrelation, SelfCorrelationMatrix, Scenario, CorrelationType
 from .reliability import DesignPoint, ReliabilityMethod, Settings, CombineSettings, ExcludingCombineSettings, LimitStateFunction
 from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings, SensitivityMethod
 from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
@@ -510,9 +510,10 @@ class ModelProject(FrozenObject):
 		if (value != self._correlation_type):
 			if (value == CorrelationType.gaussian):
 				self._correlation_matrix = CorrelationMatrix()
+				self._correlation_matrix._set_variables(self._copulas._variables)
 				self._copulas = None
 			else:
-				self._copulas = CorrelationMatrix()
+				self._copulas = CopulaCorrelation()
 				self._copulas._set_variables(self._correlation_matrix._variables)
 				self._correlation_matrix = None
 			self._correlation_type = value
@@ -524,7 +525,7 @@ class ModelProject(FrozenObject):
 		return self._correlation_matrix
 
 	@property
-	def copulas(self) -> CorrelationMatrix:
+	def copulas(self) -> CopulaCorrelation:
 		"""Correlation copula based on the input parameters of the model"""
 		self._check_model()
 		return self._copulas
@@ -618,7 +619,7 @@ class ModelProject(FrozenObject):
 		if (self._correlation_type == CorrelationType.gaussian):
 			interface.SetIntValue(self._project_id, 'correlation_matrix', self._correlation_matrix._id)
 		else:
-			interface.SetIntValue(self._project_id, 'correlation_matrix', self._copulas._id)
+			interface.SetIntValue(self._project_id, 'copula_correlation', self._copulas._id)
 		interface.SetIntValue(self._project_id, 'settings', self._settings._id)
 		if hasattr(self.settings, 'stochast_settings'):
 			interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
