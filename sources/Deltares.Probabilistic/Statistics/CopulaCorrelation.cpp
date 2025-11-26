@@ -60,9 +60,19 @@ namespace Deltares::Statistics
 
     bool CopulaCorrelation::isValid()
     {
-        for(const auto& c : copulas)
+        for(size_t i = 0; i < copulas.size(); i++)
         {
+            auto& c = copulas[i];
             if (!c.copula->isValid()) return false;
+            if (c.i == c.j) return false;
+            for (size_t j = 0; j < i; j++)
+            {
+                auto& other = copulas[j];
+                if (c.i == other.i) return false;
+                if (c.i == other.j) return false;
+                if (c.j == other.i) return false;
+                if (c.j == other.j) return false;
+            }
         }
         return true;
     }
