@@ -20,20 +20,23 @@
 // All rights reserved.
 //
 
-#pragma once
-#include "BaseCopula.h"
+#include "GaussianCopula.h"
+
+#include "StandardNormal.h"
 
 namespace Deltares::Statistics
 {
-    class DiagonalBandCopula : public BaseCopula
+    void GaussianCopula::update_uspace(const double& a, double& b) const
     {
-    public:
-        DiagonalBandCopula(const double alpha) : alpha(alpha) {}
-        void update(const double& u, double& t) const override;
-        correlationValueAndType getCorrelation() const override { return { alpha, correlationType::DiagonalBand }; }
-        bool isValid() const override { return alpha >= 0.0 && alpha <= 1.0; }
-    private:
-        const double alpha;
-    };
+        b = a * rho + b * sqrt(1.0 - rho * rho);
+    }
+
+    void GaussianCopula::update(const double& u, double& t) const
+    {
+        double a = StandardNormal::getUFromP(u);
+        double b = StandardNormal::getUFromP(t);
+        update_uspace(a, b);
+        t = StandardNormal::getUFromP(b);
+    }
 }
 

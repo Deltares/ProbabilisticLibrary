@@ -31,6 +31,7 @@ namespace Deltares::Statistics
         GumbelCopula(const double alpha) : alpha(alpha) {}
         void update(const double& u, double& t) const override;
         correlationValueAndType getCorrelation() const override { return { alpha, correlationType::Gumbel }; }
+        bool isValid() const override { return alpha >= 1.0; }
     private:
         const double alpha;
         double copulaC(double u, double v, double t) const;

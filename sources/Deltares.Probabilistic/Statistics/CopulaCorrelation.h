@@ -50,7 +50,7 @@ namespace Deltares::Statistics
             stochasts = stochastList;
         }
 
-        bool isValid() override {return true;}
+        bool isValid() override;
 
         void SetCorrelation(const int i, const int j, double value, correlationType type) override;
         void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type = correlationType::UnknownYet) override;

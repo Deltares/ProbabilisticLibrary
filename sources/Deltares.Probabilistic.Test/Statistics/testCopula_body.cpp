@@ -23,7 +23,7 @@
 #include "../../Deltares.Probabilistic/Statistics/ClaytonCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/FrankCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/GumbelCopula.h"
-#include "../../Deltares.Probabilistic/Statistics/CorrelationMatrix.h"
+#include "../../Deltares.Probabilistic/Statistics/GaussianCopula.h"
 #include <gtest/gtest.h>
 
 namespace Deltares::Probabilistic::Test
@@ -56,11 +56,14 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr double margin = 1e-12;
 
-        auto correlation = CorrelationMatrix();
-        correlation.init(2);
-        correlation.SetCorrelation(0, 1, 0.5, correlationType::Gaussian);
-        auto correlationWithType = correlation.GetCorrelation(0, 1);
+        auto correlation = GaussianCopula(0.5);
+        auto correlationWithType = correlation.getCorrelation();
         EXPECT_NEAR(0.5, correlationWithType.value, margin);
+        constexpr double u1 = 0.9;
+        double u2 = 0.8;
+        correlation.update_uspace(u1, u2);
+        const double expected = u1 * 0.5 + 0.8 * sqrt(0.75);
+        EXPECT_NEAR(expected, u2, margin);
     }
 
     void testCopula::testGumbel()

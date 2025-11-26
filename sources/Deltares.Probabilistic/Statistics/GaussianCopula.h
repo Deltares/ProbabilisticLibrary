@@ -21,19 +21,36 @@
 //
 
 #pragma once
+
+#include <cmath>
+
 #include "BaseCopula.h"
 
 namespace Deltares::Statistics
 {
-    class DiagonalBandCopula : public BaseCopula
+    class GaussianCopula : public BaseCopula
     {
     public:
-        DiagonalBandCopula(const double alpha) : alpha(alpha) {}
+        GaussianCopula(const double rho) : rho(rho) {}
+        /// <summary>
+        /// update a pair of correlated stochastic variables
+        /// </summary>
+        /// <param name="a"> value of first stochast in u-space </param>
+        /// <param name="b"> value of second stochast in u-space </param>
+        void update_uspace(const double& a, double& b) const override;
+
+        /// <summary>
+        /// update a pair of correlated stochastic variables
+        /// </summary>
+        /// <param name="u"> probability of failure of first stochast </param>
+        /// <param name="t"> probability of failure of second stochast </param>
         void update(const double& u, double& t) const override;
-        correlationValueAndType getCorrelation() const override { return { alpha, correlationType::DiagonalBand }; }
-        bool isValid() const override { return alpha >= 0.0 && alpha <= 1.0; }
+
+        correlationValueAndType getCorrelation() const override { return { rho, correlationType::Gaussian }; }
+
+        bool isValid() const override { return fabs(rho) <= 1.0; }
     private:
-        const double alpha;
+        const double rho;
     };
 }
 

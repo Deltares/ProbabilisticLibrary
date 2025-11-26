@@ -26,6 +26,7 @@
 #include "FrankCopula.h"
 #include "GumbelCopula.h"
 #include "DiagonalBandCopula.h"
+#include "GaussianCopula.h"
 
 namespace Deltares::Statistics
 {
@@ -52,9 +53,18 @@ namespace Deltares::Statistics
             lastValue = value;
             return;
         case correlationType::Gaussian:
-            throw Reliability::probLibException("not implemented yet");
+            pair.copula = std::make_shared<GaussianCopula>(value);
         }
         copulas.push_back(pair);
+    }
+
+    bool CopulaCorrelation::isValid()
+    {
+        for(const auto& c : copulas)
+        {
+            if (!c.copula->isValid()) return false;
+        }
+        return true;
     }
 
     void CopulaCorrelation::SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2 , double value, correlationType type)

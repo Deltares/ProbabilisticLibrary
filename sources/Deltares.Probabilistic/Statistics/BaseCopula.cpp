@@ -31,6 +31,6 @@ namespace Deltares::Statistics
         double t = StandardNormal::getPFromU(b);
         update(u, t);
         b = StandardNormal::getUFromP(t);
-    };
+    }
 }
 

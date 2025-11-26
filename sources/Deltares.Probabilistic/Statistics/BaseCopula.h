@@ -37,7 +37,7 @@ namespace Deltares::Statistics
         /// </summary>
         /// <param name="a"> value of first stochast in u-space </param>
         /// <param name="b"> value of second stochast in u-space </param>
-        void update_uspace(const double& a, double& b) const;
+        virtual void update_uspace(const double& a, double& b) const;
 
         /// <summary>
         /// update a pair of correlated stochastic variables
@@ -47,6 +47,8 @@ namespace Deltares::Statistics
         virtual void update(const double& u, double& t) const {}
 
         virtual correlationValueAndType getCorrelation() const { return { 0.0, correlationType::Gaussian }; }
+
+        virtual bool isValid() const { return false; }
     };
 }
 
