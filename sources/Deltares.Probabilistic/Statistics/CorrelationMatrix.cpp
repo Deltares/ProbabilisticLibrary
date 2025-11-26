@@ -35,10 +35,6 @@ namespace Deltares
 
         bool CorrelationMatrix::isValid()
         {
-            for (auto& c : inputCorrelations)
-            {
-                if (c.type != correlationType::Gaussian) return false;
-            }
             return true;
         }
 
@@ -148,13 +144,6 @@ namespace Deltares
         correlationValueAndType CorrelationMatrix::GetCorrelation(const int i, const int j) const
         {
             auto type = correlationType::Gaussian;
-            for (auto& c : inputCorrelations)
-            {
-                if ((c.index1 == i && c.index2 == j) || (c.index1 == j && c.index2 == i))
-                {
-                    type = c.type;
-                }
-            }
             return { matrix(i, j), type };
         }
 
@@ -190,11 +179,10 @@ namespace Deltares
                 {
                     c.correlation = value;
                     c.isFullyCorrelated = fully;
-                    c.type = type;
                     return;
                 }
             }
-            auto p = correlationPair({ i, j, value, fully, type });
+            auto p = correlationPair({ i, j, value, fully });
             inputCorrelations.push_back(p);
         }
 

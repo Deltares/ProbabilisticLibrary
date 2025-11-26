@@ -40,7 +40,6 @@ namespace Deltares
             int index2;
             double correlation;
             bool isFullyCorrelated;
-            correlationType type;
             bool AreLinked(const correlationPair & other) const
             {
                 return index1 == other.index1 || index1 == other.index2 || index2 == other.index1 || index2 == other.index2;
