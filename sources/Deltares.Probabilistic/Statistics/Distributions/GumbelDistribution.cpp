@@ -153,6 +153,8 @@ namespace Deltares
             double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
 
             stochast.Scale = bisection.CalculateValue(minStart, maxStart, 0, method);
+            stochast.Scale = std::max(minStart, stochast.Scale);
+            stochast.Scale = std::min(maxStart, stochast.Scale);
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast.Scale); });
 
