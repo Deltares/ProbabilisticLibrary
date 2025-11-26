@@ -27,7 +27,6 @@ namespace Deltares::Probabilistic::Test
     class testDistributions
     {
     public:
-        static void allDistributionsTests();
         static void testConditionalWeibull();
         static void testConditionalWeibullNonIntegerShape();
         static void testConditionalWeibullMeanDeviation();

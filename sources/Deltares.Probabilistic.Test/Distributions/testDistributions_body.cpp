@@ -28,32 +28,6 @@ using namespace Deltares::Statistics;
 
 namespace Deltares::Probabilistic::Test
 {
-    void testDistributions::allDistributionsTests()
-    {
-        testConditionalWeibull();
-        testConditionalWeibullNonIntegerShape();
-        testConditionalWeibullMeanDeviation();
-        testConditionalWeibullCdfPdf();
-        testConditionalWeibullCdfPdf2();
-        testConditionalStochast();
-        testCompositeStochast();
-        testCompositeTruncatedStochast();
-        testCompositeConditionalStochast();
-        testCompositeConditionalTruncatedStochast();
-        testComposite();
-        testDesignValue();
-        testVariationCoefficient();
-        testPoisson();
-        testGamma();
-        testStudentT();
-        testStudentTwithInterpolation();
-        testStudentTwithInterpolationLargeNoObservations();
-        testNormal();
-        testLogNormal();
-        testBernoulli();
-        testValidation();
-    }
-
     void testDistributions::testConditionalWeibull()
     {
         constexpr double margin = 1e-9;
