@@ -157,6 +157,19 @@ namespace Deltares
              */
             size_t getColumnCount() const { return this->m_columns; }
 
+            /**
+             * Gets an identity matrix
+             */
+            static Matrix identity(size_t n);
+
+            /**
+             * Brief Performs QR factorization
+             * @param mat Factorise A = QR
+             * @return 
+             */
+
+            std::vector<Matrix> QR(const Matrix& mat);
+
         private:
             size_t pos(size_t row, size_t column) const
             {
@@ -166,6 +179,9 @@ namespace Deltares
                 }
                 return row * m_columns + column;
             }
+
+            Matrix compute_minor(const Matrix& mat, size_t d);
+            vector1D extract_column(size_t c);
 
             std::vector<double> m_data;
             size_t m_rows;

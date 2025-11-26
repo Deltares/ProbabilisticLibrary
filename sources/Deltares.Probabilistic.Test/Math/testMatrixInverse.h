@@ -37,6 +37,8 @@ namespace Deltares
                 void matinv_test1() const;
                 void matinv_singular_test() const;
                 void positive_definite_tests() const;
+                static void qr_tests();
+
                 Deltares::Numeric::Matrix get3x3posDefiniteMatrix() const;
                 Deltares::Numeric::Matrix get2x2singularMatrix() const;
                 Deltares::Numeric::Matrix get2x2symmetrixMatrix() const;

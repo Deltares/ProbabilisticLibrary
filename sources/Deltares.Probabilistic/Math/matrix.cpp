@@ -227,5 +227,180 @@ namespace Deltares
                 return false;
             }
         }
+
+        Matrix Matrix::identity(size_t n)                                   // n x n Identity matrix
+        {
+            Matrix I(n, n);
+            for (size_t i = 0; i < n; i++) I.setValue(i, i, 1.0);
+            return I;
+        }
+
+        //bool Matrix::QR(const Matrix& A, Matrix& Q, Matrix& R)
+        //{
+        //    // see https://cplusplus.com/forum/general/242116/
+
+        //    // https://github.com/hosseinmoein/Tiger
+
+        //    // https://libeigen.gitlab.io/
+
+        //    const double SMALL = 1.0E-30;          // used to stop divide-by-zero
+
+        //    size_t rows = A.getRowCount();
+        //    size_t cols = A.getColumnCount();
+
+        //    if (rows < cols)
+        //    {
+        //        throw probLibException("Algorithm only works for rows >= cols");
+        //    }
+
+        //    R = A;
+        //    Matrix QT = identity(rows);
+
+        //    for (size_t k = 0; k < cols - 1; k++)          // k is the working column
+        //    {
+        //        // X vector, based on the elements from k down in the kth column
+        //        double alpha = 0;
+        //        for (size_t i = k; i < rows; i++) alpha += R(i, k) * R(i, k);
+        //        alpha = sqrt(alpha);                     // alpha is the Euclidean norm of Xk
+
+        //        // V vector ( normalise Xk - alpha e_k )
+        //        vector1D V = vector1D(rows);
+
+        //        double Vnorm = 0.0;
+        //        for (size_t i = k + 1; i < rows; i++)
+        //        {
+        //            V(i) = R(i, k);
+        //            Vnorm += V(k) * V(k);
+        //        }
+        //        V(k) = R(k, k) - alpha;
+        //        Vnorm += V(k) * V(k);
+        //        Vnorm = sqrt(Vnorm);
+
+        //        if (Vnorm > SMALL)
+        //        {
+        //            for (size_t i = k; i < rows; i++)
+        //            {
+        //                V(i) /= Vnorm;
+        //            }
+        //        }
+
+        //        // Householder matrix: Qk = I - 2 V VT
+        //        Matrix Qk = identity(rows);
+        //        for (size_t i = k; i < rows; i++)
+        //        {
+        //            for (size_t j = k; j < rows; j++)
+        //            {
+        //                Qk(i, j) -= 2.0 * V(i) * V(j);
+        //            }
+        //        }
+
+        //        QT= Qk.matmul(QT);
+        //        R = Qk.matmul(R);
+        //    }
+
+        //    Q = QT;
+        //    Q.Transpose();
+
+        //    return true;
+        //}
+
+        // compute minor
+        Matrix Matrix::compute_minor(const Matrix& mat, size_t d)
+        {
+            Matrix minor = Matrix(mat.getRowCount(), mat.getColumnCount());
+
+            for (size_t i = 0; i < d; i++)
+                minor(i, i) = 1.0;
+            for (size_t i = d; i < mat.getRowCount(); i++)
+                for (size_t j = d; j < mat.getColumnCount(); j++)
+                    minor(i, j) = mat(i, j);
+
+            return minor;
+        }
+
+        vector1D Matrix::extract_column(size_t c)
+        {
+            vector1D v = vector1D(m_rows);
+
+            for (size_t i = 0; i < m_rows; i++)
+            {
+                v(i) = (*this)(i, c);
+            }
+
+            return v;
+        }
+
+        std::vector<Matrix> Matrix::QR(const Matrix& mat)
+        {
+            // https://rosettacode.org/wiki/QR_decomposition#C++
+
+            size_t m = mat.getRowCount();
+            size_t n = mat.getColumnCount();
+
+            // array of factor Q1, Q2, ... Qm
+            std::vector<Matrix> qv_matrices;
+
+            // temp array
+            Matrix z(mat);
+            Matrix z1(m,n);
+
+            for (size_t k = 0; k < n && k < m - 1; k++) {
+
+                vector1D e = vector1D(m);
+                vector1D x = vector1D(m);
+
+                // compute minor
+                z1 = compute_minor(z, k);
+
+                // extract k-th column into x
+                x = z1.extract_column(k);
+
+                double a = x.norm();
+                if (mat(k, k) > 0) a = -a;
+
+                for (size_t i = 0; i < e.size(); i++)
+                {
+                    e(i) = i == k ? 1.0 : 0.0;
+                }
+
+                // e = x + a*e
+                e = x + a * e;
+                //vmadd(x, e, a, e);
+
+                // e = e / ||e||
+                e.normalize();
+
+                // compute household factor
+                // qv[k] = I - 2 *e*e^T
+                // compute_householder_factor(qv[k], e);
+
+                Matrix qv = Matrix(n, n);
+                for (size_t i = 0; i < n; i++)
+                    for (size_t j = 0; j < n; j++)
+                        qv(i, j) = -2 * e(i) * e(j);
+                for (size_t i = 0; i < n; i++)
+                    qv(i, i) += 1;
+
+                qv_matrices.push_back(qv);
+
+                // z = qv[k] * z1
+                // z.mult(qv[k], z1);
+                z = qv.matmul(z1);
+            }
+
+            Matrix Q = qv_matrices[0];
+
+            // after this loop, we will obtain Q (up to a transpose operation)
+            for (size_t i = 1; i < n && i < m - 1; i++) {
+
+                z1 = qv_matrices[i].matmul(Q);
+                Q = z1;
+            }
+
+            Matrix R = Q.matmul(mat);
+            Q.Transpose();
+
+            return std::vector<Matrix> {R, Q};
+        }
     }
 }

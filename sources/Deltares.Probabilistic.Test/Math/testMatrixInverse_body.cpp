@@ -38,6 +38,7 @@ namespace Deltares
                 matinv_test1();
                 matinv_singular_test();
                 positive_definite_tests();
+                qr_tests();
             }
 
             Matrix matinv_tests::get3x3posDefiniteMatrix() const
@@ -159,6 +160,27 @@ namespace Deltares
                 auto m4 = get16x16Matrix();
                 auto m4check = m4.IsPositiveDefinite();
                 ASSERT_TRUE(m4check);
+            }
+
+            void matinv_tests::qr_tests()
+            {
+                auto m1 = Matrix(3, 3);
+
+                m1(0, 0) = 12.0;
+                m1(0, 1) = 6.0;
+                m1(0, 2) = -4.0;
+                m1(1, 0) = -51.0;
+                m1(1, 1) = 167.0;
+                m1(1, 2) = 24.0;
+                m1(2, 0) = 4.0;
+                m1(2, 1) = -68.0;
+                m1(2, 2) = -41.0;
+
+                std::vector<Matrix> qr = m1.QR(m1);
+
+                Matrix q = qr[0];
+
+                EXPECT_NEAR(q(0, 0), 0.857143, 0.001);
             }
         }
     }
