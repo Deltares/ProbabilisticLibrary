@@ -29,6 +29,8 @@ namespace Deltares
 {
     namespace Numeric
     {
+        struct QR;
+
         /**
          * \brief Class for a matrix of doubles
          */
@@ -164,11 +166,9 @@ namespace Deltares
 
             /**
              * Brief Performs QR factorization
-             * @param mat Factorise A = QR
-             * @return 
+             * @return Q and R matrix
              */
-
-            std::vector<Matrix> QR(const Matrix& mat);
+            QR qr_decompose();
 
         private:
             size_t pos(size_t row, size_t column) const
@@ -180,12 +180,25 @@ namespace Deltares
                 return row * m_columns + column;
             }
 
-            Matrix compute_minor(const Matrix& mat, size_t d);
-            vector1D extract_column(size_t c);
+            Matrix compute_minor(size_t d) const;
+            vector1D extract_column(size_t column_index) const;
 
             std::vector<double> m_data;
             size_t m_rows;
             size_t m_columns;
+        };
+
+        struct QR
+        {
+        public:
+            QR(Matrix q_matrix, Matrix r_matrix) : q(0,0), r(0,0)
+            {
+                q = q_matrix;
+                r = r_matrix;
+            }
+
+            Matrix q;
+            Matrix r;
         };
     }
 }

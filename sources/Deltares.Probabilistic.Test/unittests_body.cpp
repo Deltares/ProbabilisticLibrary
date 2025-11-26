@@ -37,6 +37,7 @@
 #include "Combin/combiner_tests.h"
 #include "Statistics/testStandardNormal.h"
 #include "Distributions/testDistributions.h"
+#include "Math/testMatrix.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
@@ -103,6 +104,12 @@ TEST(unittst, testMatmul)
 {
     auto tstMatMul = matmul_tests();
     tstMatMul.all_matmul_tests();
+}
+
+TEST(unittst, testQRDecomposition)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.qr_tests();
 }
 
 TEST(unittst, testNumericalSupport)
