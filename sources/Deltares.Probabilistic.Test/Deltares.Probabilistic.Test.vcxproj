@@ -124,7 +124,7 @@
     <ClInclude Include="Statistics\testStandardNormal.h" />
     <ClInclude Include="Statistics\testStandardNormal_body.cpp" />
     <ClInclude Include="Statistics\testCopula.h" />
-    <ClInclude Include="Statistics\testCopula.cpp" />
+    <ClInclude Include="Statistics\testCopula_body.cpp" />
     <ClInclude Include="Math\testCholeskiDecomposition.h" />
     <ClInclude Include="Math\testCholeskiDecomposition_body.cpp" />
     <ClInclude Include="Math\testNumericSupport.h" />

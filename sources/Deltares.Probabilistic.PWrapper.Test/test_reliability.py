@@ -1224,7 +1224,7 @@ Alpha values:
 """
         self.assertEqual(expected, printed)
 
-    def test_form_copula(self):
+    def test_form_copula_gumbel(self):
         project = project_builder.get_linear_project()
 
         project.settings.reliability_method = ReliabilityMethod.form
@@ -1236,6 +1236,19 @@ Alpha values:
         dp = project.design_point
 
         self.assertAlmostEqual(1.654, dp.reliability_index, delta=margin)
+
+    def test_form_copula_clayton(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.correlation_type = CorrelationType.copulas
+        project.copulas[(project.variables[0], project.variables[1])] = (4.0, CopulaType.clayton)
+        project.run()
+
+        dp = project.design_point
+
+        self.assertAlmostEqual(1.86, dp.reliability_index, delta=margin)
 
 
 if __name__ == '__main__':
