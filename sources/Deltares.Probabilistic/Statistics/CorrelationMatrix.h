@@ -70,8 +70,7 @@ namespace Deltares
             std::shared_ptr<Statistics::Stochast> getStochast(int index) override;
             bool HasConflictingCorrelations() const override;
             void resolveConflictingCorrelations() override;
-            void CholeskyDecomposition() override;
-            void InverseCholeskyDecomposition() override;
+            void initializeForRun() override;
             bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const override;
             void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
             indexWithCorrelation findDependent(const int i) const override;
@@ -79,6 +78,8 @@ namespace Deltares
             Deltares::Numeric::Matrix matrix = Deltares::Numeric::Matrix(0, 0);
             Deltares::Numeric::Matrix choleskyMatrix = Deltares::Numeric::Matrix(0, 0);
             Deltares::Numeric::Matrix inverseCholeskyMatrix = Deltares::Numeric::Matrix(0, 0);
+            void CholeskyDecomposition();
+            void InverseCholeskyDecomposition();
             std::map<std::shared_ptr<Stochast>, int> stochastIndex;
             std::vector<std::shared_ptr<Stochast>> stochasts;
             std::vector<indexWithCorrelation> indexer;

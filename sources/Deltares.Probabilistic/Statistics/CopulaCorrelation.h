@@ -66,8 +66,6 @@ namespace Deltares::Statistics
         bool HasConflictingCorrelations() const override {return false;}
         void resolveConflictingCorrelations() override {}
         std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
-        void CholeskyDecomposition() override {}
-        void InverseCholeskyDecomposition() override {}
         bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const override {return false;}
         void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
         indexWithCorrelation findDependent(const int i) const override { return indexWithCorrelation(); }

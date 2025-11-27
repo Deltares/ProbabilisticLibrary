@@ -63,8 +63,7 @@ namespace Deltares::Statistics
         virtual bool HasConflictingCorrelations() const { return false; }
         virtual void resolveConflictingCorrelations() {}
         virtual std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) { return {}; }
-        virtual void CholeskyDecomposition() {}
-        virtual void InverseCholeskyDecomposition() {}
+        virtual void initializeForRun() {}
         virtual bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const { return false; }
         virtual void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) {}
         virtual indexWithCorrelation findDependent(const int i) const { return indexWithCorrelation(); }

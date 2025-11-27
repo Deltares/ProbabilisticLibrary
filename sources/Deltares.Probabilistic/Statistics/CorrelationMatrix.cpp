@@ -197,6 +197,12 @@ namespace Deltares
             }
         }
 
+        void CorrelationMatrix::initializeForRun()
+        {
+            CholeskyDecomposition();
+            InverseCholeskyDecomposition();
+        }
+
         void CorrelationMatrix::CholeskyDecomposition()
         {
             choleskyMatrix = matrix.CholeskyDecomposition();

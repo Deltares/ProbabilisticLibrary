@@ -27,12 +27,12 @@ namespace Deltares::Statistics
     void DiagonalBandCopula::update(const double& u, double& t) const
     {
         double Finv;
-        if (u < 1.0 - alpha and t < 1.0 - u / (1.0 - alpha))
+        if (u < 1.0 - alpha && t < 1.0 - u / (1.0 - alpha))
         {
             Finv = (1.0 - alpha) * t;
 
         }
-        else if (u > alpha and t > (1.0 - u) / (1.0 - alpha))
+        else if (u > alpha && t > (1.0 - u) / (1.0 - alpha))
         {
             Finv = (1.0 - alpha) * t + alpha;
         }
