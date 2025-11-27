@@ -420,32 +420,32 @@ TEST(unittst, testStandardNormal)
     tstStdNormal.allStandardNormalTests();
 }
 
-TEST(unittst, testClaytonCopula)
+TEST(copulas_test, testClayton)
 {
     testCopula::testClayton();
 }
 
-TEST(unittst, testFrankCopula)
+TEST(copulas_test, testFrank)
 {
     testCopula::testFrank();
 }
 
-TEST(unittst, testGaussianCorrelation)
+TEST(copulas_test, testGaussian)
 {
     testCopula::testGaussian();
 }
 
-TEST(unittst, testGumbelCopula)
+TEST(copulas_test, testGumbel)
 {
     testCopula::testGumbel();
 }
 
-TEST(unittst, testCopulaValidation)
+TEST(copulas_test, testValidation)
 {
     testCopula::testValidation();
 }
 
-TEST(unittst, testCopulaValidationMessages)
+TEST(copulas_test, testValidationMessages)
 {
     testCopula::testValidationMessages();
 }
