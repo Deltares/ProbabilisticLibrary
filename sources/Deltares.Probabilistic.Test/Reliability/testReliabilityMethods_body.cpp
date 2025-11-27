@@ -318,7 +318,7 @@ namespace Deltares
                 calculator.Settings->MaximumSamples = 100000;
                 auto designPoint = calculator.getDesignPoint(modelRunner);
                 ASSERT_EQ(designPoint->Alphas.size(), 3);
-                EXPECT_NEAR(designPoint->Beta, -0.390996, 1e-5);
+                EXPECT_NEAR(designPoint->Beta, -0.0147896, 1e-5);
             }
 
             void testReliabilityMethods::testAdaptiveImportanceSampling()

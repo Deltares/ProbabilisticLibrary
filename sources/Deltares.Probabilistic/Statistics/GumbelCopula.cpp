@@ -26,7 +26,7 @@
 
 namespace Deltares::Statistics
 {
-    double GumbelCopula::copulaC(double u, double v, double t) const
+    double GumbelCopula::copulaRootFunc(double u, double v, double t) const
     {
         const double ut = -log(u);
         const double vt = -log(v);
@@ -44,7 +44,7 @@ namespace Deltares::Statistics
     {
         Numeric::RootFinderMethod method = [this, u, t](double v)
             {
-                return copulaC(v, u, t);
+                return copulaRootFunc(v, u, t);
             };
 
         constexpr double toleranceBisection = 0.00001;

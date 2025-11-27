@@ -34,6 +34,8 @@ namespace Deltares::Statistics
         bool isValid() const override { return alpha != 0.0; }
     private:
         const double alpha;
+        double copulaRootFunc(double u, double v, double t) const;
+        static double expm1(const double x);
     };
 }
 
