@@ -42,5 +42,17 @@ namespace Deltares::Statistics
         }
         t = Finv;
     }
+
+    void DiagonalBandCopula::validate(Logging::ValidationReport& report) const
+    {
+        if (alpha < 0.0 || alpha > 1.0)
+        {
+            auto msg = std::make_shared<Logging::Message>();
+            msg->Text = "Alpha in Diagonal Band copula should be in [0.0, 1.0], but is " + std::to_string(alpha);
+            msg->Type = Logging::MessageType::Error;
+            report.messages.push_back(msg);
+        }
+    }
+
 }
 

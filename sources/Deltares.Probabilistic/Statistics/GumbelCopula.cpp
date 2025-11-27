@@ -51,7 +51,7 @@ namespace Deltares::Statistics
         auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
         double minStart = 1e-4;
-        double maxStart = 1.0-1e-4;
+        double maxStart = 1.0 - 1e-4;
 
         t = bisection.CalculateValue(minStart, maxStart, 0.0, method);
         if (t < minStart)
@@ -65,6 +65,17 @@ namespace Deltares::Statistics
             minStart = 1.0 - 2e-4;
             maxStart = 1.0 - 1e-9;
             t = bisection.CalculateValue(minStart, maxStart, 0.0, method);
+        }
+    }
+
+    void GumbelCopula::validate(Logging::ValidationReport & report) const
+    {
+        if (alpha < 1.0)
+        {
+            auto msg = std::make_shared<Logging::Message>();
+            msg->Text = "Alpha in Gumbel copula should be >= 1.0, but is " + std::to_string(alpha);
+            msg->Type = Logging::MessageType::Error;
+            report.messages.push_back(msg);
         }
     }
 }

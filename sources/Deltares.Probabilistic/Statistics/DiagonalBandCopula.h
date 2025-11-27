@@ -31,7 +31,7 @@ namespace Deltares::Statistics
         DiagonalBandCopula(const double alpha) : alpha(alpha) {}
         void update(const double& u, double& t) const override;
         correlationValueAndType getCorrelation() const override { return { alpha, correlationType::DiagonalBand }; }
-        bool isValid() const override { return alpha >= 0.0 && alpha <= 1.0; }
+        void validate(Logging::ValidationReport& report) const;
     private:
         const double alpha;
     };

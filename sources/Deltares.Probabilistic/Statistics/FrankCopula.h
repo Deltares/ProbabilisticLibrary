@@ -31,7 +31,7 @@ namespace Deltares::Statistics
         FrankCopula(const double alpha) : alpha(alpha) {}
         void update(const double& u, double& t) const override;
         correlationValueAndType getCorrelation() const override { return { alpha, correlationType::Frank }; }
-        bool isValid() const override { return alpha != 0.0; }
+        void validate(Logging::ValidationReport& report)  const override;
     private:
         const double alpha;
         double copulaRootFunc(double u, double v, double t) const;

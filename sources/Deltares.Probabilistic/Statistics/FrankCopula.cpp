@@ -61,6 +61,18 @@ namespace Deltares::Statistics
 
         t = bisection.CalculateValue(minStart, maxStart, 0.0, method);
     }
+
+    void FrankCopula::validate(Logging::ValidationReport& report) const
+    {
+        if (alpha == 0.0)
+        {
+            auto msg = std::make_shared<Logging::Message>();
+            msg->Text = "Rho in Frank copula should be <> 0.0, but is 0.0";
+            msg->Type = Logging::MessageType::Error;
+            report.messages.push_back(msg);
+        }
+    }
+
 }
 
 

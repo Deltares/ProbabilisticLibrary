@@ -32,5 +32,13 @@ namespace Deltares::Statistics
         update(u, t);
         b = StandardNormal::getUFromP(t);
     }
+
+    bool BaseCopula::isValid() const
+    {
+        auto report = Logging::ValidationReport();
+        validate(report);
+        return report.messages.empty();
+    }
+
 }
 

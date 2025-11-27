@@ -60,21 +60,36 @@ namespace Deltares::Statistics
 
     bool CopulaCorrelation::isValid()
     {
-        for(size_t i = 0; i < copulas.size(); i++)
+        auto report = Logging::ValidationReport();
+        validate(report);
+        return report.messages.empty();
+    }
+
+    void CopulaCorrelation::validate(Logging::ValidationReport& report) const
+    {
+        for (size_t i = 0; i < copulas.size(); i++)
         {
             auto& c = copulas[i];
-            if (!c.copula->isValid()) return false;
-            if (c.i == c.j) return false;
+            c.copula->validate(report);
+            if (c.i == c.j)
+            {
+                auto msg = std::make_shared<Logging::Message>();
+                msg->Text = "Self correlation not allowed for copulas, found for stochast " + std::to_string(c.i);
+                msg->Type = Logging::MessageType::Error;
+                report.messages.push_back(msg);
+            }
             for (size_t j = 0; j < i; j++)
             {
                 auto& other = copulas[j];
-                if (c.i == other.i) return false;
-                if (c.i == other.j) return false;
-                if (c.j == other.i) return false;
-                if (c.j == other.j) return false;
+                if (c.i == other.i || c.i == other.j || c.j == other.i || c.j == other.j)
+                {
+                    auto msg = std::make_shared<Logging::Message>();
+                    msg->Text = "Multiple correlations not allowed for copulas, found for correlations " + std::to_string(i) + " and " + std::to_string(j);
+                    msg->Type = Logging::MessageType::Error;
+                    report.messages.push_back(msg);
+                }
             }
         }
-        return true;
     }
 
     void CopulaCorrelation::SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2 , double value, correlationType type)

@@ -23,6 +23,7 @@
 #pragma once
 
 #include "correlationValueAndType.h"
+#include "../Logging/ValidationReport.h"
 
 namespace Deltares::Statistics
 {
@@ -48,7 +49,9 @@ namespace Deltares::Statistics
 
         virtual correlationValueAndType getCorrelation() const { return { 0.0, correlationType::Gaussian }; }
 
-        virtual bool isValid() const { return false; }
+        virtual bool isValid() const;
+
+        virtual void validate(Logging::ValidationReport& report) const {}
     };
 }
 

@@ -48,7 +48,7 @@ namespace Deltares::Statistics
 
         correlationValueAndType getCorrelation() const override { return { rho, correlationType::Gaussian }; }
 
-        bool isValid() const override { return fabs(rho) <= 1.0; }
+        void validate(Logging::ValidationReport& report) const override;
     private:
         const double rho;
     };

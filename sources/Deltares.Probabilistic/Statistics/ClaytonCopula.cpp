@@ -30,5 +30,17 @@ namespace Deltares::Statistics
     {
         t = pow (pow(pow(t,1.0/(1.0+theta)) * u, -theta)+1.0-pow(u,-theta) ,-1.0/theta);
     }
+
+    void ClaytonCopula::validate(Logging::ValidationReport& report) const
+    {
+        if (theta == 0.0 || theta < -1.0)
+        {
+            auto msg = std::make_shared<Logging::Message>();
+            msg->Text = "Theta in Clayton copula should be >= -1.0 and <> 0.0, but is " + std::to_string(theta);
+            msg->Type = Logging::MessageType::Error;
+            report.messages.push_back(msg);
+        }
+    }
+
 }
 

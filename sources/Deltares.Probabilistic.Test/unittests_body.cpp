@@ -275,6 +275,16 @@ TEST(unittst, testGumbelCopula)
     testCopula::testGumbel();
 }
 
+TEST(unittst, testCopulaValidation)
+{
+    testCopula::testValidation();
+}
+
+TEST(unittst, testCopulaValidationMessages)
+{
+    testCopula::testValidationMessages();
+}
+
 TEST(unittst, testUncertainty)
 {
     auto tstUncertainty = TestUncertainty();

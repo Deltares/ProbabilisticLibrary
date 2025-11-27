@@ -24,6 +24,9 @@
 #include "../../Deltares.Probabilistic/Statistics/FrankCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/GumbelCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/GaussianCopula.h"
+#include "../../Deltares.Probabilistic/Statistics/DiagonalBandCopula.h"
+#include "../../Deltares.Probabilistic/Statistics/CopulaCorrelation.h"
+
 #include <gtest/gtest.h>
 
 namespace Deltares::Probabilistic::Test
@@ -75,6 +78,64 @@ namespace Deltares::Probabilistic::Test
         double b = 0.2;
         gumbelCopula.update(a, b);
         EXPECT_NEAR(b, 0.1355, margin) << "comparison with Matlab fails";
+    }
+
+    void testCopula::testValidation()
+    {
+        auto gaussian_copula = GaussianCopula(1.5);
+        EXPECT_FALSE(gaussian_copula.isValid());
+
+        auto frank_copula = FrankCopula(0.0);
+        EXPECT_FALSE(frank_copula.isValid());
+
+        auto clayton_copula = ClaytonCopula(-2.0);
+        EXPECT_FALSE(clayton_copula.isValid());
+
+        auto gumbel_copula = GumbelCopula(0.99);
+        EXPECT_FALSE(gumbel_copula.isValid());
+
+        auto diagonal_band_copula = DiagonalBandCopula(-1.0);
+        EXPECT_FALSE(diagonal_band_copula.isValid());
+
+        auto copulas = CopulaCorrelation();
+        copulas.SetCorrelation(0, 1, 0.1, correlationType::Gaussian);
+        copulas.SetCorrelation(1, 0, 2.0, correlationType::Frank);
+        EXPECT_FALSE(copulas.isValid());
+    }
+
+    void testCopula::testValidationMessages()
+    {
+        auto report = Logging::ValidationReport();
+        auto gaussian_copula = GaussianCopula(1.5);
+        gaussian_copula.validate(report);
+        EXPECT_EQ("Rho in Gaussian copula should be in range [-1, 1], but is: 1.500000", report.messages[0]->Text);
+
+        report.messages.clear();
+        auto frank_copula = FrankCopula(0.0);
+        frank_copula.validate(report);
+        EXPECT_EQ("Rho in Frank copula should be <> 0.0, but is 0.0", report.messages[0]->Text);
+
+        report.messages.clear();
+        auto clayton_copula = ClaytonCopula(-2.0);
+        clayton_copula.validate(report);
+        EXPECT_EQ("Theta in Clayton copula should be >= -1.0 and <> 0.0, but is -2.000000", report.messages[0]->Text);
+
+        report.messages.clear();
+        auto gumbel_copula = GumbelCopula(0.99);
+        gumbel_copula.validate(report);
+        EXPECT_EQ("Alpha in Gumbel copula should be >= 1.0, but is 0.990000", report.messages[0]->Text);
+
+        report.messages.clear();
+        auto diagonal_band_copula = DiagonalBandCopula(-1.0);
+        diagonal_band_copula.validate(report);
+        EXPECT_EQ("Alpha in Diagonal Band copula should be in [0.0, 1.0], but is -1.000000", report.messages[0]->Text);
+
+        report.messages.clear();
+        auto copulas = CopulaCorrelation();
+        copulas.SetCorrelation(0, 1, 0.1, correlationType::Gaussian);
+        copulas.SetCorrelation(1, 0, 2.0, correlationType::Frank);
+        copulas.validate(report);
+        EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations 1 and 0", report.messages[0]->Text);
     }
 
 }

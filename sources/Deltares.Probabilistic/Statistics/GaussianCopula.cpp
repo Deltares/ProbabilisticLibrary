@@ -38,5 +38,17 @@ namespace Deltares::Statistics
         update_uspace(a, b);
         t = StandardNormal::getUFromP(b);
     }
+
+    void GaussianCopula::validate(Logging::ValidationReport& report) const
+    {
+        if (fabs(rho) > 1.0)
+        {
+            auto msg = std::make_shared<Logging::Message>();
+            msg->Text = "Rho in Gaussian copula should be in range [-1, 1], but is: " + std::to_string(rho);
+            msg->Type = Logging::MessageType::Error;
+            report.messages.push_back(msg);
+        }
+    }
+
 }
 
