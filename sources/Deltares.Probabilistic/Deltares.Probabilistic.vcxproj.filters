@@ -255,6 +255,7 @@
     <ClCompile Include="Proxies\LinearProxyMethod.cpp" />
     <ClCompile Include="Proxies\ProxyTrainer.cpp" />
     <ClCompile Include="Proxies\SingleProxyTrainer.cpp" />
+    <ClCompile Include="Proxies\ProxyCoefficients.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -539,6 +540,7 @@
     <ClInclude Include="Proxies\LinearProxyMethod.h" />
     <ClInclude Include="Proxies\ProxyTrainer.h" />
     <ClInclude Include="Proxies\SingleProxyTrainer.h" />
+    <ClInclude Include="Proxies\ProxyCoefficients.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

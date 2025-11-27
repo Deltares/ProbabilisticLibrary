@@ -22,38 +22,16 @@
 #pragma once
 #include <vector>
 
-#include "ProxyMethod.h"
-#include "ProxyCoefficients.h"
-#include "../Model/ModelSample.h"
-#include "../Model/ZModel.h"
-
-namespace Deltares::Numeric
-{
-    class vector1D;
-}
+#include "../Math/vector1D.h"
 
 namespace Deltares::Proxies
 {
-    /**
-     * \brief Combines a proxy model and settings
-     */
-    class LinearProxyMethod : public ProxyMethod
+    class ProxyCoefficients
     {
-    protected:
-        /**
-         * \brief Trains the proxy method for one particular output value
-         * \param trainingSamples Samples which are used for training
-         * \param index Index of the output value
-         */
-        Numeric::vector1D trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples, size_t index) override;
+    public:
+        std::vector<std::string> names;
 
-        /**
-         * \brief Gets the output value for one particular output value calculated by the proxy
-         * \param inputValues Inout values of the sample
-         * \param coefficients Coefficients for the output value
-         */
-        double invokeValue(std::vector<double> inputValues, Numeric::vector1D coefficients) override;
-
+        std::vector<Numeric::vector1D> coefficients;
     };
 }
 

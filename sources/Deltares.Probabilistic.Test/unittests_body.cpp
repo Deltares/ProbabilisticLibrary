@@ -106,10 +106,22 @@ TEST(unittst, testMatmul)
     tstMatMul.all_matmul_tests();
 }
 
-TEST(unittst, testQRDecomposition)
+TEST(matrix_test, qr_decomposition)
 {
     auto testMatrix = matrix_tests();
-    testMatrix.qr_tests();
+    testMatrix.qr_decomposition();
+}
+
+TEST(matrix_test, linear_equations)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.linear_equations();
+}
+
+TEST(matrix_test, linear_equations_overdetermined)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.linear_equations_overdetermined();
 }
 
 TEST(unittst, testNumericalSupport)

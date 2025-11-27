@@ -269,7 +269,7 @@ namespace Deltares
         }
 
 
-        QR Matrix::qr_decompose()
+        Numeric::QRMatrix Matrix::qr_decompose() const
         {
             // see https://rosettacode.org/wiki/QR_decomposition#C++
 
@@ -343,9 +343,40 @@ namespace Deltares
             Matrix R = Q.matmul(*this);
             Q.Transpose();
 
-            QR qr = QR(Q, R);
+            QRMatrix qr = QRMatrix(Q, R);
 
             return qr;
+        }
+
+        Numeric::vector1D QRMatrix::solve(const Numeric::vector1D& target) const
+        {
+            // see https://rosettacode.org/wiki/QR_decomposition#C++
+
+            Matrix qt = Q;
+
+            qt.Transpose();
+
+            vector1D z = qt.matvec(target);
+
+            vector1D x = vector1D(R.getColumnCount());
+
+            for (size_t i = 0; i < x.size(); i++)
+            {
+                // go backward
+                size_t j = x.size() -1 -i;
+
+                double sum = 0;
+                for (size_t k = j + 1; k < x.size(); k++)
+                {
+                    sum += x(k) * R(j, k);
+                }
+
+                double b = z(j) - sum;
+
+                x(j) = b / R(j, j);
+            }
+
+            return x;
         }
     }
 }

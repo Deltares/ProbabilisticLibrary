@@ -21,14 +21,52 @@
 //
 #include "LinearProxyMethod.h"
 
+#include <vector>
+
+#include "../Math/vector1D.h"
+#include "../Math/matrix.h"
+
 namespace Deltares::Proxies
 {
-    void LinearProxyMethod::invoke(std::shared_ptr<Models::ModelSample> sample)
+    double LinearProxyMethod::invokeValue(std::vector<double> inputValues, Numeric::vector1D coefficients)
     {
+        double z = coefficients(0);
+        for (size_t j = 0; j < inputValues.size(); j++)
+        {
+            z += inputValues[j] * coefficients(j + 1);
+        }
+
+        return z;
     }
 
-    void LinearProxyMethod::train(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples)
+    Numeric::vector1D LinearProxyMethod::trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples, size_t index)
     {
+        Numeric::vector1D results(trainingSamples.size());
+        Numeric::vector1D weights(trainingSamples.size());
+
+        for (size_t i = 0; i < trainingSamples.size(); i++)
+        {
+            results(i) = trainingSamples[i]->OutputValues[index];
+            weights(i) = trainingSamples[i]->Weight;
+        }
+
+        Numeric::Matrix xValues = Numeric::Matrix(trainingSamples.size(), trainingSamples[0]->Values.size() + 1);
+        for (size_t i = 0; i < xValues.getRowCount(); i++)
+        {
+            xValues(i, 0) = 1.0 * weights(i);
+            for (size_t j = 0; j < xValues.getColumnCount(); i++)
+            {
+                xValues(i, j+1) = trainingSamples[i]->Values[j] * weights(i);
+            }
+        }
+
+        // Do QR decomposition
+        Numeric::QRMatrix qr = xValues.qr_decompose();
+
+        // Solve using QR decomposition
+        Numeric::vector1D solution = qr.solve(results);
+
+        return solution;
     }
 }
 

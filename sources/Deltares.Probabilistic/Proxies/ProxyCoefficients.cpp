@@ -19,21 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
+#include "ProxyCoefficients.h"
 
-namespace Deltares
-{
-    namespace Probabilistic
-    {
-        namespace Test
-        {
-            class matrix_tests
-            {
-            public:
-                void qr_decomposition();
-                void linear_equations();
-                void linear_equations_overdetermined();
-            };
-        }
-    }
-}
+

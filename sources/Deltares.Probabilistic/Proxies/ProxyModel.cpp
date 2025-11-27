@@ -46,7 +46,7 @@ namespace Deltares::Proxies
             }
         }
 
-        this->proxyMethod.train(this->trainingSamples);
+        coefficients = this->proxyMethod.train(this->trainingSamples);
     }
 
     ProxyMethod ProxyModel::getProxyMethod()
@@ -62,14 +62,14 @@ namespace Deltares::Proxies
     {
         switch (settings->InitializationType)
         {
-        case ProxyInitializationType::Single: return SingleProxyTrainer(); break;
+        case ProxyInitializationType::Single: return SingleProxyTrainer();
         default: throw Reliability::probLibException("Proxy trainer is not implemented.");
         }
     }
 
     void ProxyModel::invoke(std::shared_ptr<Models::ModelSample> sample)
     {
-        proxyMethod.invoke(sample);
+        proxyMethod.invoke(sample, coefficients);
     }
 
     void ProxyModel::invoke(std::vector<std::shared_ptr<Models::ModelSample>> samples)

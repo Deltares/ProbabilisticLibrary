@@ -33,7 +33,7 @@ namespace Deltares
     {
         namespace Test
         {
-            void matrix_tests::qr_tests()
+            void matrix_tests::qr_decomposition()
             {
                 auto matrix_values =
                 {
@@ -46,7 +46,7 @@ namespace Deltares
 
                 Matrix m1 = testutils::convert1dmatrix(matrix_values, 5, 3, false);
 
-                QR qr = m1.qr_decompose();
+                QRMatrix qr = m1.qr_decompose();
 
                 auto expected_q_values =
                 {
@@ -63,7 +63,7 @@ namespace Deltares
                 {
                     for (size_t j = 0; j < m1.getColumnCount(); j++)
                     {
-                        EXPECT_NEAR(expected_q(i, j), qr.q(i, j), 0.001);
+                        EXPECT_NEAR(expected_q(i, j), qr.Q(i, j), 0.001);
                     }
                 }
 
@@ -82,12 +82,12 @@ namespace Deltares
                 {
                     for (size_t j = 0; j < m1.getColumnCount(); j++)
                     {
-                        EXPECT_NEAR(expected_r(i, j), qr.r(i, j), 0.001);
+                        EXPECT_NEAR(expected_r(i, j), qr.R(i, j), 0.001);
                     }
                 }
 
 
-                Matrix qr_product = qr.q.matmul(qr.r);
+                Matrix qr_product = qr.Q.matmul(qr.R);
 
                 for (size_t i = 0; i < m1.getRowCount(); i++)
                 {
@@ -96,6 +96,63 @@ namespace Deltares
                         EXPECT_NEAR(m1(i, j), qr_product(i, j), 0.001);
                     }
                 }
+            }
+
+            void matrix_tests::linear_equations()
+            {
+                // solving Ax= b
+
+                auto a_values =
+                {
+                    2.0,  0.0,  1.0,
+                    0.0,  1.0, -1.0,
+                    1.0,  1.0,  1.0
+                };
+
+                Matrix A = testutils::convert1dmatrix(a_values, 3, 3, false);
+
+                vector1D b = vector1D({ 3.0, 0.0, 3.0 });
+
+                QRMatrix QR = A.qr_decompose();
+
+                vector1D x = QR.solve(b);
+
+                vector1D x_expected = vector1D({ 1.0, 1.0, 1.0 });
+
+                for (size_t i = 0; i < x_expected.size(); i++)
+                {
+                    EXPECT_NEAR(x_expected(i), x(i), 0.001);
+                }
+
+            }
+
+            void matrix_tests::linear_equations_overdetermined()
+            {
+                // solving Ax= b
+                // example taken from https://www.math.uwaterloo.ca/~jmckinno/Math225/Week6/Lecture2i.pdf
+
+                auto a_values =
+                {
+                     1.0,  3.0,
+                     3.0, -1.0,
+                     2.0,  2.0
+                };
+
+                Matrix A = testutils::convert1dmatrix(a_values, 3, 2, false);
+
+                vector1D b = vector1D({ -2.0, 4.0, 1.0 });
+
+                QRMatrix QR = A.qr_decompose();
+
+                vector1D x = QR.solve(b);
+
+                vector1D x_expected = vector1D({ 1.111, -0.888 });
+
+                for (size_t i = 0; i < x_expected.size(); i++)
+                {
+                    EXPECT_NEAR(x_expected(i), x(i), 0.001);
+                }
+
             }
         }
     }

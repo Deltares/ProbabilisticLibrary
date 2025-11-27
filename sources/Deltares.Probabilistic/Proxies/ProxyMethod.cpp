@@ -21,3 +21,28 @@
 //
 #include "ProxyModel.h"
 
+namespace Deltares::Proxies
+{
+    void ProxyMethod::invoke(std::shared_ptr<Models::ModelSample> sample, ProxyCoefficients coefficients)
+    {
+        for (size_t index = 0; index < sample->OutputValues.size(); index++)
+        {
+            sample->OutputValues[index] = invokeValue(sample->Values, coefficients.coefficients[index]);
+        }
+    }
+
+    ProxyCoefficients ProxyMethod::train(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples)
+    {
+        ProxyCoefficients proxyCoefficients;
+
+        for (size_t index = 0; index < trainingSamples[0]->OutputValues.size(); index++)
+        {
+            proxyCoefficients.coefficients.push_back(trainValue(trainingSamples, index));
+        }
+
+        return proxyCoefficients;
+    }
+}
+
+
+

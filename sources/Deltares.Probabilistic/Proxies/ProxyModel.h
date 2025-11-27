@@ -47,6 +47,11 @@ namespace Deltares::Proxies
         std::shared_ptr<ProxySettings> settings = std::make_shared<ProxySettings>();
 
         /**
+         * \brief Coefficients for the proxy model
+         */
+        ProxyCoefficients coefficients;
+
+        /**
          * \brief Sets the converter
          * \param converter Converter to be set
          */

@@ -29,7 +29,7 @@ namespace Deltares
 {
     namespace Numeric
     {
-        struct QR;
+        class QRMatrix;
 
         /**
          * \brief Class for a matrix of doubles
@@ -168,7 +168,7 @@ namespace Deltares
              * Brief Performs QR factorization
              * @return Q and R matrix
              */
-            QR qr_decompose();
+            QRMatrix qr_decompose() const;
 
         private:
             size_t pos(size_t row, size_t column) const
@@ -188,17 +188,19 @@ namespace Deltares
             size_t m_columns;
         };
 
-        struct QR
+        class QRMatrix
         {
         public:
-            QR(Matrix q_matrix, Matrix r_matrix) : q(0,0), r(0,0)
+            QRMatrix(Matrix q_matrix, Matrix r_matrix) : Q(0, 0), R(0, 0)
             {
-                q = q_matrix;
-                r = r_matrix;
+                Q = q_matrix;
+                R = r_matrix;
             }
 
-            Matrix q;
-            Matrix r;
+            Matrix Q;
+            Matrix R;
+
+            Numeric::vector1D solve(const Numeric::vector1D& target) const;
         };
     }
 }
