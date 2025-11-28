@@ -1023,8 +1023,8 @@ namespace Deltares
                 std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "settings") project->setSettings(GetSettings(value));
-                else if (property_ == "correlation_matrix") project->correlationMatrix = correlations[value];
-                else if (property_ == "copula_correlation") project->correlationMatrix = correlations[value];
+                else if (property_ == "correlation_matrix") project->correlation = correlations[value];
+                else if (property_ == "copula_correlation") project->correlation = correlations[value];
                 else if (property_ == "share_project") project->shareStochasts(GetProject(value));
             }
             else if (objectType == ObjectType::FragilityCurveProject)

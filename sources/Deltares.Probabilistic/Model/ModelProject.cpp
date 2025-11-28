@@ -65,7 +65,7 @@ namespace Deltares
                 existingStochasts[stochast->name] = stochast;
             }
 
-            this->correlationMatrix = source->correlationMatrix;
+            this->correlation = source->correlation;
         }
 
         void ModelProject::validate(Logging::ValidationReport& report)
@@ -82,9 +82,9 @@ namespace Deltares
                 stochast->validate(report);
             }
 
-            if ( correlationMatrix != nullptr)
+            if ( correlation != nullptr)
             {
-                correlationMatrix->validate(report);
+                correlation->validate(report);
             }
         }
 

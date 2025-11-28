@@ -48,7 +48,7 @@ namespace Deltares
             /**
              * \brief Defines correlations between stochastic variables
              */
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = nullptr; // TODO rename into correlation
+            std::shared_ptr<Statistics::BaseCorrelation> correlation = nullptr;
 
             /**
              * \brief Deterministic model which calculates a z-value based on input values

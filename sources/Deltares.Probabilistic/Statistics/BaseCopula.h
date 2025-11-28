@@ -45,13 +45,13 @@ namespace Deltares::Statistics
         /// </summary>
         /// <param name="u"> probability of failure of first stochast </param>
         /// <param name="t"> probability of failure of second stochast </param>
-        virtual void update(const double& u, double& t) const {}
+        virtual void update(const double& u, double& t) const = 0;
 
         virtual correlationValueAndType getCorrelation() const { return { 0.0, correlationType::Gaussian }; }
 
         virtual bool isValid() const;
 
-        virtual void validate(Logging::ValidationReport& report) const {}
+        virtual void validate(Logging::ValidationReport& report) const = 0;
     };
 }
 
