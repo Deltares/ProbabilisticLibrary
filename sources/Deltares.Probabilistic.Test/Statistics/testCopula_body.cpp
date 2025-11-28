@@ -31,13 +31,11 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    using namespace Deltares::Statistics;
-
     void testCopula::testClayton()
     {
         constexpr double margin = 1e-9;
 
-        auto claytonCopula = ClaytonCopula(0.7);
+        auto claytonCopula = Statistics::ClaytonCopula(0.7);
         double a = 1.0;
         double b = 1.0;
         claytonCopula.update_uspace(a, b);
@@ -48,7 +46,7 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr double margin = 1e-9;
 
-        auto frankCopula = FrankCopula(0.7);
+        auto frankCopula = Statistics::FrankCopula(0.7);
         double a = 1.0;
         double b = 1.0;
         frankCopula.update_uspace(a, b);
@@ -59,7 +57,7 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr double margin = 1e-12;
 
-        auto correlation = GaussianCopula(0.5);
+        auto correlation = Statistics::GaussianCopula(0.5);
         auto correlationWithType = correlation.getCorrelation();
         EXPECT_NEAR(0.5, correlationWithType.value, margin);
         constexpr double u1 = 0.9;
@@ -73,7 +71,7 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr double margin = 1e-4;
 
-        auto gumbelCopula = GumbelCopula(5.0);
+        auto gumbelCopula = Statistics::GumbelCopula(5.0);
         double a = 0.2;
         double b = 0.2;
         gumbelCopula.update(a, b);
@@ -82,22 +80,22 @@ namespace Deltares::Probabilistic::Test
 
     void testCopula::testValidation()
     {
-        auto gaussian_copula = GaussianCopula(1.5);
+        auto gaussian_copula = Statistics::GaussianCopula(1.5);
         EXPECT_FALSE(gaussian_copula.isValid());
 
-        auto frank_copula = FrankCopula(0.0);
+        auto frank_copula = Statistics::FrankCopula(0.0);
         EXPECT_FALSE(frank_copula.isValid());
 
-        auto clayton_copula = ClaytonCopula(-2.0);
+        auto clayton_copula = Statistics::ClaytonCopula(-2.0);
         EXPECT_FALSE(clayton_copula.isValid());
 
-        auto gumbel_copula = GumbelCopula(0.99);
+        auto gumbel_copula = Statistics::GumbelCopula(0.99);
         EXPECT_FALSE(gumbel_copula.isValid());
 
-        auto diagonal_band_copula = DiagonalBandCopula(-1.0);
+        auto diagonal_band_copula = Statistics::DiagonalBandCopula(-1.0);
         EXPECT_FALSE(diagonal_band_copula.isValid());
 
-        auto copulas = CopulaCorrelation();
+        auto copulas = Statistics::CopulaCorrelation();
         copulas.SetCorrelation(0, 1, 0.1, correlationType::Gaussian);
         copulas.SetCorrelation(1, 0, 2.0, correlationType::Frank);
         EXPECT_FALSE(copulas.isValid());
@@ -106,32 +104,32 @@ namespace Deltares::Probabilistic::Test
     void testCopula::testValidationMessages()
     {
         auto report = Logging::ValidationReport();
-        auto gaussian_copula = GaussianCopula(1.5);
+        auto gaussian_copula = Statistics::GaussianCopula(1.5);
         gaussian_copula.validate(report);
         EXPECT_EQ("Rho in Gaussian copula should be in range [-1, 1], but is: 1.500000", report.messages[0]->Text);
 
         report.messages.clear();
-        auto frank_copula = FrankCopula(0.0);
+        auto frank_copula = Statistics::FrankCopula(0.0);
         frank_copula.validate(report);
         EXPECT_EQ("Rho in Frank copula should be <> 0.0, but is 0.0", report.messages[0]->Text);
 
         report.messages.clear();
-        auto clayton_copula = ClaytonCopula(-2.0);
+        auto clayton_copula = Statistics::ClaytonCopula(-2.0);
         clayton_copula.validate(report);
         EXPECT_EQ("Theta in Clayton copula should be >= -1.0 and <> 0.0, but is -2.000000", report.messages[0]->Text);
 
         report.messages.clear();
-        auto gumbel_copula = GumbelCopula(0.99);
+        auto gumbel_copula = Statistics::GumbelCopula(0.99);
         gumbel_copula.validate(report);
         EXPECT_EQ("Alpha in Gumbel copula should be >= 1.0, but is 0.990000", report.messages[0]->Text);
 
         report.messages.clear();
-        auto diagonal_band_copula = DiagonalBandCopula(-1.0);
+        auto diagonal_band_copula = Statistics::DiagonalBandCopula(-1.0);
         diagonal_band_copula.validate(report);
         EXPECT_EQ("Alpha in Diagonal Band copula should be in [0.0, 1.0], but is -1.000000", report.messages[0]->Text);
 
         report.messages.clear();
-        auto copulas = CopulaCorrelation();
+        auto copulas = Statistics::CopulaCorrelation();
         copulas.SetCorrelation(0, 1, 0.1, correlationType::Gaussian);
         copulas.SetCorrelation(1, 0, 2.0, correlationType::Frank);
         copulas.validate(report);
