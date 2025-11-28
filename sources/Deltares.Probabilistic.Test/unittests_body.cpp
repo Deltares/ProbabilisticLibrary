@@ -42,6 +42,7 @@
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
+#include "Proxies/TestProxies.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -122,6 +123,12 @@ TEST(matrix_test, linear_equations_overdetermined)
 {
     auto testMatrix = matrix_tests();
     testMatrix.linear_equations_overdetermined();
+}
+
+TEST(proxies_test, linear_model)
+{
+    auto testProxies = TestProxies();
+    testProxies.testLinearModel();
 }
 
 TEST(unittst, testNumericalSupport)

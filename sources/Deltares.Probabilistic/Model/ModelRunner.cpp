@@ -25,6 +25,7 @@
 #include <cmath>
 
 #include "ModelSample.h"
+#include "../Proxies/ProxyModel.h"
 
 #if __has_include(<format>)
 #include <format>
@@ -107,6 +108,26 @@ namespace Deltares
                 zModel->releaseCallBacks();
             }
         }
+
+        void ModelRunner::useProxy(bool useProxy)
+        {
+            if (useProxy && !usingProxy)
+            {
+                zModel = std::make_shared<Proxies::ProxyModel>(this->zModel);
+                std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
+                usingProxy = true;
+            }
+            else if (!useProxy && usingProxy)
+            {
+                zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->getZModel();
+                usingProxy = false;
+            }
+            else
+            {
+                // nothing to do
+            }
+        }
+
 
         std::shared_ptr<ModelSample> ModelRunner::getModelSample(std::shared_ptr<Sample> sample)
         {

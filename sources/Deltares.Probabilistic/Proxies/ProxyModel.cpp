@@ -42,9 +42,23 @@ namespace Deltares::Proxies
 
             for (std::shared_ptr<Models::ModelSample> newSample : initialSamples)
             {
+                newSample->AllowProxy = false;
                 this->trainingSamples.push_back(newSample);
             }
+
+            this->invoke(trainingSamples);
         }
+
+        std::vector<std::shared_ptr<Models::ModelSample>> samplesToCalculate;
+        for (std::shared_ptr<Models::ModelSample> trainingSample : trainingSamples)
+        {
+            if (trainingSample->OutputValues.empty())
+            {
+                samplesToCalculate.push_back(trainingSample);
+            }
+        }
+
+        invoke(samplesToCalculate);
 
         coefficients = this->proxyMethod.train(this->trainingSamples);
     }
@@ -69,14 +83,38 @@ namespace Deltares::Proxies
 
     void ProxyModel::invoke(std::shared_ptr<Models::ModelSample> sample)
     {
-        proxyMethod.invoke(sample, coefficients);
+        if (sample->AllowProxy)
+        {
+            proxyMethod.invoke(sample, coefficients);
+        }
+        else
+        {
+            model->invoke(sample);
+        }
     }
 
     void ProxyModel::invoke(std::vector<std::shared_ptr<Models::ModelSample>> samples)
     {
-        for (const auto& sample : samples)
+        bool allowAnyProxy = false;
+        for (auto& sample : samples)
         {
-            invoke(sample);
+            if (sample->AllowProxy)
+            {
+                allowAnyProxy = true;
+                break;
+            }
+        }
+
+        if (allowAnyProxy)
+        {
+            for (const auto& sample : samples)
+            {
+                invoke(sample);
+            }
+        }
+        else
+        {
+            model->invoke(samples);
         }
     }
 

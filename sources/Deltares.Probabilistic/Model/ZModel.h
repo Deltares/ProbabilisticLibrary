@@ -44,6 +44,12 @@ namespace Deltares
         class ZModel
         {
         public:
+            ZModel()
+            {
+                this->zLambda = nullptr;
+                this->zMultipleLambda = nullptr;
+            }
+
             ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
             {
                 this->zLambda = zLambda;

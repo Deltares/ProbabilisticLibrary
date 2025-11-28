@@ -27,11 +27,7 @@
 #include "ProxyTrainer.h"
 #include "../Model/ModelSample.h"
 #include "../Model/ZModel.h"
-
-namespace Deltares::Models
-{
-    class UConverter;
-}
+#include "../Model/UConverter.h"
 
 namespace Deltares::Proxies
 {
@@ -41,6 +37,12 @@ namespace Deltares::Proxies
     class ProxyModel : public Models::ZModel
     {
     public:
+
+        ProxyModel(const std::shared_ptr<Models::ZModel>& model)
+        {
+            this->model = model;
+        }
+
         /**
          * \brief Proxy settings
          */
@@ -50,6 +52,15 @@ namespace Deltares::Proxies
          * \brief Coefficients for the proxy model
          */
         ProxyCoefficients coefficients;
+
+        /**
+         * \brief Sets the underlying model
+         * \param model The underlying model
+         */
+        void setModel(const std::shared_ptr<Models::ZModel>& model)
+        {
+            this->model = model;
+        }
 
         /**
          * \brief Sets the converter
@@ -64,6 +75,11 @@ namespace Deltares::Proxies
          * \brief Initializes the proxy for running
          */
         void initializeForRun() override;
+
+        /**
+         * \brief Gets the underlying model
+         */
+        std::shared_ptr<ZModel> getZModel() { return model; }
 
         /**
          * \brief List of training samples
@@ -89,6 +105,8 @@ namespace Deltares::Proxies
     private:
 
         std::shared_ptr<Models::UConverter> uConverter = nullptr;
+
+        std::shared_ptr<Models::ZModel> model = nullptr;
 
         ProxyMethod proxyMethod;
 
