@@ -503,10 +503,10 @@ namespace Deltares
              */
             void copyFrom(std::shared_ptr<Stochast> source);
 
-            static Statistics::ConstantParameterType getConstantParameterType(std::string distributionType);
-            static std::string getConstantParameterTypeString(Statistics::ConstantParameterType distributionType);
-            static Statistics::DistributionType getDistributionType(std::string distributionType);
-            static std::string getDistributionTypeString(Statistics::DistributionType distributionType);
+            static ConstantParameterType getConstantParameterType(std::string distributionType);
+            static std::string getConstantParameterTypeString(ConstantParameterType distributionType);
+            static DistributionType getDistributionType(const std::string& distributionType);
+            static std::string getDistributionTypeString(DistributionType distributionType);
         };
     }
 }
