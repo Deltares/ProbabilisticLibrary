@@ -84,6 +84,7 @@ from .logging import Evaluation, Message, ValidationReport
 from . import interface
 import matplotlib.pyplot as plt
 
+_msg_expected_two_arguments = 'Expected 2 arguments'
 
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
@@ -1615,8 +1616,8 @@ class CorrelationMatrix(FrozenObject):
             Stochasts between which the correlation value is returned. In case of a list, the length
             of the list must be 2."""
 
-		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
-			raise ArgumentError('Expected 2 arguments')
+		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
+			raise ArgumentError(_msg_expected_two_arguments)
 
 		stochast_list = []
 		for i in range(len(stochasts)):
@@ -1639,8 +1640,8 @@ class CorrelationMatrix(FrozenObject):
         value: float
             The correlation value, must be between -1 and 1 (inclusive)"""
 
-		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
-			raise ArgumentError('Expected 2 arguments')
+		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
+			raise ArgumentError(_msg_expected_two_arguments)
 
 		stochast_list = []
 		for i in range(len(stochasts)):
@@ -1716,8 +1717,8 @@ class CopulaCorrelation(FrozenObject):
             Stochasts between which the correlation value is returned. In case of a list, the length
             of the list must be 2."""
 
-		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
-			raise ArgumentError('Expected 2 arguments')
+		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
+			raise ArgumentError(_msg_expected_two_arguments)
 
 		stochast_list = []
 		for i in range(len(stochasts)):
@@ -1741,8 +1742,8 @@ class CopulaCorrelation(FrozenObject):
             The correlation value
 			the correlation type is one of: Clayton, Frank and Gumbel copulas, Gaussian (Pearson)"""
 
-		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
-			raise ArgumentError('Expected 2 arguments')
+		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
+			raise ArgumentError(_msg_expected_two_arguments)
 
 		stochast_list = []
 		for i in range(len(stochasts)):

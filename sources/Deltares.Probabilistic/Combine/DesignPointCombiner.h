@@ -67,9 +67,9 @@ namespace Deltares
              */
             std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
                 std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr,
-                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = nullptr,
-                std::shared_ptr<ProgressIndicator> progress = nullptr);
+                const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix = nullptr,
+                const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix = nullptr,
+                const std::shared_ptr<ProgressIndicator>& progress = nullptr) const;
 
             /**
              * \brief Combines a number of design points, where each design point contributes for a certain fraction
@@ -81,7 +81,7 @@ namespace Deltares
             std::shared_ptr<DesignPoint> combineDesignPointsExcluding(
                 std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
                 std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr);
+                const std::shared_ptr<Statistics::CorrelationMatrix>& correlationMatrix = nullptr) const;
 
             static std::string getCombineTypeString(combineAndOr type);
             static combineAndOr getCombineType(const std::string& method);
