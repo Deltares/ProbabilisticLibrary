@@ -944,6 +944,17 @@ u_\text{correlated} = L\left(u_\text{uncorrelated}\right)
 
 where $L$ denotes the lower triangular matrix obtained from the Cholesky decomposition of the correlation matrix $\left[\rho\right] = LL^\top$.
 
+\subsection{Archimedean Copulas}
+Besides the Gaussian correlation, we also support a few Archimedean copulas: the Clayton, Frank and Gumbel copulas.
+These copulas can only be defined in sets of two correlated stochastic variables. And it is allowed to have e.g.
+two variables defined with a Clayton copula and two others with a Frank, Gumbel or Gaussian copula.
+
+The Frank and Gumbel copulas do not have a closed form for the inverse calculation of the dependent stochastic variable,
+so for each sample a non linear equation has to be solved using numerical bisection.
+
+The copulas Clayton, Frank and Gumbel depend on a parameter $\theta$.
+For all copulas we have the condition : $ \theta <> 0 $
+and also $ \theta >= 1 $ for Clayton and $ \theta >= -1 $ for Gumbel.
 
 \section{Conversion between standard normal variables ($U$-domain) and real variables ($X$-domain)}\label{Section_2.2.3}
 
