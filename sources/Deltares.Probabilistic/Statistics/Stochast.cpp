@@ -32,6 +32,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        using enum DistributionType;
+
         Stochast::Stochast() = default;
 
         Stochast::Stochast(DistributionType distributionType, const std::vector<double>& values)

@@ -21,11 +21,11 @@
 //
 #pragma once
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
-    {
-        enum DistributionType { Deterministic, Normal, LogNormal, Uniform, Triangular, Trapezoidal, Exponential, Gamma, Beta, Frechet, Weibull, ConditionalWeibull, Gumbel, GeneralizedExtremeValue, StudentT, Rayleigh, RayleighN, Pareto, GeneralizedPareto, Table, CDFCurve, Discrete, Bernoulli, Poisson, Composite, StandardNormal, Qualitative, External };
-    }
+    enum class DistributionType { Deterministic, Normal, LogNormal, Uniform, Triangular, Trapezoidal, Exponential, Gamma, Beta,
+        Frechet, Weibull, ConditionalWeibull, Gumbel, GeneralizedExtremeValue, StudentT, Rayleigh, RayleighN, Pareto,
+        GeneralizedPareto, Table, CDFCurve, Discrete, Bernoulli, Poisson, Composite, StandardNormal, Qualitative, External };
 }
+
 

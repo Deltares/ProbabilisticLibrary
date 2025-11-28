@@ -30,6 +30,8 @@
 
 namespace Deltares::Statistics
 {
+    using enum correlationType;
+
     void CopulaCorrelation::SetCorrelation(const int i, const int j, double value, correlationType type)
     {
         auto pair = copulaPair();
@@ -37,22 +39,22 @@ namespace Deltares::Statistics
         pair.j = j;
         switch (type)
         {
-        case correlationType::Clayton:
+        case Clayton:
             pair.copula = std::make_shared<ClaytonCopula>(value);
             break;
-        case correlationType::Frank:
+        case Frank:
             pair.copula = std::make_shared<FrankCopula>(value);
             break;
-        case correlationType::Gumbel:
+        case Gumbel:
             pair.copula = std::make_shared<GumbelCopula>(value);
             break;
-        case correlationType::DiagonalBand:
+        case DiagonalBand:
             pair.copula = std::make_shared<DiagonalBandCopula>(value);
             break;
-        case correlationType::UnknownYet:
+        case UnknownYet:
             lastValue = value;
             return;
-        case correlationType::Gaussian:
+        case Gaussian:
             pair.copula = std::make_shared<GaussianCopula>(value);
         }
         copulas.push_back(pair);
