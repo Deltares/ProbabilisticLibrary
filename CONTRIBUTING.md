@@ -4,7 +4,7 @@ The **Probabilistic Library** is open source, and we’re excited to welcome con
 To keep things consistent and high quality, please take a moment to read through our guidelines below.
 
 🧭 I. Scope  
-We focus on **probabilistic**, **sensitivity**, **statistical analysis** and **uncertainty analysis**.
+We focus on **reliability**, **sensitivity**, **statistical analysis** and **uncertainty analysis**.
 Contributions should fit within this scope.
 Deltares will review and decide whether a contribution is included in the main branch.
 
@@ -78,7 +78,7 @@ Do not use abbreviations, only for commonly known things. When using abbreviatio
 
 | **Code Element** | **Style** | **Comment** |
 | --- | --- | --- |
-| Namespace | PascalCase | Differentiate from class names ; nested namespaces are joined on one line with '::'. |
+| Namespace | PascalCase | A class name may not be used as a class name ; nested namespaces are joined on one line with '::'. |
 | Class name | PascalCase | To differentiate from STL types which ISO recommends (do not use "C" or "T" prefixes) |
 | Function name | PascalCase | Lower case start is almost universal except for .Net world |
 | Parameters/Locals | snake\_case | Vast majority of standards recommends this because \_ is more readable to C++ crowd (although not much to Java/.Net crowd) |
