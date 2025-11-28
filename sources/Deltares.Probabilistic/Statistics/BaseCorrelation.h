@@ -54,8 +54,6 @@ namespace Deltares::Statistics
         virtual int CountCorrelations() const = 0;
         virtual int getDimension() = 0;
         virtual std::shared_ptr<Stochast> getStochast(int index) = 0;
-        virtual bool HasConflictingCorrelations() const = 0;
-        virtual void resolveConflictingCorrelations() = 0;
         virtual std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) = 0;
         virtual void initializeForRun() = 0;
         virtual bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const = 0;

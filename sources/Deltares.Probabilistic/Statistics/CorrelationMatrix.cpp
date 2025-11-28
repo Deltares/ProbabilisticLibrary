@@ -117,20 +117,20 @@ namespace Deltares
             }
         }
 
-        void CorrelationMatrix::init(const std::vector<std::shared_ptr<Stochast>>& stochasts)
+        void CorrelationMatrix::init(const std::vector<std::shared_ptr<Stochast>>& stochastList)
         {
-            this->init(stochasts.size());
+            init(static_cast<int>(stochastList.size()));
 
-            for (size_t i = 0; i < stochasts.size(); i++)
+            for (size_t i = 0; i < stochastList.size(); i++)
             {
-                this->stochasts.push_back(stochasts[i]);
-                this->stochastIndex.insert({ stochasts[i], i });
+                stochasts.push_back(stochastList[i]);
+                stochastIndex.insert({ stochastList[i], i });
             }
         }
 
-        std::shared_ptr<Statistics::Stochast> CorrelationMatrix::getStochast(int index)
+        std::shared_ptr<Stochast> CorrelationMatrix::getStochast(int index)
         {
-            if (index < stochasts.size())
+            if (index < static_cast<int>(stochasts.size()))
             {
                 return stochasts[index];
             }
@@ -265,7 +265,7 @@ namespace Deltares
                     double correlation = 1.0;
                     for (;;)
                     {
-                        auto dependent = m->findDependent(ii);
+                        auto dependent = m->findDependent(static_cast<int>(ii));
                         if (dependent.index < 0) break;
                         dependent.correlation *= correlation;
                         if (index[dependent.index] >= 0)
@@ -320,7 +320,7 @@ namespace Deltares
 
         int CorrelationMatrix::CountCorrelations() const
         {
-            return inputCorrelations.size();
+            return static_cast<int>(inputCorrelations.size());
         }
 
         /// <summary>

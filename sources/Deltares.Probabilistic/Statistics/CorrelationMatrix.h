@@ -50,10 +50,13 @@ namespace Deltares
         {
         public:
             void init(const int maxStochasts) override;
-            void init(const std::vector<std::shared_ptr<Stochast>>& stochasts) override;
+            void init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override;
 
             bool isValid() const override;
-            void validate(Logging::ValidationReport& report) const override {}
+            void validate(Logging::ValidationReport& report) const override
+            {
+                // empty; currently nothing to check
+            }
 
             std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
@@ -67,18 +70,18 @@ namespace Deltares
 
             bool IsIdentity() const override;
             int CountCorrelations() const override;
-            int getDimension() override { return (int) dim; }
+            int getDimension() override { return static_cast<int>(dim); }
             std::shared_ptr<Statistics::Stochast> getStochast(int index) override;
-            bool HasConflictingCorrelations() const override;
-            void resolveConflictingCorrelations() override;
+            bool HasConflictingCorrelations() const;
+            void resolveConflictingCorrelations();
             void initializeForRun() override;
             bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override;
             void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
             indexWithCorrelation findDependent(const int i) const override;
         private:
-            Deltares::Numeric::Matrix matrix = Deltares::Numeric::Matrix(0, 0);
-            Deltares::Numeric::Matrix choleskyMatrix = Deltares::Numeric::Matrix(0, 0);
-            Deltares::Numeric::Matrix inverseCholeskyMatrix = Deltares::Numeric::Matrix(0, 0);
+            Numeric::Matrix matrix = Numeric::Matrix(0, 0);
+            Numeric::Matrix choleskyMatrix = Numeric::Matrix(0, 0);
+            Numeric::Matrix inverseCholeskyMatrix = Numeric::Matrix(0, 0);
             void CholeskyDecomposition();
             void InverseCholeskyDecomposition();
             std::map<std::shared_ptr<Stochast>, int> stochastIndex;

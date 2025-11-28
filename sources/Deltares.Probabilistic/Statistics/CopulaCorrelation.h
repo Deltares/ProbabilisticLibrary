@@ -64,10 +64,11 @@ namespace Deltares::Statistics
         int CountCorrelations() const override { return static_cast<int>(copulas.size()); }
         int getDimension() override { return maxStochasts; }
         std::shared_ptr<Stochast> getStochast(int index) override { return nullptr; }
-        bool HasConflictingCorrelations() const override {return false;}
-        void resolveConflictingCorrelations() override {}
         std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
-        void initializeForRun() override {}
+        void initializeForRun() override
+        {
+            // empty; after init and setCorrelation this class is ready to use
+        }
         bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override {return false;}
         void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
         indexWithCorrelation findDependent(const int i) const override { return indexWithCorrelation(); }
