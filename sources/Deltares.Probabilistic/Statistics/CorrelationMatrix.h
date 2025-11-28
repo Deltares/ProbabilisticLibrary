@@ -50,19 +50,20 @@ namespace Deltares
         {
         public:
             void init(const int maxStochasts) override;
-            void init(std::vector<std::shared_ptr<Stochast>> stochasts) override;
+            void init(const std::vector<std::shared_ptr<Stochast>>& stochasts) override;
 
-            bool isValid() override;
+            bool isValid() const override;
+            void validate(Logging::ValidationReport& report) const override {}
 
             std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
 
             void SetCorrelation(const int i, const int j, double value, correlationType type=correlationType::UnknownYet) override;
-            void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2,
+            void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2,
                 double value, correlationType type=correlationType::UnknownYet) override;
 
             correlationValueAndType GetCorrelation(const int i, const int j) const override;
-            correlationValueAndType GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) override;
+            correlationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) override;
 
             bool IsIdentity() const override;
             int CountCorrelations() const override;
@@ -71,7 +72,7 @@ namespace Deltares
             bool HasConflictingCorrelations() const override;
             void resolveConflictingCorrelations() override;
             void initializeForRun() override;
-            bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const override;
+            bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override;
             void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
             indexWithCorrelation findDependent(const int i) const override;
         private:

@@ -38,35 +38,29 @@ namespace Deltares::Statistics
     class BaseCorrelation
     {
     public:
-        virtual void init(const int maxStochasts) {}
-        virtual void init(std::vector<std::shared_ptr<Stochast>> stochasts) {}
+        virtual void init(const int maxStochasts) = 0;
+        virtual void init(const std::vector<std::shared_ptr<Stochast>>& stochasts) = 0;
 
-        virtual bool isValid() {return false;}
-        virtual void validate(Logging::ValidationReport& report) const {}
+        virtual bool isValid() const = 0;
+        virtual void validate(Logging::ValidationReport& report) const = 0;
 
-        virtual void SetCorrelation(const int i, const int j, double value, correlationType type = correlationType::UnknownYet) {}
-        virtual void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type = correlationType::UnknownYet) {}
+        virtual void SetCorrelation(const int i, const int j, double value, correlationType type = correlationType::UnknownYet) = 0;
+        virtual void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, correlationType type = correlationType::UnknownYet) = 0;
 
-        virtual correlationValueAndType GetCorrelation(const int i, const int j) const
-        {
-            return { -1, correlationType::Gaussian };
-        }
-        virtual correlationValueAndType GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
-        {
-            return { -1, correlationType::Gaussian };
-        }
+        virtual correlationValueAndType GetCorrelation(const int i, const int j) const = 0;
+        virtual correlationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) = 0;
 
-        virtual bool IsIdentity() const { return false; }
-        virtual int CountCorrelations() const { return -1; }
-        virtual int getDimension() { return -1; }
-        virtual std::shared_ptr<Stochast> getStochast(int index) { return nullptr; }
-        virtual bool HasConflictingCorrelations() const { return false; }
-        virtual void resolveConflictingCorrelations() {}
-        virtual std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) { return {}; }
-        virtual void initializeForRun() {}
-        virtual bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const { return false; }
-        virtual void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) {}
-        virtual indexWithCorrelation findDependent(const int i) const { return indexWithCorrelation(); }
+        virtual bool IsIdentity() const = 0;
+        virtual int CountCorrelations() const = 0;
+        virtual int getDimension() = 0;
+        virtual std::shared_ptr<Stochast> getStochast(int index) = 0;
+        virtual bool HasConflictingCorrelations() const = 0;
+        virtual void resolveConflictingCorrelations() = 0;
+        virtual std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) = 0;
+        virtual void initializeForRun() = 0;
+        virtual bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const = 0;
+        virtual void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) = 0;
+        virtual indexWithCorrelation findDependent(const int i) const = 0;
     protected:
         static int findNewIndex(const std::vector<int>& index, const size_t i);
     };

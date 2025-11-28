@@ -58,7 +58,7 @@ namespace Deltares::Statistics
         copulas.push_back(pair);
     }
 
-    bool CopulaCorrelation::isValid()
+    bool CopulaCorrelation::isValid() const
     {
         auto report = Logging::ValidationReport();
         validate(report);
@@ -92,7 +92,7 @@ namespace Deltares::Statistics
         }
     }
 
-    void CopulaCorrelation::SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2 , double value, correlationType type)
+    void CopulaCorrelation::SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2 , double value, correlationType type)
     {
         size_t index1 = std::numeric_limits<size_t>::max();
         size_t index2 = std::numeric_limits<size_t>::max();
@@ -161,7 +161,7 @@ namespace Deltares::Statistics
         return { lastValue, correlationType::Gaussian };
     }
 
-    correlationValueAndType CopulaCorrelation::GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
+    correlationValueAndType CopulaCorrelation::GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2)
     {
         size_t index1 = std::numeric_limits<size_t>::max();
         size_t index2 = std::numeric_limits<size_t>::max();

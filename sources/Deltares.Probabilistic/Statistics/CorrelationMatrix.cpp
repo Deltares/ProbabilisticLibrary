@@ -33,7 +33,7 @@ namespace Deltares
         using namespace Deltares::Reliability;
         using namespace Deltares::Numeric;
 
-        bool CorrelationMatrix::isValid()
+        bool CorrelationMatrix::isValid() const
         {
             return true;
         }
@@ -117,7 +117,7 @@ namespace Deltares
             }
         }
 
-        void CorrelationMatrix::init(std::vector<std::shared_ptr<Stochast>> stochasts)
+        void CorrelationMatrix::init(const std::vector<std::shared_ptr<Stochast>>& stochasts)
         {
             this->init(stochasts.size());
 
@@ -147,7 +147,7 @@ namespace Deltares
             return { matrix(i, j), type };
         }
 
-        correlationValueAndType CorrelationMatrix::GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
+        correlationValueAndType CorrelationMatrix::GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2)
         {
             if (stochastIndex.contains(stochast1) && stochastIndex.contains(stochast2))
             {
@@ -186,7 +186,7 @@ namespace Deltares
             inputCorrelations.push_back(p);
         }
 
-        void CorrelationMatrix::SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type)
+        void CorrelationMatrix::SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, correlationType type)
         {
             if (stochastIndex.contains(stochast1) && stochastIndex.contains(stochast2))
             {
@@ -213,7 +213,7 @@ namespace Deltares
             inverseCholeskyMatrix = MatrixSupport::Inverse(&choleskyMatrix);
         }
 
-        bool CorrelationMatrix::isFullyCorrelated(const int index, std::vector<int> varyingIndices) const
+        bool CorrelationMatrix::isFullyCorrelated(const int index, const std::vector<int>& varyingIndices) const
         {
             if (dim == 0) return false;
 

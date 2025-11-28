@@ -44,29 +44,31 @@ namespace Deltares::Statistics
             maxStochasts = maxStochastsCnt;
         }
 
-        void init(std::vector<std::shared_ptr<Stochast>> stochastList) override
+        void init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override
         {
             maxStochasts = static_cast<int>(stochastList.size());
             stochasts = stochastList;
         }
 
-        bool isValid() override;
+        bool isValid() const override;
         void validate(Logging::ValidationReport& report) const override;
 
         void SetCorrelation(const int i, const int j, double value, correlationType type) override;
-        void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value, correlationType type = correlationType::UnknownYet) override;
+        void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2,
+            double value, correlationType type = correlationType::UnknownYet) override;
 
         correlationValueAndType GetCorrelation(const int i, const int j) const override;
-        correlationValueAndType GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2) override;
+        correlationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) override;
 
-        bool IsIdentity() const override {return false;}
-        int CountCorrelations() const override { return -1; }
-        int getDimension() override { return -1; }
+        bool IsIdentity() const override {return copulas.empty();}
+        int CountCorrelations() const override { return static_cast<int>(copulas.size()); }
+        int getDimension() override { return maxStochasts; }
         std::shared_ptr<Stochast> getStochast(int index) override { return nullptr; }
         bool HasConflictingCorrelations() const override {return false;}
         void resolveConflictingCorrelations() override {}
         std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
-        bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const override {return false;}
+        void initializeForRun() override {}
+        bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override {return false;}
         void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
         indexWithCorrelation findDependent(const int i) const override { return indexWithCorrelation(); }
         void copyFrom(BaseCorrelation& source);
