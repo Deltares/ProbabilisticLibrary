@@ -112,7 +112,7 @@ namespace Deltares::Proxies
 
         ProxyMethod getProxyMethod();
 
-        ProxyTrainer getProxyTrainer();
+        std::shared_ptr<ProxyTrainer> getProxyTrainer();
     };
 }
 

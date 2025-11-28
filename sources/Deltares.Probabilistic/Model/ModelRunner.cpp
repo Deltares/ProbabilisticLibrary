@@ -115,6 +115,7 @@ namespace Deltares
             {
                 zModel = std::make_shared<Proxies::ProxyModel>(this->zModel);
                 std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
+                std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
                 usingProxy = true;
             }
             else if (!useProxy && usingProxy)

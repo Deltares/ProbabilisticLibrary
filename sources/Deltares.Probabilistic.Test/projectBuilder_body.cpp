@@ -230,6 +230,7 @@ namespace Deltares::Probabilistic::Test
         for (double value : sample->Values)
         {
             sample->Z -= value;
+            sample->OutputValues.push_back(sample->Z);
         }
     }
 

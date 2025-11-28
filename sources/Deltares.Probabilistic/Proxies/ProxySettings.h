@@ -116,7 +116,7 @@ namespace Deltares::Proxies
         /**
          * \brief Indicates how initial training samples are generated
          */
-        ProxyInitializationType InitializationType = ProxyInitializationType::Double;
+        ProxyInitializationType InitializationType = ProxyInitializationType::Single;
 
         /**
          * \brief If true, makes a guess for the design point if the final FORM loop does not converge

@@ -35,10 +35,10 @@ namespace Deltares::Proxies
 
         if (this->trainingSamples.empty())
         {
-            ProxyTrainer proxyTrainer = getProxyTrainer();
-            proxyTrainer.SetConverter(this->uConverter);
+            std::shared_ptr<ProxyTrainer> proxyTrainer = getProxyTrainer();
+            proxyTrainer->SetConverter(this->uConverter);
 
-            std::vector<std::shared_ptr<Models::ModelSample>> initialSamples = proxyTrainer.getTrainingSet();
+            std::vector<std::shared_ptr<Models::ModelSample>> initialSamples = proxyTrainer->getTrainingSet();
 
             for (std::shared_ptr<Models::ModelSample> newSample : initialSamples)
             {
@@ -72,11 +72,11 @@ namespace Deltares::Proxies
         }
     }
 
-    ProxyTrainer ProxyModel::getProxyTrainer()
+    std::shared_ptr<ProxyTrainer> ProxyModel::getProxyTrainer()
     {
         switch (settings->InitializationType)
         {
-        case ProxyInitializationType::Single: return SingleProxyTrainer();
+        case ProxyInitializationType::Single: return std::make_shared<SingleProxyTrainer>();
         default: throw Reliability::probLibException("Proxy trainer is not implemented.");
         }
     }
