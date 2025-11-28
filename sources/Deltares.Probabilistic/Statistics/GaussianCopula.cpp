@@ -21,8 +21,8 @@
 //
 
 #include "GaussianCopula.h"
-
 #include "StandardNormal.h"
+#include <cmath>
 
 namespace Deltares::Statistics
 {

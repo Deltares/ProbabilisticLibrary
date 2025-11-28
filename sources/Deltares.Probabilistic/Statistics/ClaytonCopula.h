@@ -28,7 +28,7 @@ namespace Deltares::Statistics
     class ClaytonCopula : public BaseCopula
     {
     public:
-        ClaytonCopula(const double theta) : theta(theta) {}
+        explicit ClaytonCopula(const double theta) : theta(theta) {}
         void update(const double& u, double& t) const override;
         correlationValueAndType getCorrelation() const override { return { theta, correlationType::Clayton }; }
         void validate(Logging::ValidationReport& report) const override;

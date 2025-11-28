@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <cmath>
-
 #include "BaseCopula.h"
 
 namespace Deltares::Statistics
@@ -31,7 +29,7 @@ namespace Deltares::Statistics
     class GaussianCopula : public BaseCopula
     {
     public:
-        GaussianCopula(const double rho) : rho(rho) {}
+        explicit GaussianCopula(const double rho) : rho(rho) {}
         /// <summary>
         /// update a pair of correlated stochastic variables
         /// </summary>

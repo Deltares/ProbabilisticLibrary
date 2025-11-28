@@ -28,10 +28,10 @@ namespace Deltares::Statistics
     class DiagonalBandCopula : public BaseCopula
     {
     public:
-        DiagonalBandCopula(const double alpha) : alpha(alpha) {}
+        explicit DiagonalBandCopula(const double alpha) : alpha(alpha) {}
         void update(const double& u, double& t) const override;
         correlationValueAndType getCorrelation() const override { return { alpha, correlationType::DiagonalBand }; }
-        void validate(Logging::ValidationReport& report) const;
+        void validate(Logging::ValidationReport& report) const override;
     private:
         const double alpha;
     };

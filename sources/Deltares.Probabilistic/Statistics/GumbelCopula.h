@@ -28,7 +28,7 @@ namespace Deltares::Statistics
     class GumbelCopula : public BaseCopula
     {
     public:
-        GumbelCopula(const double alpha) : alpha(alpha) {}
+        explicit GumbelCopula(const double alpha) : alpha(alpha) {}
         void update(const double& u, double& t) const override;
         correlationValueAndType getCorrelation() const override { return { alpha, correlationType::Gumbel }; }
         void validate(Logging::ValidationReport& report) const override;

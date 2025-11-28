@@ -28,7 +28,7 @@ namespace Deltares::Statistics
     class FrankCopula : public BaseCopula
     {
     public:
-        FrankCopula(const double alpha) : alpha(alpha) {}
+        explicit FrankCopula(const double alpha) : alpha(alpha) {}
         void update(const double& u, double& t) const override;
         correlationValueAndType getCorrelation() const override { return { alpha, correlationType::Frank }; }
         void validate(Logging::ValidationReport& report)  const override;
