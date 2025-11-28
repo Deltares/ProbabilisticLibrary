@@ -29,11 +29,7 @@
 #include "intEqualElements.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
-#if __has_include(<format>)
 #include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
 
 using namespace Deltares::Statistics;
 
@@ -153,18 +149,7 @@ namespace Deltares {
 
         std::string upscaling::createMessage(const double deltaL, const double rhoZ, const double dZ)
         {
-            std::string message;
-#ifdef __cpp_lib_format
-            message = std::format("Intermediate results: Delta L = {0:.6F}; rhoZ = {1:.6F}; dZ = {2:.6F}",
-                deltaL, rhoZ, dZ);
-#else
-            message = "Intermediate results: ";
-            const auto number1 = probLibString::double2strTrimmed(deltaL);
-            const auto number2 = probLibString::double2strTrimmed(rhoZ);
-            const auto number3 = probLibString::double2strTrimmed(dZ);
-            message += "Delta L = " + number1 + "; rhoZ = " + number2 + "; dZ = " + number3;
-#endif
-            return message;
+            return std::format("Intermediate results: Delta L = {0:.6F}; rhoZ = {1:.6F}; dZ = {2:.6F}", deltaL, rhoZ, dZ);
         }
 
         // \brief This method scales up from a cross-section to a given section length

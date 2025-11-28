@@ -82,7 +82,7 @@ namespace Deltares
             void removeTask(int iterationIndex);
 
             void reportResult(std::shared_ptr<Reliability::ReliabilityReport> report);
-            void reportProgress(int step, int maxSteps, double reliability = std::nan(""), double convergence = std::nan(""));
+            void reportProgress(int step, int maxSteps, double reliability = std::nan(""), double convergence = std::nan("")) const;
             void reportMessage(Logging::MessageType type, std::string text);
 
             void doTextualProgress(ProgressType type, std::string text);
