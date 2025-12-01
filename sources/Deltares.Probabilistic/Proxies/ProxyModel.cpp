@@ -35,7 +35,7 @@ namespace Deltares::Proxies
 
         if (this->trainingSamples.empty())
         {
-            std::shared_ptr<ProxyTrainer> proxyTrainer = getProxyTrainer();
+            std::unique_ptr<ProxyTrainer> proxyTrainer = getProxyTrainer();
             proxyTrainer->SetConverter(this->uConverter);
 
             std::vector<std::shared_ptr<Models::ModelSample>> initialSamples = proxyTrainer->getTrainingSet();
@@ -45,8 +45,6 @@ namespace Deltares::Proxies
                 newSample->AllowProxy = false;
                 this->trainingSamples.push_back(newSample);
             }
-
-            this->invoke(trainingSamples);
         }
 
         std::vector<std::shared_ptr<Models::ModelSample>> samplesToCalculate;
@@ -60,23 +58,23 @@ namespace Deltares::Proxies
 
         invoke(samplesToCalculate);
 
-        coefficients = this->proxyMethod.train(this->trainingSamples);
+        coefficients = this->proxyMethod->train(this->trainingSamples);
     }
 
-    ProxyMethod ProxyModel::getProxyMethod()
+    std::unique_ptr<ProxyMethod> ProxyModel::getProxyMethod()
     {
         switch (settings->MethodType)
         {
-        case ProxyMethodType::FirstOrder: return LinearProxyMethod();
+        case ProxyMethodType::FirstOrder: return std::make_unique<LinearProxyMethod>();
         default: throw Reliability::probLibException("Proxy method is not implemented.");
         }
     }
 
-    std::shared_ptr<ProxyTrainer> ProxyModel::getProxyTrainer()
+    std::unique_ptr<ProxyTrainer> ProxyModel::getProxyTrainer() const
     {
         switch (settings->InitializationType)
         {
-        case ProxyInitializationType::Single: return std::make_shared<SingleProxyTrainer>();
+        case ProxyInitializationType::Single: return std::make_unique<SingleProxyTrainer>();
         default: throw Reliability::probLibException("Proxy trainer is not implemented.");
         }
     }
@@ -85,7 +83,9 @@ namespace Deltares::Proxies
     {
         if (sample->AllowProxy)
         {
-            proxyMethod.invoke(sample, coefficients);
+            proxyMethod->invoke(sample, coefficients);
+            this->model->zValueConverter->updateZValue(sample);
+            sample->UsedProxy = true;
         }
         else
         {

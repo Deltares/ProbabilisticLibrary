@@ -312,6 +312,7 @@ namespace Deltares
             evaluation.Z = sample->Z;
             evaluation.Beta = sample->Beta;
             evaluation.Iteration = sample->IterationIndex;
+            evaluation.usedProxy = sample->UsedProxy;
             evaluation.InputValues = sample->Values;
             evaluation.OutputValues = sample->OutputValues;
             evaluation.Tag = sample->Tag;

@@ -46,17 +46,20 @@ namespace Deltares::Proxies
 
         for (size_t i = 0; i < trainingSamples.size(); i++)
         {
-            results(i) = trainingSamples[i]->OutputValues[index];
             weights(i) = trainingSamples[i]->Weight;
+            results(i) = trainingSamples[i]->OutputValues[index] * trainingSamples[i]->Weight;
         }
 
-        Numeric::Matrix xValues = Numeric::Matrix(trainingSamples.size(), trainingSamples[0]->Values.size() + 1);
-        for (size_t i = 0; i < xValues.getRowCount(); i++)
+        size_t n_samples = trainingSamples.size(); // samples
+        size_t n_variables = trainingSamples[0]->Values.size() + 1; // variables
+
+        Numeric::Matrix xValues = Numeric::Matrix(n_samples, n_variables);
+        for (size_t i = 0; i < n_samples; i++) // samples
         {
             xValues(i, 0) = 1.0 * weights(i);
-            for (size_t j = 0; j < xValues.getColumnCount(); i++)
+            for (size_t j = 1; j < n_variables; j++) // variables
             {
-                xValues(i, j+1) = trainingSamples[i]->Values[j] * weights(i);
+                xValues(i, j) = trainingSamples[i]->Values[j - 1] * weights(i);
             }
         }
 

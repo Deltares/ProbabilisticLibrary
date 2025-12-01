@@ -19,19 +19,4 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <vector>
-
-#include "../Math/vector1D.h"
-
-namespace Deltares::Proxies
-{
-    class ProxyCoefficients
-    {
-    public:
-        std::vector<std::string> names;
-        std::vector<Numeric::vector1D> coefficients;
-    };
-}
-
-
+#include "DefaultValueConverter.h"

@@ -256,6 +256,7 @@
     <ClCompile Include="Proxies\ProxyTrainer.cpp" />
     <ClCompile Include="Proxies\SingleProxyTrainer.cpp" />
     <ClCompile Include="Proxies\ProxyCoefficients.cpp" />
+    <ClCompile Include="Model\DefaultValueConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -541,6 +542,7 @@
     <ClInclude Include="Proxies\ProxyTrainer.h" />
     <ClInclude Include="Proxies\SingleProxyTrainer.h" />
     <ClInclude Include="Proxies\ProxyCoefficients.h" />
+    <ClInclude Include="Model\DefaultValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

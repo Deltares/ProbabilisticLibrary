@@ -21,6 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include "projectBuilder.h"
+#include "../Deltares.Probabilistic/Model/DefaultValueConverter.h"
 #include <iostream>
 
 using namespace Deltares::Reliability;
@@ -50,6 +51,7 @@ namespace Deltares::Probabilistic::Test
     std::shared_ptr<ModelRunner> projectBuilder::BuildLinearProject()
     {
         auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linear(v); });
+        z->zValueConverter = std::make_shared<Deltares::Models::DefaultValueConverter>();
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -230,8 +232,9 @@ namespace Deltares::Probabilistic::Test
         for (double value : sample->Values)
         {
             sample->Z -= value;
-            sample->OutputValues.push_back(sample->Z);
         }
+
+        sample->OutputValues.push_back(sample->Z);
     }
 
     void projectBuilder::linearMultiple(std::shared_ptr<ModelSample> sample)

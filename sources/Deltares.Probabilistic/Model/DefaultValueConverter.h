@@ -20,18 +20,27 @@
 // All rights reserved.
 //
 #pragma once
-#include <vector>
+#include <memory>
 
-#include "../Math/vector1D.h"
+#include "ModelSample.h"
+#include "ZValueConverter.h"
 
-namespace Deltares::Proxies
+namespace Deltares::Models
 {
-    class ProxyCoefficients
+    class DefaultValueConverter : public ZValueConverter
     {
     public:
-        std::vector<std::string> names;
-        std::vector<Numeric::vector1D> coefficients;
+        void updateZValue(std::shared_ptr<ModelSample> sample) override
+        {
+            if (sample->OutputValues.empty())
+            {
+                sample->Z = std::nan("");
+            }
+            else
+            {
+                sample->Z = sample->OutputValues[0];
+            }
+        }
     };
 }
-
 

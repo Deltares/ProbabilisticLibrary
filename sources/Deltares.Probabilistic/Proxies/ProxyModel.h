@@ -108,11 +108,10 @@ namespace Deltares::Proxies
 
         std::shared_ptr<Models::ZModel> model = nullptr;
 
-        ProxyMethod proxyMethod;
+        std::unique_ptr<ProxyMethod> proxyMethod = nullptr;
 
-        ProxyMethod getProxyMethod();
-
-        std::shared_ptr<ProxyTrainer> getProxyTrainer();
+        std::unique_ptr<ProxyMethod> getProxyMethod();
+        std::unique_ptr<ProxyTrainer> getProxyTrainer() const;
     };
 }
 

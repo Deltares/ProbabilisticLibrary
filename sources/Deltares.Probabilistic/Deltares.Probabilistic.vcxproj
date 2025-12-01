@@ -397,6 +397,7 @@
     <ClInclude Include="Math\WeightedValue.h" />
     <ClInclude Include="Model\ZValueConverter.h" />
     <ClInclude Include="Logging\ValidationReport.h" />
+    <ClInclude Include="Model\DefaultValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Combine\ExcludingCombineSettings.cpp" />
@@ -620,6 +621,7 @@
     <ClCompile Include="Model\ZValueConverter.cpp" />
     <ClCompile Include="Statistics\VariableStochastValue.cpp" />
     <ClCompile Include="Logging\ValidationReport.cpp" />
+    <ClCompile Include="Model\DefaultValueConverter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

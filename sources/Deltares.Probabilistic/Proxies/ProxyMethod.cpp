@@ -25,6 +25,9 @@ namespace Deltares::Proxies
 {
     void ProxyMethod::invoke(std::shared_ptr<Models::ModelSample> sample, ProxyCoefficients coefficients)
     {
+        size_t outputSize = coefficients.coefficients.size();
+        sample->OutputValues = std::vector<double>(outputSize);
+
         for (size_t index = 0; index < sample->OutputValues.size(); index++)
         {
             sample->OutputValues[index] = invokeValue(sample->Values, coefficients.coefficients[index]);

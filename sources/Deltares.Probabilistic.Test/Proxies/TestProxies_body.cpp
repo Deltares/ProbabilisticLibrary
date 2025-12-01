@@ -24,7 +24,6 @@
 #include "../projectBuilder.h"
 
 #include "../../Deltares.Probabilistic/Proxies/ProxyModel.h"
-#include "../../Deltares.Probabilistic/Proxies/LinearProxyMethod.h"
 
 #include <gtest/gtest.h>
 
@@ -47,9 +46,12 @@ namespace Deltares::Probabilistic::Test
 
         Models::Evaluation eval2 = modelRunner->getEvaluation(sample);
 
+        EXPECT_FALSE(eval1.usedProxy);
+        EXPECT_TRUE(eval2.usedProxy);
+
         for (size_t i = 0; i < eval1.OutputValues.size(); i++)
         {
-            // EXPECT_NEAR(eval1.OutputValues[i], eval2.OutputValues[i], margin);
+            EXPECT_NEAR(eval1.OutputValues[i], eval2.OutputValues[i], margin);
         }
 
         EXPECT_NEAR(eval1.Z, eval2.Z, margin);
