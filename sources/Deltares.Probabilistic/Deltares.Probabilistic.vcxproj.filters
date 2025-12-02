@@ -118,7 +118,6 @@
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
-    <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
@@ -394,7 +393,6 @@
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
-    <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />

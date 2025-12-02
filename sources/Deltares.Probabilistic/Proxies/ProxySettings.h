@@ -60,6 +60,27 @@ namespace Deltares::Proxies
     {
     public:
         /**
+         * \brief Temporary: indicates whether a proxy model is used
+         */
+        bool IsProxyModel = false;
+
+        /**
+         * \brief Temporary: indicates whether thr proxy is updatable
+         */
+        bool IsUpdatableProxyModel = false;
+
+        /**
+         * \brief Temporary: indicates update info
+         */
+
+        bool ShouldUpdateFinalSteps = false;
+
+        /**
+         * \brief Temporary: Threshold value
+         */
+        double ThresholdOffset = 0;
+
+        /**
          * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration
          */
         double  VarianceFactor = 1.0;
@@ -132,6 +153,10 @@ namespace Deltares::Proxies
         {
             Logging::ValidationSupport::checkMinimumInt(report, 1, NumberOfRuns, "number of runs");
             Logging::ValidationSupport::checkMinimum(report, 0.01, VarianceFactor, "variance factor");
+            if (IsProxyModel)
+            {
+                Logging::ValidationSupport::checkMinimum(report, 0, ThresholdOffset, "threshold offset");
+            }
         }
     };
 }
