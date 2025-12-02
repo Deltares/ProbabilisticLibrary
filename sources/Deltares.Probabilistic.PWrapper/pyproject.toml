@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "probabilistic-library"
+dynamic = ["version"]
+description = "Package which provides probabilistic methods"
+license = ""
+requires-python = ">=3.10"
+authors = [
+    { name = "Deltares", email = "software.support@deltares.nl" },
+]
+classifiers = [
+    "License :: OSI Approved :: LGPL License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+
+[tool.hatch.version]
+path = "probabilistic_library/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/probabilistic_library",
+]
