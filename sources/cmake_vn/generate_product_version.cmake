@@ -1,3 +1,9 @@
+#CMakeHelpers library, distributed under MIT license
+#
+#Copyright (C) 2015, by halex2005
+#
+#Report bugs and download new versions at https://github.com/halex2005/CMakeHelpers
+
 include (CMakeParseArguments)
 
 set (GenerateProductVersionCurrentDir ${CMAKE_CURRENT_LIST_DIR})
