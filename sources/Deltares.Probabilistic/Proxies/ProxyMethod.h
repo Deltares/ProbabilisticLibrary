@@ -41,7 +41,7 @@ namespace Deltares::Proxies
          * \param sample Sample for which the model results will be calculated
          * \param proxyCoefficients The coefficients needed for the proxy to calculate the output values
          */
-        virtual void invoke(std::shared_ptr<Models::ModelSample> sample, ProxyCoefficients proxyCoefficients);
+        virtual void invoke(std::shared_ptr<Models::ModelSample>& sample, ProxyCoefficients& proxyCoefficients);
 
         /**
          * \brief Trains the proxy method
@@ -53,12 +53,12 @@ namespace Deltares::Proxies
         /**
          * \brief Trains the proxy method for one particular output value
          * \param trainingSamples Samples which are used for training
-         * \param index Index of the output value
+         * \param proxyValues Values to be proxied
          */
-        virtual Numeric::vector1D trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples,
-                                             size_t index)
+        virtual ProxyCoefficient trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples,
+                                            std::vector<double> proxyValues)
         {
-            return Numeric::vector1D(0);
+            return ProxyCoefficient();
         }
 
         /**
@@ -66,7 +66,7 @@ namespace Deltares::Proxies
          * \param inputValues Inout values of the sample
          * \param coefficients Coefficients for the output value
          */
-        virtual double invokeValue(std::vector<double> inputValues, Numeric::vector1D coefficients)
+        virtual double invokeValue(std::vector<double> inputValues, ProxyCoefficient coefficients)
         {
             return std::nan("");
         }

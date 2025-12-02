@@ -172,6 +172,7 @@
     <ClInclude Include="Proxies\LinearProxyMethod.h" />
     <ClInclude Include="Proxies\ProxyTrainer.h" />
     <ClInclude Include="Proxies\SingleProxyTrainer.h" />
+    <ClInclude Include="Proxies\ProxyCoefficient.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSupport.h" />
     <ClInclude Include="Logging\ValidationSupport.h" />
     <ClInclude Include="Model\ComputationalStochast.h" />
@@ -413,6 +414,7 @@
     <ClCompile Include="Proxies\LinearProxyMethod.cpp" />
     <ClCompile Include="Proxies\ProxyTrainer.cpp" />
     <ClCompile Include="Proxies\SingleProxyTrainer.cpp" />
+    <ClCompile Include="Proxies\ProxyCoefficient.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
     <ClCompile Include="Logging\ValidationSupport.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />

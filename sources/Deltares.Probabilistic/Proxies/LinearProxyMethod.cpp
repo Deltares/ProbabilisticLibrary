@@ -28,18 +28,18 @@
 
 namespace Deltares::Proxies
 {
-    double LinearProxyMethod::invokeValue(std::vector<double> inputValues, Numeric::vector1D coefficients)
+    double LinearProxyMethod::invokeValue(std::vector<double> inputValues, ProxyCoefficient proxyCoefficient)
     {
-        double z = coefficients(0);
+        double z = proxyCoefficient.coefficients(0);
         for (size_t j = 0; j < inputValues.size(); j++)
         {
-            z += inputValues[j] * coefficients(j + 1);
+            z += inputValues[j] * proxyCoefficient.coefficients(j + 1);
         }
 
         return z;
     }
 
-    Numeric::vector1D LinearProxyMethod::trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples, size_t index)
+    ProxyCoefficient LinearProxyMethod::trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples, std::vector<double> proxyValues)
     {
         Numeric::vector1D results(trainingSamples.size());
         Numeric::vector1D weights(trainingSamples.size());
@@ -47,7 +47,7 @@ namespace Deltares::Proxies
         for (size_t i = 0; i < trainingSamples.size(); i++)
         {
             weights(i) = trainingSamples[i]->Weight;
-            results(i) = trainingSamples[i]->OutputValues[index] * trainingSamples[i]->Weight;
+            results(i) = proxyValues[i] * trainingSamples[i]->Weight;
         }
 
         size_t n_samples = trainingSamples.size(); // samples
@@ -69,7 +69,12 @@ namespace Deltares::Proxies
         // Solve using QR decomposition
         Numeric::vector1D solution = qr.solve(results);
 
-        return solution;
+        ProxyCoefficient proxyCoefficient;
+
+        proxyCoefficient.valid = true;
+        proxyCoefficient.coefficients = solution;
+
+        return proxyCoefficient;
     }
 }
 

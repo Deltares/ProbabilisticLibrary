@@ -32,7 +32,7 @@
 namespace Deltares::Proxies
 {
     /**
-     * \brief Combines a proxy model and settings
+     * \brief Model which retrieves model results by a proxy
      */
     class ProxyModel : public Models::ZModel
     {
@@ -51,7 +51,7 @@ namespace Deltares::Proxies
         /**
          * \brief Coefficients for the proxy model
          */
-        ProxyCoefficients coefficients;
+        ProxyCoefficients proxyCoefficients;
 
         /**
          * \brief Sets the underlying model

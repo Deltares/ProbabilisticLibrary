@@ -36,11 +36,31 @@ namespace Deltares::Probabilistic::Test
 
         std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> {1.0, 0.5});
 
+        modelRunner->ProxySettings->InitializationType = Proxies::ProxyInitializationType::Single;
+        modelRunner->ProxySettings->MethodType = Proxies::ProxyMethodType::FirstOrder;
+
+        testProxy(modelRunner, sample);
+    }
+
+    void TestProxies::testLinearOutputOnlyModel() const
+    {
+        std::shared_ptr<Models::ModelRunner> modelRunner = projectBuilder::BuildLinearOutputOnlyProject();
+
+        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> {1.0, 0.5});
+
+        modelRunner->ProxySettings->InitializationType = Proxies::ProxyInitializationType::Single;
+        modelRunner->ProxySettings->MethodType = Proxies::ProxyMethodType::FirstOrder;
+
+        testProxy(modelRunner, sample);
+    }
+
+    void TestProxies::testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::Sample> sample) const
+    {
+        modelRunner->useProxy(false);
+
         Models::Evaluation eval1 = modelRunner->getEvaluation(sample);
 
         modelRunner->useProxy(true);
-        modelRunner->ProxySettings->InitializationType = Proxies::ProxyInitializationType::Single;
-        modelRunner->ProxySettings->MethodType = Proxies::ProxyMethodType::FirstOrder;
 
         modelRunner->initializeForRun();
 
@@ -54,8 +74,10 @@ namespace Deltares::Probabilistic::Test
             EXPECT_NEAR(eval1.OutputValues[i], eval2.OutputValues[i], margin);
         }
 
-        EXPECT_NEAR(eval1.Z, eval2.Z, margin);
+        if (!std::isnan(eval1.Z))
+        {
+            EXPECT_NEAR(eval1.Z, eval2.Z, margin);
+        }
     }
-
 }
 

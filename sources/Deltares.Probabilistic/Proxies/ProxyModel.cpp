@@ -42,23 +42,23 @@ namespace Deltares::Proxies
 
             for (std::shared_ptr<Models::ModelSample> newSample : initialSamples)
             {
-                newSample->AllowProxy = false;
                 this->trainingSamples.push_back(newSample);
             }
         }
 
         std::vector<std::shared_ptr<Models::ModelSample>> samplesToCalculate;
-        for (std::shared_ptr<Models::ModelSample> trainingSample : trainingSamples)
+        for (const std::shared_ptr<Models::ModelSample>& trainingSample : trainingSamples)
         {
             if (trainingSample->OutputValues.empty())
             {
+                trainingSample->AllowProxy = false;
                 samplesToCalculate.push_back(trainingSample);
             }
         }
 
         invoke(samplesToCalculate);
 
-        coefficients = this->proxyMethod->train(this->trainingSamples);
+        proxyCoefficients = proxyMethod->train(this->trainingSamples);
     }
 
     std::unique_ptr<ProxyMethod> ProxyModel::getProxyMethod()
@@ -83,7 +83,7 @@ namespace Deltares::Proxies
     {
         if (sample->AllowProxy)
         {
-            proxyMethod->invoke(sample, coefficients);
+            proxyMethod->invoke(sample, proxyCoefficients);
             this->model->zValueConverter->updateZValue(sample);
             sample->UsedProxy = true;
         }

@@ -653,6 +653,19 @@ namespace Deltares
             return getStandardDeviation(mean, values);
         }
 
+        bool NumericSupport::any(std::vector<double>& values, std::function<bool(double)> function)
+        {
+            for (double value : values)
+            {
+                if (function(value))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         std::vector<double> NumericSupport::select(std::vector<double>& values, std::function<double(double)> function)
         {
             std::vector<double> result(values.size());

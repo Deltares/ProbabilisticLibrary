@@ -20,42 +20,31 @@
 // All rights reserved.
 //
 #pragma once
-#include <vector>
 
-#include "ProxyMethod.h"
-#include "ProxyCoefficients.h"
-#include "../Model/ModelSample.h"
-#include "../Model/ZModel.h"
-
-namespace Deltares::Numeric
-{
-    class vector1D;
-}
+#include "../Math/vector1D.h"
 
 namespace Deltares::Proxies
 {
     /**
-     * \brief Combines a proxy model and settings
+     * \brief Coefficients of a proxy model for a certain output parameter of a model
      */
-    class LinearProxyMethod : public ProxyMethod
+    class ProxyCoefficient
     {
-    protected:
+    public:
         /**
-         * \brief Trains the proxy method for one particular output value
-         * \param trainingSamples Samples which are used for training
-         * \param proxyValues Values to be proxied
-         * \param name Name of the output parameter
+         * \brief Name of the output parameter
          */
-        ProxyCoefficient trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples,
-                                    std::vector<double> proxyValues) override;
+        std::string name;
 
         /**
-         * \brief Gets the output value for one particular output value calculated by the proxy
-         * \param inputValues Inout values of the sample
-         * \param proxyCoefficient Coefficients for the output value
+         * \brief Indicates whether the coefficients are valid
          */
-        double invokeValue(std::vector<double> inputValues, ProxyCoefficient proxyCoefficient) override;
+        bool valid = false;
 
+        /**
+         * \brief Coefficients which are used by a proxy method to generate the output value of a sample
+         */
+        Numeric::vector1D coefficients;
     };
 }
 

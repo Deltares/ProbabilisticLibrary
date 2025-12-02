@@ -51,6 +51,22 @@ namespace Deltares::Probabilistic::Test
     std::shared_ptr<ModelRunner> projectBuilder::BuildLinearProject()
     {
         auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linear(v); });
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        auto dist = DistributionType::Uniform;
+        std::vector<double> params{ -1.0, 1.0 };
+        std::shared_ptr<Stochast> s(new Stochast(dist, params));
+        stochast.push_back(s);
+        stochast.push_back(s);
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+        uConverter->initializeForRun();
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
+        return m;
+    }
+
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearOutputOnlyProject()
+    {
+        auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linearOutputOnly(v); });
         z->zValueConverter = std::make_shared<Deltares::Models::DefaultValueConverter>();
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Uniform;
@@ -233,8 +249,17 @@ namespace Deltares::Probabilistic::Test
         {
             sample->Z -= value;
         }
+    }
 
-        sample->OutputValues.push_back(sample->Z);
+    void projectBuilder::linearOutputOnly(std::shared_ptr<ModelSample> sample)
+    {
+        double z = 1.8;
+        for (double value : sample->Values)
+        {
+            z -= value;
+        }
+
+        sample->OutputValues.push_back(z);
     }
 
     void projectBuilder::linearMultiple(std::shared_ptr<ModelSample> sample)

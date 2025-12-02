@@ -23,14 +23,19 @@
 #include <vector>
 
 #include "../Math/vector1D.h"
+#include "ProxyCoefficient.h"
 
 namespace Deltares::Proxies
 {
+    /**
+     * \brief Collection of proxy coefficients for a model
+     */
     class ProxyCoefficients
     {
     public:
         std::vector<std::string> names;
-        std::vector<Numeric::vector1D> coefficients;
+        ProxyCoefficient zCoefficients;
+        std::vector<ProxyCoefficient> coefficients;
     };
 }
 

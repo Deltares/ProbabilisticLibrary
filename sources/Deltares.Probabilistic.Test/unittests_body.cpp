@@ -131,6 +131,12 @@ TEST(proxies_test, linear_model)
     testProxies.testLinearModel();
 }
 
+TEST(proxies_test, linear_output_only_model)
+{
+    auto testProxies = TestProxies();
+    testProxies.testLinearOutputOnlyModel();
+}
+
 TEST(unittst, testNumericalSupport)
 {
     testNumericSupport::allNumericSupportTests();
