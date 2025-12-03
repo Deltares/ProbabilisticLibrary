@@ -46,20 +46,21 @@ namespace Deltares
 		private:
 			RegisterSampleLambda sampleFunction = nullptr;
 			BreakLoopLambda breakFunction = nullptr;
-			std::vector<std::shared_ptr<ImportanceSamplingCluster>> getClusters(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<DesignPoint>& startDesignPoint);
-			bool checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, double minWeight, int samples, int nmaal);
-			std::vector<double> getFactors(std::shared_ptr<StochastSettingsSet> stochastSettings);
-			double getProbabilityOfFailure(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);
+			std::vector<std::shared_ptr<ImportanceSamplingCluster>> getClusters(ModelRunner& modelRunner, std::shared_ptr<DesignPoint>& startDesignPoint) const;
+			bool checkConvergence(Models::ModelRunner& modelRunner, double pf, double minWeight, int samples, int nmaal) const;
+			static std::vector<double> getFactors(StochastSettingsSet& stochastSettings);
+			static double getProbabilityOfFailure(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);
 
-			bool prematureExit(std::shared_ptr<ImportanceSamplingSettings> settings, int samples, int runs);
-			double getCorrectionForOverlappingClusters(std::shared_ptr<Sample> sample, std::shared_ptr<ImportanceSamplingCluster> clusterResult, std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusterResults);
-			std::shared_ptr<ImportanceSamplingCluster> getNearestCluster(std::shared_ptr<Sample> sample, std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters);
-			std::shared_ptr<ImportanceSamplingCluster> findMostContributingCluster(std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters);
+			static bool prematureExit(const ImportanceSamplingSettings& settings, int samples, int runs);
+			static double getCorrectionForOverlappingClusters(const Sample& sample, const std::shared_ptr<ImportanceSamplingCluster>& clusterResult,
+                std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusterResults);
+			static std::shared_ptr<ImportanceSamplingCluster> getNearestCluster(const Sample& sample, std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);
+			static std::shared_ptr<ImportanceSamplingCluster> findMostContributingCluster(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);
 
-			bool breakLoopWithFailureObs(std::shared_ptr<ImportanceSamplingSettings> settings, bool enoughSamples, bool smallEnough, std::shared_ptr<ImportanceSamplingCluster> results);
-			bool breakLoopWithNoFailureObs(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<ImportanceSamplingSettings> settings, int sampleIndex, bool& reported);
+			bool breakLoopWithFailureObs(bool enoughSamples, bool smallEnough, const std::shared_ptr<ImportanceSamplingCluster>& results) const;
+			bool breakLoopWithNoFailureObs(ModelRunner& modelRunner, const ImportanceSamplingSettings& settings, int sampleIndex, bool& reported) const;
 
-			void report(std::shared_ptr<ModelRunner> modelRunner, int sampleIndex);
+			void report(ModelRunner& modelRunner, int sampleIndex) const;
 		};
 	}
 }

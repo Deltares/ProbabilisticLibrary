@@ -24,7 +24,7 @@
 This module contains all reliability related functionality.
 
 The entry point for performing a reliability analysis is `probabilistic_library.project.ReliabilityProject`. A model can be attached to a reliability project, then
-stochastic variables, correlation matrix and settings are provided. When the reliabity project is run, a `DesignPoint` is generated,
+stochastic variables, correlation matrix and settings are provided. When the reliability project is run, a `DesignPoint` is generated,
 which contains the results of the reliability analysis.
 
 ```mermaid
@@ -164,12 +164,13 @@ class ExcludingCombinerMethod(Enum):
 		return str(self.value)
 
 class CombineType(Enum):
-	"""Enumeration which defines how design points are combined
-    Series: OR port, the result of the combination is the probability that one of the failure conditions will happen
-    Parallel: AND port, the result of the combination is the probability that all of the failure conditions will happen"""
+	"""Enumeration which defines how design points are combined"""
 
 	series = 'series'
+	"""OR port, the result of the combination is the probability that one of the failure conditions will happen"""
+
 	parallel = 'parallel'
+	"""AND port, the result of the combination is the probability that all of the failure conditions will happen."""
 	def __str__(self):
 		return str(self.value)
 
@@ -245,7 +246,7 @@ class Settings(FrozenObject):
 
 	@property
 	def max_parallel_processes(self) -> int:
-		"""The number of parallel excutions of model evaluations"""
+		"""The number of parallel executions of model evaluations"""
 		return interface.GetIntValue(self._id, 'max_parallel_processes')
 
 	@max_parallel_processes.setter
@@ -287,7 +288,7 @@ class Settings(FrozenObject):
 		"""Indicates whether prior model results will be reused by the reliability analysis.
 
         This will speed up calculations when several analyses are performed, for which the same realizations
-        will have to be executed, for example a crude monte carlo analysis with different limit state
+        will have to be executed, for example a Crude Monte Carlo analysis with different limit state
         definitions. But when a modification to the model is made, which is beyond the scope of the
         model definition, this leads to undesired results"""
 
@@ -565,7 +566,7 @@ class StochastSettings(FrozenObject):
 	@property
 	def variable(self) -> Stochast:
 		"""The stochastic variable to which these settings apply
-        This value can not be set. A project generates these settings automatically when a model is set to the project."""
+        This value cannot be set. A project generates these settings automatically when a model is set to the project."""
 
 		if self._variable is None:
 			id_ = interface.GetIdValue(self._id, 'variable')
@@ -646,7 +647,7 @@ class CompareType(Enum):
 class LimitStateFunction(FrozenObject):
 	"""Defines how model output is transformed to a z-value, which is used by reliability analyses.
 
-    A reliabilty algorithm only uses a z-value, where a value < 0 indicates failure and a value >= 0
+    A reliability algorithm only uses a z-value, where a value < 0 indicates failure and a value >= 0
     indicates no failure. A model produces several output values in the form of an array, where each
     array value is related to an output parameter of the model. This class allows the user to select
     an output parameter and compare it against a critical value.
@@ -719,11 +720,11 @@ class DesignPoint(FrozenObject):
     stochastic variables.
 
     The main result of a reliability analysis is a reliability index, which can be transformed to a
-    probability of failure. Besides contributions of stochastic variables are given in the list of
+    probability of failure. Also contributions of stochastic variables are given in the list of
     alphas.
 
     Convergence information, number of samples, iterations or directions are given too. Depending on
-    settings, samples, messages and convergence information during the calcualtion are reported too.
+    settings, samples, messages and convergence information during the calculation are reported too.
     If intermediate design points were generated, for example by adaptive importance sampling, they
     are reported in the contributing design points list.
 
@@ -793,7 +794,7 @@ class DesignPoint(FrozenObject):
 
 	@property
 	def reliability_index(self) -> float:
-		"""Reliability index, calcualted by the reliability algorithm"""
+		"""Reliability index, calculated by the reliability algorithm"""
 		return interface.GetValue(self._id, 'reliability_index')
 
 	# testing method
@@ -1072,12 +1073,12 @@ class DesignPoint(FrozenObject):
 		return plt
 
 	def plot_convergence(self):
-		"""Shows a plot of the convergence against the iteration or sample index
+		"""Shows a plot of the convergence against the iteration or sample index. 
         Only available when `Settings.save_convergence` was set"""
 		self.get_plot_convergence().show()
 
 	def get_plot_convergence(self) -> plt:
-		"""Gets a plot object of the convergence against the iteration or sample index
+		"""Gets a plot object of the convergence against the iteration or sample index. 
         Only available when `Settings.save_convergence` was set"""
 
 		if len(self.reliability_results) == 0:
@@ -1206,7 +1207,7 @@ class Alpha(FrozenObject):
 
 
 class FragilityCurve(FrozenObject):
-	"""Curve with a number of x-values, for which a relibility is defined
+	"""Curve with a number of x-values, for which a reliability is defined
 
     A fragility curve is similar to a `probabilistic_library.statistic.Stochast` with distribution type
     cdf_curve. A fragility curve has an additional method `integrate` to calculate the reliability, when
@@ -1319,7 +1320,7 @@ class FragilityCurve(FrozenObject):
 
         Parameters
         ----------
-        quantile : float
+        quantile : float.
             Quantile for which the x-value is requested, must be between 0 and 1 (exclusive)"""
 
 		return interface.GetArgValue(self._id, 'quantile', quantile)
@@ -1329,7 +1330,7 @@ class FragilityCurve(FrozenObject):
 
         Parameters
         ----------
-        u : float
+        u : float.
             U-value for which the x-value is requested"""
 
 		return interface.GetArgValue(self._id, 'x_from_u', u)
@@ -1384,13 +1385,13 @@ class FragilityCurve(FrozenObject):
 		"""Calculates the reliability index of the fragility curve if the distribution of the x-values in the
         `fragility_values` is given. Results in a design point.
 
-        The calculation is performed by integration over the possible x-values. If the design point in the
+        The calculation is performed by integration over the possible x-values. If the design points in the
         fragility values are given, the alpha values in the resulting design point are based on the design
         points in the `fragility_values`.
 
         Parameters
         ----------
-        integrand : Stochast
+        integrand : Stochast.
             Stochastic variable describing the distribution of the x-values in the 'fragility_values'"""
 
 		project = FragilityCurveProject()
@@ -1400,7 +1401,7 @@ class FragilityCurve(FrozenObject):
 		return project.design_point
 
 class FragilityCurveProject(FrozenObject):
-	"""Project to calculate the reliabity of a fragility curve when the distribution of the x-values of
+	"""Project to calculate the reliability of a fragility curve when the distribution of the x-values of
     the fragility_valus of the fragility curve is known. 
 
     This class is used internally by the `FragilityCurve.integrate` method."""
@@ -1546,15 +1547,15 @@ class ReliabilityResult(FrozenObject):
 	
 	@property   
 	def index(self) -> int:
-		"""Index of a realization or iteration in the reliabilty analysis to which the reliability index and convergence belong"""
+		"""Index of a realization or iteration in the reliability analysis to which the reliability index and convergence belong"""
 		return interface.GetIntValue(self._id, 'index')
 		
 	@property   
 	def reliability_index(self) -> float:
-		"""Intermediate reliability index in the reliabilty analysis"""
+		"""Intermediate reliability index in the reliability analysis"""
 		return interface.GetValue(self._id, 'reliability_index')
 		
 	@property   
 	def convergence(self) -> float:
-		"""Intermediate convergence index in the reliabilty analysis"""
+		"""Intermediate convergence index in the reliability analysis"""
 		return interface.GetValue(self._id, 'convergence')

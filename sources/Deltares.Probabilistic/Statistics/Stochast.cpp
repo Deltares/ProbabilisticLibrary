@@ -34,10 +34,10 @@ namespace Deltares
     {
         Stochast::Stochast() = default;
 
-        Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
+        Stochast::Stochast(DistributionType distributionType, const std::vector<double>& values)
         {
             setDistributionType(distributionType);
-            distribution->initialize(properties, values);
+            distribution->initialize(*properties, values);
             properties->dirty = true;
         }
 
@@ -67,28 +67,28 @@ namespace Deltares
 
         double Stochast::getPDF(double x)
         {
-            return distribution->getPDF(properties, x);
+            return distribution->getPDF(*properties, x);
         }
 
         double Stochast::getCDF(double x)
         {
-            return distribution->getCDF(properties, x);
+            return distribution->getCDF(*properties, x);
         }
 
         double Stochast::getQuantile(double quantile) const
         {
             double u = StandardNormal::getUFromP(quantile);
-            return distribution->getXFromU(properties, u);
+            return distribution->getXFromU(*properties, u);
         }
 
         double Stochast::getXFromU(double u)
         {
-            return distribution->getXFromU(properties, u);
+            return distribution->getXFromU(*properties, u);
         }
 
         double Stochast::getUFromX(double x)
         {
-            return distribution->getUFromX(properties, x);
+            return distribution->getUFromX(*properties, x);
         }
 
         double Stochast::getXFromUAndSource(double xSource, double u)
@@ -96,7 +96,7 @@ namespace Deltares
             if (isVariable())
             {
                 std::shared_ptr<StochastProperties> valueSetProperties = getInterpolatedProperties(xSource);
-                return distribution->getXFromU(valueSetProperties, u);
+                return distribution->getXFromU(*valueSetProperties, u);
             }
             else
             {
@@ -109,7 +109,7 @@ namespace Deltares
             if (isVariable())
             {
                 std::shared_ptr<StochastProperties> valueSetProperties = getInterpolatedProperties(xSource);
-                return distribution->getUFromX(valueSetProperties, x);
+                return distribution->getUFromX(*valueSetProperties, x);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace Deltares
 
         void Stochast::setXAtU(double x, double u, ConstantParameterType constantType) const
         {
-            distribution->setXAtU(properties, x, u, constantType);
+            distribution->setXAtU(*properties, x, u, constantType);
         }
 
         double Stochast::getXFromType(RunValuesType type)
@@ -140,10 +140,10 @@ namespace Deltares
                 std::shared_ptr<StochastProperties> valueSetProperties = getInterpolatedProperties(xSource);
                 switch (type)
                 {
-                case RunValuesType::MedianValues: return distribution->getXFromU(valueSetProperties, 0);
-                case RunValuesType::MeanValues: return distribution->getMean(valueSetProperties);
+                case RunValuesType::MedianValues: return distribution->getXFromU(*valueSetProperties, 0);
+                case RunValuesType::MeanValues: return distribution->getMean(*valueSetProperties);
                 case RunValuesType::DesignValues:
-                    return distribution->getXFromU(valueSetProperties, StandardNormal::getUFromP(designQuantile)) / designFactor;
+                    return distribution->getXFromU(*valueSetProperties, StandardNormal::getUFromP(designQuantile)) / designFactor;
                 default: throw Reliability::probLibException("Value type not supported");
                 }
             }
@@ -157,7 +157,7 @@ namespace Deltares
         {
             if (distributionType == DistributionType::Composite)
             {
-                for (auto contributingStochast : properties->ContributingStochasts)
+                for (const auto& contributingStochast : properties->ContributingStochasts)
                 {
                     if (contributingStochast->Probability > 0 && contributingStochast->Stochast->isVariable())
                     {
@@ -177,7 +177,7 @@ namespace Deltares
         {
             if (distributionType == DistributionType::Composite)
             {
-                for (auto contributingStochast : properties->ContributingStochasts)
+                for (const auto& contributingStochast : properties->ContributingStochasts)
                 {
                     if (contributingStochast->Probability > 0 && contributingStochast->Stochast->isVariable())
                     {
@@ -199,7 +199,7 @@ namespace Deltares
             if (distributionType == DistributionType::Composite)
             {
                 std::shared_ptr<StochastProperties> compositeProperties = std::make_shared<StochastProperties>();
-                for (auto compositeStochast : properties->ContributingStochasts)
+                for (const auto& compositeStochast : properties->ContributingStochasts)
                 {
                     if (compositeStochast->Stochast->isVariable())
                     {
@@ -262,7 +262,7 @@ namespace Deltares
                 distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
                 properties->dirty = true;
 
-                if (distribution->maintainMeanAndDeviation(properties))
+                if (distribution->maintainMeanAndDeviation(*properties))
                 {
                     if (distributionChangingType == DistributionChangeType::Nothing)
                     {
@@ -376,7 +376,7 @@ namespace Deltares
             }
             else
             {
-                return distribution->isVarying(properties);
+                return distribution->isVarying(*properties);
             }
         }
 
@@ -389,7 +389,7 @@ namespace Deltares
             }
             else
             {
-                distribution->validate(report, properties, name);
+                distribution->validate(report, *properties, name);
             }
         }
 
@@ -413,12 +413,12 @@ namespace Deltares
 
         double Stochast::getRepresentativeU(double u) const
         {
-            return distribution->getRepresentativeU(properties, u);
+            return distribution->getRepresentativeU(*properties, u);
         }
 
         double Stochast::getMean()
         {
-            return distribution->getMean(properties);
+            return distribution->getMean(*properties);
         }
 
         void Stochast::setMean(double mean)
@@ -431,32 +431,32 @@ namespace Deltares
 
             if (constantParameterType == ConstantParameterType::Deviation)
             {
-                distribution->setMeanAndDeviation(properties, mean, deviation);
+                distribution->setMeanAndDeviation(*properties, mean, deviation);
             }
             else if (constantParameterType == ConstantParameterType::VariationCoefficient)
             {
                 double currentMean = getMean();
                 if (currentMean == 0.0)
                 {
-                    distribution->setMeanAndDeviation(properties, mean, mean * lastVariation);
+                    distribution->setMeanAndDeviation(*properties, mean, mean * lastVariation);
                 }
                 else
                 {
                     double variation = deviation / currentMean;
-                    distribution->setMeanAndDeviation(properties, mean, std::abs(mean * variation));
+                    distribution->setMeanAndDeviation(*properties, mean, std::abs(mean * variation));
                 }
             }
         }
 
         double Stochast::getDeviation() const
         {
-            return distribution->getDeviation(properties);
+            return distribution->getDeviation(*properties);
         }
 
         void Stochast::setDeviation(double deviation)
         {
             double mean = getMean();
-            distribution->setMeanAndDeviation(properties, mean, deviation);
+            distribution->setMeanAndDeviation(*properties, mean, deviation);
         }
 
         double Stochast::getVariation()
@@ -476,23 +476,23 @@ namespace Deltares
         void Stochast::setVariation(double variation)
         {
             double mean = getMean();
-            distribution->setMeanAndDeviation(properties, mean, variation * std::abs(mean));
+            distribution->setMeanAndDeviation(*properties, mean, variation * std::abs(mean));
             lastVariation = variation;
         }
 
         void Stochast::setMeanAndDeviation(double mean, double deviation) const
         {
-            distribution->setMeanAndDeviation(properties, mean, deviation);
+            distribution->setMeanAndDeviation(*properties, mean, deviation);
         }
 
         void Stochast::setShift(double shift) const
         {
-            distribution->setShift(properties, shift, false);
+            distribution->setShift(*properties, shift, false);
         }
 
         void Stochast::initializeForRun()
         {
-            distribution->initializeForRun(properties);
+            distribution->initializeForRun(*properties);
 
             if (IsVariableStochast)
             {
@@ -585,7 +585,7 @@ namespace Deltares
             return report;
         }
 
-        void Stochast::fit(std::vector<double> values, const double shift) const
+        void Stochast::fit(std::vector<double>& values, const double shift) const
         {
             Logging::ValidationReport report = getFitValidationReport(values, nullptr, shift);
             if (!report.isValid())
@@ -593,10 +593,10 @@ namespace Deltares
                 throw Reliability::probLibException("Can not fit with given Values should not be empty");
             }
 
-            distribution->fit(properties, values, shift);
+            distribution->fit(*properties, values, shift);
         }
 
-        void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift) const
+        void Stochast::fitPrior(std::vector<double>& values, std::shared_ptr<Stochast> prior, const double shift) const
         {
             Logging::ValidationReport report = getFitValidationReport(values, prior, shift);
             if (!report.isValid())
@@ -604,12 +604,12 @@ namespace Deltares
                 throw Reliability::probLibException("Can not fit with given Values should not be empty");
             }
 
-            distribution->fitPrior(properties, values, prior->getProperties(), shift);
+            distribution->fitPrior(*properties, values, *prior->getProperties(), shift);
         }
 
-        void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights) const
+        void Stochast::fitWeighted(const std::vector<double>& values, std::vector<double> weights) const
         {
-            distribution->fitWeighted(properties, values, weights);
+            distribution->fitWeighted(*properties, values, weights);
         }
 
         void Stochast::fitFromHistogramValues() const
@@ -623,12 +623,12 @@ namespace Deltares
                 weights.push_back(bin->Amount);
             }
 
-            distribution->fitWeighted(properties, values, weights);
+            distribution->fitWeighted(*properties, values, weights);
         }
 
-        double Stochast::getKSTest(std::vector<double> values) const
+        double Stochast::getKSTest(const std::vector<double>& values) const
         {
-            return KSCalculator::getGoodnessOfFit(values, distribution, properties);
+            return KSCalculator::getGoodnessOfFit(values, *distribution, *properties);
         }
 
         std::shared_ptr<Stochast> Stochast::getVariableStochast(double x)
@@ -659,7 +659,7 @@ namespace Deltares
 
         std::vector<double> Stochast::getSpecialXValues()
         {
-            return distribution->getSpecialPoints(properties);
+            return distribution->getSpecialPoints(*properties);
         }
 
         std::vector<double> Stochast::getDiscontinuityPoints()

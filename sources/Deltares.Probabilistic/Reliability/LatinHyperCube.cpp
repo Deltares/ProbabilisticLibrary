@@ -38,7 +38,7 @@ namespace Deltares
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
+            auto sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
             double qRange = 1.0;
@@ -168,7 +168,7 @@ namespace Deltares
 
             auto zValues = std::vector<double>(0); // copy of z for all parallel threads as double
 
-            const std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
+            auto uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
             std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nStochasts);
 
@@ -216,7 +216,7 @@ namespace Deltares
                         // determine multiplication factor for z (z<0), if u = 0
                         z0Fac = getZFactor(zValues[0]);
                         uMin = uMin->getSampleAtBeta(z0Fac * StandardNormal::BetaMax);
-                        uMean->initialize(z0Fac * StandardNormal::BetaMax);
+                        uMean.initialize(z0Fac * StandardNormal::BetaMax);
                         initial = false;
                         zIndex = 1;
                     }
@@ -248,7 +248,7 @@ namespace Deltares
                 // register minimum value of r and alpha
                 if (z * z0Fac < 0)
                 {
-                    uMean->addSample(u);
+                    uMean.addSample(u);
                 }
 
                 if (z < 0.0)
@@ -263,7 +263,7 @@ namespace Deltares
             // general processing
             double beta = StandardNormal::getUFromQ(probFailure);
 
-            uMin = uMean->getSample();
+            uMin = uMean.getSample();
 
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport);
             return designPoint;

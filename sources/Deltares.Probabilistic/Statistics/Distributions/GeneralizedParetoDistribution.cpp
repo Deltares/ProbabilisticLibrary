@@ -25,7 +25,6 @@
 #include "../../Math/NumericSupport.h"
 
 #include <cmath>
-#include <algorithm>
 
 #include "DistributionSupport.h"
 
@@ -33,90 +32,90 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void GeneralizedParetoDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void GeneralizedParetoDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->Shape, "shape", subject);
-            Logging::ValidationSupport::checkMinimum(report, 0, stochast->Scale, "scale", subject);
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Shape, "shape", subject);
+            Logging::ValidationSupport::checkMinimum(report, 0, stochast.Scale, "scale", subject);
         }
 
-        bool GeneralizedParetoDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool GeneralizedParetoDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Scale > 0;
+            return stochast.Scale > 0.0;
         }
 
-        double GeneralizedParetoDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double GeneralizedParetoDistribution::getMean(StochastProperties& stochast)
         {
             return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
-        double GeneralizedParetoDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double GeneralizedParetoDistribution::getDeviation(StochastProperties& stochast)
         {
             return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
-        double GeneralizedParetoDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GeneralizedParetoDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            double k = stochast->Shape;
-            double s = stochast->Scale;
-            double m = stochast->Shift;
+            const double k = stochast.Shape;
+            const double s = stochast.Scale;
+            const double m = stochast.Shift;
 
-            if (x >= m && std::fabs(k) <= epsilon && s > 0)
+            if (x >= m && std::fabs(k) <= epsilon && s > 0.0)
             {
                 return std::exp(-(x - m) / s) / s;
             }
             else if (x >= m && (k * x < s + k * m) && k > epsilon)
             {
-                return std::pow(1 - k * (x - m) / s, 1 / k - 1) / s;
+                return std::pow(1.0 - k * (x - m) / s, 1.0 / k - 1.0) / s;
             }
-            else if (x >= m && (k < epsilon) && s > 0)
+            else if (x >= m && (k < epsilon) && s > 0.0)
             {
-                return std::pow(1 - k * (x - m) / s, 1 / k - 1) / s;
+                return std::pow(1.0 - k * (x - m) / s, 1.0 / k - 1.0) / s;
             }
             else
             {
-                return 0;
+                return 0.0;
             }
         }
 
-        double GeneralizedParetoDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GeneralizedParetoDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            double k = stochast->Shape;
-            double s = stochast->Scale;
-            double m = stochast->Shift;
+            const double k = stochast.Shape;
+            const double s = stochast.Scale;
+            const double m = stochast.Shift;
 
-            if (x >= m && std::fabs(k) <= epsilon && s > 0)
+            if (x >= m && std::fabs(k) <= epsilon && s > 0.0)
             {
                 return std::exp(-(x - m) / s);
             }
             else if (x >= m && (k * x < s + k * m) && std::fabs(k) > epsilon)
             {
-                return 1 - std::pow(1 - k * (x - m) / s, 1 / k);
+                return 1.0 - std::pow(1.0 - k * (x - m) / s, 1.0 / k);
             }
             else if ((k * x >= s + k * m) && k > epsilon)
             {
-                return 1;
+                return 1.0;
             }
             else
             {
-                return 0;
+                return 0.0;
             }
         }
 
-        double GeneralizedParetoDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double GeneralizedParetoDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            double q = StandardNormal::getQFromU(u);
+            const double q = StandardNormal::getQFromU(u);
 
-            double k = stochast->Shape;
-            double s = stochast->Scale;
-            double m = stochast->Shift;
+            const double k = stochast.Shape;
+            const double s = stochast.Scale;
+            const double m = stochast.Shift;
 
-            if (std::fabs(k) <= epsilon && s > 0)
+            if (std::fabs(k) <= epsilon && s > 0.0)
             {
                 return m - s * std::log(q);
             }
-            else if (std::fabs(k) > epsilon && s > 0)
+            else if (std::fabs(k) > epsilon && s > 0.0)
             {
-                return m + s * (1 - std::pow(q, k)) / k;
+                return m + s * (1.0 - std::pow(q, k)) / k;
             }
             else
             {
@@ -124,29 +123,29 @@ namespace Deltares
             }
         }
 
-        double GeneralizedParetoDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double GeneralizedParetoDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            if (x <= stochast->Scale)
+            if (x <= stochast.Scale)
             {
                 return -StandardNormal::UMax;
             }
             else
             {
-                double cdf = this->getCDF(stochast, x);
+                const double cdf = getCDF(stochast, x);
                 return StandardNormal::getUFromP(cdf);
             }
         }
 
-        void GeneralizedParetoDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void GeneralizedParetoDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
             DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
-        std::vector<double> GeneralizedParetoDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> GeneralizedParetoDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             std::vector<double> specialPoints;
 
-            specialPoints.push_back(stochast->Scale);
+            specialPoints.push_back(stochast.Scale);
 
             return specialPoints;
         }

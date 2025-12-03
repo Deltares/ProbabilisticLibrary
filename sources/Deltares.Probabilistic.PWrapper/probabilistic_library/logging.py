@@ -30,7 +30,7 @@ if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
 class MessageType(Enum):
-	"""Enumeration which defines the severity of a message"""
+	"""Enumeration which defines the severity of a message."""
 	debug = 'debug'
 	info = 'info'
 	warning = 'warning'
@@ -39,7 +39,7 @@ class MessageType(Enum):
 		return str(self.value)
 
 class Message(FrozenObject):
-	"""Defines a message, which will be presented to the user
+	"""Defines a message, which will be presented to the user.
     A message may be the result of a validation request or an informative message of an algorithm"""
 
 	def __init__(self, id = None):
@@ -113,7 +113,7 @@ class ValidationReport(FrozenObject):
 		        'print']
 
 	def is_valid(self) -> bool:
-		"""Indicates whether ths validation report should be interpreted as valid or non-valid"""
+		"""Indicates whether this validation report should be interpreted as valid or non-valid"""
 		return interface.GetBoolValue(self._id, 'is_valid')
 
 	@property   
@@ -208,7 +208,7 @@ class Evaluation(FrozenObject):
 
         Parameters
         ----------
-        decimals : int, optional
+        decimals : int, optional.
             The number of decimals to print"""
 
 		self._print(0, decimals)

@@ -21,7 +21,6 @@
 //
 #include "Sobol.h"
 
-#include <algorithm>
 #include <memory>
 
 #include "SobolSequenceProvider.h"

@@ -83,10 +83,10 @@ namespace Deltares
             static bool any(std::vector<double>& values, std::function<bool(double)> function);
             static std::vector<double> select(std::vector<double>& values, std::function<double(double)> function);
             static std::vector<double> take(std::vector<double>& values, int skip, int size);
-            static std::vector<double> zip(std::vector<double>& values1, std::vector<double>& values2, std::function<double(double, double)> function);
+            static std::vector<double> zip(const std::vector<double>& values1, const std::vector<double>& values2, std::function<double(double, double)> function);
             static std::vector<double> combine(const std::vector<double>& values1, const std::vector<double>& values2);
-            static double sum(std::vector<double>& values);
-            static double sum(std::vector<double>& values, std::function<double(double)> function);
+            static double sum(const std::vector<double>& values);
+            static double sum(const std::vector<double>& values, std::function<double(double)> function);
             static double getMaxAbs(const double val1, const double val2);
             static std::vector<double> LinearSpaced(const int length, const double start, const double stop);
             static std::string ConvertToString(std::vector<double>& values, const std::string& separator);

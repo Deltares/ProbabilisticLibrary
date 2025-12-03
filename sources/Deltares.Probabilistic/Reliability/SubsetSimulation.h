@@ -58,7 +58,7 @@ namespace Deltares
             int rejectedSamples = 0;
             int acceptedSamples = 0;
             double acceptanceRate = 0.0;
-            std::shared_ptr<RandomSampleGenerator> randomSampleGenerator;
+            RandomSampleGenerator randomSampleGenerator = RandomSampleGenerator();
         };
     }
 }

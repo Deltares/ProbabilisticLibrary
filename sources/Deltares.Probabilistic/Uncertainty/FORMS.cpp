@@ -45,9 +45,8 @@ namespace Deltares::Uncertainty
     {
         int nStochasts = modelRunner->getVaryingStochastCount();
 
-        std::shared_ptr<Models::GradientCalculator> gradientCalculator = std::make_shared<GradientCalculator>();
-        gradientCalculator->Settings = std::make_shared<GradientSettings>();
-        gradientCalculator->Settings = Settings->GradientSettings;
+        auto gradientCalculator = GradientCalculator();
+        gradientCalculator.Settings = Settings->GradientSettings;
 
         int iteration = 0;
         double zPrevious = std::nan("");
@@ -67,7 +66,7 @@ namespace Deltares::Uncertainty
         std::shared_ptr<Sample> startPoint = std::make_shared<Sample>(nStochasts);
         startPoint->IterationIndex = iteration - 1;
 
-        std::vector<double> gradient0 = gradientCalculator->getGradient(modelRunner, startPoint);
+        std::vector<double> gradient0 = gradientCalculator.getGradient(*modelRunner, startPoint);
         double z0 = startPoint->Z;
 
         std::shared_ptr<FragilityValue> zeroValue = std::make_shared<FragilityValue>();
@@ -91,7 +90,7 @@ namespace Deltares::Uncertainty
                 if (iteration > 0)
                 {
                     startPoint->IterationIndex = iteration - 1;
-                    gradient = gradientCalculator->getGradient(modelRunner, startPoint);
+                    gradient = gradientCalculator.getGradient(*modelRunner, startPoint);
                     z = startPoint->Z;
 
                     modelRunner->reportProgress(++performedIterations, maxIterations);
@@ -176,7 +175,7 @@ namespace Deltares::Uncertainty
                 if (iteration < 0)
                 {
                     startPoint->IterationIndex = iteration - 1;
-                    gradient = gradientCalculator->getGradient(modelRunner, startPoint);
+                    gradient = gradientCalculator.getGradient(*modelRunner, startPoint);
                     z = startPoint->Z;
 
                     checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);

@@ -23,7 +23,6 @@
 #include "FragilityCurveIntegration.h"
 
 #include "DesignPoint.h"
-#include "../Model/GradientCalculator.h"
 #include "../Math/NumericSupport.h"
 
 #if __has_include(<format>)
@@ -52,8 +51,8 @@ namespace Deltares
             }
 
             std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = std::vector{ parameter, fragilityCurve };
-            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(Settings->designPointMethod, stochasts);
-            designPointBuilder->initialize(Statistics::StandardNormal::BetaMax);
+            auto designPointBuilder = DesignPointBuilder(Settings->designPointMethod, stochasts);
+            designPointBuilder.initialize(Statistics::StandardNormal::BetaMax);
 
             // Perform numerical integration over the fragility curve stochast
 
@@ -90,7 +89,7 @@ namespace Deltares
                 double beta = std::sqrt(step->U * step->U + uFrag * uFrag);
                 sample->Weight = Statistics::StandardNormal::getQFromU(beta);
 
-                designPointBuilder->addSample(sample);
+                designPointBuilder.addSample(sample);
 
                 probFailure += addition;
 
@@ -105,7 +104,7 @@ namespace Deltares
             std::shared_ptr<DesignPoint> designPoint = std::make_shared<DesignPoint>();
             designPoint->Beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-            std::shared_ptr<Sample> designPointSample = designPointBuilder->getSample();
+            std::shared_ptr<Sample> designPointSample = designPointBuilder.getSample();
 
             // Set the contribution of the conditional stochast
             double alphaParameter = -designPointSample->Values[0] / designPoint->Beta; // u = - beta * alpha
@@ -156,8 +155,8 @@ namespace Deltares
 
             double cdfLow = Statistics::StandardNormal::getPFromU(u);
 
-            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(2, Settings->designPointMethod, this->Settings->StochastSet);
-            designPointBuilder->initialize(Statistics::StandardNormal::BetaMax);
+            auto designPointBuilder = DesignPointBuilder(2, Settings->designPointMethod, this->Settings->StochastSet);
+            designPointBuilder.initialize(Statistics::StandardNormal::BetaMax);
 
             // Perform numerical integration over the fragility curve stochast
 
@@ -185,7 +184,7 @@ namespace Deltares
                 double betaSample = std::sqrt(parU * parU + uFrag * uFrag);
                 fragilitySample->Weight = Statistics::StandardNormal::getQFromU(betaSample);
 
-                designPointBuilder->addSample(fragilitySample);
+                designPointBuilder.addSample(fragilitySample);
 
                 probFailure += addition;
 
@@ -195,7 +194,7 @@ namespace Deltares
                 count++;
             }
 
-            std::shared_ptr<Sample> designPointSample = designPointBuilder->getSample();
+            std::shared_ptr<Sample> designPointSample = designPointBuilder.getSample();
 
             double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 

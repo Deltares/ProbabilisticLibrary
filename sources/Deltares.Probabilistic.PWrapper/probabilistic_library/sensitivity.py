@@ -126,7 +126,7 @@ class SensitivitySettings(FrozenObject):
 		
 	@property
 	def max_parallel_processes(self) -> int:
-		"""The number of parallel excutions of model evaluations"""
+		"""The number of parallel executions of model evaluations"""
 		return interface.GetIntValue(self._id, 'max_parallel_processes')
 
 	@max_parallel_processes.setter
@@ -155,10 +155,10 @@ class SensitivitySettings(FrozenObject):
 
 	@property
 	def reuse_calculations(self) -> bool:
-		"""Indicates whether prior model results will be reused by the sensitivity analysis.
+		"""Indicates whether prior model results will be reused in the sensitivity analysis.
 
         This will speed up calculations when several analyses are performed, for which the same realizations
-        will have to be executed, for example calculate the sensitivity of several output parameters. But
+        will have to be executed, for example when calculating the sensitivity of several output parameters. But
         when a modification to the model is made, which is beyond the scope of the model definition, this
         leads to undesired results"""
 
@@ -389,7 +389,7 @@ class SensitivityResult(FrozenObject):
 
         Parameters
         ----------
-        decimals : int, optional
+        decimals : int, optional.
             The number of decimals to print"""
 
 		print('Parameter: ' + self.identifier)
@@ -399,11 +399,11 @@ class SensitivityResult(FrozenObject):
 				value._print(1, decimals)
 
 	def plot(self):
-		"""Shows a plot of the sensitivity in the form a bar-chart"""
+		"""Shows a plot of the sensitivity in the form of a bar-chart"""
 		self.get_plot().show()
 
 	def get_plot(self) -> plt:
-		"""Gets a plot object of the sensitivity in the form a bar-chart"""
+		"""Gets a plot object of the sensitivity in the form of a bar-chart"""
 
 		plt.subplot()
 

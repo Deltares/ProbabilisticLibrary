@@ -28,67 +28,67 @@ namespace Deltares
 {
     namespace Statistics
     {
-        void BernoulliDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void BernoulliDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
-            stochast->Location = values[0];
+            stochast.Location = values[0];
         }
 
-        bool BernoulliDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool BernoulliDistribution::isVarying(StochastProperties& stochast)
         {
-            return stochast->Location > 0.0 && stochast->Location < 1.0;
+            return stochast.Location > 0.0 && stochast.Location < 1.0;
         }
 
-        void BernoulliDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void BernoulliDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            Logging::ValidationSupport::checkMinimum(report, 0, stochast->Location, "location", subject);
-            Logging::ValidationSupport::checkMaximum(report, 1, stochast->Location, "location", subject);
+            Logging::ValidationSupport::checkMinimum(report, 0, stochast.Location, "location", subject);
+            Logging::ValidationSupport::checkMaximum(report, 1, stochast.Location, "location", subject);
             Distribution::validate(report, stochast, subject);
         }
 
-        double BernoulliDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double BernoulliDistribution::getMean(StochastProperties& stochast)
         {
-            return stochast->Location;
+            return stochast.Location;
         }
 
-        double BernoulliDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double BernoulliDistribution::getDeviation(StochastProperties& stochast)
         {
-            return sqrt(stochast->Location * (1 - stochast->Location));
+            return sqrt(stochast.Location * (1.0 - stochast.Location));
         }
 
-        void BernoulliDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void BernoulliDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            stochast->Location = mean;
+            stochast.Location = mean;
         }
 
-        double BernoulliDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double BernoulliDistribution::getXFromU(StochastProperties& stochast, double u)
         {
             double q = StandardNormal::getQFromU(u);
 
-            if (q > stochast->Location)
+            if (q > stochast.Location)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                return 1;
+                return 1.0;
             }
         }
 
-        double BernoulliDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double BernoulliDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            double cdf = getCDF(stochast, x);
+            const double cdf = getCDF(stochast, x);
             return StandardNormal::getUFromP(cdf);
         }
 
-        double BernoulliDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double BernoulliDistribution::getPDF(StochastProperties& stochast, double x)
         {
             if (Numeric::NumericSupport::areEqual(x, 1.0, delta))
             {
-                return stochast->Location;
+                return stochast.Location;
             }
             else if (Numeric::NumericSupport::areEqual(x, 0.0, delta))
             {
-                return 1.0 - stochast->Location;
+                return 1.0 - stochast.Location;
             }
             else
             {
@@ -96,11 +96,11 @@ namespace Deltares
             }
         }
 
-        double BernoulliDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double BernoulliDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            if (x < 0)
+            if (x < 0.0)
             {
-                return 0;
+                return 0.0;
             }
             else if (x >= 1.0)
             {
@@ -108,24 +108,24 @@ namespace Deltares
             }
             else
             {
-                return 1.0 - stochast->Location;
+                return 1.0 - stochast.Location;
             }
         }
 
-        void BernoulliDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void BernoulliDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
-            stochast->Location = Numeric::NumericSupport::getMean(values);
-            stochast->Observations = static_cast<int>(values.size());
+            stochast.Location = Numeric::NumericSupport::getMean(values);
+            stochast.Observations = static_cast<int>(values.size());
         }
 
-        void BernoulliDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
+        void BernoulliDistribution::fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
             int n_data = static_cast<int>(values.size());
             double n_data_success = Numeric::NumericSupport::sum(values);
             double n_data_fail = n_data - n_data_success;
 
-            int n_prior = prior->Observations;
-            double n_prior_success = prior->Location * n_prior;
+            int n_prior = prior.Observations;
+            double n_prior_success = prior.Location * n_prior;
             double n_prior_fail = n_prior - n_prior_success;
 
             // assume a beta distribution, the shape properties can be set according to binomial experiments
@@ -137,16 +137,16 @@ namespace Deltares
 
             double postMean = postAlpha / (postAlpha + postBeta);
 
-            stochast->Location = postMean;
-            stochast->Observations = prior->Observations + n_data;
+            stochast.Location = postMean;
+            stochast.Observations = prior.Observations + n_data;
         }
 
-        std::vector<double> BernoulliDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        std::vector<double> BernoulliDistribution::getDiscontinuityPoints(StochastProperties& stochast)
         {
             return { 0.0, 1.0 };
         }
 
-        std::vector<double> BernoulliDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> BernoulliDistribution::getSpecialPoints(StochastProperties& stochast)
         {
             double offset = 10 * delta;
 

@@ -270,9 +270,174 @@ TEST(reliability_method_test, testDirSamplingTwoBranchesLargerStepsize)
 {
     testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 3.0);
 }
-TEST(unittst, testDistributions)
+TEST(distribution_tests, testConditionalStochast)
 {
-    testDistributions::allDistributionsTests();
+    testDistributions::testConditionalStochast();
+}
+
+TEST(distribution_tests, testComposite)
+{
+    testDistributions::testComposite();
+}
+
+TEST(distribution_tests, testCompositeConditionalStochast)
+{
+    testDistributions::testCompositeConditionalStochast();
+}
+
+TEST(distribution_tests, testCompositeConditionalTruncatedStochast)
+{
+    testDistributions::testCompositeConditionalTruncatedStochast();
+}
+
+TEST(distribution_tests, testCompositeStochast)
+{
+    testDistributions::testCompositeStochast();
+}
+
+TEST(distribution_tests, testCompositeTruncatedStochast)
+{
+    testDistributions::testCompositeTruncatedStochast();
+}
+
+TEST(distribution_tests, testConditionalWeibull)
+{
+    testDistributions::testConditionalWeibull();
+}
+
+TEST(distribution_tests, testConditionalWeibullCdfPdf)
+{
+    testDistributions::testConditionalWeibullCdfPdf();
+}
+
+TEST(distribution_tests, testConditionalWeibullCdfPdf2)
+{
+    testDistributions::testConditionalWeibullCdfPdf2();
+}
+
+TEST(distribution_tests, testConditionalWeibullMeanDeviation)
+{
+    testDistributions::testConditionalWeibullMeanDeviation();
+}
+
+TEST(distribution_tests, testConditionalWeibullNonIntegerShape)
+{
+    testDistributions::testConditionalWeibullNonIntegerShape();
+}
+
+TEST(distribution_tests, testDesignValue)
+{
+    testDistributions::testDesignValue();
+}
+
+TEST(distribution_tests, testNormal)
+{
+    testDistributions::testNormal();
+}
+
+TEST(distribution_tests, testLogNormal)
+{
+    testDistributions::testLogNormal();
+}
+
+TEST(distribution_tests, testUniform)
+{
+    testDistributions::testUniform();
+}
+
+TEST(distribution_tests, testTriangular)
+{
+    testDistributions::testTriangular();
+}
+
+TEST(distribution_tests, testTrapezoidal)
+{
+    testDistributions::testTrapezoidal();
+}
+
+TEST(distribution_tests, testExponential)
+{
+    testDistributions::testExponential();
+}
+
+TEST(distribution_tests, testGamma)
+{
+    testDistributions::testGamma();
+}
+
+TEST(distribution_tests, testBeta)
+{
+    testDistributions::testBeta();
+}
+
+TEST(distribution_tests, testGumbel)
+{
+    testDistributions::testGumbel();
+}
+
+TEST(distribution_tests, testWeibull)
+{
+    testDistributions::testWeibull();
+}
+
+TEST(distribution_tests, testFrechet)
+{
+    testDistributions::testFrechet();
+}
+
+TEST(distribution_tests, testGEV)
+{
+    testDistributions::testGEV();
+}
+
+TEST(distribution_tests, testPareto)
+{
+    testDistributions::testPareto();
+}
+
+TEST(distribution_tests, testGeneralizedPareto)
+{
+    testDistributions::testGeneralizedPareto();
+}
+
+TEST(distribution_tests, testRayleigh)
+{
+    testDistributions::testRayleigh();
+}
+
+TEST(distribution_tests, testRayleighN)
+{
+    testDistributions::testRayleighN();
+}
+
+TEST(distribution_tests, testBernoulli)
+{
+    testDistributions::testBernoulli();
+}
+
+TEST(distribution_tests, testPoisson)
+{
+    testDistributions::testPoisson();
+}
+
+TEST(distribution_tests, testStudentT)
+{
+    testDistributions::testStudentT();
+}
+
+TEST(distribution_tests, testStudentTwithInterpolation)
+{
+    testDistributions::testStudentTwithInterpolation();
+}
+
+TEST(distribution_tests, testValidation)
+{
+    testDistributions::testValidation();
+}
+
+TEST(distribution_tests, testVariationCoefficient)
+{
+    testDistributions::testVariationCoefficient();
 }
 
 TEST(unittst, testStandardNormal)

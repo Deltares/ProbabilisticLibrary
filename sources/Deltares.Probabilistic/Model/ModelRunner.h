@@ -98,8 +98,8 @@ namespace Deltares
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
             Uncertainty::UncertaintyResult getUncertaintyResult(std::shared_ptr<Statistics::Stochast> stochast) const;
             Sensitivity::SensitivityResult getSensitivityResult() const;
-            std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
-            std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type);
+            std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample) const;
+            std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type) const;
             std::vector<double> getOnlyVaryingValues(std::vector<double> values);
 
             void setDirectionModel(ZBetaLambda zBetaLambda) const;
@@ -107,7 +107,7 @@ namespace Deltares
             void setShouldInvertFunction(ShouldInvertLambda shouldInvertFunction) { this->shouldInvertFunction = shouldInvertFunction; }
             void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
             void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
-            std::shared_ptr<Sample> getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
+            std::shared_ptr<Sample> getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint) const;
             void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
             Evaluation getEvaluationFromType(Statistics::RunValuesType type);

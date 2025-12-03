@@ -26,7 +26,6 @@
 
 #include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
-#include "../Model/GradientCalculator.h"
 #include "../Statistics/ProbabilityIterator.h"
 
 namespace Deltares::Statistics

@@ -29,13 +29,13 @@ namespace Deltares
 {
     namespace Statistics
     {
-        DistributionType GeneralizedExtremeValueDistribution::getExtremeDistributionType(std::shared_ptr<StochastProperties> stochast)
+        DistributionType GeneralizedExtremeValueDistribution::getExtremeDistributionType(const StochastProperties& stochast)
         {
-            if (stochast->Shape == 0)
+            if (stochast.Shape == 0.0)
             {
                 return DistributionType::Gumbel;
             }
-            else if (stochast->Shape > 0)
+            else if (stochast.Shape > 0.0)
             {
                 return DistributionType::Frechet;
             }
@@ -45,9 +45,9 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<Distribution> GeneralizedExtremeValueDistribution::getDistribution(std::shared_ptr<StochastProperties> stochast)
+        std::shared_ptr<Distribution> GeneralizedExtremeValueDistribution::getDistribution(const StochastProperties& stochast) const
         {
-            switch (this->getExtremeDistributionType(stochast))
+            switch (getExtremeDistributionType(stochast))
             {
             case DistributionType::Gumbel: return gumbelDistribution;
             case DistributionType::Frechet: return frechetDistribution;
@@ -56,28 +56,28 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<StochastProperties> GeneralizedExtremeValueDistribution::getStochast(std::shared_ptr<StochastProperties> stochast)
+        StochastProperties GeneralizedExtremeValueDistribution::getStochast(const StochastProperties& stochast)
         {
-            switch (this->getExtremeDistributionType(stochast))
+            switch (getExtremeDistributionType(stochast))
             {
             case DistributionType::Gumbel:
             {
-                return stochast->clone();
+                return stochast;
             }
             case DistributionType::Frechet:
             {
-                std::shared_ptr<StochastProperties> frechetStochast = stochast->clone();
-                frechetStochast->Shape = 1 / stochast->Shape;
-                frechetStochast->Scale = stochast->Scale / stochast->Shape;
-                frechetStochast->Shift = stochast->Shift - stochast->Scale / stochast->Shape;
+                auto frechetStochast = stochast;
+                frechetStochast.Shape = 1.0 / stochast.Shape;
+                frechetStochast.Scale = stochast.Scale / stochast.Shape;
+                frechetStochast.Shift = stochast.Shift - stochast.Scale / stochast.Shape;
                 return frechetStochast;
             }
             case DistributionType::Weibull:
             {
-                std::shared_ptr<StochastProperties> weibullStochast = stochast->clone();
-                weibullStochast->Shape = -1 / stochast->Shape;
-                weibullStochast->Scale = -stochast->Scale / stochast->Shape;
-                weibullStochast->Shift = stochast->Shift - stochast->Scale / stochast->Shape;
+                auto weibullStochast = stochast;
+                weibullStochast.Shape = -1.0 / stochast.Shape;
+                weibullStochast.Scale = -stochast.Scale / stochast.Shape;
+                weibullStochast.Shift = stochast.Shift - stochast.Scale / stochast.Shape;
                 return weibullStochast;
             }
             default:
@@ -85,83 +85,91 @@ namespace Deltares
             }
         }
 
-        void GeneralizedExtremeValueDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        void GeneralizedExtremeValueDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
         {
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        void GeneralizedExtremeValueDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
+        void GeneralizedExtremeValueDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
         {
-            this->getDistribution(stochast)->validate(report, getStochast(stochast), subject);
+            auto stochastInstance = getStochast(stochast);
+            this->getDistribution(stochast)->validate(report, stochastInstance, subject);
         }
 
-        bool GeneralizedExtremeValueDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        bool GeneralizedExtremeValueDistribution::isVarying(StochastProperties& stochast)
         {
-            return this->getDistribution(stochast)->isVarying(getStochast(stochast));
+            auto stochastInstance = getStochast(stochast);
+            return this->getDistribution(stochast)->isVarying(stochastInstance);
         }
 
-        double GeneralizedExtremeValueDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        double GeneralizedExtremeValueDistribution::getMean(StochastProperties& stochast)
         {
-            return this->getDistribution(stochast)->getMean(getStochast(stochast));
+            auto stochastInstance = getStochast(stochast);
+            return this->getDistribution(stochast)->getMean(stochastInstance);
         }
 
-        double GeneralizedExtremeValueDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        double GeneralizedExtremeValueDistribution::getDeviation(StochastProperties& stochast)
         {
-            return this->getDistribution(stochast)->getDeviation(getStochast(stochast));
+            auto stochastInstance = getStochast(stochast);
+            return this->getDistribution(stochast)->getDeviation(stochastInstance);
         }
 
-        double GeneralizedExtremeValueDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        double GeneralizedExtremeValueDistribution::getXFromU(StochastProperties& stochast, double u)
         {
-            return this->getDistribution(stochast)->getXFromU(getStochast(stochast), u);
+            auto stochastInstance = getStochast(stochast);
+            return this->getDistribution(stochast)->getXFromU(stochastInstance, u);
         }
 
-        double GeneralizedExtremeValueDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        double GeneralizedExtremeValueDistribution::getUFromX(StochastProperties& stochast, double x)
         {
-            return this->getDistribution(stochast)->getUFromX(getStochast(stochast), x);
+            auto stochastInstance = getStochast(stochast);
+            return this->getDistribution(stochast)->getUFromX(stochastInstance, x);
         }
 
-        double GeneralizedExtremeValueDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GeneralizedExtremeValueDistribution::getPDF(StochastProperties& stochast, double x)
         {
-            return this->getDistribution(stochast)->getPDF(getStochast(stochast), x);
+            auto stochastInstance = getStochast(stochast);
+            return this->getDistribution(stochast)->getPDF(stochastInstance, x);
         }
 
-        double GeneralizedExtremeValueDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        double GeneralizedExtremeValueDistribution::getCDF(StochastProperties& stochast, double x)
         {
-            return this->getDistribution(stochast)->getCDF(getStochast(stochast), x);
+            auto stochastInstance = getStochast(stochast);
+            return this->getDistribution(stochast)->getCDF(stochastInstance, x);
         }
 
-        void GeneralizedExtremeValueDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        void GeneralizedExtremeValueDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
         {
-            std::shared_ptr<StochastProperties> gevStochast = this->getStochast(stochast);
-            this->getDistribution(stochast)->setMeanAndDeviation(gevStochast, mean, deviation);
-            this->assign(gevStochast, stochast);
+            auto gevStochast = getStochast(stochast);
+            getDistribution(stochast)->setMeanAndDeviation(gevStochast, mean, deviation);
+            assign(gevStochast, stochast);
         }
 
-        void GeneralizedExtremeValueDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        void GeneralizedExtremeValueDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
         {
-            std::shared_ptr<StochastProperties> gevStochast = getStochast(stochast);
-            this->getDistribution(stochast)->setXAtU(gevStochast, x, u, constantType);
-            this->assign(gevStochast, stochast);
+            auto gevStochast = getStochast(stochast);
+            getDistribution(stochast)->setXAtU(gevStochast, x, u, constantType);
+            assign(gevStochast, stochast);
         }
 
-        void GeneralizedExtremeValueDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
+        void GeneralizedExtremeValueDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             double bestGoodness = std::numeric_limits<double>::max();
-            std::shared_ptr<StochastProperties> bestStochast = nullptr;
+            StochastProperties bestStochast;
             double bestShape = -1;
 
             for (auto shape : std::vector<double>{ -1, 0, 1 })
             {
-                std::shared_ptr<StochastProperties> dStochast = std::make_shared<StochastProperties>();
-                dStochast->Shape = shape;
+                auto dStochast = StochastProperties();
+                dStochast.Shape = shape;
 
                 const std::shared_ptr<Distribution> distribution = getDistribution(dStochast);
 
                 distribution->fit(dStochast, values, shift);
 
-                if (!std::isnan(dStochast->Shape) && !std::isnan(dStochast->Scale))
+                if (!std::isnan(dStochast.Shape) && !std::isnan(dStochast.Scale))
                 {
-                    double goodness = KSCalculator::getGoodnessOfFit(values, distribution, dStochast);
+                    double goodness = KSCalculator::getGoodnessOfFit(values, *distribution, dStochast);
 
                     if (goodness < bestGoodness)
                     {
@@ -172,9 +180,9 @@ namespace Deltares
                 }
             }
 
-            stochast->Shape = bestShape;
+            stochast.Shape = bestShape;
 
-            this->assign(bestStochast, stochast);
+            assign(bestStochast, stochast);
         }
 
         double GeneralizedExtremeValueDistribution::getMaxShiftValue(std::vector<double>& values)
@@ -182,37 +190,35 @@ namespace Deltares
             return *std::ranges::min_element(values);
         }
 
-        std::vector<double> GeneralizedExtremeValueDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> GeneralizedExtremeValueDistribution::getSpecialPoints(StochastProperties& stochast)
         {
-            return this->getDistribution(stochast)->getSpecialPoints(getStochast(stochast));
+            auto gevStochast = getStochast(stochast);
+            return getDistribution(stochast)->getSpecialPoints(gevStochast);
         }
 
-        void GeneralizedExtremeValueDistribution::assign(std::shared_ptr<StochastProperties> source, std::shared_ptr<StochastProperties> target)
+        void GeneralizedExtremeValueDistribution::assign(const StochastProperties& source, StochastProperties& target)
         {
-            if (source != target)
+            switch (getExtremeDistributionType(target))
             {
-                switch (this->getExtremeDistributionType(target))
-                {
-                case DistributionType::Gumbel:
-                    target->Shift = source->Shift;
-                    target->Shape = source->Shape;
-                    target->Scale = source->Scale;
-                    target->Observations = source->Observations;
-                    break;
-                case DistributionType::Frechet:
-                    target->Shift = source->Shift + source->Scale;
-                    target->Shape = 1 / source->Shape;
-                    target->Scale = source->Scale / source->Shape;
-                    target->Observations = source->Observations;
-                    break;
-                case DistributionType::Weibull:
-                    target->Shift = source->Shift - source->Scale;
-                    target->Shape = -1 / source->Shape;
-                    target->Scale = source->Scale / source->Shape;
-                    target->Observations = source->Observations;
-                    break;
-                default: throw Reliability::probLibException("Extreme distribution type not supported");
-                }
+            case DistributionType::Gumbel:
+                target.Shift = source.Shift;
+                target.Shape = source.Shape;
+                target.Scale = source.Scale;
+                target.Observations = source.Observations;
+                break;
+            case DistributionType::Frechet:
+                target.Shift = source.Shift + source.Scale;
+                target.Shape = 1.0 / source.Shape;
+                target.Scale = source.Scale / source.Shape;
+                target.Observations = source.Observations;
+                break;
+            case DistributionType::Weibull:
+                target.Shift = source.Shift - source.Scale;
+                target.Shape = -1.0 / source.Shape;
+                target.Scale = source.Scale / source.Shape;
+                target.Observations = source.Observations;
+                break;
+            default: throw Reliability::probLibException("Extreme distribution type not supported");
             }
         }
     }

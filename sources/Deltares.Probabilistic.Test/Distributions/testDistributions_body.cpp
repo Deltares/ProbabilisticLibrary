@@ -19,35 +19,15 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+#include <numbers>
 #include <gtest/gtest.h>
 #include "testDistributions.h"
+#include "../../Deltares.Probabilistic/Math/RandomValueGenerator.h"
 
 using namespace Deltares::Statistics;
 
 namespace Deltares::Probabilistic::Test
 {
-    void testDistributions::allDistributionsTests()
-    {
-        testConditionalWeibull();
-        testConditionalWeibullNonIntegerShape();
-        testConditionalWeibullMeanDeviation();
-        testConditionalWeibullCdfPdf();
-        testConditionalWeibullCdfPdf2();
-        testConditionalStochast();
-        testCompositeStochast();
-        testCompositeTruncatedStochast();
-        testCompositeConditionalStochast();
-        testCompositeConditionalTruncatedStochast();
-        testDesignValue();
-        testVariationCoefficient();
-        testPoisson();
-        testGamma();
-        testFitNormal();
-        testFitLogNormal();
-        testFitBernoulli();
-        testValidation();
-    }
-
     void testDistributions::testConditionalWeibull()
     {
         constexpr double margin = 1e-9;
@@ -382,8 +362,228 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(cdf10p1, cdf10p2) << "x from 10.0001... 10.9999 gives the same cdf";
     }
 
+    void testDistributions::testUniform()
+    {
+        Stochast stochastForFit = Stochast(DistributionType::Uniform, { 1.7, 7.3 });
+        testFit(stochastForFit);
+    }
+
+    void testDistributions::testTriangular()
+    {
+        Stochast stochastForFit = Stochast(DistributionType::Triangular, { 4.0, 5.0, 8.0 });
+        testFit(stochastForFit, 0.15);
+    }
+
+    void testDistributions::testTrapezoidal()
+    {
+        constexpr double margin = 0.25;
+        constexpr int number = 10000;
+
+        Stochast stochastForFit = Stochast(DistributionType::Trapezoidal, { 4.0, 5.0, 6.0, 8.0 });
+        testFit(stochastForFit, margin, number);
+
+        Stochast triangular = Stochast(DistributionType::Trapezoidal, { 4.0, 5.0, 5.0, 8.0 });
+        testFit(triangular, margin, number);
+
+        Stochast uniform = Stochast(DistributionType::Trapezoidal, { 4.0, 4.0, 8.0, 8.0 });
+        testFit(uniform, margin, number);
+
+        Stochast left = Stochast(DistributionType::Trapezoidal, { 4.0, 4.0, 4.0, 8.0 });
+        testFit(left, margin, number);
+
+        Stochast right = Stochast(DistributionType::Trapezoidal, { 4.0, 8.0, 8.0, 8.0 });
+        testFit(right, margin, number);
+
+        Stochast uneven = Stochast(DistributionType::Trapezoidal, { 0.0, 7.0, 9.0, 10.0 });
+        testFit(uneven, margin, number);
+    }
+
+    void testDistributions::testExponential()
+    {
+        Stochast stochastForFit = Stochast(DistributionType::Exponential, { 2.5 });
+        testFit(stochastForFit);
+        testInvert(stochastForFit);
+
+        stochastForFit.setInverted(true);
+        testFit(stochastForFit);
+
+        Stochast stochastForFitShift = Stochast(DistributionType::Exponential, { 2.5, 0.5 });
+        testFit(stochastForFitShift);
+        testInvert(stochastForFitShift);
+
+        stochastForFitShift.setInverted(true);
+        testFit(stochastForFitShift);
+    }
+
+    void testDistributions::testGumbel()
+    {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::Gumbel);
+        stochast.getProperties()->Scale = 2.0;
+        stochast.getProperties()->Shift = 3.0;
+
+        EXPECT_NEAR(3.0 + 2.0 * std::numbers::egamma, stochast.getMean(), 0.01);
+
+        testInvert(stochast);
+
+        testFit(stochast);
+
+        stochast.setInverted(true);
+        testFit(stochast);
+
+        Stochast stochast2 = Stochast();
+        stochast2.setDistributionType(DistributionType::Gumbel);
+
+        std::vector<double> values = { 12.18, 12.32, 12.00, 12.09, 12.25, 11.93, 12.15, 12.03, 12.04, 12.12, 12.21, 12.2, 12.12, 11.98, 12.15, 12.17 };
+        stochast2.fit(values);
+        EXPECT_NEAR(0.1, stochast2.getProperties()->Scale, 0.01);
+        EXPECT_NEAR(12.07, stochast2.getProperties()->Shift, 0.01);
+    }
+
+    void testDistributions::testFrechet()
+    {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::Frechet);
+        stochast.getProperties()->Scale = 2;
+        stochast.getProperties()->Shape = 3;
+
+        testInvert(stochast);
+
+        testFit(stochast, 1.1);
+
+        stochast.setInverted(true);
+        testFit(stochast, 1.1);
+    }
+
+    void testDistributions::testWeibull()
+    {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::Weibull);
+        stochast.getProperties()->Scale = 2.0;
+        stochast.getProperties()->Shape = 3.0;
+        stochast.getProperties()->Shift = 0.5;
+
+        testInvert(stochast);
+
+        testFit(stochast, 0.4);
+
+        stochast.setInverted(true);
+        testFit(stochast, 0.4);
+    }
+
+    void testDistributions::testGEV()
+    {
+        Stochast frechet = Stochast();
+        frechet.setDistributionType(DistributionType::GeneralizedExtremeValue);
+        frechet.getProperties()->Scale = 2.0;
+        frechet.getProperties()->Shape = 0.0;
+        frechet.getProperties()->Shift = 3.0;
+
+        testFit(frechet, 1.0);
+
+        Stochast gumbel = Stochast();
+        gumbel.setDistributionType(DistributionType::GeneralizedExtremeValue);
+        gumbel.getProperties()->Scale = 2.0;
+        gumbel.getProperties()->Shape = 0.2;
+        gumbel.getProperties()->Shift = 0.0;
+
+        testFit(gumbel, 5.0);
+
+        Stochast weibull = Stochast();
+        weibull.setDistributionType(DistributionType::GeneralizedExtremeValue);
+        weibull.getProperties()->Scale = 2.0;
+        weibull.getProperties()->Shape = -0.5;
+        weibull.getProperties()->Shift = 0.0;
+
+        testFit(weibull, 1.0);
+    }
+
+    void testDistributions::testPareto()
+    {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::Pareto);
+        stochast.getProperties()->Scale = 2.0;
+        stochast.getProperties()->Shape = 3.0;
+
+        testInvert(stochast);
+
+        testFit(stochast);
+
+        stochast.setInverted(true);
+        testFit(stochast);
+    }
+
+    void testDistributions::testGeneralizedPareto()
+    {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::GeneralizedPareto);
+
+        stochast.getProperties()->Scale = 5.0;
+        stochast.getProperties()->Shape = 1.0;
+        stochast.getProperties()->Shift = 20.0;
+
+        EXPECT_EQ(false, stochast.canFit());
+    }
+
+    void testDistributions::testRayleigh()
+    {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::Rayleigh);
+        stochast.getProperties()->Scale = 2.0;
+        stochast.getProperties()->Shift = 2.0;
+
+        testInvert(stochast);
+
+        testFit(stochast);
+
+        stochast.setInverted(true);
+        testFit(stochast);
+    }
+
+    void testDistributions::testRayleighN()
+    {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::RayleighN);
+        stochast.getProperties()->Scale = 1.1;
+        stochast.getProperties()->Shape = 2.0;
+
+        testInvert(stochast);
+
+        testFit(stochast);
+
+        stochast.setInverted(true);
+        testFit(stochast, 0.4);
+    }
+
+    void testDistributions::testBeta()
+    {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::Beta);
+        stochast.getProperties()->Shape = 3.0;
+        stochast.getProperties()->ShapeB = 4.0;
+
+        testInvert(stochast);
+
+        testFit(stochast);
+
+        stochast.setInverted(true);
+        testFit(stochast);
+    }
+
     void testDistributions::testGamma()
     {
+        Stochast stochast = Stochast();
+        stochast.setDistributionType(DistributionType::Gamma);
+        stochast.getProperties()->Scale = 2.0;
+        stochast.getProperties()->Shape = 3.0;
+
+        testInvert(stochast);
+
+        testFit(stochast);
+
+        stochast.setInverted(true);
+        testFit(stochast);
+
         constexpr double margin = 1e-12;
         auto dist = Stochast(DistributionType::Gamma, { 8.0, 4.0 });
         EXPECT_NEAR(4.0, dist.getProperties()->Shape, margin); // if shape is integer, first term in pdf is < 0 for x < 0
@@ -396,9 +596,80 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(0.00175162254855, dist.getCDF(1.0), margin);
     }
 
-    void testDistributions::testFitNormal()
+    void testDistributions::testStudentT()
+    {
+        Stochast stochastForFit = Stochast(DistributionType::StudentT, { 3.4, 1.8 });
+        stochastForFit.getProperties()->Observations = 5;
+        testFit(stochastForFit);
+
+        constexpr double margin = 1e-12;
+        auto prop = std::make_shared<StochastProperties>();
+        prop->Observations = 5;
+        prop->Scale = 1.0;
+        prop->Location = 0.0;
+        auto dist = Stochast(DistributionType::StudentT, prop);
+        EXPECT_NEAR(0.5, dist.getCDF(0.0), margin);
+        EXPECT_NEAR(0.375, dist.getPDF(0.0), margin);
+        EXPECT_NEAR(sqrt(2.0), dist.getDeviation(), margin);
+    }
+
+    void testDistributions::testStudentTwithInterpolation()
+    {
+        constexpr double margin = 1e-6;
+        auto prop = std::make_shared<StochastProperties>();
+        prop->Observations = 90;
+        prop->Scale = 1.0;
+        prop->Location = 0.0;
+        auto dist = Stochast(DistributionType::StudentT, prop);
+        EXPECT_NEAR(0.16051490, dist.getCDF(-1.0), margin);
+        EXPECT_NEAR(0.5, dist.getCDF(0.0), margin);
+        EXPECT_NEAR(0.83948510, dist.getCDF(1.0), margin);
+        EXPECT_NEAR(0.39782325, dist.getPDF(0.0), margin);
+        EXPECT_NEAR(1.01142894, dist.getDeviation(), margin);
+    }
+
+    void testDistributions::testStudentTwithInterpolationLargeNoObservations()
+    {
+        constexpr double margin = 1e-6;
+        auto prop = std::make_shared<StochastProperties>();
+        prop->Observations = 200;
+        prop->Scale = 1.0;
+        prop->Location = 0.0;
+        auto dist = Stochast(DistributionType::StudentT, prop);
+        EXPECT_NEAR(0.15953513, dist.getCDF(-1.0), margin);
+        EXPECT_NEAR(0.5, dist.getCDF(0.0), margin);
+        EXPECT_NEAR(0.84046487, dist.getCDF(1.0), margin);
+        EXPECT_NEAR(0.39844141, dist.getPDF(0.0), margin);
+        EXPECT_NEAR(1.00506332, dist.getDeviation(), margin);
+    }
+
+    void testDistributions::testComposite()
+    {
+        constexpr double margin = 1e-9;
+
+        auto prop = std::make_shared<StochastProperties>();
+        auto stochast1 = Stochast(DistributionType::Uniform, { 0.0, 8.0 });
+        auto stochast1sp = std::make_shared<Stochast>(stochast1);
+        auto contrStoc1 = std::make_shared<ContributingStochast>(0.4, stochast1sp);
+        auto stochast2 = Stochast(DistributionType::Uniform, { 6.0, 10.0 });
+        auto stochast2sp = std::make_shared<Stochast>(stochast2);
+        auto contrStoc2 = std::make_shared<ContributingStochast>(0.6, stochast2sp);
+
+        prop->ContributingStochasts.push_back(contrStoc1);
+        prop->ContributingStochasts.push_back(contrStoc2);
+        auto stochast = Stochast(DistributionType::Composite, prop);
+
+        EXPECT_NEAR(0.4 * 0.125 + 0.6 * 0, stochast.getCDF(1.0), margin);
+        EXPECT_NEAR(0.4 * 0.875 + 0.6 * 0.25, stochast.getCDF(7.0), margin);
+        EXPECT_NEAR(0.4 * 1 + 0.6 * 0.75, stochast.getCDF(9.0), margin);
+    }
+
+    void testDistributions::testNormal()
     {
         constexpr double margin = 1e-3;
+
+        Stochast stochastForFit = Stochast(DistributionType::Normal, { 5.5, 1.0 });
+        testFit(stochastForFit);
 
         std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
         stochast->setDistributionType(DistributionType::Normal);
@@ -422,9 +693,16 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(stochast->getDeviation(), 0.141, margin);
     }
 
-    void testDistributions::testFitLogNormal()
+    void testDistributions::testLogNormal()
     {
         constexpr double margin = 1e-3;
+
+        Stochast stochastForFit = Stochast(DistributionType::LogNormal, { 3.0, 1.0, 0.0 });
+        testInvert(stochastForFit);
+        testFit(stochastForFit);
+
+        stochastForFit.setInverted(true);
+        testFit(stochastForFit);
 
         std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
         stochast->setDistributionType(DistributionType::LogNormal);
@@ -478,9 +756,12 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(stochast->getProperties()->Shift, -4.4, margin);
     }
 
-    void testDistributions::testFitBernoulli()
+    void testDistributions::testBernoulli()
     {
         constexpr double margin = 1e-3;
+
+        Stochast stochastForFit = Stochast(DistributionType::Bernoulli, { 0.65 });
+        testFit(stochastForFit);
 
         std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
         stochast->setDistributionType(DistributionType::Bernoulli);
@@ -526,6 +807,98 @@ namespace Deltares::Probabilistic::Test
 
         EXPECT_EQ(1, report2.messages.size());
         EXPECT_EQ("scale value -1 is less than 0.", report2.messages[0]->Text);
+    }
+
+    void testDistributions::testFit(Statistics::Stochast& stochast, const double margin, const int number)
+    {
+        auto random = Deltares::Numeric::RandomValueGenerator();
+
+        Stochast fittedStochast;
+        fittedStochast.setDistributionType(stochast.getDistributionType());
+        fittedStochast.setInverted(stochast.isInverted());
+        fittedStochast.setTruncated(stochast.isTruncated());
+
+        std::vector<double> values(number);
+
+        for (int i = 0; i < number; i++)
+        {
+            double p = random.next();
+            double u = StandardNormal::getUFromP(p);
+            values[i] = stochast.getXFromU(u);
+        }
+
+        fittedStochast.fit(values);
+
+        if (fittedStochast.hasParameter(DistributionPropertyType::Location))
+        {
+            EXPECT_NEAR(stochast.getProperties()->Location, fittedStochast.getProperties()->Location, margin);
+        }
+        if (fittedStochast.hasParameter(DistributionPropertyType::Scale))
+        {
+            EXPECT_NEAR(stochast.getProperties()->Scale, fittedStochast.getProperties()->Scale, margin);
+        }
+        if (fittedStochast.hasParameter(DistributionPropertyType::Shift))
+        {
+            EXPECT_NEAR(stochast.getProperties()->Shift, fittedStochast.getProperties()->Shift, margin);
+        }
+        if (fittedStochast.hasParameter(DistributionPropertyType::ShiftB))
+        {
+            EXPECT_NEAR(stochast.getProperties()->ShiftB, fittedStochast.getProperties()->ShiftB, margin);
+        }
+        if (fittedStochast.hasParameter(DistributionPropertyType::Minimum))
+        {
+            EXPECT_NEAR(stochast.getProperties()->Minimum, fittedStochast.getProperties()->Minimum, margin);
+        }
+        if (fittedStochast.hasParameter(DistributionPropertyType::Maximum))
+        {
+            EXPECT_NEAR(stochast.getProperties()->Maximum, fittedStochast.getProperties()->Maximum, margin);
+        }
+        if (fittedStochast.hasParameter(DistributionPropertyType::Shape))
+        {
+            EXPECT_NEAR(stochast.getProperties()->Shape, fittedStochast.getProperties()->Shape, margin);
+        }
+        if (fittedStochast.hasParameter(DistributionPropertyType::ShapeB))
+        {
+            EXPECT_NEAR(stochast.getProperties()->ShapeB, fittedStochast.getProperties()->ShapeB, margin);
+        }
+
+        EXPECT_EQ(static_cast<int>(values.size()), fittedStochast.getProperties()->Observations);
+    }
+
+    void testDistributions::testInvert(Statistics::Stochast& stochast, const double margin)
+    {
+        std::vector<double> values = { -7, -6, -5, -4, -3, -2, -1.5, -1, -0.5, -0.1, 0, 0.1, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7 };
+
+        double shift = 0;
+        if (stochast.hasParameter(DistributionPropertyType::Shift))
+        {
+            shift = stochast.getProperties()->Shift;
+        }
+
+        for (double uu : values)
+        {
+            stochast.setInverted(false);
+
+            double x = stochast.getXFromU(uu);
+            double u = stochast.getUFromX(x);
+            double cdf = stochast.getCDF(x);
+            double pdf = stochast.getPDF(x);
+
+            stochast.setInverted(true);
+
+            double xInverted = stochast.getXFromU(-uu);
+            double uInverted = stochast.getUFromX(xInverted);
+            double cdfInverted = stochast.getCDF(xInverted);
+            double pdfInverted = stochast.getPDF(xInverted);
+
+            EXPECT_NEAR(2 * shift - x, xInverted, margin);
+            EXPECT_NEAR(-u, uInverted, margin);
+            EXPECT_NEAR(1 - cdf, cdfInverted, margin);
+            EXPECT_NEAR(pdf, pdfInverted, margin);
+        }
+
+        // reset for further tests
+        stochast.setInverted(false);
     }
 }
 

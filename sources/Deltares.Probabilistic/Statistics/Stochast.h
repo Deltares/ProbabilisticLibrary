@@ -78,7 +78,7 @@ namespace Deltares
              * \param distributionType Distribution type
              * \param values Initial values
              */
-            Stochast(DistributionType distributionType, std::vector<double> values);
+            Stochast(DistributionType distributionType, const std::vector<double>& values);
 
             /**
              * \brief Constructor with object containing the stochastic parameters
@@ -357,7 +357,7 @@ namespace Deltares
              * \param values Given set of x-values
              * \param shift If set, shift is not fitted but uses given shift parameter
              */
-            void fit(std::vector<double> values, const double shift = nan("")) const;
+            void fit(std::vector<double>& values, const double shift = nan("")) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and a prior variable
@@ -365,7 +365,7 @@ namespace Deltares
              * \param prior Prior variable
              * \param shift If set, shift is not fitted but uses given shift parameter
              */
-            void fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift = nan("")) const;
+            void fitPrior(std::vector<double>& values, std::shared_ptr<Stochast> prior, const double shift = nan("")) const;
 
             /**
              * \brief Gets a validation report which tells whether a fit operation is allowed
@@ -380,7 +380,7 @@ namespace Deltares
              * \param values Given set of x-values
              * \param weights Given weights
              */
-            void fitWeighted(std::vector<double> values, std::vector<double> weights) const;
+            void fitWeighted(const std::vector<double>& values, std::vector<double> weights) const;
 
             /**
              * \brief Fits the distribution properties from the histogram values in the properties
@@ -391,7 +391,7 @@ namespace Deltares
              * \brief Calculates the Kolmogorov-Smirnov statistic, which is an indication how well data correspond with the stochast (0 = perfect, 1 = no correspondence at all)
              * \return Kolmogorov-Smirnov statistic
              */
-            double getKSTest(std::vector<double> values) const;
+            double getKSTest(const std::vector<double>& values) const;
 
             /**
              * \brief Gets a number of interesting x-values

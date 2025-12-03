@@ -63,6 +63,7 @@ namespace Deltares
             void initializeTotals();
 
         public:
+            DesignPointBuilder() = default;
             DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet = nullptr);
             DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
 

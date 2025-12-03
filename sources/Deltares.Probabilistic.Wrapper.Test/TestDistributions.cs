@@ -234,6 +234,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Deviation = 1;
             TestFit(stochast);
 
+            stochast.Inverted = true;
+
+            TestFit(stochast);
+
+            stochast.Inverted = false;
             Stochast prior = new Stochast { DistributionType = DistributionType.LogNormal, Mean = 3, Deviation = 1 };
             stochast.FitPrior(prior, new[] { 2.5, 3.5, 4.5, 5.5, 6.5 });
             ClassicAssert.AreEqual(4.051, stochast.Mean, margin);
@@ -263,8 +268,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             // interpolation
             stochast.Observations = 91;
-            ClassicAssert.AreEqual(3 - 2 * 1.2925, stochast.GetXFromP(0.1), margin);
-            ClassicAssert.AreEqual(3 + 2 * 1.2925, stochast.GetXFromP(0.9), margin);
+            ClassicAssert.AreEqual(3 - 2 * 1.291333, stochast.GetXFromP(0.1), margin);
+            ClassicAssert.AreEqual(3 + 2 * 1.291333, stochast.GetXFromP(0.9), margin);
 
             // interpolation
             stochast.Observations = 5;
@@ -331,6 +336,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             TestInvert(stochast, true);
             TestFit(stochast);
 
+            stochast.Inverted = true;
+
+            TestFit(stochast);
+
+            stochast.Inverted = false;
             stochast.Fit(new[] { 2.5, 3.0, 3.5, 5.5, 6.5 });
             ClassicAssert.AreEqual(2.5, stochast.Scale, margin);
         }
@@ -489,6 +499,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Maximum = double.PositiveInfinity;
 
             TestFit(stochast);
+
+            stochast.Inverted = true;
+
+            TestFit(stochast);
         }
 
         [Test]
@@ -503,6 +517,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Shift = 0.5;
 
             TestInvert(stochast, true);
+            TestFit(stochast, 0.4);
+
+            stochast.Inverted = true;
+
             TestFit(stochast, 0.4);
         }
 
@@ -552,6 +570,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             TestInvert(stochast, true);
             TestFit(stochast, 1.1);
+
+            stochast.Inverted = true;
+
+            TestFit(stochast, 1.1);
         }
 
         [Test]
@@ -587,6 +609,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             TestInvert(stochast, true);
             TestFit(stochast, 1);
+
+            stochast.Inverted = true;
+
+            TestFit(stochast, 1);
         }
 
         [Test]
@@ -605,6 +631,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Shift = 2;
             stochast.Scale = 2;
             TestFit(stochast);
+
+            stochast.Inverted = true;
+
+            TestFit(stochast);
+
         }
 
         [Test]
@@ -619,6 +650,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
             TestInvert(stochast, true);
 
             TestFit(stochast);
+
+            stochast.Inverted = true;
+
+            TestFit(stochast, 0.4);
         }
 
         [Test]
@@ -630,6 +665,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             stochast.Scale = 2;
             stochast.Shape = 3;
+
+            TestFit(stochast);
+
+            stochast.Inverted = true;
 
             TestFit(stochast);
         }
@@ -670,6 +709,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(0.656, stochast.GetCDF(0.5), margin);
 
             TestFit(stochast, 0.15);
+
+            stochast.Inverted = true;
+
+            TestFit(stochast, 0.15);
         }
 
         [Test]
@@ -686,6 +729,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             TestInvert(stochast, false);
             TestFit(stochast, 0.15);
+
+            stochast.Inverted = true;
+
+            TestFit(stochast);
         }
 
         [Test]
@@ -1040,7 +1087,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
         private void TestInvert(Stochast stochast, bool useShift, double delta = 0.01)
         {
-            double center = stochast.Shift;
+            double center = useShift ? stochast.Shift : 0;
 
             ClassicAssert.IsFalse(stochast.Inverted);
 
@@ -1099,6 +1146,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             Stochast fittedStochast = new Stochast();
             fittedStochast.DistributionType = stochast.DistributionType;
+            fittedStochast.Inverted = stochast.Inverted;
+            fittedStochast.Truncated = stochast.Truncated;
 
             double[] values = new double[number];
 
