@@ -74,8 +74,8 @@ add_executable(Deltares.Probabilistic.Test
     Optimization/testCobyla_body.cpp
     Model/TestRunModel.h
     Model/TestRunModel_body.cpp
-    Proxies/testProxies.h
-    Proxies/testProxies_body.cpp
+    Proxies/TestProxies.h
+    Proxies/TestProxies_body.cpp
     Statistics/testStandardNormal.h
     Statistics/testStandardNormal_body.cpp
     Uncertainty/TestUncertainty.h
