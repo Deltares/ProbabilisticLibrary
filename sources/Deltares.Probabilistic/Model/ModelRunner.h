@@ -98,7 +98,7 @@ namespace Deltares
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
             Uncertainty::UncertaintyResult getUncertaintyResult(std::shared_ptr<Statistics::Stochast> stochast) const;
             Sensitivity::SensitivityResult getSensitivityResult() const;
-            std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample) const;
+            std::shared_ptr<Models::ModelSample> getModelSample(const std::shared_ptr<Sample>& sample) const;
             std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type) const;
             std::vector<double> getOnlyVaryingValues(std::vector<double> values);
 

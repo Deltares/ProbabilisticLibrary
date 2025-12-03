@@ -130,7 +130,7 @@ namespace Deltares
         }
 
 
-        std::shared_ptr<ModelSample> ModelRunner::getModelSample(std::shared_ptr<Sample> sample)
+        std::shared_ptr<ModelSample> ModelRunner::getModelSample(const std::shared_ptr<Sample>& sample) const
         {
             std::vector<double> xValues = this->uConverter->getXValues(sample);
 

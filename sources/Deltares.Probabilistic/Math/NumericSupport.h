@@ -76,13 +76,13 @@ namespace Deltares
              * \remark {1,2,3} + {10, 11} becomes {1,10}, {1,11}, {2,10}, {2,11}, {3,10}, {3, 11}
              */
             static std::vector<std::vector<double>> getFullFactorialCombination(std::vector<std::vector<double>>& sourceLists);
-            static double getMean(std::vector<double>& values);
-            static double getStandardDeviation(double mean, std::vector<double>& values);
-            static double getWeightedMean(std::vector<double>& values, std::vector<double>& weights);
-            static double getStandardDeviation(std::vector<double>& values);
+            static double getMean(const std::vector<double>& values);
+            static double getStandardDeviation(double mean, const std::vector<double>& values);
+            static double getWeightedMean(const std::vector<double>& values, const std::vector<double>& weights);
+            static double getStandardDeviation(const std::vector<double>& values);
             static bool any(std::vector<double>& values, std::function<bool(double)> function);
-            static std::vector<double> select(std::vector<double>& values, std::function<double(double)> function);
-            static std::vector<double> take(std::vector<double>& values, int skip, int size);
+            static std::vector<double> select(const std::vector<double>& values, std::function<double(double)> function);
+            static std::vector<double> take(const std::vector<double>& values, int skip, int size);
             static std::vector<double> zip(const std::vector<double>& values1, const std::vector<double>& values2, std::function<double(double, double)> function);
             static std::vector<double> combine(const std::vector<double>& values1, const std::vector<double>& values2);
             static double sum(const std::vector<double>& values);

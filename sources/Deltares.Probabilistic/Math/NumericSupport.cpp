@@ -666,7 +666,7 @@ namespace Deltares
             return false;
         }
 
-        std::vector<double> NumericSupport::select(std::vector<double>& values, std::function<double(double)> function)
+        std::vector<double> NumericSupport::select(const std::vector<double>& values, std::function<double(double)> function)
         {
             std::vector<double> result(values.size());
 
@@ -678,7 +678,7 @@ namespace Deltares
             return result;
         }
 
-        std::vector<double> NumericSupport::take(std::vector<double>& values, int skip, int size)
+        std::vector<double> NumericSupport::take(const std::vector<double>& values, int skip, int size)
         {
             std::vector<double> takenValues(values.begin() + skip, values.begin() + skip + size);
             return takenValues;
