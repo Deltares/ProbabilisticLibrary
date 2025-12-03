@@ -46,6 +46,8 @@ add_executable(Deltares.Probabilistic.Test
     Math/testCholeskiDecomposition_body.cpp
     Math/testKMean.h
     Math/testKMean_body.cpp
+    Math/testMatrix.h
+    Math/testMatrix_body.cpp
     Math/testMatrixInverse.h
     Math/testMatrixInverse_body.cpp
     Math/testMatrixMultiplication.h
