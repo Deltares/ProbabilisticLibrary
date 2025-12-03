@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 1, size(functionName)
+        do j = 2, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)

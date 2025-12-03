@@ -148,6 +148,8 @@
     <ClInclude Include="Model\TestRunModel_body.cpp" />
     <ClInclude Include="Reliability\testStartPointCalculator.h" />
     <ClInclude Include="Reliability\testStartPointCalculator_body.cpp" />
+    <ClInclude Include="Reliability\testWaarts.h" />
+    <ClInclude Include="Reliability\testWaarts_body.cpp" />
     <ClInclude Include="Reliability\testReliabilityMethods.h" />
     <ClInclude Include="Reliability\testReliabilityMethods_body.cpp" />
     <ClInclude Include="Uncertainty\TestUncertainty.h" />
@@ -180,6 +182,7 @@
     <ClCompile Include="projectBuilder.cpp" />
     <ClCompile Include="Model\TestRunModel.cpp" />
     <ClCompile Include="Reliability\testStartPointCalculator.cpp" />
+    <ClCompile Include="Reliability\testWaarts.cpp" />
     <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />

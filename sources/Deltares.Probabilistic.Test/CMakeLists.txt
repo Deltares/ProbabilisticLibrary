@@ -42,6 +42,8 @@ add_executable(Deltares.Probabilistic.Test
     Reliability/testStartPointCalculator_body.cpp
     Reliability/testReliabilityMethods.h
     Reliability/testReliabilityMethods_body.cpp
+    Reliability/testWaarts.h
+    Reliability/testWaarts_body.cpp
     Math/testCholeskiDecomposition.h
     Math/testCholeskiDecomposition_body.cpp
     Math/testKMean.h

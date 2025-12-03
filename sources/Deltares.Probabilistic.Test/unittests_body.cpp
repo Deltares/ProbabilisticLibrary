@@ -41,6 +41,7 @@
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
+#include "Reliability/testWaarts.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -454,5 +455,45 @@ TEST(unittst, testCobylaOptimization)
 {
     auto tstCobylaOpt = testCobyla();
     tstCobylaOpt.allCobylaTests();
+}
+
+TEST(WaartsTests, LinearResistanceFORM)
+{
+    TestWaarts::WaartsLinearResistanceFORM();
+}
+
+TEST(WaartsTests, LinearResistanceCrudeMonteCarlo)
+{
+    TestWaarts::WaartsLinearResistanceCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, LinearResistanceDirectionalSampling)
+{
+    TestWaarts::WaartsLinearResistanceDirectionalSampling();
+}
+
+TEST(WaartsTests, LinearResistanceNumericalIntegration)
+{
+    TestWaarts::WaartsLinearResistanceNumericalIntegration();
+}
+
+TEST(WaartsTests, LinearResistanceImportanceSampling)
+{
+    TestWaarts::WaartsLinearResistanceImportanceSampling();
+}
+
+TEST(WaartsTests, LinearResistanceAdaptiveImportanceSampling)
+{
+    TestWaarts::WaartsLinearResistanceAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, LinearResistanceFDIR)
+{
+    TestWaarts::WaartsLinearResistanceFDIR();
+}
+
+TEST(WaartsTests, LinearResistanceDSFI)
+{
+    TestWaarts::WaartsLinearResistanceDSFI();
 }
 
