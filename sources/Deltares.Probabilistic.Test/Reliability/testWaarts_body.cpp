@@ -22,10 +22,6 @@
 
 #include <gtest/gtest.h>
 #include "testWaarts.h"
-#include "../projectBuilder.h"
-#include "../../Deltares.Probabilistic/Model/ModelSample.h"
-#include "../../Deltares.Probabilistic/Model/ZModel.h"
-#include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 #include "../../Deltares.Probabilistic/Reliability/FORM.h"
 #include "../../Deltares.Probabilistic/Reliability/CrudeMonteCarlo.h"
 #include "../../Deltares.Probabilistic/Reliability/DirectionalSampling.h"
@@ -37,100 +33,68 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    std::shared_ptr<Models::ModelRunner> TestWaarts::WaartsLinearResistance()
+    void TestWaarts::WaartsFORM()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
-        {
-            v->Z = v->Values[0] - v->Values[1];
-            return v->Z;
-        });
-
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochast.push_back(projectBuilder::getNormalStochast(7.0, 1.0));
-        stochast.push_back(projectBuilder::getNormalStochast(2.0, 1.0));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
-    }
-
-    WaartsResult TestWaarts::ExpectedValuesLinearResistance()
-    {
-        auto expected = WaartsResult();
-        expected.beta = 3.54;
-        expected.alpha = { sqrt(0.5), -sqrt(0.5) };
-        expected.x = { 4.5, 4.5 };
-        return expected;
-    }
-
-    void TestWaarts::WaartsLinearResistanceFORM()
-    {
-        auto modelRunner = WaartsLinearResistance();
+        auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORM>();
-        auto expected = ExpectedValuesLinearResistance();
+        auto expected = ExpectedValuesFORM();
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 
-    void TestWaarts::WaartsLinearResistanceCrudeMonteCarlo()
+    void TestWaarts::WaartsCrudeMonteCarlo()
     {
-        auto modelRunner = WaartsLinearResistance();
+        auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::CrudeMonteCarlo>();
-        auto expected = ExpectedValuesLinearResistance();
-        expected.alpha_margin = 0.15;
-        expected.x_margin = 0.5;
-        expected.success = false;
+        auto expected = ExpectedValuesCrudeMonteCarlo();
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 
-    void TestWaarts::WaartsLinearResistanceDirectionalSampling()
+    void TestWaarts::WaartsDirectionalSampling()
     {
-        auto modelRunner = WaartsLinearResistance();
+        auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::DirectionalSampling>();
-        auto expected = ExpectedValuesLinearResistance();
+        auto expected = ExpectedValuesDirectionalSampling();
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 
-    void TestWaarts::WaartsLinearResistanceNumericalIntegration()
+    void TestWaarts::WaartsNumericalIntegration()
     {
-        auto modelRunner = WaartsLinearResistance();
+        auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
-        auto expected = ExpectedValuesLinearResistance();
+        auto expected = ExpectedValuesNumericalIntegration();
         expected.success = false;
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 
-    void TestWaarts::WaartsLinearResistanceImportanceSampling()
+    void TestWaarts::WaartsImportanceSampling()
     {
-        auto modelRunner = WaartsLinearResistance();
+        auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::ImportanceSampling>();
-        auto expected = ExpectedValuesLinearResistance();
-        expected.x_margin = 0.1;
-        expected.success = false;
+        auto expected = ExpectedValuesImportanceSampling();
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 
-    void TestWaarts::WaartsLinearResistanceAdaptiveImportanceSampling()
+    void TestWaarts::WaartsAdaptiveImportanceSampling()
     {
-        auto modelRunner = WaartsLinearResistance();
+        auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::AdaptiveImportanceSampling>();
-        auto expected = ExpectedValuesLinearResistance();
+        auto expected = ExpectedValuesAdaptiveImportanceSampling();
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 
-    void TestWaarts::WaartsLinearResistanceFDIR()
+    void TestWaarts::WaartsFDIR()
     {
-        auto modelRunner = WaartsLinearResistance();
+        auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORMThenDirectionalSampling>();
-        auto expected = ExpectedValuesLinearResistance();
+        auto expected = ExpectedValuesFDIR();
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 
-    void TestWaarts::WaartsLinearResistanceDSFI()
+    void TestWaarts::WaartsDSFI()
     {
-        auto modelRunner = WaartsLinearResistance();
+        auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::DirectionalSamplingThenFORM>();
-        auto expected = ExpectedValuesLinearResistance();
+        auto expected = ExpectedValuesDSFI();
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 

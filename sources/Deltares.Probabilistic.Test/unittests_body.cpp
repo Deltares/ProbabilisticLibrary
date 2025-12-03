@@ -41,7 +41,7 @@
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
-#include "Reliability/testWaarts.h"
+#include "Reliability/testWaartsLinearResistance.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -459,41 +459,49 @@ TEST(unittst, testCobylaOptimization)
 
 TEST(WaartsTests, LinearResistanceFORM)
 {
-    TestWaarts::WaartsLinearResistanceFORM();
+    auto tester = TestWaartsLinearResistance();
+    tester.WaartsFORM();
 }
 
 TEST(WaartsTests, LinearResistanceCrudeMonteCarlo)
 {
-    TestWaarts::WaartsLinearResistanceCrudeMonteCarlo();
+    auto tester = TestWaartsLinearResistance();
+    tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, LinearResistanceDirectionalSampling)
 {
-    TestWaarts::WaartsLinearResistanceDirectionalSampling();
+    auto tester = TestWaartsLinearResistance();
+    tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, LinearResistanceNumericalIntegration)
 {
-    TestWaarts::WaartsLinearResistanceNumericalIntegration();
+    auto tester = TestWaartsLinearResistance();
+    tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, LinearResistanceImportanceSampling)
 {
-    TestWaarts::WaartsLinearResistanceImportanceSampling();
+    auto tester = TestWaartsLinearResistance();
+    tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, LinearResistanceAdaptiveImportanceSampling)
 {
-    TestWaarts::WaartsLinearResistanceAdaptiveImportanceSampling();
+    auto tester = TestWaartsLinearResistance();
+    tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, LinearResistanceFDIR)
 {
-    TestWaarts::WaartsLinearResistanceFDIR();
+    auto tester = TestWaartsLinearResistance();
+    tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, LinearResistanceDSFI)
 {
-    TestWaarts::WaartsLinearResistanceDSFI();
+    auto tester = TestWaartsLinearResistance();
+    tester.WaartsDSFI();
 }
 

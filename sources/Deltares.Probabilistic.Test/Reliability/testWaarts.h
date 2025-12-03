@@ -44,18 +44,26 @@ namespace Deltares::Probabilistic::Test
     class TestWaarts
     {
     public:
-        static void WaartsLinearResistanceFORM();
-        static void WaartsLinearResistanceCrudeMonteCarlo();
-        static void WaartsLinearResistanceDirectionalSampling();
-        static void WaartsLinearResistanceNumericalIntegration();
-        static void WaartsLinearResistanceImportanceSampling();
-        static void WaartsLinearResistanceAdaptiveImportanceSampling();
-        static void WaartsLinearResistanceFDIR();
-        static void WaartsLinearResistanceDSFI();
-    private:
+        void WaartsFORM();
+        void WaartsCrudeMonteCarlo();
+        void WaartsDirectionalSampling();
+        void WaartsNumericalIntegration();
+        void WaartsImportanceSampling();
+        void WaartsAdaptiveImportanceSampling();
+        void WaartsFDIR();
+        void WaartsDSFI();
+    protected:
         static void RunSingleWaartsTest(const std::shared_ptr<Models::ModelRunner>& modelRunner,
             const std::unique_ptr<Reliability::ReliabilityMethod>& calculator, const WaartsResult& expected);
-        static std::shared_ptr<Models::ModelRunner> WaartsLinearResistance();
-        static WaartsResult ExpectedValuesLinearResistance();
+        virtual std::shared_ptr<Models::ModelRunner> WaartsModel() = 0;
+        virtual WaartsResult ExpectedValues() = 0;
+        virtual WaartsResult ExpectedValuesFORM() { return ExpectedValues(); }
+        virtual WaartsResult ExpectedValuesCrudeMonteCarlo() { return ExpectedValues(); }
+        virtual WaartsResult ExpectedValuesDirectionalSampling() { return ExpectedValues(); }
+        virtual WaartsResult ExpectedValuesNumericalIntegration() { return ExpectedValues(); }
+        virtual WaartsResult ExpectedValuesImportanceSampling() { return ExpectedValues(); }
+        virtual WaartsResult ExpectedValuesAdaptiveImportanceSampling() { return ExpectedValues(); }
+        virtual WaartsResult ExpectedValuesFDIR() { return ExpectedValues(); }
+        virtual WaartsResult ExpectedValuesDSFI() { return ExpectedValues(); }
     };
 }
