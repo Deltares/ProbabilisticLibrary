@@ -33,15 +33,9 @@ jobs:
       - run: pip install matplotlib
       - run: pdoc -o docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
 
-      # upload the artifact
-      - uses: int128/upload-artifact-wiki-action@v1
-        id: upload-artifact-wiki-action
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: docs/
-
-      #- uses: actions/upload-pages-artifact@v4
-      #  with:
-      #    path: docs/
 
   # Deploy the artifact to GitHub pages.
   # This is a separate job so that only actions/deploy-pages has the necessary permissions.
@@ -58,3 +52,14 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
 
+  deploy-wiki:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      #- uses: actions/checkout@v4
+      #- uses: actions4gh/configure-wiki@v1
+      - uses: actions4gh/deploy-wiki@v1
+        with:
+          #repository: ${{ github.repository }}.wiki
+          path: docs/
