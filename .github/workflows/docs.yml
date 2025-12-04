@@ -30,6 +30,7 @@ jobs:
       # We use a custom build script for pdoc itself, ideally you just run `pdoc -o docs/ ...` here.
       - run: pip install pdoc
       - run: pip install mermaid-python
+      - run: pip install matplotlib
       - run: pdoc -o docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
 
       - uses: actions/upload-pages-artifact@v4
