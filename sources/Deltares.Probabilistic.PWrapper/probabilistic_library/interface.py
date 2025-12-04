@@ -46,7 +46,7 @@ def LoadLibrary(lib_full_path):
 			_print_error(message)
 			raise
 	if lib == None:
-		raise FileNotFoundError("Could not find " + lib_full_path)
+		print("ERROR: Could not find " + lib_full_path)
 
 def IsLibraryLoaded():
 	return 'lib' in globals() and not lib is None
