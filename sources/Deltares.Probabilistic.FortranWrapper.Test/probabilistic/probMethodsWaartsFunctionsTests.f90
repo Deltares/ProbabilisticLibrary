@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 3, size(functionName)
+        do j = 4, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -248,65 +248,6 @@ subroutine testProbabilisticWithFunction ( )
     endif
 
     select case (waartsFunction)
-
-        case (3) ! Resistance solicitation with 1 quadratic term
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 2, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionNormal, 11.0d0, 1.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 2, distributionNormal, 1.5d0, 0.5d0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call iterateMechanism (probDb, convergenceData, zResistanceSolicitation1QuadraticTerm, probMethod, &
-                    alfa, actualBeta, x)
-
-            select case (probMethod)
-
-                case (methodNumericalIntegration)
-                    call assert_comparable(  3.455623d0, actualBeta, margin, &
-                        "Resistance solicitation with 1 quadratic term: Beta" )
-                    call assert_comparable(  0.358979d0, alfa(1), margin, &
-                        "Resistance solicitation with 1 quadratic term: Alfa(1)" )
-                    call assert_comparable( -0.9333456d0, alfa(2), margin, &
-                        "Resistance solicitation with 1 quadratic term: Alfa(2)" )
-                    block
-                        type(tError) :: ierr
-                        real(kind=wp) :: z
-                        type(computationSetting) :: idata
-                        idata%designPointSetting = -999
-                        z = zResistanceSolicitation1QuadraticTerm(x, idata, ierr)
-                        call assert_true(abs(z) < 1d-1, "small z")
-                    end block
-
-                case (methodFORM)
-                    call assert_comparable( 3.46d0, actualBeta, 0.05d0 * betaFactor, &
-                        "Resistance solicitation with 1 quadratic term: Beta" )
-                case (methodCrudeMonteCarlo)
-                    call assert_comparable( 3.47024d0, actualBeta, 1d-4, &
-                        "Resistance solicitation with 1 quadratic term: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
-                case (methodImportanceSampling)
-                    call assert_comparable( 3.439d0, actualBeta, 1d-2, &
-                        "Resistance solicitation with 1 quadratic term: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 16561, "no samples")
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
 
         case (4) ! Limit state with 10 quadratic terms
 

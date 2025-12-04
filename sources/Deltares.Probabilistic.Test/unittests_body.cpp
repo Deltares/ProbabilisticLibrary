@@ -43,6 +43,7 @@
 #include "Optimization/testCobyla.h"
 #include "Reliability/testWaartsLinearResistance.h"
 #include "Reliability/testWaartsNoisyLimitState.h"
+#include "Reliability/testWaartsResistanceOneQuadratic.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -548,4 +549,51 @@ TEST(WaartsTests, NoisyLimitStateDSFI)
     tester.WaartsDSFI();
 }
 
+TEST(WaartsTests, ResistanceOneQuadraticFORM)
+{
+    auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, ResistanceOneQuadraticCrudeMonteCarlo)
+{
+    auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, ResistanceOneQuadraticDirectionalSampling)
+{
+    auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, ResistanceOneQuadraticNumericalIntegration)
+{
+    auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsNumericalIntegration();
+}
+
+TEST(WaartsTests, ResistanceOneQuadraticImportanceSampling)
+{
+    auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, ResistanceOneQuadraticAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, ResistanceOneQuadraticFDIR)
+{
+    auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, ResistanceOneQuadraticDSFI)
+{
+    auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsDSFI();
+}
 
