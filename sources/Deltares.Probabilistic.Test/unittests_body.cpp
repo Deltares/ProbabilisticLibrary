@@ -42,6 +42,7 @@
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
 #include "Reliability/testWaartsLinearResistance.h"
+#include "Reliability/testWaartsNoisyLimitState.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -504,4 +505,47 @@ TEST(WaartsTests, LinearResistanceDSFI)
     auto tester = TestWaartsLinearResistance();
     tester.WaartsDSFI();
 }
+
+TEST(WaartsTests, NoisyLimitStateFORM)
+{
+    auto tester = TestWaartsNoisyLimitState();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, NoisyLimitStateCrudeMonteCarlo)
+{
+    auto tester = TestWaartsNoisyLimitState();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, NoisyLimitStateDirectionalSampling)
+{
+    auto tester = TestWaartsNoisyLimitState();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, NoisyLimitStateImportanceSampling)
+{
+    auto tester = TestWaartsNoisyLimitState();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, NoisyLimitStateAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsNoisyLimitState();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, NoisyLimitStateFDIR)
+{
+    auto tester = TestWaartsNoisyLimitState();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, NoisyLimitStateDSFI)
+{
+    auto tester = TestWaartsNoisyLimitState();
+    tester.WaartsDSFI();
+}
+
 

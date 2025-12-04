@@ -56,6 +56,7 @@ namespace Deltares::Probabilistic::Test
         static const bool logZtoScreen = false;
         static std::shared_ptr<Statistics::Stochast>  getDeterministicStochast(double mean = 0);
         static std::shared_ptr<Statistics::Stochast>  getNormalStochast(double mean = 0, double stddev = 1);
+        static std::shared_ptr<Statistics::Stochast>  getLogNormalStochast(double mean = 0, double stddev = 1, double shift = 0);
     private:
         void zfunc(std::shared_ptr<Models::ModelSample> sample) const;
         void zfuncWithDeterminist(std::shared_ptr<Models::ModelSample> sample) const;
@@ -68,7 +69,6 @@ namespace Deltares::Probabilistic::Test
         static void linearMultiple(std::shared_ptr<Models::ModelSample> sample);
         static void quadratic(std::shared_ptr<Models::ModelSample> sample);
 
-        static std::shared_ptr<Statistics::Stochast>  getLogNormalStochast(double mean = 0, double stddev = 1, double shift = 0);
         static std::shared_ptr<Statistics::Stochast>  getUniformStochast(double min = 0, double max = 1);
         static std::shared_ptr<Statistics::Stochast>  getTriangularStochast(double min = 0, double top = 0, double max = 1);
         static std::shared_ptr<Statistics::Stochast>  getGumbelStochast(double mean = 0, double stddev = 1);

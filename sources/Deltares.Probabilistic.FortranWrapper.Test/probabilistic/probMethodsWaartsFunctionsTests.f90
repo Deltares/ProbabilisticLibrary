@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 2, size(functionName)
+        do j = 3, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -248,106 +248,6 @@ subroutine testProbabilisticWithFunction ( )
     endif
 
     select case (waartsFunction)
-
-        case (1) ! Linear resistance solicitation
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 2, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            if (dpOption >= 0) then
-                probDb%method%DPoption = dpOption
-            endif
-
-            ! Initialize stochast data
-            call initializeStochast ( probDb, 1, distributionNormal, 7.0d0, 1.0D0, 0.0d0, 0.0d0)
-            call initializeStochast ( probDb, 2, distributionNormal, 2.0d0, 1.0d0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-            call iterateMechanism ( probDb, convergenceData, zLinearResistanceSolicitation, probMethod, alfa, actualBeta, x)
-            call updateCounter(invocationCount)
-            call cleanUpWaartsTestsFunctions
-
-            select case (probDb%method%DPoption)
-            case (designPointRMinZFunc)
-                if (probMethod == methodNumericalIntegration) then
-                    call assert_comparable(  3.56231d0, actualBeta, margin, "Linear resistance solicitation: Beta" )
-                    call assert_comparable(  0.707106781186547d0, alfa(1), margin, "Linear resistance solicitation: Alfa(1)" )
-                    call assert_comparable( -0.707106781186547d0, alfa(2), margin, "Linear resistance solicitation: Alfa(2)" )
-                else if (probMethod == methodImportanceSampling) then
-                    call assert_comparable( 3.49250d0, actualBeta, margin, "Linear resistance solicitation: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 17916, "no samples")
-                else if (probMethod < 10) then
-                    call assert_comparable( 3.54d0, actualBeta, 0.05d0 * betaFactor, "Linear resistance solicitation: Beta" )
-                endif
-            case (designPointNone)
-                call assert_comparable(  0d0, x(1), margin, "dpOption designPointNone: x(1)" )
-                call assert_comparable(  0d0, x(2), margin, "dpOption designPointNone: x(2)" )
-            case (designPointXfromU, designPointXCorrelatedFromU, designPointRMin)
-                call assert_comparable(  4.481d0, x(1), 1d-3, "dpOption designPointXfromU: x(1)" )
-                call assert_comparable(  4.519d0, x(2), 1d-3, "dpOption designPointXfromU: x(2)" )
-            end select
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (2) ! Noisy limit state
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 6, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionShiftedLogNormal2, 120.0d0, 12.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 2, distributionShiftedLogNormal2, 120.0d0, 12.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 3, distributionShiftedLogNormal2, 120.0d0, 12.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 4, distributionShiftedLogNormal2, 120.0d0, 12.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 5, distributionShiftedLogNormal2, 50.0d0, 15.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 6, distributionShiftedLogNormal2, 40.0d0, 12.0D0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call iterateMechanism (probDb, convergenceData, zNoisyLimitState, probMethod, alfa, actualBeta, x)
-
-            select case (probMethod)
-
-                case (methodNumericalIntegration)
-                    call assert_comparable(  2.16254d0, actualBeta, margin, "Noisy limit state: Beta" )
-                    call assert_comparable(  0.182574185835055d0, alfa(1), margin, "Noisy limit state: Alfa(1)" )
-                    call assert_comparable(  0.547722557505166d0, alfa(2), margin, "Noisy limit state: Alfa(2)" )
-                    call assert_comparable(  0.182574185835055d0, alfa(3), margin, "Noisy limit state: Alfa(3)" )
-                    call assert_comparable(  0.182574185835055d0, alfa(4), margin, "Noisy limit state: Alfa(4)" )
-                    call assert_comparable( -0.547722557505166d0, alfa(5), margin, "Noisy limit state: Alfa(5)" )
-                    call assert_comparable( -0.547722557505166d0, alfa(6), margin, "Noisy limit state: Alfa(6)" )
-
-                case (methodFORM)
-                    call assert_comparable( 2.348d0, actualBeta, 1d-3, "Noisy limit state: Beta" )
-                case (methodCrudeMonteCarlo)
-                    call assert_comparable( 2.23733d0, actualBeta, margin, "Noisy limit state: Beta" )
-                case (methodImportanceSampling)
-                    call assert_comparable( 2.255d0, actualBeta, 1d-2, "Noisy limit state: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 15989, "no samples")
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
 
         case (3) ! Resistance solicitation with 1 quadratic term
 

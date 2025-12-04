@@ -32,7 +32,7 @@ namespace Deltares::Probabilistic::Test
 {
     struct WaartsResult
     {
-        double beta;
+        double beta = 40.0;
         double beta_margin = 0.05;
         std::vector<double> alpha;
         double alpha_margin = 0.05;
@@ -44,14 +44,14 @@ namespace Deltares::Probabilistic::Test
     class TestWaarts
     {
     public:
-        void WaartsFORM();
-        void WaartsCrudeMonteCarlo();
-        void WaartsDirectionalSampling();
-        void WaartsNumericalIntegration();
-        void WaartsImportanceSampling();
-        void WaartsAdaptiveImportanceSampling();
-        void WaartsFDIR();
-        void WaartsDSFI();
+        virtual void WaartsFORM();
+        virtual void WaartsCrudeMonteCarlo();
+        virtual void WaartsDirectionalSampling();
+        virtual void WaartsNumericalIntegration();
+        virtual void WaartsImportanceSampling();
+        virtual void WaartsAdaptiveImportanceSampling();
+        virtual void WaartsFDIR();
+        virtual void WaartsDSFI();
     protected:
         static void RunSingleWaartsTest(const std::shared_ptr<Models::ModelRunner>& modelRunner,
             const std::unique_ptr<Reliability::ReliabilityMethod>& calculator, const WaartsResult& expected);

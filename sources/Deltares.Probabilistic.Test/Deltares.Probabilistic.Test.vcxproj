@@ -152,6 +152,8 @@
     <ClInclude Include="Reliability\testWaarts_body.cpp" />
     <ClInclude Include="Reliability\testWaartsLinearResistance.h" />
     <ClInclude Include="Reliability\testWaartsLinearResistance_body.cpp" />
+    <ClInclude Include="Reliability\testWaartsNoisyLimitState.h" />
+    <ClInclude Include="Reliability\testWaartsNoisyLimitState_body.cpp" />
     <ClInclude Include="Reliability\testReliabilityMethods.h" />
     <ClInclude Include="Reliability\testReliabilityMethods_body.cpp" />
     <ClInclude Include="Uncertainty\TestUncertainty.h" />
@@ -186,6 +188,7 @@
     <ClCompile Include="Reliability\testStartPointCalculator.cpp" />
     <ClCompile Include="Reliability\testWaarts.cpp" />
     <ClCompile Include="Reliability\testWaartsLinearResistance.cpp" />
+    <ClCompile Include="Reliability\testWaartsNoisyLimitState.cpp" />
     <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />
