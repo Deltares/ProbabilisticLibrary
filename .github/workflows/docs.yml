@@ -61,5 +61,5 @@ jobs:
       #- uses: actions4gh/configure-wiki@v1
       - uses: actions4gh/deploy-wiki@v1
         with:
-          #repository: ${{ github.repository }}.wiki
+          repository: ${{ github.repository }}.wiki
           path: docs/
