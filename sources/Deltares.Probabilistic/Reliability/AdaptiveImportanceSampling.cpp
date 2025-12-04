@@ -22,11 +22,7 @@
 #include "AdaptiveImportanceSampling.h"
 
 #include <vector>
-
-#if __has_include(<format>)
 #include <format>
-#endif
-
 #include <memory>
 
 #include "../Model/Sample.h"
@@ -128,11 +124,7 @@ namespace Deltares
                             importanceSampling->Settings->MaximumSamplesNoResult = Settings->importanceSamplingSettings->MaximumSamplesNoResult;
                         }
 
-#ifdef __cpp_lib_format
                         std::string identifier = std::format("Variance loop {0:}", loopCounter - 1);
-#else
-                        std::string identifier = "Variance loop" + std::to_string(loopCounter - 1);
-#endif
                         designPoint->Identifier = identifier;
 
                         previousDesignPoints.push_back(designPoint);
@@ -386,11 +378,7 @@ namespace Deltares
             {
                 modelRunner->reportMessage(Logging::MessageType::Info, "Cluster = (" + Numeric::NumericSupport::ConvertToString(center->Values, ", ") + ")");
             }
-#ifdef __cpp_lib_format
             auto text = std::format("Calculating variance loop #{0:}.", loopCounter);
-#else
-            auto text = "Calculating variance loop " + std::to_string(loopCounter) + ".";
-#endif
             modelRunner->doTextualProgress(ProgressType::Global, text);
         }
 
