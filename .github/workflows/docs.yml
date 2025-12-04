@@ -19,6 +19,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - run: mkdir -p /tmp/wiki/
+    
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: /tmp/wiki
+    
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
@@ -31,35 +38,33 @@ jobs:
       - run: pip install pdoc
       - run: pip install mermaid-python
       - run: pip install matplotlib
-      - run: pdoc -o docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
+      - run: pdoc -o /tmp/wiki/docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
 
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: docs/
+      - name: Push to wiki
+        run: |
+          cd /tmp/wiki
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add .
+          git commit -m "docs: Added new file"
+          git push      
+
+      #- uses: actions/upload-pages-artifact@v4
+      #  with:
+      #    path: docs/
 
   # Deploy the artifact to GitHub pages.
   # This is a separate job so that only actions/deploy-pages has the necessary permissions.
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+  #deploy:
+  #  needs: build
+  #  runs-on: ubuntu-latest
+  #  permissions:
+  #    pages: write
+  #    id-token: write
+  #  environment:
+  #    name: github-pages
+  #    url: ${{ steps.deployment.outputs.page_url }}
+  #  steps:
+  #    - id: deployment
+  #      uses: actions/deploy-pages@v4
 
-  deploy-wiki:
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      #- uses: actions/checkout@v4
-      #- uses: actions4gh/configure-wiki@v1
-      - uses: actions4gh/deploy-wiki@v1
-        with:
-          repository: ${{ github.repository }}.wiki
-          path: docs/
