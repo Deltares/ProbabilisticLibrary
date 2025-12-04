@@ -19,12 +19,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: mkdir -p /tmp/wiki/
+      - run: mkdir -p tmp/wiki/
     
       - uses: actions/checkout@v3
         with:
           repository: ${{ github.repository }}.wiki
-          path: /tmp/wiki
+          path: tmp/wiki
     
       - uses: actions/checkout@v6
         with:
@@ -38,11 +38,11 @@ jobs:
       - run: pip install pdoc
       - run: pip install mermaid-python
       - run: pip install matplotlib
-      - run: pdoc -o /tmp/wiki/docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
+      - run: pdoc -o tmp/wiki/docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
 
       - name: Push to wiki
         run: |
-          cd /tmp/wiki
+          cd tmp/wiki
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
           git add .
