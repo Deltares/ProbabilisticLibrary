@@ -31,11 +31,11 @@ jobs:
       - run: pip install pdoc
       - run: pip install mermaid-python
       - run: pip install matplotlib
-      - run: pdoc -o docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
+      - run: pdoc -o ${{github.repository}}.wiki/docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
 
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: docs/
+      #- uses: actions/upload-pages-artifact@v4
+      #  with:
+      #    path: docs/
 
   # Deploy the artifact to GitHub pages.
   # This is a separate job so that only actions/deploy-pages has the necessary permissions.
@@ -51,3 +51,4 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
