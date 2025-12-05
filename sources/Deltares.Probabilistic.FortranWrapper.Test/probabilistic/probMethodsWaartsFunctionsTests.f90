@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 7, size(functionName)
+        do j = 8, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -293,64 +293,6 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
                     call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (7) ! Oblate spheroid
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 11, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionDeterministic, 10.0d0, 0.5D0, 0.0d0, 0.0d0)
-
-            do i = 1, 10
-                call initializeStochast (probDb, i + 1, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-            end do
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            probDb%method%FORM%startMethod = fORMStartSensitivity
-
-            ! Perform computation numberIterations times
-            call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-            call iterateMechanism (probDb, convergenceData, zOblateSpheroid, probMethod, alfa, actualBeta, x)
-            call updateCounter(invocationCount)
-            call cleanUpWaartsTestsFunctions
-
-            select case (probMethod)
-                case ( methodFORM )
-                    call assert_comparable( 3.37d0, actualBeta, 0.15d0 * betaFactor, "Oblate spheroid: Beta" )
-
-                case ( methodNumericalIntegration )
-                    call assert_comparable( 0.56649404_wp, actualBeta, margin, "Oblate spheroid: Beta" )
-                    call assert_almost_zero( alfa(1), margin, "Oblate spheroid: Alfa(1)" )
-                    call assert_comparable( 1.0d0, alfa(2), margin, "Oblate spheroid: Alfa(2)" )
-                    call assert_almost_zero( alfa(3), margin, "Oblate spheroid: Alfa(3)" )
-                    call assert_almost_zero( alfa(4), margin, "Oblate spheroid: Alfa(4)" )
-                    call assert_almost_zero( alfa(5), margin, "Oblate spheroid: Alfa(5)" )
-                    call assert_almost_zero( alfa(6), margin, "Oblate spheroid: Alfa(6)" )
-                    call assert_almost_zero( alfa(7), margin, "Oblate spheroid: Alfa(7)" )
-                    call assert_almost_zero( alfa(8), margin, "Oblate spheroid: Alfa(8)" )
-                    call assert_almost_zero( alfa(9), margin, "Oblate spheroid: Alfa(9)" )
-                    call assert_almost_zero( alfa(10), margin, "Oblate spheroid: Alfa(10)" )
-                    call assert_almost_zero( alfa(11), margin, "Oblate spheroid: Alfa(11)" )
-
-                case (methodImportanceSampling)
-                    call assert_comparable( 1.09d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 41997, "no samples")
-
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select

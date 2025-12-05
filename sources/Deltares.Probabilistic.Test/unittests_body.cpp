@@ -47,6 +47,7 @@
 #include "Reliability/testWaartsResistanceTenQuadraticTerms.h"
 #include "Reliability/testWaartsResistance25QuadraticTerms.h"
 #include "Reliability/testWaartsConvexFailureDomain.h"
+#include "Reliability/testWaartsOblateSpheroid.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -729,6 +730,48 @@ TEST(WaartsTests, ConvexFailureDomainFDIR)
 TEST(WaartsTests, ConvexFailureDomainDSFI)
 {
     auto tester = TestWaartsConvexFailureDomain();
+    tester.WaartsDSFI();
+}
+
+TEST(WaartsTests, OblateSpheroidFORM)
+{
+    auto tester = TestWaartsOblateSpheroid();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, OblateSpheroidCrudeMonteCarlo)
+{
+    auto tester = TestWaartsOblateSpheroid();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, OblateSpheroidDirectionalSampling)
+{
+    auto tester = TestWaartsOblateSpheroid();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, OblateSpheroidImportanceSampling)
+{
+    auto tester = TestWaartsOblateSpheroid();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, OblateSpheroidAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsOblateSpheroid();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, OblateSpheroidFDIR)
+{
+    auto tester = TestWaartsOblateSpheroid();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, OblateSpheroidDSFI)
+{
+    auto tester = TestWaartsOblateSpheroid();
     tester.WaartsDSFI();
 }
 

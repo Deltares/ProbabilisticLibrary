@@ -56,6 +56,8 @@ add_executable(Deltares.Probabilistic.Test
     Reliability/testWaartsNoisyLimitState_body.cpp
     Reliability/testWaartsConvexFailureDomain.h
     Reliability/testWaartsConvexFailureDomain_body.cpp
+    Reliability/testWaartsOblateSpheroid.h
+    Reliability/testWaartsOblateSpheroid_body.cpp
     Math/testCholeskiDecomposition.h
     Math/testCholeskiDecomposition_body.cpp
     Math/testKMean.h
