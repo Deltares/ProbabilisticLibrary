@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 4, size(functionName)
+        do j = 5, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -248,61 +248,6 @@ subroutine testProbabilisticWithFunction ( )
     endif
 
     select case (waartsFunction)
-
-        case (4) ! Limit state with 10 quadratic terms
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 11, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionNormal, 0.5d0, 0.1D0, 0.0d0, 0.0d0)
-
-            do i = 1, 10
-              call initializeStochast (probDb, i + 1, distributionNormal, 0.2d0, 0.1d0, 0.0d0, 0.0d0)
-            end do
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Perform computation numberIterations times
-            call iterateMechanism( probDb, convergenceData, zLimitState10QuadraticTerms, probMethod, alfa, actualBeta, x)
-
-            select case(probMethod)
-                case ( methodFORM )
-                    ! Compare to the value given by Paul Waarts
-                    call assert_comparable( 3.20d0, actualBeta, 0.05d0 * betaFactor, "Limit state with 10 quadratic terms: Beta" )
-
-                case ( methodNumericalINtegration )
-                    call assert_comparable(  2.3146639d0, actualBeta, margin, "Limit state with 10 quadratic terms: Beta" )
-                    call assert_comparable(  0.707106781186547d0, alfa(1), margin, "Limit state with 10 quadratic terms: Alfa(1)" )
-                    call assert_almost_zero( alfa(2), margin, "Limit state with 10 quadratic terms: Alfa(2)" )
-                    call assert_almost_zero( alfa(3), margin, "Limit state with 10 quadratic terms: Alfa(3)" )
-                    call assert_almost_zero( alfa(4), margin, "Limit state with 10 quadratic terms: Alfa(4)" )
-                    call assert_comparable( -0.707106781186548d0, alfa(5), margin, "Limit state with 10 quadratic terms: Alfa(5)" )
-                    call assert_almost_zero( alfa(6), margin, "Limit state with 10 quadratic terms: Alfa(6)" )
-                    call assert_almost_zero( alfa(7), margin, "Limit state with 10 quadratic terms: Alfa(7)" )
-                    call assert_almost_zero( alfa(8), margin, "Limit state with 10 quadratic terms: Alfa(8)" )
-                    call assert_almost_zero( alfa(9), margin, "Limit state with 10 quadratic terms: Alfa(9)" )
-                    call assert_almost_zero( alfa(10), margin, "Limit state with 10 quadratic terms: Alfa(10)" )
-                    call assert_almost_zero( alfa(11), margin, "Limit state with 10 quadratic terms: Alfa(11)" )
-
-                case (methodImportanceSampling)
-                    call assert_comparable( 3.00290d0, actualBeta, 1d-5, "Limit state with 10 quadratic terms: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
-
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
 
         case (5, 14) ! Limit state with 25 quadratic terms
 

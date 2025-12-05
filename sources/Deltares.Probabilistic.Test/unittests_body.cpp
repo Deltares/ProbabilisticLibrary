@@ -44,6 +44,7 @@
 #include "Reliability/testWaartsLinearResistance.h"
 #include "Reliability/testWaartsNoisyLimitState.h"
 #include "Reliability/testWaartsResistanceOneQuadratic.h"
+#include "Reliability/testWaartsResistanceTenQuadraticTerms.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -594,6 +595,48 @@ TEST(WaartsTests, ResistanceOneQuadraticFDIR)
 TEST(WaartsTests, ResistanceOneQuadraticDSFI)
 {
     auto tester = TestWaartsResistanceOneQuadratic();
+    tester.WaartsDSFI();
+}
+
+TEST(WaartsTests, ResistanceTenQuadraticTermsFORM)
+{
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, ResistanceeTenQuadraticTermsCrudeMonteCarlo)
+{
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, ResistanceeTenQuadraticTermsDirectionalSampling)
+{
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, ResistanceeTenQuadraticTermsImportanceSampling)
+{
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, ResistanceeTenQuadraticTermsAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, ResistanceeTenQuadraticTermsFDIR)
+{
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, ResistanceeTenQuadraticTermsDSFI)
+{
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsDSFI();
 }
 
