@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 5, size(functionName)
+        do j = 6, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -249,30 +249,18 @@ subroutine testProbabilisticWithFunction ( )
 
     select case (waartsFunction)
 
-        case (5, 14) ! Limit state with 25 quadratic terms
+        case (14) ! Limit state with 25 quadratic terms
 
             ! Initialization of mechanism
-            if (waartsFunction == 5) then
-                call initializeCalculation (probDb, 26, alfa, x)
-                probDb%method%DS%iterationMethod = methodDS
+            call initializeCalculation (probDb, 30, alfa, x)
+            probDb%method%DS%iterationMethod = methodDS
 
-                ! Initialize stochast data
-                call initializeStochast (probDb, 1, distributionNormal, 0.5d0, 0.1D0, 0.0d0, 0.0d0)
+            ! Initialize stochast data
+            call initializeStochast (probDb, 30, distributionNormal, 0.5d0, 0.1D0, 0.0d0, 0.0d0)
 
-                do i = 1, 25
-                    call initializeStochast (probDb, i + 1, distributionNormal, 0.2d0, 0.1d0, 0.0d0, 0.0d0)
-                end do
-            else
-                call initializeCalculation (probDb, 30, alfa, x)
-                probDb%method%DS%iterationMethod = methodDS
-
-                ! Initialize stochast data
-                call initializeStochast (probDb, 30, distributionNormal, 0.5d0, 0.1D0, 0.0d0, 0.0d0)
-
-                do i = 1, 25
-                    call initializeStochast (probDb, i + 2, distributionNormal, 0.2d0, 0.1d0, 0.0d0, 0.0d0)
-                end do
-            endif
+            do i = 1, 25
+                call initializeStochast (probDb, i + 2, distributionNormal, 0.2d0, 0.1d0, 0.0d0, 0.0d0)
+            end do
 
             ! Initialize random generator
             probDb%method%IS%seedPRNG  = 1
@@ -288,16 +276,12 @@ subroutine testProbabilisticWithFunction ( )
             probDb%method%AdaptiveIS%minFailed = 10
 
             ! Perform computation numberIterations times
-            if (waartsFunction == 5) then
-                call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTerms, probMethod, alfa, actualBeta, x)
-            else
-                x = 0.0_wp
-                call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-                call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTermsSparse, &
-                        probMethod, alfa, actualBeta, x)
-                call updateCounter(invocationCount)
-                call cleanUpWaartsTestsFunctions
-            endif
+            x = 0.0_wp
+            call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
+            call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTermsSparse, &
+                    probMethod, alfa, actualBeta, x)
+            call updateCounter(invocationCount)
+            call cleanUpWaartsTestsFunctions
 
             select case (probMethod)
                 case (methodFORM)
@@ -305,18 +289,10 @@ subroutine testProbabilisticWithFunction ( )
                 case (methodDirectionalSampling)
                     call assert_comparable( 2.63d0, actualBeta, 0.05d0 * betaFactor, trim(waartsFunctionName) // ": Beta" )
                 case (methodImportanceSampling)
-                    if (waartsFunction == 5) then
-                        call assert_comparable( 2.662158d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
-                    else
-                        call assert_comparable( 2.5525d0, actualBeta, 1d-4, trim(waartsFunctionName) // ": Beta" )
-                    end if
+                    call assert_comparable( 2.5525d0, actualBeta, 1d-4, trim(waartsFunctionName) // ": Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
-                    if (waartsFunction == 5) then
-                        call assert_comparable( 2.95d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    else
-                        call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    end if
+                    call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select

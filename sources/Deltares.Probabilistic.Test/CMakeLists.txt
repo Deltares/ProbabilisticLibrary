@@ -50,6 +50,8 @@ add_executable(Deltares.Probabilistic.Test
     Reliability/testWaartsResistanceOneQuadratic_body.cpp
     Reliability/testWaartsResistanceTenQuadraticTerms.h
     Reliability/testWaartsResistanceTenQuadraticTerms_body.cpp
+    Reliability/testWaartsResistance25QuadraticTerms.h
+    Reliability/testWaartsResistance25QuadraticTerms_body.cpp
     Reliability/testWaartsNoisyLimitState.h
     Reliability/testWaartsNoisyLimitState_body.cpp
     Math/testCholeskiDecomposition.h

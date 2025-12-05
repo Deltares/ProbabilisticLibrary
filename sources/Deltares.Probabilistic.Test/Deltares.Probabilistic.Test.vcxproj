@@ -156,6 +156,8 @@
     <ClInclude Include="Reliability\testWaartsResistanceOneQuadratic_body.cpp" />
     <ClInclude Include="Reliability\testWaartsResistanceTenQuadraticTerms.h" />
     <ClInclude Include="Reliability\testWaartsResistanceTenQuadraticTerms_body.cpp" />
+    <ClInclude Include="Reliability\testWaartsResistance25QuadraticTerms.h" />
+    <ClInclude Include="Reliability\testWaartsResistance25QuadraticTerms_body.cpp" />
     <ClInclude Include="Reliability\testWaartsNoisyLimitState.h" />
     <ClInclude Include="Reliability\testWaartsNoisyLimitState_body.cpp" />
     <ClInclude Include="Reliability\testReliabilityMethods.h" />
@@ -194,6 +196,7 @@
     <ClCompile Include="Reliability\testWaartsLinearResistance.cpp" />
     <ClCompile Include="Reliability\testWaartsResistanceOneQuadratic.cpp" />
     <ClCompile Include="Reliability\testWaartsResistanceTenQuadraticTerms.cpp" />
+    <ClCompile Include="Reliability\testWaartsResistance25QuadraticTerms.cpp" />
     <ClCompile Include="Reliability\testWaartsNoisyLimitState.cpp" />
     <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />

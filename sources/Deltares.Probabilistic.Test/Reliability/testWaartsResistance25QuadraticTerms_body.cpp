@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 
-#include "testWaartsResistanceTenQuadraticTerms.h"
+#include "testWaartsResistance25QuadraticTerms.h"
 #include "../projectBuilder.h"
 #include "../../Deltares.Probabilistic/Model/ModelSample.h"
 #include "../../Deltares.Probabilistic/Model/ZModel.h"
@@ -28,9 +28,9 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    std::shared_ptr<Models::ModelRunner> TestWaartsResistanceTenQuadraticTerms::WaartsModel()
+    std::shared_ptr<Models::ModelRunner> TestWaartsResistance25QuadraticTerms::WaartsModel()
     {
-        constexpr int numberOfQuadraticTerms = 10;
+        constexpr int numberOfQuadraticTerms = 25;
         auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
         {
 
@@ -56,54 +56,58 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValues()
+    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValues()
     {
         auto expected = WaartsResult();
-        expected.beta = 3.20;
-        expected.alpha = { 0.757538, -0.586958, -0.20787, -0.125312, -0.0896262, -0.0697503, -0.0570874, -0.0483151, -0.0418794, -0.0369565 , -0.0330692 };
+        expected.beta = 2.92;
+        expected.alpha = { 0.771, -0.564, -0.207, -0.126, -0.090, -0.070, -0.058, -0.049, -0.042, -0.037, -0.0335, -0.030, -0.028, -0.026 };
+        while (expected.alpha.size() < 26)
+        {
+            expected.alpha.push_back(-0.02);
+        }
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesCrudeMonteCarlo()
     {
         auto expected = ExpectedValues();
-        expected.beta = 3.04;
-        expected.alpha = { 0.679947, -0.622061, -0.165165, -0.0979174, -0.201122, 0.00966454, -0.0959883, -0.08764, -0.0737432, -0.0224048, -0.224647 };
+        expected.beta = 2.67;
+        expected.alpha.clear();
+        expected.success = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesDirectionalSampling()
+    {
+        auto expected = ExpectedValues();
+        expected.beta = 2.64;
         expected.alpha_margin = 0.1;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesDirectionalSampling()
+    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesImportanceSampling()
     {
         auto expected = ExpectedValues();
-        expected.beta = 2.98;
-        expected.alpha_margin = 0.1;
+        expected.beta = 2.61;
+        expected.alpha.clear();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesAdaptiveImportanceSampling()
     {
         auto expected = ExpectedValues();
-        expected.beta = 2.98;
-        expected.alpha_margin = 0.1;
+        expected.beta = 2.56;
+        expected.alpha_margin = 0.2;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesDSFI()
     {
         auto expected = ExpectedValues();
-        expected.beta = 2.95;
-        expected.success = false;
-        return expected;
-    }
-
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesDSFI()
-    {
-        auto expected = ExpectedValues();
-        expected.beta = 2.98;
+        expected.beta = 2.64;
         expected.success = false;
         return expected;
     }

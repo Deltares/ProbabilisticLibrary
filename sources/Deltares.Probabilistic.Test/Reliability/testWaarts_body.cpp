@@ -109,10 +109,10 @@ namespace Deltares::Probabilistic::Test
         {
             std::cout << "DesignPoint:" << std::endl;
             std::cout << "Beta = " << designPoint->Beta << std::endl;
-        }
-        for (size_t i = 0; i < designPoint->Alphas.size(); i++)
-        {
-            std::cout << "Alpha: " << i << " , " << designPoint->Alphas[i]->Alpha << std::endl;
+            for (size_t i = 0; i < designPoint->Alphas.size(); i++)
+            {
+                std::cout << "Alpha: " << i << " , " << designPoint->Alphas[i]->Alpha << std::endl;
+            }
         }
         if (!expected.alpha.empty())
         {
