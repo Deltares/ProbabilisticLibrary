@@ -26,7 +26,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class TestWaartsResistanceOneQuadratic : public TestWaarts
+    class TestWaartsResistanceOneQuadraticTerm : public TestWaarts
     {
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
         WaartsResult ExpectedValues() override;

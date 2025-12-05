@@ -43,7 +43,7 @@
 #include "Optimization/testCobyla.h"
 #include "Reliability/testWaartsLinearResistance.h"
 #include "Reliability/testWaartsNoisyLimitState.h"
-#include "Reliability/testWaartsResistanceOneQuadratic.h"
+#include "Reliability/testWaartsResistanceOneQuadraticTerm.h"
 #include "Reliability/testWaartsResistanceTenQuadraticTerms.h"
 #include "Reliability/testWaartsResistance25QuadraticTerms.h"
 
@@ -553,49 +553,49 @@ TEST(WaartsTests, NoisyLimitStateDSFI)
 
 TEST(WaartsTests, ResistanceOneQuadraticFORM)
 {
-    auto tester = TestWaartsResistanceOneQuadratic();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, ResistanceOneQuadraticCrudeMonteCarlo)
 {
-    auto tester = TestWaartsResistanceOneQuadratic();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, ResistanceOneQuadraticDirectionalSampling)
 {
-    auto tester = TestWaartsResistanceOneQuadratic();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, ResistanceOneQuadraticNumericalIntegration)
 {
-    auto tester = TestWaartsResistanceOneQuadratic();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, ResistanceOneQuadraticImportanceSampling)
 {
-    auto tester = TestWaartsResistanceOneQuadratic();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, ResistanceOneQuadraticAdaptiveImportanceSampling)
 {
-    auto tester = TestWaartsResistanceOneQuadratic();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, ResistanceOneQuadraticFDIR)
 {
-    auto tester = TestWaartsResistanceOneQuadratic();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, ResistanceOneQuadraticDSFI)
 {
-    auto tester = TestWaartsResistanceOneQuadratic();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsDSFI();
 }
 

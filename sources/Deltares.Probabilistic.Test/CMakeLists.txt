@@ -46,8 +46,8 @@ add_executable(Deltares.Probabilistic.Test
     Reliability/testWaarts_body.cpp
     Reliability/testWaartsLinearResistance.h
     Reliability/testWaartsLinearResistance_body.cpp
-    Reliability/testWaartsResistanceOneQuadratic.h
-    Reliability/testWaartsResistanceOneQuadratic_body.cpp
+    Reliability/testWaartsResistanceOneQuadraticTerm.h
+    Reliability/testWaartsResistanceOneQuadraticTerm_body.cpp
     Reliability/testWaartsResistanceTenQuadraticTerms.h
     Reliability/testWaartsResistanceTenQuadraticTerms_body.cpp
     Reliability/testWaartsResistance25QuadraticTerms.h

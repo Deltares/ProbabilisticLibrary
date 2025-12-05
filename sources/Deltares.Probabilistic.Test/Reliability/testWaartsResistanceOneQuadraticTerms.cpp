@@ -20,5 +20,5 @@
 // All rights reserved.
 //
 #include "pch.h"
-#include "testWaartsResistanceOneQuadratic_body.cpp"
+#include "testWaartsResistanceOneQuadraticTerm_body.cpp"
 

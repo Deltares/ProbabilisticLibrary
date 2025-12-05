@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 
-#include "testWaartsResistanceOneQuadratic.h"
+#include "testWaartsResistanceOneQuadraticTerm.h"
 #include "../projectBuilder.h"
 #include "../../Deltares.Probabilistic/Model/ModelSample.h"
 #include "../../Deltares.Probabilistic/Model/ZModel.h"
@@ -28,7 +28,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    std::shared_ptr<Models::ModelRunner> TestWaartsResistanceOneQuadratic::WaartsModel()
+    std::shared_ptr<Models::ModelRunner> TestWaartsResistanceOneQuadraticTerm::WaartsModel()
     {
         auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
         {
@@ -46,7 +46,7 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsResistanceOneQuadratic::ExpectedValues()
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::ExpectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 3.45;
@@ -56,7 +56,7 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceOneQuadratic::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::ExpectedValuesCrudeMonteCarlo()
     {
         auto expected = ExpectedValues();
         expected.alpha.clear();
@@ -65,7 +65,7 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceOneQuadratic::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::ExpectedValuesImportanceSampling()
     {
         auto expected = ExpectedValues();
         expected.success = false;
