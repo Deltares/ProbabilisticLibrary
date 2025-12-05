@@ -27,11 +27,6 @@
 #include "../Model/ModelSample.h"
 #include "../Model/ZModel.h"
 
-namespace Deltares::Numeric
-{
-    class vector1D;
-}
-
 namespace Deltares::Proxies
 {
     /**
@@ -44,7 +39,6 @@ namespace Deltares::Proxies
          * \brief Trains the proxy method for one particular output value
          * \param trainingSamples Samples which are used for training
          * \param proxyValues Values to be proxied
-         * \param name Name of the output parameter
          */
         ProxyCoefficient trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples,
                                     std::vector<double> proxyValues) override;
