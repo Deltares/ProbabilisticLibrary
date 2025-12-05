@@ -94,8 +94,8 @@ namespace Deltares
 
         double DistributionFitter::getSumLogLikelihood(const std::vector<double>& values, StochastProperties& stochast) const
         {
-            double prevLog = NAN;
-            double prevX = NAN;
+            double prevLog = std::nan("");
+            double prevX = std::nan("");
 
             double sum = 0;
 
@@ -108,11 +108,7 @@ namespace Deltares
                 else
                 {
                     double log = distributionObj->getLogLikelihood(stochast, x);
-                    if (std::isnan(log))
-                    {
-                        return log;
-                    }
-                    else
+                    if (!std::isnan(log))
                     {
                         prevX = x;
                         prevLog = log;

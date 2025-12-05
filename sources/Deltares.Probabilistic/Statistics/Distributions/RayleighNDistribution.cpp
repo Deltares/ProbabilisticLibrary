@@ -174,14 +174,29 @@ namespace Deltares
 
             auto fitter = DistributionFitter();
 
-            std::vector minValues = { 0.5 * stochast.Scale, 0.5 * stochast.Shift, 0.5 };
-            std::vector maxValues = { 1.5 * stochast.Scale, 1.5 * stochast.Shift, 1.5 };
-            std::vector properties = { Scale, Shift, Shape};
-            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+            if (std::isnan(shift))
+            {
+                std::vector minValues = { 0.5 * stochast.Scale, 0.5, 0.5 * stochast.Shift };
+                std::vector maxValues = { 1.5 * stochast.Scale, 1.5, 1.5 * stochast.Shift };
+                std::vector properties = { Scale, Shape, Shift };
+                std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
 
-            stochast.Scale = std::max(0.0, parameters[0]);
-            stochast.Shift = parameters[1];
-            stochast.Shape = std::max(0.0, parameters[2]);
+                stochast.Scale = std::max(0.0, parameters[0]);
+                stochast.Shape = std::max(0.0, parameters[1]);
+                stochast.Shift = parameters[2];
+            }
+            else
+            {
+                stochast.Shift = shift;
+
+                std::vector minValues = { 0.5 * stochast.Scale, 0.5 };
+                std::vector maxValues = { 1.5 * stochast.Scale, 1.5 };
+                std::vector properties = { Scale, Shape };
+                std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+
+                stochast.Scale = std::max(0.0, parameters[0]);
+                stochast.Shape = std::max(0.0, parameters[1]);
+            }
             stochast.Observations = static_cast<int>(values.size());
         }
 
