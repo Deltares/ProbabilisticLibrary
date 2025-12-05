@@ -19,6 +19,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - run: mkdir -p tmp/wiki/
+    
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: tmp/wiki
+    
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
@@ -30,6 +37,7 @@ jobs:
       # We use a custom build script for pdoc itself, ideally you just run `pdoc -o docs/ ...` here.
       - run: pip install pdoc
       - run: pip install mermaid-python
+      - run: pip install matplotlib
       - run: pdoc -o docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
 
       - uses: actions/upload-pages-artifact@v4
@@ -50,3 +58,4 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
