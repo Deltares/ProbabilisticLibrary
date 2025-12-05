@@ -327,7 +327,7 @@ namespace Deltares
 
                 qv_matrices.push_back(qv);
 
-                // z = qv[k] * z1
+                // calculate matrix product z = qv[k] * z1
                 z = qv.matmul(z1);
             }
 

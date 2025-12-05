@@ -66,19 +66,20 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<ModelRunner> projectBuilder::BuildLinearOutputOnlyProject()
     {
-        auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linearOutputOnly(v); });
-        z->zValueConverter = std::make_shared<Deltares::Models::DefaultValueConverter>();
-        auto stochast = std::vector<std::shared_ptr<Stochast>>();
-        auto dist = DistributionType::Uniform;
-        std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Stochast> s(new Stochast(dist, params));
-        stochast.push_back(s);
-        stochast.push_back(s);
-        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
-        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+        auto zModel = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> sample) { return linearOutputOnly(sample); });
+        zModel->zValueConverter = std::make_shared<Deltares::Models::DefaultValueConverter>();
+
+        auto stochasts = std::vector<std::shared_ptr<Stochast>>();
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double> { -1.0, 1.0 });
+        stochasts.push_back(stochast);
+        stochasts.push_back(stochast);
+
+        std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>();
+        std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(stochasts, correlationMatrix);
         uConverter->initializeForRun();
-        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
-        return m;
+
+        std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(zModel, uConverter);
+        return modelRunner;
     }
 
     std::shared_ptr<ModelRunner> projectBuilder::BuildLinearOutputProject()

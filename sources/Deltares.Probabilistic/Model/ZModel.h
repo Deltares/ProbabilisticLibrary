@@ -44,17 +44,11 @@ namespace Deltares
         class ZModel
         {
         public:
-            ZModel()
-            {
-                this->zLambda = nullptr;
-                this->zMultipleLambda = nullptr;
-            }
+            virtual ~ZModel() = default;
+            ZModel() {}
 
-            ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
-            {
-                this->zLambda = zLambda;
-                this->zMultipleLambda = zMultipleLambda;
-                callbackAssigned = this->zLambda != nullptr;
+            ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr) :
+                zLambda(zLambda), zMultipleLambda(zMultipleLambda), callbackAssigned(zLambda != nullptr) {
             }
 
             ZModel(ZValuesCallBack zValuesLambda, ZValuesMultipleCallBack zValuesMultipleLambda = nullptr)
@@ -124,21 +118,21 @@ namespace Deltares
             /**
              * \brief Calculates a sample
              */
-            virtual void invoke(std::shared_ptr<ModelSample> sample);
+            virtual void invoke(const std::shared_ptr<ModelSample>& sample);
 
             /**
              * \brief Calculates a number of samples
              */
-            virtual void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
+            virtual void invoke(const std::vector<std::shared_ptr<ModelSample>>& samples);
 
             double getBeta(std::shared_ptr<ModelSample> sample, double beta);
 
-            bool canCalculateBeta()
+            bool canCalculateBeta() const
             {
                 return this->zBetaLambda != nullptr;
             }
 
-            int getModelRuns()
+            int getModelRuns() const
             {
                 return modelRuns;
             }
@@ -163,7 +157,7 @@ namespace Deltares
              * \param report Report in which the validity is reported
              * \param subject String describing the validated object
              */
-            void validate(Logging::ValidationReport& report, const std::string& subject) const;
+            virtual void validate(Logging::ValidationReport& report, const std::string& subject) const;
 
             /**
              * \brief Indicates whether the model has been assigned with a valid callback

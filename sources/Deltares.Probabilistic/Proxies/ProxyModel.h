@@ -38,10 +38,7 @@ namespace Deltares::Proxies
     {
     public:
 
-        ProxyModel(const std::shared_ptr<Models::ZModel>& model)
-        {
-            this->model = model;
-        }
+        ProxyModel(const std::shared_ptr<Models::ZModel>& model) : model(model) {}
 
         /**
          * \brief Proxy settings
@@ -55,18 +52,18 @@ namespace Deltares::Proxies
 
         /**
          * \brief Sets the underlying model
-         * \param model The underlying model
+         * \param zModel The underlying model
          */
-        void setModel(const std::shared_ptr<Models::ZModel>& model)
+        void setModel(const std::shared_ptr<Models::ZModel>& zModel)
         {
-            this->model = model;
+            this->model = zModel;
         }
 
         /**
          * \brief Sets the converter
          * \param converter Converter to be set
          */
-        void setConverter(std::shared_ptr<Models::UConverter> converter)
+        void setConverter(const std::shared_ptr<Models::UConverter>& converter)
         {
             this->uConverter = converter;
         }
@@ -89,18 +86,19 @@ namespace Deltares::Proxies
         /**
          * \brief Calculates a sample
          */
-        void invoke(std::shared_ptr<Models::ModelSample> sample) override;
+        void invoke(const std::shared_ptr<Models::ModelSample>& sample) override;
 
         /**
          * \brief Calculates a number of samples
          */
-        void invoke(std::vector<std::shared_ptr<Models::ModelSample>> samples) override;
+        void invoke(const std::vector<std::shared_ptr<Models::ModelSample>>& samples) override;
 
         /**
          * \brief Reports whether these settings have valid values
          * \param report Report in which the validity is reported
+         * \param subject String describing the validated object
          */
-        void validate(Logging::ValidationReport& report) const;
+        void validate(Logging::ValidationReport& report, const std::string& subject) const override;
 
     private:
 

@@ -123,7 +123,7 @@ namespace Deltares::Proxies
         /**
          * \brief Gets the u-value corresponding to a qualitative value
          */
-        double GetQualitativeValue(QualitativeValue qualitativeValue)
+        double GetQualitativeValue(QualitativeValue qualitativeValue) const
         {
             switch (qualitativeValue)
             {

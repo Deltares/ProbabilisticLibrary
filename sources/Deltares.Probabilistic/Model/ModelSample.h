@@ -113,7 +113,8 @@ namespace Deltares
              * \param function Operation on a sample
              * \return Resulting numeric values
              */
-            static std::vector<double> select(std::vector<std::shared_ptr<ModelSample>>& samples, std::function<double(std::shared_ptr<ModelSample>)> function)
+            using SampleFunction = std::function<double(std::shared_ptr<ModelSample>)>;
+            static std::vector<double> select(const std::vector<std::shared_ptr<ModelSample>>& samples, const SampleFunction& function)
             {
                 std::vector<double> result(samples.size());
 

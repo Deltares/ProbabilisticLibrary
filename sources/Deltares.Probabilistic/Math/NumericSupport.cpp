@@ -29,6 +29,7 @@
 #else
 #include "../Utils/probLibString.h"
 #endif
+#include <algorithm>
 #include <sstream>
 
 #include "Constants.h"
@@ -651,19 +652,6 @@ namespace Deltares
             double mean = getMean(values);
 
             return getStandardDeviation(mean, values);
-        }
-
-        bool NumericSupport::any(std::vector<double>& values, std::function<bool(double)> function)
-        {
-            for (double value : values)
-            {
-                if (function(value))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         std::vector<double> NumericSupport::select(const std::vector<double>& values, std::function<double(double)> function)

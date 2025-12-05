@@ -41,7 +41,7 @@ namespace Deltares::Proxies
          * \param sample Sample for which the model results will be calculated
          * \param proxyCoefficients The coefficients needed for the proxy to calculate the output values
          */
-        virtual void invoke(std::shared_ptr<Models::ModelSample>& sample, ProxyCoefficients& proxyCoefficients);
+        virtual void invoke(const std::shared_ptr<Models::ModelSample>& sample, ProxyCoefficients& proxyCoefficients);
 
         /**
          * \brief Trains the proxy method

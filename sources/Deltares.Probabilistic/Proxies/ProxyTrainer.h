@@ -34,7 +34,6 @@ namespace Deltares::Proxies
     class ProxyTrainer
     {
     public:
-
         /**
          * \brief Trains the proxy method
          * \returns Collection with training samples
@@ -55,11 +54,11 @@ namespace Deltares::Proxies
 
         /**
          * \brief Sets the settings
-         * \param settings Settings to be set
+         * \param newSettings Settings to be set
          */
-        void SetSettings(const ProxySettings& settings)
+        void SetSettings(const ProxySettings& newSettings)
         {
-            this->settings = settings;
+            this->settings = newSettings;
         }
 
     protected:

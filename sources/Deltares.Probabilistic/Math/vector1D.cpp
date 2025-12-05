@@ -202,7 +202,7 @@ namespace Deltares
             }
         }
 
-        double vector1D::norm()
+        double vector1D::norm() const
         {
             return sqrt(sumOfSquares());
         }

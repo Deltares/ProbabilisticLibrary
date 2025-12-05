@@ -25,7 +25,7 @@
 
 namespace Deltares::Proxies
 {
-    void ProxyMethod::invoke(std::shared_ptr<Models::ModelSample>& sample, ProxyCoefficients& proxyCoefficients)
+    void ProxyMethod::invoke(const std::shared_ptr<Models::ModelSample>& sample, ProxyCoefficients& proxyCoefficients)
     {
         size_t outputSize = proxyCoefficients.coefficients.size();
         sample->OutputValues = std::vector<double>(outputSize);
@@ -61,20 +61,20 @@ namespace Deltares::Proxies
             std::vector<double> proxyValues = Models::ModelSample::select(
                 trainingSamples, [index](std::shared_ptr<Models::ModelSample> p) { return p->OutputValues[index]; });
 
-            if (!Numeric::NumericSupport::any(proxyValues, [](double x) {return !Numeric::NumericSupport::isValidValue(x); }))
+            if (std::ranges::all_of(proxyValues, [](double x) {return Numeric::NumericSupport::isValidValue(x); }))
             {
                 proxyCoefficients.coefficients.push_back(trainValue(trainingSamples, proxyValues));
             }
             else
             {
-                proxyCoefficients.coefficients.push_back(ProxyCoefficient());
+                proxyCoefficients.coefficients.emplace_back();
             }
         }
 
         std::vector<double> zValues = Models::ModelSample::select(
             trainingSamples, [](std::shared_ptr<Models::ModelSample> p) { return p->Z; });
 
-        if (!Numeric::NumericSupport::any(zValues, [](double x) {return !Numeric::NumericSupport::isValidValue(x); }))
+        if (std::ranges::all_of(zValues, [](double x) {return Numeric::NumericSupport::isValidValue(x); }))
         {
             proxyCoefficients.zCoefficients = trainValue(trainingSamples, zValues);
         }

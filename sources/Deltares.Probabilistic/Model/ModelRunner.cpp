@@ -445,7 +445,7 @@ namespace Deltares
                 auto text = std::format("{}/{}", step, maxSteps);
                 if (!std::isnan(reliability) || !std::isnan(convergence))
                 {
-                    text = text + std::format(", Reliability = {:.3f}, Convergence = {:.3f}", reliability, convergence);
+                    text = std::format("{}, Reliability = {:.3f}, Convergence = {:.3f}", text, reliability, convergence);
                 }
 #else
                 auto text = std::to_string(step) + "/" + std::to_string(maxSteps);

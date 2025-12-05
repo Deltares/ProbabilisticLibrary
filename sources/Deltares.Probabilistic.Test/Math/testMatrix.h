@@ -21,19 +21,13 @@
 //
 #pragma once
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class matrix_tests
     {
-        namespace Test
-        {
-            class matrix_tests
-            {
-            public:
-                void qr_decomposition();
-                void linear_equations();
-                void linear_equations_overdetermined();
-            };
-        }
-    }
+    public:
+        void qr_decomposition() const;
+        void linear_equations() const;
+        void linear_equations_overdetermined() const;
+    };
 }

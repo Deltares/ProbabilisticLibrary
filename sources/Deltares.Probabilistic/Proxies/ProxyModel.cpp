@@ -21,6 +21,8 @@
 //
 #include "ProxyModel.h"
 
+#include <any>
+
 #include "LinearProxyMethod.h"
 #include "ProxyTrainer.h"
 #include "SingleProxyTrainer.h"
@@ -79,7 +81,7 @@ namespace Deltares::Proxies
         }
     }
 
-    void ProxyModel::invoke(std::shared_ptr<Models::ModelSample> sample)
+    void ProxyModel::invoke(const std::shared_ptr<Models::ModelSample>& sample)
     {
         if (sample->AllowProxy)
         {
@@ -93,19 +95,9 @@ namespace Deltares::Proxies
         }
     }
 
-    void ProxyModel::invoke(std::vector<std::shared_ptr<Models::ModelSample>> samples)
+    void ProxyModel::invoke(const std::vector<std::shared_ptr<Models::ModelSample>>& samples)
     {
-        bool allowAnyProxy = false;
-        for (auto& sample : samples)
-        {
-            if (sample->AllowProxy)
-            {
-                allowAnyProxy = true;
-                break;
-            }
-        }
-
-        if (allowAnyProxy)
+        if (std::ranges::any_of(samples, [](const auto& sample) { return sample->AllowProxy; }))
         {
             for (const auto& sample : samples)
             {
@@ -118,7 +110,7 @@ namespace Deltares::Proxies
         }
     }
 
-    void ProxyModel::validate(Logging::ValidationReport& report) const
+    void ProxyModel::validate(Logging::ValidationReport& report, const std::string& subject) const
     {
         settings->validate(report);
     }
