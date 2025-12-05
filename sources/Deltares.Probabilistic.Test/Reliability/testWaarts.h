@@ -39,6 +39,7 @@ namespace Deltares::Probabilistic::Test
         std::vector<double> x;
         double x_margin = 0.05;
         bool success = true;
+        bool printResults = false;
     };
 
     class TestWaarts

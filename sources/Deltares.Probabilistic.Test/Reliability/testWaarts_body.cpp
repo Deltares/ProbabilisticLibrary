@@ -21,6 +21,7 @@
 //
 
 #include <gtest/gtest.h>
+#include <iostream>
 #include "testWaarts.h"
 #include "../../Deltares.Probabilistic/Reliability/FORM.h"
 #include "../../Deltares.Probabilistic/Reliability/CrudeMonteCarlo.h"
@@ -104,6 +105,15 @@ namespace Deltares::Probabilistic::Test
         auto designPoint = calculator->getDesignPoint(modelRunner);
         ASSERT_FALSE(designPoint == nullptr);
         EXPECT_NEAR(expected.beta, designPoint->Beta, expected.beta_margin);
+        if (expected.printResults)
+        {
+            std::cout << "DesignPoint:" << std::endl;
+            std::cout << "Beta = " << designPoint->Beta << std::endl;
+        }
+        for (size_t i = 0; i < designPoint->Alphas.size(); i++)
+        {
+            std::cout << "Alpha: " << i << " , " << designPoint->Alphas[i]->Alpha << std::endl;
+        }
         if (!expected.alpha.empty())
         {
             ASSERT_EQ(expected.alpha.size(), designPoint->Alphas.size());
