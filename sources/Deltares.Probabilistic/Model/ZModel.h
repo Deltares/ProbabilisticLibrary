@@ -44,11 +44,12 @@ namespace Deltares
         class ZModel
         {
         public:
-            virtual ~ZModel() = default;
-            ZModel() {}
+            ZModel() = default;
 
-            ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr) :
-                zLambda(zLambda), zMultipleLambda(zMultipleLambda), callbackAssigned(zLambda != nullptr) {
+            explicit ZModel(const ZLambda& zLambda, const ZMultipleLambda& zMultipleLambda = nullptr) :
+                zLambda(zLambda), zMultipleLambda(zMultipleLambda)
+            {
+                callbackAssigned = zLambda != nullptr;
             }
 
             ZModel(ZValuesCallBack zValuesLambda, ZValuesMultipleCallBack zValuesMultipleLambda = nullptr)

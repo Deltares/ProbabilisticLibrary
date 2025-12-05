@@ -44,26 +44,14 @@ namespace Deltares::Proxies
         }
 
         /**
-         * \brief Sets the converter
-         * \param converter Converter to be set
+         * \brief Converter from u-values to x-values 
          */
-        void SetConverter(const std::shared_ptr<Models::UConverter>& converter)
-        {
-            this->uConverter = converter;
-        }
+        std::shared_ptr<Models::UConverter> uConverter = nullptr;
 
         /**
-         * \brief Sets the settings
-         * \param newSettings Settings to be set
+         * \brief Settings for training
          */
-        void SetSettings(const ProxySettings& newSettings)
-        {
-            this->settings = newSettings;
-        }
-
-    protected:
         ProxySettings settings;
-        std::shared_ptr<Models::UConverter> uConverter = nullptr;
     };
 }
 

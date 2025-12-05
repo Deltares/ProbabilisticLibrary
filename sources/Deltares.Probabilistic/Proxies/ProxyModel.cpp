@@ -38,7 +38,7 @@ namespace Deltares::Proxies
         if (this->trainingSamples.empty())
         {
             std::unique_ptr<ProxyTrainer> proxyTrainer = getProxyTrainer();
-            proxyTrainer->SetConverter(this->uConverter);
+            proxyTrainer->uConverter = this->uConverter;
 
             std::vector<std::shared_ptr<Models::ModelSample>> initialSamples = proxyTrainer->getTrainingSet();
 

@@ -191,7 +191,7 @@ namespace Deltares
         class QRMatrix
         {
         public:
-            QRMatrix(Matrix q_matrix, Matrix r_matrix) noexcept : Q(std::move(q_matrix)), R(std::move(r_matrix)) {}
+            QRMatrix(const Matrix& q_matrix, const Matrix& r_matrix) noexcept : Q(q_matrix), R(r_matrix) {}
             Numeric::vector1D solve(const Numeric::vector1D& target) const;
             Matrix getProduct() const { return Q.matmul(R); }
 

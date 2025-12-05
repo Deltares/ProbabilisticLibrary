@@ -38,7 +38,7 @@ namespace Deltares::Proxies
     {
     public:
 
-        ProxyModel(const std::shared_ptr<Models::ZModel>& model) : model(model) {}
+        explicit ProxyModel(const std::shared_ptr<Models::ZModel>& model) : model(model) {}
 
         /**
          * \brief Proxy settings
