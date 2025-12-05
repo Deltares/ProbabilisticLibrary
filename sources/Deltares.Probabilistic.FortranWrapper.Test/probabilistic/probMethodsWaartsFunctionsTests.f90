@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 6, size(functionName)
+        do j = 7, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -293,51 +293,6 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
                     call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (6) ! Convex failure domain
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 2, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 2, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call iterateMechanism (probDb, convergenceData, zConvexFailureDomain, probMethod, alfa, actualBeta, x)
-
-            select case (probMethod)
-                case (methodFORM)
-                    ! We need to compare to the correct estimate for the method, not the exact value
-                    call assert_comparable( 2.50d0, actualBeta, 0.05d0 * betaFactor, "Convex failure domain: Beta" )
-
-                case (methodNumericalIntegration)
-                    call assert_comparable(  2.63526752586810d0, actualBeta, margin, "Convex failure domain: Beta" )
-                    call assert_comparable( -0.687199853876083d0, alfa(1), margin, "Convex failure domain: Alfa(1)" )
-                    call assert_comparable( -0.726468416954716d0, alfa(2), margin, "Convex failure domain: Alfa(2)" )
-
-                case (methodDirectionalSampling)
-                    call assert_comparable( 2.70532d0, actualBeta, 0.05d0 * betaFactor, "Convex failure domain: Beta" )
-
-                case (methodImportanceSampling)
-                    call assert_comparable( 2.641218d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 5552, "no samples")
-
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select

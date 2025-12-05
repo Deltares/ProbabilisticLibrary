@@ -46,6 +46,7 @@
 #include "Reliability/testWaartsResistanceOneQuadraticTerm.h"
 #include "Reliability/testWaartsResistanceTenQuadraticTerms.h"
 #include "Reliability/testWaartsResistance25QuadraticTerms.h"
+#include "Reliability/testWaartsConvexFailureDomain.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -680,6 +681,54 @@ TEST(WaartsTests, Resistancee25QuadraticTermsFDIR)
 TEST(WaartsTests, Resistancee25QuadraticTermsDSFI)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
+    tester.WaartsDSFI();
+}
+
+TEST(WaartsTests, ConvexFailureDomainFORM)
+{
+    auto tester = TestWaartsConvexFailureDomain();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, ConvexFailureDomainCrudeMonteCarlo)
+{
+    auto tester = TestWaartsConvexFailureDomain();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, ConvexFailureDomainDirectionalSampling)
+{
+    auto tester = TestWaartsConvexFailureDomain();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, ConvexFailureDomainNumericalIntegration)
+{
+    auto tester = TestWaartsConvexFailureDomain();
+    tester.WaartsNumericalIntegration();
+}
+
+TEST(WaartsTests, ConvexFailureDomainImportanceSampling)
+{
+    auto tester = TestWaartsConvexFailureDomain();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, ConvexFailureDomainAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsConvexFailureDomain();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, ConvexFailureDomainFDIR)
+{
+    auto tester = TestWaartsConvexFailureDomain();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, ConvexFailureDomainDSFI)
+{
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsDSFI();
 }
 
