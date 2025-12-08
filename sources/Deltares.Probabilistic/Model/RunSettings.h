@@ -24,7 +24,6 @@
 
 #include "../Logging/ValidationReport.h"
 #include "../Logging/ValidationSupport.h"
-#include "ProxySettings.h"
 
 namespace Deltares
 {
@@ -52,21 +51,9 @@ namespace Deltares
             Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
             bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
-            std::shared_ptr<ProxySettings> proxySettings = nullptr;
-
             void validate(Logging::ValidationReport& report) const
             {
                 Logging::ValidationSupport::checkMinimumInt(report, 1, MaxParallelProcesses, "max parallel processes");
-            }
-
-            bool IsProxyModel()
-            {
-                bool isProxyModel = false;
-                if (proxySettings.get() != nullptr)
-                {
-                    isProxyModel = proxySettings->IsProxyModel;
-                }
-                return isProxyModel;
             }
         };
     }

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <cmath>
+#include <functional>
 #include <vector>
 #include <memory>
 
@@ -104,6 +105,25 @@ namespace Deltares
                 }
 
                 return true;
+            }
+
+            /**
+             * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
+             * \param samples Collection of samples
+             * \param function Operation on a sample
+             * \return Resulting numeric values
+             */
+            template <std::predicate<std::shared_ptr<ModelSample> const&> SampleFunction>
+            static std::vector<double> select(const std::vector<std::shared_ptr<ModelSample>>& samples, const SampleFunction& function)
+            {
+                std::vector<double> result(samples.size());
+
+                for (size_t i = 0; i < samples.size(); i++)
+                {
+                    result[i] = function(samples[i]);
+                }
+
+                return result;
             }
         };
     }

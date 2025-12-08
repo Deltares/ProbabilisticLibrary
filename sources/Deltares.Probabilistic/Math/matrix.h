@@ -29,6 +29,8 @@ namespace Deltares
 {
     namespace Numeric
     {
+        class QRMatrix;
+
         /**
          * \brief Class for a matrix of doubles
          */
@@ -157,6 +159,17 @@ namespace Deltares
              */
             size_t getColumnCount() const { return this->m_columns; }
 
+            /**
+             * Gets an identity matrix
+             */
+            static Matrix identity(size_t n);
+
+            /**
+             * Brief Performs QR factorization
+             * @return Q and R matrix
+             */
+            QRMatrix qr_decompose() const;
+
         private:
             size_t pos(size_t row, size_t column) const
             {
@@ -167,9 +180,23 @@ namespace Deltares
                 return row * m_columns + column;
             }
 
+            Matrix compute_minor(size_t d) const;
+            vector1D extract_column(size_t column_index) const;
+
             std::vector<double> m_data;
             size_t m_rows;
             size_t m_columns;
+        };
+
+        class QRMatrix
+        {
+        public:
+            QRMatrix(const Matrix& q_matrix, const Matrix& r_matrix) noexcept : Q(q_matrix), R(r_matrix) {}
+            Numeric::vector1D solve(const Numeric::vector1D& target) const;
+            Matrix getProduct() const { return Q.matmul(R); }
+
+            Matrix Q;
+            Matrix R;
         };
     }
 }

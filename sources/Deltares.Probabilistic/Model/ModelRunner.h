@@ -35,11 +35,17 @@
 #include "UConverter.h"
 #include "ZModel.h"
 #include "../Logging/Message.h"
+#include "../Proxies/ProxySettings.h"
 #include "ModelSample.h"
 #include "ProgressIndicator.h"
 #include "../Uncertainty/CorrelationMatrixBuilder.h"
 #include "../Uncertainty/UncertaintyResult.h"
 #include "../Sensitivity/SensitivityResult.h"
+
+namespace Deltares::Proxies
+{
+    class ProxyModel;
+}
 
 namespace Deltares
 {
@@ -65,11 +71,13 @@ namespace Deltares
             }
 
             std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
+            std::shared_ptr<Proxies::ProxySettings> ProxySettings = std::make_shared<Proxies::ProxySettings>();
 
             void initializeForRun();
             void clear();
             void clearLists();
             void releaseCallBacks();
+            void useProxy(bool useProxy);
             void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
             void setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider);
             double getZValue(std::shared_ptr<Sample> sample);
@@ -90,7 +98,7 @@ namespace Deltares
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
             Uncertainty::UncertaintyResult getUncertaintyResult(std::shared_ptr<Statistics::Stochast> stochast) const;
             Sensitivity::SensitivityResult getSensitivityResult() const;
-            std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample) const;
+            std::shared_ptr<Models::ModelSample> getModelSample(const std::shared_ptr<Sample>& sample) const;
             std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type) const;
             std::vector<double> getOnlyVaryingValues(std::vector<double> values);
 
@@ -111,6 +119,7 @@ namespace Deltares
             std::shared_ptr<ZModel> zModel;
             std::shared_ptr<UConverter> uConverter;
             int runDesignPointCounter = 1;
+            bool usingProxy = false;
             std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
             std::vector<std::shared_ptr<Evaluation>> evaluations;
             std::vector< std::shared_ptr<Logging::Message>> messages;

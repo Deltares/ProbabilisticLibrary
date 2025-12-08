@@ -20,30 +20,27 @@
 // All rights reserved.
 //
 #pragma once
+#include <vector>
 
-#include "../Logging/ValidationReport.h"
-#include "../Logging/ValidationSupport.h"
+#include "ProxyTrainer.h"
+#include "../Model/ModelSample.h"
+#include "../Model/ZModel.h"
 
-namespace Deltares
+namespace Deltares::Proxies
 {
-    namespace Models
+    /**
+     * \brief Combines a proxy model and settings
+     */
+    class SingleProxyTrainer : public ProxyTrainer
     {
-        class ProxySettings
-        {
-        public:
-            bool IsProxyModel = false;
-            bool IsUpdatableProxyModel = false;
-            bool ShouldUpdateFinalSteps = false;
-            double ThresholdOffset = 0;
+    public:
 
-            void validate(Logging::ValidationReport& report) const
-            {
-                if (IsProxyModel)
-                {
-                    Logging::ValidationSupport::checkMinimum(report, 0, ThresholdOffset, "threshold offset");
-                }
-            }
-        };
-    }
+        /**
+         * \brief Trains the proxy method
+         * \returns Collection with training samples
+         */
+        std::vector<std::shared_ptr<Models::ModelSample>> getTrainingSet() override;
+    };
 }
+
 

@@ -49,7 +49,7 @@ namespace Deltares::Reliability
 
         z = std::isnan(resultRootFinder.X) ? nan("") : resultRootFinder.Value;
 
-        if ( ! modelRunner.Settings->IsProxyModel())
+        if ( ! modelRunner.ProxySettings->IsProxyModel)
         {
             // non-proxy models are ready now
             return resultRootFinder.X;
@@ -62,8 +62,8 @@ namespace Deltares::Reliability
                 [directionCalculation](double v) { return directionCalculation.GetZ(v); });
         }
 
-        const auto ThresholdOffset = modelRunner.Settings->proxySettings->ThresholdOffset;
-        if (modelRunner.Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, resultRootFinder.X, this->Threshold))
+        const auto ThresholdOffset = modelRunner.ProxySettings->ThresholdOffset;
+        if (modelRunner.ProxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, resultRootFinder.X, this->Threshold))
         {
             directionCalculation.uDirection.AllowProxy = false;
 

@@ -378,8 +378,7 @@ namespace Deltares
                 calculator.Settings->runSettings->MaxParallelProcesses = 1;
                 calculator.Settings->DirectionSettings->modelVaryingType = varyingType;
                 calculator.Settings->DirectionSettings->Dsdu = dsdu;
-                modelRunner->Settings->proxySettings = std::make_shared<ProxySettings>();
-                modelRunner->Settings->proxySettings->IsProxyModel = useProxy;
+                modelRunner->ProxySettings->IsProxyModel = useProxy;
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 

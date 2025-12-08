@@ -202,9 +202,14 @@ namespace Deltares
             }
         }
 
+        double vector1D::norm() const
+        {
+            return sqrt(sumOfSquares());
+        }
+
         void vector1D::normalize()
         {
-            double s = sqrt(sumOfSquares());
+            double s = norm();
             if (s > 0.0)
             {
                 double r = 1.0 / s;

@@ -150,7 +150,7 @@ namespace Deltares
             this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
         }
 
-        void ZModel::invoke(std::shared_ptr<ModelSample> sample)
+        void ZModel::invoke(const std::shared_ptr<ModelSample>& sample)
         {
             std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
 
@@ -225,11 +225,11 @@ namespace Deltares
             }
         }
 
-        void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
+        void ZModel::invoke(const std::vector<std::shared_ptr<ModelSample>>& samples)
         {
             std::vector<std::shared_ptr<ModelSample>> executeSamples;
 
-            for (std::shared_ptr<ModelSample> sample : samples)
+            for (const std::shared_ptr<ModelSample>& sample : samples)
             {
                 std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
 

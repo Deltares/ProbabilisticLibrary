@@ -21,29 +21,19 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Math/matrix.h"
+#include "../../Deltares.Probabilistic/Model/ModelRunner.h"
+#include "../../Deltares.Probabilistic/Model/Sample.h"
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class TestProxies
     {
-        namespace Test
-        {
-            class matinv_tests
-            {
-            public:
-                void all_matinv_tests() const;
-            private:
-                void matinv_test1() const;
-                void matinv_singular_test() const;
-                void positive_definite_tests() const;
+    public:
+        void testLinearModel() const;
+        void testLinearOutputOnlyModel() const;
+    private:
+        const double margin = 0.001;
+        void testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::Sample> sample) const;
+    };
+};
 
-                Deltares::Numeric::Matrix get3x3posDefiniteMatrix() const;
-                Deltares::Numeric::Matrix get2x2singularMatrix() const;
-                Deltares::Numeric::Matrix get2x2symmetrixMatrix() const;
-                Deltares::Numeric::Matrix get16x16Matrix() const;
-                const double margin = 1e-12;
-            };
-        }
-    }
-}

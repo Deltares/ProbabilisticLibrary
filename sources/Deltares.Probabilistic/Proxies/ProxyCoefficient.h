@@ -21,29 +21,31 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Math/matrix.h"
+#include "../Math/vector1D.h"
 
-namespace Deltares
+namespace Deltares::Proxies
 {
-    namespace Probabilistic
+    /**
+     * \brief Coefficients of a proxy model for a certain output parameter of a model
+     */
+    class ProxyCoefficient
     {
-        namespace Test
-        {
-            class matinv_tests
-            {
-            public:
-                void all_matinv_tests() const;
-            private:
-                void matinv_test1() const;
-                void matinv_singular_test() const;
-                void positive_definite_tests() const;
+    public:
+        /**
+         * \brief Name of the output parameter
+         */
+        std::string name;
 
-                Deltares::Numeric::Matrix get3x3posDefiniteMatrix() const;
-                Deltares::Numeric::Matrix get2x2singularMatrix() const;
-                Deltares::Numeric::Matrix get2x2symmetrixMatrix() const;
-                Deltares::Numeric::Matrix get16x16Matrix() const;
-                const double margin = 1e-12;
-            };
-        }
-    }
+        /**
+         * \brief Indicates whether the coefficients are valid
+         */
+        bool valid = false;
+
+        /**
+         * \brief Coefficients which are used by a proxy method to generate the output value of a sample
+         */
+        Numeric::vector1D coefficients;
+    };
 }
+
+
