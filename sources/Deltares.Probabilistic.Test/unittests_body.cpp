@@ -608,37 +608,37 @@ TEST(WaartsTests, ResistanceTenQuadraticTermsFORM)
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, ResistanceeTenQuadraticTermsCrudeMonteCarlo)
+TEST(WaartsTests, ResistanceTenQuadraticTermsCrudeMonteCarlo)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, ResistanceeTenQuadraticTermsDirectionalSampling)
+TEST(WaartsTests, ResistanceTenQuadraticTermsDirectionalSampling)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, ResistanceeTenQuadraticTermsImportanceSampling)
+TEST(WaartsTests, ResistanceTenQuadraticTermsImportanceSampling)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, ResistanceeTenQuadraticTermsAdaptiveImportanceSampling)
+TEST(WaartsTests, ResistanceTenQuadraticTermsAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, ResistanceeTenQuadraticTermsFDIR)
+TEST(WaartsTests, ResistanceTenQuadraticTermsFDIR)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, ResistanceeTenQuadraticTermsDSFI)
+TEST(WaartsTests, ResistanceTenQuadraticTermsDSFI)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsDSFI();
@@ -650,37 +650,37 @@ TEST(WaartsTests, Resistance25QuadraticTermsFORM)
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, Resistancee25QuadraticTermsCrudeMonteCarlo)
+TEST(WaartsTests, Resistance25QuadraticTermsCrudeMonteCarlo)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, Resistancee25QuadraticTermsDirectionalSampling)
+TEST(WaartsTests, Resistance25QuadraticTermsDirectionalSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, Resistancee25QuadraticTermsImportanceSampling)
+TEST(WaartsTests, Resistance25QuadraticTermsImportanceSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, Resistancee25QuadraticTermsAdaptiveImportanceSampling)
+TEST(WaartsTests, Resistance25QuadraticTermsAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, Resistancee25QuadraticTermsFDIR)
+TEST(WaartsTests, Resistance25QuadraticTermsFDIR)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, Resistancee25QuadraticTermsDSFI)
+TEST(WaartsTests, Resistance25QuadraticTermsDSFI)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsDSFI();
