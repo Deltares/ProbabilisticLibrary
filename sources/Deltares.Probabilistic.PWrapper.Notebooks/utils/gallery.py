@@ -1,4 +1,5 @@
 from probabilistic_library import Stochast, DistributionType, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, ConditionalValue
+from probabilistic_library import ReliabilityProject, DistributionType, ReliabilityMethod, StartMethod
 
 cells = []
 lines = []
@@ -30,13 +31,9 @@ def new_line():
 
 lines.append('1. Distribution functions:')
 
-import matplotlib.pyplot as plt
-
-#plt.figure(figsize=(1,1))
+start_table()
 
 # overview distribution functions
-
-start_table()
 
 header = 'overview distribution functions'
 notebook = 'overview_distribution_functions'
@@ -139,6 +136,40 @@ new_line()
 lines.append('2. Distribution functions:')
 
 lines.append('3. Reliability analysis of a single component:')
+
+start_table()
+
+# FORM simple calculations
+
+from models import linear_a_b
+
+header = 'FORM simple calculations'
+notebook = 'FORM_simple_correlations'
+
+project = ReliabilityProject()
+project.model = linear_a_b
+
+project.variables["a"].distribution = DistributionType.uniform
+project.variables["a"].minimum = -1
+project.variables["a"].maximum = 1
+
+project.variables["b"].distribution = DistributionType.uniform
+project.variables["b"].minimum = -1
+project.variables["b"].maximum = 1
+
+project.settings.reliability_method = ReliabilityMethod.form
+project.settings.relaxation_factor = 0.15
+project.settings.maximum_iterations = 50
+project.settings.epsilon_beta = 0.01
+
+project.correlation_matrix["a", "b"] = 0.8
+project.run()
+
+plot = project.design_point.get_plot_alphas()
+
+create_cell(header, notebook, plot)
+
+new_line()
 
 
 with open("gallery.md", "w") as file:
