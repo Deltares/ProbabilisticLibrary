@@ -19,20 +19,14 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <tuple>
 #include "FORM.h"
-
 #include "StartPointCalculator.h"
 #include "DesignPoint.h"
 #include "../Model/GradientCalculator.h"
 #include "../Math/NumericSupport.h"
 
-#if __has_include(<format>)
+#include <tuple>
 #include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
-
 
 namespace Deltares
 {
@@ -85,11 +79,7 @@ namespace Deltares
 
                     if (modifiedRelaxationIndex < Settings->RelaxationLoops)
                     {
-#ifdef __cpp_lib_format
                         designPoint->Identifier = std::format("Relaxation loop {0:}", modifiedRelaxationIndex);
-#else
-                        designPoint->Identifier = "Relaxation loop " + std::to_string(modifiedRelaxationIndex);
-#endif
                         previousDesignPoints.push_back(designPoint);
                     }
                 }
@@ -143,12 +133,8 @@ namespace Deltares
                 if (!areAllResultsValid(zGradient))
                 {
                     // return the result so far
-#ifdef __cpp_lib_format
-                    modelRunner->reportMessage(Logging::MessageType::Error, std::format("Model did not provide valid results, limit state value = {0:.5G}", sample->Z));
-#else
-                    auto pl = Deltares::Reliability::probLibString();
-                    modelRunner->reportMessage(Logging::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( sample->Z));
-#endif
+                    modelRunner->reportMessage(Logging::MessageType::Error,
+                        std::format("Model did not provide valid results, limit state value = {0:.5G}", sample->Z));
 
                     std::shared_ptr<ReliabilityReport> reportInvalid = getReport(iteration, nan(""));
 

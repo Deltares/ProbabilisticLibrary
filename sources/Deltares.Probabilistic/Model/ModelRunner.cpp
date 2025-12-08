@@ -20,18 +20,14 @@
 // All rights reserved.
 //
 #include "ModelRunner.h"
+#include "ModelSample.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/Stochast.h"
 #include <cmath>
 
 #include "ModelSample.h"
 #include "../Proxies/ProxyModel.h"
-
-#if __has_include(<format>)
 #include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
 
 namespace Deltares
 {
@@ -434,27 +430,18 @@ namespace Deltares
             }
         }
 
-        void ModelRunner::reportProgress(int step, int maxSteps, double reliability, double convergence)
+        void ModelRunner::reportProgress(int step, int maxSteps, double reliability, double convergence) const
         {
             if (this->progressIndicator != nullptr)
             {
                 const double progress = Numeric::NumericSupport::Divide(step, maxSteps);
                 this->progressIndicator->doProgress(progress);
 
-#ifdef __cpp_lib_format
                 auto text = std::format("{}/{}", step, maxSteps);
                 if (!std::isnan(reliability) || !std::isnan(convergence))
                 {
-                    text = std::format("{}, Reliability = {:.3f}, Convergence = {:.3f}", text, reliability, convergence);
+                    text += std::format(", Reliability = {:.3f}, Convergence = {:.3f}", reliability, convergence);
                 }
-#else
-                auto text = std::to_string(step) + "/" + std::to_string(maxSteps);
-                if (!std::isnan(reliability) || !std::isnan(convergence))
-                {
-                    auto pl = Deltares::Reliability::probLibString();
-                    text = text + ", Reliability = " + pl.double2str(reliability);
-                }
-#endif
 
                 this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
             }

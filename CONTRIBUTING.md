@@ -164,8 +164,7 @@ Long lines are inconvenient when doing a side-by-side diff.
 especially in combination with an unique or shared pointer declaration.
 - When throwing an exception, use the exception class in Deltares::Probabilistic::Utils,
 so that we can distinguish between exceptions from our own library or the system libraries.
-- When using std::format provide fall back code for compilers that do not support it.
-Besides this, all features of C++20 are allowed. We do not use the Boost library.
+- All features of C++20 are allowed. We do not use the Boost library.
 - We prefer new style C++, e.g. casting with std::static_cast.
 - We prefer structs over tuples.
 - Counters may be i,j,k , but loops are preferable of the form : for( const auto& o : listOfObjects) {}.
