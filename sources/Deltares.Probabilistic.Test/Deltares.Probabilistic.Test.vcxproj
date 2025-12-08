@@ -166,6 +166,8 @@
     <ClInclude Include="Reliability\testWaartsOblateSpheroid_body.cpp" />
     <ClInclude Include="Reliability\testWaartsSaddleSurface.h" />
     <ClInclude Include="Reliability\testWaartsSaddleSurface_body.cpp" />
+    <ClInclude Include="Reliability\testWaartsDiscontinuousLimitState.h" />
+    <ClInclude Include="Reliability\testWaartsDiscontinuousLimitState_body.cpp" />
     <ClInclude Include="Reliability\testReliabilityMethods.h" />
     <ClInclude Include="Reliability\testReliabilityMethods_body.cpp" />
     <ClInclude Include="Uncertainty\TestUncertainty.h" />
@@ -207,6 +209,7 @@
     <ClCompile Include="Reliability\testWaartsConvexFailureDomain.cpp" />
     <ClCompile Include="Reliability\testWaartsOblateSpheroid.cpp" />
     <ClCompile Include="Reliability\testWaartsSaddleSurface.cpp" />
+    <ClCompile Include="Reliability\testWaartsDiscontinuousLimitState.cpp" />
     <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />

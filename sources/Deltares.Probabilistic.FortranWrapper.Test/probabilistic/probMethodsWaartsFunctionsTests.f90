@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 9, size(functionName)
+        do j = 10, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -293,57 +293,6 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
                     call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (9) ! Discontinuous limit state
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 2, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionNormal, 15.0d0, 2.5D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 2, distributionNormal, 5.0d0, 0.5D0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call iterateMechanism (probDb, convergenceData, zDiscontinuousLimitState, probMethod, alfa, actualBeta, x)
-
-            ! Note:
-            ! Our FORM routine fails (crashes), Waarts reports an error
-
-            select case (probMethod)
-                case (methodFORM, methodFORMandDirSampling)
-                    call assert_false( convergenceData%conv, "Discontinuous limit state: expected non convergence" )
-
-                case (methodNumericalIntegration)
-                    call assert_comparable(  3.83249521d0, actualBeta, margin, "Discontinuous limit state: Beta" )
-                    call assert_comparable(  0.975260429306580d0, alfa(1), margin, "Discontinuous limit state: Alfa(1)" )
-                    call assert_comparable( -0.221059030642825d0, alfa(2), margin, "Discontinuous limit state: Alfa(2)" )
-
-                case (methodDirectionalSampling)
-                    call assert_comparable( 3.83d0, actualBeta, 0.10d0 * betaFactor, "Discontinuous limit state: Beta" )
-
-                case (methodCrudeMonteCarlo)
-                    call assert_comparable( 4.26489d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
-
-                case (methodImportanceSampling)
-                    call assert_comparable( 3.83d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 38465, "no samples")
-
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select

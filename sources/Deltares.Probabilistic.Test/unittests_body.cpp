@@ -49,6 +49,7 @@
 #include "Reliability/testWaartsConvexFailureDomain.h"
 #include "Reliability/testWaartsOblateSpheroid.h"
 #include "Reliability/testWaartsSaddleSurface.h"
+#include "Reliability/testWaartsDiscontinuousLimitState.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -821,6 +822,54 @@ TEST(WaartsTests, SaddleSurfaceFDIR)
 TEST(WaartsTests, SaddleSurfaceDSFI)
 {
     auto tester = TestWaartsSaddleSurface();
+    tester.WaartsDSFI();
+}
+
+TEST(WaartsTests, DiscontinuousFORM)
+{
+    auto tester = TestWaartsDiscontinuousLimitState();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, DiscontinuousCrudeMonteCarlo)
+{
+    auto tester = TestWaartsDiscontinuousLimitState();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, DiscontinuousDirectionalSampling)
+{
+    auto tester = TestWaartsDiscontinuousLimitState();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, DiscontinuousNumericalIntegration)
+{
+    auto tester = TestWaartsDiscontinuousLimitState();
+    tester.WaartsNumericalIntegration();
+}
+
+TEST(WaartsTests, DiscontinuousImportanceSampling)
+{
+    auto tester = TestWaartsDiscontinuousLimitState();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, DiscontinuousAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsDiscontinuousLimitState();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, DiscontinuousFDIR)
+{
+    auto tester = TestWaartsDiscontinuousLimitState();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, DiscontinuousDSFI)
+{
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsDSFI();
 }
 
