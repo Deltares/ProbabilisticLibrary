@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 10, size(functionName)
+        do j = 11, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -296,74 +296,6 @@ subroutine testProbabilisticWithFunction ( )
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (10) ! Two branches
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 3, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionNormal, 10.0d0, 0.5D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 2, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 3, distributionNormal, 4.0d0, 1.0D0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            oldNumberIterations = numberIterations
-            runOption = .true.
-
-            if (probMethod == methodCrudeMonteCarlo) then  ! MonteCarlo and high beta expected => adapt number of samples
-
-                probDb%method%CMC%maximumSamples = 10000000
-                runOption = numberIterations > 1 ! Only execute this task in integration test
-
-                numberIterations = 1
-            end if
-
-            if (runOption) then
-
-                ! Perform computation numberIterations times
-                call iterateMechanism (probDb, convergenceData, zTwoBranches, probMethod, alfa, actualBeta, x)
-
-                select case (probMethod)
-                    case (methodFORM)
-                        ! Waarts reports 2.21 for FORM RFLS, with error message
-                        ! result depends on estimateBetaNonConv
-                        call assert_comparable( 2.44948974d0, actualBeta, 0.10d0 * betaFactor, "Two branches: Beta" )
-
-                    case (methodNumericalIntegration)
-                        call assert_comparable( 5.03d0, actualBeta, 0.10d0 * betaFactor, "Two branches: Beta" )
-                        call assert_comparable(  0.442037277331605d0, alfa(1), margin, "Two branches: Alfa(1)" )
-                        call assert_comparable( -0.873293157655122d0, alfa(2), margin, "Two branches: Alfa(2)" )
-                        call assert_comparable( -0.204846543153671d0, alfa(3), margin, "Two branches: Alfa(3)" )
-
-                    case (methodDirectionalSampling, methodFORMandDirSampling, methodDirSamplingWithFORMiterations)
-                        call assert_comparable( 5.03d0, actualBeta, 0.10d0 * betaFactor, "Two branches: Beta" )
-
-                    case (methodCrudeMonteCarlo)
-                        call assert_comparable( 5.06896d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
-                        call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 10000000, "no samples")
-
-                    case (methodImportanceSampling)
-                        call assert_comparable( 5.005519d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
-                        call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
-
-                    case default
-                        call assert_true( convergenceData%conv, "No convergence" )
-                    end select
-            end if
-
-            numberIterations = oldNumberIterations
 
             call finalizeProbabilisticCalculation(probDb)
 

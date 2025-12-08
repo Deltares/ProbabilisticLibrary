@@ -50,6 +50,7 @@
 #include "Reliability/testWaartsOblateSpheroid.h"
 #include "Reliability/testWaartsSaddleSurface.h"
 #include "Reliability/testWaartsDiscontinuousLimitState.h"
+#include "Reliability/testWaartsTwoBranches.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -870,6 +871,42 @@ TEST(WaartsTests, DiscontinuousFDIR)
 TEST(WaartsTests, DiscontinuousDSFI)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
+    tester.WaartsDSFI();
+}
+
+TEST(WaartsTests, TwoBranchesFORM)
+{
+    auto tester = TestWaartsTwoBranches();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, TwoBranchesDirectionalSampling)
+{
+    auto tester = TestWaartsTwoBranches();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, TwoBranchesNumericalIntegration)
+{
+    auto tester = TestWaartsTwoBranches();
+    tester.WaartsNumericalIntegration();
+}
+
+TEST(WaartsTests, TwoBranchesAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsTwoBranches();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, TwoBranchesFDIR)
+{
+    auto tester = TestWaartsTwoBranches();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, TwoBranchesDSFI)
+{
+    auto tester = TestWaartsTwoBranches();
     tester.WaartsDSFI();
 }
 
