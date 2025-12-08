@@ -48,6 +48,7 @@
 #include "Reliability/testWaartsResistance25QuadraticTerms.h"
 #include "Reliability/testWaartsConvexFailureDomain.h"
 #include "Reliability/testWaartsOblateSpheroid.h"
+#include "Reliability/testWaartsSaddleSurface.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -772,6 +773,54 @@ TEST(WaartsTests, OblateSpheroidFDIR)
 TEST(WaartsTests, OblateSpheroidDSFI)
 {
     auto tester = TestWaartsOblateSpheroid();
+    tester.WaartsDSFI();
+}
+
+TEST(WaartsTests, SaddleSurfaceFORM)
+{
+    auto tester = TestWaartsSaddleSurface();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, SaddleSurfaceCrudeMonteCarlo)
+{
+    auto tester = TestWaartsSaddleSurface();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, SaddleSurfaceDirectionalSampling)
+{
+    auto tester = TestWaartsSaddleSurface();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, SaddleSurfaceNumericalIntegration)
+{
+    auto tester = TestWaartsSaddleSurface();
+    tester.WaartsNumericalIntegration();
+}
+
+TEST(WaartsTests, SaddleSurfaceImportanceSampling)
+{
+    auto tester = TestWaartsSaddleSurface();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, SaddleSurfaceAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsSaddleSurface();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, SaddleSurfaceFDIR)
+{
+    auto tester = TestWaartsSaddleSurface();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, SaddleSurfaceDSFI)
+{
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsDSFI();
 }
 

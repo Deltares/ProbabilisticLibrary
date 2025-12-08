@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 8, size(functionName)
+        do j = 9, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -293,55 +293,6 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
                     call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (8) ! Saddle surface
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 2, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Set the starting vector for FORM, otherwise we start in the saddle point itself
-            probDb%method%FORM%startMethod = fORMStartOne
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 2, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call iterateMechanism (probDb, convergenceData, zSaddleSurface, probMethod, alfa, actualBeta, x)
-
-            select case (probMethod)
-                case (methodFORM)
-                    ! We find the value 2.45 as in Waart's FORM NLPQL/RFLS, probably because of the different
-                    ! start vector
-                    call assert_comparable( 2.45d0, actualBeta, 0.05d0 * betaFactor, "Saddle surface: Beta" )
-
-                case (methodNumericalIntegration)
-                    call assert_comparable( 2.32764660158888d0, actualBeta, margin, "Saddle surface: Beta" )
-                    call assert_comparable( 0.707106781186548d0, alfa(1), margin, "Saddle surface: Alfa(1)" )
-                    call assert_comparable( 0.707106781186548d0, alfa(2), margin, "Saddle surface: Alfa(2)" )
-
-                case (methodDirectionalSampling)
-                    call assert_comparable( 2.34d0, actualBeta, 0.05d0 * betaFactor, "Saddle surface: Beta" )
-
-                case (methodImportanceSampling)
-                    call assert_comparable( 2.35d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 23796, "no samples")
-
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select
