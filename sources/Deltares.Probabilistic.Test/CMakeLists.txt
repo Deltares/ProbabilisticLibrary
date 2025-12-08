@@ -115,8 +115,19 @@ if(WIN32)
   target_link_options(Deltares.Probabilistic.Test PRIVATE "$<$<CONFIG:Debug>:/Debug>")
 endif()
 
-add_test(
-  NAME Deltares-Probabilistic-unit-tests
-  COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test>
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-)
+get_property(CODECOV GLOBAL PROPERTY WITH_CODECOV)
+# codecov tests are primary run on TeamCity, so add option for xml output that TeamCity can read.
+if(CODECOV)
+  add_test(
+    NAME Deltares-Probabilistic-unit-tests
+    COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test> --gtest_output="xml:test_results.xml"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  )
+else()
+  add_test(
+    NAME Deltares-Probabilistic-unit-tests
+    COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test>
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  )
+endif()
+
