@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/PROBL-207-actions
+      - master
     # Alternative: only build for tags.
     # tags:
     #   - '*'
