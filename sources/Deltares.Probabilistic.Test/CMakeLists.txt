@@ -122,7 +122,7 @@ get_property(CODECOV GLOBAL PROPERTY WITH_CODECOV)
 if(CODECOV)
   add_test(
     NAME Deltares-Probabilistic-unit-tests
-    COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test> --gtest_output="xml:test_results.xml"
+    COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test> --gtest_output=xml:test_results.xml
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
   )
 else()

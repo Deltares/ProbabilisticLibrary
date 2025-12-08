@@ -4,9 +4,12 @@ FROM docker.io/gcc:13
 # Set working directory
 WORKDIR /app
 
-RUN apt-get update -y && apt-get upgrade -y
+COPY ./build_cmake.sh .
 
-RUN apt-get install -y --no-install-recommends \
-    cmake
+RUN . ./build_cmake.sh
+
+RUN ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
+
+RUN rm build_cmake.sh
 
 ENTRYPOINT ["/bin/sh"]
