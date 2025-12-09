@@ -8,7 +8,14 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 import os
 
-path = "../Deltares.Probabilistic.PWrapper.Notebooks"
+directory = os.path.dirname(os.path.abspath(__file__))
+
+os.chdir(directory)
+os.chdir('..')
+
+current_dir = os.getcwd()
+
+path = current_dir
 gallery_path = path + "/gallery"
 
 if not os.path.exists(gallery_path):
@@ -23,7 +30,7 @@ class Category:
         self.cells = []
         self.name = name
         self.empty = True
-        self.lines.append(name)
+        self.lines.append(f'## {name}')
         self.start_table();
 
     def start_table(self):
@@ -31,11 +38,20 @@ class Category:
         self.lines.append('| | | |')
         self.lines.append('|-|-|-|')
 
-    def create_cell (self, header, image):
+    def create_image_cell (self, header, image):
         self.empty = False
         path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
         link = path + image.replace('.png', '.ipynb')
         self.cells.append(f'[<img src="{image}">]({link})')
+
+        if len(self.cells) == max_cells_per_line:
+            self.new_line()
+
+    def create_text_cell (self, header, link):
+        self.empty = False
+        path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
+        link = path + link
+        self.cells.append(f'[{header}]({link})')
 
         if len(self.cells) == max_cells_per_line:
             self.new_line()
@@ -56,19 +72,23 @@ def convert_file(file_name):
 
     image = file_name.replace('.ipynb', '.png')
     image_path = gallery_path + "/" + image
+    link_path = gallery_path + "/" + file_name
 
     header = pl_notebook.cells[0].source.split('\n')[0].lstrip(' #')
 
     category = ''
+    has_plot = False
     for cell in pl_notebook.cells:
         if cell.metadata.hasattr('tags'):
             if 'gallery' in cell.metadata.tags:
                 new_lines = []
+                has_plot = True
                 for line in cell.source.split('\n'):
                     plot_line = False
-                    if line.rstrip().endswith('.plot()'):
-                        line = 'plot_object = ' + line.replace('.plot()', '.get_plot()')
-                        plot_line = True
+                    for plot_statement in ['plot', 'plot_alphas', 'plot_realizations', 'plot_convergence']:
+                        if line.rstrip().endswith(f'.{plot_statement}()'):
+                            line = 'plot_object = ' + line.replace(f'.{plot_statement}()', f'.get_{plot_statement}()')
+                            plot_line = True
                     if line.rstrip().endswith('.show()'):
                         line = 'plot_object = ' + line.replace('.show()', '')
                         plot_line = True
@@ -84,13 +104,18 @@ def convert_file(file_name):
     if category != '':
         for i in range(len(categories)):
             if category.lower() == categories[i].name.lower():
-                categories[i].create_cell(header, image)
+                if has_plot:
+                    categories[i].create_image_cell(header, image)
+                else:
+                    categories[i].create_text_cell(header, image)
 
-        out = ep.preprocess(pl_notebook, {'metadata': {'path': path}})
+        if has_plot:
+            out = ep.preprocess(pl_notebook, {'metadata': {'path': path}})
+
 
 categories = []
 categories.append(Category('Statistics'))
-categories.append(Category('Reliabilty'))
+categories.append(Category('Reliability'))
 categories.append(Category('Uncertainty'))
 categories.append(Category('Sensitivity'))
 categories.append(Category('Model'))
