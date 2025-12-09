@@ -35,8 +35,8 @@ namespace Deltares::Statistics
     void CopulaCorrelation::SetCorrelation(const int i, const int j, double value, correlationType type)
     {
         auto pair = copulaPair();
-        pair.i = i;
-        pair.j = j;
+        pair.index1 = i;
+        pair.index2 = j;
         switch (type)
         {
         case Clayton:
@@ -73,17 +73,17 @@ namespace Deltares::Statistics
         {
             auto& c = copulas[i];
             c.copula->validate(report);
-            if (c.i == c.j)
+            if (c.index1 == c.index2)
             {
                 auto msg = std::make_shared<Logging::Message>();
-                msg->Text = "Self correlation not allowed for copulas, found for stochast " + std::to_string(c.i);
+                msg->Text = "Self correlation not allowed for copulas, found for stochast " + std::to_string(c.index1);
                 msg->Type = Logging::MessageType::Error;
                 report.messages.push_back(msg);
             }
             for (size_t j = 0; j < i; j++)
             {
                 auto& other = copulas[j];
-                if (c.i == other.i || c.i == other.j || c.j == other.i || c.j == other.j)
+                if (c.AreLinked(other))
                 {
                     auto msg = std::make_shared<Logging::Message>();
                     msg->Text = "Multiple correlations not allowed for copulas, found for correlations " + std::to_string(i) + " and " + std::to_string(j);
@@ -116,12 +116,12 @@ namespace Deltares::Statistics
         auto src = std::dynamic_pointer_cast<CopulaCorrelation> (m);
         for (auto copula : src->copulas)
         {
-            auto ii = findNewIndex(index, copula.i);
-            auto jj = findNewIndex(index, copula.j);
+            auto ii = findNewIndex(index, copula.index1);
+            auto jj = findNewIndex(index, copula.index2);
             if (ii >= 0 && jj >= 0)
             {
-                copula.i = ii;
-                copula.j = jj;
+                copula.index1 = ii;
+                copula.index2 = jj;
                 copulas.push_back(copula);
             }
         }
@@ -132,7 +132,7 @@ namespace Deltares::Statistics
         auto newUvalues = uValues;
         for (const auto& copula : copulas)
         {
-            copula.copula->update_uspace(newUvalues[copula.i], newUvalues[copula.j]);
+            copula.copula->update_uspace(newUvalues[copula.index1], newUvalues[copula.index2]);
         }
         return newUvalues;
     }
@@ -141,8 +141,8 @@ namespace Deltares::Statistics
     {
         for(const auto& p : copulas)
         {
-            if (p.i == i && p.j == j) return { p.copula->getCorrelation() };
-            if (p.i == j && p.j == i) return { p.copula->getCorrelation() };
+            if (p.index1 == i && p.index2 == j) return { p.copula->getCorrelation() };
+            if (p.index1 == j && p.index2 == i) return { p.copula->getCorrelation() };
         }
         return { lastValue, correlationType::Gaussian };
     }

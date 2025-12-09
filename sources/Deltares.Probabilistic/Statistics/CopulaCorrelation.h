@@ -29,10 +29,9 @@
 
 namespace Deltares::Statistics
 {
-    struct copulaPair
+    class copulaPair : public BaseCorrelationPair
     {
-        int i;
-        int j;
+    public:
         std::shared_ptr<BaseCopula> copula;
     };
 

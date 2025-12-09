@@ -35,6 +35,17 @@ namespace Deltares::Statistics
         double correlation;
     };
 
+    class BaseCorrelationPair
+    {
+    public:
+        int index1;
+        int index2;
+        bool AreLinked(const BaseCorrelationPair& other) const
+        {
+            return index1 == other.index1 || index1 == other.index2 || index2 == other.index1 || index2 == other.index2;
+        }
+    };
+
     class BaseCorrelation
     {
     public:
