@@ -4,6 +4,10 @@ This is the repository of the Probabilistic Library of Deltares.
 
 The library provides a set of routines that enable reliability analysis of a component or a system of components.
 
+## Gallery
+
+See the [Gallery](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions how to use the Probabilistic Library.
+
 ## Scientific background
 
 The scientific background document is part of the release,
@@ -24,9 +28,8 @@ pip install probabilistic_library-25.3.1-py3-none-any.whl --force-reinstall
 ```
 
 ### Jupyter notebooks
-Several Jupyter notebooks are available to demonstrate how to use the Probabilistic Library through the Python wrapper:
 
-See the [Gallery](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions how to use the Probabilistic Library.
+Several Jupyter notebooks are available to demonstrate how to use the Probabilistic Library through the Python wrapper:
 
 1. Distribution functions:
     * [Overview of the available distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/overview_distribution_functions.ipynb)
