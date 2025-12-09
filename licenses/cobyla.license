@@ -1,5 +1,3 @@
-/* cobyla : constrained optimization by linear approximation */
-
 /*
  * Copyright (c) 1992, Michael J. D. Powell (M.J.D.Powell@damtp.cam.ac.uk)
  * Copyright (c) 2004, Jean-Sebastien Roy (js@jeannot.org)
@@ -31,32 +29,3 @@
  * The original source code can be found at :
  * http://plato.la.asu.edu/topics/problems/nlores.html
  */
-
-/* $Jeannot: cobyla.h,v 1.10 2004/04/18 09:51:37 js Exp $ */
-
-#ifndef _COBYLA_
-#define _COBYLA_
-
-#include "nlopt.h"
-#include "nlopt-util.h"
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif /* __cplusplus */
-
-/* NLopt-style interface function */
-nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
-                             unsigned m, nlopt_constraint *fc,
-                             unsigned p, nlopt_constraint *h,
-                             const double *lb, const double *ub, /* bounds */
-                             double *x, /* in: initial guess, out: minimizer */
-                             double *minf,
-                             nlopt_stopping *stop,
-                             const double *dx);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* _COBYLA_ */
