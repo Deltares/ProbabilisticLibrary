@@ -1752,9 +1752,9 @@ class CopulaCorrelation(FrozenObject):
 			else:
 				stochast_list.append(stochasts[i])
 
-		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value[0])
 		copula_type = CopulaType.get_index(value[1])
 		interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, copula_type)
+		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value[0])
 
 class SelfCorrelationMatrix(FrozenObject):
 	"""Defines the correlation values of a stochast with another stochast, both corresponding with the same

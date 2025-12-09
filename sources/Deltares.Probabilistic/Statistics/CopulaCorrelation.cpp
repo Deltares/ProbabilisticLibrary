@@ -51,9 +51,6 @@ namespace Deltares::Statistics
         case DiagonalBand:
             pair.copula = std::make_shared<DiagonalBandCopula>(value);
             break;
-        case UnknownYet:
-            lastValue = value;
-            return;
         case Gaussian:
             pair.copula = std::make_shared<GaussianCopula>(value);
         }
@@ -144,7 +141,7 @@ namespace Deltares::Statistics
             if (p.index1 == i && p.index2 == j) return { p.copula->getCorrelation() };
             if (p.index1 == j && p.index2 == i) return { p.copula->getCorrelation() };
         }
-        return { lastValue, correlationType::Gaussian };
+        return { 0.0, correlationType::Gaussian };
     }
 
     correlationValueAndType CopulaCorrelation::GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2)

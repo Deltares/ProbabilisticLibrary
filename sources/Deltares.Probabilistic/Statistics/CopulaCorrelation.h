@@ -54,7 +54,7 @@ namespace Deltares::Statistics
 
         void SetCorrelation(const int i, const int j, double value, correlationType type) override;
         void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2,
-            double value, correlationType type = correlationType::UnknownYet) override;
+            double value, correlationType type) override;
 
         correlationValueAndType GetCorrelation(const int i, const int j) const override;
         correlationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) override;
@@ -75,7 +75,6 @@ namespace Deltares::Statistics
         int maxStochasts = -1;
         std::vector<copulaPair> copulas;
         std::vector<std::shared_ptr<Stochast>> stochasts;
-        double lastValue = 0.0;
     };
 }
 

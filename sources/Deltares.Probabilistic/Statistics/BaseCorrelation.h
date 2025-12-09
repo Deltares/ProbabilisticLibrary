@@ -55,8 +55,8 @@ namespace Deltares::Statistics
         virtual bool isValid() const = 0;
         virtual void validate(Logging::ValidationReport& report) const = 0;
 
-        virtual void SetCorrelation(const int i, const int j, double value, correlationType type = correlationType::UnknownYet) = 0;
-        virtual void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, correlationType type = correlationType::UnknownYet) = 0;
+        virtual void SetCorrelation(const int i, const int j, double value, correlationType type) = 0;
+        virtual void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, correlationType type) = 0;
 
         virtual correlationValueAndType GetCorrelation(const int i, const int j) const = 0;
         virtual correlationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) = 0;

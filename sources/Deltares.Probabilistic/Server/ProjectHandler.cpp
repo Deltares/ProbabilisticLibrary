@@ -1967,13 +1967,23 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
+            if (objectType == ObjectType::CorrelationMatrix)
             {
                 std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
                 if (property_ == "correlation")
                 {
-                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value);
+                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, correlationType::Gaussian);
+                }
+            }
+            else if (objectType == ObjectType::CopulaCorrelation)
+            {
+                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+
+                if (property_ == "correlation")
+                {
+                    correlationType type = static_cast<correlationType>(tempIntValue);
+                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, type);
                 }
             }
         }
@@ -1982,15 +1992,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
+            if (objectType == ObjectType::CopulaCorrelation)
             {
                 std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
                 if (property_ == "correlation")
                 {
-                    auto curValue = correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]);
-                    auto type = static_cast<correlationType>(value);
-                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], curValue.value, type);
+                    tempIntValue = value;
                 }
             }
         }
