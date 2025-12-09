@@ -704,7 +704,7 @@ namespace Deltares
             }
         }
 
-        static std::vector<std::pair<const char*, DistributionType>> allDistributions = {
+        static const std::vector<std::pair<const char*, DistributionType>> allDistributions = {
                 {"deterministic", Deterministic},
                 {"normal", Normal },
                 {"log_normal", LogNormal },
@@ -736,11 +736,11 @@ namespace Deltares
 
         DistributionType Stochast::getDistributionType(const std::string& distributionType)
         {
-            for(const auto& pair : allDistributions)
+            for(const auto& [name, type] : allDistributions)
             {
-                if (pair.first == distributionType)
+                if (name == distributionType)
                 {
-                    return pair.second;
+                    return type;
                 }
             }
             throw Reliability::probLibException("distribution type");
@@ -748,11 +748,11 @@ namespace Deltares
 
         std::string Stochast::getDistributionTypeString(DistributionType distributionType)
         {
-            for (const auto& pair : allDistributions)
+            for (const auto& [name, type] : allDistributions)
             {
-                if (pair.second == distributionType)
+                if (type == distributionType)
                 {
-                    return pair.first;
+                    return name;
                 }
             }
 
