@@ -108,3 +108,4 @@ testpytk*
 /sources/Deltares.Probabilistic.PWrapper/*.egg-info/top_level.txt
 /sources/Deltares.Probabilistic.PWrapper/html/probabilistic_library
 /sources/Deltares.Probabilistic.PWrapper/docs
+/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery

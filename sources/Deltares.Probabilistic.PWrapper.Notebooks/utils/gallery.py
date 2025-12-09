@@ -1,176 +1,109 @@
+import nbclient
+import nbformat
 from probabilistic_library import Stochast, DistributionType, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, ConditionalValue
 from probabilistic_library import ReliabilityProject, DistributionType, ReliabilityMethod, StartMethod
 
-cells = []
-lines = []
+import nbconvert
+import nbformat
+from nbconvert.preprocessors import ExecutePreprocessor
+import os
+
+path = "../Deltares.Probabilistic.PWrapper.Notebooks"
+gallery_path = path + "/gallery"
+
+if not os.path.exists(gallery_path):
+   # Create a new directory because it does not exist
+   os.makedirs(gallery_path)
 
 max_cells_per_line = 3
 
-def start_table():
-    lines.append('')
-    lines.append('| | | |')
-    lines.append('|-|-|-|')
+class Category:
+    def __init__(self, name):
+        self.lines = []
+        self.cells = []
+        self.name = name
+        self.empty = True
+        self.lines.append(name)
+        self.start_table();
 
-def create_cell (header, notebook, plot):
-    plot.title(header)
-    plot.savefig(notebook + '.png')
-    path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
-    link = path + notebook + '.ipynb'
-    image = notebook + '.png'
-    cells.append(f'[<img src="{image}">]({link})')
+    def start_table(self):
+        self.lines.append('')
+        self.lines.append('| | | |')
+        self.lines.append('|-|-|-|')
 
-    if len(cells) == max_cells_per_line:
-        new_line()
+    def create_cell (self, header, image):
+        self.empty = False
+        path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
+        link = path + image.replace('.png', '.ipynb')
+        self.cells.append(f'[<img src="{image}">]({link})')
 
-def new_line():
-    if len(cells) > 0:
-        while len(cells) < max_cells_per_line:
-            cells.append(' ')
-        lines.append('| ' + str.join(' | ', cells) + ' |')
-        cells.clear()
+        if len(self.cells) == max_cells_per_line:
+            self.new_line()
 
-lines.append('1. Distribution functions:')
+    def new_line(self):
+        if len(self.cells) > 0:
+            while len(self.cells) < max_cells_per_line:
+                self.cells.append(' ')
+            self.lines.append('| ' + str.join(' | ', self.cells) + ' |')
+            self.cells.clear()
 
-start_table()
+def convert_file(file_name):
 
-# overview distribution functions
+    print(file_name)
 
-header = 'overview distribution functions'
-notebook = 'overview_distribution_functions'
+    pl_notebook = nbformat.read(path + "/" + file_name, as_version = nbformat.NO_CONVERT )
+    ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
 
-stochast = Stochast()
-stochast.distribution = DistributionType.gumbel
-stochast.scale = 2.0
-stochast.shift = 3.0
+    image = file_name.replace('.ipynb', '.png')
+    image_path = gallery_path + "/" + image
 
-plot = stochast.get_plot()
+    header = pl_notebook.cells[0].source.split('\n')[0].lstrip(' #')
 
-create_cell(header, notebook, plot)
+    category = ''
+    for cell in pl_notebook.cells:
+        if cell.metadata.hasattr('tags'):
+            if 'gallery' in cell.metadata.tags:
+                new_lines = []
+                for line in cell.source.split('\n'):
+                    plot_line = False
+                    if line.rstrip().endswith('.plot()'):
+                        line = 'plot_object = ' + line.replace('.plot()', '.get_plot()')
+                        plot_line = True
+                    if line.rstrip().endswith('.show()'):
+                        line = 'plot_object = ' + line.replace('.show()', '')
+                        plot_line = True
+                    if plot_line:
+                        line = line + f'\nplot_object.title("{header}")' 
+                        line = line + f'\nplot_object.savefig("{image_path}")' 
+                    new_lines.append(line)
+                cell.source = str.join('\n', new_lines)
+            for cat in [cat.name.lower() for cat in categories]:
+                if cat in cell.metadata.tags:
+                    category = cat
 
-# Operations on distribution functions
+    if category != '':
+        for i in range(len(categories)):
+            if category.lower() == categories[i].name.lower():
+                categories[i].create_cell(header, image)
 
-header = 'Operations on distribution functions'
-notebook = 'operations_on_distribution_functions'
+        out = ep.preprocess(pl_notebook, {'metadata': {'path': path}})
 
-stochast = Stochast()
-stochast.distribution = DistributionType.normal
-stochast.location = 0.0
-stochast.scale = 1.0
-stochast.truncated = True
-stochast.minimum = -0.5
+categories = []
+categories.append(Category('Statistics'))
+categories.append(Category('Reliabilty'))
+categories.append(Category('Uncertainty'))
+categories.append(Category('Sensitivity'))
+categories.append(Category('Model'))
 
-plot = stochast.get_plot()
+for file in os.listdir(path):
+    if file.endswith(".ipynb"):
+        convert_file(file)
 
-create_cell(header, notebook, plot)
+lines = []
+for cat in categories:
+    if not cat.empty:
+        cat.new_line()
+        lines.extend(cat.lines)
 
-# Composite distributions
-
-header = 'Composite distributions'
-notebook = 'composite_distribution'
-
-w1 = 0.2
-w2 = 0.8
-
-x1 = Stochast()
-x1.distribution = DistributionType.normal
-x1.location = 1.0
-x1.scale = 0.5
-
-x2 = Stochast()
-x2.distribution = DistributionType.normal
-x2.location = 4.0
-x2.scale = 0.3
-
-stochast = Stochast()
-stochast.distribution = DistributionType.composite
-stochast.contributing_stochasts.append(ContributingStochast.create(w1, x1))
-stochast.contributing_stochasts.append(ContributingStochast.create(w2, x2))
-
-plot = stochast.get_plot()
-
-create_cell(header, notebook, plot)
-
-# Fitting with prior distribution
-
-header = 'Fitting with prior distribution'
-notebook = 'fitting_with_prior_distribution'
-
-stochast = Stochast()
-stochast.distribution = DistributionType.gumbel
-stochast.scale = 2.0
-stochast.shift = 3.0
-
-plot = stochast.get_plot()
-
-create_cell(header, notebook, plot)
-
-# Including statistical uncertainty
-
-header = 'Including statistical uncertainty'
-notebook = 'statistical_uncertainty'
-
-x_values = [1,2,3,4,5]
-means = [12, 15, 18, 20, 21]
-sigmas = [2, 2.5, 3.5, 3, 2.5]
-
-stochast = Stochast()
-stochast.distribution = DistributionType.normal
-stochast.mean = 0
-stochast.deviation = 1
-stochast.conditional = True
-stochast.conditional_source = "q"
-
-for i in range(0, len(x_values)):
-    conditional = ConditionalValue()
-    conditional.x = x_values[i]
-    conditional.mean = means[i]
-    conditional.deviation = sigmas[i]
-    stochast.conditional_values.append(conditional)
-
-plot = stochast.get_plot()
-
-create_cell(header, notebook, plot)
-
-new_line()
-
-lines.append('2. Distribution functions:')
-
-lines.append('3. Reliability analysis of a single component:')
-
-start_table()
-
-# FORM simple calculations
-
-from models import linear_a_b
-
-header = 'FORM simple calculations'
-notebook = 'FORM_simple_correlations'
-
-project = ReliabilityProject()
-project.model = linear_a_b
-
-project.variables["a"].distribution = DistributionType.uniform
-project.variables["a"].minimum = -1
-project.variables["a"].maximum = 1
-
-project.variables["b"].distribution = DistributionType.uniform
-project.variables["b"].minimum = -1
-project.variables["b"].maximum = 1
-
-project.settings.reliability_method = ReliabilityMethod.form
-project.settings.relaxation_factor = 0.15
-project.settings.maximum_iterations = 50
-project.settings.epsilon_beta = 0.01
-
-project.correlation_matrix["a", "b"] = 0.8
-project.run()
-
-plot = project.design_point.get_plot_alphas()
-
-create_cell(header, notebook, plot)
-
-new_line()
-
-
-with open("gallery.md", "w") as file:
+with open(gallery_path + "/gallery.md", "w") as file:
     file.writelines(line + '\n' for line in lines)
