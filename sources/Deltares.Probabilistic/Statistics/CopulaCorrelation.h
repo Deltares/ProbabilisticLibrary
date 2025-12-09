@@ -70,7 +70,7 @@ namespace Deltares::Statistics
         }
         bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override {return false;}
         void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
-        indexWithCorrelation findDependent(const int i) const override { return indexWithCorrelation(); }
+        IndexWithCorrelation findDependent(const int i) const override { return IndexWithCorrelation(); }
     private:
         int maxStochasts = -1;
         std::vector<copulaPair> copulas;

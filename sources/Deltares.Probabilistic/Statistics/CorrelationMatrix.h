@@ -71,7 +71,7 @@ namespace Deltares
             void initializeForRun() override;
             bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override;
             void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
-            indexWithCorrelation findDependent(const int i) const override;
+            IndexWithCorrelation findDependent(const int i) const override;
         private:
             Numeric::Matrix matrix = Numeric::Matrix(0, 0);
             Numeric::Matrix choleskyMatrix = Numeric::Matrix(0, 0);
@@ -80,7 +80,7 @@ namespace Deltares
             void InverseCholeskyDecomposition();
             std::map<std::shared_ptr<Stochast>, int> stochastIndex;
             std::vector<std::shared_ptr<Stochast>> stochasts;
-            std::vector<indexWithCorrelation> indexer;
+            std::vector<IndexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;
             std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
             size_t dim = 0;

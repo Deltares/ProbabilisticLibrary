@@ -252,7 +252,7 @@ namespace Deltares
                 }
             }
 
-            auto newIndexer = std::vector<indexWithCorrelation>(nrAllStochasts);
+            auto newIndexer = std::vector<IndexWithCorrelation>(nrAllStochasts);
             for (size_t i = 0; i < nrAllStochasts; i++)
             {
                 if (index[i] == -2)
@@ -281,7 +281,7 @@ namespace Deltares
             indexer = newIndexer;
         }
 
-        indexWithCorrelation CorrelationMatrix::findDependent(const int j) const
+        IndexWithCorrelation CorrelationMatrix::findDependent(const int j) const
         {
             if (indexer.size() > 0)
             {

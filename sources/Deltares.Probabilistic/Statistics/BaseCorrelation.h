@@ -29,7 +29,7 @@
 
 namespace Deltares::Statistics
 {
-    struct indexWithCorrelation
+    struct IndexWithCorrelation
     {
         int index;
         double correlation;
@@ -69,7 +69,7 @@ namespace Deltares::Statistics
         virtual void initializeForRun() = 0;
         virtual bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const = 0;
         virtual void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) = 0;
-        virtual indexWithCorrelation findDependent(const int i) const = 0;
+        virtual IndexWithCorrelation findDependent(const int i) const = 0;
     protected:
         static int findNewIndex(const std::vector<int>& index, const size_t i);
     };
