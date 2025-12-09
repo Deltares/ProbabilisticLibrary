@@ -358,7 +358,7 @@
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
     <ClInclude Include="Statistics\BaseCorrelation.h" />
     <ClInclude Include="Statistics\CopulaCorrelation.h" />
-    <ClInclude Include="Statistics\correlationValueAndType.h" />
+    <ClInclude Include="Statistics\CorrelationValueAndType.h" />
     <ClInclude Include="Statistics\BaseCopula.h" />
     <ClInclude Include="Statistics\ClaytonCopula.h" />
     <ClInclude Include="Statistics\FrankCopula.h" />
