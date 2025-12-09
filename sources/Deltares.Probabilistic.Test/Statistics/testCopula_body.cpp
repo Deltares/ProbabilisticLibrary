@@ -96,6 +96,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_FALSE(diagonal_band_copula.isValid());
 
         auto copulas = Statistics::CopulaCorrelation();
+        copulas.init(2);
         copulas.SetCorrelation(0, 1, 0.1, CorrelationType::Gaussian);
         copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
         EXPECT_FALSE(copulas.isValid());
@@ -106,7 +107,7 @@ namespace Deltares::Probabilistic::Test
         auto report = Logging::ValidationReport();
         auto gaussian_copula = Statistics::GaussianCopula(1.5);
         gaussian_copula.validate(report);
-        EXPECT_EQ("Rho in Gaussian copula should be in range [-1, 1], but is: 1.500000", report.messages[0]->Text);
+        EXPECT_EQ("Rho value 1.5 is greater than 1.", report.messages[0]->Text);
 
         report.messages.clear();
         auto frank_copula = Statistics::FrankCopula(0.0);
@@ -121,15 +122,16 @@ namespace Deltares::Probabilistic::Test
         report.messages.clear();
         auto gumbel_copula = Statistics::GumbelCopula(0.99);
         gumbel_copula.validate(report);
-        EXPECT_EQ("Alpha in Gumbel copula should be >= 1.0, but is 0.990000", report.messages[0]->Text);
+        EXPECT_EQ("Alpha value 0.99 is less than 1.", report.messages[0]->Text);
 
         report.messages.clear();
         auto diagonal_band_copula = Statistics::DiagonalBandCopula(-1.0);
         diagonal_band_copula.validate(report);
-        EXPECT_EQ("Alpha in Diagonal Band copula should be in [0.0, 1.0], but is -1.000000", report.messages[0]->Text);
+        EXPECT_EQ("Alpha value -1 is less than 0.", report.messages[0]->Text);
 
         report.messages.clear();
         auto copulas = Statistics::CopulaCorrelation();
+        copulas.init(2);
         copulas.SetCorrelation(0, 1, 0.1, CorrelationType::Gaussian);
         copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
         copulas.validate(report);
