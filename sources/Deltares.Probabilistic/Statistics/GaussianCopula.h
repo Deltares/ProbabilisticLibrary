@@ -44,7 +44,7 @@ namespace Deltares::Statistics
         /// <param name="t"> probability of failure of second stochast </param>
         void update(const double& u, double& t) const override;
 
-        correlationValueAndType getCorrelation() const override { return { rho, correlationType::Gaussian }; }
+        CorrelationValueAndType getCorrelation() const override { return { rho, CorrelationType::Gaussian }; }
 
         void validate(Logging::ValidationReport& report) const override;
     private:

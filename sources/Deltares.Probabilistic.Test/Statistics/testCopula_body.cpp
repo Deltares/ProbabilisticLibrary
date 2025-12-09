@@ -96,8 +96,8 @@ namespace Deltares::Probabilistic::Test
         EXPECT_FALSE(diagonal_band_copula.isValid());
 
         auto copulas = Statistics::CopulaCorrelation();
-        copulas.SetCorrelation(0, 1, 0.1, correlationType::Gaussian);
-        copulas.SetCorrelation(1, 0, 2.0, correlationType::Frank);
+        copulas.SetCorrelation(0, 1, 0.1, CorrelationType::Gaussian);
+        copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
         EXPECT_FALSE(copulas.isValid());
     }
 
@@ -130,8 +130,8 @@ namespace Deltares::Probabilistic::Test
 
         report.messages.clear();
         auto copulas = Statistics::CopulaCorrelation();
-        copulas.SetCorrelation(0, 1, 0.1, correlationType::Gaussian);
-        copulas.SetCorrelation(1, 0, 2.0, correlationType::Frank);
+        copulas.SetCorrelation(0, 1, 0.1, CorrelationType::Gaussian);
+        copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
         copulas.validate(report);
         EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations 1 and 0", report.messages[0]->Text);
     }

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "correlationValueAndType.h"
+#include "CorrelationValueAndType.h"
 #include "../Logging/ValidationReport.h"
 
 namespace Deltares::Statistics
@@ -47,7 +47,7 @@ namespace Deltares::Statistics
         /// <param name="t"> probability of failure of second stochast </param>
         virtual void update(const double& u, double& t) const = 0;
 
-        virtual correlationValueAndType getCorrelation() const { return { 0.0, correlationType::Gaussian }; }
+        virtual CorrelationValueAndType getCorrelation() const { return { 0.0, CorrelationType::Gaussian }; }
 
         virtual bool isValid() const;
 

@@ -141,13 +141,13 @@ namespace Deltares
         }
 
 
-        correlationValueAndType CorrelationMatrix::GetCorrelation(const int i, const int j) const
+        CorrelationValueAndType CorrelationMatrix::GetCorrelation(const int i, const int j) const
         {
-            auto type = correlationType::Gaussian;
+            auto type = CorrelationType::Gaussian;
             return { matrix(i, j), type };
         }
 
-        correlationValueAndType CorrelationMatrix::GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2)
+        CorrelationValueAndType CorrelationMatrix::GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2)
         {
             if (stochastIndex.contains(stochast1) && stochastIndex.contains(stochast2))
             {
@@ -158,11 +158,11 @@ namespace Deltares
             }
             else
             {
-                return { 0, correlationType::Gaussian };
+                return { 0, CorrelationType::Gaussian };
             }
         }
 
-        void CorrelationMatrix::SetCorrelation(const int i, const int j, double value, correlationType type)
+        void CorrelationMatrix::SetCorrelation(const int i, const int j, double value, CorrelationType type)
         {
             if (std::max(i, j) >= (int)dim)
             {
@@ -186,7 +186,7 @@ namespace Deltares
             inputCorrelations.push_back(p);
         }
 
-        void CorrelationMatrix::SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, correlationType type)
+        void CorrelationMatrix::SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, CorrelationType type)
         {
             if (stochastIndex.contains(stochast1) && stochastIndex.contains(stochast2))
             {

@@ -52,12 +52,12 @@ namespace Deltares::Statistics
         bool isValid() const override;
         void validate(Logging::ValidationReport& report) const override;
 
-        void SetCorrelation(const int i, const int j, double value, correlationType type) override;
+        void SetCorrelation(const int i, const int j, double value, CorrelationType type) override;
         void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2,
-            double value, correlationType type) override;
+            double value, CorrelationType type) override;
 
-        correlationValueAndType GetCorrelation(const int i, const int j) const override;
-        correlationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) override;
+        CorrelationValueAndType GetCorrelation(const int i, const int j) const override;
+        CorrelationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) override;
 
         bool IsIdentity() const override {return copulas.empty();}
         int CountCorrelations() const override { return static_cast<int>(copulas.size()); }

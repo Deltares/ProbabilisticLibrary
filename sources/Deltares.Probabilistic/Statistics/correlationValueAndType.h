@@ -22,7 +22,7 @@
 
 #pragma once
 
-enum class correlationType
+enum class CorrelationType
 {
     Clayton,
     Frank,
@@ -31,9 +31,9 @@ enum class correlationType
     DiagonalBand,
 };
 
-struct correlationValueAndType
+struct CorrelationValueAndType
 {
     double value;
-    correlationType type;
+    CorrelationType type;
 };
 

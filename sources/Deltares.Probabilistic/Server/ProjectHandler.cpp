@@ -1973,7 +1973,7 @@ namespace Deltares
 
                 if (property_ == "correlation")
                 {
-                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, correlationType::Gaussian);
+                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, CorrelationType::Gaussian);
                 }
             }
             else if (objectType == ObjectType::CopulaCorrelation)
@@ -1982,7 +1982,7 @@ namespace Deltares
 
                 if (property_ == "correlation")
                 {
-                    correlationType type = static_cast<correlationType>(tempIntValue);
+                    CorrelationType type = static_cast<CorrelationType>(tempIntValue);
                     correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, type);
                 }
             }

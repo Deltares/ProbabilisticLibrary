@@ -24,7 +24,7 @@
 #include <memory>
 #include <vector>
 
-#include "correlationValueAndType.h"
+#include "CorrelationValueAndType.h"
 #include "Stochast.h"
 
 namespace Deltares::Statistics
@@ -55,11 +55,11 @@ namespace Deltares::Statistics
         virtual bool isValid() const = 0;
         virtual void validate(Logging::ValidationReport& report) const = 0;
 
-        virtual void SetCorrelation(const int i, const int j, double value, correlationType type) = 0;
-        virtual void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, correlationType type) = 0;
+        virtual void SetCorrelation(const int i, const int j, double value, CorrelationType type) = 0;
+        virtual void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, CorrelationType type) = 0;
 
-        virtual correlationValueAndType GetCorrelation(const int i, const int j) const = 0;
-        virtual correlationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) = 0;
+        virtual CorrelationValueAndType GetCorrelation(const int i, const int j) const = 0;
+        virtual CorrelationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) = 0;
 
         virtual bool IsIdentity() const = 0;
         virtual int CountCorrelations() const = 0;

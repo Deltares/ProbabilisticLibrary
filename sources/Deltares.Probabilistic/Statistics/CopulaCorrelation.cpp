@@ -30,9 +30,9 @@
 
 namespace Deltares::Statistics
 {
-    using enum correlationType;
+    using enum CorrelationType;
 
-    void CopulaCorrelation::SetCorrelation(const int i, const int j, double value, correlationType type)
+    void CopulaCorrelation::SetCorrelation(const int i, const int j, double value, CorrelationType type)
     {
         auto pair = copulaPair();
         pair.index1 = i;
@@ -91,7 +91,7 @@ namespace Deltares::Statistics
         }
     }
 
-    void CopulaCorrelation::SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2 , double value, correlationType type)
+    void CopulaCorrelation::SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2 , double value, CorrelationType type)
     {
         size_t index1 = std::numeric_limits<size_t>::max();
         size_t index2 = std::numeric_limits<size_t>::max();
@@ -134,17 +134,17 @@ namespace Deltares::Statistics
         return newUvalues;
     }
 
-    correlationValueAndType CopulaCorrelation::GetCorrelation(const int i, const int j) const
+    CorrelationValueAndType CopulaCorrelation::GetCorrelation(const int i, const int j) const
     {
         for(const auto& p : copulas)
         {
             if (p.index1 == i && p.index2 == j) return { p.copula->getCorrelation() };
             if (p.index1 == j && p.index2 == i) return { p.copula->getCorrelation() };
         }
-        return { 0.0, correlationType::Gaussian };
+        return { 0.0, CorrelationType::Gaussian };
     }
 
-    correlationValueAndType CopulaCorrelation::GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2)
+    CorrelationValueAndType CopulaCorrelation::GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2)
     {
         size_t index1 = std::numeric_limits<size_t>::max();
         size_t index2 = std::numeric_limits<size_t>::max();
@@ -160,7 +160,7 @@ namespace Deltares::Statistics
         }
         else
         {
-            return { 0, correlationType::Gaussian };
+            return { 0, CorrelationType::Gaussian };
         }
 
     }

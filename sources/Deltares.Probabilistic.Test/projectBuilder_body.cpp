@@ -185,7 +185,7 @@ namespace Deltares::Probabilistic::Test
         stochast.push_back(getDeterministicStochast(valueDeterminist));
         stochast.push_back(getNormalStochast(0.0, 1.0));
         auto corr = std::make_shared<CopulaCorrelation>();
-        corr->SetCorrelation(0, 2, 0.5, correlationType::Frank);
+        corr->SetCorrelation(0, 2, 0.5, CorrelationType::Frank);
         auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
         auto m = std::make_shared<ModelRunner>(z, uConverter);
