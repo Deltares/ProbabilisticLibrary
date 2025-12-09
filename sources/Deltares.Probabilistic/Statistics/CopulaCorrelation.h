@@ -69,7 +69,7 @@ namespace Deltares::Statistics
             // empty; after init and setCorrelation this class is ready to use
         }
         bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override {return false;}
-        void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
+        void filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) override;
         IndexWithCorrelation findDependent(const int i) const override { return IndexWithCorrelation(); }
     private:
         int maxStochasts = -1;

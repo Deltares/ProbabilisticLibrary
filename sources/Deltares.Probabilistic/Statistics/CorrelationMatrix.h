@@ -70,7 +70,7 @@ namespace Deltares
             void resolveConflictingCorrelations();
             void initializeForRun() override;
             bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override;
-            void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) override;
+            void filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) override;
             IndexWithCorrelation findDependent(const int i) const override;
         private:
             Numeric::Matrix matrix = Numeric::Matrix(0, 0);

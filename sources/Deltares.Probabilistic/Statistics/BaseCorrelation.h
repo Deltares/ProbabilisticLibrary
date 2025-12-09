@@ -68,7 +68,7 @@ namespace Deltares::Statistics
         virtual std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) = 0;
         virtual void initializeForRun() = 0;
         virtual bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const = 0;
-        virtual void filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index) = 0;
+        virtual void filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) = 0;
         virtual IndexWithCorrelation findDependent(const int i) const = 0;
     protected:
         static int findNewIndex(const std::vector<int>& index, const size_t i);

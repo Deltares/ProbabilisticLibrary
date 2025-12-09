@@ -110,10 +110,10 @@ namespace Deltares::Statistics
         }
     }
 
-
-    void CopulaCorrelation::filter(const std::shared_ptr<BaseCorrelation> m, const std::vector<int>& index)
+    void CopulaCorrelation::filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index)
     {
-        auto src = std::dynamic_pointer_cast<CopulaCorrelation> (m);
+        auto src = std::dynamic_pointer_cast<CopulaCorrelation> (source);
+        if (src == nullptr) throw Reliability::probLibException("error casting a correlation source in filter method.");
         for (auto copula : src->copulas)
         {
             auto ii = findNewIndex(index, copula.index1);
