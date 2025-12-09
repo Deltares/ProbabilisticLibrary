@@ -26,6 +26,8 @@ pip install probabilistic_library-25.3.1-py3-none-any.whl --force-reinstall
 ### Jupyter notebooks
 Several Jupyter notebooks are available to demonstrate how to use the Probabilistic Library through the Python wrapper:
 
+See the [Gallery](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions how to use the Probabilistic Library.
+
 1. Distribution functions:
     * [Overview of the available distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/overview_distribution_functions.ipynb)
 
