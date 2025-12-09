@@ -949,10 +949,22 @@ Besides the Gaussian correlation, we also support a few Archimedean copulas: the
 These copulas can only be defined in sets of two correlated stochastic variables. And it is allowed to have e.g.
 two variables defined with a Clayton copula and two others with a Frank, Gumbel or Gaussian copula.
 
-The Frank and Gumbel copulas do not have a closed form for the inverse calculation of the dependent stochastic variable,
-so for each sample a non linear equation has to be solved using numerical bisection.
+The definition of the Frank copula is:
+\begin{align}
+C\left(u,v\right) = -\frac{1}{\theta} \ln \left( 1 + \frac{\left(e^{-\theta u} - 1\right) \left(e^{-\theta v} - 1\right)}{e^{-\theta} - 1} \right)
+\end{align}
 
-The copulas Clayton, Frank and Gumbel depend on a parameter $\theta$.
+The definition of the Clayton copula is:
+\begin{align}
+C\left(u,v\right) = \left( \max \left[ u^{-\theta} + v^{-\theta} - 1 , 0 \right] \right)^{-\frac{1}{\theta}}
+\end{align}
+
+The definition of the Gumbel copula is:
+\begin{align}	
+C\left(u,v\right) = \exp \left( - \left( \left(-\ln u\right)^{\theta} + \left(-\ln v\right)^{\theta} \right)^{\frac{1}{\theta}} \right)
+\end{align}	
+
+As given above, the copulas Clayton, Frank and Gumbel depend on a parameter $\theta$.
 For all copulas we have the condition : $ \theta <> 0 $
 and also $ \theta >= 1 $ for Clayton and $ \theta >= -1 $ for Gumbel.
 
