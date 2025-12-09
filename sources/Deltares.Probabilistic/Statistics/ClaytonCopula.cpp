@@ -37,7 +37,7 @@ namespace Deltares::Statistics
         if (theta == 0.0 || theta < -1.0)
         {
             auto msg = std::make_shared<Logging::Message>();
-            msg->Text = std::format("Theta in Clayton copula should be >= -1.0 and <> 0.0, but is {0:.6F}", theta);
+            msg->Text = std::format("Theta in Clayton copula should be >= -1.0 and <> 0.0, but is {:.6F}", theta);
             msg->Type = Logging::MessageType::Error;
             report.messages.push_back(msg);
         }
