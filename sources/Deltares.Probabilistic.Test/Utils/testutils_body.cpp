@@ -149,18 +149,40 @@ namespace Deltares
 
             Deltares::Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m)
             {
-                size_t s = (size_t)sqrt((double)m.size());
+                size_t s = static_cast<size_t>(sqrt(static_cast<double>(m.size())));
+
+                return convert1dmatrix(m, s, s, true);
+            }
+
+            Deltares::Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m, size_t rows, size_t columns, bool mirrored)
+            {
                 auto vm = std::vector<double>(m);
-                auto cm = Deltares::Numeric::Matrix(s, s);
+                auto cm = Deltares::Numeric::Matrix(rows, columns);
                 size_t ii = 0;
-                for (size_t j = 0; j < s; j++)
+
+                if (mirrored)
                 {
-                    for (size_t i = 0; i < s; i++)
+                    for (size_t j = 0; j < columns; j++)
                     {
-                        cm(i, j) = vm[ii];
-                        ii++;
+                        for (size_t i = 0; i < rows; i++)
+                        {
+                            cm(i, j) = vm[ii];
+                            ii++;
+                        }
                     }
                 }
+                else
+                {
+                    for (size_t i = 0; i < rows; i++)
+                    {
+                        for (size_t j = 0; j < columns; j++)
+                        {
+                            cm(i, j) = vm[ii];
+                            ii++;
+                        }
+                    }
+                }
+
                 return cm;
             }
 

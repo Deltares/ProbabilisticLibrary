@@ -36,16 +36,17 @@ def _print_error(message):
 	print('error: ' + str(message), flush = True)
 
 def LoadLibrary(lib_full_path):
+	global lib
+	lib = None
 	if os.path.isfile(lib_full_path):
 		try:
-			global lib
 			lib = cdll.LoadLibrary(lib_full_path)
 		except:
 			message = sys.exc_info()[0]
 			_print_error(message)
 			raise
 	if lib == None:
-		raise FileNotFoundError("Could not find " + lib_full_path)
+		print("ERROR: Could not find " + lib_full_path)
 
 def IsLibraryLoaded():
 	return 'lib' in globals() and not lib is None

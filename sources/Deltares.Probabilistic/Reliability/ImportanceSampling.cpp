@@ -23,11 +23,7 @@
 #include "ImportanceSamplingSupport.h"
 #include <vector>
 #include <cmath>
-#if __has_include(<format>)
 #include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
 #include <memory>
 
 #include "../Math/NumericSupport.h"
@@ -287,12 +283,7 @@ namespace Deltares
 			{
 				for (size_t i = 0; i < clusterResults.size(); i++)
 				{
-#ifdef __cpp_lib_format
 					std::string clusterIdentifier = std::format("Cluster {0:}", i + 1);
-#else
-					std::string clusterIdentifier = "Cluster " + std::to_string(i+1);
-#endif
-
 					double clusterBeta = Statistics::StandardNormal::getUFromQ(clusterResults[i]->ProbFailure);
 					std::shared_ptr<Sample> clusterSample = clusterResults[i]->designPointBuilder.getSample();
 					std::shared_ptr<DesignPoint> clusterDesignPoint = modelRunner->getDesignPoint(clusterSample, clusterBeta, convergenceReport, clusterIdentifier);

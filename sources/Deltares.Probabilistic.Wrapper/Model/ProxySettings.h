@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #pragma once
-#include "../../Deltares.Probabilistic/Model/ProxySettings.h"
+#include "../../Deltares.Probabilistic/Proxies/ProxySettings.h"
 #include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
@@ -33,7 +33,7 @@ namespace Deltares
             {
 
             private:
-                Utils::Wrappers::SharedPointerProvider<Models::ProxySettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Models::ProxySettings());
+                Utils::Wrappers::SharedPointerProvider<Proxies::ProxySettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Proxies::ProxySettings());
 
             public:
                 ProxySettings() { }
@@ -64,7 +64,7 @@ namespace Deltares
                     void set(double value) { shared->object->ThresholdOffset = value; }
                 }
 
-                std::shared_ptr<Models::ProxySettings> GetSettings()
+                std::shared_ptr<Proxies::ProxySettings> GetSettings()
                 {
                     return shared->object;
                 }
