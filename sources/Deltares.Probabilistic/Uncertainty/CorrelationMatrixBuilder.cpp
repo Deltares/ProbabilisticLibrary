@@ -105,7 +105,7 @@ namespace Deltares::Uncertainty
             for (size_t j = 0; j < i; j++)
             {
                 double correlationValue = this->getCorrelationValue(stochasts[i], stochasts[j]);
-                correlationMatrix->SetCorrelation(stochasts[i], stochasts[j], correlationValue);
+                correlationMatrix->SetCorrelation(stochasts[i], stochasts[j], correlationValue, CorrelationType::Gaussian);
             }
         }
 

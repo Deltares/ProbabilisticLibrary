@@ -102,8 +102,8 @@ namespace Deltares
             bool CheckConnection();
             void SetParentProcess();
 
-            std::string StringJoin(const std::vector<std::string>& strings, const std::string delim);
-            std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
+            static std::string StringJoin(const std::vector<std::string>& strings, const std::string& delim);
+            static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
             void StartProcess(std::string processName, bool waitForExit);
             void UpdateAddressInfo();

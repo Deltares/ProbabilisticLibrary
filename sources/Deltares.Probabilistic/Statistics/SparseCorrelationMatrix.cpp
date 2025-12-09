@@ -88,7 +88,7 @@ namespace Deltares
 
             for (std::shared_ptr<CorrelationValue> correlationValue : this->correlations)
             {
-                correlationMatrix->SetCorrelation(correlationValue->stochast1, correlationValue->stochast2, correlationValue->value);
+                correlationMatrix->SetCorrelation(correlationValue->stochast1, correlationValue->stochast2, correlationValue->value, CorrelationType::Gaussian);
             }
 
             return correlationMatrix;

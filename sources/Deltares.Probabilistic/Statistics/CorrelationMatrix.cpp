@@ -247,7 +247,7 @@ namespace Deltares
                     auto jj = findNewIndex(index, j);
                     if (index[i] >= 0 && index[j] >= 0)
                     {
-                        SetCorrelation(ii, jj, corrM->matrix(i, j));
+                        SetCorrelation(ii, jj, corrM->matrix(i, j), CorrelationType::Gaussian);
                     }
                 }
             }
@@ -389,7 +389,7 @@ namespace Deltares
 
                                 if (correlationWithType.value != expectedCorrelation)
                                 {
-                                    SetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1], expectedCorrelation);
+                                    SetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1], expectedCorrelation, CorrelationType::Gaussian);
                                     modified = true;
                                 }
                             }

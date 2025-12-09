@@ -71,12 +71,12 @@ namespace Deltares
 
                 void SetCorrelation(const int i, const int j, const double value)
                 {
-                    shared->object->SetCorrelation(i, j, value);
+                    shared->object->SetCorrelation(i, j, value, CorrelationType::Gaussian);
                 }
                 
                 void SetCorrelation(Stochast^ stochast1, Stochast^ stochast2, const double value)
                 {
-                    shared->object->SetCorrelation(stochast1->GetStochast(), stochast2->GetStochast(), value);
+                    shared->object->SetCorrelation(stochast1->GetStochast(), stochast2->GetStochast(), value, CorrelationType::Gaussian);
                 }
 
                 double GetCorrelation(const int i, const int j)

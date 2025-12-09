@@ -27,6 +27,7 @@
 #include "GumbelCopula.h"
 #include "DiagonalBandCopula.h"
 #include "GaussianCopula.h"
+#include <format>
 
 namespace Deltares::Statistics
 {
@@ -97,21 +98,19 @@ namespace Deltares::Statistics
             for (size_t j = 0; j < i; j++)
             {
                 auto& other = copulas[j];
-                if (c.AreLinked(other))
+                if (!c.AreLinked(other)) continue;
+                auto msg = std::make_shared<Logging::Message>();
+                const auto fmt = "Multiple correlations not allowed for copulas, found for correlations {0:} and {1:}";
+                if (stochasts.empty())
                 {
-                    auto msg = std::make_shared<Logging::Message>();
-                    msg->Text = "Multiple correlations not allowed for copulas, found for correlations ";
-                    if (stochasts.empty())
-                    {
-                        msg->Text += std::to_string(i) + " and " + std::to_string(j);
-                    }
-                    else
-                    {
-                        msg->Text += stochasts[i]->name + " and " + stochasts[j]->name;
-                    }
-                    msg->Type = Logging::MessageType::Error;
-                    report.messages.push_back(msg);
+                    msg->Text = std::format(fmt, i, j);
                 }
+                else
+                {
+                    msg->Text = std::format(fmt, stochasts[i]->name, stochasts[j]->name);
+                }
+                msg->Type = Logging::MessageType::Error;
+                report.messages.push_back(msg);
             }
         }
     }
