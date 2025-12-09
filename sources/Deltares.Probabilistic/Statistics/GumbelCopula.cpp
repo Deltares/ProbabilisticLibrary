@@ -23,6 +23,7 @@
 #include <cmath>
 #include "GumbelCopula.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
+#include "../Logging/ValidationSupport.h"
 
 namespace Deltares::Statistics
 {
@@ -70,13 +71,7 @@ namespace Deltares::Statistics
 
     void GumbelCopula::validate(Logging::ValidationReport & report) const
     {
-        if (alpha < 1.0)
-        {
-            auto msg = std::make_shared<Logging::Message>();
-            msg->Text = "Alpha in Gumbel copula should be >= 1.0, but is " + std::to_string(alpha);
-            msg->Type = Logging::MessageType::Error;
-            report.messages.push_back(msg);
-        }
+        Logging::ValidationSupport::checkMinimum(report, 1.0, alpha, "Alpha", "Gumbel copula", Logging::MessageType::Error);
     }
 }
 

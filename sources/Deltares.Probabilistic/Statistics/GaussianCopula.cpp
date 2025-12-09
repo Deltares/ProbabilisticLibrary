@@ -22,6 +22,7 @@
 
 #include "GaussianCopula.h"
 #include "StandardNormal.h"
+#include "../Logging/ValidationSupport.h"
 #include <cmath>
 
 namespace Deltares::Statistics
@@ -41,13 +42,8 @@ namespace Deltares::Statistics
 
     void GaussianCopula::validate(Logging::ValidationReport& report) const
     {
-        if (fabs(rho) > 1.0)
-        {
-            auto msg = std::make_shared<Logging::Message>();
-            msg->Text = "Rho in Gaussian copula should be in range [-1, 1], but is: " + std::to_string(rho);
-            msg->Type = Logging::MessageType::Error;
-            report.messages.push_back(msg);
-        }
+        Logging::ValidationSupport::checkMinimum(report, -1.0, rho, "Rho", "Gaussian copula", Logging::MessageType::Error);
+        Logging::ValidationSupport::checkMaximum(report,  1.0, rho, "Rho", "Gaussian copula", Logging::MessageType::Error);
     }
 
 }

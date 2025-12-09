@@ -34,6 +34,15 @@ namespace Deltares::Statistics
 
     void CopulaCorrelation::SetCorrelation(const int i, const int j, double value, CorrelationType type)
     {
+        if (i >= maxStochasts)
+        {
+            throw Reliability::probLibException("Invalid index in SetCorrelation: ", i);
+        }
+        else if (j >= maxStochasts)
+        {
+            throw Reliability::probLibException("Invalid index in SetCorrelation: ", j);
+        }
+
         auto pair = copulaPair();
         pair.index1 = i;
         pair.index2 = j;
@@ -73,7 +82,15 @@ namespace Deltares::Statistics
             if (c.index1 == c.index2)
             {
                 auto msg = std::make_shared<Logging::Message>();
-                msg->Text = "Self correlation not allowed for copulas, found for stochast " + std::to_string(c.index1);
+                msg->Text = "Self correlation not allowed for copulas, found for stochast ";
+                if (stochasts.empty())
+                {
+                    msg->Text += std::to_string(c.index1);
+                }
+                else
+                {
+                    msg->Text += stochasts[c.index1]->name;
+                }
                 msg->Type = Logging::MessageType::Error;
                 report.messages.push_back(msg);
             }
@@ -83,7 +100,15 @@ namespace Deltares::Statistics
                 if (c.AreLinked(other))
                 {
                     auto msg = std::make_shared<Logging::Message>();
-                    msg->Text = "Multiple correlations not allowed for copulas, found for correlations " + std::to_string(i) + " and " + std::to_string(j);
+                    msg->Text = "Multiple correlations not allowed for copulas, found for correlations ";
+                    if (stochasts.empty())
+                    {
+                        msg->Text += std::to_string(i) + " and " + std::to_string(j);
+                    }
+                    else
+                    {
+                        msg->Text += stochasts[i]->name + " and " + stochasts[j]->name;
+                    }
                     msg->Type = Logging::MessageType::Error;
                     report.messages.push_back(msg);
                 }
