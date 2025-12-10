@@ -27,6 +27,10 @@ Install the wheel as follows:
 pip install probabilistic_library-25.3.1-py3-none-any.whl --force-reinstall
 ```
 
+## Probabilistic Toolkit
+
+The routines in the Probabilistic Library are accessible through a user interface by the application [Probabilistic Toolkit](https://www.deltares.nl/en/software-and-data/products/probabilistic-toolkit-ptk).
+
 ## License
 
 This library is released under the LGPL license. For full text of this license, refer to the [LICENSE](LICENSE) file.
