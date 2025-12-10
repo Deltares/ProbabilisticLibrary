@@ -100,7 +100,7 @@ namespace Deltares::Statistics
                 auto& other = copulas[j];
                 if (!c.AreLinked(other)) continue;
                 auto msg = std::make_shared<Logging::Message>();
-                const auto fmt = "Multiple correlations not allowed for copulas, found for correlations {:} and {:}";
+                constexpr auto fmt = "Multiple correlations not allowed for copulas, found for correlations {:} and {:}";
                 if (stochasts.empty())
                 {
                     msg->Text = std::format(fmt, i, j);

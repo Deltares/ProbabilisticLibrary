@@ -438,7 +438,7 @@ namespace Deltares
 
         void ExternalServerHandler::SetIndexedIndexedIntValue(int id, std::string property, int index1, int index2, int value)
         {
-            auto message = std::format("set_indexed_indexed_int_value: {}:{}:{}:{}:{}",
+            const auto message = std::format("set_indexed_indexed_int_value: {}:{}:{}:{}:{}",
                 id, property, index1, index2, value);
             this->Send(message, false);
         }
