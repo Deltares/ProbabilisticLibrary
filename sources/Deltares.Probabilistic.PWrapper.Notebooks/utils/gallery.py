@@ -36,13 +36,14 @@ class Category:
     def start_table(self):
         self.lines.append('')
         self.lines.append('| | | |')
-        self.lines.append('|-|-|-|')
+        self.lines.append('|:-:|:-:|:-:|')
 
     def create_image_cell (self, header, image):
         self.empty = False
         path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
         link = path + image.replace('.png', '.ipynb')
-        self.cells.append(f'[<img src="{image}">]({link})')
+        #self.cells.append(f'[<img src="{image}">]({link})')
+        self.cells.append(f'[<img src="{image}">]({link})[{header}]({link})')
 
         if len(self.cells) == max_cells_per_line:
             self.new_line()
