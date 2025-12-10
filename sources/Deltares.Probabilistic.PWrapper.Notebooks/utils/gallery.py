@@ -1,10 +1,7 @@
 import nbclient
 import nbformat
-from probabilistic_library import Stochast, DistributionType, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, ConditionalValue
-from probabilistic_library import ReliabilityProject, DistributionType, ReliabilityMethod, StartMethod
-
 import nbconvert
-import nbformat
+
 from nbconvert.preprocessors import ExecutePreprocessor
 import os
 
@@ -23,6 +20,16 @@ if not os.path.exists(gallery_path):
    os.makedirs(gallery_path)
 
 max_cells_per_line = 3
+cells = []
+
+class Cell:
+    def __init__(self, index, contents):
+        self.index = index
+        self.contents = contents
+
+    def __lt__(self, other):
+        return self.index < other.index
+
 
 class Category:
     def __init__(self, name):
@@ -38,31 +45,43 @@ class Category:
         self.lines.append('| | | |')
         self.lines.append('|:-:|:-:|:-:|')
 
-    def create_image_cell (self, header, image):
+    def create_image_cell (self, index, header, image):
         self.empty = False
         path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
         link = path + image.replace('.png', '.ipynb')
-        #self.cells.append(f'[<img src="{image}">]({link})')
-        self.cells.append(f'[<img src="{image}">]({link})[{header}]({link})')
+        contents = f'[<img src="{image}">]({link})[{header}]({link})'
+        self.cells.append(Cell(index, contents))
 
         if len(self.cells) == max_cells_per_line:
             self.new_line()
 
-    def create_text_cell (self, header, link):
+    def create_text_cell (self, index, header, link):
         self.empty = False
         path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
         link = path + link.replace('.png', '.ipynb')
-        self.cells.append(f'[{header}]({link})')
+        contents = f'[{header}]({link})'
+        self.cells.append(Cell(index, contents))
 
-        if len(self.cells) == max_cells_per_line:
-            self.new_line()
 
-    def new_line(self):
-        if len(self.cells) > 0:
-            while len(self.cells) < max_cells_per_line:
-                self.cells.append(' ')
-            self.lines.append('| ' + str.join(' | ', self.cells) + ' |')
-            self.cells.clear()
+    def finalize(self):
+        self.cells.sort()
+
+        contents = []
+        for cell in self.cells:
+            contents.append(cell.contents)
+            if len(contents) == max_cells_per_line:
+                self.write_line(contents)
+                contents = []
+
+        self.write_line(contents)
+
+
+    def write_line(self, contents):
+        if len(contents) > 0:
+            while len(contents) < max_cells_per_line:
+                contents.append(' ')
+            self.lines.append('| ' + str.join(' | ', contents) + ' |')
+            contents.clear()
 
 def convert_file(file_name):
 
@@ -78,6 +97,7 @@ def convert_file(file_name):
     header = pl_notebook.cells[0].source.split('\n')[0].lstrip(' #')
 
     category = ''
+    index = 9999999
     has_plot = False
     for cell in pl_notebook.cells:
         if cell.metadata.hasattr('tags'):
@@ -101,14 +121,17 @@ def convert_file(file_name):
             for cat in [cat.name.lower() for cat in categories]:
                 if cat in cell.metadata.tags:
                     category = cat
+            for tag in cell.metadata.tags:
+                if tag.isdigit():
+                    index = int(tag)
 
     if category != '':
         for i in range(len(categories)):
             if category.lower() == categories[i].name.lower():
                 if has_plot:
-                    categories[i].create_image_cell(header, image)
+                    categories[i].create_image_cell(index, header, image)
                 else:
-                    categories[i].create_text_cell(header, image)
+                    categories[i].create_text_cell(index, header, image)
 
         if has_plot:
             out = ep.preprocess(pl_notebook, {'metadata': {'path': path}})
@@ -128,7 +151,7 @@ for file in os.listdir(path):
 lines = []
 for cat in categories:
     if not cat.empty:
-        cat.new_line()
+        cat.finalize()
         lines.extend(cat.lines)
 
 with open(gallery_path + "/gallery.md", "w") as file:
