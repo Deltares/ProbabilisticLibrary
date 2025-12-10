@@ -51,7 +51,7 @@ class Category:
     def create_text_cell (self, header, link):
         self.empty = False
         path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
-        link = path + link
+        link = path + link.replace('.png', '.ipynb')
         self.cells.append(f'[{header}]({link})')
 
         if len(self.cells) == max_cells_per_line:
