@@ -50,10 +50,9 @@ class Category:
         contents = f'[<img src="{image}">]({link})[{header}]({link})'
         self.cells.append(Cell(index, contents))
 
-    def create_text_cell (self, index, header, image):
+    def create_text_cell (self, index, header, notebook):
         self.empty = False
-        path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
-        link = notebook_path + image.replace('.png', '.ipynb')
+        link = notebook_path + notebook
         contents = f'[{header}]({link})'
         self.cells.append(Cell(index, contents))
 
@@ -86,8 +85,6 @@ def convert_file(file_name):
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
 
     image = file_name.replace('.ipynb', '.png')
-    image_path = gallery_path + "/" + image
-
     header = pl_notebook.cells[0].source.split('\n')[0].lstrip(' #')
 
     category = ''
@@ -108,6 +105,7 @@ def convert_file(file_name):
                         line = 'plot_object = ' + line.replace('.show()', '')
                         plot_line = True
                     if plot_line:
+                        image_path = gallery_path + "/" + image
                         line = line + f'\nplot_object.title("{header}")' 
                         line = line + f'\nplot_object.savefig("{image_path}")' 
                     new_lines.append(line)
@@ -125,7 +123,7 @@ def convert_file(file_name):
                 if has_plot:
                     categories[i].create_image_cell(index, header, image)
                 else:
-                    categories[i].create_text_cell(index, header, image)
+                    categories[i].create_text_cell(index, header, file_name)
 
         if has_plot:
             out = ep.preprocess(pl_notebook, {'metadata': {'path': path}})
