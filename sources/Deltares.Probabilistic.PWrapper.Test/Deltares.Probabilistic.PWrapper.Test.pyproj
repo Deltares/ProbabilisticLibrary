@@ -4,7 +4,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>..\Deltares.Probabilistic.PWrapper.Notebooks\utils\gallery.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>..\Deltares.Probabilistic.PWrapper</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -26,7 +27,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Deltares.Probabilistic.PWrapper.Notebooks\utils\gallery.py" />
     <Compile Include="project_builder.py" />
     <Compile Include="test_combine.py" />
     <Compile Include="test_length_effect.py" />
