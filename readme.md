@@ -6,7 +6,7 @@ The library provides a set of routines that enable reliability analysis of a com
 
 ## Gallery
 
-See the [Gallery](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions how to use the Probabilistic Library.
+See the [Gallery](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions how to use the Probabilistic Library. Jupyter notebooks are available, which demonstrate how to the usage of the Probabilistic Library.
 
 ## Scientific background
 
@@ -26,68 +26,6 @@ Install the wheel as follows:
 ```
 pip install probabilistic_library-25.3.1-py3-none-any.whl --force-reinstall
 ```
-
-### Jupyter notebooks
-
-Several Jupyter notebooks are available to demonstrate how to use the Probabilistic Library through the Python wrapper:
-
-1. Distribution functions:
-    * [Overview of the available distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/overview_distribution_functions.ipynb)
-
-    * [Operations on distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/operations_on_distribution_functions.ipynb)
-
-    * [Composite distributions](sources/Deltares.Probabilistic.PWrapper.Notebooks/composite_distribution.ipynb)
-
-    * [Fitting with prior distribution](sources/Deltares.Probabilistic.PWrapper.Notebooks/fitting_with_prior_distribution.ipynb)
-
-    * [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
-
-2. [Conversion functions (reliability index to failure probability)](sources/Deltares.Probabilistic.PWrapper.Notebooks/conversion_functions.ipynb)
-
-
-3. Reliability analysis of a single component:
-
-    * [Simple calculations with FORM and correlation case](sources/Deltares.Probabilistic.PWrapper.Notebooks/FORM_simple_correlations.ipynb)
-    
-    * [FORM, Crude Monte Carlo and Numerical Integration](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_methods_bligh.ipynb)
-
-    * [Directional sampling, Importance sampling, Adaptive importance sampling and Subset simulation](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_methods_hunt.ipynb)
-
-    * [Numerical bisection, Latin hypercube and COBYLA](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_methods_overtopping.ipynb)
-
-    * [Hybrid reliability methods (FDIR, DSFI)](sources/Deltares.Probabilistic.PWrapper.Notebooks/hybrid_reliability_methods.ipynb)
-
-    * [Reliability calculations with a model](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_with_piping_model.ipynb)
-
-    * [Reliability calculations with arrays as arguments in the model](sources/Deltares.Probabilistic.PWrapper.Notebooks/limit_state_function_with_arrays.ipynb)
-
-4. Reliability analysis of a system of components:
-
-    * [Reliability analysis of a system of components](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_analysis_system.ipynb)
-
-5. Working with conditional variables:
-
-    * [Conditional variable](sources/Deltares.Probabilistic.PWrapper.Notebooks/conditional_variable.ipynb)
-
-    * [Integration of a fragility curve](sources/Deltares.Probabilistic.PWrapper.Notebooks/failure_probability_fragility_curve.ipynb)
-
-6. Uncertainty analysis:
-
-    * [Simple example](sources/Deltares.Probabilistic.PWrapper.Notebooks/uncertainty_analysis.ipynb)
-
-    * [Safety levels](sources/Deltares.Probabilistic.PWrapper.Notebooks/safety_levels.ipynb)
-
-7. [Sensitivity analysis](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
-
-8. [Including spatial correlations (length-effect)](sources/Deltares.Probabilistic.PWrapper.Notebooks/length_effect.ipynb)
-
-9. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
-
-10. [Visualization of results](sources/Deltares.Probabilistic.PWrapper.Notebooks/visualize_results.ipynb)
-
-11. [Single model run](sources/Deltares.Probabilistic.PWrapper.Notebooks/run_model.ipynb)
-
-12. [Validation](sources/Deltares.Probabilistic.PWrapper.Notebooks/validation.ipynb)
 
 ## License
 
