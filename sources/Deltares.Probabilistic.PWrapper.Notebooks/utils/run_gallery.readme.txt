@@ -1,5 +1,5 @@
-FUNCIONALITY
-============
+FUNCTIONALITY
+=============
 
 The batch file run_gallery.bat generates the markdown file for the gallery (gallery.md) and all needed image files. They are put in the directory \sources\Deltares.Probabilistic.PWrapper.Notebooks\utils. After running this script, the gallery contents should be pushed to the repository.
 

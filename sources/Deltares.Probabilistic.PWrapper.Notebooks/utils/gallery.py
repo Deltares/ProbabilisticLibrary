@@ -1,11 +1,11 @@
-import nbclient
 import nbformat
-import nbconvert
 
 from nbconvert.preprocessors import ExecutePreprocessor
 import os
 
 directory = os.path.dirname(os.path.abspath(__file__))
+
+notebook_path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
 
 os.chdir(directory)
 os.chdir('..')
@@ -20,7 +20,6 @@ if not os.path.exists(gallery_path):
    os.makedirs(gallery_path)
 
 max_cells_per_line = 3
-cells = []
 
 class Cell:
     def __init__(self, index, contents):
@@ -33,8 +32,8 @@ class Cell:
 
 class Category:
     def __init__(self, name):
-        self.lines = []
-        self.cells = []
+        self.lines : list[str] = []
+        self.cells : list[Cell] = []
         self.name = name
         self.empty = True
         self.lines.append(f'## {name}')
@@ -47,18 +46,14 @@ class Category:
 
     def create_image_cell (self, index, header, image):
         self.empty = False
-        path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
-        link = path + image.replace('.png', '.ipynb')
+        link = notebook_path + image.replace('.png', '.ipynb')
         contents = f'[<img src="{image}">]({link})[{header}]({link})'
         self.cells.append(Cell(index, contents))
 
-        if len(self.cells) == max_cells_per_line:
-            self.new_line()
-
-    def create_text_cell (self, index, header, link):
+    def create_text_cell (self, index, header, image):
         self.empty = False
         path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
-        link = path + link.replace('.png', '.ipynb')
+        link = notebook_path + image.replace('.png', '.ipynb')
         contents = f'[{header}]({link})'
         self.cells.append(Cell(index, contents))
 
@@ -92,7 +87,6 @@ def convert_file(file_name):
 
     image = file_name.replace('.ipynb', '.png')
     image_path = gallery_path + "/" + image
-    link_path = gallery_path + "/" + file_name
 
     header = pl_notebook.cells[0].source.split('\n')[0].lstrip(' #')
 
@@ -102,7 +96,7 @@ def convert_file(file_name):
     for cell in pl_notebook.cells:
         if cell.metadata.hasattr('tags'):
             if 'gallery' in cell.metadata.tags:
-                new_lines = []
+                new_lines : list[str] = []
                 has_plot = True
                 for line in cell.source.split('\n'):
                     plot_line = False
@@ -137,7 +131,7 @@ def convert_file(file_name):
             out = ep.preprocess(pl_notebook, {'metadata': {'path': path}})
 
 
-categories = []
+categories : list[Category] = []
 categories.append(Category('Statistics'))
 categories.append(Category('Reliability'))
 categories.append(Category('Uncertainty'))
@@ -148,7 +142,7 @@ for file in os.listdir(path):
     if file.endswith(".ipynb"):
         convert_file(file)
 
-lines = []
+lines : list[str] = []
 for cat in categories:
     if not cat.empty:
         cat.finalize()
