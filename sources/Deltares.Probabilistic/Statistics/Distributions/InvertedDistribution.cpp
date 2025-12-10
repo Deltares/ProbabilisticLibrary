@@ -137,7 +137,7 @@ namespace Deltares
             std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
             StochastProperties invertedStochast = getInvertedStochast(stochast);
-            this->innerDistribution->fit(invertedStochast, zeroInvertedValues, shift);
+            this->innerDistribution->fit(invertedStochast, zeroInvertedValues, -shift);
 
             copyFromInverted(stochast, invertedStochast);
 
