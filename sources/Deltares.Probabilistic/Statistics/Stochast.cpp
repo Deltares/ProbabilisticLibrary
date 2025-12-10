@@ -704,7 +704,7 @@ namespace Deltares
             }
         }
 
-        static const std::vector<std::pair<const char*, DistributionType>> allDistributions = {
+        const std::vector<std::pair<const char*, DistributionType>> Stochast::allDistributions = {
                 {"deterministic", Deterministic},
                 {"normal", Normal },
                 {"log_normal", LogNormal },

@@ -63,6 +63,8 @@ namespace Deltares
              */
             std::shared_ptr<StochastProperties> getInterpolatedProperties(double xSource);
 
+            static const std::vector<std::pair<const char*, DistributionType>> allDistributions;
+
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 
