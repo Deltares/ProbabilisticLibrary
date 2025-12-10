@@ -6,7 +6,7 @@ The library provides a set of routines that enable reliability analysis of a com
 
 ## Gallery
 
-See the [Gallery](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions how to use the Probabilistic Library. Jupyter notebooks are available, which demonstrate how to the usage of the Probabilistic Library.
+See the [Gallery](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions how to use the Probabilistic Library. Jupyter notebooks are available for each gallery item. They demonstrate how to use the Probabilistic Library.
 
 ## Scientific background
 
