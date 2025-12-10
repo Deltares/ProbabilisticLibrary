@@ -64,6 +64,8 @@ add_executable(Deltares.Probabilistic.Test
     Reliability/testWaartsDiscontinuousLimitState_body.cpp
     Reliability/testWaartsTwoBranches.h
     Reliability/testWaartsTwoBranches_body.cpp
+    Reliability/testWaartsConcaveFailureDomain.h
+    Reliability/testWaartsConcaveFailureDomain_body.cpp
     Math/testCholeskiDecomposition.h
     Math/testCholeskiDecomposition_body.cpp
     Math/testKMean.h

@@ -51,6 +51,7 @@
 #include "Reliability/testWaartsSaddleSurface.h"
 #include "Reliability/testWaartsDiscontinuousLimitState.h"
 #include "Reliability/testWaartsTwoBranches.h"
+#include "Reliability/testWaartsConcaveFailureDomain.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -913,6 +914,54 @@ TEST(WaartsTests, TwoBranchesFDIR)
 TEST(WaartsTests, TwoBranchesDSFI)
 {
     auto tester = TestWaartsTwoBranches();
+    tester.WaartsDSFI();
+}
+
+TEST(WaartsTests, ConcaveFailureDomainFORM)
+{
+    auto tester = TestWaartsConcaveFailureDomain();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, ConcaveFailureDomainCrudeMonteCarlo)
+{
+    auto tester = TestWaartsConcaveFailureDomain();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, ConcaveFailureDomainDirectionalSampling)
+{
+    auto tester = TestWaartsConcaveFailureDomain();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, ConcaveFailureDomainNumericalIntegration)
+{
+    auto tester = TestWaartsConcaveFailureDomain();
+    tester.WaartsNumericalIntegration();
+}
+
+TEST(WaartsTests, ConcaveFailureDomainImportanceSampling)
+{
+    auto tester = TestWaartsConcaveFailureDomain();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, ConcaveFailureDomainAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsConcaveFailureDomain();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, ConcaveFailureDomainFDIR)
+{
+    auto tester = TestWaartsConcaveFailureDomain();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, ConcaveFailureDomainDSFI)
+{
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsDSFI();
 }
 

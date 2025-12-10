@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 11, size(functionName)
+        do j = 12, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -293,56 +293,6 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
                     call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (11) ! Concave failure domain
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 2, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 2, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Set the starting vector for FORM, see note by Waarts
-            ! Instead of (1,1) use a line search to start
-            ! The methods (0,0) and (1,1) as start vector both give a value 3.0
-            probDb%method%FORM%startMethod = fORMStartRaySearch
-            probDb%method%FORM%startValue  = (/ 1.0, 0.0 /)
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call iterateMechanism (probDb, convergenceData, zConcaveFailureDomain, probMethod, alfa, actualBeta, x)
-
-            select case (probMethod)
-                case (methodFORM)
-                    call assert_comparable( 1.66d0, actualBeta, 0.10d0 * betaFactor, "Concave failure domain: Beta" )
-
-                case (methodNumericalIntegration)
-                    call assert_comparable( 1.26d0, actualBeta, 0.10d0 * betaFactor, "Concave failure domain: Beta" )
-                    call assert_comparable( 0.386726676d0, alfa(1), margin, "Concave failure domain: Alfa(1)" )
-                    call assert_comparable( -0.92219438d0, alfa(2), margin, "Concave failure domain: Alfa(2)" )
-
-                case (methodDirectionalSampling)
-                    call assert_comparable( 1.26d0, actualBeta, 0.10d0 * betaFactor, "Concave failure domain: Beta" )
-
-                case (methodImportanceSampling)
-                    call assert_comparable( 1.28d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 1888, "no samples")
-
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select
