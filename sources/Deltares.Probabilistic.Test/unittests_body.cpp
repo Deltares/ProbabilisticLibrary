@@ -880,6 +880,12 @@ TEST(WaartsTests, TwoBranchesFORM)
     tester.WaartsFORM();
 }
 
+TEST(WaartsTests, TwoBranchesCrudeMonteCarlo)
+{
+    auto tester = TestWaartsTwoBranches();
+    tester.WaartsCrudeMonteCarlo();
+}
+
 TEST(WaartsTests, TwoBranchesDirectionalSampling)
 {
     auto tester = TestWaartsTwoBranches();

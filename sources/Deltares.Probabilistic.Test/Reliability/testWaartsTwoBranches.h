@@ -30,10 +30,12 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         void WaartsFORM() override;
+        void WaartsCrudeMonteCarlo() override;
     private:
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
         WaartsResult ExpectedValues() override;
         WaartsResult ExpectedValuesFORM() override;
+        WaartsResult ExpectedValuesCrudeMonteCarlo() override;
         WaartsResult ExpectedValuesFDIR() override;
         WaartsResult ExpectedValuesDSFI() override;
         WaartsResult ExpectedValuesDirectionalSampling() override;

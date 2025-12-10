@@ -69,6 +69,17 @@ namespace Deltares::Probabilistic::Test
         RunSingleWaartsTest(modelRunner, calculator, expected);
     }
 
+    void TestWaartsTwoBranches::WaartsCrudeMonteCarlo()
+    {
+        auto modelRunner = WaartsModel();
+        std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::CrudeMonteCarlo>();
+        auto cm = dynamic_cast<Reliability::CrudeMonteCarlo*>(calculator.get());
+        cm->Settings->MaximumSamples = 10000000;
+        cm->Settings->randomSettings->Seed = 1; // default seed (0), gives beta = 40
+        auto expected = ExpectedValuesCrudeMonteCarlo();
+        RunSingleWaartsTest(modelRunner, calculator, expected);
+    }
+
     WaartsResult TestWaartsTwoBranches::ExpectedValues()
     {
         auto expected = WaartsResult();
@@ -80,6 +91,14 @@ namespace Deltares::Probabilistic::Test
     {
         auto expected = ExpectedValues();
         expected.beta = 2.45;
+        expected.success = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsTwoBranches::ExpectedValuesCrudeMonteCarlo()
+    {
+        auto expected = ExpectedValues();
+        expected.beta = 5.07;
         expected.success = false;
         return expected;
     }
