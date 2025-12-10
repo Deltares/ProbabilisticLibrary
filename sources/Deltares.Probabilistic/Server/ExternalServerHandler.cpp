@@ -436,7 +436,7 @@ namespace Deltares
             this->Send("set_indexed_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index1) + ":" + std::to_string(index2) + ":" + std::to_string(value), false);
         }
 
-        void ExternalServerHandler::SetIndexedIndexedIntValue(int id, std::string property, int index1, int index2, int value)
+        void ExternalServerHandler::SetIndexedIndexedIntValue(int id, const std::string& property, int index1, int index2, int value)
         {
             const auto message = std::format("set_indexed_indexed_int_value: {}:{}:{}:{}:{}",
                 id, property, index1, index2, value);

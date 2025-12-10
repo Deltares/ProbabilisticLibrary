@@ -73,7 +73,7 @@ namespace Deltares
             void SetIndexedValue(int id, std::string property_, int index, double value) override;
             double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) override;
             void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
-            void SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value) override;
+            void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value) override;
             int GetIndexedIntValue(int id, std::string property_, int index) override;
             int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;

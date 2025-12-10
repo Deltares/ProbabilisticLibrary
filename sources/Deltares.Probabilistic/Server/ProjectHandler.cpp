@@ -1988,7 +1988,7 @@ namespace Deltares
             }
         }
 
-        void ProjectHandler::SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value)
+        void ProjectHandler::SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
         {
             ObjectType objectType = types[id];
 

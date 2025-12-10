@@ -85,7 +85,7 @@ namespace Deltares
             int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
             double GetIndexedIndexedValue(int id, std::string property, int index1, int index2) override;
             void SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value) override;
-            void SetIndexedIndexedIntValue(int id, std::string property, int index1, int index2, int value) override;
+            void SetIndexedIndexedIntValue(int id, const std::string& property, int index1, int index2, int value) override;
             void Execute(int id, std::string method_) override;
 #endif
 
