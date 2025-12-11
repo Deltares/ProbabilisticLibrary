@@ -38,36 +38,36 @@ add_executable(Deltares.Probabilistic.Test
     unittests_body.cpp
     projectBuilder.h
     projectBuilder_body.cpp
-    Reliability/testStartPointCalculator.h
-    Reliability/testStartPointCalculator_body.cpp
-    Reliability/testReliabilityMethods.h
-    Reliability/testReliabilityMethods_body.cpp
-    Reliability/testWaarts.h
-    Reliability/testWaarts_body.cpp
-    Reliability/testWaartsLinearResistance.h
-    Reliability/testWaartsLinearResistance_body.cpp
-    Reliability/testWaartsResistanceOneQuadraticTerm.h
-    Reliability/testWaartsResistanceOneQuadraticTerm_body.cpp
-    Reliability/testWaartsResistanceTenQuadraticTerms.h
-    Reliability/testWaartsResistanceTenQuadraticTerms_body.cpp
-    Reliability/testWaartsResistance25QuadraticTerms.h
-    Reliability/testWaartsResistance25QuadraticTerms_body.cpp
-    Reliability/testWaartsNoisyLimitState.h
-    Reliability/testWaartsNoisyLimitState_body.cpp
-    Reliability/testWaartsConvexFailureDomain.h
-    Reliability/testWaartsConvexFailureDomain_body.cpp
-    Reliability/testWaartsOblateSpheroid.h
-    Reliability/testWaartsOblateSpheroid_body.cpp
-    Reliability/testWaartsSaddleSurface.h
-    Reliability/testWaartsSaddleSurface_body.cpp
-    Reliability/testWaartsDiscontinuousLimitState.h
-    Reliability/testWaartsDiscontinuousLimitState_body.cpp
-    Reliability/testWaartsTwoBranches.h
-    Reliability/testWaartsTwoBranches_body.cpp
-    Reliability/testWaartsConcaveFailureDomain.h
-    Reliability/testWaartsConcaveFailureDomain_body.cpp
-    Reliability/testWaartsSeriesSystem.h
-    Reliability/testWaartsSeriesSystem_body.cpp
+    Reliability/TestStartPointCalculator.h
+    Reliability/TestStartPointCalculator_body.cpp
+    Reliability/TestReliabilityMethods.h
+    Reliability/TestReliabilityMethods_body.cpp
+    Reliability/Waarts/TestWaarts.h
+    Reliability/Waarts/TestWaarts_body.cpp
+    Reliability/Waarts/TestWaartsLinearResistance.h
+    Reliability/Waarts/TestWaartsLinearResistance_body.cpp
+    Reliability/Waarts/TestWaartsResistanceOneQuadraticTerm.h
+    Reliability/Waarts/TestWaartsResistanceOneQuadraticTerm_body.cpp
+    Reliability/Waarts/TestWaartsResistanceTenQuadraticTerms.h
+    Reliability/Waarts/TestWaartsResistanceTenQuadraticTerms_body.cpp
+    Reliability/Waarts/TestWaartsResistance25QuadraticTerms.h
+    Reliability/Waarts/TestWaartsResistance25QuadraticTerms_body.cpp
+    Reliability/Waarts/TestWaartsNoisyLimitState.h
+    Reliability/Waarts/TestWaartsNoisyLimitState_body.cpp
+    Reliability/Waarts/TestWaartsConvexFailureDomain.h
+    Reliability/Waarts/TestWaartsConvexFailureDomain_body.cpp
+    Reliability/Waarts/TestWaartsOblateSpheroid.h
+    Reliability/Waarts/TestWaartsOblateSpheroid_body.cpp
+    Reliability/Waarts/TestWaartsSaddleSurface.h
+    Reliability/Waarts/TestWaartsSaddleSurface_body.cpp
+    Reliability/Waarts/TestWaartsDiscontinuousLimitState.h
+    Reliability/Waarts/TestWaartsDiscontinuousLimitState_body.cpp
+    Reliability/Waarts/TestWaartsTwoBranches.h
+    Reliability/Waarts/TestWaartsTwoBranches_body.cpp
+    Reliability/Waarts/TestWaartsConcaveFailureDomain.h
+    Reliability/Waarts/TestWaartsConcaveFailureDomain_body.cpp
+    Reliability/Waarts/TestWaartsSeriesSystem.h
+    Reliability/Waarts/TestWaartsSeriesSystem_body.cpp
     Math/testCholeskiDecomposition.h
     Math/testCholeskiDecomposition_body.cpp
     Math/testKMean.h

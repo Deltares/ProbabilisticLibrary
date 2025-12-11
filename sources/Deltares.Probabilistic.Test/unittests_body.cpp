@@ -20,8 +20,8 @@
 // All rights reserved.
 //
 #include <gtest/gtest.h>
-#include "Reliability/testStartPointCalculator.h"
-#include "Reliability/testReliabilityMethods.h"
+#include "Reliability/TestStartPointCalculator.h"
+#include "Reliability/TestReliabilityMethods.h"
 #include "Math/testCholeskiDecomposition.h"
 #include "Math/testNumericSupport.h"
 #include "Math/testKMean.h"
@@ -41,25 +41,25 @@
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
-#include "Reliability/testWaartsLinearResistance.h"
-#include "Reliability/testWaartsNoisyLimitState.h"
-#include "Reliability/testWaartsResistanceOneQuadraticTerm.h"
-#include "Reliability/testWaartsResistanceTenQuadraticTerms.h"
-#include "Reliability/testWaartsResistance25QuadraticTerms.h"
-#include "Reliability/testWaartsConvexFailureDomain.h"
-#include "Reliability/testWaartsOblateSpheroid.h"
-#include "Reliability/testWaartsSaddleSurface.h"
-#include "Reliability/testWaartsDiscontinuousLimitState.h"
-#include "Reliability/testWaartsTwoBranches.h"
-#include "Reliability/testWaartsConcaveFailureDomain.h"
-#include "Reliability/testWaartsSeriesSystem.h"
+#include "Reliability/Waarts/TestWaartsLinearResistance.h"
+#include "Reliability/Waarts/TestWaartsNoisyLimitState.h"
+#include "Reliability/Waarts/TestWaartsResistanceOneQuadraticTerm.h"
+#include "Reliability/Waarts/TestWaartsResistanceTenQuadraticTerms.h"
+#include "Reliability/Waarts/TestWaartsResistance25QuadraticTerms.h"
+#include "Reliability/Waarts/TestWaartsConvexFailureDomain.h"
+#include "Reliability/Waarts/TestWaartsOblateSpheroid.h"
+#include "Reliability/Waarts/TestWaartsSaddleSurface.h"
+#include "Reliability/Waarts/TestWaartsDiscontinuousLimitState.h"
+#include "Reliability/Waarts/TestWaartsTwoBranches.h"
+#include "Reliability/Waarts/TestWaartsConcaveFailureDomain.h"
+#include "Reliability/Waarts/TestWaartsSeriesSystem.h"
 
 using namespace Deltares::Probabilistic::Test;
 
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
-    //::testing::GTEST_FLAG(filter) = "reliability_method_test.testClustersAdpImpSampling";
+    //::testing::GTEST_FLAG(filter) = "reliability_method_test.TestClustersAdpImpSampling";
     return RUN_ALL_TESTS();
 }
 
@@ -130,125 +130,118 @@ TEST(unittst, testKMeanClustering)
 
 TEST(unittst, testStartPointCalculator)
 {
-    auto tstStartPoint = testStartPointCalculator();
-    tstStartPoint.allStartPointTests();
+    auto tstStartPoint = TestStartPointCalculator();
+    tstStartPoint.AllStartPointTests();
 }
 
-TEST(reliability_method_test, testFORM)
+TEST(reliability_method_test, TestFORM)
 {
-    auto tstRelMethods = testReliabilityMethods();
-    tstRelMethods.testFORM();
+    TestReliabilityMethods::TestFORM();
 }
 
-TEST(reliability_method_test, testFORMArray)
+TEST(reliability_method_test, TestFORMArray)
 {
-    auto tstRelMethods = testReliabilityMethods();
-    tstRelMethods.testFORMArray();
+    TestReliabilityMethods::TestFORMArray();
 }
 
-TEST(reliability_method_test, testFORMVaryingArray)
+TEST(reliability_method_test, TestFORMVaryingArray)
 {
-    auto tstRelMethods = testReliabilityMethods();
-    tstRelMethods.testFORMVaryingArray();
+    TestReliabilityMethods::TestFORMVaryingArray();
 }
 
-TEST(reliability_method_test, testValidation)
+TEST(reliability_method_test, TestValidation)
 {
-    testReliabilityMethods::testValidation();
+    TestReliabilityMethods::TestValidation();
 }
 
-TEST(reliability_method_test, testLatinHyperCube)
+TEST(reliability_method_test, TestLatinHyperCube)
 {
-    auto tstRelMethods = testReliabilityMethods();
-    tstRelMethods.testLatinHyperCube();
+    TestReliabilityMethods::TestLatinHyperCube();
 }
 
-TEST(reliability_method_test, testCobylaReliability)
+TEST(reliability_method_test, TestCobylaReliability)
 {
-    auto tstRelMethods = testReliabilityMethods();
-    tstRelMethods.testCobylaReliability();
+    TestReliabilityMethods::TestCobylaReliability();
 }
 
-TEST(reliability_method_test, testNumBisection1)
+TEST(reliability_method_test, TestNumBisection1)
 {
-    auto tstRelMethods = testReliabilityMethods();
-    tstRelMethods.testNumericalBisection();
+    TestReliabilityMethods::TestNumericalBisection();
 }
 
-TEST(reliability_method_test, testNumBisection2)
+TEST(reliability_method_test, TestNumBisection2)
 {
-    auto tstRelMethods = testReliabilityMethods();
-    tstRelMethods.testNumericalBisectionLinear();
+    TestReliabilityMethods::TestNumericalBisectionLinear();
 }
 
-TEST(reliability_method_test, testSubSetSimulationReliabilityNearestToMean)
+TEST(reliability_method_test, TestSubSetSimulationReliabilityNearestToMean)
 {
-    testReliabilityMethods::testSubSetSimulationReliabilityNearestToMean();
+    TestReliabilityMethods::TestSubSetSimulationReliabilityNearestToMean();
 }
 
-TEST(reliability_method_test, testSubSetSimulationReliabilityCenterOfGravity)
+TEST(reliability_method_test, TestSubSetSimulationReliabilityCenterOfGravity)
 {
-    testReliabilityMethods::testSubSetSimulationReliabilityCenterOfGravity();
+    TestReliabilityMethods::TestSubSetSimulationReliabilityCenterOfGravity();
 }
 
-TEST(reliability_method_test, testFDIRReliability)
+TEST(reliability_method_test, TestFDIRReliability)
 {
-    testReliabilityMethods::testFDIRReliability();
+    TestReliabilityMethods::TestFDIRReliability();
 }
 
-TEST(reliability_method_test, testDSFIReliability)
+TEST(reliability_method_test, TestDSFIReliability)
 {
-    testReliabilityMethods::testDSFIReliability();
+    TestReliabilityMethods::TestDSFIReliability();
 }
 
-TEST(reliability_method_test, testFragilityCurveIntegration)
+TEST(reliability_method_test, TestFragilityCurveIntegration)
 {
-    testReliabilityMethods::testFragilityCurveIntegration();
+    TestReliabilityMethods::TestFragilityCurveIntegration();
 }
 
-TEST(reliability_method_test, testNumericalIntegrationReliability)
+TEST(reliability_method_test, TestNumericalIntegrationReliability)
 {
-    testReliabilityMethods::testNumericalIntegrationReliability();
+    TestReliabilityMethods::TestNumericalIntegrationReliability();
 }
 
-TEST(reliability_method_test, testCrudeMCReliability)
+TEST(reliability_method_test, TestCrudeMCReliability)
 {
-    testReliabilityMethods::testCrudeMonteCarloReliability();
+    TestReliabilityMethods::TestCrudeMonteCarloReliability();
 }
 
-TEST(reliability_method_test, testAdaptiveImportanceSampling)
+TEST(reliability_method_test, TestAdaptiveImportanceSampling)
 {
-    testReliabilityMethods::testAdaptiveImportanceSampling();
+    TestReliabilityMethods::TestAdaptiveImportanceSampling();
 }
 
-TEST(reliability_method_test, testClustersAdpImpSampling)
+TEST(reliability_method_test, TestClustersAdpImpSampling)
 {
-    testReliabilityMethods::testClustersAdpImpSampling();
+    TestReliabilityMethods::TestClustersAdpImpSampling();
 }
 
-TEST(reliability_method_test, testDirSamplingTwoBranches)
+TEST(reliability_method_test, TestDirSamplingTwoBranches)
 {
-    testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 1.0);
+    TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Monotone, 1.0);
 }
 
-TEST(reliability_method_test, testDirSamplingProxyModels)
+TEST(reliability_method_test, TestDirSamplingProxyModels)
 {
-    testReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Monotone, 1.0);
+    TestReliabilityMethods::TestDirSamplingProxyModels(true, ModelVaryingType::Monotone, 1.0);
 }
 
-TEST(reliability_method_test, testDirSamplingTwoBranchesNotMonotone)
+TEST(reliability_method_test, TestDirSamplingTwoBranchesNotMonotone)
 {
-    testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Varying, 1.0);
+    TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Varying, 1.0);
 }
 
-TEST(reliability_method_test, testDirSamplingProxyModelsNotMonotone)
+TEST(reliability_method_test, TestDirSamplingProxyModelsNotMonotone)
 {
-    testReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Varying, 1.0);
+    TestReliabilityMethods::TestDirSamplingProxyModels(true, ModelVaryingType::Varying, 1.0);
 }
 
-TEST(reliability_method_test, testDirSamplingTwoBranchesLargerStepsize)
+TEST(reliability_method_test, TestDirSamplingTwoBranchesLargerStepsize)
 {
-    testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 3.0);
+    TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Monotone, 3.0);
 }
 TEST(distribution_tests, testConditionalStochast)
 {
@@ -446,8 +439,7 @@ TEST(unittst, testRunModel)
 
 TEST(unittst, testRandom)
 {
-    auto tstRnd = testRandom();
-    tstRnd.allRandomTests();
+    testRandom::allRandomTests();
 }
 
 TEST(unittst, testRootfinder)
