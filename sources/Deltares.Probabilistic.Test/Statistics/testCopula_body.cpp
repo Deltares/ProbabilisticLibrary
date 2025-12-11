@@ -136,6 +136,21 @@ namespace Deltares::Probabilistic::Test
         copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
         copulas.validate(report);
         EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations 1 and 0", report.messages[0]->Text);
+
+        report.messages.clear();
+        auto copulas2 = Statistics::CopulaCorrelation();
+        auto stochast1 = std::make_shared<Statistics::Stochast>();
+        stochast1->name = "A";
+        auto stochast2 = std::make_shared<Statistics::Stochast>();
+        stochast2->name = "B";
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(stochast1);
+        stochasts.push_back(stochast2);
+        copulas2.init(stochasts);
+        copulas2.SetCorrelation(stochast1, stochast2, 0.1, CorrelationType::Gaussian);
+        copulas2.SetCorrelation(stochast2, stochast1, 2.0, CorrelationType::Frank);
+        copulas2.validate(report);
+        EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations B-A and A-B", report.messages[0]->Text);
     }
 
 }

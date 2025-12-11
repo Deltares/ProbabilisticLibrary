@@ -107,7 +107,9 @@ namespace Deltares::Statistics
                 }
                 else
                 {
-                    msg->Text = std::format(fmt, stochasts[i]->name, stochasts[j]->name);
+                    const auto pair1 = stochasts[c.index1]->name + "-" + stochasts[c.index2]->name;
+                    const auto pair2 = stochasts[other.index1]->name + "-" + stochasts[other.index2]->name;
+                    msg->Text = std::format(fmt, pair1, pair2);
                 }
                 msg->Type = Logging::MessageType::Error;
                 report.messages.push_back(msg);
