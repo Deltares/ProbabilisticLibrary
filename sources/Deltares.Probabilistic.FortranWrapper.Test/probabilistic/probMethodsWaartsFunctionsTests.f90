@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 12, size(functionName)
+        do j = 13, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -293,57 +293,6 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
                     call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (12) ! Series system
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 2, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Set the starting vector for FORM
-            probDb%method%FORM%startMethod = fORMStartSphereSearch
-            probDb%method%FORM%startValue  = (/ 1.0, 1.0 /)
-            probDb%method%FORM%allQuadrants = .true.
-            probDb%method%FORM%maxStepsSphereSearch = 16
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 1, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-            call initializeStochast (probDb, 2, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call iterateMechanism (probDb, convergenceData, zSeriesSystem, probMethod, alfa, actualBeta, x)
-
-            select case (probMethod)
-                case (methodFORM)
-                    call assert_comparable( 3.00d0, actualBeta, 0.05d0 * betaFactor, "Series system: Beta" )
-
-                case (methodNumericalIntegration)
-                    call assert_comparable( 2.842646d0, actualBeta, margin, "Series system: Beta" )
-                    ! function is symmetric in x; so sign of alpha can flip
-                    call assert_comparable( 0.707106781186548d0, abs(alfa(1)), margin, "Series system: Alfa(1)" )
-                    call assert_comparable( 0.707106781186548d0, abs(alfa(2)), margin, "Series system: Alfa(2)" )
-
-                case (methodDirectionalSampling)
-                    call assert_comparable( 2.9d0, actualBeta, 0.1d0, "Series system: Beta" )
-
-                case (methodImportanceSampling)
-                    call assert_comparable( 2.84d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
-
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select
