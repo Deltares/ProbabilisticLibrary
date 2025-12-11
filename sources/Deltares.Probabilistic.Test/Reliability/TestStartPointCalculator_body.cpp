@@ -21,7 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include <cmath>
-#include "testStartPointCalculator.h"
+#include "TestStartPointCalculator.h"
 #include "../../Deltares.Probabilistic/Reliability/StartPointCalculator.h"
 #include "../projectBuilder.h"
 
