@@ -172,6 +172,8 @@
     <ClInclude Include="Reliability\testWaartsTwoBranches_body.cpp" />
     <ClInclude Include="Reliability\testWaartsConcaveFailureDomain.h" />
     <ClInclude Include="Reliability\testWaartsConcaveFailureDomain_body.cpp" />
+    <ClInclude Include="Reliability\testWaartsSeriesSystem.h" />
+    <ClInclude Include="Reliability\testWaartsSeriesSystem_body.cpp" />
     <ClInclude Include="Reliability\testReliabilityMethods.h" />
     <ClInclude Include="Reliability\testReliabilityMethods_body.cpp" />
     <ClInclude Include="Uncertainty\TestUncertainty.h" />
@@ -216,6 +218,7 @@
     <ClCompile Include="Reliability\testWaartsDiscontinuousLimitState.cpp" />
     <ClCompile Include="Reliability\testWaartsTwoBranches.cpp" />
     <ClCompile Include="Reliability\testWaartsConcave.cpp" />
+    <ClCompile Include="Reliability\testWaartsSeriesSystem.cpp" />
     <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />
