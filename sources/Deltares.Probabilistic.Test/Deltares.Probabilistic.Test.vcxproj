@@ -217,7 +217,7 @@
     <ClCompile Include="Reliability\testWaartsSaddleSurface.cpp" />
     <ClCompile Include="Reliability\testWaartsDiscontinuousLimitState.cpp" />
     <ClCompile Include="Reliability\testWaartsTwoBranches.cpp" />
-    <ClCompile Include="Reliability\testWaartsConcave.cpp" />
+    <ClCompile Include="Reliability\testWaartsConcaveFailureDomain.cpp" />
     <ClCompile Include="Reliability\testWaartsSeriesSystem.cpp" />
     <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />
