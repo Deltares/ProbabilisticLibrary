@@ -29,105 +29,99 @@ using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 using namespace Deltares::Models;
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    void TestStartPointCalculator::AllStartPointTests() const
     {
-        namespace Test
-        {
-            void TestStartPointCalculator::AllStartPointTests()
-            {
-                TestMethodOne();
-                TestMethodRaySearch();
-                TestMethodSphereSearch();
-                TestMethodSphereSearchAllDirections();
-                TestMethodSphereSearchWithDeterminist();
-            }
-
-            void TestStartPointCalculator::TestMethodOne()
-            {
-                auto modelRunner = projectBuilder().BuildProject();
-                auto calculator = StartPointCalculator();
-
-                modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-                calculator.Settings->StartMethod = StartMethodType::FixedValue;
-                calculator.Settings->startVector = { 1.0, 1.0 };
-
-                auto r = calculator.getStartPoint(*modelRunner);
-
-                ASSERT_EQ(r->Values.size(), 2);
-                EXPECT_EQ(r->Values[0], 1.0);
-                EXPECT_EQ(r->Values[1], 1.0);
-            }
-
-            void TestStartPointCalculator::TestMethodRaySearch()
-            {
-                auto modelRunner = projectBuilder().BuildProject();
-                auto calculator = StartPointCalculator();
-
-                modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-                calculator.Settings->StartMethod = StartMethodType::RaySearch;
-                calculator.Settings->MaximumLengthStartPoint = 20.0;
-                calculator.Settings->dsdu = 3.0;
-
-                auto r = calculator.getStartPoint(*modelRunner);
-
-                ASSERT_EQ(r->Values.size(), 2);
-                EXPECT_NEAR(r->Values[0], 12.0, margin);
-                EXPECT_NEAR(r->Values[1], 12.0, margin);
-            }
-
-            void TestStartPointCalculator::TestMethodSphereSearch()
-            {
-                auto modelRunner = projectBuilder().BuildProject();
-                auto calculator = StartPointCalculator();
-
-                modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-                calculator.Settings->StartMethod = StartMethodType::SphereSearch;
-
-                auto r = calculator.getStartPoint(*modelRunner);
-
-                ASSERT_EQ(r->Values.size(), 2);
-                auto z = modelRunner->getZValue(r);
-                EXPECT_TRUE(std::abs(z) < margin);
-                EXPECT_NEAR(r->Values[0], 2.4, margin);
-                EXPECT_NEAR(r->Values[1], 0.0, margin);
-            }
-
-            void TestStartPointCalculator::TestMethodSphereSearchAllDirections()
-            {
-                auto modelRunner = projectBuilder().BuildProject();
-                auto calculator = StartPointCalculator();
-
-                modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-                calculator.Settings->StartMethod = StartMethodType::SphereSearch;
-                calculator.Settings->allQuadrants = true;
-                calculator.Settings->maxStepsSphereSearch = 16;
-
-                auto r = calculator.getStartPoint(*modelRunner);
-
-                ASSERT_EQ(r->Values.size(), 2);
-                auto z = modelRunner->getZValue(r);
-                EXPECT_TRUE(std::abs(z) < margin);
-                EXPECT_NEAR(r->Values[0], 1.64172137689, margin);
-                EXPECT_NEAR(r->Values[1], -0.94784827888, margin);
-            }
-
-            void TestStartPointCalculator::TestMethodSphereSearchWithDeterminist()
-            {
-                auto modelRunner = projectBuilder().BuildProjectWithDeterminist(3.0);
-                auto calculator = StartPointCalculator();
-
-                modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-                calculator.Settings->StartMethod = StartMethodType::SphereSearch;
-
-                auto r = calculator.getStartPoint(*modelRunner);
-
-                ASSERT_EQ(r->Values.size(), 2);
-                EXPECT_NEAR(r->Values[1], 2.4, margin);
-                EXPECT_NEAR(r->Values[0], 0.0, margin);
-            }
-
-        }
+        TestMethodOne();
+        TestMethodRaySearch();
+        TestMethodSphereSearch();
+        TestMethodSphereSearchAllDirections();
+        TestMethodSphereSearchWithDeterminist();
     }
+
+    void TestStartPointCalculator::TestMethodOne()
+    {
+        auto modelRunner = projectBuilder().BuildProject();
+        auto calculator = StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = StartMethodType::FixedValue;
+        calculator.Settings->startVector = { 1.0, 1.0 };
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r->Values.size(), 2);
+        EXPECT_EQ(r->Values[0], 1.0);
+        EXPECT_EQ(r->Values[1], 1.0);
+    }
+
+    void TestStartPointCalculator::TestMethodRaySearch() const
+    {
+        auto modelRunner = projectBuilder().BuildProject();
+        auto calculator = StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = StartMethodType::RaySearch;
+        calculator.Settings->MaximumLengthStartPoint = 20.0;
+        calculator.Settings->dsdu = 3.0;
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r->Values.size(), 2);
+        EXPECT_NEAR(r->Values[0], 12.0, margin);
+        EXPECT_NEAR(r->Values[1], 12.0, margin);
+    }
+
+    void TestStartPointCalculator::TestMethodSphereSearch() const
+    {
+        auto modelRunner = projectBuilder().BuildProject();
+        auto calculator = StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = StartMethodType::SphereSearch;
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r->Values.size(), 2);
+        auto z = modelRunner->getZValue(r);
+        EXPECT_TRUE(std::abs(z) < margin);
+        EXPECT_NEAR(r->Values[0], 2.4, margin);
+        EXPECT_NEAR(r->Values[1], 0.0, margin);
+    }
+
+    void TestStartPointCalculator::TestMethodSphereSearchAllDirections() const
+    {
+        auto modelRunner = projectBuilder().BuildProject();
+        auto calculator = StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = StartMethodType::SphereSearch;
+        calculator.Settings->allQuadrants = true;
+        calculator.Settings->maxStepsSphereSearch = 16;
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r->Values.size(), 2);
+        auto z = modelRunner->getZValue(r);
+        EXPECT_TRUE(std::abs(z) < margin);
+        EXPECT_NEAR(r->Values[0], 1.64172137689, margin);
+        EXPECT_NEAR(r->Values[1], -0.94784827888, margin);
+    }
+
+    void TestStartPointCalculator::TestMethodSphereSearchWithDeterminist() const
+    {
+        auto modelRunner = projectBuilder().BuildProjectWithDeterminist(3.0);
+        auto calculator = StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = StartMethodType::SphereSearch;
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r->Values.size(), 2);
+        EXPECT_NEAR(r->Values[1], 2.4, margin);
+        EXPECT_NEAR(r->Values[0], 0.0, margin);
+    }
+
 }

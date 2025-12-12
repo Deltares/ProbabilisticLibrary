@@ -21,24 +21,18 @@
 //
 #pragma once
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class TestStartPointCalculator
     {
-        namespace Test
-        {
-            class TestStartPointCalculator
-            {
-            public:
-                void AllStartPointTests();
-            private:
-                void TestMethodOne();
-                void TestMethodRaySearch();
-                void TestMethodSphereSearch();
-                void TestMethodSphereSearchAllDirections();
-                void TestMethodSphereSearchWithDeterminist();
-                const double margin = 1e-9;
-            };
-        }
-    }
+    public:
+        void AllStartPointTests() const;
+    private:
+        static void TestMethodOne();
+        void TestMethodRaySearch() const;
+        void TestMethodSphereSearch() const;
+        void TestMethodSphereSearchAllDirections() const;
+        void TestMethodSphereSearchWithDeterminist() const;
+        const double margin = 1e-9;
+    };
 }
