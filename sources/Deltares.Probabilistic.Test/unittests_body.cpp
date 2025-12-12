@@ -53,6 +53,7 @@
 #include "Reliability/Waarts/TestWaartsTwoBranches.h"
 #include "Reliability/Waarts/TestWaartsConcaveFailureDomain.h"
 #include "Reliability/Waarts/TestWaartsSeriesSystem.h"
+#include "Reliability/Waarts/TestWaartsParallelSystem.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -1003,6 +1004,48 @@ TEST(WaartsTests, SeriesSystemDomainFDIR)
 TEST(WaartsTests, SeriesSystemDomainDSFI)
 {
     auto tester = TestWaartsSeriesSystem();
+    tester.WaartsDSFI();
+}
+
+TEST(WaartsTests, ParallelSystemFORM)
+{
+    auto tester = TestWaartsParallelSystem();
+    tester.WaartsFORM();
+}
+
+TEST(WaartsTests, ParallelSystemCrudeMonteCarlo)
+{
+    auto tester = TestWaartsParallelSystem();
+    tester.WaartsCrudeMonteCarlo();
+}
+
+TEST(WaartsTests, ParallelSystemDirectionalSampling)
+{
+    auto tester = TestWaartsParallelSystem();
+    tester.WaartsDirectionalSampling();
+}
+
+TEST(WaartsTests, ParallelSystemImportanceSampling)
+{
+    auto tester = TestWaartsParallelSystem();
+    tester.WaartsImportanceSampling();
+}
+
+TEST(WaartsTests, ParallelSystemAdaptiveImportanceSampling)
+{
+    auto tester = TestWaartsParallelSystem();
+    tester.WaartsAdaptiveImportanceSampling();
+}
+
+TEST(WaartsTests, ParallelSystemDomainFDIR)
+{
+    auto tester = TestWaartsParallelSystem();
+    tester.WaartsFDIR();
+}
+
+TEST(WaartsTests, ParallelSystemDomainDSFI)
+{
+    auto tester = TestWaartsParallelSystem();
     tester.WaartsDSFI();
 }
 

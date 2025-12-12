@@ -152,7 +152,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 13, size(functionName)
+        do j = 14, size(functionName)
 
             waartsFunction     = j
             waartsFunctionName = functionName(j)
@@ -293,55 +293,6 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
                     call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-        case (13) ! Parallel system
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 5, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            do i = 1, 5
-                call initializeStochast (probDb, i, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
-            end do
-
-            ! Initialize the number of integration intervals for numerical integration
-            call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
-                     probDb%method%NI%numberIntervals )
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! Perform computation numberIterations times
-            call iterateMechanism (probDb, convergenceData, zParallelSystem, probMethod, alfa, actualBeta, x)
-
-            select case (probMethod)
-                case (methodFORM, methodFORMandDirSampling, methodDirSamplingWithFORMiterations)
-                    ! Waarts shows an error entry for FORM in this case, we do get a value
-                    call assert_false ( convergenceData%conv, "Parallel system: convergence flag" )
-
-                case (methodNumericalIntegration)
-                    call assert_comparable( 3.56514503038931d0, actualBeta, margin, "Parallel system: Beta" )
-                    call assert_comparable( -0.409615960259520d0, alfa(1), margin, "Parallel system: Alfa(1)" )
-                    call assert_comparable( -0.573462344363328d0, alfa(2), margin, "Parallel system: Alfa(2)" )
-                    call assert_comparable( -0.409615960259520d0, alfa(3), margin, "Parallel system: Alfa(3)" )
-                    call assert_comparable( -0.409615960259520d0, alfa(4), margin, "Parallel system: Alfa(4)" )
-                    call assert_comparable( -0.409615960259520d0, alfa(5), margin, "Parallel system: Alfa(5)" )
-                case (methodDirectionalSampling)
-                    call assert_comparable( 3.52d0, actualBeta, 0.05d0 * betaFactor, "Parallel system: Beta" )
-                case (methodCrudeMonteCarlo)
-                    call assert_comparable( 3.47024d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
-                case (methodImportanceSampling)
-                    call assert_comparable( 3.56d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select
