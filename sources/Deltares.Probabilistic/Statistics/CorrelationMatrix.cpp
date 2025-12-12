@@ -33,7 +33,7 @@ namespace Deltares
         using namespace Deltares::Reliability;
         using namespace Deltares::Numeric;
 
-        bool CorrelationMatrix::isValid() const
+        bool CorrelationMatrix::IsValid() const
         {
             return true;
         }
@@ -107,7 +107,7 @@ namespace Deltares
             return inverseValues;
         }
 
-        void CorrelationMatrix::init(const int maxStochasts)
+        void CorrelationMatrix::Init(const int maxStochasts)
         {
             dim = maxStochasts;
             matrix = Matrix(maxStochasts, maxStochasts);
@@ -117,9 +117,9 @@ namespace Deltares
             }
         }
 
-        void CorrelationMatrix::init(const std::vector<std::shared_ptr<Stochast>>& stochastList)
+        void CorrelationMatrix::Init(const std::vector<std::shared_ptr<Stochast>>& stochastList)
         {
-            init(static_cast<int>(stochastList.size()));
+            Init(static_cast<int>(stochastList.size()));
 
             for (size_t i = 0; i < stochastList.size(); i++)
             {
@@ -128,7 +128,7 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<Stochast> CorrelationMatrix::getStochast(int index)
+        std::shared_ptr<Stochast> CorrelationMatrix::GetStochast(int index)
         {
             if (index < static_cast<int>(stochasts.size()))
             {
@@ -197,7 +197,7 @@ namespace Deltares
             }
         }
 
-        void CorrelationMatrix::initializeForRun()
+        void CorrelationMatrix::InitializeForRun()
         {
             CholeskyDecomposition();
             InverseCholeskyDecomposition();
@@ -213,7 +213,7 @@ namespace Deltares
             inverseCholeskyMatrix = MatrixSupport::Inverse(&choleskyMatrix);
         }
 
-        bool CorrelationMatrix::isFullyCorrelated(const int index, const std::vector<int>& varyingIndices) const
+        bool CorrelationMatrix::IsFullyCorrelated(const int index, const std::vector<int>& varyingIndices) const
         {
             if (dim == 0) return false;
 
@@ -231,9 +231,9 @@ namespace Deltares
             return false;
         }
 
-        void CorrelationMatrix::filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index)
+        void CorrelationMatrix::Filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index)
         {
-            if (source->getDimension() == 0) return;
+            if (source->GetDimension() == 0) return;
             auto corrM = std::dynamic_pointer_cast<CorrelationMatrix> (source);
             if (corrM == nullptr) throw probLibException("error casting a correlation matrix in filter method.");
 
@@ -241,10 +241,10 @@ namespace Deltares
 
             for (size_t i = 0; i < nrAllStochasts; i++)
             {
-                auto ii = findNewIndex(index, i);
+                auto ii = FindNewIndex(index, i);
                 for (size_t j = 0; j < nrAllStochasts; j++)
                 {
-                    auto jj = findNewIndex(index, j);
+                    auto jj = FindNewIndex(index, j);
                     if (index[i] >= 0 && index[j] >= 0)
                     {
                         SetCorrelation(ii, jj, corrM->matrix(i, j), CorrelationType::Gaussian);
@@ -265,7 +265,7 @@ namespace Deltares
                     double correlation = 1.0;
                     for (;;)
                     {
-                        auto dependent = source->findDependent(static_cast<int>(ii));
+                        auto dependent = source->FindDependent(static_cast<int>(ii));
                         if (dependent.index < 0) break;
                         dependent.correlation *= correlation;
                         if (index[dependent.index] >= 0)
@@ -281,7 +281,7 @@ namespace Deltares
             indexer = newIndexer;
         }
 
-        IndexWithCorrelation CorrelationMatrix::findDependent(const int j) const
+        IndexWithCorrelation CorrelationMatrix::FindDependent(const int j) const
         {
             if (indexer.size() > 0)
             {

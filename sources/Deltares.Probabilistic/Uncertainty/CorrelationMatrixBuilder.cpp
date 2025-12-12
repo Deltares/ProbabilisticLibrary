@@ -98,7 +98,7 @@ namespace Deltares::Uncertainty
     {
         std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
 
-        correlationMatrix->init(this->stochasts);
+        correlationMatrix->Init(this->stochasts);
 
         for (size_t i = 0; i < stochasts.size(); i++)
         {

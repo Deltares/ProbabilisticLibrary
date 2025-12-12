@@ -84,7 +84,7 @@ namespace Deltares
 
             if ( correlation != nullptr)
             {
-                correlation->validate(report);
+                correlation->Validate(report);
             }
         }
 

@@ -38,19 +38,19 @@ namespace Deltares::Statistics
     class CopulaCorrelation : public BaseCorrelation
     {
     public:
-        void init(const int maxStochastsCnt) override
+        void Init(const int max_stochasts_count) override
         {
-            maxStochasts = maxStochastsCnt;
+            max_stochasts = max_stochasts_count;
         }
 
-        void init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override
+        void Init(const std::vector<std::shared_ptr<Stochast>>& stochast_list) override
         {
-            maxStochasts = static_cast<int>(stochastList.size());
-            stochasts = stochastList;
+            max_stochasts = static_cast<int>(stochast_list.size());
+            stochasts = stochast_list;
         }
 
-        bool isValid() const override;
-        void validate(Logging::ValidationReport& report) const override;
+        bool IsValid() const override;
+        void Validate(Logging::ValidationReport& report) const override;
 
         void SetCorrelation(const int i, const int j, double value, CorrelationType type) override;
         void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2,
@@ -61,18 +61,18 @@ namespace Deltares::Statistics
 
         bool IsIdentity() const override {return copulas.empty();}
         int CountCorrelations() const override { return static_cast<int>(copulas.size()); }
-        int getDimension() override { return maxStochasts; }
-        std::shared_ptr<Stochast> getStochast(int index) override { return nullptr; }
+        int GetDimension() override { return max_stochasts; }
+        std::shared_ptr<Stochast> GetStochast(int index) override { return nullptr; }
         std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
-        void initializeForRun() override
+        void InitializeForRun() override
         {
             // empty; after init and setCorrelation this class is ready to use
         }
-        bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override {return false;}
-        void filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) override;
-        IndexWithCorrelation findDependent(const int i) const override { return IndexWithCorrelation(); }
+        bool IsFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override {return false;}
+        void Filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) override;
+        IndexWithCorrelation FindDependent(const int i) const override { return IndexWithCorrelation(); }
     private:
-        int maxStochasts = -1;
+        int max_stochasts = -1;
         std::vector<CopulaPair> copulas;
         std::vector<std::shared_ptr<Stochast>> stochasts;
     };

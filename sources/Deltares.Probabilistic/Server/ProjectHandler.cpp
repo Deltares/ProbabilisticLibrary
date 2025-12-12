@@ -775,7 +775,7 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
-                if (property_ == "variables_count") return correlationMatrix->getDimension();
+                if (property_ == "variables_count") return correlationMatrix->GetDimension();
             }
             else if (objectType == ObjectType::FragilityCurve)
             {
@@ -1777,7 +1777,7 @@ namespace Deltares
                         correlationMatrixStochasts.push_back(stochasts[values[i]]);
                     }
 
-                    correlationMatrix->init(correlationMatrixStochasts);
+                    correlationMatrix->Init(correlationMatrixStochasts);
                 }
             }
             else if (objectType == ObjectType::Settings)
@@ -2046,7 +2046,7 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
-                if (property_ == "variables") return GetStochastId(correlationMatrix->getStochast(index), newId);
+                if (property_ == "variables") return GetStochastId(correlationMatrix->GetStochast(index), newId);
             }
             else if (objectType == ObjectType::UncertaintyProject)
             {

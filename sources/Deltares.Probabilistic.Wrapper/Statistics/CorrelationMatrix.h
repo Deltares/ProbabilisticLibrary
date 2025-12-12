@@ -52,7 +52,7 @@ namespace Deltares
                 ~CorrelationMatrix() { this->!CorrelationMatrix(); }
                 !CorrelationMatrix() { delete shared; }
 
-                void Initialize(const int size) { shared->object->init(size); }
+                void Initialize(const int size) { shared->object->Init(size); }
 
                 void Initialize(System::Collections::Generic::List<Stochast^>^ stochasts)
                 {
@@ -66,7 +66,7 @@ namespace Deltares
                         nativeStochasts.push_back(stochasts[i]->GetStochast());
                     }
 
-                    shared->object->init(nativeStochasts);
+                    shared->object->Init(nativeStochasts);
                 }
 
                 void SetCorrelation(const int i, const int j, const double value)

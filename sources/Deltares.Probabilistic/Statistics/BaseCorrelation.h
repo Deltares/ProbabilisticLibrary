@@ -82,25 +82,25 @@ namespace Deltares::Statistics
         /// initialize with the maximum number of stochastic variables
         /// </summary>
         /// <param name="maxStochasts"> maximum number of stochastic variables </param>
-        virtual void init(const int maxStochasts) = 0;
+        virtual void Init(const int maxStochasts) = 0;
 
         /// <summary>
         /// initialize with the list of stochastic variables
         /// </summary>
         /// <param name="stochasts"> the list of stochastic variables </param>
-        virtual void init(const std::vector<std::shared_ptr<Stochast>>& stochasts) = 0;
+        virtual void Init(const std::vector<std::shared_ptr<Stochast>>& stochasts) = 0;
 
         /// <summary>
         /// checks the object is valid
         /// </summary>
         /// <returns> flag: true = valid </returns>
-        virtual bool isValid() const = 0;
+        virtual bool IsValid() const = 0;
 
         /// <summary>
         /// fill the report with validation messages for this object
         /// </summary>
         /// <param name="report"> report to extend with validation messages </param>
-        virtual void validate(Logging::ValidationReport& report) const = 0;
+        virtual void Validate(Logging::ValidationReport& report) const = 0;
 
         /// <summary>
         /// set the correlation between two stochastic variables \n
@@ -154,13 +154,13 @@ namespace Deltares::Statistics
         /// get the number stochastic variables
         /// </summary>
         /// <returns> the number of stochastic variables </returns>
-        virtual int getDimension() = 0;
+        virtual int GetDimension() = 0;
 
         /// <summary>
         /// get the stochastic variable for a given index
         /// </summary>
         /// <returns> the stochastic variable </returns>
-        virtual std::shared_ptr<Stochast> getStochast(int index) = 0;
+        virtual std::shared_ptr<Stochast> GetStochast(int index) = 0;
 
         /// <summary>
         /// apply the correlation on a vector of U-values
@@ -172,7 +172,7 @@ namespace Deltares::Statistics
         /// <summary>
         /// make the object ready-to-run
         /// </summary>
-        virtual void initializeForRun() = 0;
+        virtual void InitializeForRun() = 0;
 
         /// <summary>
         /// checks whether a stochastic variable is fully correlated with another variable
@@ -180,24 +180,24 @@ namespace Deltares::Statistics
         /// <param name="i"> the input U-values </param>
         /// <param name="varyingIndices"> a list of indices </param>
         /// <returns> flag : true = fully correlated </returns>
-        virtual bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const = 0;
+        virtual bool IsFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const = 0;
 
         /// <summary>
         /// creates a new object with a sub set from the source
         /// </summary>
         /// <param name="source"> the input correlation object </param>
         /// <param name="index"> the index for filtering </param>
-        virtual void filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) = 0;
+        virtual void Filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) = 0;
 
         /// <summary>
         /// get the stochastic variable where the variable depends on
         /// </summary>
         /// <param name="i"> the index of the stochast </param>
         /// <returns> index of dependent stochastic variable with value </returns>
-        virtual IndexWithCorrelation findDependent(const int i) const = 0;
+        virtual IndexWithCorrelation FindDependent(const int i) const = 0;
 
     protected:
-        static int findNewIndex(const std::vector<int>& index, const size_t i);
+        static int FindNewIndex(const std::vector<int>& index, const size_t i);
     };
 }
 

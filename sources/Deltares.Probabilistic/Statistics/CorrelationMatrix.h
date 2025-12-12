@@ -43,11 +43,11 @@ namespace Deltares
         class CorrelationMatrix : public BaseCorrelation
         {
         public:
-            void init(const int maxStochasts) override;
-            void init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override;
+            void Init(const int maxStochasts) override;
+            void Init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override;
 
-            bool isValid() const override;
-            void validate(Logging::ValidationReport& report) const override
+            bool IsValid() const override;
+            void Validate(Logging::ValidationReport& report) const override
             {
                 // empty; currently nothing to check
             }
@@ -64,14 +64,14 @@ namespace Deltares
 
             bool IsIdentity() const override;
             int CountCorrelations() const override;
-            int getDimension() override { return static_cast<int>(dim); }
-            std::shared_ptr<Statistics::Stochast> getStochast(int index) override;
+            int GetDimension() override { return static_cast<int>(dim); }
+            std::shared_ptr<Statistics::Stochast> GetStochast(int index) override;
             bool HasConflictingCorrelations() const;
             void resolveConflictingCorrelations();
-            void initializeForRun() override;
-            bool isFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override;
-            void filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) override;
-            IndexWithCorrelation findDependent(const int i) const override;
+            void InitializeForRun() override;
+            bool IsFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override;
+            void Filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) override;
+            IndexWithCorrelation FindDependent(const int i) const override;
         private:
             Numeric::Matrix matrix = Numeric::Matrix(0, 0);
             Numeric::Matrix choleskyMatrix = Numeric::Matrix(0, 0);

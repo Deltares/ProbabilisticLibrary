@@ -84,7 +84,7 @@ namespace Deltares
         {
             std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>();
 
-            correlationMatrix->init(stochasts);
+            correlationMatrix->Init(stochasts);
 
             for (std::shared_ptr<CorrelationValue> correlationValue : this->correlations)
             {

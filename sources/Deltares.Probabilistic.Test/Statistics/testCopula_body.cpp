@@ -96,10 +96,10 @@ namespace Deltares::Probabilistic::Test
         EXPECT_FALSE(diagonal_band_copula.isValid());
 
         auto copulas = Statistics::CopulaCorrelation();
-        copulas.init(2);
+        copulas.Init(2);
         copulas.SetCorrelation(0, 1, 0.1, CorrelationType::Gaussian);
         copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
-        EXPECT_FALSE(copulas.isValid());
+        EXPECT_FALSE(copulas.IsValid());
     }
 
     void testCopula::testValidationMessages()
@@ -131,10 +131,10 @@ namespace Deltares::Probabilistic::Test
 
         report.messages.clear();
         auto copulas = Statistics::CopulaCorrelation();
-        copulas.init(2);
+        copulas.Init(2);
         copulas.SetCorrelation(0, 1, 0.1, CorrelationType::Gaussian);
         copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
-        copulas.validate(report);
+        copulas.Validate(report);
         EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations 1 and 0", report.messages[0]->Text);
 
         report.messages.clear();
@@ -146,10 +146,10 @@ namespace Deltares::Probabilistic::Test
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         stochasts.push_back(stochast1);
         stochasts.push_back(stochast2);
-        copulas2.init(stochasts);
+        copulas2.Init(stochasts);
         copulas2.SetCorrelation(stochast1, stochast2, 0.1, CorrelationType::Gaussian);
         copulas2.SetCorrelation(stochast2, stochast1, 2.0, CorrelationType::Frank);
-        copulas2.validate(report);
+        copulas2.Validate(report);
         EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations B-A and A-B", report.messages[0]->Text);
     }
 

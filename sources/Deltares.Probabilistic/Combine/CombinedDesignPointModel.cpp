@@ -131,7 +131,7 @@ namespace Deltares
             std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>();
 
             // initialize the correlation matrix
-            correlationMatrix->init(this->standardNormalStochasts);
+            correlationMatrix->Init(this->standardNormalStochasts);
 
             if (selfCorrelationMatrix != nullptr)
             {

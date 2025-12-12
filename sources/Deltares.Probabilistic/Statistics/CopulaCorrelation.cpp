@@ -35,11 +35,11 @@ namespace Deltares::Statistics
 
     void CopulaCorrelation::SetCorrelation(const int i, const int j, double value, CorrelationType type)
     {
-        if (i >= maxStochasts)
+        if (i >= max_stochasts)
         {
             throw Reliability::probLibException("Invalid index in SetCorrelation: ", i);
         }
-        else if (j >= maxStochasts)
+        else if (j >= max_stochasts)
         {
             throw Reliability::probLibException("Invalid index in SetCorrelation: ", j);
         }
@@ -67,14 +67,14 @@ namespace Deltares::Statistics
         copulas.push_back(pair);
     }
 
-    bool CopulaCorrelation::isValid() const
+    bool CopulaCorrelation::IsValid() const
     {
         auto report = Logging::ValidationReport();
-        validate(report);
+        Validate(report);
         return report.messages.empty();
     }
 
-    void CopulaCorrelation::validate(Logging::ValidationReport& report) const
+    void CopulaCorrelation::Validate(Logging::ValidationReport& report) const
     {
         for (size_t i = 0; i < copulas.size(); i++)
         {
@@ -133,14 +133,14 @@ namespace Deltares::Statistics
         }
     }
 
-    void CopulaCorrelation::filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index)
+    void CopulaCorrelation::Filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index)
     {
         auto src = std::dynamic_pointer_cast<CopulaCorrelation> (source);
         if (src == nullptr) throw Reliability::probLibException("error casting a correlation source in filter method.");
         for (auto copula : src->copulas)
         {
-            auto ii = findNewIndex(index, copula.index1);
-            auto jj = findNewIndex(index, copula.index2);
+            auto ii = FindNewIndex(index, copula.index1);
+            auto jj = FindNewIndex(index, copula.index2);
             if (ii >= 0 && jj >= 0)
             {
                 copula.index1 = ii;

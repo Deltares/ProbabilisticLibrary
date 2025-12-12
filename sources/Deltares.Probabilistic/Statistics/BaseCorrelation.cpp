@@ -24,7 +24,7 @@
 
 namespace Deltares::Statistics
 {
-    int BaseCorrelation::findNewIndex(const std::vector<int>& index, const size_t i)
+    int BaseCorrelation::FindNewIndex(const std::vector<int>& index, const size_t i)
     {
         if (index[i] == -1)
         {
