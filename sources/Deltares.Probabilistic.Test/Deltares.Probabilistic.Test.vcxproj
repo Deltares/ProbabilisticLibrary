@@ -176,6 +176,8 @@
     <ClInclude Include="Reliability\Waarts\TestWaartsSeriesSystem_body.cpp" />
     <ClInclude Include="Reliability\Waarts\TestWaartsParallelSystem.h" />
     <ClInclude Include="Reliability\Waarts\TestWaartsParallelSystem_body.cpp" />
+    <ClInclude Include="Reliability\Waarts\TestWaartsResistance25QuadraticTermsSparse.h" />
+    <ClInclude Include="Reliability\Waarts\TestWaartsResistance25QuadraticTermsSparse_body.cpp" />
     <ClInclude Include="Reliability\TestReliabilityMethods.h" />
     <ClInclude Include="Reliability\TestReliabilityMethods_body.cpp" />
     <ClInclude Include="Uncertainty\TestUncertainty.h" />
@@ -222,6 +224,7 @@
     <ClCompile Include="Reliability\Waarts\TestWaartsConcaveFailureDomain.cpp" />
     <ClCompile Include="Reliability\Waarts\TestWaartsSeriesSystem.cpp" />
     <ClCompile Include="Reliability\Waarts\TestWaartsParallelSystem.cpp" />
+    <ClCompile Include="Reliability\Waarts\TestWaartsResistance25QuadraticTermsSparse.cpp" />
     <ClCompile Include="Reliability\TestReliabilityMethods.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />

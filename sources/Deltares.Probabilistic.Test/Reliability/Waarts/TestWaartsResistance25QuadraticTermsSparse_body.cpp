@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 
-#include "TestWaartsResistance25QuadraticTerms.h"
+#include "TestWaartsResistance25QuadraticTermsSparse.h"
 #include "../../projectBuilder.h"
 #include "../../../Deltares.Probabilistic/Model/ModelSample.h"
 #include "../../../Deltares.Probabilistic/Model/ZModel.h"
@@ -28,55 +28,67 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    std::shared_ptr<Models::ModelRunner> TestWaartsResistance25QuadraticTerms::WaartsModel()
+    std::shared_ptr<Models::ModelRunner> TestWaartsResistance25QuadraticTermsSparse::WaartsModel()
     {
         constexpr int numberOfQuadraticTerms = 25;
         auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
         {
-            double Z = v->Values[0];
+            double Z = v->Values[29];
             for(int i = 1; i <= numberOfQuadraticTerms; i++)
             {
-                Z -= pow(v->Values[i], 2) / static_cast<double>(i);
+                Z -= pow(v->Values[i+1], 2) / static_cast<double>(i);
             }
             v->Z = Z;
             return Z;
         });
 
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochast.push_back(projectBuilder::getNormalStochast(0.5, 0.1));
-        for(int i = 0; i < numberOfQuadraticTerms; i++)
+        for (int i = 0; i < 2; i++)
+        {
+            stochast.push_back(projectBuilder::getDeterministicStochast(0.0)); // not used stochast
+        }
+        for (int i = 0; i < numberOfQuadraticTerms; i++)
         {
             stochast.push_back(projectBuilder::getNormalStochast(0.2, 0.1));
         }
+        for (int i = 0; i < 2; i++)
+        {
+            stochast.push_back(projectBuilder::getDeterministicStochast(0.0)); // not used stochast
+        }
+        stochast.push_back(projectBuilder::getNormalStochast(0.5, 0.1));
         auto corr = std::make_shared<Statistics::CorrelationMatrix>();
+        corr->init(30);
         auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
         auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
         return modelRunner;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValues()
+    WaartsResult TestWaartsResistance25QuadraticTermsSparse::ExpectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 2.92;
-        expected.alpha = { 0.771, -0.564, -0.207, -0.126, -0.090, -0.070, -0.058, -0.049, -0.042, -0.037, -0.0335, -0.030, -0.028, -0.026 };
-        while (expected.alpha.size() < 26)
+        expected.alpha = { 0.0, 0.0, -0.564, -0.207, -0.126, -0.090, -0.070, -0.058, -0.049, -0.042, -0.037, -0.0335, -0.030, -0.028, -0.026 };
+        while (expected.alpha.size() < 27)
         {
             expected.alpha.push_back(-0.02);
         }
+        expected.alpha.push_back(0.0);
+        expected.alpha.push_back(0.0);
+        expected.alpha.push_back(0.771);
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsResistance25QuadraticTermsSparse::ExpectedValuesCrudeMonteCarlo()
     {
         auto expected = ExpectedValues();
-        expected.beta = 2.67;
+        expected.beta = 2.56;
         expected.alpha.clear();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesDirectionalSampling()
+    WaartsResult TestWaartsResistance25QuadraticTermsSparse::ExpectedValuesDirectionalSampling()
     {
         auto expected = ExpectedValues();
         expected.beta = 2.64;
@@ -85,16 +97,16 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsResistance25QuadraticTermsSparse::ExpectedValuesImportanceSampling()
     {
         auto expected = ExpectedValues();
-        expected.beta = 2.61;
+        expected.beta = 2.69;
         expected.alpha.clear();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsResistance25QuadraticTermsSparse::ExpectedValuesAdaptiveImportanceSampling()
     {
         auto expected = ExpectedValues();
         expected.beta = 2.56;
@@ -103,7 +115,7 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesDSFI()
+    WaartsResult TestWaartsResistance25QuadraticTermsSparse::ExpectedValuesDSFI()
     {
         auto expected = ExpectedValues();
         expected.beta = 2.64;

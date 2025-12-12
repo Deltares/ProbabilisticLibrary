@@ -70,6 +70,8 @@ add_executable(Deltares.Probabilistic.Test
     Reliability/Waarts/TestWaartsSeriesSystem_body.cpp
     Reliability/Waarts/TestWaartsParallelSystem.h
     Reliability/Waarts/TestWaartsParallelSystem_body.cpp
+    Reliability/Waarts/TestWaartsResistance25QuadraticTermsSparse.h
+    Reliability/Waarts/TestWaartsResistance25QuadraticTermsSparse_body.cpp
     Math/testCholeskiDecomposition.h
     Math/testCholeskiDecomposition_body.cpp
     Math/testKMean.h

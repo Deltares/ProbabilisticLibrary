@@ -247,60 +247,6 @@ subroutine testProbabilisticWithFunction ( )
         probDb%method%chunkSizeOpenMP = 200
     endif
 
-    select case (waartsFunction)
-
-        case (14) ! Limit state with 25 quadratic terms
-
-            ! Initialization of mechanism
-            call initializeCalculation (probDb, 30, alfa, x)
-            probDb%method%DS%iterationMethod = methodDS
-
-            ! Initialize stochast data
-            call initializeStochast (probDb, 30, distributionNormal, 0.5d0, 0.1D0, 0.0d0, 0.0d0)
-
-            do i = 1, 25
-                call initializeStochast (probDb, i + 2, distributionNormal, 0.2d0, 0.1d0, 0.0d0, 0.0d0)
-            end do
-
-            ! Initialize random generator
-            probDb%method%IS%seedPRNG  = 1
-            probDb%method%DS%seedPRNG  = 1
-            probDb%method%CMC%seedPRNG = 1
-
-            ! increase accuracy, to see effect of OpenMP
-            if (probMethod == methodDirectionalSampling) then
-                probDb%method%DS%varCoeffFailure   = 0.01d0
-                probDb%method%DS%varCoeffNoFailure = 0.01d0
-                probDb%method%DS%maximumSamples    = 75000
-            endif
-            probDb%method%AdaptiveIS%minFailed = 10
-
-            ! Perform computation numberIterations times
-            x = 0.0_wp
-            call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-            call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTermsSparse, &
-                    probMethod, alfa, actualBeta, x)
-            call updateCounter(invocationCount)
-            call cleanUpWaartsTestsFunctions
-
-            select case (probMethod)
-                case (methodFORM)
-                    call assert_comparable( 2.92d0, actualBeta, 0.05d0 * betaFactor, trim(waartsFunctionName) // ": Beta" )
-                case (methodDirectionalSampling)
-                    call assert_comparable( 2.63d0, actualBeta, 0.05d0 * betaFactor, trim(waartsFunctionName) // ": Beta" )
-                case (methodImportanceSampling)
-                    call assert_comparable( 2.5525d0, actualBeta, 1d-4, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
-                case (methodAdaptiveImportanceSampling)
-                    call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                case default
-                    call assert_true( convergenceData%conv, "No convergence" )
-            end select
-
-            call finalizeProbabilisticCalculation(probDb)
-
-    end select
-
 end subroutine testProbabilisticWithFunction
 
 
