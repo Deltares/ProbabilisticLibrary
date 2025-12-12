@@ -23,7 +23,7 @@ module sparseWaartsTestFunctions
     use precision
     use interface_ProbCalc
     use class_ProbCalc
-    use waartsFunctions
+    use waartsFunctions, only :linearResistanceSolicitation, limitState25QuadraticTerms, oblateSpheroid
 
     implicit none
 

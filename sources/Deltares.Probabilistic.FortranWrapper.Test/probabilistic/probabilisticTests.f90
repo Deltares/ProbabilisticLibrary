@@ -29,7 +29,6 @@ module probabilisticTests
     use ftnunit
     use distributionFunctionsTests
     use probMethodsWaartsFunctionsTests
-    use waartsFunctionsTests
     use performImportanceSamplingTests
     use performAdaptiveMCIStests
     use performLatinHyperCubeTests
@@ -59,7 +58,6 @@ subroutine allProbabilisticTests
 
     call allInitProbabilisticTests
     call allDistributionFunctionsTests
-    call allWaartsFunctionsTests
     call allCombineElementsTests
     call allPerformImportanceSamplingTests
     call allPerformAdaptiveMCIStests
@@ -70,8 +68,6 @@ subroutine allProbabilisticTests
     call performAllDSTests
     call allUpscalingTests
     call allUpscaleLengthTests
-    !call allIncompleteGammaTests
-    !call allBasicCorrelationTests
 
 end subroutine allProbabilisticTests
 
