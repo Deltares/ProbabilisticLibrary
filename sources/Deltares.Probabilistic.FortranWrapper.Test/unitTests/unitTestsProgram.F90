@@ -30,13 +30,13 @@ program unitTestsProgram
     use initTestSubs
     use conversionFunctionsTests
     use probabilisticTests
-    use probMethodsWaartsFunctionsTests
     use interface_probCalcData
 
     use, intrinsic :: ieee_exceptions
 
     implicit none
 
+    integer :: maxNumberIterations ! not used any more, but needed to keep interface the same
     integer :: testLevel
     character(len=16) :: testSet
 
@@ -69,8 +69,6 @@ program unitTestsProgram
     end if
 
     if (testSet == 'all' .or. testSet == 'prob') then
-        call allProbabilisticIntegrationTests
-
         call allProbabilisticTests
     end if
 

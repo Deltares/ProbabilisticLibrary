@@ -32,7 +32,7 @@ module initProbabilisticTests
     use interface_distributions
     use interface_probcalc
     use interface_probcalcdata
-    use probMethodsWaartsFunctionsTests
+    use probMethodsWaartsFunctionsTests, only : initializeStochast, initializeCalculation
 
     implicit none
 

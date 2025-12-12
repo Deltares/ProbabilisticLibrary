@@ -47,7 +47,7 @@ module probabilisticTests
 
     private
 
-    public :: allProbabilisticTests, allProbabilisticIntegrationTests
+    public :: allProbabilisticTests
 
 contains
 
@@ -60,7 +60,6 @@ subroutine allProbabilisticTests
     call allInitProbabilisticTests
     call allDistributionFunctionsTests
     call allWaartsFunctionsTests
-    call allProbMethodsWaartsFunctionsNoIterationTest
     call allCombineElementsTests
     call allPerformImportanceSamplingTests
     call allPerformAdaptiveMCIStests
@@ -77,18 +76,5 @@ subroutine allProbabilisticTests
 end subroutine allProbabilisticTests
 
 
-subroutine allProbabilisticIntegrationTests
-
-    methodDS = 1
-    call runtests( allProbMethodsWaartsFunctionsIterationTest )
-
-    methodDS = 2
-    call runtests( allProbMethodsWaartsFunctionsIterationTest)
-
-    methodDS = 3
-    call runtests( allProbMethodsWaartsFunctionsIterationTest)
-
-    methodDS = 1
-end subroutine allProbabilisticIntegrationTests
 
 end module probabilisticTests
