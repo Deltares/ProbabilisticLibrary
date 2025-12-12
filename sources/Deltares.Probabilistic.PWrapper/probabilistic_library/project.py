@@ -939,7 +939,7 @@ class UncertaintyProject(ModelProject):
 		if self._result is None:
 			result_id = interface.GetIdValue(self._id, 'uncertainty_result')
 			if result_id > 0:
-				self._result = UncertaintyResult(result_id)
+				self._result = UncertaintyResult(result_id, self.variables)
 
 		return self._result
 
@@ -950,7 +950,7 @@ class UncertaintyProject(ModelProject):
 			results = []
 			result_ids = interface.GetArrayIdValue(self._id, 'uncertainty_results')
 			for result_id in result_ids:
-				results.append(UncertaintyResult(result_id))
+				results.append(UncertaintyResult(result_id, self.variables))
 			self._results = FrozenList(results)
 				
 		return self._results

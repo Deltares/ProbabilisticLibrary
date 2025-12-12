@@ -180,5 +180,5 @@ class NumericUtils:
 			if diff == 0:
 				diff = 1
 			value1 = value1 - diff
-			value2 = value1 + diff
+			value2 = value2 + diff
 		return value1, value2
