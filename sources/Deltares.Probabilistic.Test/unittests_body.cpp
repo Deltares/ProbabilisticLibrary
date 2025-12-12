@@ -486,6 +486,24 @@ TEST(WaartsTests, LinearResistanceNumericalIntegration)
     tester.WaartsNumericalIntegration();
 }
 
+TEST(WaartsTests, LinearResistanceNumericalIntegrationCenterOfGravity)
+{
+    auto tester = TestWaartsLinearResistance();
+    tester.RunNumInt(CenterOfGravity);
+}
+
+TEST(WaartsTests, LinearResistanceNumericalIntegrationCenterOfAngles)
+{
+    auto tester = TestWaartsLinearResistance();
+    tester.RunNumInt(CenterOfAngles);
+}
+
+TEST(WaartsTests, LinearResistanceNumericalIntegrationNearestToMean)
+{
+    auto tester = TestWaartsLinearResistance();
+    tester.RunNumInt(NearestToMean);
+}
+
 TEST(WaartsTests, LinearResistanceImportanceSampling)
 {
     auto tester = TestWaartsLinearResistance();

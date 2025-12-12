@@ -152,102 +152,12 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 cycle
         end select
 
-        do j = 14, size(functionName)
-
-            waartsFunction     = j
-            waartsFunctionName = functionName(j)
-
-            level = minTestLevel
-            if (i > 10) then
-                select case (j)
-                case(9, 10, 13)
-                    cycle    ! skip some tests for "new" methods
-                end select
-            endif
-
-            ! some levelling in tests
-            if (probMethod==methodNumericalIntegration) then
-                if (trim(functionName(waartsFunction)) == "ParallelSystem") then
-                    level = max(3, minTestLevel)
-                elseif ( trim(functionName(waartsFunction)) == "NoisyLimitState") then
-                    level = max(2, minTestLevel)
-                end if
-            end if
-
-            if ( i == methodDirectionalSampling) then
-                write(testName, '(4a,i0,a,i0)') trim(probMethodName), " + ", trim(waartsFunctionName), " numIt = ", &
-                    numberIterations, " MethodDS = ", methodDS
-            else
-                write(testName, '(4a,i0)') trim(probMethodName), " + ", trim(waartsFunctionName), " numIt = ", numberIterations
-            endif
-
-            ! Note: Some calculations may be neglected, because these calculations are practically impossible
-            if ( probMethod /= methodNumericalIntegration .or. index(functionName(j), "LimitState 25 quadratic terms" ) == 0) then
-                invocationCount = 0
-                call progressReport( 1, "Test: "//trim(testName) )
-                call progressReport( 1, "    Function: "//trim(waartsFunctionName) )
-
-                call testWithLevel( testProbabilisticWithFunction, testName, level )
-
-                call progressReport( 1, "    Number of invocations: ", invocationCount )
-            end if
-
-        end do
 
     end do
-
-    if (numberIterations == 1 .and. any(availableMethods == methodNumericalIntegration)) then
-        probMethod         = methodNumericalIntegration
-        waartsFunction     = 1
-        waartsFunctionName = functionName(1)
-        probMethodName     = "NumericalIntegration"
-        do i = 0, 5
-            dpOption = i
-            write(testName, '(4a,i1)') trim(probMethodName), " + ", trim(waartsFunctionName), ' dpOption=', dpOption
-            if (i == 5) call SetFatalErrorExpected(.true.)
-
-            invocationCount = 0
-            call progressReport( 1, "Test: "//trim(testName) )
-            call progressReport( 1, "    Function: "//trim(waartsFunctionName) )
-
-            call testWithLevel( testProbabilisticWithFunction, testName, 2)
-
-            call progressReport( 1, "    Number of invocations: ", invocationCount )
-
-            if (i == 5) call SetFatalErrorExpected(.false.)
-        enddo
-    endif
 
 end subroutine allProbMethodsWaartsFunctionsTests
 
 
-!> Test betaFromQ with the expected value
-subroutine testProbabilisticWithFunction ( )
-    use omp_lib
-    type(probabilisticDataStructure_data) :: probDb
-    type(storedConvergenceData)           :: convergenceData
-    integer                     :: i = 0
-    real (kind = wp), pointer   :: alfa(:)
-    real (kind = wp), pointer   :: x(:)
-    real (kind = wp)            :: actualBeta = 0.0d0
-    real (kind = wp)            :: margin = 1.0d-5
-    real (kind = wp)            :: betaFactor
-    logical                     :: runOption
-    integer                     :: oldNumberIterations
-
-    ! we expect a more precise result if the number of iterations increase
-    if (numberIterations <= 1) then
-        betaFactor = 1.0d0
-    else
-        betaFactor = 0.5d0
-    end if
-
-    if (probMethod == methodDirectionalSampling .or. probMethod == methodFORM) then
-        call omp_set_num_threads(4)
-        probDb%method%chunkSizeOpenMP = 200
-    endif
-
-end subroutine testProbabilisticWithFunction
 
 
 !> Initializes calculation

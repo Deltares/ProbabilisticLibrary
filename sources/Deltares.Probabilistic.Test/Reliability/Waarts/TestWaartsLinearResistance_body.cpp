@@ -46,6 +46,17 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
+    void TestWaartsLinearResistance::RunNumInt(const Reliability::DesignPointMethod method)
+    {
+        auto modelRunner = WaartsModel();
+        std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
+        auto form = dynamic_cast<Reliability::NumericalIntegration*>(calculator.get());
+        form->Settings.designPointMethod = method;
+        auto expected = ExpectedValuesNumericalIntegration();
+        expected.success = false;
+        RunSingleWaartsTest(modelRunner, calculator, expected);
+    }
+
     WaartsResult TestWaartsLinearResistance::ExpectedValues()
     {
         auto expected = WaartsResult();

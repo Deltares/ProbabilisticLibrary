@@ -23,11 +23,15 @@
 #pragma once
 
 #include "TestWaarts.h"
+#include "../../../Deltares.Probabilistic/Reliability/DesignPointBuilder.h"
 
 namespace Deltares::Probabilistic::Test
 {
     class TestWaartsLinearResistance : public TestWaarts
     {
+    public:
+        void RunNumInt(const Reliability::DesignPointMethod method);
+    private:
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
         WaartsResult ExpectedValues() override;
         WaartsResult ExpectedValuesCrudeMonteCarlo() override;
