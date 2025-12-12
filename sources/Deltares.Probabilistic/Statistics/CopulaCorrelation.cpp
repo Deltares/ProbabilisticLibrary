@@ -44,7 +44,7 @@ namespace Deltares::Statistics
             throw Reliability::probLibException("Invalid index in SetCorrelation: ", j);
         }
 
-        auto pair = copulaPair();
+        auto pair = CopulaPair();
         pair.index1 = i;
         pair.index2 = j;
         switch (type)

@@ -29,7 +29,7 @@
 
 namespace Deltares::Statistics
 {
-    class copulaPair : public BaseCorrelationPair
+    class CopulaPair : public BaseCorrelationPair
     {
     public:
         std::shared_ptr<BaseCopula> copula;
@@ -73,7 +73,7 @@ namespace Deltares::Statistics
         IndexWithCorrelation findDependent(const int i) const override { return IndexWithCorrelation(); }
     private:
         int maxStochasts = -1;
-        std::vector<copulaPair> copulas;
+        std::vector<CopulaPair> copulas;
         std::vector<std::shared_ptr<Stochast>> stochasts;
     };
 }
