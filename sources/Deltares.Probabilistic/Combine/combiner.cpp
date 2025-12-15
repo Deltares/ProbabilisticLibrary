@@ -67,7 +67,7 @@ namespace Deltares
                 project->stochasts.push_back(model->standardNormalStochasts[i]);
             }
 
-            project->correlationMatrix = model->getCorrelationMatrix(selfCorrelationMatrix);
+            project->correlation = model->getCorrelationMatrix(selfCorrelationMatrix);
 
             ZLambda zFunction = [model](std::shared_ptr<ModelSample> sample)
             {

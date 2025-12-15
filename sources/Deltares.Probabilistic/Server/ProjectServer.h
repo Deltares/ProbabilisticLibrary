@@ -78,6 +78,7 @@ namespace Deltares
             void SetIndexedValue(int id, std::string property_, int index, double value);
             double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2);
             void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
+            void SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value);
             int GetIndexedIntValue(int id, std::string property_, int index);
             int GetIdValue(int id, std::string property_);
             int GetIndexedIdValue(int id, std::string property_, int index);

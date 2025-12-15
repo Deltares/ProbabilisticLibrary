@@ -40,7 +40,7 @@ namespace Deltares
                     shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
                 }
 
-                shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
+                shared->object->correlation = this->CorrelationMatrix->GetCorrelationMatrix();
                 shared->object->uncertaintyMethod = this->UncertaintyMethod->GetNativeSensitivityMethod();
 
                 return shared->object->isValid();
@@ -55,7 +55,7 @@ namespace Deltares
                     shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
                 }
 
-                shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
+                shared->object->correlation = this->CorrelationMatrix->GetCorrelationMatrix();
                 shared->object->uncertaintyMethod = this->UncertaintyMethod->GetNativeSensitivityMethod();
                 shared->object->runSettings = this->Settings->GetSettings();
                 shared->object->progressIndicator = this->ProgressIndicator != nullptr ? this->ProgressIndicator->GetProgressIndicator() : nullptr;

@@ -25,6 +25,7 @@
 
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
+#include "../Statistics/CopulaCorrelation.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
 #include "../Utils/probLibException.h"
@@ -37,7 +38,7 @@ namespace Deltares
 {
     namespace Models
     {
-        UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> stochastCorrelationMatrix)
+        UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::BaseCorrelation> stochastCorrelationMatrix)
         {
             this->stochasts.clear();
 
@@ -80,12 +81,12 @@ namespace Deltares
             else if (stochastCorrelationMatrix->IsIdentity())
             {
                 this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-                this->correlationMatrix->init(static_cast<int>(this->stochasts.size()));
+                this->correlationMatrix->Init(static_cast<int>(this->stochasts.size()));
             }
             else
             {
                 this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-                this->correlationMatrix->init(static_cast<int>(this->stochasts.size()));
+                this->correlationMatrix->Init(static_cast<int>(this->stochasts.size()));
 
                 for (int i = 0; i < static_cast<int>(this->stochasts.size()); i++)
                 {
@@ -96,8 +97,8 @@ namespace Deltares
 
                         if (k_i != k_j)
                         {
-                            double correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
-                            this->correlationMatrix->SetCorrelation(i, j, correlationValue);
+                            auto correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
+                            this->correlationMatrix->SetCorrelation(i, j, correlationValue.value, correlationValue.type);
                         }
                     }
                 }
@@ -137,19 +138,26 @@ namespace Deltares
                 this->variableStochastList = getVariableStochastIndex();
             }
 
+            auto copulaCorrelation = std::dynamic_pointer_cast<Statistics::CopulaCorrelation> (correlationMatrix);
+
             if (stochasts.size() == varyingStochasts.size())
             {
                 varyingCorrelationMatrix = correlationMatrix;
             }
+            else if (copulaCorrelation != nullptr)
+            {
+                varyingCorrelationMatrix = std::make_shared<Statistics::CopulaCorrelation>();
+                varyingCorrelationMatrix->Init(static_cast<int>(varyingStochasts.size()));
+                varyingCorrelationMatrix->Filter(correlationMatrix, varyingStochastIndex);
+            }
             else
             {
                 varyingCorrelationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-                varyingCorrelationMatrix->init(static_cast<int>(varyingStochasts.size()));
-                varyingCorrelationMatrix->filter(correlationMatrix, varyingStochastIndex);
+                varyingCorrelationMatrix->Init(static_cast<int>(varyingStochasts.size()));
+                varyingCorrelationMatrix->Filter(correlationMatrix, varyingStochastIndex);
             }
 
-            varyingCorrelationMatrix->CholeskyDecomposition();
-            varyingCorrelationMatrix->InverseCholeskyDecomposition();
+            varyingCorrelationMatrix->InitializeForRun();
         }
 
         void UConverter::checkArraysMatch(std::shared_ptr<ComputationalStochast> stochast, std::shared_ptr<ComputationalStochast> otherStochast) const
@@ -242,7 +250,7 @@ namespace Deltares
 
         bool UConverter::isFullyCorrelated(const int index, std::vector<int> varyingIndices)
         {
-            return correlationMatrix->isFullyCorrelated(index, varyingIndices);
+            return correlationMatrix->IsFullyCorrelated(index, varyingIndices);
         }
 
         int UConverter::getStochastCount()
@@ -317,9 +325,10 @@ namespace Deltares
                 }
             }
 
-            if (settings->AreStartValuesCorrelated)
+            auto correlation = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
+            if (settings->AreStartValuesCorrelated && correlation != nullptr)
             {
-                const std::vector<double> uncorrelatedStartValues = varyingCorrelationMatrix->InverseCholesky(startValues);
+                const std::vector<double> uncorrelatedStartValues = correlation->InverseCholesky(startValues);
 
                 for (size_t i = 0; i < settings->VaryingStochastSettings.size(); i++)
                 {
@@ -337,7 +346,7 @@ namespace Deltares
 
         void UConverter::updateDependentParameter(std::vector<double>& uValues, const int i)
         {
-            auto r = varyingCorrelationMatrix->findDependent(i);
+            auto r = varyingCorrelationMatrix->FindDependent(i);
             if (r.index >= 0)
             {
                 uValues[i] = r.correlation * uValues[r.index];
@@ -393,7 +402,12 @@ namespace Deltares
 
         std::vector<double> UConverter::getUValues(std::shared_ptr<Sample> sample)
         {
-            return varyingCorrelationMatrix->Cholesky(sample->Values);
+            auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
+            if (corrM == nullptr)
+            {
+                throw Reliability::probLibException("not implemented yet");
+            }
+            return corrM->ApplyCorrelation(sample->Values);
         }
 
         std::vector<double> UConverter::getExpandedUValues(std::shared_ptr<Sample> sample)
@@ -409,7 +423,7 @@ namespace Deltares
                 }
             }
 
-            std::vector<double> uCorrelated = varyingCorrelationMatrix->Cholesky(unexpandedUValues);
+            std::vector<double> uCorrelated = varyingCorrelationMatrix->ApplyCorrelation(unexpandedUValues);
 
             std::vector<double> expandedUValues = getExpandedValues(uCorrelated);
 
@@ -635,7 +649,7 @@ namespace Deltares
                     count = static_cast<int>(uValuesNew.size());
                 }
 
-                auto uCorrelated = varyingCorrelationMatrix->Cholesky(uValues);
+                auto uCorrelated = varyingCorrelationMatrix->ApplyCorrelation(uValues);
 
                 auto alphaCorrelated = std::vector<double>(count);
                 for (int i = 0; i < count; i++)

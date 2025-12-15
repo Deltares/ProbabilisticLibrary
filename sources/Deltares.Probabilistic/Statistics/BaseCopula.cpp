@@ -20,24 +20,25 @@
 // All rights reserved.
 //
 
-#include "RunProject.h"
-#include "ModelRunner.h"
+#include "BaseCopula.h"
+#include "StandardNormal.h"
 
-namespace Deltares::Models
+namespace Deltares::Statistics
 {
-    void RunProject::run()
+    void BaseCopula::update_uspace(const double& a, double& b) const
     {
-        this->evaluation = nullptr;
-
-        if (this->model != nullptr && this->model->callbackAssigned)
-        {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
-
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
-        }
+        double u = StandardNormal::getPFromU(a);
+        double t = StandardNormal::getPFromU(b);
+        update(u, t);
+        b = StandardNormal::getUFromP(t);
     }
+
+    bool BaseCopula::isValid() const
+    {
+        auto report = Logging::ValidationReport();
+        validate(report);
+        return report.messages.empty();
+    }
+
 }
 

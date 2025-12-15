@@ -56,9 +56,9 @@ namespace Deltares {
         {
             char buffer[32];
 #ifdef _WIN32
-            sprintf_s(buffer, "%15.6f", x);
+            sprintf_s(buffer, "%15.6g", x);
 #else
-            snprintf(buffer, 32, "%15.6f", x);
+            snprintf(buffer, 32, "%15.6g", x);
 #endif // _WIN32
             std::string retval = buffer;
             return retval;

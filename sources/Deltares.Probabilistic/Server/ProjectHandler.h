@@ -73,6 +73,7 @@ namespace Deltares
             void SetIndexedValue(int id, std::string property_, int index, double value) override;
             double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) override;
             void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
+            void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value) override;
             int GetIndexedIntValue(int id, std::string property_, int index) override;
             int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
@@ -110,7 +111,7 @@ namespace Deltares
             enum ObjectType {StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult,
-                SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult};
+                SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -126,7 +127,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
             std::unordered_map<int, std::shared_ptr<Statistics::ContributingStochast>> contributingStochasts;
             std::unordered_map<int, std::shared_ptr<Statistics::VariableStochastValue>> conditionalValues;
-            std::unordered_map<int, std::shared_ptr<Statistics::CorrelationMatrix>> correlationMatrices;
+            std::unordered_map<int, std::shared_ptr<Statistics::BaseCorrelation>> correlations;
             std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
@@ -162,7 +163,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
             std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, int> probabilityValueIds;
-            std::unordered_map<std::shared_ptr<Statistics::CorrelationMatrix>, int> correlationMatrixIds;
+            std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
             std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
             std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;

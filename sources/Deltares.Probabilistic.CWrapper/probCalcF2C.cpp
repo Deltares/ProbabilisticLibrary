@@ -151,10 +151,10 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
         {
-            corr->init((int)nStoch);
+            corr->Init((int)nStoch);
             for (int i = 0; i < nrCorrelations; i++)
             {
-                corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
+                corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation, CorrelationType::Gaussian);
             }
         }
         auto uConverter = std::make_shared<UConverter>(stochasts, corr);

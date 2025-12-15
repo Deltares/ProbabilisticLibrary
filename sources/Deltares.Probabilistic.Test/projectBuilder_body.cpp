@@ -24,6 +24,8 @@
 #include "../Deltares.Probabilistic/Model/DefaultValueConverter.h"
 #include <iostream>
 
+#include "../Deltares.Probabilistic/Statistics/CopulaCorrelation.h"
+
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 using namespace Deltares::Models;
@@ -168,6 +170,23 @@ namespace Deltares::Probabilistic::Test
         stochast.push_back(getDeterministicStochast(valueDeterminist));
         stochast.push_back(getNormalStochast(0.0, 1.0));
         auto corr = std::make_shared<CorrelationMatrix>();
+        auto uConverter = std::make_shared<UConverter>(stochast, corr);
+        uConverter->initializeForRun();
+        auto m = std::make_shared<ModelRunner>(z, uConverter);
+        return m;
+    }
+
+    std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterministAndCopula(double valueDeterminist) const
+    {
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
+            { return zfuncWithDeterminist(v); });
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        stochast.push_back(getNormalStochast(0.0, 1.0));
+        stochast.push_back(getDeterministicStochast(valueDeterminist));
+        stochast.push_back(getNormalStochast(0.0, 1.0));
+        auto corr = std::make_shared<CopulaCorrelation>();
+        corr->Init(3);
+        corr->SetCorrelation(0, 2, 0.5, CorrelationType::Frank);
         auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
         auto m = std::make_shared<ModelRunner>(z, uConverter);
@@ -344,7 +363,7 @@ namespace Deltares::Probabilistic::Test
             uncertaintyProject->stochasts.push_back(stochast);
         }
 
-        uncertaintyProject->correlationMatrix = project->correlationMatrix;
+        uncertaintyProject->correlation = project->correlation;
         uncertaintyProject->model = project->model;
 
         return uncertaintyProject;
@@ -359,7 +378,7 @@ namespace Deltares::Probabilistic::Test
             sensitivityProject->stochasts.push_back(stochast);
         }
 
-        sensitivityProject->correlationMatrix = project->correlationMatrix;
+        sensitivityProject->correlation = project->correlation;
         sensitivityProject->model = project->model;
 
         return sensitivityProject;
@@ -374,7 +393,7 @@ namespace Deltares::Probabilistic::Test
             runProject->stochasts.push_back(stochast);
         }
 
-        runProject->correlationMatrix = project->correlationMatrix;
+        runProject->correlation = project->correlation;
         runProject->model = project->model;
 
         return runProject;
@@ -387,8 +406,8 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(getDeterministicStochast(1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlationMatrix = std::make_shared<CorrelationMatrix>();
-        project->correlationMatrix->init(project->stochasts);
+        project->correlation = std::make_shared<CorrelationMatrix>();
+        project->correlation->Init(project->stochasts);
 
         project->model = std::make_shared<ZModel>(projectBuilder::sum);
 
@@ -402,8 +421,8 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(getUniformStochast(-1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlationMatrix = std::make_shared<CorrelationMatrix>();
-        project->correlationMatrix->init(project->stochasts);
+        project->correlation = std::make_shared<CorrelationMatrix>();
+        project->correlation->Init(project->stochasts);
 
         project->model = std::make_shared<ZModel>(linear);
 
@@ -417,8 +436,8 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(getUniformStochast(-1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlationMatrix = std::make_shared<CorrelationMatrix>();
-        project->correlationMatrix->init(project->stochasts);
+        project->correlation = std::make_shared<CorrelationMatrix>();
+        project->correlation->Init(project->stochasts);
 
         project->model = std::make_shared<ZModel>(projectBuilder::linearMultiple);
         project->model->outputParameters.push_back(std::make_shared<ModelInputParameter>("Result1"));
@@ -434,8 +453,8 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(getTriangularStochast(0, 0, 1));
         project->stochasts.push_back(getTriangularStochast(0, 0, 1));
 
-        project->correlationMatrix = std::make_shared<CorrelationMatrix>();
-        project->correlationMatrix->init(project->stochasts);
+        project->correlation = std::make_shared<CorrelationMatrix>();
+        project->correlation->Init(project->stochasts);
 
         project->model = std::make_shared<ZModel>(projectBuilder::linear);
 

@@ -20,24 +20,22 @@
 // All rights reserved.
 //
 
-#include "RunProject.h"
-#include "ModelRunner.h"
+#pragma once
+#include "BaseCopula.h"
 
-namespace Deltares::Models
+namespace Deltares::Statistics
 {
-    void RunProject::run()
+    class FrankCopula : public BaseCopula
     {
-        this->evaluation = nullptr;
-
-        if (this->model != nullptr && this->model->callbackAssigned)
-        {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
-
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
-        }
-    }
+    public:
+        explicit FrankCopula(const double alpha) : alpha(alpha) {}
+        void update(const double& u, double& t) const override;
+        CorrelationValueAndType getCorrelation() const override { return { alpha, CorrelationType::Frank }; }
+        void validate(Logging::ValidationReport& report)  const override;
+    private:
+        const double alpha;
+        double copulaRootFunc(double u, double v, double t) const;
+        static double expm1(const double x);
+    };
 }
 

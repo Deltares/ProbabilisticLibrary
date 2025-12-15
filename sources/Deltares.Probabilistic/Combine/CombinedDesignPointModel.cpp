@@ -131,7 +131,7 @@ namespace Deltares
             std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>();
 
             // initialize the correlation matrix
-            correlationMatrix->init(this->standardNormalStochasts);
+            correlationMatrix->Init(this->standardNormalStochasts);
 
             if (selfCorrelationMatrix != nullptr)
             {
@@ -149,7 +149,7 @@ namespace Deltares
                             if (designPoint1 != nullptr && designPoint2 != nullptr && designPoint1 != designPoint2)
                             {
                                 const double correlationValue = selfCorrelationMatrix->getSelfCorrelation(stochast, designPoint1, designPoint2);
-                                correlationMatrix->SetCorrelation(standardNormalStochasts[i], standardNormalStochasts[j], correlationValue);
+                                correlationMatrix->SetCorrelation(standardNormalStochasts[i], standardNormalStochasts[j], correlationValue, CorrelationType::Gaussian);
                             }
                         }
                     }

@@ -26,7 +26,7 @@
 
 #include "ModelProjectSettings.h"
 #include "../Statistics/Stochast.h"
-#include "../Statistics/CorrelationMatrix.h"
+#include "../Statistics/BaseCorrelation.h"
 #include "ZModel.h"
 
 namespace Deltares
@@ -48,7 +48,7 @@ namespace Deltares
             /**
              * \brief Defines correlations between stochastic variables
              */
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr;
+            std::shared_ptr<Statistics::BaseCorrelation> correlation = nullptr;
 
             /**
              * \brief Deterministic model which calculates a z-value based on input values

@@ -102,7 +102,7 @@ namespace Deltares
                 m(0, 1) = 0.0;
                 m(1, 0) = 0.0;
                 auto v = vector1D({ std::numbers::pi, std::numbers::e });
-                auto r = m.matvec(v); // r = v as m is the identity maxtrix
+                auto r = m.matvec(v); // r = v as m is the identity matrix
                 for (size_t i = 0; i < v.size(); i++)
                 {
                     EXPECT_NEAR(r(i), v(i), margin);

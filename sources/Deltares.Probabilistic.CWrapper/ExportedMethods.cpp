@@ -210,6 +210,12 @@ extern "C" DLL_PUBLIC void SetIndexedIndexedValue(int id, char* property, int in
     projectServer->SetIndexedIndexedValue(id, propertyStr, index1, index2, value);
 }
 
+extern "C" DLL_PUBLIC void SetIndexedIndexedIntValue(int id, char* property, int index1, int index2, int value)
+{
+    std::string propertyStr(property);
+    projectServer->SetIndexedIndexedIntValue(id, propertyStr, index1, index2, value);
+}
+
 extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, char* property, int index)
 {
     std::string propertyStr(property);

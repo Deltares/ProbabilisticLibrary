@@ -85,6 +85,7 @@ namespace Deltares
             int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
             double GetIndexedIndexedValue(int id, std::string property, int index1, int index2) override;
             void SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value) override;
+            void SetIndexedIndexedIntValue(int id, const std::string& property, int index1, int index2, int value) override;
             void Execute(int id, std::string method_) override;
 #endif
 
@@ -101,8 +102,8 @@ namespace Deltares
             bool CheckConnection();
             void SetParentProcess();
 
-            std::string StringJoin(const std::vector<std::string>& strings, const std::string delim);
-            std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
+            static std::string StringJoin(const std::vector<std::string>& strings, const std::string& delim);
+            static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
             void StartProcess(std::string processName, bool waitForExit);
             void UpdateAddressInfo();

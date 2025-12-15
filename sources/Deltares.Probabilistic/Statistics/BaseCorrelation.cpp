@@ -20,23 +20,25 @@
 // All rights reserved.
 //
 
-#include "RunProject.h"
-#include "ModelRunner.h"
+#include "BaseCorrelation.h"
 
-namespace Deltares::Models
+namespace Deltares::Statistics
 {
-    void RunProject::run()
+    int BaseCorrelation::FindNewIndex(const std::vector<int>& index, const size_t i)
     {
-        this->evaluation = nullptr;
-
-        if (this->model != nullptr && this->model->callbackAssigned)
+        if (index[i] == -1)
         {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
+            return -1;
+        }
+        else
+        {
+            int newIndex = 0;
+            for (size_t j = 0; j < i; j++)
+            {
+                if (index[j] >= 0) newIndex++;
+            }
 
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
+            return newIndex;
         }
     }
 }
