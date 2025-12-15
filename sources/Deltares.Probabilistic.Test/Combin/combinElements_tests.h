@@ -24,71 +24,69 @@
 #include "../../Deltares.Probabilistic/Combine/combineElements.h"
 #include "../../Deltares.Probabilistic/Combine/upscaling.h"
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class combinElementsTests
     {
-        namespace Test
-        {
-            class combinElementsTests
-            {
-            public:
-                void runAllCombineTwoElementsTests();
-                void runAllLengthEffectTests();
-            private:
-                void testCombineTwoElementsNoCorrelation1();
-                void testCombineTwoElementsNoCorrelation2();
-                void testCombineTwoElementsNoCorrelation3();
-                void testCombineTwoElementsNoCorrelation4();
-                void testCombineTwoElementsNoCorrelation5();
-                void testCombineTwoElementsNoCorrelation6();
-                void testCombineTwoElementsPartialCorrelation1();
-                void testCombineTwoElementsPartialCorrelation2();
-                void testCombineTwoElementsPartialCorrelation3();
-                void testCombineTwoElementsPartialCorrelation4();
-                void testCombineTwoElementsPartialCorrelation5();
-                void testCombineTwoElementsPartialCorrelation6();
-                void testCombineTwoElementsPartialCorrelation7();
-                void testCombineTwoElementsPartialCorrelation8();
-                void testCombineTwoElementsPartialCorrelation9();
-                void testCombineTwoElementsPartialCorrelation10();
-                void testCombineTwoElementsPartialCorrelation11();
-                void testCombineTwoElementsPartialCorrelation12();
-                void testCombineTwoElementsPartialCorrelation13();
-                void testCombineTwoElementsPartialCorrelation14();
-                void testCombineTwoElementsPartialCorrelation15();
-                void testCombineTwoElementsPartialCorrelation99();
-                void testCombineTwoElementsPCorWithNonContrAlphas();
-                void testCombineMultipleElementsProb1();
-                void testCombineMultipleElementsProb2();
-                void testCombineMultipleElementsProb3();
-                void testCombineMultipleElementsProb4();
-                void testCombineMultipleElementsProb5();
-                void testCombineMultipleElementsSpatialCorrelated1();
-                void testCombineMultipleElementsSpatialCorrelated2();
-                void testCombineMultipleElementsSpatialCorrelated3();
-                void testLengthEffectFourStochasts();
-                void testCombineElementsFullCorrelation1();
-                void testCombineElementsFullCorrelation2();
-                void testCombineElementsFullCorrelation(const Deltares::Reliability::combineAndOr andOr);
-                void testCombineTwoElementsNegativeCorrelation1();
-                void testCombineTwoElementsNegativeCorrelation2();
-                void testCombineThreeElementsPartialCorrelation1();
-                void testCombineThreeElementsPartialCorrelation2();
-                void testCombineThreeElementsPartialCorrelation3();
-                void testCombineThreeElementsPartialCorrelation4();
-                void testCombineTwoElementsPartialCorrelationPiping();
-                void testCombineTwoElementsPartialCorrelation9a();
-                void testCombineTwoElementsPartialCorrelation10a();
-                void testCombineTwoElementsPartialCorrelation11a();
-                void testCombineTwoElementsPartialCorrelation12a();
-                void testCombineTwoElementsPartialCorrelation13a();
-                void testCombineTwoElementsPartialCorrelation14a();
-                void testCombineTwoElementsPartialCorrelation99a();
-                Deltares::Reliability::combineElements cmb;
-                Deltares::Reliability::upscaling up;
-                testutils utils;
-            };
-        }
-    }
+    public:
+        void runAllCombineTwoElementsTests();
+        void runAllLengthEffectTests();
+    private:
+        void testCombineTwoElementsNoCorrelation1();
+        void testCombineTwoElementsNoCorrelation2();
+        void testCombineTwoElementsNoCorrelation3();
+        void testCombineTwoElementsNoCorrelation4();
+        void testCombineTwoElementsNoCorrelation5();
+        void testCombineTwoElementsNoCorrelation6();
+        void testCombineTwoElementsPartialCorrelation1();
+        void testCombineTwoElementsPartialCorrelation2();
+        void testCombineTwoElementsPartialCorrelation3();
+        void testCombineTwoElementsPartialCorrelation4();
+        void testCombineTwoElementsPartialCorrelation5();
+        void testCombineTwoElementsPartialCorrelation6();
+        void testCombineTwoElementsPartialCorrelation7();
+        void testCombineTwoElementsPartialCorrelation8();
+        void testCombineTwoElementsPartialCorrelation9();
+        void testCombineTwoElementsPartialCorrelation10();
+        void testCombineTwoElementsPartialCorrelation11();
+        void testCombineTwoElementsPartialCorrelation12();
+        void testCombineTwoElementsPartialCorrelation13();
+        void testCombineTwoElementsPartialCorrelation14();
+        void testCombineTwoElementsPartialCorrelation15();
+        void testCombineTwoElementsPartialCorrelation99();
+        void testCombineTwoElementsPCorWithNonContrAlphas();
+        void testCombineMultipleElementsProb1();
+        void testCombineMultipleElementsProb2();
+        void testCombineMultipleElementsProb3();
+        void testCombineMultipleElementsProb4();
+        void testCombineMultipleElementsProb5();
+        void testCombineMultipleElementsSpatialCorrelated1();
+        void testCombineMultipleElementsSpatialCorrelated2();
+        void testCombineMultipleElementsSpatialCorrelated3();
+        void testLengthEffectFourStochasts();
+        void testCombineElementsFullCorrelation1();
+        void testCombineElementsFullCorrelation2();
+        void testCombineElementsFullCorrelation(const Reliability::combineAndOr andOr);
+        void testCombineTwoElementsNegativeCorrelation1();
+        void testCombineTwoElementsNegativeCorrelation2();
+        void testCombineThreeElementsPartialCorrelation1();
+        void testCombineThreeElementsPartialCorrelation2();
+        void testCombineThreeElementsPartialCorrelation3();
+        void testCombineThreeElementsPartialCorrelation4();
+        void testCombineTwoElementsPartialCorrelationPiping();
+        void TestCombineTwoElementsPartialCorrelationRealCaseA();
+        void TestCombineTwoElementsPartialCorrelationRealCaseB();
+        void TestCombineTwoElementsPartialCorrelationRealCaseC();
+        void testCombineTwoElementsPartialCorrelation9a();
+        void testCombineTwoElementsPartialCorrelation10a();
+        void testCombineTwoElementsPartialCorrelation11a();
+        void testCombineTwoElementsPartialCorrelation12a();
+        void testCombineTwoElementsPartialCorrelation13a();
+        void testCombineTwoElementsPartialCorrelation14a();
+        void testCombineTwoElementsPartialCorrelation99a();
+        Reliability::combineElements combiner;
+        Reliability::upscaling upscaler;
+        testutils test_utilities;
+    };
 }
+

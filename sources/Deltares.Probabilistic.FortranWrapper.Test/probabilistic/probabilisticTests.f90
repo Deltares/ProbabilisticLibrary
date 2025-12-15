@@ -35,7 +35,6 @@ module probabilisticTests
     use performNumericalBisectionTests
     use performCobylaReliabilityTests
     use performSubSetSimulationReliabilityTests
-    use combineElementsTests
     use performDSTests
     use upscaleLengthTests
     use initProbabilisticTests
@@ -57,7 +56,6 @@ subroutine allProbabilisticTests
 
     call allInitProbabilisticTests
     call allDistributionFunctionsTests
-    call allCombineElementsTests
     call allPerformImportanceSamplingTests
     call allPerformAdaptiveMCIStests
     call allPerformLatinHyperCubeTests
