@@ -75,6 +75,8 @@ namespace Deltares::Statistics
         int max_stochasts = -1;
         std::vector<CopulaPair> copulas;
         std::vector<std::shared_ptr<Stochast>> stochasts;
+        void RemovePair(const CopulaPair& pair);
+        size_t FindPair(const CopulaPair& pair) const;
     };
 }
 

@@ -104,7 +104,8 @@ namespace Deltares::Statistics
 
         /// <summary>
         /// set the correlation between two stochastic variables \n
-        /// note that the behaviour of multiple calls with the same set of stochastic variables is undefined
+        /// multiple calls with the same set of stochastic variables will overwrite the previous call,
+        /// even if the order of i and j is reversed
         /// </summary>
         /// <param name="i"> index first stochast </param>
         /// <param name="j"> index second stochast </param>
@@ -114,7 +115,8 @@ namespace Deltares::Statistics
 
         /// <summary>
         /// set the correlation between two stochastic variable \n
-        /// note that the behaviour of multiple calls with the same set of stochastic variables is undefined
+        /// multiple calls with the same set of stochastic variables will overwrite the previous call,
+        /// even if the order of stochast1 and stochast2 is reversed
         /// </summary>
         /// <param name="stochast1"> the first stochast </param>
         /// <param name="stochast2"> the second stochast </param>

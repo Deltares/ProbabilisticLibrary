@@ -63,8 +63,43 @@ namespace Deltares::Statistics
             break;
         case Gaussian:
             pair.copula = std::make_shared<GaussianCopula>(value);
+            if (value == 0.0)
+            {
+                RemovePair(pair);
+                return;
+            }
         }
-        copulas.push_back(pair);
+
+        auto index = FindPair(pair);
+        if (index < copulas.size())
+        {
+            copulas[index] = pair;
+        }
+        else
+        {
+            copulas.push_back(pair);
+        }
+
+    }
+
+    size_t CopulaCorrelation::FindPair(const CopulaPair& pair) const
+    {
+        for (size_t i = 0; i < copulas.size(); i++)
+        {
+            if (copulas[i].index1 == pair.index1 && copulas[i].index2 == pair.index2) return i;
+            if (copulas[i].index1 == pair.index2 && copulas[i].index2 == pair.index1) return i;
+        }
+        return std::numeric_limits<size_t>::max();
+    }
+
+    void CopulaCorrelation::RemovePair(const CopulaPair& pair)
+    {
+        const auto index = FindPair(pair);
+        if (index < copulas.size())
+        {
+            copulas[index] = copulas.back();
+            copulas.pop_back();
+        }
     }
 
     bool CopulaCorrelation::IsValid() const

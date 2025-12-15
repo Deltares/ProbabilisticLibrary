@@ -99,7 +99,13 @@ namespace Deltares::Probabilistic::Test
         copulas.Init(2);
         copulas.SetCorrelation(0, 1, 0.1, CorrelationType::Gaussian);
         copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
-        EXPECT_FALSE(copulas.IsValid());
+        EXPECT_TRUE(copulas.IsValid());
+
+        auto copulas_empty = Statistics::CopulaCorrelation();
+        copulas_empty.Init(2);
+        copulas_empty.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
+        copulas_empty.SetCorrelation(0, 1, 0.0, CorrelationType::Gaussian);
+        EXPECT_EQ(copulas_empty.CountCorrelations() , 0);
     }
 
     void testCopula::testValidationMessages()
@@ -135,7 +141,7 @@ namespace Deltares::Probabilistic::Test
         copulas.SetCorrelation(0, 1, 0.1, CorrelationType::Gaussian);
         copulas.SetCorrelation(1, 0, 2.0, CorrelationType::Frank);
         copulas.Validate(report);
-        EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations 1 and 0", report.messages[0]->Text);
+        EXPECT_EQ(0, report.messages.size());
 
         report.messages.clear();
         auto copulas2 = Statistics::CopulaCorrelation();
@@ -143,14 +149,17 @@ namespace Deltares::Probabilistic::Test
         stochast1->name = "A";
         auto stochast2 = std::make_shared<Statistics::Stochast>();
         stochast2->name = "B";
+        auto stochast3 = std::make_shared<Statistics::Stochast>();
+        stochast3->name = "C";
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         stochasts.push_back(stochast1);
         stochasts.push_back(stochast2);
+        stochasts.push_back(stochast3);
         copulas2.Init(stochasts);
         copulas2.SetCorrelation(stochast1, stochast2, 0.1, CorrelationType::Gaussian);
-        copulas2.SetCorrelation(stochast2, stochast1, 2.0, CorrelationType::Frank);
+        copulas2.SetCorrelation(stochast3, stochast1, 2.0, CorrelationType::Frank);
         copulas2.Validate(report);
-        EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations B-A and A-B", report.messages[0]->Text);
+        EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations C-A and A-B", report.messages[0]->Text);
     }
 
 }
