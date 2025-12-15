@@ -20,5 +20,5 @@
 // All rights reserved.
 //
 #include "pch.h"
-#include "testCopula_body.cpp"
+#include "TestCopula_body.cpp"
 

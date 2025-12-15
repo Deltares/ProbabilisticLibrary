@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "testCopula.h"
+#include "TestCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/ClaytonCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/FrankCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/GumbelCopula.h"
@@ -31,35 +31,35 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void testCopula::testClayton()
+    void TestCopula::TestClayton()
     {
         constexpr double margin = 1e-9;
 
-        auto claytonCopula = Statistics::ClaytonCopula(0.7);
+        auto clayton_copula = Statistics::ClaytonCopula(0.7);
         double a = 1.0;
         double b = 1.0;
-        claytonCopula.update_uspace(a, b);
+        clayton_copula.update_uspace(a, b);
         EXPECT_NEAR(b, 1.23779153247, margin);
     }
 
-    void testCopula::testFrank()
+    void TestCopula::TestFrank()
     {
         constexpr double margin = 1e-9;
 
-        auto frankCopula = Statistics::FrankCopula(0.7);
+        auto frank_copula = Statistics::FrankCopula(0.7);
         double a = 1.0;
         double b = 1.0;
-        frankCopula.update_uspace(a, b);
+        frank_copula.update_uspace(a, b);
         EXPECT_NEAR(b, 1.1216920258, margin);
     }
 
-    void testCopula::testGaussian()
+    void TestCopula::TestGaussian()
     {
         constexpr double margin = 1e-12;
 
         auto correlation = Statistics::GaussianCopula(0.5);
-        auto correlationWithType = correlation.getCorrelation();
-        EXPECT_NEAR(0.5, correlationWithType.value, margin);
+        auto correlation_with_type = correlation.getCorrelation();
+        EXPECT_NEAR(0.5, correlation_with_type.value, margin);
         constexpr double u1 = 0.9;
         double u2 = 0.8;
         correlation.update_uspace(u1, u2);
@@ -67,18 +67,18 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(expected, u2, margin);
     }
 
-    void testCopula::testGumbel()
+    void TestCopula::TestGumbel()
     {
         constexpr double margin = 1e-4;
 
-        auto gumbelCopula = Statistics::GumbelCopula(5.0);
+        auto gumbel_copula = Statistics::GumbelCopula(5.0);
         double a = 0.2;
         double b = 0.2;
-        gumbelCopula.update(a, b);
+        gumbel_copula.update(a, b);
         EXPECT_NEAR(b, 0.1355, margin) << "comparison with Matlab fails";
     }
 
-    void testCopula::testValidation()
+    void TestCopula::TestValidation()
     {
         auto gaussian_copula = Statistics::GaussianCopula(1.5);
         EXPECT_FALSE(gaussian_copula.isValid());
@@ -108,7 +108,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(copulas_empty.CountCorrelations() , 0);
     }
 
-    void testCopula::testValidationMessages()
+    void TestCopula::TestValidationMessages()
     {
         auto report = Logging::ValidationReport();
         auto gaussian_copula = Statistics::GaussianCopula(1.5);

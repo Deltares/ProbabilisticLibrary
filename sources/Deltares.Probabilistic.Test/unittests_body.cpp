@@ -36,7 +36,7 @@
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
 #include "Statistics/testStandardNormal.h"
-#include "Statistics/testCopula.h"
+#include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
 #include "Math/testMatrix.h"
 #include "Model/TestRunModel.h"
@@ -454,32 +454,32 @@ TEST(unittst, testStandardNormal)
 
 TEST(copulas_test, testClayton)
 {
-    testCopula::testClayton();
+    TestCopula::TestClayton();
 }
 
 TEST(copulas_test, testFrank)
 {
-    testCopula::testFrank();
+    TestCopula::TestFrank();
 }
 
 TEST(copulas_test, testGaussian)
 {
-    testCopula::testGaussian();
+    TestCopula::TestGaussian();
 }
 
 TEST(copulas_test, testGumbel)
 {
-    testCopula::testGumbel();
+    TestCopula::TestGumbel();
 }
 
 TEST(copulas_test, testValidation)
 {
-    testCopula::testValidation();
+    TestCopula::TestValidation();
 }
 
 TEST(copulas_test, testValidationMessages)
 {
-    testCopula::testValidationMessages();
+    TestCopula::TestValidationMessages();
 }
 
 TEST(unittst, testUncertainty)
