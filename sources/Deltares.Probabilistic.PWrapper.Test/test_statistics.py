@@ -470,6 +470,32 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(0.37, stochast.mean, delta=margin)
 
+    def test_frechet(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.frechet
+        stochast.scale = 0.5
+        stochast.shift = 1.0
+        stochast.shape = 2.0
+        stochast.print()
+
+    def test_gev(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.generalized_extreme_value
+        stochast.scale = 1.0
+        stochast.shift = 5.0
+        stochast.shape = -0.5
+        stochast.print()
+        stochast.plot()
+
+        import numpy as np
+        u = np.arange(-1.0, 5.0, 0.1)
+        data = [stochast.get_x_from_u(val) for val in u]
+        stochast_new = Stochast()
+        stochast_new.distribution = DistributionType.generalized_extreme_value
+        stochast_new.fit(data, 1.5)
+        stochast_new.print()
+        stochast_new.plot()
+
     def test_ks_test(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.normal

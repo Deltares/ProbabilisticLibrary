@@ -254,11 +254,20 @@ namespace Deltares
             stochast.Minimum = min - add;
             stochast.Maximum = max + add;
 
-            double mean = Numeric::NumericSupport::getMean(values);
-            stochast.Shift = 3 * mean - (min + max);
+            if (std::isnan(shift))
+            {
+                double mean = Numeric::NumericSupport::getMean(values);
+                stochast.Shift = 3 * mean - (min + max);
 
-            stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
-            stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
+                stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
+                stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
+            }
+            else
+            {
+                stochast.Shift = shift;
+                stochast.Minimum = std::min(stochast.Shift, stochast.Minimum);
+                stochast.Maximum = std::max(stochast.Shift, stochast.Maximum);
+            }
 
             stochast.Observations = static_cast<int>(values.size());
         }

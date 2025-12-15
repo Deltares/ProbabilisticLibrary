@@ -342,21 +342,43 @@ namespace Deltares
             stochast.Maximum = max + add;
 
             double mean = Numeric::NumericSupport::getMean(values);
-            stochast.Shift = 3 * mean - (min + max);
 
-            stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
-            stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
+            if (std::isnan(shift))
+            {
+                stochast.Shift = 3 * mean - (min + max);
 
-            auto fitter = DistributionFitter();
+                stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
+                stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
 
-            std::vector minValues = { stochast.Minimum, stochast.Minimum };
-            std::vector maxValues = { stochast.Maximum, stochast.Maximum };
-            std::vector properties = {Shift, ShiftB };
+                auto fitter = DistributionFitter();
 
-            std::vector<double> parameters = fitter.fitByLogLikelihood(values,this, stochast,minValues,maxValues,properties);
+                std::vector minValues = { stochast.Minimum, stochast.Minimum };
+                std::vector maxValues = { stochast.Maximum, stochast.Maximum };
+                std::vector properties = { Shift, ShiftB };
 
-            stochast.Shift = std::max(stochast.Minimum, parameters[0]);
-            stochast.ShiftB = std::min(stochast.Maximum, parameters[1]);
+                std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+
+                stochast.Shift = std::max(stochast.Minimum, parameters[0]);
+                stochast.ShiftB = std::min(stochast.Maximum, parameters[1]);
+            }
+            else
+            {
+                stochast.Shift = shift;
+
+                stochast.Minimum = std::min(stochast.Minimum, shift);
+                stochast.Maximum = std::max(stochast.Maximum, shift);
+
+                auto fitter = DistributionFitter();
+
+                std::vector minValues = { stochast.Minimum };
+                std::vector maxValues = { stochast.Maximum };
+                std::vector properties = { ShiftB };
+
+                std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+
+                stochast.ShiftB = std::min(stochast.Maximum, parameters[0]);
+            }
+
             stochast.Observations = static_cast<int>(values.size());
         }
 
