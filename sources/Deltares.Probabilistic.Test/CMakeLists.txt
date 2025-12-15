@@ -92,8 +92,8 @@ add_executable(Deltares.Probabilistic.Test
     Combin/hohenbichler_tests.cpp
     Combin/intEqualElements_tests.h
     Combin/intEqualElements_tests.cpp
-    Combin/upscale_tests.h
-    Combin/upscale_tests.cpp
+    Combin/UpscaleTests.h
+    Combin/UpscaleTests.cpp
     Combin/combinElements_tests.h
     Combin/combinElements_tests.cpp
     Combin/combiner_tests.h

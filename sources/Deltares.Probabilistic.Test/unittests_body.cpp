@@ -32,7 +32,7 @@
 #include "Math/testRootfinder.h"
 #include "Combin/hohenbichler_tests.h"
 #include "Combin/intEqualElements_tests.h"
-#include "Combin/upscale_tests.h"
+#include "Combin/UpscaleTests.h"
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
 #include "Statistics/testStandardNormal.h"
@@ -65,72 +65,84 @@ int main(int argc, char** argv)
     return RUN_ALL_TESTS();
 }
 
-TEST(unittst, testCombiner)
+TEST(unit_tests, testCombiner)
 {
     auto h = CombinerTest();
     h.allCombinerTests();
 }
 
-TEST(unittst, testCombinElements)
+TEST(unit_tests, testCombinElements)
 {
     auto h = combinElementsTests();
     h.runAllCombineTwoElementsTests();
 }
 
-TEST(unittst, testLengthEffect)
+TEST(unit_tests, testLengthEffect)
 {
     auto h = combinElementsTests();
     h.runAllLengthEffectTests();
 }
 
-TEST(unittst, testUpscaling)
+TEST(unit_tests, AllUpscaleInTimeTests)
 {
-    auto h = upscale_tests();
-    h.runAll();
+    auto h = UpscaleTests();
+    h.RunAllUpscaleInTimeTests();
 }
 
-TEST(unittst, testIntEqualElements)
+TEST(unit_tests, AllEquivalentAlphaTests)
+{
+    auto h = UpscaleTests();
+    h.RunAllEquivalentAlphaTests();
+}
+
+TEST(unit_tests, AllUpscaleToLargestBlockTests)
+{
+    auto h = UpscaleTests();
+    h.RunAllUpscaleToLargestBlockTests();
+}
+
+TEST(unit_tests, testIntEqualElements)
 {
     auto h = intEqualElements_tests();
     h.allIntegrateEqualElementsTests();
 }
 
-TEST(unittst, testHohenbichler)
+TEST(unit_tests, testHohenbichler)
 {
     auto h = HohenbichlerTest();
     h.allHohenbichlerTests();
 }
 
-TEST(unittst, testCholeskiDecomp)
+TEST(unit_tests, testCholeskiDecomp)
 {
     auto tstCholeskiDecomp = choleski_decomp_tests();
     tstCholeskiDecomp.allCholeskyDecompositionTests();
 }
 
-TEST(unittst, testMatinv)
+TEST(unit_tests, testMatinv)
 {
     auto tstMatInv = matinv_tests();
     tstMatInv.all_matinv_tests();
 }
 
-TEST(unittst, testMatmul)
+TEST(unit_tests, testMatmul)
 {
     auto tstMatMul = matmul_tests();
     tstMatMul.all_matmul_tests();
 }
 
-TEST(unittst, testNumericalSupport)
+TEST(unit_tests, testNumericalSupport)
 {
     testNumericSupport::allNumericSupportTests();
 }
 
-TEST(unittst, testKMeanClustering)
+TEST(unit_tests, testKMeanClustering)
 {
     auto h = testKMean();
     h.allKMeanTests();
 }
 
-TEST(unittst, testStartPointCalculator)
+TEST(unit_tests, testStartPointCalculator)
 {
     auto tstStartPoint = TestStartPointCalculator();
     tstStartPoint.AllStartPointTests();
@@ -415,48 +427,48 @@ TEST(distribution_tests, testVariationCoefficient)
     testDistributions::testVariationCoefficient();
 }
 
-TEST(unittst, testStandardNormal)
+TEST(unit_tests, testStandardNormal)
 {
     auto tstStdNormal = testStandardNormal();
     tstStdNormal.allStandardNormalTests();
 }
 
-TEST(unittst, testUncertainty)
+TEST(unit_tests, testUncertainty)
 {
     auto tstUncertainty = TestUncertainty();
     tstUncertainty.allUncertaintyTests();
 }
 
-TEST(unittst, testSensitivity)
+TEST(unit_tests, testSensitivity)
 {
     auto tstSensitivity = TestSensitivity();
     tstSensitivity.allSensitivityTests();
 }
 
-TEST(unittst, testRunModel)
+TEST(unit_tests, testRunModel)
 {
     auto tstModel = TestRunModel();
     tstModel.allModelTests();
 }
 
-TEST(unittst, testRandom)
+TEST(unit_tests, testRandom)
 {
     testRandom::allRandomTests();
 }
 
-TEST(unittst, testRootfinder)
+TEST(unit_tests, testRootfinder)
 {
     auto tstRF = rootfinder_tests();
     tstRF.all_rootfinder_tests();
 }
 
-TEST(unittst, testVector1D)
+TEST(unit_tests, testVector1D)
 {
     auto tstVector1D = vector1D_tests();
     tstVector1D.allVector1Dtests();
 }
 
-TEST(unittst, testCobylaOptimization)
+TEST(unit_tests, testCobylaOptimization)
 {
     auto tstCobylaOpt = testCobyla();
     tstCobylaOpt.allCobylaTests();

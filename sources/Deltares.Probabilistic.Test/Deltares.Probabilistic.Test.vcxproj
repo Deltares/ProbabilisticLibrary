@@ -113,12 +113,12 @@
     <ClInclude Include="Combin\hohenbichlerCombiner_tests.h" />
     <ClInclude Include="Combin\hohenbichler_tests.h" />
     <ClInclude Include="Combin\intEqualElements_tests.h" />
-    <ClInclude Include="Combin\upscale_tests.h" />
+    <ClInclude Include="Combin\UpscaleTests.h" />
     <ClInclude Include="Combin\combinElements_tests.cpp" />
     <ClInclude Include="Combin\hohenbichlerCombiner_tests.cpp" />
     <ClInclude Include="Combin\hohenbichler_tests.cpp" />
     <ClInclude Include="Combin\intEqualElements_tests.cpp" />
-    <ClInclude Include="Combin\upscale_tests.cpp" />
+    <ClInclude Include="Combin\UpscaleTests.cpp" />
     <ClInclude Include="Distributions\testDistributions.h" />
     <ClInclude Include="Distributions\testDistributions_body.cpp" />
     <ClInclude Include="Statistics\testStandardNormal.h" />
