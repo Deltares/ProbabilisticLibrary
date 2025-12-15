@@ -349,6 +349,12 @@ namespace Deltares
             bool canFit() const;
 
             /**
+             * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values and a given shift value
+             * \return Indication
+             */
+            bool canFitShift() const;
+
+            /**
              * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values and a prior distribution
              * \return Indication
              */

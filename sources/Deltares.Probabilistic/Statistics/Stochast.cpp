@@ -541,6 +541,11 @@ namespace Deltares
             return distribution->canFit();
         }
 
+        bool Stochast::canFitShift() const
+        {
+            return distribution->canFitShift();
+        }
+
         bool Stochast::canFitPrior() const
         {
             return distribution->canFitPrior();
@@ -559,6 +564,11 @@ namespace Deltares
 
             if (!values.empty() && !std::isnan(shift))
             {
+                if (!this->canFitShift())
+                {
+                    Logging::ValidationSupport::add(report, "Fit with shift is not supported for distribution type " + Stochast::getDistributionTypeString(distributionType) + ".", name);
+                }
+
                 double minValue = distribution->getMaxShiftValue(values);
 
                 if (inverted)

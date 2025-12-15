@@ -43,6 +43,7 @@ namespace Deltares
             bool canTruncate() override { return this->innerDistribution->canTruncate(); }
             bool canInvert() override { return true; }
             bool canFit() override { return this->innerDistribution->canFit(); }
+            bool canFitShift() override { return this->innerDistribution->canFitShift(); }
             bool canFitPrior() override { return this->innerDistribution->canFitPrior(); }
             double getMean(StochastProperties& stochast) override;
             double getDeviation(StochastProperties& stochast) override;

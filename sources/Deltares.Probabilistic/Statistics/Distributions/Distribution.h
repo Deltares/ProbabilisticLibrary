@@ -101,6 +101,18 @@ namespace Deltares::Statistics
         virtual bool canFit() { return false; }
 
         /**
+         * \brief Indicates whether the stochast can be fitted to data with a given value for shift
+         * \return Indication
+         */
+        virtual bool canFitShift()
+        {
+            return std::ranges::any_of(getParameters(), [](DistributionPropertyType parameter)
+            {
+                return parameter == DistributionPropertyType::Shift;
+            });
+        }
+
+        /**
          * \brief Indicates whether the stochast can be fitted to data with use of a prior stochast
          * \return Indication
          */

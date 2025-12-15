@@ -374,7 +374,6 @@ namespace Deltares::Probabilistic::Test
     {
         Stochast stochastForFit = Stochast(DistributionType::Triangular, { 4.0, 5.0, 8.0 });
         testFit(stochastForFit, 0.15);
-        testFitShift(stochastForFit, 0.15);
     }
 
     void testDistributions::testTrapezoidal()
@@ -384,27 +383,21 @@ namespace Deltares::Probabilistic::Test
 
         Stochast stochastForFit = Stochast(DistributionType::Trapezoidal, { 4.0, 5.0, 6.0, 8.0 });
         testFit(stochastForFit, margin, number);
-        testFitShift(stochastForFit, margin, number);
 
         Stochast triangular = Stochast(DistributionType::Trapezoidal, { 4.0, 5.0, 5.0, 8.0 });
         testFit(triangular, margin, number);
-        testFitShift(triangular, margin, number);
 
         Stochast uniform = Stochast(DistributionType::Trapezoidal, { 4.0, 4.0, 8.0, 8.0 });
         testFit(uniform, margin, number);
-        testFitShift(uniform, margin, number);
 
         Stochast left = Stochast(DistributionType::Trapezoidal, { 4.0, 4.0, 4.0, 8.0 });
         testFit(left, margin, number);
-        testFitShift(left, margin, number);
 
         Stochast right = Stochast(DistributionType::Trapezoidal, { 4.0, 8.0, 8.0, 8.0 });
         testFit(right, margin, number);
-        testFitShift(right, margin, number);
 
         Stochast uneven = Stochast(DistributionType::Trapezoidal, { 0.0, 7.0, 9.0, 10.0 });
         testFit(uneven, margin, number);
-        testFitShift(uneven, margin, number);
     }
 
     void testDistributions::testExponential()
