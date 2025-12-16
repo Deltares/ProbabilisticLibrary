@@ -63,7 +63,9 @@ namespace Deltares::Probabilistic::Test
         void testCombineMultipleElementsSpatialCorrelated1();
         void testCombineMultipleElementsSpatialCorrelated2();
         void testCombineMultipleElementsSpatialCorrelated3();
-        void testLengthEffectFourStochasts();
+        static void testLengthEffectFourStochasts();
+        static void UpscaleLengthTests11();
+        static void UpscaleLengthTests16();
         void testCombineElementsFullCorrelation1();
         void testCombineElementsFullCorrelation2();
         void testCombineElementsFullCorrelation(const Reliability::combineAndOr andOr);

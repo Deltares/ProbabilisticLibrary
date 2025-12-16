@@ -86,6 +86,8 @@ namespace Deltares::Probabilistic::Test
     void combinElementsTests::runAllLengthEffectTests()
     {
         testLengthEffectFourStochasts();
+        UpscaleLengthTests11();
+        UpscaleLengthTests16();
         testCombineMultipleElementsSpatialCorrelated1();
         testCombineMultipleElementsSpatialCorrelated2();
         testCombineMultipleElementsSpatialCorrelated3();
@@ -900,6 +902,49 @@ namespace Deltares::Probabilistic::Test
             EXPECT_NEAR(dp.Alphas[i]->X, refX[i], 1e-6);
         }
         EXPECT_EQ(1, dp.ContributingDesignPoints.size());
+    }
+
+    void combinElementsTests::UpscaleLengthTests11()
+    {
+        vector1D alpha_cross_section = { 0.0, 0.6, 0.0, -0.8, 0.0 };
+        alpha_cross_section.normalize();
+        auto design_point = alphaBeta(5.0, alpha_cross_section);
+        constexpr double section_length = 250.0;
+        vector1D rhoXK = { 0.8, 0.8, 0.8, 0.8, 0.8 };
+        const vector1D dXK = { 200.0, 200.0, 200.0, 200.0, 200.0 };
+
+        auto up = upscaling();
+        std::string msg;
+        auto result = up.upscaleLength(design_point, rhoXK, dXK, section_length, msg);
+        //The expected value of alphaSection() is alphaCrossSection for the given length
+        for (size_t i = 0; i < alpha_cross_section.size(); i++)
+        {
+            constexpr double my_margin = 1.0e-6;
+            ASSERT_NEAR(result.first.getAlphaI(i), alpha_cross_section(i), my_margin);
+        }
+    }
+
+    void combinElementsTests::UpscaleLengthTests16()
+    {
+        vector1D alpha_cross_section = { 1.0, -2.0, 4.0, 0.0, -3.0 };
+        alpha_cross_section.normalize();
+        auto design_point = alphaBeta(5.0, alpha_cross_section);
+        const std::vector section_lengths = { 100.0, 150.0, 170.0, 175.0, 177.0 };
+        vector1D rhoXK = { 0.8, 0.0, 1.0, 0.5, 1.0 };
+        const vector1D dXK = { 100.0, 200.0, 50.0, 150.0, 300.0 };
+
+        auto up = upscaling();
+        for (size_t iLength = 1; iLength < section_lengths.size(); iLength++)
+        {
+            std::string msg;
+            auto result = up.upscaleLength(design_point, rhoXK, dXK, section_lengths[iLength], msg);
+            //The expected value of alphaSection() is alphaCrossSection for the given length
+            for (size_t i = 0; i < alpha_cross_section.size(); i++)
+            {
+                constexpr double my_margin = 1.0e-6;
+                ASSERT_NEAR(result.first.getAlphaI(i), alpha_cross_section(i), my_margin);
+            }
+        }
     }
 
     void combinElementsTests::testCombineElementsFullCorrelation(const combineAndOr andOr)

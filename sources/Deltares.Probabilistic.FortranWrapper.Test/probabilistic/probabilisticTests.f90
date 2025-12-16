@@ -36,7 +36,6 @@ module probabilisticTests
     use performCobylaReliabilityTests
     use performSubSetSimulationReliabilityTests
     use performDSTests
-    use upscaleLengthTests
     use initProbabilisticTests
     use incompleteGammaFunctionTests
     use basicCorrelationTests
@@ -63,7 +62,6 @@ subroutine allProbabilisticTests
     call allPerformCobylaReliabilityTests
     call allPerformSubSetSimulationReliabilityTests
     call performAllDSTests
-    call allUpscaleLengthTests
 
 end subroutine allProbabilisticTests
 
