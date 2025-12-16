@@ -164,7 +164,6 @@ TEST(proxies_test, linear_output_only_model)
     testProxies.testLinearOutputOnlyModel();
 }
 
-TEST(unittst, testNumericalSupport)
 TEST(unit_tests, testNumericalSupport)
 {
     testNumericSupport::allNumericSupportTests();
@@ -259,10 +258,9 @@ TEST(reliability_method_test, TestCrudeMCReliability)
 
 TEST(reliability_method_test, testCrudeMCwithCopula)
 {
-    testReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
+    TestReliabilityMethods::TestCrudeMonteCarloWithCopulaReliability();
 }
 
-TEST(reliability_method_test, testAdaptiveImportanceSampling)
 TEST(reliability_method_test, TestAdaptiveImportanceSampling)
 {
     TestReliabilityMethods::TestAdaptiveImportanceSampling();
@@ -503,7 +501,6 @@ TEST(copulas_test, testValidationMessages)
     TestCopula::TestValidationMessages();
 }
 
-TEST(unittst, testUncertainty)
 TEST(unit_tests, testUncertainty)
 {
     auto tstUncertainty = TestUncertainty();

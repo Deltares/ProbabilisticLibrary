@@ -306,6 +306,17 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
     }
 
+    void TestReliabilityMethods::TestCrudeMonteCarloWithCopulaReliability()
+    {
+        auto calculator = CrudeMonteCarlo();
+        auto modelRunner = projectBuilder().BuildProjectWithDeterministAndCopula(0.0);
+        calculator.Settings->MinimumSamples = 10000;
+        calculator.Settings->MaximumSamples = 100000;
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+        ASSERT_EQ(designPoint->Alphas.size(), 3);
+        EXPECT_NEAR(designPoint->Beta, -0.0147896, 1e-5);
+    }
+
     void TestReliabilityMethods::TestAdaptiveImportanceSampling()
     {
         auto calculator = AdaptiveImportanceSampling();
@@ -374,8 +385,7 @@ namespace Deltares::Probabilistic::Test
         calculator.Settings->runSettings->MaxParallelProcesses = 1;
         calculator.Settings->DirectionSettings->modelVaryingType = varyingType;
         calculator.Settings->DirectionSettings->Dsdu = dsdu;
-        modelRunner->Settings->proxySettings = std::make_shared<ProxySettings>();
-        modelRunner->Settings->proxySettings->IsProxyModel = useProxy;
+        modelRunner->ProxySettings->IsProxyModel = useProxy;
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 

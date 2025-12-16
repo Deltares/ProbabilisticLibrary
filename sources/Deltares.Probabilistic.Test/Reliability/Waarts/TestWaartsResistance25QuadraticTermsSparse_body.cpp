@@ -57,7 +57,7 @@ namespace Deltares::Probabilistic::Test
         }
         stochast.push_back(projectBuilder::getNormalStochast(0.5, 0.1));
         auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        corr->init(30);
+        corr->Init(30);
         auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
         auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);

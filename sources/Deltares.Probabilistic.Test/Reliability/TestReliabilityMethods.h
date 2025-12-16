@@ -28,25 +28,25 @@ namespace Deltares::Probabilistic::Test
     class TestReliabilityMethods
     {
     public:
-        static void testFORM();
-        static void testFORMArray();
-        static void testFORMVaryingArray();
-        static void testValidation();
-        static void testLatinHyperCube();
-        static void testNumericalBisection();
-        static void testNumericalBisectionLinear();
-        static void testCobylaReliability();
-        static void testSubSetSimulationReliabilityNearestToMean();
-        static void testSubSetSimulationReliabilityCenterOfGravity();
-        static void testFDIRReliability();
-        static void testDSFIReliability();
-        static void testFragilityCurveIntegration();
-        static void testNumericalIntegrationReliability();
-        static void testCrudeMonteCarloReliability();
-        static void testCrudeMonteCarloWithCopulaReliability();
-        static void testAdaptiveImportanceSampling();
-        static void testClustersAdpImpSampling();
-        static void testDirSamplingProxyModels(const bool useProxy,
+        static void TestFORM();
+        static void TestFORMArray();
+        static void TestFORMVaryingArray();
+        static void TestValidation();
+        static void TestLatinHyperCube();
+        static void TestNumericalBisection();
+        static void TestNumericalBisectionLinear();
+        static void TestCobylaReliability();
+        static void TestSubSetSimulationReliabilityNearestToMean();
+        static void TestSubSetSimulationReliabilityCenterOfGravity();
+        static void TestFDIRReliability();
+        static void TestDSFIReliability();
+        static void TestFragilityCurveIntegration();
+        static void TestNumericalIntegrationReliability();
+        static void TestCrudeMonteCarloReliability();
+        static void TestCrudeMonteCarloWithCopulaReliability();
+        static void TestAdaptiveImportanceSampling();
+        static void TestClustersAdpImpSampling();
+        static void TestDirSamplingProxyModels(const bool useProxy,
             const Reliability::ModelVaryingType varyingType, const double dsdu);
     };
 }
