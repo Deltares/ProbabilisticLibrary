@@ -112,6 +112,8 @@ add_executable(Deltares.Probabilistic.Test
     Statistics/testStandardNormal_body.cpp
     Statistics/TestCopula.h
     Statistics/TestCopula_body.cpp
+    Statistics/TestXfromU.h
+    Statistics/TestXfromU_body.cpp
     Uncertainty/TestUncertainty.h
     Uncertainty/TestUncertainty_body.cpp
     Sensitivity/TestSensitivity.h

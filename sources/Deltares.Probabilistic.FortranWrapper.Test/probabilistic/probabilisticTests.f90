@@ -27,7 +27,6 @@
 module probabilisticTests
 
     use ftnunit
-    use distributionFunctionsTests
     use probMethodsWaartsFunctionsTests
     use performImportanceSamplingTests
     use performAdaptiveMCIStests
@@ -54,7 +53,6 @@ contains
 subroutine allProbabilisticTests
 
     call allInitProbabilisticTests
-    call allDistributionFunctionsTests
     call allPerformImportanceSamplingTests
     call allPerformAdaptiveMCIStests
     call allPerformLatinHyperCubeTests

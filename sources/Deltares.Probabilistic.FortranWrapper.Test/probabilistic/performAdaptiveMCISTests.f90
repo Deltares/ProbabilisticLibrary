@@ -111,7 +111,6 @@ subroutine AdaptiveImportanceSamplingTestLinear
     !
     ! Test performAdaptiveImportanceSampling
     !
-    use distributionFunctions
 
     implicit none
 
@@ -177,7 +176,6 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     !
     ! Test performAdaptiveImportanceSampling
     !
-    use distributionFunctions
 
     implicit none
 
@@ -243,7 +241,6 @@ subroutine AdaptiveImportanceSamplingTestMany
     !
     ! Test performAdaptiveImportanceSampling
     !
-    use distributionFunctions
 
     implicit none
 
@@ -307,7 +304,6 @@ subroutine AdaptiveImportanceSamplingTestBligh
     !
     ! Test performAdaptiveImportanceSampling
     !
-    use distributionFunctions
 
     implicit none
 
@@ -378,7 +374,6 @@ subroutine AdaptiveImportanceSamplingTestBligh2
     !
     ! Test performAdaptiveImportanceSampling
     !
-    use distributionFunctions
 
     implicit none
 
@@ -445,7 +440,6 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     !
     ! Test performAdaptiveImportanceSampling
     !
-    use distributionFunctions
 
     implicit none
 

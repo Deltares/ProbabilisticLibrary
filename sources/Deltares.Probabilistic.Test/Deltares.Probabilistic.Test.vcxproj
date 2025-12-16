@@ -127,6 +127,8 @@
     <ClInclude Include="Statistics\testStandardNormal_body.cpp" />
     <ClInclude Include="Statistics\TestCopula.h" />
     <ClInclude Include="Statistics\TestCopula_body.cpp" />
+    <ClInclude Include="Statistics\TestXfromU.h" />
+    <ClInclude Include="Statistics\TestXfromU_body.cpp" />
     <ClInclude Include="Math\testCholeskiDecomposition.h" />
     <ClInclude Include="Math\testCholeskiDecomposition_body.cpp" />
     <ClInclude Include="Math\testNumericSupport.h" />
@@ -200,6 +202,7 @@
     <ClCompile Include="Proxies\TestProxies.cpp" />
     <ClCompile Include="Statistics\testStandardNormal.cpp" />
     <ClCompile Include="Statistics\TestCopula.cpp" />
+    <ClCompile Include="Statistics\TestXfromU.cpp" />
     <ClCompile Include="Math\testCholeskiDecomposition.cpp" />
     <ClCompile Include="Math\testNumericSupport.cpp" />
     <ClCompile Include="Math\testKMean.cpp" />

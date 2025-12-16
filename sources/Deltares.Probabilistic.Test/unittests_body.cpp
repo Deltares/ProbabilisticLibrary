@@ -38,6 +38,7 @@
 #include "Statistics/testStandardNormal.h"
 #include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
+#include "Statistics/TestXfromU.h"
 #include "Math/testMatrix.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
@@ -469,6 +470,56 @@ TEST(distribution_tests, testValidation)
 TEST(distribution_tests, testVariationCoefficient)
 {
     testDistributions::testVariationCoefficient();
+}
+
+TEST(x_from_u_tests, testNormal)
+{
+    TestXfromU::TestNormal();
+}
+
+TEST(x_from_u_tests, testUniform)
+{
+    TestXfromU::TestUniform();
+}
+
+TEST(x_from_u_tests, testTriangular)
+{
+    TestXfromU::TestTriangular();
+}
+
+TEST(x_from_u_tests, testExponential)
+{
+    TestXfromU::TestExponential();
+}
+
+TEST(x_from_u_tests, testGumbel)
+{
+    TestXfromU::TestGumbel();
+}
+
+TEST(x_from_u_tests, testWeibull)
+{
+    TestXfromU::TestWeibull();
+}
+
+TEST(x_from_u_tests, testPareto)
+{
+    TestXfromU::TestPareto();
+}
+
+TEST(x_from_u_tests, testRayleigh)
+{
+    TestXfromU::TestRayleigh();
+}
+
+TEST(x_from_u_tests, testRayleighN)
+{
+    TestXfromU::TestRayleighN();
+}
+
+TEST(x_from_u_tests, testTruncatedNormal)
+{
+    TestXfromU::TestTruncatedNormal();
 }
 
 TEST(unit_tests, testStandardNormal)
