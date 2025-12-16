@@ -50,7 +50,7 @@ namespace Deltares
             /**
              * \brief Correlations on which the input design points were based
              */
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
 
             /**
              * \brief Results of the combination

@@ -84,6 +84,7 @@ from .logging import Evaluation, Message, ValidationReport
 from . import interface
 import matplotlib.pyplot as plt
 
+_msg_expected_two_arguments = 'Expected 2 arguments'
 
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
@@ -1523,6 +1524,27 @@ class ConditionalValue(FrozenObject):
 	def observations(self, value : int):
 		interface.SetIntValue(self._id, 'observations', value)
 
+class CorrelationType(Enum):
+    """Enumeration which defines the type of correlation"""
+    gaussian = 'gaussian'
+    copulas = 'copulas'
+
+    @classmethod
+    def get_index(cls, type):
+        return list(cls).index(type)
+
+class CopulaType(Enum):
+    """Enumeration which defines the type of copula correlation"""
+    clayton = 'clayton'
+    frank = 'frank'
+    gumbel = 'gumbel'
+    gaussian = 'gaussian'
+    diagonal_band = 'diagonal_band'
+
+    @classmethod
+    def get_index(cls, type):
+        return list(cls).index(type)
+
 class CorrelationMatrix(FrozenObject):
 	"""Correlation matrix for stochastic variables
 
@@ -1594,8 +1616,8 @@ class CorrelationMatrix(FrozenObject):
             Stochasts between which the correlation value is returned. In case of a list, the length
             of the list must be 2."""
 
-		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
-			raise ArgumentError('Expected 2 arguments')
+		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
+			raise ArgumentError(_msg_expected_two_arguments)
 
 		stochast_list = []
 		for i in range(len(stochasts)):
@@ -1618,8 +1640,8 @@ class CorrelationMatrix(FrozenObject):
         value: float
             The correlation value, must be between -1 and 1 (inclusive)"""
 
-		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
-			raise ArgumentError('Expected 2 arguments')
+		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
+			raise ArgumentError(_msg_expected_two_arguments)
 
 		stochast_list = []
 		for i in range(len(stochasts)):
@@ -1629,6 +1651,110 @@ class CorrelationMatrix(FrozenObject):
 				stochast_list.append(stochasts[i])
 
 		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
+
+class CopulaCorrelation(FrozenObject):
+	"""Copulas correlation for stochastic variables
+
+    The correlation values are retrieved or set with an indexer, with variables as arguments.
+
+    ```mermaid
+    classDiagram
+        class Stochast{
+            +distribution : DistributionType
+            +"defining properties" : float
+        }
+        class CopulaCorrelation{
+            +variables : list[Stochast]
+        }
+        class SelfCorrelationMatrix{
+            +variables : list[Stochast]
+        }
+        Stochast "*" <-- CopulaCorrelation
+        Stochast "*" <-- SelfCorrelationMatrix
+    ```
+	"""
+
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('copula_correlation')
+		else:
+			self._id = id
+		self._variables = FrozenList()
+		super()._freeze()
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	@property
+	def variables(self) -> list[Stochast]:
+		"""List of variables for which correlations are defined.
+        The variables are retrieved automatically when this correlation class is part of a project."""
+		return self._variables
+
+	def _set_variables(self, variables):
+		self._variables = FrozenList(variables)
+		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
+
+	def _update_variables(self, known_variables):
+		update_variables = []
+		stochast_ids = interface.GetArrayIdValue(self._id, 'variables')
+		for stochast_id in stochast_ids:
+			found = False
+			for known_variable in known_variables:
+				if not found and known_variable._id == stochast_id:
+					update_variables.append(known_variable)
+					found = True
+			if not found:
+				update_variables.append(Stochast(stochast_id))
+		self._variables = FrozenList(update_variables)
+
+	def __getitem__(self, stochasts : list[Stochast|str]|tuple[Stochast|str,Stochast|str]) -> float:
+		"""Gets the correlation value between stochasts
+
+        Parameters
+        ----------
+        stochasts: list[Stochast|str]|tuple[Stochast|str,Stochast|str]
+            Stochasts between which the correlation value is returned. In case of a list, the length
+            of the list must be 2."""
+
+		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
+			raise ArgumentError(_msg_expected_two_arguments)
+
+		stochast_list = []
+		for i in range(len(stochasts)):
+			if isinstance(stochasts[i], str):
+				stochast_list.append(self._variables[stochasts[i]])
+			else:
+				stochast_list.append(stochasts[i])
+
+		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id)
+
+	def __setitem__(self, stochasts, value):
+		"""Sets the correlation value between stochasts
+
+        Parameters
+        ----------
+        stochasts: list[Stochast|str]|tuple[Stochast|str,Stochast|str]
+            Stochasts between which the correlation value is returned. In case of a list, the length
+            of the list must be 2.
+
+        value: (float, copulaType)
+            The correlation value
+			the correlation type is one of: Clayton, Frank and Gumbel copulas, Gaussian (Pearson)"""
+
+		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
+			raise ArgumentError(_msg_expected_two_arguments)
+
+		stochast_list = []
+		for i in range(len(stochasts)):
+			if isinstance(stochasts[i], str):
+				stochast_list.append(self._variables[stochasts[i]])
+			else:
+				stochast_list.append(stochasts[i])
+
+		copula_type = CopulaType.get_index(value[1])
+		interface.SetIndexedIndexedIntValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, copula_type)
+		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value[0])
 
 class SelfCorrelationMatrix(FrozenObject):
 	"""Defines the correlation values of a stochast with another stochast, both corresponding with the same

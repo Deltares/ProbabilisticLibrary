@@ -36,16 +36,17 @@ def _print_error(message):
 	print('error: ' + str(message), flush = True)
 
 def LoadLibrary(lib_full_path):
+	global lib
+	lib = None
 	if os.path.isfile(lib_full_path):
 		try:
-			global lib
 			lib = cdll.LoadLibrary(lib_full_path)
 		except:
 			message = sys.exc_info()[0]
 			_print_error(message)
 			raise
 	if lib == None:
-		raise FileNotFoundError("Could not find " + lib_full_path)
+		print("ERROR: Could not find " + lib_full_path)
 
 def IsLibraryLoaded():
 	return 'lib' in globals() and not lib is None
@@ -235,6 +236,9 @@ def GetIndexedIndexedValue(id_, property_, index1_, index2_):
 
 def SetIndexedIndexedValue(id_, property_, index1_, index2_, value_):
 	lib.SetIndexedIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_), ctypes.c_double(value_))
+
+def SetIndexedIndexedIntValue(id_, property_, index1_, index2_, value_):
+	lib.SetIndexedIndexedIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_), ctypes.c_int(value_))
 
 def SetCallBack(id_, property_, callBack_):
 	try:

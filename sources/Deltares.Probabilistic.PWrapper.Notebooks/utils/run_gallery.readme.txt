@@ -1,0 +1,29 @@
+FUNCTIONALITY
+=============
+
+The batch file run_gallery.bat generates the markdown file for the gallery (gallery.md) and all needed image files. They are put in the directory \sources\Deltares.Probabilistic.PWrapper.Notebooks\utils. After running this script, the gallery contents should be pushed to the repository.
+
+REQUIREMENTS
+============
+
+pip install nbconvert
+
+PREPARATION OF NOTEBOOKS
+========================
+
+The notebooks should be enhanced with tags. In Jupyter notebooks, use the menu command Edit->Edit notebook metadata to set tags for a cell.
+
+gallery
+-------
+
+Add the tag 'gallery' for the cell from which the image should be taken. If multiple images exist, the last image is taken. The image can only be taken if a command *.show(), *.plot() or *.plot_[alphas|realizations|convergence]() exists in the cell.
+
+category
+--------
+
+A tag 'statistics', 'reliability', 'uncertainty', 'sensitivity' or 'model' should exists somewhere in the notebook. This is used to put the notebook in the right classification.
+
+numeric value
+-------------
+
+Add a numeric value (positive integer) as tag to define the order of notebooks within a category. If not set, the notebook will appear at the end of the category.

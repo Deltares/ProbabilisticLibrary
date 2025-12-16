@@ -56,7 +56,7 @@ namespace Deltares::Uncertainty
         // Step 2: Calculate beta_q, the reliability index corresponding to the given quantile value / exceeding probability
 
         auto stochast = std::make_shared<Statistics::Stochast>();
-        stochast->setDistributionType(Statistics::CDFCurve);
+        stochast->setDistributionType(Statistics::DistributionType::CDFCurve);
 
         std::set<double> handledReliabilities;
 

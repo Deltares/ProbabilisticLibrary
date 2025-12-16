@@ -36,11 +36,13 @@ namespace Deltares::Probabilistic::Test
     public:
         std::shared_ptr<Models::ModelRunner> BuildProject() const;
         static std::shared_ptr<Models::ModelRunner> BuildLinearProject();
+        static std::shared_ptr<Models::ModelRunner> BuildLinearOutputOnlyProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearOutputProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearArrayProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearVaryingArrayProject();
         static std::shared_ptr<Models::ModelRunner> BuildQuadraticProject();
         std::shared_ptr<Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist) const;
+        std::shared_ptr<Models::ModelRunner> BuildProjectWithDeterministAndCopula(double valueDeterminist) const;
         std::shared_ptr<Models::ModelRunner> BuildProjectWithPolynome() const;
             static std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
         std::shared_ptr<Models::ModelRunner> BuildProjectTwoBranches(bool useProxy) const;
@@ -66,6 +68,7 @@ namespace Deltares::Probabilistic::Test
 
         static void sum(std::shared_ptr<Models::ModelSample> sample);
         static void linear(std::shared_ptr<Models::ModelSample> sample);
+        static void linearOutputOnly(std::shared_ptr<Models::ModelSample> sample);
         static void linearMultiple(std::shared_ptr<Models::ModelSample> sample);
         static void quadratic(std::shared_ptr<Models::ModelSample> sample);
 

@@ -19,31 +19,23 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
+#include "BaseCopula.h"
 
-#include "../Logging/ValidationReport.h"
-#include "../Logging/ValidationSupport.h"
-
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Models
+    class FrankCopula : public BaseCopula
     {
-        class ProxySettings
-        {
-        public:
-            bool IsProxyModel = false;
-            bool IsUpdatableProxyModel = false;
-            bool ShouldUpdateFinalSteps = false;
-            double ThresholdOffset = 0;
-
-            void validate(Logging::ValidationReport& report) const
-            {
-                if (IsProxyModel)
-                {
-                    Logging::ValidationSupport::checkMinimum(report, 0, ThresholdOffset, "threshold offset");
-                }
-            }
-        };
-    }
+    public:
+        explicit FrankCopula(const double alpha) : alpha(alpha) {}
+        void update(const double& u, double& t) const override;
+        CorrelationValueAndType getCorrelation() const override { return { alpha, CorrelationType::Frank }; }
+        void validate(Logging::ValidationReport& report)  const override;
+    private:
+        const double alpha;
+        double copulaRootFunc(double u, double v, double t) const;
+        static double expm1(const double x);
+    };
 }
 

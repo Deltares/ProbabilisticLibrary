@@ -37,6 +37,7 @@ namespace Deltares::Probabilistic::Test
         void checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double margin);
         void checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double margin1, const double margin2);
         static Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m);
+        static Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m, size_t rows, size_t columns, bool mirrored);
     private:
         std::vector<std::string> readWholeFile(const std::string& file) const;
         bool compareLine(const std::string& ref, const std::string& nw) const;

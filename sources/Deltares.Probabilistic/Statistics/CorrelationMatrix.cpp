@@ -33,7 +33,12 @@ namespace Deltares
         using namespace Deltares::Reliability;
         using namespace Deltares::Numeric;
 
-        std::vector<double> CorrelationMatrix::Cholesky(const std::vector<double>& uValues)
+        bool CorrelationMatrix::IsValid() const
+        {
+            return true;
+        }
+
+        std::vector<double> CorrelationMatrix::ApplyCorrelation(const std::vector<double>& uValues)
         {
             auto count = uValues.size();
             auto correlatedValues = std::vector<double>(count);
@@ -102,7 +107,7 @@ namespace Deltares
             return inverseValues;
         }
 
-        void CorrelationMatrix::init(const int maxStochasts)
+        void CorrelationMatrix::Init(const int maxStochasts)
         {
             dim = maxStochasts;
             matrix = Matrix(maxStochasts, maxStochasts);
@@ -112,20 +117,20 @@ namespace Deltares
             }
         }
 
-        void CorrelationMatrix::init(std::vector<std::shared_ptr<Stochast>> stochasts)
+        void CorrelationMatrix::Init(const std::vector<std::shared_ptr<Stochast>>& stochastList)
         {
-            this->init(stochasts.size());
+            Init(static_cast<int>(stochastList.size()));
 
-            for (size_t i = 0; i < stochasts.size(); i++)
+            for (size_t i = 0; i < stochastList.size(); i++)
             {
-                this->stochasts.push_back(stochasts[i]);
-                this->stochastIndex.insert({ stochasts[i], i });
+                stochasts.push_back(stochastList[i]);
+                stochastIndex.insert({ stochastList[i], i });
             }
         }
 
-        std::shared_ptr<Statistics::Stochast> CorrelationMatrix::getStochast(int index)
+        std::shared_ptr<Stochast> CorrelationMatrix::GetStochast(int index)
         {
-            if (index < stochasts.size())
+            if (index < static_cast<int>(stochasts.size()))
             {
                 return stochasts[index];
             }
@@ -136,12 +141,13 @@ namespace Deltares
         }
 
 
-        double CorrelationMatrix::GetCorrelation(const int i, const int j) const
+        CorrelationValueAndType CorrelationMatrix::GetCorrelation(const int i, const int j) const
         {
-            return matrix(i, j);
+            auto type = CorrelationType::Gaussian;
+            return { matrix(i, j), type };
         }
 
-        double CorrelationMatrix::GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
+        CorrelationValueAndType CorrelationMatrix::GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2)
         {
             if (stochastIndex.contains(stochast1) && stochastIndex.contains(stochast2))
             {
@@ -152,11 +158,11 @@ namespace Deltares
             }
             else
             {
-                return 0;
+                return { 0, CorrelationType::Gaussian };
             }
         }
 
-        void CorrelationMatrix::SetCorrelation(const int i, const int j, double value)
+        void CorrelationMatrix::SetCorrelation(const int i, const int j, double value, CorrelationType type)
         {
             if (std::max(i, j) >= (int)dim)
             {
@@ -180,15 +186,21 @@ namespace Deltares
             inputCorrelations.push_back(p);
         }
 
-        void CorrelationMatrix::SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value)
+        void CorrelationMatrix::SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2, double value, CorrelationType type)
         {
             if (stochastIndex.contains(stochast1) && stochastIndex.contains(stochast2))
             {
                 const int index1 = stochastIndex.at(stochast1);
                 const int index2 = stochastIndex.at(stochast2);
 
-                SetCorrelation(index1, index2, value);
+                SetCorrelation(index1, index2, value, type);
             }
+        }
+
+        void CorrelationMatrix::InitializeForRun()
+        {
+            CholeskyDecomposition();
+            InverseCholeskyDecomposition();
         }
 
         void CorrelationMatrix::CholeskyDecomposition()
@@ -201,7 +213,7 @@ namespace Deltares
             inverseCholeskyMatrix = MatrixSupport::Inverse(&choleskyMatrix);
         }
 
-        bool CorrelationMatrix::isFullyCorrelated(const int index, std::vector<int> varyingIndices) const
+        bool CorrelationMatrix::IsFullyCorrelated(const int index, const std::vector<int>& varyingIndices) const
         {
             if (dim == 0) return false;
 
@@ -219,25 +231,28 @@ namespace Deltares
             return false;
         }
 
-        void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
+        void CorrelationMatrix::Filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index)
         {
-            if (m->dim == 0) return;
+            if (source->GetDimension() == 0) return;
+            auto corrM = std::dynamic_pointer_cast<CorrelationMatrix> (source);
+            if (corrM == nullptr) throw probLibException("error casting a correlation matrix in filter method.");
+
             auto nrAllStochasts = index.size();
 
             for (size_t i = 0; i < nrAllStochasts; i++)
             {
-                auto ii = findNewIndex(index, i);
+                auto ii = FindNewIndex(index, i);
                 for (size_t j = 0; j < nrAllStochasts; j++)
                 {
-                    auto jj = findNewIndex(index, j);
+                    auto jj = FindNewIndex(index, j);
                     if (index[i] >= 0 && index[j] >= 0)
                     {
-                        SetCorrelation(ii, jj, m->matrix(i, j));
+                        SetCorrelation(ii, jj, corrM->matrix(i, j), CorrelationType::Gaussian);
                     }
                 }
             }
 
-            auto newIndexer = std::vector<indexWithCorrelation>(nrAllStochasts);
+            auto newIndexer = std::vector<IndexWithCorrelation>(nrAllStochasts);
             for (size_t i = 0; i < nrAllStochasts; i++)
             {
                 if (index[i] == -2)
@@ -250,7 +265,7 @@ namespace Deltares
                     double correlation = 1.0;
                     for (;;)
                     {
-                        auto dependent = m->findDependent(ii);
+                        auto dependent = source->FindDependent(static_cast<int>(ii));
                         if (dependent.index < 0) break;
                         dependent.correlation *= correlation;
                         if (index[dependent.index] >= 0)
@@ -266,25 +281,7 @@ namespace Deltares
             indexer = newIndexer;
         }
 
-        int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
-        {
-            if (index[i] == -1)
-            {
-                return -1;
-            }
-            else
-            {
-                int newIndex = 0;
-                for (size_t j = 0; j < i; j++)
-                {
-                    if (index[j] >= 0) newIndex++;
-                }
-
-                return newIndex;
-            }
-        }
-
-        indexWithCorrelation CorrelationMatrix::findDependent(const int j) const
+        IndexWithCorrelation CorrelationMatrix::FindDependent(const int j) const
         {
             if (indexer.size() > 0)
             {
@@ -323,7 +320,7 @@ namespace Deltares
 
         int CorrelationMatrix::CountCorrelations() const
         {
-            return inputCorrelations.size();
+            return static_cast<int>(inputCorrelations.size());
         }
 
         /// <summary>
@@ -347,10 +344,10 @@ namespace Deltares
                             // find the stochasts which are not the linking values
                             auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
 
-                            double correlationValue = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
+                            auto correlationWithType = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
                             double expectedCorrelation = correlation.correlation * otherCorrelation.correlation;
 
-                            if (correlationValue != expectedCorrelation)
+                            if (correlationWithType.value != expectedCorrelation)
                             {
                                 return true;
                             }
@@ -387,12 +384,12 @@ namespace Deltares
                             {
                                 auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
 
-                                double correlationValue = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
+                                auto correlationWithType = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
                                 double expectedCorrelation = correlation.correlation * otherCorrelation.correlation;
 
-                                if (correlationValue != expectedCorrelation)
+                                if (correlationWithType.value != expectedCorrelation)
                                 {
-                                    SetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1], expectedCorrelation);
+                                    SetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1], expectedCorrelation, CorrelationType::Gaussian);
                                     modified = true;
                                 }
                             }

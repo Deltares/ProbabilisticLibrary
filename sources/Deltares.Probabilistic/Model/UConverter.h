@@ -27,7 +27,7 @@
 #include "StochastPoint.h"
 #include "ComputationalStochast.h"
 #include "../Statistics/Stochast.h"
-#include "../Statistics/CorrelationMatrix.h"
+#include "../Statistics/BaseCorrelation.h"
 #include "../Reliability/StochastSettingsSet.h"
 #include "../Uncertainty/CorrelationMatrixBuilder.h"
 #include "../Sensitivity/SensitivityResult.h"
@@ -50,8 +50,8 @@ namespace Deltares
             std::vector<int> variableStochastIndex; // reference of the stochast index to the variable source index
             std::vector<int> variableStochastList; // list of all stochast indices in order how they should be assigned
 
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix;
-            std::shared_ptr<Statistics::CorrelationMatrix> varyingCorrelationMatrix;
+            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix;
+            std::shared_ptr<Statistics::BaseCorrelation> varyingCorrelationMatrix;
 
             std::vector<double> getExpandedValues(const std::vector<double>& values);
             std::vector<double> getExpandedValues(const std::vector<double>& values, double defaultValue);
@@ -68,7 +68,7 @@ namespace Deltares
 
         public:
 
-            UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> stochastCorrelationMatrix);
+            UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::BaseCorrelation> stochastCorrelationMatrix);
             void initializeForRun();
             std::vector<double> getUValues(std::shared_ptr<Sample> sample);
             std::vector<double> getExpandedUValues(std::shared_ptr<Sample> sample);

@@ -98,14 +98,14 @@ namespace Deltares::Uncertainty
     {
         std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
 
-        correlationMatrix->init(this->stochasts);
+        correlationMatrix->Init(this->stochasts);
 
         for (size_t i = 0; i < stochasts.size(); i++)
         {
             for (size_t j = 0; j < i; j++)
             {
                 double correlationValue = this->getCorrelationValue(stochasts[i], stochasts[j]);
-                correlationMatrix->SetCorrelation(stochasts[i], stochasts[j], correlationValue);
+                correlationMatrix->SetCorrelation(stochasts[i], stochasts[j], correlationValue, CorrelationType::Gaussian);
             }
         }
 

@@ -36,11 +36,14 @@
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
 #include "Statistics/testStandardNormal.h"
+#include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
+#include "Math/testMatrix.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
+#include "Proxies/TestProxies.h"
 #include "Reliability/Waarts/TestWaartsLinearResistance.h"
 #include "Reliability/Waarts/TestWaartsNoisyLimitState.h"
 #include "Reliability/Waarts/TestWaartsResistanceOneQuadraticTerm.h"
@@ -131,6 +134,37 @@ TEST(unit_tests, testMatmul)
     tstMatMul.all_matmul_tests();
 }
 
+TEST(matrix_test, qr_decomposition)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.qr_decomposition();
+}
+
+TEST(matrix_test, linear_equations)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.linear_equations();
+}
+
+TEST(matrix_test, linear_equations_overdetermined)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.linear_equations_overdetermined();
+}
+
+TEST(proxies_test, linear_model)
+{
+    auto testProxies = TestProxies();
+    testProxies.testLinearModel();
+}
+
+TEST(proxies_test, linear_output_only_model)
+{
+    auto testProxies = TestProxies();
+    testProxies.testLinearOutputOnlyModel();
+}
+
+TEST(unittst, testNumericalSupport)
 TEST(unit_tests, testNumericalSupport)
 {
     testNumericSupport::allNumericSupportTests();
@@ -223,6 +257,12 @@ TEST(reliability_method_test, TestCrudeMCReliability)
     TestReliabilityMethods::TestCrudeMonteCarloReliability();
 }
 
+TEST(reliability_method_test, testCrudeMCwithCopula)
+{
+    testReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
+}
+
+TEST(reliability_method_test, testAdaptiveImportanceSampling)
 TEST(reliability_method_test, TestAdaptiveImportanceSampling)
 {
     TestReliabilityMethods::TestAdaptiveImportanceSampling();
@@ -433,6 +473,37 @@ TEST(unit_tests, testStandardNormal)
     tstStdNormal.allStandardNormalTests();
 }
 
+TEST(copulas_test, testClayton)
+{
+    TestCopula::TestClayton();
+}
+
+TEST(copulas_test, testFrank)
+{
+    TestCopula::TestFrank();
+}
+
+TEST(copulas_test, testGaussian)
+{
+    TestCopula::TestGaussian();
+}
+
+TEST(copulas_test, testGumbel)
+{
+    TestCopula::TestGumbel();
+}
+
+TEST(copulas_test, testValidation)
+{
+    TestCopula::TestValidation();
+}
+
+TEST(copulas_test, testValidationMessages)
+{
+    TestCopula::TestValidationMessages();
+}
+
+TEST(unittst, testUncertainty)
 TEST(unit_tests, testUncertainty)
 {
     auto tstUncertainty = TestUncertainty();

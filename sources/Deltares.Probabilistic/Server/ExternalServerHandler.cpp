@@ -123,7 +123,7 @@ namespace Deltares
             const char* sendbuf = message.c_str();
 
             // Send an initial buffer
-            int iResult = send(server_socket, sendbuf, message.size() + 1, 0);
+            int iResult = send(server_socket, sendbuf, static_cast<int>(message.size()) + 1, 0);
             if (iResult == SOCKET_ERROR)
             {
                 printf("send failed with error: %d\n", WSAGetLastError());
@@ -436,16 +436,23 @@ namespace Deltares
             this->Send("set_indexed_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index1) + ":" + std::to_string(index2) + ":" + std::to_string(value), false);
         }
 
+        void ExternalServerHandler::SetIndexedIndexedIntValue(int id, const std::string& property, int index1, int index2, int value)
+        {
+            const auto message = std::format("set_indexed_indexed_int_value: {}:{}:{}:{}:{}",
+                id, property, index1, index2, value);
+            this->Send(message, false);
+        }
+
         void ExternalServerHandler::Execute(int id, std::string method)
         {
             this->Send("execute:" + std::to_string(id) + ":" + method, false);
         }
 
-        std::string ExternalServerHandler::StringJoin(const std::vector<std::string>& strings, const std::string delim)
+        std::string ExternalServerHandler::StringJoin(const std::vector<std::string>& strings, const std::string& delim)
         {
-            if (strings.size() == 0) return "";
+            if (strings.empty()) return "";
             std::vector<char> res;
-            for (int i = 0; i < strings.size() - 1; ++i)
+            for (size_t i = 0; i < strings.size() - 1; ++i)
             {
                 for (auto c : strings[i]) res.push_back(c);
                 for (auto c : delim) res.push_back(c);

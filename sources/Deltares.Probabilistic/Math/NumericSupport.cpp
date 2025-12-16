@@ -661,7 +661,7 @@ namespace Deltares
             return result;
         }
 
-        std::vector<double> NumericSupport::take(std::vector<double>& values, int skip, int size)
+        std::vector<double> NumericSupport::take(const std::vector<double>& values, int skip, int size)
         {
             std::vector<double> takenValues(values.begin() + skip, values.begin() + skip + size);
             return takenValues;

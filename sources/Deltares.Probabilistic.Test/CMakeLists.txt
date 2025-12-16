@@ -76,6 +76,8 @@ add_executable(Deltares.Probabilistic.Test
     Math/testCholeskiDecomposition_body.cpp
     Math/testKMean.h
     Math/testKMean_body.cpp
+    Math/testMatrix.h
+    Math/testMatrix_body.cpp
     Math/testMatrixInverse.h
     Math/testMatrixInverse_body.cpp
     Math/testMatrixMultiplication.h
@@ -104,8 +106,12 @@ add_executable(Deltares.Probabilistic.Test
     Optimization/testCobyla_body.cpp
     Model/TestRunModel.h
     Model/TestRunModel_body.cpp
+    Proxies/TestProxies.h
+    Proxies/TestProxies_body.cpp
     Statistics/testStandardNormal.h
     Statistics/testStandardNormal_body.cpp
+    Statistics/TestCopula.h
+    Statistics/TestCopula_body.cpp
     Uncertainty/TestUncertainty.h
     Uncertainty/TestUncertainty_body.cpp
     Sensitivity/TestSensitivity.h

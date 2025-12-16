@@ -34,7 +34,7 @@ namespace Deltares
 
             FragilityCurve() : Stochast()
             {
-                Stochast::setDistributionType(Statistics::CDFCurve);
+                Stochast::setDistributionType(Statistics::DistributionType::CDFCurve);
             }
 
             void setDistributionType(Statistics::DistributionType distributionType) override

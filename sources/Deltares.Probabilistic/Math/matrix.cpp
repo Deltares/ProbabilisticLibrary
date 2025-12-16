@@ -227,5 +227,156 @@ namespace Deltares
                 return false;
             }
         }
+
+        Matrix Matrix::identity(size_t n)                                   // n x n Identity matrix
+        {
+            Matrix I(n, n);
+            for (size_t i = 0; i < n; i++) I.setValue(i, i, 1.0);
+            return I;
+        }
+
+        // compute minor
+        Matrix Matrix::compute_minor(size_t d) const
+        {
+            Matrix minor = Matrix(getRowCount(), getColumnCount());
+
+            for (size_t i = 0; i < d; i++)
+            {
+                minor(i, i) = 1.0;
+            }
+
+            for (size_t i = d; i < getRowCount(); i++)
+            {
+                for (size_t j = d; j < getColumnCount(); j++)
+                {
+                    minor(i, j) = getValue(i, j);
+                }
+            }
+
+            return minor;
+        }
+
+        vector1D Matrix::extract_column(size_t column_index) const
+        {
+            vector1D v = vector1D(m_rows);
+
+            for (size_t i = 0; i < m_rows; i++)
+            {
+                v(i) = getValue(i, column_index);
+            }
+
+            return v;
+        }
+
+
+        Numeric::QRMatrix Matrix::qr_decompose() const
+        {
+            // see https://rosettacode.org/wiki/QR_decomposition#C++
+
+            size_t m = getRowCount();
+            size_t n = getColumnCount();
+
+            // array of factor Q1, Q2, ... Qm
+            std::vector<Matrix> qv_matrices;
+
+            // temp array
+            Matrix z(*this);
+            Matrix z1(m, n);
+
+            for (size_t k = 0; k < n && k < m - 1; k++)
+            {
+                // compute minor
+                z1 = z.compute_minor(k);
+
+                // extract k-th column into x
+                vector1D x = z1.extract_column(k);
+
+                double a = x.norm();
+                if (getValue(k, k) > 0)
+                {
+                    a = -a;
+                }
+
+                vector1D e = vector1D(m);
+                for (size_t i = 0; i < e.size(); i++)
+                {
+                    e(i) = i == k ? 1.0 : 0.0;
+                }
+
+                e = x + a * e;
+
+                // e = e / ||e||
+                e.normalize();
+
+                // compute household factor
+                // qv = I - 2 *e*e^T
+
+                Matrix qv = Matrix(m, m);
+                for (size_t i = 0; i < m; i++)
+                {
+                    for (size_t j = 0; j < m; j++)
+                    {
+                        qv(i, j) = -2 * e(i) * e(j);
+                    }
+                }
+
+                for (size_t i = 0; i < m; i++)
+                {
+                    qv(i, i) += 1;
+                }
+
+                qv_matrices.push_back(qv);
+
+                // calculate matrix product z = qv[k] * z1
+                z = qv.matmul(z1);
+            }
+
+            Matrix Q = qv_matrices[0];
+
+            // after this loop, we will obtain Q (up to a transpose operation)
+            for (size_t i = 1; i < n && i < m - 1; i++) {
+
+                z1 = qv_matrices[i].matmul(Q);
+                Q = z1;
+            }
+
+            Matrix R = Q.matmul(*this);
+            Q.Transpose();
+
+            QRMatrix qr = QRMatrix(Q, R);
+
+            return qr;
+        }
+
+        Numeric::vector1D QRMatrix::solve(const Numeric::vector1D& target) const
+        {
+            // see https://rosettacode.org/wiki/QR_decomposition#C++
+
+            Matrix qt = Q;
+
+            qt.Transpose();
+
+            vector1D z = qt.matvec(target);
+
+            vector1D x = vector1D(R.getColumnCount());
+
+            for (size_t i = 0; i < x.size(); i++)
+            {
+                // go backward
+                size_t j = x.size() -1 -i;
+
+                double sum = 0;
+                for (size_t k = j + 1; k < x.size(); k++)
+                {
+                    sum += x(k) * R(j, k);
+                }
+
+                double b = z(j) - sum;
+
+                x(j) = b / R(j, j);
+            }
+
+            return x;
+        }
     }
 }

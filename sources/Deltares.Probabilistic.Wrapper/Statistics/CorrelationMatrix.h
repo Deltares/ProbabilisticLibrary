@@ -52,7 +52,7 @@ namespace Deltares
                 ~CorrelationMatrix() { this->!CorrelationMatrix(); }
                 !CorrelationMatrix() { delete shared; }
 
-                void Initialize(const int size) { shared->object->init(size); }
+                void Initialize(const int size) { shared->object->Init(size); }
 
                 void Initialize(System::Collections::Generic::List<Stochast^>^ stochasts)
                 {
@@ -66,27 +66,27 @@ namespace Deltares
                         nativeStochasts.push_back(stochasts[i]->GetStochast());
                     }
 
-                    shared->object->init(nativeStochasts);
+                    shared->object->Init(nativeStochasts);
                 }
 
                 void SetCorrelation(const int i, const int j, const double value)
                 {
-                    shared->object->SetCorrelation(i, j, value);
+                    shared->object->SetCorrelation(i, j, value, CorrelationType::Gaussian);
                 }
                 
                 void SetCorrelation(Stochast^ stochast1, Stochast^ stochast2, const double value)
                 {
-                    shared->object->SetCorrelation(stochast1->GetStochast(), stochast2->GetStochast(), value);
+                    shared->object->SetCorrelation(stochast1->GetStochast(), stochast2->GetStochast(), value, CorrelationType::Gaussian);
                 }
 
                 double GetCorrelation(const int i, const int j)
                 {
-                    return shared->object->GetCorrelation(i, j);
+                    return shared->object->GetCorrelation(i, j).value;
                 }
 
                 double GetCorrelation(Stochast^ stochast1, Stochast^ stochast2)
                 {
-                    return shared->object->GetCorrelation(stochast1->GetStochast(), stochast2->GetStochast());
+                    return shared->object->GetCorrelation(stochast1->GetStochast(), stochast2->GetStochast()).value;
                 }
 
                 virtual bool IsIdentity()

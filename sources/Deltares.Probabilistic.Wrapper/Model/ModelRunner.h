@@ -30,6 +30,7 @@
 #include "../Utils/TagRepository.h"
 #include "ProgressIndicator.h"
 #include "RunSettings.h"
+#include "ProxySettings.h"
 #include "ModelSample.h"
 #include "Sample.h"
 #include "Evaluation.h"
@@ -162,6 +163,8 @@ namespace Deltares
 
                 RunSettings^ Settings = gcnew RunSettings();
 
+                ProxySettings^ ProxySettings = gcnew Wrappers::ProxySettings();
+
                 virtual void InitializeForRun()
                 {
                     shared->object->initializeForRun();
@@ -186,6 +189,7 @@ namespace Deltares
                 std::shared_ptr<Models::ModelRunner> GetModelRunner()
                 {
                     shared->object->Settings = this->Settings->GetSettings();
+                    shared->object->ProxySettings = this->ProxySettings->GetSettings();
                     return shared->object;
                 }
             };
