@@ -32,7 +32,7 @@ using namespace Deltares::Statistics;
 namespace Deltares::Probabilistic::Test
 {
 
-    void combinElementsTests::runAllCombineTwoElementsTests()
+    void combinElementsTests::RunAllCombineTwoElementsTests()
     {
         testCombineTwoElementsNoCorrelation1();
         testCombineTwoElementsNoCorrelation2();
@@ -57,19 +57,10 @@ namespace Deltares::Probabilistic::Test
         testCombineTwoElementsPartialCorrelation15();
         testCombineTwoElementsPartialCorrelation99();
         testCombineTwoElementsPCorWithNonContrAlphas();
-        testCombineMultipleElementsProb1();
-        testCombineMultipleElementsProb2();
-        testCombineMultipleElementsProb3();
-        testCombineMultipleElementsProb4();
-        testCombineMultipleElementsProb5();
         testCombineElementsFullCorrelation1();
         testCombineElementsFullCorrelation2();
         testCombineTwoElementsNegativeCorrelation1();
         testCombineTwoElementsNegativeCorrelation2();
-        testCombineThreeElementsPartialCorrelation1();
-        testCombineThreeElementsPartialCorrelation2();
-        testCombineThreeElementsPartialCorrelation3();
-        testCombineThreeElementsPartialCorrelation4();
         testCombineTwoElementsPartialCorrelationPiping();
         TestCombineTwoElementsPartialCorrelationRealCaseA();
         TestCombineTwoElementsPartialCorrelationRealCaseB();
@@ -83,7 +74,20 @@ namespace Deltares::Probabilistic::Test
         testCombineTwoElementsPartialCorrelation99a();
     }
 
-    void combinElementsTests::runAllLengthEffectTests()
+    void combinElementsTests::RunAllCombineMultipleElementsTests()
+    {
+        testCombineMultipleElementsProb1();
+        testCombineMultipleElementsProb2();
+        testCombineMultipleElementsProb3();
+        testCombineMultipleElementsProb4();
+        testCombineMultipleElementsProb5();
+        testCombineThreeElementsPartialCorrelation1();
+        testCombineThreeElementsPartialCorrelation2();
+        testCombineThreeElementsPartialCorrelation3();
+        testCombineThreeElementsPartialCorrelation4();
+    }
+
+    void combinElementsTests::RunAllLengthEffectTests()
     {
         testLengthEffectFourStochasts();
         UpscaleLengthTests11();
@@ -913,9 +917,8 @@ namespace Deltares::Probabilistic::Test
         vector1D rhoXK = { 0.8, 0.8, 0.8, 0.8, 0.8 };
         const vector1D dXK = { 200.0, 200.0, 200.0, 200.0, 200.0 };
 
-        auto up = upscaling();
         std::string msg;
-        auto result = up.upscaleLength(design_point, rhoXK, dXK, section_length, msg);
+        auto result = upscaler.upscaleLength(design_point, rhoXK, dXK, section_length, msg);
         //The expected value of alphaSection() is alphaCrossSection for the given length
         for (size_t i = 0; i < alpha_cross_section.size(); i++)
         {
@@ -933,11 +936,10 @@ namespace Deltares::Probabilistic::Test
         vector1D rhoXK = { 0.8, 0.0, 1.0, 0.5, 1.0 };
         const vector1D dXK = { 100.0, 200.0, 50.0, 150.0, 300.0 };
 
-        auto up = upscaling();
         for (size_t iLength = 1; iLength < section_lengths.size(); iLength++)
         {
             std::string msg;
-            auto result = up.upscaleLength(design_point, rhoXK, dXK, section_lengths[iLength], msg);
+            auto result = upscaler.upscaleLength(design_point, rhoXK, dXK, section_lengths[iLength], msg);
             //The expected value of alphaSection() is alphaCrossSection for the given length
             for (size_t i = 0; i < alpha_cross_section.size(); i++)
             {

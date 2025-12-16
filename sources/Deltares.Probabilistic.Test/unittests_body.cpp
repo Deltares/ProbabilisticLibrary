@@ -74,16 +74,22 @@ TEST(unit_tests, testCombiner)
     h.allCombinerTests();
 }
 
-TEST(unit_tests, testCombinElements)
+TEST(unit_tests, testCombinTwoElements)
 {
     auto h = combinElementsTests();
-    h.runAllCombineTwoElementsTests();
+    h.RunAllCombineTwoElementsTests();
+}
+
+TEST(unit_tests, testCombinMultipleElements)
+{
+    auto h = combinElementsTests();
+    h.RunAllCombineMultipleElementsTests();
 }
 
 TEST(unit_tests, testLengthEffect)
 {
     auto h = combinElementsTests();
-    h.runAllLengthEffectTests();
+    h.RunAllLengthEffectTests();
 }
 
 TEST(unit_tests, AllUpscaleInTimeTests)
