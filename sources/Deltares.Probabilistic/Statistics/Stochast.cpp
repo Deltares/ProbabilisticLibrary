@@ -602,7 +602,7 @@ namespace Deltares
             Logging::ValidationReport report = getFitValidationReport(values, nullptr, shift);
             if (!report.isValid())
             {
-                throw Reliability::probLibException("Can not fit with given Values should not be empty");
+                throw Reliability::probLibException("Can not fit with given values and shift");
             }
 
             distribution->fit(*properties, values, shift);
@@ -613,7 +613,7 @@ namespace Deltares
             Logging::ValidationReport report = getFitValidationReport(values, prior, shift);
             if (!report.isValid())
             {
-                throw Reliability::probLibException("Can not fit with given Values should not be empty");
+                throw Reliability::probLibException("Can not fit with given values, prior and shift");
             }
 
             distribution->fitPrior(*properties, values, *prior->getProperties(), shift);

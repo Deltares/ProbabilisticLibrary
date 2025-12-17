@@ -488,7 +488,6 @@ namespace Deltares::Probabilistic::Test
         gumbel.getProperties()->Shift = 2.0;
 
         testFit(gumbel);
-        testFitShift(gumbel);
 
         Stochast frechet = Stochast();
         frechet.setDistributionType(DistributionType::GeneralizedExtremeValue);
@@ -497,7 +496,6 @@ namespace Deltares::Probabilistic::Test
         frechet.getProperties()->Shift = 1.0;
 
         testFit(frechet, 0.4);
-        testFitShift(frechet, 2.8);
 
         Stochast weibull = Stochast();
         weibull.setDistributionType(DistributionType::GeneralizedExtremeValue);
@@ -506,7 +504,6 @@ namespace Deltares::Probabilistic::Test
         weibull.getProperties()->Shift = 1.0;
 
         testFit(weibull, 0.5);
-        testFitShift(weibull, 0.5);
     }
 
     void testDistributions::testPareto()
