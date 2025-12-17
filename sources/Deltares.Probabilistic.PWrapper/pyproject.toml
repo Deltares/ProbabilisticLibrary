@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "probabilistic-library"
+name = "probabilistic_library"
 dynamic = ["version"]
 description = "Package which provides probabilistic methods"
 license = "LGPL-3.0"
