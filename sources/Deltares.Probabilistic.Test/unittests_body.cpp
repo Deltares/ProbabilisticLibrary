@@ -36,7 +36,7 @@
 #include "Combin/UpscaleTests.h"
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
-#include "Statistics/testStandardNormal.h"
+#include "Statistics/TestStandardNormal.h"
 #include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
 #include "Statistics/TestXfromU.h"
@@ -525,8 +525,8 @@ TEST(x_from_u_tests, testTruncatedNormal)
 
 TEST(unit_tests, testStandardNormal)
 {
-    auto tstStdNormal = testStandardNormal();
-    tstStdNormal.allStandardNormalTests();
+    auto tstStdNormal = TestStandardNormal();
+    tstStdNormal.AllStandardNormalTests();
 }
 
 TEST(copulas_test, testClayton)

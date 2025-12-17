@@ -110,8 +110,8 @@ add_executable(Deltares.Probabilistic.Test
     Model/TestRunModel_body.cpp
     Proxies/TestProxies.h
     Proxies/TestProxies_body.cpp
-    Statistics/testStandardNormal.h
-    Statistics/testStandardNormal_body.cpp
+    Statistics/TestStandardNormal.h
+    Statistics/TestStandardNormal_body.cpp
     Statistics/TestCopula.h
     Statistics/TestCopula_body.cpp
     Statistics/TestXfromU.h

@@ -19,5 +19,20 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "testStandardNormal_body.cpp"
+#pragma once
+
+namespace Deltares::Probabilistic::Test
+{
+    class TestStandardNormal
+    {
+    public:
+        void AllStandardNormalTests() const;
+    private:
+        void TestPQbetaConversions() const;
+        void TestReturnTime() const;
+        void TestFreqFromBeta() const;
+        void TestLogQFromBeta() const;
+        const double margin = 1e-9;
+    };
+}
+
