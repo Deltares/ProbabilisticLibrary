@@ -552,7 +552,7 @@ class UncertaintyResult(FrozenObject):
         Parameters
         ----------
         var_x : str | Stochast, optional
-            The stochastic variable to use for the x-axis, if omitted the first variable
+            The stochastic variable to use for the x-axis, if omitted the first variable is used
 
         var_y : str | Stochast, optional
             The stochastic variable to use for the y-axis, if omitted the second variable is used"""
@@ -582,7 +582,7 @@ class UncertaintyResult(FrozenObject):
 
 		plt.close()
 
-		# 2 variables with the highest alpha
+		# the first two variables
 		index = [0, 1]
 
 		if var_x is not None:
