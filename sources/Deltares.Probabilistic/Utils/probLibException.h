@@ -33,7 +33,7 @@ namespace Deltares::Reliability
         probLibException(const std::string& message, const double number);
         probLibException(const std::string& message, const int number);
         probLibException(const std::string& message, const size_t number);
-        const char* what() const override { return message.c_str(); }
+        virtual const char* what() const throw() { return message.c_str(); }
     private:
         const std::string message;
     };
