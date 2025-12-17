@@ -23,11 +23,3 @@ Documentation = "https://github.com/Deltares/ProbabilisticLibrary/tree/master/do
 Repository = "https://github.com/Deltares/ProbabilisticLibrary"
 issues = "https://github.com/Deltares/ProbabilisticLibrary/issues"
 
-[tool.hatch.version]
-path = "probabilistic_library/__init__.py"
-
-[tool.hatch.build.targets.sdist]
-include = [
-    "/probabilistic_library",
-]
-
