@@ -24,11 +24,7 @@
 #include <cmath>
 #include <functional>
 #include <memory>
-#if __has_include(<format>)
 #include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
 #include <sstream>
 
 #include "Constants.h"
@@ -665,7 +661,7 @@ namespace Deltares
             return result;
         }
 
-        std::vector<double> NumericSupport::take(std::vector<double>& values, int skip, int size)
+        std::vector<double> NumericSupport::take(const std::vector<double>& values, int skip, int size)
         {
             std::vector<double> takenValues(values.begin() + skip, values.begin() + skip + size);
             return takenValues;
@@ -828,11 +824,7 @@ namespace Deltares
             for (size_t i = 0; i <values.size(); i++)
             {
                 double value = values[i];
-#ifdef __cpp_lib_format
                 std::string valueStr = std::format("{:.5G}", value);
-#else
-                std::string valueStr = Reliability::probLibString::double2str(value);
-#endif
                 if (i == 0)
                 {
                     ss << valueStr;

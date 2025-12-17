@@ -121,14 +121,20 @@
     <ClInclude Include="Combin\upscale_tests.cpp" />
     <ClInclude Include="Distributions\testDistributions.h" />
     <ClInclude Include="Distributions\testDistributions_body.cpp" />
+    <ClInclude Include="Proxies\TestProxies.h" />
+    <ClInclude Include="Proxies\TestProxies_body.cpp" />
     <ClInclude Include="Statistics\testStandardNormal.h" />
     <ClInclude Include="Statistics\testStandardNormal_body.cpp" />
+    <ClInclude Include="Statistics\TestCopula.h" />
+    <ClInclude Include="Statistics\TestCopula_body.cpp" />
     <ClInclude Include="Math\testCholeskiDecomposition.h" />
     <ClInclude Include="Math\testCholeskiDecomposition_body.cpp" />
     <ClInclude Include="Math\testNumericSupport.h" />
     <ClInclude Include="Math\testNumericSupport_body.cpp" />
     <ClInclude Include="Math\testKMean.h" />
     <ClInclude Include="Math\testKMean_body.cpp" />
+    <ClInclude Include="Math\testMatrix.h" />
+    <ClInclude Include="Math\testMatrix_body.cpp" />
     <ClInclude Include="Math\testMatrixInverse.h" />
     <ClInclude Include="Math\testMatrixInverse_body.cpp" />
     <ClInclude Include="Math\testMatrixMultiplication.h" />
@@ -161,10 +167,13 @@
   <ItemGroup>
     <ClCompile Include="Combin\all_combin_tests.cpp" />
     <ClCompile Include="Distributions\testDistributions.cpp" />
+    <ClCompile Include="Proxies\TestProxies.cpp" />
     <ClCompile Include="Statistics\testStandardNormal.cpp" />
+    <ClCompile Include="Statistics\TestCopula.cpp" />
     <ClCompile Include="Math\testCholeskiDecomposition.cpp" />
     <ClCompile Include="Math\testNumericSupport.cpp" />
     <ClCompile Include="Math\testKMean.cpp" />
+    <ClCompile Include="Math\testMatrix.cpp" />
     <ClCompile Include="Math\testMatrixInverse.cpp" />
     <ClCompile Include="Math\testMatrixMultiplication.cpp" />
     <ClCompile Include="Math\testRandom.cpp" />

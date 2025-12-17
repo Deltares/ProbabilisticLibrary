@@ -77,7 +77,7 @@ namespace Deltares
             }
 
             int chunkSize = modelRunner->Settings->MaxChunkSize;
-            if (modelRunner->Settings->IsProxyModel())
+            if (modelRunner->ProxySettings->IsProxyModel)
             {
                 // the early return for proxy models has results depending on the chunk size
                 // to avoid this, use a chunk size equal to the number of processes that are used.
@@ -227,7 +227,7 @@ namespace Deltares
             if ( ! modelRunner.canCalculateBeta())
             {
                 auto shouldCompute = std::vector(nSamples, true);
-                if (modelRunner.Settings->IsProxyModel())
+                if (modelRunner.ProxySettings->IsProxyModel)
                 {
                     for (size_t i = 0; i < nSamples; i++)
                     {
@@ -247,7 +247,7 @@ namespace Deltares
             for (int i = 0; i < static_cast<int>(nSamples); i++)
             {
                 // retain previous results from model if running in a proxy model environment
-                if (modelRunner.Settings->IsProxyModel() && previousResults.contains(samples[i]->IterationIndex))
+                if (modelRunner.ProxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
                 {
                     betaValues[i] = previousResults[samples[i]->IterationIndex];
                 }
@@ -259,7 +259,7 @@ namespace Deltares
             }
 
             // keep results from non-proxy runs when proxies are used for a next run
-            if (modelRunner.Settings->IsProxyModel())
+            if (modelRunner.ProxySettings->IsProxyModel)
             {
                 for (size_t i = 0; i < samples.size(); i++)
                 {

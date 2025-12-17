@@ -20,22 +20,15 @@
 // All rights reserved.
 //
 #include "SubsetSimulation.h"
-
-#include <algorithm>
-#include <numbers>
-
 #include "DesignPoint.h"
 #include "DesignPointBuilder.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Model/RandomSampleGenerator.h"
 
-#if __has_include(<format>)
+#include <algorithm>
+#include <numbers>
 #include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
-
 
 namespace Deltares
 {
@@ -199,11 +192,8 @@ namespace Deltares
                 if (!selectedSamples.empty())
                 {
                     const double ratio = 100 * NumericSupport::Divide(rejectedSamples, acceptedSamples + rejectedSamples);
-#if __has_include(<format>)
-                    std::string message = std::format("Rejected {0:} values, accepted {1:} values ({2:} % rejected) in iteration {3:}", rejectedSamples, acceptedSamples, ratio, iteration);
-#else
-                    std::string message = "Rejected " + std::to_string(rejectedSamples) + ", accepted " + std::to_string(acceptedSamples) + " samples";
-#endif
+                    auto message = std::format("Rejected {0:} values, accepted {1:} values ({2:} % rejected) in iteration {3:}",
+                        rejectedSamples, acceptedSamples, ratio, iteration);
                     modelRunner->reportMessage(Logging::MessageType::Debug, message);
                 }
 
@@ -218,11 +208,7 @@ namespace Deltares
                 {
                     std::shared_ptr<Sample> sample = designPointBuilder.getSample();
                     std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
-#if __has_include(<format>)
                     std::string identifier = std::format("Subset iteration {0:}", iteration);
-#else
-                    std::string identifier = "Subset iteration " + std::to_string(iteration);
-#endif
                     designPoint->Identifier = identifier;
 
                     contributingDesignPoints.push_back(designPoint);

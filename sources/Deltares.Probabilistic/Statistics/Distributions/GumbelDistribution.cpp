@@ -138,6 +138,7 @@ namespace Deltares
         void GumbelDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
             // https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
+
             double mean = Numeric::NumericSupport::getMean(values);
 
             auto bisection = Numeric::BisectionRootFinder(0.001);
@@ -158,7 +159,14 @@ namespace Deltares
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast.Scale); });
 
-            stochast.Shift = -stochast.Scale * log(sum / values.size());
+            if (std::isnan(shift))
+            {
+                stochast.Shift = -stochast.Scale * log(sum / static_cast<double>(values.size()));
+            }
+            else
+            {
+                stochast.Shift = shift;
+            }
             stochast.Observations = static_cast<int>(values.size());
         }
 

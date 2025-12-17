@@ -36,11 +36,14 @@
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
 #include "Statistics/testStandardNormal.h"
+#include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
+#include "Math/testMatrix.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
+#include "Proxies/TestProxies.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -103,6 +106,36 @@ TEST(unittst, testMatmul)
 {
     auto tstMatMul = matmul_tests();
     tstMatMul.all_matmul_tests();
+}
+
+TEST(matrix_test, qr_decomposition)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.qr_decomposition();
+}
+
+TEST(matrix_test, linear_equations)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.linear_equations();
+}
+
+TEST(matrix_test, linear_equations_overdetermined)
+{
+    auto testMatrix = matrix_tests();
+    testMatrix.linear_equations_overdetermined();
+}
+
+TEST(proxies_test, linear_model)
+{
+    auto testProxies = TestProxies();
+    testProxies.testLinearModel();
+}
+
+TEST(proxies_test, linear_output_only_model)
+{
+    auto testProxies = TestProxies();
+    testProxies.testLinearOutputOnlyModel();
 }
 
 TEST(unittst, testNumericalSupport)
@@ -202,6 +235,11 @@ TEST(reliability_method_test, testNumericalIntegrationReliability)
 TEST(reliability_method_test, testCrudeMCReliability)
 {
     testReliabilityMethods::testCrudeMonteCarloReliability();
+}
+
+TEST(reliability_method_test, testCrudeMCwithCopula)
+{
+    testReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
 }
 
 TEST(reliability_method_test, testAdaptiveImportanceSampling)
@@ -412,6 +450,36 @@ TEST(unittst, testStandardNormal)
 {
     auto tstStdNormal = testStandardNormal();
     tstStdNormal.allStandardNormalTests();
+}
+
+TEST(copulas_test, testClayton)
+{
+    TestCopula::TestClayton();
+}
+
+TEST(copulas_test, testFrank)
+{
+    TestCopula::TestFrank();
+}
+
+TEST(copulas_test, testGaussian)
+{
+    TestCopula::TestGaussian();
+}
+
+TEST(copulas_test, testGumbel)
+{
+    TestCopula::TestGumbel();
+}
+
+TEST(copulas_test, testValidation)
+{
+    TestCopula::TestValidation();
+}
+
+TEST(copulas_test, testValidationMessages)
+{
+    TestCopula::TestValidationMessages();
 }
 
 TEST(unittst, testUncertainty)

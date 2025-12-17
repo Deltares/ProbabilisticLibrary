@@ -164,7 +164,15 @@
     <ClInclude Include="Combine\ExcludingCombiner.h" />
     <ClInclude Include="Combine\WeightedSumCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
+    <ClInclude Include="Proxies\ProxyCoefficients.h" />
     <ClInclude Include="Model\Validatable.h" />
+    <ClInclude Include="Proxies\ProxySettings.h" />
+    <ClInclude Include="Proxies\ProxyModel.h" />
+    <ClInclude Include="Proxies\ProxyMethod.h" />
+    <ClInclude Include="Proxies\LinearProxyMethod.h" />
+    <ClInclude Include="Proxies\ProxyTrainer.h" />
+    <ClInclude Include="Proxies\SingleProxyTrainer.h" />
+    <ClInclude Include="Proxies\ProxyCoefficient.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSupport.h" />
     <ClInclude Include="Logging\ValidationSupport.h" />
     <ClInclude Include="Model\ComputationalStochast.h" />
@@ -251,7 +259,6 @@
     <ClInclude Include="Statistics\Distributions\TrapezoidalDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ParetoDistribution.h" />
     <ClInclude Include="Utils\DirtySupport.h" />
-    <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Model\SampleProvider.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
@@ -349,6 +356,15 @@
     <ClInclude Include="Math\RandomValueGenerator.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
+    <ClInclude Include="Statistics\BaseCorrelation.h" />
+    <ClInclude Include="Statistics\CopulaCorrelation.h" />
+    <ClInclude Include="Statistics\CorrelationValueAndType.h" />
+    <ClInclude Include="Statistics\BaseCopula.h" />
+    <ClInclude Include="Statistics\ClaytonCopula.h" />
+    <ClInclude Include="Statistics\FrankCopula.h" />
+    <ClInclude Include="Statistics\GaussianCopula.h" />
+    <ClInclude Include="Statistics\DiagonalBandCopula.h" />
+    <ClInclude Include="Statistics\GumbelCopula.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Math\NumericSupport.h" />
     <ClInclude Include="Model\RandomSettings.h" />
@@ -390,6 +406,7 @@
     <ClInclude Include="Math\WeightedValue.h" />
     <ClInclude Include="Model\ZValueConverter.h" />
     <ClInclude Include="Logging\ValidationReport.h" />
+    <ClInclude Include="Model\DefaultValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Combine\ExcludingCombineSettings.cpp" />
@@ -397,7 +414,15 @@
     <ClCompile Include="Combine\ExcludingCombiner.cpp" />
     <ClCompile Include="Combine\WeightedSumCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
+    <ClCompile Include="Proxies\ProxyCoefficients.cpp" />
     <ClCompile Include="Model\Validatable.cpp" />
+    <ClCompile Include="Proxies\ProxySettings.cpp" />
+    <ClCompile Include="Proxies\ProxyModel.cpp" />
+    <ClCompile Include="Proxies\ProxyMethod.cpp" />
+    <ClCompile Include="Proxies\LinearProxyMethod.cpp" />
+    <ClCompile Include="Proxies\ProxyTrainer.cpp" />
+    <ClCompile Include="Proxies\SingleProxyTrainer.cpp" />
+    <ClCompile Include="Proxies\ProxyCoefficient.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
     <ClCompile Include="Logging\ValidationSupport.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
@@ -472,7 +497,6 @@
     <ClCompile Include="Statistics\Distributions\TrapezoidalDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ParetoDistribution.cpp" />
     <ClCompile Include="Utils\DirtySupport.cpp" />
-    <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Model\SampleProvider.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
@@ -570,6 +594,14 @@
     <ClCompile Include="Math\RandomValueGenerator.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
+    <ClCompile Include="Statistics\BaseCorrelation.cpp" />
+    <ClCompile Include="Statistics\CopulaCorrelation.cpp" />
+    <ClCompile Include="Statistics\BaseCopula.cpp" />
+    <ClCompile Include="Statistics\ClaytonCopula.cpp" />
+    <ClCompile Include="Statistics\FrankCopula.cpp" />
+    <ClCompile Include="Statistics\GaussianCopula.cpp" />
+    <ClCompile Include="Statistics\DiagonalBandCopula.cpp" />
+    <ClCompile Include="Statistics\GumbelCopula.cpp" />
     <ClCompile Include="Math\NumericSupport.cpp" />
     <ClCompile Include="Model\RandomSettings.cpp" />
     <ClCompile Include="Model\RunSettings.cpp" />
@@ -606,6 +638,7 @@
     <ClCompile Include="Model\ZValueConverter.cpp" />
     <ClCompile Include="Statistics\VariableStochastValue.cpp" />
     <ClCompile Include="Logging\ValidationReport.cpp" />
+    <ClCompile Include="Model\DefaultValueConverter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

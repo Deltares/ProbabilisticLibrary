@@ -1,4 +1,4 @@
-/* cobyla : contrained optimization by linear approximation */
+/* cobyla : constrained optimization by linear approximation */
 
 /*
  * Copyright (c) 1992, Michael J. D. Powell (M.J.D.Powell@damtp.cam.ac.uk)
@@ -25,7 +25,7 @@
  */
 
 /*
- * This software is a C version of COBYLA2, a contrained optimization by linear
+ * This software is a C version of COBYLA2, a constrained optimization by linear
  * approximation package developed by Michael J. D. Powell in Fortran.
  * 
  * The original source code can be found at :

@@ -118,7 +118,6 @@
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
-    <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
@@ -249,6 +248,15 @@
     <ClCompile Include="Statistics\Distributions\DistributionSupport.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
     <ClCompile Include="Model\Validatable.cpp" />
+    <ClCompile Include="Proxies\ProxySettings.cpp" />
+    <ClCompile Include="Proxies\ProxyModel.cpp" />
+    <ClCompile Include="Proxies\ProxyMethod.cpp" />
+    <ClCompile Include="Proxies\LinearProxyMethod.cpp" />
+    <ClCompile Include="Proxies\ProxyTrainer.cpp" />
+    <ClCompile Include="Proxies\SingleProxyTrainer.cpp" />
+    <ClCompile Include="Proxies\ProxyCoefficients.cpp" />
+    <ClCompile Include="Model\DefaultValueConverter.cpp" />
+    <ClCompile Include="Proxies\ProxyCoefficient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -385,7 +393,6 @@
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
-    <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
@@ -527,6 +534,15 @@
     <ClInclude Include="Statistics\Distributions\DistributionSupport.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSupport.h" />
     <ClInclude Include="Model\Validatable.h" />
+    <ClInclude Include="Proxies\ProxySettings.h" />
+    <ClInclude Include="Proxies\ProxyModel.h" />
+    <ClInclude Include="Proxies\ProxyMethod.h" />
+    <ClInclude Include="Proxies\LinearProxyMethod.h" />
+    <ClInclude Include="Proxies\ProxyTrainer.h" />
+    <ClInclude Include="Proxies\SingleProxyTrainer.h" />
+    <ClInclude Include="Proxies\ProxyCoefficients.h" />
+    <ClInclude Include="Model\DefaultValueConverter.h" />
+    <ClInclude Include="Proxies\ProxyCoefficient.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

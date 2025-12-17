@@ -59,9 +59,9 @@ namespace Deltares
 
         std::shared_ptr<DesignPoint> DesignPointCombiner::combineDesignPoints(combineAndOr combineMethodType,
             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
-            std::shared_ptr<ProgressIndicator> progress)
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix,
+            const std::shared_ptr<ProgressIndicator>& progress) const
         {
             const std::shared_ptr<Combiner> combiner = getCombiner();
             std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
@@ -74,7 +74,7 @@ namespace Deltares
         std::shared_ptr<DesignPoint> DesignPointCombiner::combineDesignPointsExcluding(
             std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
+            const std::shared_ptr<Statistics::CorrelationMatrix>& correlationMatrix) const
         {
             const std::unique_ptr<ExcludingCombiner> combiner = getExcludingCombiner();
             std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineExcludingDesignPoints(scenarios, designPoints);
@@ -85,7 +85,7 @@ namespace Deltares
         }
 
         void DesignPointCombiner::applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                                                   std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
+                                                   std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix,
                                                    DesignPoint* combinedDesignPoint)
         {
             if (correlationMatrix != nullptr && !correlationMatrix->IsIdentity())

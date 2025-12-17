@@ -66,7 +66,7 @@ namespace Deltares
                     shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
                 }
 
-                shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
+                shared->object->correlation = this->CorrelationMatrix->GetCorrelationMatrix();
                 shared->object->sensitivityMethod = this->SensitivityMethod->GetNativeSensitivityMethod();
             }
 

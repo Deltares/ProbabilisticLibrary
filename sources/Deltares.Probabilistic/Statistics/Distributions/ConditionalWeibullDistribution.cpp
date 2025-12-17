@@ -164,22 +164,39 @@ namespace Deltares
 
         void ConditionalWeibullDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
-            double minValue = Numeric::NumericSupport::getMinimum(values);
-            double meanValue = Numeric::NumericSupport::getMean(values);
-            double estimatedMaxValue = minValue + 2 * (meanValue - minValue);
-
             auto fitter = DistributionFitter();
 
-            std::vector minValues = { minValue, 0.5, 0.5, 0.5 };
-            std::vector maxValues = { estimatedMaxValue, 1.5, 1.5, 1.5 };
-            std::vector initValues = { meanValue, 1.0, 1.0, 1.0 };
-            std::vector properties = {Shift, Scale, Shape, ShapeB };
-            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+            if (std::isnan(shift))
+            {
+                double minValue = Numeric::NumericSupport::getMinimum(values);
+                double meanValue = Numeric::NumericSupport::getMean(values);
+                double estimatedMaxValue = minValue + 2 * (meanValue - minValue);
 
-            stochast.Shift = std::max(minValue, parameters[0]);
-            stochast.Scale = std::max(0.0, parameters[1]);
-            stochast.Shape = std::max(0.0, parameters[2]);
-            stochast.ShapeB = std::max(0.0, parameters[3]);
+                std::vector minValues = { 0.5, 0.5, 0.5, minValue };
+                std::vector maxValues = { 1.5, 1.5, 1.5, estimatedMaxValue };
+                std::vector initValues = { 1.0, 1.0, 1.0, meanValue };
+                std::vector properties = { Scale, Shape, ShapeB, Shift };
+                std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+
+                stochast.Scale = std::max(0.0, parameters[0]);
+                stochast.Shape = std::max(0.0, parameters[1]);
+                stochast.ShapeB = std::max(0.0, parameters[2]);
+                stochast.Shift = std::max(minValue, parameters[3]);
+            }
+            else
+            {
+                stochast.Shift = shift;
+
+                std::vector minValues = { 0.5, 0.5, 0.5 };
+                std::vector maxValues = { 1.5, 1.5, 1.5 };
+                std::vector initValues = { 1.0, 1.0, 1.0 };
+                std::vector properties = { Scale, Shape, ShapeB };
+                std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+
+                stochast.Scale = std::max(0.0, parameters[0]);
+                stochast.Shape = std::max(0.0, parameters[1]);
+                stochast.ShapeB = std::max(0.0, parameters[2]);
+            }
 
             stochast.Observations = static_cast<int>(values.size());
         }

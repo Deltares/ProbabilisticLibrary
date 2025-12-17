@@ -67,6 +67,7 @@ namespace Deltares
             double sumOfInner(const vector1D& m) const;
             double sumOfInners(const vector1D& m, const vector1D& n) const;
             void assign(const double x);
+            double norm() const;
             void normalize();
             double minval() const;
             double maxval() const;

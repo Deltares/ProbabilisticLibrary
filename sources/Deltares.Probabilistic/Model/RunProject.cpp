@@ -31,7 +31,7 @@ namespace Deltares::Models
 
         if (this->model != nullptr && this->model->callbackAssigned)
         {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
+            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
             ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
             modelRunner.Settings = this->settings->RunSettings;
             modelRunner.initializeForRun();

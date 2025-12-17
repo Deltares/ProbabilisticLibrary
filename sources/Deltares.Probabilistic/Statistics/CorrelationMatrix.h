@@ -27,64 +27,60 @@
 #include <vector>
 
 #include "Stochast.h"
+#include "BaseCorrelation.h"
 
 namespace Deltares
 {
     namespace Statistics
     {
-        struct indexWithCorrelation
-        {
-            int index;
-            double correlation;
-        };
-
-        class correlationPair
+        class correlationPair : public BaseCorrelationPair
         {
         public:
-            int index1;
-            int index2;
             double correlation;
             bool isFullyCorrelated;
-            bool AreLinked(const correlationPair & other) const
-            {
-                return index1 == other.index1 || index1 == other.index2 || index2 == other.index1 || index2 == other.index2;
-            }
         };
 
-        class CorrelationMatrix
+        class CorrelationMatrix : public BaseCorrelation
         {
         public:
-            void init(const int maxStochasts);
-            void init(std::vector<std::shared_ptr<Stochast>> stochasts);
+            void Init(const int maxStochasts) override;
+            void Init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override;
 
-            std::vector<double> Cholesky(const std::vector<double>& uValues);
+            bool IsValid() const override;
+            void Validate(Logging::ValidationReport& report) const override
+            {
+                // empty; currently nothing to check
+            }
+
+            std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
 
-            void SetCorrelation(const int i, const int j, double value);
-            void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value);
+            void SetCorrelation(const int i, const int j, double value, CorrelationType type) override;
+            void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2,
+                double value, CorrelationType type) override;
 
-            double GetCorrelation(const int i, const int j) const;
-            double GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2);
+            CorrelationValueAndType GetCorrelation(const int i, const int j) const override;
+            CorrelationValueAndType GetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2) override;
 
-            bool IsIdentity() const;
-            int CountCorrelations() const;
-            int getDimension() { return (int) dim; }
-            std::shared_ptr<Statistics::Stochast> getStochast(int index);
+            bool IsIdentity() const override;
+            int CountCorrelations() const override;
+            int GetDimension() override { return static_cast<int>(dim); }
+            std::shared_ptr<Statistics::Stochast> GetStochast(int index) override;
             bool HasConflictingCorrelations() const;
             void resolveConflictingCorrelations();
+            void InitializeForRun() override;
+            bool IsFullyCorrelated(const int i, const std::vector<int>& varyingIndices) const override;
+            void Filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index) override;
+            IndexWithCorrelation FindDependent(const int i) const override;
+        private:
+            Numeric::Matrix matrix = Numeric::Matrix(0, 0);
+            Numeric::Matrix choleskyMatrix = Numeric::Matrix(0, 0);
+            Numeric::Matrix inverseCholeskyMatrix = Numeric::Matrix(0, 0);
             void CholeskyDecomposition();
             void InverseCholeskyDecomposition();
-            bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const;
-            void filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index);
-            indexWithCorrelation findDependent(const int i) const;
-        private:
-            Deltares::Numeric::Matrix matrix = Deltares::Numeric::Matrix(0, 0);
-            Deltares::Numeric::Matrix choleskyMatrix = Deltares::Numeric::Matrix(0, 0);
-            Deltares::Numeric::Matrix inverseCholeskyMatrix = Deltares::Numeric::Matrix(0, 0);
-            int findNewIndex(const std::vector<int> index, const size_t i);
             std::map<std::shared_ptr<Stochast>, int> stochastIndex;
             std::vector<std::shared_ptr<Stochast>> stochasts;
-            std::vector<indexWithCorrelation> indexer;
+            std::vector<IndexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;
             std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
             size_t dim = 0;

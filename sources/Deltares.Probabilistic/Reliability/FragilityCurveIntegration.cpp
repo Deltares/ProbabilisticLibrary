@@ -19,18 +19,11 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <cmath>
 #include "FragilityCurveIntegration.h"
-
 #include "DesignPoint.h"
 #include "../Math/NumericSupport.h"
 
-#if __has_include(<format>)
-#include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
-
+#include <cmath>
 
 namespace Deltares
 {

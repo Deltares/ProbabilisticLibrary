@@ -51,13 +51,15 @@ namespace Deltares::Probabilistic::Test
 
         for (int i = 0; i < expectedValues.size(); i++)
         {
-            auto u = (double)i;
-            auto x = distCondWeibull.getXFromU(u);
+            double u = static_cast<double>(i);
+            double x = distCondWeibull.getXFromU(u);
             EXPECT_NEAR(x, expectedValues[i], margin);
-            auto uCalculated = distCondWeibull.getUFromX(x);
+            double uCalculated = distCondWeibull.getUFromX(x);
             EXPECT_NEAR(u, uCalculated, 5.0 * margin);
         }
 
+        testFit(distCondWeibull, 0.75);
+        testFitShift(distCondWeibull, 0.75);
     }
 
     void testDistributions::testConditionalWeibullNonIntegerShape()
@@ -409,6 +411,7 @@ namespace Deltares::Probabilistic::Test
 
         Stochast stochastForFitShift = Stochast(DistributionType::Exponential, { 2.5, 0.5 });
         testFit(stochastForFitShift);
+        testFitShift(stochastForFitShift);
         testInvert(stochastForFitShift);
 
         stochastForFitShift.setInverted(true);
@@ -427,9 +430,11 @@ namespace Deltares::Probabilistic::Test
         testInvert(stochast);
 
         testFit(stochast);
+        testFitShift(stochast);
 
         stochast.setInverted(true);
         testFit(stochast);
+        testFitShift(stochast);
 
         Stochast stochast2 = Stochast();
         stochast2.setDistributionType(DistributionType::Gumbel);
@@ -450,6 +455,7 @@ namespace Deltares::Probabilistic::Test
         testInvert(stochast);
 
         testFit(stochast, 1.1);
+        testFitShift(stochast, 1.1);
 
         stochast.setInverted(true);
         testFit(stochast, 1.1);
@@ -466,9 +472,11 @@ namespace Deltares::Probabilistic::Test
         testInvert(stochast);
 
         testFit(stochast, 0.4);
+        testFitShift(stochast, 0.4);
 
         stochast.setInverted(true);
         testFit(stochast, 0.4);
+        testFitShift(stochast, 0.4);
     }
 
     void testDistributions::testGEV()
@@ -535,9 +543,11 @@ namespace Deltares::Probabilistic::Test
         testInvert(stochast);
 
         testFit(stochast);
+        testFitShift(stochast);
 
         stochast.setInverted(true);
         testFit(stochast);
+        testFitShift(stochast);
     }
 
     void testDistributions::testRayleighN()
@@ -550,9 +560,11 @@ namespace Deltares::Probabilistic::Test
         testInvert(stochast);
 
         testFit(stochast);
+        testFitShift(stochast);
 
         stochast.setInverted(true);
         testFit(stochast, 0.4);
+        testFitShift(stochast, 0.4);
     }
 
     void testDistributions::testBeta()
@@ -700,6 +712,7 @@ namespace Deltares::Probabilistic::Test
         Stochast stochastForFit = Stochast(DistributionType::LogNormal, { 3.0, 1.0, 0.0 });
         testInvert(stochastForFit);
         testFit(stochastForFit);
+        testFit(stochastForFit, 0.1, 1000, true);
 
         stochastForFit.setInverted(true);
         testFit(stochastForFit);
@@ -809,7 +822,12 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ("scale value -1 is less than 0.", report2.messages[0]->Text);
     }
 
-    void testDistributions::testFit(Statistics::Stochast& stochast, const double margin, const int number)
+    void testDistributions::testFitShift(Statistics::Stochast& stochast, const double margin, const int number)
+    {
+        testFit(stochast, margin, number, true);
+    }
+
+    void testDistributions::testFit(Statistics::Stochast& stochast, const double margin, const int number, const bool useShift)
     {
         auto random = Deltares::Numeric::RandomValueGenerator();
 
@@ -827,7 +845,14 @@ namespace Deltares::Probabilistic::Test
             values[i] = stochast.getXFromU(u);
         }
 
-        fittedStochast.fit(values);
+        if (useShift)
+        {
+            fittedStochast.fit(values, stochast.getProperties()->Shift);
+        }
+        else
+        {
+            fittedStochast.fit(values);
+        }
 
         if (fittedStochast.hasParameter(DistributionPropertyType::Location))
         {
@@ -863,6 +888,13 @@ namespace Deltares::Probabilistic::Test
         }
 
         EXPECT_EQ(static_cast<int>(values.size()), fittedStochast.getProperties()->Observations);
+
+        if (useShift)
+        {
+            double modifiedShift = stochast.isInverted() ? stochast.getProperties()->Shift + 1 : stochast.getProperties()->Shift - 1;
+            fittedStochast.fit(values, modifiedShift);
+            EXPECT_NEAR(modifiedShift, fittedStochast.getProperties()->Shift, 1E-10);
+        }
     }
 
     void testDistributions::testInvert(Statistics::Stochast& stochast, const double margin)
