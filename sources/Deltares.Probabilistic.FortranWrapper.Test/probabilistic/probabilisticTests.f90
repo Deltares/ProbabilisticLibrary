@@ -36,7 +36,6 @@ module probabilisticTests
     use performSubSetSimulationReliabilityTests
     use performDSTests
     use initProbabilisticTests
-    use incompleteGammaFunctionTests
     use basicCorrelationTests
     implicit none
 

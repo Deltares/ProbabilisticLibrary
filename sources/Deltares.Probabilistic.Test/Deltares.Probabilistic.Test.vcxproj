@@ -147,6 +147,8 @@
     <ClInclude Include="Math\testRootfinder_body.cpp" />
     <ClInclude Include="Math\testVector1D.h" />
     <ClInclude Include="Math\testVector1D_body.cpp" />
+    <ClInclude Include="Math\TestSpecialFunctions.h" />
+    <ClInclude Include="Math\TestSpecialFunctions_body.cpp" />
     <ClInclude Include="Optimization\testCobyla.h" />
     <ClInclude Include="Optimization\testCobyla_body.cpp" />
     <ClInclude Include="pch.h" />
@@ -212,6 +214,7 @@
     <ClCompile Include="Math\testRandom.cpp" />
     <ClCompile Include="Math\testRootfinder.cpp" />
     <ClCompile Include="Math\testVector1D.cpp" />
+    <ClCompile Include="Math\TestSpecialFunctions.cpp" />
     <ClCompile Include="Optimization\testCobyla.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

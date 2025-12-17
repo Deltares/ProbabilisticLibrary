@@ -19,22 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <exception>
-#include <string>
-#include <cstddef>
-
-namespace Deltares::Reliability
-{
-    class probLibException : public std::exception
-    {
-    public:
-        probLibException(std::string message) : message(std::move(message)) {}
-        probLibException(const std::string& message, const double number);
-        probLibException(const std::string& message, const int number);
-        probLibException(const std::string& message, const size_t number);
-        const char* what() const override { return message.c_str(); }
-    private:
-        const std::string message;
-    };
-}
+#include "pch.h"
+#include "TestSpecialFunctions_body.cpp"

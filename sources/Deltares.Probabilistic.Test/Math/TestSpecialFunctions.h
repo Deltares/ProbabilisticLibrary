@@ -20,21 +20,14 @@
 // All rights reserved.
 //
 #pragma once
-#include <exception>
-#include <string>
-#include <cstddef>
 
-namespace Deltares::Reliability
+namespace Deltares::Probabilistic::Test
 {
-    class probLibException : public std::exception
+    class TestSpecialFunctions
     {
     public:
-        probLibException(std::string message) : message(std::move(message)) {}
-        probLibException(const std::string& message, const double number);
-        probLibException(const std::string& message, const int number);
-        probLibException(const std::string& message, const size_t number);
-        const char* what() const override { return message.c_str(); }
-    private:
-        const std::string message;
+        static void IncompleteGammaTest();
+        static void IncompleteGammaExceptionalCasesTest();
     };
 }
+

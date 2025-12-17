@@ -30,6 +30,7 @@
 #include "Math/testRandom.h"
 #include "Math/testVector1D.h"
 #include "Math/testRootfinder.h"
+#include "Math/TestSpecialFunctions.h"
 #include "Combin/hohenbichler_tests.h"
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/UpscaleTests.h"
@@ -591,6 +592,16 @@ TEST(unit_tests, testVector1D)
 {
     auto tstVector1D = vector1D_tests();
     tstVector1D.allVector1Dtests();
+}
+
+TEST(unit_tests, testIncompleteGamma)
+{
+    TestSpecialFunctions::IncompleteGammaTest();
+}
+
+TEST(unit_tests, testIncompleteGammaExceptionalCases)
+{
+    TestSpecialFunctions::IncompleteGammaExceptionalCasesTest();
 }
 
 TEST(unit_tests, testCobylaOptimization)
