@@ -21,7 +21,7 @@ classifiers = [
 Homepage = "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk"
 Documentation = "https://github.com/Deltares/ProbabilisticLibrary/tree/master/doc"
 Repository = "https://github.com/Deltares/ProbabilisticLibrary"
-"Bug Tracker" = "https://github.com/Deltares/ProbabilisticLibrary/issues"
+issues = "https://github.com/Deltares/ProbabilisticLibrary/issues"
 
 [tool.hatch.version]
 path = "probabilistic_library/__init__.py"
