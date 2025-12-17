@@ -74,16 +74,12 @@ namespace Deltares::Probabilistic::Test
 
     WaartsResult TestWaartsNoisyLimitState::ExpectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
-        expected.success = false;
-        return expected;
+        return ExpectedValuesCrudeMonteCarlo();
     }
 
     WaartsResult TestWaartsNoisyLimitState::ExpectedValuesAdaptiveImportanceSampling()
     {
-        auto expected = ExpectedValues();
-        expected.success = false;
-        return expected;
+        return ExpectedValuesCrudeMonteCarlo();
     }
 
 }

@@ -67,9 +67,7 @@ namespace Deltares::Probabilistic::Test
 
     WaartsResult TestWaartsConvexFailureDomain::ExpectedValuesFDIR()
     {
-        auto expected = ExpectedValues();
-        expected.beta = 2.50;
-        return expected;
+        return ExpectedValuesFORM();
     }
 
     WaartsResult TestWaartsConvexFailureDomain::ExpectedValuesCrudeMonteCarlo()

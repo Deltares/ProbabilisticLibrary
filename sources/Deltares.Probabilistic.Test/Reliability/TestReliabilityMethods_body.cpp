@@ -352,7 +352,6 @@ namespace Deltares::Probabilistic::Test
             calculator.Settings->clusterSettings->MaxClusters = 4;
             calculator.Settings->clusterSettings->clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus;
             auto designPoint = calculator.getDesignPoint(modelRunner);
-            //std::cout << "Beta = " << designPoint->Beta << std::endl;
             auto ii = 0;
 
             for (int i = 0; i < 4; i++)
@@ -365,9 +364,7 @@ namespace Deltares::Probabilistic::Test
 
                 EXPECT_NEAR(alpha[0]->Alpha, expectedAlpha0, 1e-4);
                 EXPECT_NEAR(alpha[1]->Alpha, expectedAlpha1, 1e-4);
-                //std::cout << ", " << alpha[0]->Alpha << ", " << alpha[1]->Alpha;
             }
-            //std::cout << std::endl;
             ASSERT_EQ(designPoint->Alphas.size(), 2);
             EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
         }

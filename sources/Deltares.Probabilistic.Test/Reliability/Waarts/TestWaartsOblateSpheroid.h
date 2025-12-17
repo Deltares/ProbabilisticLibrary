@@ -34,11 +34,5 @@ namespace Deltares::Probabilistic::Test
         WaartsResult ExpectedValuesFDIR() override;
         WaartsResult ExpectedValuesImportanceSampling() override;
         WaartsResult ExpectedValuesAdaptiveImportanceSampling() override;
-        /*
-        WaartsResult ExpectedValuesCrudeMonteCarlo() override;
-        WaartsResult ExpectedValuesDirectionalSampling() override;
-        WaartsResult ExpectedValuesImportanceSampling() override;
-        WaartsResult ExpectedValuesCrudeMonteCarlo() override;
-        */
     };
 }
