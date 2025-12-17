@@ -20,24 +20,28 @@
 // All rights reserved.
 //
 
-#include "RunProject.h"
-#include "ModelRunner.h"
+#include "ClaytonCopula.h"
 
-namespace Deltares::Models
+#include <cmath>
+#include <format>
+
+namespace Deltares::Statistics
 {
-    void RunProject::run()
+    void ClaytonCopula ::update(const double& u, double& t) const
     {
-        this->evaluation = nullptr;
+        t = pow (pow(pow(t,1.0/(1.0+theta)) * u, -theta)+1.0-pow(u,-theta) ,-1.0/theta);
+    }
 
-        if (this->model != nullptr && this->model->callbackAssigned)
+    void ClaytonCopula::validate(Logging::ValidationReport& report) const
+    {
+        if (theta == 0.0 || theta < -1.0)
         {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
-
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
+            auto msg = std::make_shared<Logging::Message>();
+            msg->Text = std::format("Theta in Clayton copula should be >= -1.0 and <> 0.0, but is {:.6F}", theta);
+            msg->Type = Logging::MessageType::Error;
+            report.messages.push_back(msg);
         }
     }
+
 }
 

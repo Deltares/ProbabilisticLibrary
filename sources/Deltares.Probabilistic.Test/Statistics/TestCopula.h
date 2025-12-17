@@ -19,25 +19,19 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+#pragma once
 
-#include "RunProject.h"
-#include "ModelRunner.h"
-
-namespace Deltares::Models
+namespace Deltares::Probabilistic::Test
 {
-    void RunProject::run()
+    class TestCopula
     {
-        this->evaluation = nullptr;
-
-        if (this->model != nullptr && this->model->callbackAssigned)
-        {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
-
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
-        }
-    }
+    public:
+        static void TestClayton();
+        static void TestFrank();
+        static void TestGaussian();
+        static void TestGumbel();
+        static void TestValidation();
+        static void TestValidationMessages();
+    };
 }
 

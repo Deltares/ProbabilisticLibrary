@@ -29,7 +29,8 @@ from probabilistic_library.utils import FrozenList, FrozenObject
 from probabilistic_library.reliability import (DesignPoint, DesignPointMethod, ReliabilityMethod, CompareType, StartMethod,
                                                FragilityCurve, FragilityValue)
 from probabilistic_library.project import ReliabilityProject
-from probabilistic_library.statistic import Stochast, DistributionType, ContributingStochast, ConditionalValue
+from probabilistic_library.statistic import (Stochast, DistributionType, ContributingStochast, ConditionalValue,
+                                             CorrelationType, CopulaType)
 
 import project_builder
 
@@ -1223,6 +1224,44 @@ Alpha values:
 """
         self.assertEqual(expected, printed)
 
+    def test_form_copula_gumbel(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.correlation_type = CorrelationType.copulas
+        project.copulas[(project.variables[0], project.variables[1])] = (5.0, CopulaType.gumbel)
+        project.run()
+
+        dp = project.design_point
+
+        self.assertAlmostEqual(1.654, dp.reliability_index, delta=margin)
+
+    def test_form_copula_clayton(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.correlation_type = CorrelationType.copulas
+        project.copulas[(project.variables[0], project.variables[1])] = (4.0, CopulaType.clayton)
+        project.run()
+
+        dp = project.design_point
+
+        self.assertAlmostEqual(1.86, dp.reliability_index, delta=margin)
+
+    def test_form_copula_frank(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.correlation_type = CorrelationType.copulas
+        project.copulas[(project.variables[0], project.variables[1])] = (4.0, CopulaType.frank)
+        project.run()
+
+        dp = project.design_point
+
+        self.assertAlmostEqual(1.92, dp.reliability_index, delta=margin)
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,24 +20,20 @@
 // All rights reserved.
 //
 
-#include "RunProject.h"
-#include "ModelRunner.h"
+#pragma once
 
-namespace Deltares::Models
+enum class CorrelationType
 {
-    void RunProject::run()
-    {
-        this->evaluation = nullptr;
+    Clayton,
+    Frank,
+    Gumbel,
+    Gaussian,
+    DiagonalBand,
+};
 
-        if (this->model != nullptr && this->model->callbackAssigned)
-        {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
-
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
-        }
-    }
-}
+struct CorrelationValueAndType
+{
+    double value;
+    CorrelationType type;
+};
 

@@ -20,24 +20,35 @@
 // All rights reserved.
 //
 
-#include "RunProject.h"
-#include "ModelRunner.h"
+#include "DiagonalBandCopula.h"
+#include "../Logging/ValidationSupport.h"
 
-namespace Deltares::Models
+namespace Deltares::Statistics
 {
-    void RunProject::run()
+    void DiagonalBandCopula::update(const double& u, double& t) const
     {
-        this->evaluation = nullptr;
-
-        if (this->model != nullptr && this->model->callbackAssigned)
+        double Finv;
+        if (u < 1.0 - alpha && t < 1.0 - u / (1.0 - alpha))
         {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
+            Finv = (1.0 - alpha) * t;
 
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
         }
+        else if (u > alpha && t > (1.0 - u) / (1.0 - alpha))
+        {
+            Finv = (1.0 - alpha) * t + alpha;
+        }
+        else
+        {
+            Finv = 2.0 * (1.0 - alpha) * t + u - 1.0 + alpha;
+        }
+        t = Finv;
     }
+
+    void DiagonalBandCopula::validate(Logging::ValidationReport& report) const
+    {
+        Logging::ValidationSupport::checkMinimum(report, 0.0, alpha, "Alpha", "Diagonal Band copula", Logging::MessageType::Error);
+        Logging::ValidationSupport::checkMaximum(report, 1.0, alpha, "Alpha", "Diagonal Band copula", Logging::MessageType::Error);
+    }
+
 }
 

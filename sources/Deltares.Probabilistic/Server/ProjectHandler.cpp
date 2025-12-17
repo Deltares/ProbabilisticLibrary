@@ -24,6 +24,8 @@
 #include <string>
 #include <memory>
 
+#include "../Statistics/CopulaCorrelation.h"
+
 namespace Deltares
 {
     namespace Server
@@ -48,6 +50,7 @@ namespace Deltares
                     object_type == "contributing_stochast" ||
                     object_type == "conditional_value" ||
                     object_type == "correlation_matrix" ||
+                    object_type == "copula_correlation" ||
                     object_type == "scenario" ||
                     object_type == "settings" ||
                     object_type == "stochast_settings" ||
@@ -90,6 +93,7 @@ namespace Deltares
             else if (object_type == "contributing_stochast") return ObjectType::ContributingStochast;
             else if (object_type == "conditional_value") return ObjectType::ConditionalValue;
             else if (object_type == "correlation_matrix") return ObjectType::CorrelationMatrix;
+            else if (object_type == "copula_correlation") return ObjectType::CopulaCorrelation;
             else if (object_type == "scenario") return ObjectType::Scenario;
             else if (object_type == "settings") return ObjectType::Settings;
             else if (object_type == "stochast_settings") return  ObjectType::StochastSettings;
@@ -167,8 +171,12 @@ namespace Deltares
                 conditionalValueIds[conditionalValues[id]] = id;
                 break;
             case ObjectType::CorrelationMatrix:
-                correlationMatrices[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
-                correlationMatrixIds[correlationMatrices[id]] = id;
+                correlations[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
+                correlationIds[correlations[id]] = id;
+                break;
+            case ObjectType::CopulaCorrelation:
+                correlations[id] = std::make_shared<Deltares::Statistics::CopulaCorrelation>();
+                correlationIds[correlations[id]] = id;
                 break;
             case ObjectType::Scenario:
                 scenarios[id] = std::make_shared<Deltares::Statistics::Scenario>();
@@ -278,7 +286,9 @@ namespace Deltares
             case ObjectType::FragilityValue: fragilityCurveIds.erase(fragilityCurves[id]); fragilityValues.erase(id); break;
             case ObjectType::ContributingStochast: contributingStochastIds.erase(contributingStochasts[id]); contributingStochasts.erase(id); break;
             case ObjectType::ConditionalValue: conditionalValueIds.erase(conditionalValues[id]);  conditionalValues.erase(id); break;
-            case ObjectType::CorrelationMatrix: correlationMatrixIds.erase(correlationMatrices[id]); correlationMatrices.erase(id); break;
+            case ObjectType::CorrelationMatrix:
+            case ObjectType::CopulaCorrelation:
+                correlationIds.erase(correlations[id]); correlations.erase(id); break;
             case ObjectType::Scenario: scenarios.erase(id); break;
             case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
@@ -761,11 +771,11 @@ namespace Deltares
 
                 if (property_ == "observations") return conditionalValue->Stochast->Observations;
             }
-            else if (objectType == ObjectType::CorrelationMatrix)
+            else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
             {
-                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
-                if (property_ == "variables_count") return correlationMatrix->getDimension();
+                if (property_ == "variables_count") return correlationMatrix->GetDimension();
             }
             else if (objectType == ObjectType::FragilityCurve)
             {
@@ -1013,7 +1023,8 @@ namespace Deltares
                 std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "settings") project->setSettings(GetSettings(value));
-                else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
+                else if (property_ == "correlation_matrix") project->correlation = correlations[value];
+                else if (property_ == "copula_correlation") project->correlation = correlations[value];
                 else if (property_ == "share_project") project->shareStochasts(GetProject(value));
             }
             else if (objectType == ObjectType::FragilityCurveProject)
@@ -1120,7 +1131,7 @@ namespace Deltares
 
                 if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
                 else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = selfCorrelationMatrices[value];
-                else if (property_ == "design_point_correlation_matrix") combineProject->correlationMatrix = correlationMatrices[value];
+                else if (property_ == "design_point_correlation_matrix") combineProject->correlationMatrix = correlations[value];
             }
             else if (objectType == ObjectType::ExcludingCombineProject)
             {
@@ -1754,9 +1765,9 @@ namespace Deltares
                     }
                 }
             }
-            else if (objectType == ObjectType::CorrelationMatrix)
+            else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
             {
-                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
                 if (property_ == "variables")
                 {
@@ -1766,7 +1777,7 @@ namespace Deltares
                         correlationMatrixStochasts.push_back(stochasts[values[i]]);
                     }
 
-                    correlationMatrix->init(correlationMatrixStochasts);
+                    correlationMatrix->Init(correlationMatrixStochasts);
                 }
             }
             else if (objectType == ObjectType::Settings)
@@ -1939,13 +1950,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::CorrelationMatrix)
+            if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
             {
-                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
                 if (property_ == "correlation")
                 {
-                    return correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]);
+                    return correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]).value;
                 }
             }
 
@@ -1958,11 +1969,36 @@ namespace Deltares
 
             if (objectType == ObjectType::CorrelationMatrix)
             {
-                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
                 if (property_ == "correlation")
                 {
-                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value);
+                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, CorrelationType::Gaussian);
+                }
+            }
+            else if (objectType == ObjectType::CopulaCorrelation)
+            {
+                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+
+                if (property_ == "correlation")
+                {
+                    CorrelationType type = static_cast<CorrelationType>(tempIntValue);
+                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, type);
+                }
+            }
+        }
+
+        void ProjectHandler::SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::CopulaCorrelation)
+            {
+                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+
+                if (property_ == "correlation")
+                {
+                    tempIntValue = value;
                 }
             }
         }
@@ -2006,11 +2042,11 @@ namespace Deltares
 
                 if (property_ == "fragility_values") return GetFragilityValueId(fragilityCurve->getProperties()->FragilityValues[index], newId);
             }
-            else if (objectType == ObjectType::CorrelationMatrix)
+            else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
             {
-                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+                std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
-                if (property_ == "variables") return GetStochastId(correlationMatrix->getStochast(index), newId);
+                if (property_ == "variables") return GetStochastId(correlationMatrix->GetStochast(index), newId);
             }
             else if (objectType == ObjectType::UncertaintyProject)
             {
@@ -2239,14 +2275,14 @@ namespace Deltares
             }
             else
             {
-                if (!correlationMatrixIds.contains(correlationMatrix))
+                if (!correlationIds.contains(correlationMatrix))
                 {
-                    correlationMatrices[newId] = correlationMatrix;
+                    correlations[newId] = correlationMatrix;
                     types[newId] = ObjectType::CorrelationMatrix;
-                    correlationMatrixIds[correlationMatrix] = newId;
+                    correlationIds[correlationMatrix] = newId;
                 }
 
-                return correlationMatrixIds[correlationMatrix];
+                return correlationIds[correlationMatrix];
             }
         }
 

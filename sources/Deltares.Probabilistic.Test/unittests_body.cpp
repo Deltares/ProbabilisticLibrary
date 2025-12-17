@@ -36,6 +36,7 @@
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
 #include "Statistics/testStandardNormal.h"
+#include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
 #include "Math/testMatrix.h"
 #include "Model/TestRunModel.h"
@@ -234,6 +235,11 @@ TEST(reliability_method_test, testNumericalIntegrationReliability)
 TEST(reliability_method_test, testCrudeMCReliability)
 {
     testReliabilityMethods::testCrudeMonteCarloReliability();
+}
+
+TEST(reliability_method_test, testCrudeMCwithCopula)
+{
+    testReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
 }
 
 TEST(reliability_method_test, testAdaptiveImportanceSampling)
@@ -444,6 +450,36 @@ TEST(unittst, testStandardNormal)
 {
     auto tstStdNormal = testStandardNormal();
     tstStdNormal.allStandardNormalTests();
+}
+
+TEST(copulas_test, testClayton)
+{
+    TestCopula::TestClayton();
+}
+
+TEST(copulas_test, testFrank)
+{
+    TestCopula::TestFrank();
+}
+
+TEST(copulas_test, testGaussian)
+{
+    TestCopula::TestGaussian();
+}
+
+TEST(copulas_test, testGumbel)
+{
+    TestCopula::TestGumbel();
+}
+
+TEST(copulas_test, testValidation)
+{
+    TestCopula::TestValidation();
+}
+
+TEST(copulas_test, testValidationMessages)
+{
+    TestCopula::TestValidationMessages();
 }
 
 TEST(unittst, testUncertainty)

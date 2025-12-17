@@ -20,24 +20,31 @@
 // All rights reserved.
 //
 
-#include "RunProject.h"
-#include "ModelRunner.h"
+#include "GaussianCopula.h"
+#include "StandardNormal.h"
+#include "../Logging/ValidationSupport.h"
+#include <cmath>
 
-namespace Deltares::Models
+namespace Deltares::Statistics
 {
-    void RunProject::run()
+    void GaussianCopula::update_uspace(const double& a, double& b) const
     {
-        this->evaluation = nullptr;
-
-        if (this->model != nullptr && this->model->callbackAssigned)
-        {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
-
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
-        }
+        b = a * rho + b * sqrt(1.0 - rho * rho);
     }
+
+    void GaussianCopula::update(const double& u, double& t) const
+    {
+        double a = StandardNormal::getUFromP(u);
+        double b = StandardNormal::getUFromP(t);
+        update_uspace(a, b);
+        t = StandardNormal::getUFromP(b);
+    }
+
+    void GaussianCopula::validate(Logging::ValidationReport& report) const
+    {
+        Logging::ValidationSupport::checkMinimum(report, -1.0, rho, "Rho", "Gaussian copula", Logging::MessageType::Error);
+        Logging::ValidationSupport::checkMaximum(report,  1.0, rho, "Rho", "Gaussian copula", Logging::MessageType::Error);
+    }
+
 }
 

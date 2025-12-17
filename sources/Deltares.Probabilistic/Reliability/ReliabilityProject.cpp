@@ -47,7 +47,7 @@ namespace Deltares
         {
             this->model->zValueConverter = this->limitStateFunction;
 
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
+            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
             const std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(this->model, uConverter, this->progressIndicator);
             modelRunner->Settings = this->runSettings;
             modelRunner->initializeForRun();
@@ -65,9 +65,9 @@ namespace Deltares
         std::shared_ptr<Statistics::Stochast> ReliabilityProject::getFragilityCurve()
         {
             this->fragilityCurve = std::make_shared<Statistics::Stochast>();
-            fragilityCurve->setDistributionType(Statistics::CDFCurve);
+            fragilityCurve->setDistributionType(Statistics::DistributionType::CDFCurve);
 
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
+            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
             const std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(this->model, uConverter, this->progressIndicator);
             modelRunner->Settings = this->runSettings;
             modelRunner->initializeForRun();

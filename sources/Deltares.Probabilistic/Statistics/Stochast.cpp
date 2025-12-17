@@ -32,6 +32,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        using enum DistributionType;
+
         Stochast::Stochast() = default;
 
         Stochast::Stochast(DistributionType distributionType, const std::vector<double>& values)
@@ -364,7 +366,7 @@ namespace Deltares
             }
             else if (modelParameter->isArray && !ArrayVariables.empty())
             {
-                for (std::shared_ptr<Stochast> arrayVariable : ArrayVariables)
+                for (const std::shared_ptr<Stochast>& arrayVariable : ArrayVariables)
                 {
                     if (arrayVariable->isVarying())
                     {
@@ -501,7 +503,7 @@ namespace Deltares
 
             if (distributionType == DistributionType::Composite)
             {
-                for (auto contributingStochast : properties->ContributingStochasts)
+                for (const auto& contributingStochast : properties->ContributingStochasts)
                 {
                     contributingStochast->Stochast->initializeForRun();
                 }
@@ -512,7 +514,7 @@ namespace Deltares
         {
             if (distributionType == DistributionType::Composite)
             {
-                for (auto contributingStochast : properties->ContributingStochasts)
+                for (const auto& contributingStochast : properties->ContributingStochasts)
                 {
                     if (contributingStochast->Stochast->isVariable())
                     {
@@ -702,73 +704,60 @@ namespace Deltares
             }
         }
 
-        Statistics::DistributionType Stochast::getDistributionType(std::string distributionType)
-        {
-            if (distributionType == "deterministic") return Statistics::DistributionType::Deterministic;
-            else if (distributionType == "normal") return Statistics::DistributionType::Normal;
-            else if (distributionType == "log_normal") return Statistics::DistributionType::LogNormal;
-            else if (distributionType == "student_t") return Statistics::DistributionType::StudentT;
-            else if (distributionType == "uniform") return Statistics::DistributionType::Uniform;
-            else if (distributionType == "exponential") return Statistics::DistributionType::Exponential;
-            else if (distributionType == "triangular") return Statistics::DistributionType::Triangular;
-            else if (distributionType == "trapezoidal") return Statistics::DistributionType::Trapezoidal;
-            else if (distributionType == "gumbel") return Statistics::DistributionType::Gumbel;
-            else if (distributionType == "weibull") return Statistics::DistributionType::Weibull;
-            else if (distributionType == "conditional_weibull") return Statistics::DistributionType::ConditionalWeibull;
-            else if (distributionType == "frechet") return Statistics::DistributionType::Frechet;
-            else if (distributionType == "generalized_extreme_value") return Statistics::DistributionType::GeneralizedExtremeValue;
-            else if (distributionType == "rayleigh") return Statistics::DistributionType::Rayleigh;
-            else if (distributionType == "rayleigh_n") return Statistics::DistributionType::RayleighN;
-            else if (distributionType == "pareto") return Statistics::DistributionType::Pareto;
-            else if (distributionType == "generalized_pareto") return Statistics::DistributionType::GeneralizedPareto;
-            else if (distributionType == "beta") return Statistics::DistributionType::Beta;
-            else if (distributionType == "gamma") return Statistics::DistributionType::Gamma;
-            else if (distributionType == "bernoulli") return Statistics::DistributionType::Bernoulli;
-            else if (distributionType == "poisson") return Statistics::DistributionType::Poisson;
-            else if (distributionType == "histogram") return Statistics::DistributionType::Table;
-            else if (distributionType == "cdf_curve") return Statistics::DistributionType::CDFCurve;
-            else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
-            else if (distributionType == "qualitative") return Statistics::DistributionType::Qualitative;
-            else if (distributionType == "composite") return Statistics::DistributionType::Composite;
-            else if (distributionType == "standard_normal") return Statistics::DistributionType::StandardNormal;
-            else throw Reliability::probLibException("distribution type");
-        }
+        const std::vector<std::pair<const char*, DistributionType>> Stochast::allDistributions = {
+                {"deterministic", Deterministic},
+                {"normal", Normal },
+                {"log_normal", LogNormal },
+                {"student_t", StudentT },
+                {"uniform", Uniform },
+                {"exponential", Exponential },
+                {"triangular", Triangular },
+                {"trapezoidal", Trapezoidal},
+                {"gumbel", Gumbel },
+                {"weibull", Weibull},
+                {"conditional_weibull", ConditionalWeibull},
+                {"frechet", Frechet},
+                {"generalized_extreme_value", GeneralizedExtremeValue},
+                {"rayleigh", Rayleigh},
+                {"rayleigh_n", RayleighN },
+                {"pareto", Pareto},
+                {"generalized_pareto", GeneralizedPareto},
+                {"beta", Beta},
+                {"gamma", Gamma},
+                {"bernoulli", Bernoulli},
+                {"poisson", Poisson},
+                {"histogram", Table },
+                {"cdf_curve", CDFCurve},
+                {"discrete", Discrete},
+                {"qualitative", Qualitative},
+                {"composite", Composite},
+                {"standard_normal", DistributionType::StandardNormal}
+            };
 
-        std::string Stochast::getDistributionTypeString(Statistics::DistributionType distributionType)
+        DistributionType Stochast::getDistributionType(const std::string& distributionType)
         {
-            switch (distributionType)
+            for(const auto& [name, type] : allDistributions)
             {
-            case Statistics::DistributionType::Deterministic: return "deterministic";
-            case Statistics::DistributionType::Normal: return "normal";
-            case Statistics::DistributionType::LogNormal: return "log_normal";
-            case Statistics::DistributionType::StudentT: return "student_t";
-            case Statistics::DistributionType::Uniform: return "uniform";
-            case Statistics::DistributionType::Exponential: return "exponential";
-            case Statistics::DistributionType::Triangular: return "triangular";
-            case Statistics::DistributionType::Trapezoidal: return "trapezoidal";
-            case Statistics::DistributionType::Gumbel: return "gumbel";
-            case Statistics::DistributionType::Weibull: return "weibull";
-            case Statistics::DistributionType::ConditionalWeibull: return "conditional_weibull";
-            case Statistics::DistributionType::Frechet: return "frechet";
-            case Statistics::DistributionType::GeneralizedExtremeValue: return "generalized_extreme_value";
-            case Statistics::DistributionType::Rayleigh: return "rayleigh";
-            case Statistics::DistributionType::RayleighN: return "rayleigh_n";
-            case Statistics::DistributionType::Pareto: return "pareto";
-            case Statistics::DistributionType::GeneralizedPareto: return "generalized_pareto";
-            case Statistics::DistributionType::Beta: return "beta";
-            case Statistics::DistributionType::Gamma: return "gamma";
-            case Statistics::DistributionType::Bernoulli: return "bernoulli";
-            case Statistics::DistributionType::Poisson: return "poisson";
-            case Statistics::DistributionType::Table: return "histogram";
-            case Statistics::DistributionType::CDFCurve: return "cdf_curve";
-            case Statistics::DistributionType::Discrete: return "discrete";
-            case Statistics::DistributionType::Qualitative: return "qualitative";
-            case Statistics::DistributionType::Composite: return "composite";
-            case Statistics::DistributionType::StandardNormal: return "standard_normal";
-            default: throw Reliability::probLibException("distribution type");
+                if (name == distributionType)
+                {
+                    return type;
+                }
             }
+            throw Reliability::probLibException("distribution type");
         }
 
+        std::string Stochast::getDistributionTypeString(DistributionType distributionType)
+        {
+            for (const auto& [name, type] : allDistributions)
+            {
+                if (type == distributionType)
+                {
+                    return name;
+                }
+            }
+
+            throw Reliability::probLibException("distribution type");
+        }
 
     }
 }

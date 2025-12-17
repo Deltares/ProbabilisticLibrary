@@ -944,6 +944,35 @@ u_\text{correlated} = L\left(u_\text{uncorrelated}\right)
 
 where $L$ denotes the lower triangular matrix obtained from the Cholesky decomposition of the correlation matrix $\left[\rho\right] = LL^\top$.
 
+\subsection{Archimedean Copulas}
+Besides the Gaussian correlation, we also support a few Archimedean copulas: the Clayton, Frank and Gumbel copulas.
+These copulas can only be defined in sets of two correlated stochastic variables. And it is allowed to have e.g.
+two variables defined with a Clayton copula and two others with a Frank, Gumbel or Gaussian copula.
+
+The definition of the Frank copula is:
+\begin{align}
+C\left(u,v\right) = -\frac{1}{\theta} \ln \left( 1 + \frac{\left(e^{-\theta u} - 1\right) \left(e^{-\theta v} - 1\right)}{e^{-\theta} - 1} \right)
+\end{align}
+
+The definition of the Clayton copula is:
+\begin{align}
+C\left(u,v\right) = \left( \max \left[ u^{-\theta} + v^{-\theta} - 1 , 0 \right] \right)^{-\frac{1}{\theta}}
+\end{align}
+
+The definition of the Gumbel copula is:
+\begin{align}	
+C\left(u,v\right) = \exp \left( - \left( \left(-\ln u\right)^{\theta} + \left(-\ln v\right)^{\theta} \right)^{\frac{1}{\theta}} \right)
+\end{align}	
+
+As given above, the copulas Clayton, Frank and Gumbel depend on a parameter $\theta$.
+For all copulas we have the condition : $ \theta <> 0 $
+and also $ \theta >= 1 $ for Gumbel and $ \theta >= -1 $ for Clayton.
+
+The copula $C$ is defined for probabilities, where our methods work with standard normal variables.
+We have $u$ as the independent variable, and we look for $v$ as the dependent variable.
+To find $v$ for a given $u$, we have to find $v$ such that $C$ is at its maximum.
+
+In case of the Gaussian copula, we can use the Cholesky decomposition as explained in the previous section.
 
 \section{Conversion between standard normal variables ($U$-domain) and real variables ($X$-domain)}\label{Section_2.2.3}
 

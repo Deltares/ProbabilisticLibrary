@@ -20,24 +20,20 @@
 // All rights reserved.
 //
 
-#include "RunProject.h"
-#include "ModelRunner.h"
+#pragma once
+#include "BaseCopula.h"
 
-namespace Deltares::Models
+namespace Deltares::Statistics
 {
-    void RunProject::run()
+    class DiagonalBandCopula : public BaseCopula
     {
-        this->evaluation = nullptr;
-
-        if (this->model != nullptr && this->model->callbackAssigned)
-        {
-            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlation);
-            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-            modelRunner.Settings = this->settings->RunSettings;
-            modelRunner.initializeForRun();
-
-            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
-        }
-    }
+    public:
+        explicit DiagonalBandCopula(const double alpha) : alpha(alpha) {}
+        void update(const double& u, double& t) const override;
+        CorrelationValueAndType getCorrelation() const override { return { alpha, CorrelationType::DiagonalBand }; }
+        void validate(Logging::ValidationReport& report) const override;
+    private:
+        const double alpha;
+    };
 }
 
