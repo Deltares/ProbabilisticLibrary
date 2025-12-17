@@ -55,7 +55,7 @@ namespace Deltares::Probabilistic::Test
         virtual void WaartsDSFI();
     protected:
         static void RunSingleWaartsTest(const std::shared_ptr<Models::ModelRunner>& modelRunner,
-            const std::unique_ptr<Reliability::ReliabilityMethod>& calculator, const WaartsResult& expected);
+            Reliability::ReliabilityMethod& calculator, const WaartsResult& expected);
         virtual std::shared_ptr<Models::ModelRunner> WaartsModel() = 0;
         virtual WaartsResult ExpectedValues() = 0;
         virtual WaartsResult ExpectedValuesFORM() { return ExpectedValues(); }

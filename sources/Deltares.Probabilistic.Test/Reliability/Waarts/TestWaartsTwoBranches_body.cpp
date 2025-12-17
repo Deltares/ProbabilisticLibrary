@@ -66,7 +66,7 @@ namespace Deltares::Probabilistic::Test
         auto form = dynamic_cast<Reliability::FORM*>(calculator.get());
         form->Settings->FilterAtNonConvergence = true;
         auto expected = ExpectedValuesFORM();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaartsTwoBranches::WaartsCrudeMonteCarlo()
@@ -77,7 +77,7 @@ namespace Deltares::Probabilistic::Test
         cm->Settings->MaximumSamples = 10000000;
         cm->Settings->randomSettings->Seed = 1; // default seed (0), gives beta = 40
         auto expected = ExpectedValuesCrudeMonteCarlo();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     WaartsResult TestWaartsTwoBranches::ExpectedValues()

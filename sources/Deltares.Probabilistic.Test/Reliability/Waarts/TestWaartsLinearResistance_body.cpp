@@ -54,7 +54,7 @@ namespace Deltares::Probabilistic::Test
         form->Settings.designPointMethod = method;
         auto expected = ExpectedValuesNumericalIntegration();
         expected.success = false;
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     WaartsResult TestWaartsLinearResistance::ExpectedValues()

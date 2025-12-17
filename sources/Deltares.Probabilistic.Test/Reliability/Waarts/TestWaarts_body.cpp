@@ -39,7 +39,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORM>();
         auto expected = ExpectedValuesFORM();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaarts::WaartsCrudeMonteCarlo()
@@ -47,7 +47,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::CrudeMonteCarlo>();
         auto expected = ExpectedValuesCrudeMonteCarlo();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaarts::WaartsDirectionalSampling()
@@ -55,7 +55,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::DirectionalSampling>();
         auto expected = ExpectedValuesDirectionalSampling();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaarts::WaartsNumericalIntegration()
@@ -64,7 +64,7 @@ namespace Deltares::Probabilistic::Test
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
         auto expected = ExpectedValuesNumericalIntegration();
         expected.success = false;
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaarts::WaartsImportanceSampling()
@@ -72,7 +72,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::ImportanceSampling>();
         auto expected = ExpectedValuesImportanceSampling();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaarts::WaartsAdaptiveImportanceSampling()
@@ -80,7 +80,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::AdaptiveImportanceSampling>();
         auto expected = ExpectedValuesAdaptiveImportanceSampling();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaarts::WaartsFDIR()
@@ -88,7 +88,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORMThenDirectionalSampling>();
         auto expected = ExpectedValuesFDIR();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaarts::WaartsDSFI()
@@ -96,13 +96,13 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::DirectionalSamplingThenFORM>();
         auto expected = ExpectedValuesDSFI();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaarts::RunSingleWaartsTest(const std::shared_ptr<Models::ModelRunner>& modelRunner,
-        const std::unique_ptr<Reliability::ReliabilityMethod>& calculator, const WaartsResult& expected)
+        Reliability::ReliabilityMethod& calculator, const WaartsResult& expected)
     {
-        auto designPoint = calculator->getDesignPoint(modelRunner);
+        auto designPoint = calculator.getDesignPoint(modelRunner);
         ASSERT_FALSE(designPoint == nullptr);
         EXPECT_NEAR(expected.beta, designPoint->Beta, expected.beta_margin);
         if (expected.printResults)

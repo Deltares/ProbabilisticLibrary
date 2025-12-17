@@ -65,7 +65,7 @@ namespace Deltares::Probabilistic::Test
         auto cm = dynamic_cast<Reliability::CrudeMonteCarlo*>(calculator.get());
         cm->Settings->MaximumSamples = 250000;
         auto expected = ExpectedValuesCrudeMonteCarlo();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     WaartsResult TestWaartsDiscontinuousLimitState::ExpectedValues()

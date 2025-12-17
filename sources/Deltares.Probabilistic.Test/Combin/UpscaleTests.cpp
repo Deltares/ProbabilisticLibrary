@@ -24,8 +24,6 @@
 #include "UpscaleTests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 
-using namespace Deltares::Statistics;
-
 namespace Deltares::Probabilistic::Test
 {
     void UpscaleTests::RunAllUpscaleInTimeTests()
@@ -90,7 +88,7 @@ namespace Deltares::Probabilistic::Test
         const auto in_rho_t = vector1D(nr_stochasts); // defaults to 0.0
 
         const auto p = element.getP();
-        const auto beta = StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
+        const auto beta = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
         const auto ref = alphaBeta(beta, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
@@ -110,7 +108,7 @@ namespace Deltares::Probabilistic::Test
         const auto in_rho_t = vector1D(nr_stochasts);
 
         const auto p = element.getP();
-        const auto beta = StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
+        const auto beta = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
         const auto ref = alphaBeta(beta, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
@@ -130,7 +128,7 @@ namespace Deltares::Probabilistic::Test
         const auto in_rho_t = vector1D(nr_stochasts);
 
         const auto p = element.getP();
-        const auto beta = StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
+        const auto beta = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
         const auto ref = alphaBeta(beta, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
@@ -150,7 +148,7 @@ namespace Deltares::Probabilistic::Test
         const auto in_rho_t = vector1D(nr_stochasts);
 
         const auto p = element.getP();
-        const auto beta = StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
+        const auto beta = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
         const auto ref = alphaBeta(beta, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
@@ -423,8 +421,8 @@ namespace Deltares::Probabilistic::Test
         const auto duration_org = duration;  // Copy of the original durations
         const auto max_duration = duration.maxval();
 
-        const double p = StandardNormal::getPFromU(beta);
-        const auto beta2 = StandardNormal::getUFromQ(1.0 - pow(p, 10));
+        const double p = Statistics::StandardNormal::getPFromU(beta);
+        const auto beta2 = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, 10));
         const auto ref = alphaBeta(beta2, original_design_point.getAlpha());
 
         alphaBeta elm;

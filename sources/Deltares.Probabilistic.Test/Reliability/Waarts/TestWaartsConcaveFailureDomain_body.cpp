@@ -58,7 +58,7 @@ namespace Deltares::Probabilistic::Test
         form->Settings->StartPointSettings->StartMethod = Reliability::RaySearch;
         form->Settings->StartPointSettings->startVector = { 1.0, 0.0 };
         auto expected = ExpectedValuesFORM();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaartsConcaveFailureDomain::WaartsFDIR()
@@ -69,7 +69,7 @@ namespace Deltares::Probabilistic::Test
         form->formSettings->StartPointSettings->StartMethod = Reliability::RaySearch;
         form->formSettings->StartPointSettings->startVector = { 1.0, 0.0 };
         auto expected = ExpectedValuesFORM();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaartsConcaveFailureDomain::WaartsNumericalIntegration()
@@ -79,7 +79,7 @@ namespace Deltares::Probabilistic::Test
         auto numint = dynamic_cast<Reliability::NumericalIntegration*>(calculator.get());
         numint->Settings.designPointMethod = Reliability::NearestToMean;
         auto expected = ExpectedValuesNumericalIntegration();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     WaartsResult TestWaartsConcaveFailureDomain::ExpectedValues()

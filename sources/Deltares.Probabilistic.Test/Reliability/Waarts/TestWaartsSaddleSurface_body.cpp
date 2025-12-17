@@ -56,7 +56,7 @@ namespace Deltares::Probabilistic::Test
         form->Settings->StartPointSettings->StartMethod = Reliability::StartMethodType::FixedValue;
         form->Settings->StartPointSettings->startVector = { 1.0, 1.0 };
         auto expected = ExpectedValuesFORM();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     void TestWaartsSaddleSurface::WaartsFDIR()
@@ -67,7 +67,7 @@ namespace Deltares::Probabilistic::Test
         form->formSettings->StartPointSettings->StartMethod = Reliability::StartMethodType::FixedValue;
         form->formSettings->StartPointSettings->startVector = { 1.0, 1.0 };
         auto expected = ExpectedValuesFORM();
-        RunSingleWaartsTest(modelRunner, calculator, expected);
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
     WaartsResult TestWaartsSaddleSurface::ExpectedValues()
