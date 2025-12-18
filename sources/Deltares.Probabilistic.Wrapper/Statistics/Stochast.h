@@ -389,12 +389,12 @@ namespace Deltares
 
                 virtual bool CanFit()
                 {
-                    return shared->object->canFit();
+                    return shared->object->canFit(false, false);
                 }
 
                 virtual bool CanFitPrior()
                 {
-                    return shared->object->canFitPrior();
+                    return shared->object->canFit(false, true);
                 }
 
                 virtual void Fit(array<double>^ values)

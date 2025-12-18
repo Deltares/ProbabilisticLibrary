@@ -38,7 +38,7 @@ namespace Deltares
             void initializeForRun(StochastProperties& stochast) override;
             double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(StochastProperties& stochast, double x) override;
-            bool canFit() override { return false; }
+            bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
             void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
         private:
