@@ -29,7 +29,6 @@ class Cell:
     def __lt__(self, other):
         return self.index < other.index
 
-
 class Category:
     def __init__(self, name):
         self.lines : list[str] = []
@@ -56,7 +55,6 @@ class Category:
         contents = f'[{header}]({link})'
         self.cells.append(Cell(index, contents))
 
-
     def finalize(self):
         self.cells.sort()
 
@@ -68,7 +66,6 @@ class Category:
                 contents = []
 
         self.write_line(contents)
-
 
     def write_line(self, contents):
         if len(contents) > 0:
@@ -128,12 +125,10 @@ def convert_file(file_name):
         if has_plot:
             out = ep.preprocess(pl_notebook, {'metadata': {'path': path}})
 
-
 categories : list[Category] = []
 categories.append(Category('Statistics'))
 categories.append(Category('Reliability'))
 categories.append(Category('Uncertainty'))
-categories.append(Category('Sensitivity'))
 categories.append(Category('Model'))
 
 for file in os.listdir(path):
