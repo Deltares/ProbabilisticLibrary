@@ -87,9 +87,9 @@ namespace Deltares::Probabilistic::Test
         void testCombineTwoElementsPartialCorrelation13a();
         void testCombineTwoElementsPartialCorrelation14a();
         void testCombineTwoElementsPartialCorrelation99a();
-        Reliability::combineElements combiner;
-        Reliability::upscaling upscaler;
-        testutils test_utilities;
+        Reliability::combineElements combiner = Reliability::combineElements();
+        Reliability::upscaling upscaler = Reliability::upscaling();
+        testutils test_utilities = testutils();
     };
 }
 

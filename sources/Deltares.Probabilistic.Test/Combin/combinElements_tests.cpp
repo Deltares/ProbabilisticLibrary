@@ -914,16 +914,18 @@ namespace Deltares::Probabilistic::Test
         alpha_cross_section.normalize();
         auto design_point = alphaBeta(5.0, alpha_cross_section);
         constexpr double section_length = 250.0;
-        vector1D rhoXK = { 0.8, 0.8, 0.8, 0.8, 0.8 };
+        const vector1D rhoXK = { 0.8, 0.8, 0.8, 0.8, 0.8 };
         const vector1D dXK = { 200.0, 200.0, 200.0, 200.0, 200.0 };
 
-        std::string msg;
-        auto result = upscaler.upscaleLength(design_point, rhoXK, dXK, section_length, msg);
+        std::string message;
+        auto [resulting_design_point, no_convergence_count] = upscaler.upscaleLength(design_point, rhoXK, dXK,
+            section_length, message);
+        EXPECT_EQ(no_convergence_count, 0);
         //The expected value of alphaSection() is alphaCrossSection for the given length
         for (size_t i = 0; i < alpha_cross_section.size(); i++)
         {
             constexpr double my_margin = 1.0e-6;
-            ASSERT_NEAR(result.first.getAlphaI(i), alpha_cross_section(i), my_margin);
+            EXPECT_NEAR(resulting_design_point.getAlphaI(i), alpha_cross_section(i), my_margin);
         }
     }
 
@@ -938,13 +940,15 @@ namespace Deltares::Probabilistic::Test
 
         for (size_t iLength = 1; iLength < section_lengths.size(); iLength++)
         {
-            std::string msg;
-            auto result = upscaler.upscaleLength(design_point, rhoXK, dXK, section_lengths[iLength], msg);
+            std::string message;
+            auto [resulting_design_point, no_convergence_count] =
+                upscaler.upscaleLength(design_point, rhoXK, dXK, section_lengths[iLength], message);
+            EXPECT_EQ(no_convergence_count, 0);
             //The expected value of alphaSection() is alphaCrossSection for the given length
             for (size_t i = 0; i < alpha_cross_section.size(); i++)
             {
                 constexpr double my_margin = 1.0e-6;
-                ASSERT_NEAR(result.first.getAlphaI(i), alpha_cross_section(i), my_margin);
+                EXPECT_NEAR(resulting_design_point.getAlphaI(i), alpha_cross_section(i), my_margin);
             }
         }
     }

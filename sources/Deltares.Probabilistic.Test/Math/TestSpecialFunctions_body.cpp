@@ -19,18 +19,18 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+#include "TestSpecialFunctions.h"
+#include "../../Deltares.Probabilistic/Math/SpecialFunctions.h"
+#include "../../Deltares.Probabilistic/Utils/probLibException.h"
 #include <gtest/gtest.h>
 #include <cmath>
 #include <limits>
-#include "../../Deltares.Probabilistic/Math/SpecialFunctions.h"
-#include "TestSpecialFunctions.h"
-
-using namespace Deltares::Numeric;
 
 namespace Deltares::Probabilistic::Test
 {
     void TestSpecialFunctions::IncompleteGammaTest()
     {
+        using namespace Deltares::Numeric;
         auto references = std::vector<std::vector<double>>();
         references.push_back({ 0.632, 0.264, 0.080, 0.019, 0.004, 0.001, 0.000, 0.000, 0.000, 0.000 });
         references.push_back({ 0.865, 0.594, 0.323, 0.143, 0.053, 0.017, 0.005, 0.001, 0.000, 0.000 });
@@ -62,12 +62,13 @@ namespace Deltares::Probabilistic::Test
 
     void TestSpecialFunctions::IncompleteGammaExceptionalCasesTest()
     {
+        using namespace Deltares::Numeric;
         std::string message;
         try
         {
             SpecialFunctions::getGammaUpperRegularized(-1, 1);
         }
-        catch (const std::exception& e)
+        catch (const Reliability::probLibException& e)
         {
             message = e.what();
         }
@@ -77,7 +78,7 @@ namespace Deltares::Probabilistic::Test
         {
             SpecialFunctions::getGammaUpperRegularized(1, -1);
         }
-        catch (const std::exception& e)
+        catch (const Reliability::probLibException& e)
         {
             message = e.what();
         }
@@ -88,7 +89,7 @@ namespace Deltares::Probabilistic::Test
             constexpr double a = std::numeric_limits<double>::infinity();
             SpecialFunctions::getGammaUpperRegularized(a, 1);
         }
-        catch (const std::exception& e)
+        catch (const Reliability::probLibException& e)
         {
             message = e.what();
         }
@@ -99,7 +100,7 @@ namespace Deltares::Probabilistic::Test
             constexpr double x = std::numeric_limits<double>::infinity();
             SpecialFunctions::getGammaUpperRegularized(1, x);
         }
-        catch (const std::exception& e)
+        catch (const Reliability::probLibException& e)
         {
             message = e.what();
         }

@@ -66,1193 +66,1193 @@ using namespace Deltares::Probabilistic::Test;
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
-    //::testing::GTEST_FLAG(filter) = "reliability_method_test.TestClustersAdpImpSampling";
+    //::testing::GTEST_FLAG(filter) = "ReliabilityMethodTest.TestClustersAdpImpSampling";
     return RUN_ALL_TESTS();
 }
 
-TEST(unit_tests, testCombiner)
+TEST(UnitTests, testCombiner)
 {
     auto h = CombinerTest();
     h.allCombinerTests();
 }
 
-TEST(unit_tests, testCombinTwoElements)
+TEST(UnitTests, testCombinTwoElements)
 {
     auto h = combinElementsTests();
     h.RunAllCombineTwoElementsTests();
 }
 
-TEST(unit_tests, testCombinMultipleElements)
+TEST(UnitTests, testCombinMultipleElements)
 {
     auto h = combinElementsTests();
     h.RunAllCombineMultipleElementsTests();
 }
 
-TEST(unit_tests, testLengthEffect)
+TEST(UnitTests, testLengthEffect)
 {
     auto h = combinElementsTests();
     h.RunAllLengthEffectTests();
 }
 
-TEST(unit_tests, AllUpscaleInTimeTests)
+TEST(UnitTests, AllUpscaleInTimeTests)
 {
     auto h = UpscaleTests();
     h.RunAllUpscaleInTimeTests();
 }
 
-TEST(unit_tests, AllEquivalentAlphaTests)
+TEST(UnitTests, AllEquivalentAlphaTests)
 {
     auto h = UpscaleTests();
     h.RunAllEquivalentAlphaTests();
 }
 
-TEST(unit_tests, AllUpscaleToLargestBlockTests)
+TEST(UnitTests, AllUpscaleToLargestBlockTests)
 {
     auto h = UpscaleTests();
     h.RunAllUpscaleToLargestBlockTests();
 }
 
-TEST(unit_tests, testIntEqualElements)
+TEST(UnitTests, testIntEqualElements)
 {
     auto h = intEqualElements_tests();
     h.allIntegrateEqualElementsTests();
 }
 
-TEST(unit_tests, testHohenbichler)
+TEST(UnitTests, testHohenbichler)
 {
     auto h = HohenbichlerTest();
     h.allHohenbichlerTests();
 }
 
-TEST(unit_tests, testCholeskiDecomp)
+TEST(UnitTests, testCholeskiDecomp)
 {
     auto tstCholeskiDecomp = choleski_decomp_tests();
     tstCholeskiDecomp.allCholeskyDecompositionTests();
 }
 
-TEST(unit_tests, testMatinv)
+TEST(UnitTests, testMatinv)
 {
     auto tstMatInv = matinv_tests();
     tstMatInv.all_matinv_tests();
 }
 
-TEST(unit_tests, testMatmul)
+TEST(UnitTests, testMatmul)
 {
     auto tstMatMul = matmul_tests();
     tstMatMul.all_matmul_tests();
 }
 
-TEST(matrix_test, qr_decomposition)
+TEST(MatrixTest, qr_decomposition)
 {
     auto testMatrix = matrix_tests();
     testMatrix.qr_decomposition();
 }
 
-TEST(matrix_test, linear_equations)
+TEST(MatrixTest, linear_equations)
 {
     auto testMatrix = matrix_tests();
     testMatrix.linear_equations();
 }
 
-TEST(matrix_test, linear_equations_overdetermined)
+TEST(MatrixTest, linear_equations_overdetermined)
 {
     auto testMatrix = matrix_tests();
     testMatrix.linear_equations_overdetermined();
 }
 
-TEST(proxies_test, linear_model)
+TEST(ProxiesTest, linear_model)
 {
     auto testProxies = TestProxies();
     testProxies.testLinearModel();
 }
 
-TEST(proxies_test, linear_output_only_model)
+TEST(ProxiesTest, linear_output_only_model)
 {
     auto testProxies = TestProxies();
     testProxies.testLinearOutputOnlyModel();
 }
 
-TEST(unit_tests, testNumericalSupport)
+TEST(UnitTests, testNumericalSupport)
 {
     testNumericSupport::allNumericSupportTests();
 }
 
-TEST(unit_tests, testKMeanClustering)
+TEST(UnitTests, testKMeanClustering)
 {
     auto h = testKMean();
     h.allKMeanTests();
 }
 
-TEST(unit_tests, testStartPointCalculator)
+TEST(UnitTests, testStartPointCalculator)
 {
     auto tstStartPoint = TestStartPointCalculator();
     tstStartPoint.AllStartPointTests();
 }
 
-TEST(reliability_method_test, TestFORM)
+TEST(ReliabilityMethodTest, TestFORM)
 {
     TestReliabilityMethods::TestFORM();
 }
 
-TEST(reliability_method_test, TestFORMArray)
+TEST(ReliabilityMethodTest, TestFORMArray)
 {
     TestReliabilityMethods::TestFORMArray();
 }
 
-TEST(reliability_method_test, TestFORMVaryingArray)
+TEST(ReliabilityMethodTest, TestFORMVaryingArray)
 {
     TestReliabilityMethods::TestFORMVaryingArray();
 }
 
-TEST(reliability_method_test, TestValidation)
+TEST(ReliabilityMethodTest, TestValidation)
 {
     TestReliabilityMethods::TestValidation();
 }
 
-TEST(reliability_method_test, TestLatinHyperCube)
+TEST(ReliabilityMethodTest, TestLatinHyperCube)
 {
     TestReliabilityMethods::TestLatinHyperCube();
 }
 
-TEST(reliability_method_test, TestCobylaReliability)
+TEST(ReliabilityMethodTest, TestCobylaReliability)
 {
     TestReliabilityMethods::TestCobylaReliability();
 }
 
-TEST(reliability_method_test, TestNumBisection1)
+TEST(ReliabilityMethodTest, TestNumBisection1)
 {
     TestReliabilityMethods::TestNumericalBisection();
 }
 
-TEST(reliability_method_test, TestNumBisection2)
+TEST(ReliabilityMethodTest, TestNumBisection2)
 {
     TestReliabilityMethods::TestNumericalBisectionLinear();
 }
 
-TEST(reliability_method_test, TestSubSetSimulationReliabilityNearestToMean)
+TEST(ReliabilityMethodTest, TestSubSetSimulationReliabilityNearestToMean)
 {
     TestReliabilityMethods::TestSubSetSimulationReliabilityNearestToMean();
 }
 
-TEST(reliability_method_test, TestSubSetSimulationReliabilityCenterOfGravity)
+TEST(ReliabilityMethodTest, TestSubSetSimulationReliabilityCenterOfGravity)
 {
     TestReliabilityMethods::TestSubSetSimulationReliabilityCenterOfGravity();
 }
 
-TEST(reliability_method_test, TestFDIRReliability)
+TEST(ReliabilityMethodTest, TestFDIRReliability)
 {
     TestReliabilityMethods::TestFDIRReliability();
 }
 
-TEST(reliability_method_test, TestDSFIReliability)
+TEST(ReliabilityMethodTest, TestDSFIReliability)
 {
     TestReliabilityMethods::TestDSFIReliability();
 }
 
-TEST(reliability_method_test, TestFragilityCurveIntegration)
+TEST(ReliabilityMethodTest, TestFragilityCurveIntegration)
 {
     TestReliabilityMethods::TestFragilityCurveIntegration();
 }
 
-TEST(reliability_method_test, TestNumericalIntegrationReliability)
+TEST(ReliabilityMethodTest, TestNumericalIntegrationReliability)
 {
     TestReliabilityMethods::TestNumericalIntegrationReliability();
 }
 
-TEST(reliability_method_test, TestCrudeMCReliability)
+TEST(ReliabilityMethodTest, TestCrudeMCReliability)
 {
     TestReliabilityMethods::TestCrudeMonteCarloReliability();
 }
 
-TEST(reliability_method_test, testCrudeMCwithCopula)
+TEST(ReliabilityMethodTest, testCrudeMCwithCopula)
 {
     TestReliabilityMethods::TestCrudeMonteCarloWithCopulaReliability();
 }
 
-TEST(reliability_method_test, TestAdaptiveImportanceSampling)
+TEST(ReliabilityMethodTest, TestAdaptiveImportanceSampling)
 {
     TestReliabilityMethods::TestAdaptiveImportanceSampling();
 }
 
-TEST(reliability_method_test, TestClustersAdpImpSampling)
+TEST(ReliabilityMethodTest, TestClustersAdpImpSampling)
 {
     TestReliabilityMethods::TestClustersAdpImpSampling();
 }
 
-TEST(reliability_method_test, TestDirSamplingTwoBranches)
+TEST(ReliabilityMethodTest, TestDirSamplingTwoBranches)
 {
     TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Monotone, 1.0);
 }
 
-TEST(reliability_method_test, TestDirSamplingProxyModels)
+TEST(ReliabilityMethodTest, TestDirSamplingProxyModels)
 {
     TestReliabilityMethods::TestDirSamplingProxyModels(true, ModelVaryingType::Monotone, 1.0);
 }
 
-TEST(reliability_method_test, TestDirSamplingTwoBranchesNotMonotone)
+TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesNotMonotone)
 {
     TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Varying, 1.0);
 }
 
-TEST(reliability_method_test, TestDirSamplingProxyModelsNotMonotone)
+TEST(ReliabilityMethodTest, TestDirSamplingProxyModelsNotMonotone)
 {
     TestReliabilityMethods::TestDirSamplingProxyModels(true, ModelVaryingType::Varying, 1.0);
 }
 
-TEST(reliability_method_test, TestDirSamplingTwoBranchesLargerStepsize)
+TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesLargerStepsize)
 {
     TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Monotone, 3.0);
 }
-TEST(distribution_tests, testConditionalStochast)
+TEST(DistributionTests, testConditionalStochast)
 {
     testDistributions::testConditionalStochast();
 }
 
-TEST(distribution_tests, testComposite)
+TEST(DistributionTests, testComposite)
 {
     testDistributions::testComposite();
 }
 
-TEST(distribution_tests, testCompositeConditionalStochast)
+TEST(DistributionTests, testCompositeConditionalStochast)
 {
     testDistributions::testCompositeConditionalStochast();
 }
 
-TEST(distribution_tests, testCompositeConditionalTruncatedStochast)
+TEST(DistributionTests, testCompositeConditionalTruncatedStochast)
 {
     testDistributions::testCompositeConditionalTruncatedStochast();
 }
 
-TEST(distribution_tests, testCompositeStochast)
+TEST(DistributionTests, testCompositeStochast)
 {
     testDistributions::testCompositeStochast();
 }
 
-TEST(distribution_tests, testCompositeTruncatedStochast)
+TEST(DistributionTests, testCompositeTruncatedStochast)
 {
     testDistributions::testCompositeTruncatedStochast();
 }
 
-TEST(distribution_tests, testConditionalWeibull)
+TEST(DistributionTests, testConditionalWeibull)
 {
     testDistributions::testConditionalWeibull();
 }
 
-TEST(distribution_tests, testConditionalWeibullCdfPdf)
+TEST(DistributionTests, testConditionalWeibullCdfPdf)
 {
     testDistributions::testConditionalWeibullCdfPdf();
 }
 
-TEST(distribution_tests, testConditionalWeibullCdfPdf2)
+TEST(DistributionTests, testConditionalWeibullCdfPdf2)
 {
     testDistributions::testConditionalWeibullCdfPdf2();
 }
 
-TEST(distribution_tests, testConditionalWeibullMeanDeviation)
+TEST(DistributionTests, testConditionalWeibullMeanDeviation)
 {
     testDistributions::testConditionalWeibullMeanDeviation();
 }
 
-TEST(distribution_tests, testConditionalWeibullNonIntegerShape)
+TEST(DistributionTests, testConditionalWeibullNonIntegerShape)
 {
     testDistributions::testConditionalWeibullNonIntegerShape();
 }
 
-TEST(distribution_tests, testDesignValue)
+TEST(DistributionTests, testDesignValue)
 {
     testDistributions::testDesignValue();
 }
 
-TEST(distribution_tests, testNormal)
+TEST(DistributionTests, testNormal)
 {
     testDistributions::testNormal();
 }
 
-TEST(distribution_tests, testLogNormal)
+TEST(DistributionTests, testLogNormal)
 {
     testDistributions::testLogNormal();
 }
 
-TEST(distribution_tests, testUniform)
+TEST(DistributionTests, testUniform)
 {
     testDistributions::testUniform();
 }
 
-TEST(distribution_tests, testTriangular)
+TEST(DistributionTests, testTriangular)
 {
     testDistributions::testTriangular();
 }
 
-TEST(distribution_tests, testTrapezoidal)
+TEST(DistributionTests, testTrapezoidal)
 {
     testDistributions::testTrapezoidal();
 }
 
-TEST(distribution_tests, testExponential)
+TEST(DistributionTests, testExponential)
 {
     testDistributions::testExponential();
 }
 
-TEST(distribution_tests, testGamma)
+TEST(DistributionTests, testGamma)
 {
     testDistributions::testGamma();
 }
 
-TEST(distribution_tests, testBeta)
+TEST(DistributionTests, testBeta)
 {
     testDistributions::testBeta();
 }
 
-TEST(distribution_tests, testGumbel)
+TEST(DistributionTests, testGumbel)
 {
     testDistributions::testGumbel();
 }
 
-TEST(distribution_tests, testWeibull)
+TEST(DistributionTests, testWeibull)
 {
     testDistributions::testWeibull();
 }
 
-TEST(distribution_tests, testFrechet)
+TEST(DistributionTests, testFrechet)
 {
     testDistributions::testFrechet();
 }
 
-TEST(distribution_tests, testGEV)
+TEST(DistributionTests, testGEV)
 {
     testDistributions::testGEV();
 }
 
-TEST(distribution_tests, testPareto)
+TEST(DistributionTests, testPareto)
 {
     testDistributions::testPareto();
 }
 
-TEST(distribution_tests, testGeneralizedPareto)
+TEST(DistributionTests, testGeneralizedPareto)
 {
     testDistributions::testGeneralizedPareto();
 }
 
-TEST(distribution_tests, testRayleigh)
+TEST(DistributionTests, testRayleigh)
 {
     testDistributions::testRayleigh();
 }
 
-TEST(distribution_tests, testRayleighN)
+TEST(DistributionTests, testRayleighN)
 {
     testDistributions::testRayleighN();
 }
 
-TEST(distribution_tests, testBernoulli)
+TEST(DistributionTests, testBernoulli)
 {
     testDistributions::testBernoulli();
 }
 
-TEST(distribution_tests, testPoisson)
+TEST(DistributionTests, testPoisson)
 {
     testDistributions::testPoisson();
 }
 
-TEST(distribution_tests, testStudentT)
+TEST(DistributionTests, testStudentT)
 {
     testDistributions::testStudentT();
 }
 
-TEST(distribution_tests, testStudentTwithInterpolation)
+TEST(DistributionTests, testStudentTwithInterpolation)
 {
     testDistributions::testStudentTwithInterpolation();
 }
 
-TEST(distribution_tests, testValidation)
+TEST(DistributionTests, testValidation)
 {
     testDistributions::testValidation();
 }
 
-TEST(distribution_tests, testVariationCoefficient)
+TEST(DistributionTests, testVariationCoefficient)
 {
     testDistributions::testVariationCoefficient();
 }
 
-TEST(x_from_u_tests, testNormal)
+TEST(XfromUTests, testNormal)
 {
     TestXfromU::TestNormal();
 }
 
-TEST(x_from_u_tests, testUniform)
+TEST(XfromUTests, testUniform)
 {
     TestXfromU::TestUniform();
 }
 
-TEST(x_from_u_tests, testTriangular)
+TEST(XfromUTests, testTriangular)
 {
     TestXfromU::TestTriangular();
 }
 
-TEST(x_from_u_tests, testExponential)
+TEST(XfromUTests, testExponential)
 {
     TestXfromU::TestExponential();
 }
 
-TEST(x_from_u_tests, testGumbel)
+TEST(XfromUTests, testGumbel)
 {
     TestXfromU::TestGumbel();
 }
 
-TEST(x_from_u_tests, testWeibull)
+TEST(XfromUTests, testWeibull)
 {
     TestXfromU::TestWeibull();
 }
 
-TEST(x_from_u_tests, testPareto)
+TEST(XfromUTests, testPareto)
 {
     TestXfromU::TestPareto();
 }
 
-TEST(x_from_u_tests, testRayleigh)
+TEST(XfromUTests, testRayleigh)
 {
     TestXfromU::TestRayleigh();
 }
 
-TEST(x_from_u_tests, testRayleighN)
+TEST(XfromUTests, testRayleighN)
 {
     TestXfromU::TestRayleighN();
 }
 
-TEST(x_from_u_tests, testTruncatedNormal)
+TEST(XfromUTests, testTruncatedNormal)
 {
     TestXfromU::TestTruncatedNormal();
 }
 
-TEST(unit_tests, testStandardNormal)
+TEST(UnitTests, testStandardNormal)
 {
     auto tstStdNormal = TestStandardNormal();
     tstStdNormal.AllStandardNormalTests();
 }
 
-TEST(copulas_test, testClayton)
+TEST(CopulasTest, testClayton)
 {
     TestCopula::TestClayton();
 }
 
-TEST(copulas_test, testFrank)
+TEST(CopulasTest, testFrank)
 {
     TestCopula::TestFrank();
 }
 
-TEST(copulas_test, testGaussian)
+TEST(CopulasTest, testGaussian)
 {
     TestCopula::TestGaussian();
 }
 
-TEST(copulas_test, testGumbel)
+TEST(CopulasTest, testGumbel)
 {
     TestCopula::TestGumbel();
 }
 
-TEST(copulas_test, testValidation)
+TEST(CopulasTest, testValidation)
 {
     TestCopula::TestValidation();
 }
 
-TEST(copulas_test, testValidationMessages)
+TEST(CopulasTest, testValidationMessages)
 {
     TestCopula::TestValidationMessages();
 }
 
-TEST(unit_tests, testUncertainty)
+TEST(UnitTests, testUncertainty)
 {
     auto tstUncertainty = TestUncertainty();
     tstUncertainty.allUncertaintyTests();
 }
 
-TEST(unit_tests, testSensitivity)
+TEST(UnitTests, testSensitivity)
 {
     auto tstSensitivity = TestSensitivity();
     tstSensitivity.allSensitivityTests();
 }
 
-TEST(unit_tests, testRunModel)
+TEST(UnitTests, testRunModel)
 {
     auto tstModel = TestRunModel();
     tstModel.allModelTests();
 }
 
-TEST(unit_tests, testRandom)
+TEST(UnitTests, testRandom)
 {
     testRandom::allRandomTests();
 }
 
-TEST(unit_tests, testRootfinder)
+TEST(UnitTests, testRootfinder)
 {
     auto tstRF = rootfinder_tests();
     tstRF.all_rootfinder_tests();
 }
 
-TEST(unit_tests, testVector1D)
+TEST(UnitTests, testVector1D)
 {
     auto tstVector1D = vector1D_tests();
     tstVector1D.allVector1Dtests();
 }
 
-TEST(unit_tests, testIncompleteGamma)
+TEST(UnitTests, testIncompleteGamma)
 {
     TestSpecialFunctions::IncompleteGammaTest();
 }
 
-TEST(unit_tests, testIncompleteGammaExceptionalCases)
+TEST(UnitTests, testIncompleteGammaExceptionalCases)
 {
     TestSpecialFunctions::IncompleteGammaExceptionalCasesTest();
 }
 
-TEST(unit_tests, testCobylaOptimization)
+TEST(UnitTests, testCobylaOptimization)
 {
     auto tstCobylaOpt = testCobyla();
     tstCobylaOpt.allCobylaTests();
 }
 
-TEST(WaartsTests, LinearResistanceFORM)
+TEST(WaartsTests, testLinearResistanceFORM)
 {
     auto tester = TestWaartsLinearResistance();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, LinearResistanceCrudeMonteCarlo)
+TEST(WaartsTests, testLinearResistanceCrudeMonteCarlo)
 {
     auto tester = TestWaartsLinearResistance();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, LinearResistanceDirectionalSampling)
+TEST(WaartsTests, testLinearResistanceDirectionalSampling)
 {
     auto tester = TestWaartsLinearResistance();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, LinearResistanceNumericalIntegration)
+TEST(WaartsTests, testLinearResistanceNumericalIntegration)
 {
     auto tester = TestWaartsLinearResistance();
     tester.WaartsNumericalIntegration();
 }
 
-TEST(WaartsTests, LinearResistanceNumericalIntegrationCenterOfGravity)
+TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfGravity)
 {
     auto tester = TestWaartsLinearResistance();
     tester.RunNumInt(CenterOfGravity);
 }
 
-TEST(WaartsTests, LinearResistanceNumericalIntegrationCenterOfAngles)
+TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfAngles)
 {
     auto tester = TestWaartsLinearResistance();
     tester.RunNumInt(CenterOfAngles);
 }
 
-TEST(WaartsTests, LinearResistanceNumericalIntegrationNearestToMean)
+TEST(WaartsTests, testLinearResistanceNumericalIntegrationNearestToMean)
 {
     auto tester = TestWaartsLinearResistance();
     tester.RunNumInt(NearestToMean);
 }
 
-TEST(WaartsTests, LinearResistanceImportanceSampling)
+TEST(WaartsTests, testLinearResistanceImportanceSampling)
 {
     auto tester = TestWaartsLinearResistance();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, LinearResistanceAdaptiveImportanceSampling)
+TEST(WaartsTests, testLinearResistanceAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsLinearResistance();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, LinearResistanceFDIR)
+TEST(WaartsTests, testLinearResistanceFDIR)
 {
     auto tester = TestWaartsLinearResistance();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, LinearResistanceDSFI)
+TEST(WaartsTests, testLinearResistanceDSFI)
 {
     auto tester = TestWaartsLinearResistance();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, NoisyLimitStateFORM)
+TEST(WaartsTests, testNoisyLimitStateFORM)
 {
     auto tester = TestWaartsNoisyLimitState();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, NoisyLimitStateCrudeMonteCarlo)
+TEST(WaartsTests, testNoisyLimitStateCrudeMonteCarlo)
 {
     auto tester = TestWaartsNoisyLimitState();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, NoisyLimitStateDirectionalSampling)
+TEST(WaartsTests, testNoisyLimitStateDirectionalSampling)
 {
     auto tester = TestWaartsNoisyLimitState();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, NoisyLimitStateImportanceSampling)
+TEST(WaartsTests, testNoisyLimitStateImportanceSampling)
 {
     auto tester = TestWaartsNoisyLimitState();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, NoisyLimitStateAdaptiveImportanceSampling)
+TEST(WaartsTests, testNoisyLimitStateAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsNoisyLimitState();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, NoisyLimitStateFDIR)
+TEST(WaartsTests, testNoisyLimitStateFDIR)
 {
     auto tester = TestWaartsNoisyLimitState();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, NoisyLimitStateDSFI)
+TEST(WaartsTests, testNoisyLimitStateDSFI)
 {
     auto tester = TestWaartsNoisyLimitState();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, ResistanceOneQuadraticFORM)
+TEST(WaartsTests, testResistanceOneQuadraticFORM)
 {
     auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, ResistanceOneQuadraticCrudeMonteCarlo)
+TEST(WaartsTests, testResistanceOneQuadraticCrudeMonteCarlo)
 {
     auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, ResistanceOneQuadraticDirectionalSampling)
+TEST(WaartsTests, testResistanceOneQuadraticDirectionalSampling)
 {
     auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, ResistanceOneQuadraticNumericalIntegration)
+TEST(WaartsTests, testResistanceOneQuadraticNumericalIntegration)
 {
     auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsNumericalIntegration();
 }
 
-TEST(WaartsTests, ResistanceOneQuadraticImportanceSampling)
+TEST(WaartsTests, testResistanceOneQuadraticImportanceSampling)
 {
     auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, ResistanceOneQuadraticAdaptiveImportanceSampling)
+TEST(WaartsTests, testResistanceOneQuadraticAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, ResistanceOneQuadraticFDIR)
+TEST(WaartsTests, testResistanceOneQuadraticFDIR)
 {
     auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, ResistanceOneQuadraticDSFI)
+TEST(WaartsTests, testResistanceOneQuadraticDSFI)
 {
     auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, ResistanceTenQuadraticTermsFORM)
+TEST(WaartsTests, testResistanceTenQuadraticTermsFORM)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, ResistanceTenQuadraticTermsCrudeMonteCarlo)
+TEST(WaartsTests, testResistanceTenQuadraticTermsCrudeMonteCarlo)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, ResistanceTenQuadraticTermsDirectionalSampling)
+TEST(WaartsTests, testResistanceTenQuadraticTermsDirectionalSampling)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, ResistanceTenQuadraticTermsImportanceSampling)
+TEST(WaartsTests, testResistanceTenQuadraticTermsImportanceSampling)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, ResistanceTenQuadraticTermsAdaptiveImportanceSampling)
+TEST(WaartsTests, testResistanceTenQuadraticTermsAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, ResistanceTenQuadraticTermsFDIR)
+TEST(WaartsTests, testResistanceTenQuadraticTermsFDIR)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, ResistanceTenQuadraticTermsDSFI)
+TEST(WaartsTests, testResistanceTenQuadraticTermsDSFI)
 {
     auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsFORM)
+TEST(WaartsTests, testResistance25QuadraticTermsFORM)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsCrudeMonteCarlo)
+TEST(WaartsTests, testResistance25QuadraticTermsCrudeMonteCarlo)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsDirectionalSampling)
+TEST(WaartsTests, testResistance25QuadraticTermsDirectionalSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsImportanceSampling)
+TEST(WaartsTests, testResistance25QuadraticTermsImportanceSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsAdaptiveImportanceSampling)
+TEST(WaartsTests, testResistance25QuadraticTermsAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsFDIR)
+TEST(WaartsTests, testResistance25QuadraticTermsFDIR)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsDSFI)
+TEST(WaartsTests, testResistance25QuadraticTermsDSFI)
 {
     auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, ConvexFailureDomainFORM)
+TEST(WaartsTests, testConvexFailureDomainFORM)
 {
     auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, ConvexFailureDomainCrudeMonteCarlo)
+TEST(WaartsTests, testConvexFailureDomainCrudeMonteCarlo)
 {
     auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, ConvexFailureDomainDirectionalSampling)
+TEST(WaartsTests, testConvexFailureDomainDirectionalSampling)
 {
     auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, ConvexFailureDomainNumericalIntegration)
+TEST(WaartsTests, testConvexFailureDomainNumericalIntegration)
 {
     auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsNumericalIntegration();
 }
 
-TEST(WaartsTests, ConvexFailureDomainImportanceSampling)
+TEST(WaartsTests, testConvexFailureDomainImportanceSampling)
 {
     auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, ConvexFailureDomainAdaptiveImportanceSampling)
+TEST(WaartsTests, testConvexFailureDomainAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, ConvexFailureDomainFDIR)
+TEST(WaartsTests, testConvexFailureDomainFDIR)
 {
     auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, ConvexFailureDomainDSFI)
+TEST(WaartsTests, testConvexFailureDomainDSFI)
 {
     auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, OblateSpheroidFORM)
+TEST(WaartsTests, testOblateSpheroidFORM)
 {
     auto tester = TestWaartsOblateSpheroid();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, OblateSpheroidCrudeMonteCarlo)
+TEST(WaartsTests, testOblateSpheroidCrudeMonteCarlo)
 {
     auto tester = TestWaartsOblateSpheroid();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, OblateSpheroidDirectionalSampling)
+TEST(WaartsTests, testOblateSpheroidDirectionalSampling)
 {
     auto tester = TestWaartsOblateSpheroid();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, OblateSpheroidImportanceSampling)
+TEST(WaartsTests, testOblateSpheroidImportanceSampling)
 {
     auto tester = TestWaartsOblateSpheroid();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, OblateSpheroidAdaptiveImportanceSampling)
+TEST(WaartsTests, testOblateSpheroidAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsOblateSpheroid();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, OblateSpheroidFDIR)
+TEST(WaartsTests, testOblateSpheroidFDIR)
 {
     auto tester = TestWaartsOblateSpheroid();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, OblateSpheroidDSFI)
+TEST(WaartsTests, testOblateSpheroidDSFI)
 {
     auto tester = TestWaartsOblateSpheroid();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, SaddleSurfaceFORM)
+TEST(WaartsTests, testSaddleSurfaceFORM)
 {
     auto tester = TestWaartsSaddleSurface();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, SaddleSurfaceCrudeMonteCarlo)
+TEST(WaartsTests, testSaddleSurfaceCrudeMonteCarlo)
 {
     auto tester = TestWaartsSaddleSurface();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, SaddleSurfaceDirectionalSampling)
+TEST(WaartsTests, testSaddleSurfaceDirectionalSampling)
 {
     auto tester = TestWaartsSaddleSurface();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, SaddleSurfaceNumericalIntegration)
+TEST(WaartsTests, testSaddleSurfaceNumericalIntegration)
 {
     auto tester = TestWaartsSaddleSurface();
     tester.WaartsNumericalIntegration();
 }
 
-TEST(WaartsTests, SaddleSurfaceImportanceSampling)
+TEST(WaartsTests, testSaddleSurfaceImportanceSampling)
 {
     auto tester = TestWaartsSaddleSurface();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, SaddleSurfaceAdaptiveImportanceSampling)
+TEST(WaartsTests, testSaddleSurfaceAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsSaddleSurface();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, SaddleSurfaceFDIR)
+TEST(WaartsTests, testSaddleSurfaceFDIR)
 {
     auto tester = TestWaartsSaddleSurface();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, SaddleSurfaceDSFI)
+TEST(WaartsTests, testSaddleSurfaceDSFI)
 {
     auto tester = TestWaartsSaddleSurface();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, DiscontinuousFORM)
+TEST(WaartsTests, testDiscontinuousFORM)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, DiscontinuousCrudeMonteCarlo)
+TEST(WaartsTests, testDiscontinuousCrudeMonteCarlo)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, DiscontinuousDirectionalSampling)
+TEST(WaartsTests, testDiscontinuousDirectionalSampling)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, DiscontinuousNumericalIntegration)
+TEST(WaartsTests, testDiscontinuousNumericalIntegration)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsNumericalIntegration();
 }
 
-TEST(WaartsTests, DiscontinuousImportanceSampling)
+TEST(WaartsTests, testDiscontinuousImportanceSampling)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, DiscontinuousAdaptiveImportanceSampling)
+TEST(WaartsTests, testDiscontinuousAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, DiscontinuousFDIR)
+TEST(WaartsTests, testDiscontinuousFDIR)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, DiscontinuousDSFI)
+TEST(WaartsTests, testDiscontinuousDSFI)
 {
     auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, TwoBranchesFORM)
+TEST(WaartsTests, testTwoBranchesFORM)
 {
     auto tester = TestWaartsTwoBranches();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, TwoBranchesCrudeMonteCarlo)
+TEST(WaartsTests, testTwoBranchesCrudeMonteCarlo)
 {
     auto tester = TestWaartsTwoBranches();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, TwoBranchesDirectionalSampling)
+TEST(WaartsTests, testTwoBranchesDirectionalSampling)
 {
     auto tester = TestWaartsTwoBranches();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, TwoBranchesNumericalIntegration)
+TEST(WaartsTests, testTwoBranchesNumericalIntegration)
 {
     auto tester = TestWaartsTwoBranches();
     tester.WaartsNumericalIntegration();
 }
 
-TEST(WaartsTests, TwoBranchesAdaptiveImportanceSampling)
+TEST(WaartsTests, testTwoBranchesAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsTwoBranches();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, TwoBranchesFDIR)
+TEST(WaartsTests, testTwoBranchesFDIR)
 {
     auto tester = TestWaartsTwoBranches();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, TwoBranchesDSFI)
+TEST(WaartsTests, testTwoBranchesDSFI)
 {
     auto tester = TestWaartsTwoBranches();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, ConcaveFailureDomainFORM)
+TEST(WaartsTests, testConcaveFailureDomainFORM)
 {
     auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, ConcaveFailureDomainCrudeMonteCarlo)
+TEST(WaartsTests, testConcaveFailureDomainCrudeMonteCarlo)
 {
     auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, ConcaveFailureDomainDirectionalSampling)
+TEST(WaartsTests, testConcaveFailureDomainDirectionalSampling)
 {
     auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, ConcaveFailureDomainNumericalIntegration)
+TEST(WaartsTests, testConcaveFailureDomainNumericalIntegration)
 {
     auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsNumericalIntegration();
 }
 
-TEST(WaartsTests, ConcaveFailureDomainImportanceSampling)
+TEST(WaartsTests, testConcaveFailureDomainImportanceSampling)
 {
     auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, ConcaveFailureDomainAdaptiveImportanceSampling)
+TEST(WaartsTests, testConcaveFailureDomainAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, ConcaveFailureDomainFDIR)
+TEST(WaartsTests, testConcaveFailureDomainFDIR)
 {
     auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, ConcaveFailureDomainDSFI)
+TEST(WaartsTests, testConcaveFailureDomainDSFI)
 {
     auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, SeriesSystemFORM)
+TEST(WaartsTests, testSeriesSystemFORM)
 {
     auto tester = TestWaartsSeriesSystem();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, SeriesSystemCrudeMonteCarlo)
+TEST(WaartsTests, testSeriesSystemCrudeMonteCarlo)
 {
     auto tester = TestWaartsSeriesSystem();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, SeriesSystemDirectionalSampling)
+TEST(WaartsTests, testSeriesSystemDirectionalSampling)
 {
     auto tester = TestWaartsSeriesSystem();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, SeriesSystemNumericalIntegration)
+TEST(WaartsTests, testSeriesSystemNumericalIntegration)
 {
     auto tester = TestWaartsSeriesSystem();
     tester.WaartsNumericalIntegration();
 }
 
-TEST(WaartsTests, SeriesSystemImportanceSampling)
+TEST(WaartsTests, testSeriesSystemImportanceSampling)
 {
     auto tester = TestWaartsSeriesSystem();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, SeriesSystemAdaptiveImportanceSampling)
+TEST(WaartsTests, testSeriesSystemAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsSeriesSystem();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, SeriesSystemDomainFDIR)
+TEST(WaartsTests, testSeriesSystemDomainFDIR)
 {
     auto tester = TestWaartsSeriesSystem();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, SeriesSystemDomainDSFI)
+TEST(WaartsTests, testSeriesSystemDomainDSFI)
 {
     auto tester = TestWaartsSeriesSystem();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, ParallelSystemFORM)
+TEST(WaartsTests, testParallelSystemFORM)
 {
     auto tester = TestWaartsParallelSystem();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, ParallelSystemCrudeMonteCarlo)
+TEST(WaartsTests, testParallelSystemCrudeMonteCarlo)
 {
     auto tester = TestWaartsParallelSystem();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, ParallelSystemDirectionalSampling)
+TEST(WaartsTests, testParallelSystemDirectionalSampling)
 {
     auto tester = TestWaartsParallelSystem();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, ParallelSystemImportanceSampling)
+TEST(WaartsTests, testParallelSystemImportanceSampling)
 {
     auto tester = TestWaartsParallelSystem();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, ParallelSystemAdaptiveImportanceSampling)
+TEST(WaartsTests, testParallelSystemAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsParallelSystem();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, ParallelSystemDomainFDIR)
+TEST(WaartsTests, testParallelSystemDomainFDIR)
 {
     auto tester = TestWaartsParallelSystem();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, ParallelSystemDomainDSFI)
+TEST(WaartsTests, testParallelSystemDomainDSFI)
 {
     auto tester = TestWaartsParallelSystem();
     tester.WaartsDSFI();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsSparseFORM)
+TEST(WaartsTests, testResistance25QuadraticTermsSparseFORM)
 {
     auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsFORM();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsSparseCrudeMonteCarlo)
+TEST(WaartsTests, testResistance25QuadraticTermsSparseCrudeMonteCarlo)
 {
     auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsCrudeMonteCarlo();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsSparseDirectionalSampling)
+TEST(WaartsTests, testResistance25QuadraticTermsSparseDirectionalSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsDirectionalSampling();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsSparseImportanceSampling)
+TEST(WaartsTests, testResistance25QuadraticTermsSparseImportanceSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsImportanceSampling();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsSparseAdaptiveImportanceSampling)
+TEST(WaartsTests, testResistance25QuadraticTermsSparseAdaptiveImportanceSampling)
 {
     auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsSparseFDIR)
+TEST(WaartsTests, testResistance25QuadraticTermsSparseFDIR)
 {
     auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsFDIR();
 }
 
-TEST(WaartsTests, Resistance25QuadraticTermsSparseDSFI)
+TEST(WaartsTests, testResistance25QuadraticTermsSparseDSFI)
 {
     auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsDSFI();

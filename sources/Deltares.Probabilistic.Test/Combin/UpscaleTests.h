@@ -50,9 +50,9 @@ namespace Deltares::Probabilistic::Test
         void UpscaleToLargestBlockTests1();
         void UpscaleToLargestBlockTests2();
         void UpscaleToLargestBlockTests3();
-        Reliability::upscaling upscaler;
-        Reliability::combineElements combiner;
-        testutils test_utilities;
+        Reliability::upscaling upscaler = Reliability::upscaling();
+        Reliability::combineElements combiner = Reliability::combineElements();
+        testutils test_utilities = testutils();
     };
 
 }
