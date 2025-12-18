@@ -31,6 +31,8 @@ When running an analysis, the result is a `probabilistic_library.reliability.Des
 or `probabilistic_library.sensitivity.SensitivityResult`.
 """
 
+__version__ = "25.3.1"
+
 from .interface import *
 from .logging import *
 from .statistic import *

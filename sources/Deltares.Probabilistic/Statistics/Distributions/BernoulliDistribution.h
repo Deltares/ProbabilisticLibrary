@@ -40,8 +40,7 @@ namespace Deltares
             void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
             double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(StochastProperties& stochast, double x) override;
-            bool canFit() override { return true; }
-            bool canFitPrior() override { return true; }
+            bool canFit(const bool useShift, const bool usePrior) override { return !useShift; }
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
             std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;

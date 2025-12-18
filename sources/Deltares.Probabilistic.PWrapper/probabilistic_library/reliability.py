@@ -768,7 +768,10 @@ class DesignPoint(FrozenObject):
 		        'print',
 		        'plot_alphas',
 		        'plot_realizations',
- 		        'plot_convergence']
+ 		        'plot_convergence',
+		        'get_plot_alphas',
+		        'get_plot_realizations',
+ 		        'get_plot_convergence']
 		
 	def __str__(self):
 		return self.identifier
@@ -993,7 +996,7 @@ class DesignPoint(FrozenObject):
 	def plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
 		"""Shows a scatter-plot of realizations performed by the reliability analysis. The color
         indicates failure or non-failure. The x-y coordinates correspond with realization input
-        values. Only available when 'save_realizations' was set in the settings.
+        values. Only available when `Settings.save_realizations` was set in the settings.
 
         Parameters
         ----------
@@ -1010,7 +1013,7 @@ class DesignPoint(FrozenObject):
 	def get_plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None) -> plt:
 		"""Gets a plot object of a scatter-plot of realizations performed by the reliability analysis. The color
         indicates failure or non-failure. The x-y coordinates correspond with realization input
-        values. Only available when 'save_realizations' was set in the settings.
+        values. Only available when `Settings.save_realizations` was set in the settings.
 
         Parameters
         ----------

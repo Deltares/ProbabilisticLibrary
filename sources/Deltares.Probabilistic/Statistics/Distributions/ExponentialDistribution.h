@@ -34,7 +34,7 @@ namespace Deltares
             double getUFromX(StochastProperties& stochast, double x) override;
             bool isVarying(StochastProperties& stochast) override;
             bool canTruncate() override { return true; }
-            bool canFit() override { return true; }
+            bool canFit(const bool useShift, const bool usePrior) override { return !usePrior; }
             bool canInvert() override { return true; }
             double getMean(StochastProperties& stochast) override;
             double getDeviation(StochastProperties& stochast) override;

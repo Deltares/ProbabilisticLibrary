@@ -124,6 +124,26 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(2.0, stochast.mean, delta=margin)
         self.assertAlmostEqual(2.5, stochast.deviation, delta=margin)
 
+    def test_triangular(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.triangular
+
+        stochast.fit([3.0, 4.0, 5.0, 7.0, 9.0])
+        self.assertAlmostEqual(1.8, stochast.minimum, delta=margin)
+        self.assertAlmostEqual(4.8, stochast.shift, delta=margin)
+        self.assertAlmostEqual(10.2, stochast.maximum, delta=margin)
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        stochast.fit([3.0, 4.0, 5.0, 7.0, 9.0], 4.8)
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: Fit with shift is not supported for distribution type triangular.\n""", printed)
+
     def test_exponential_fit(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.exponential
@@ -411,6 +431,27 @@ class Test_statistics(unittest.TestCase):
         # registered stochasts
         self.assertAlmostEqual(0.8, correlation_matrix[(stochast1, stochast2)], delta=margin)
         self.assertAlmostEqual(0.8, correlation_matrix[('a', 'b')], delta=margin)
+        self.assertAlmostEqual(0.8, correlation_matrix['a', 'b'], delta=margin)
+
+        # unregistered stochasts
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        stochast3 = Stochast()
+        stochast3.name = 'c'
+
+        correlation_matrix['a', 'c'] = 0.7
+
+        printed = sys.stdout.getvalue()
+        self.assertEqual("""Variable c is not available, value is not set.\n""", printed)
+
+        self.assertTrue(np.isnan(correlation_matrix['a', 'c']))
+
+        printed = sys.stdout.getvalue().splitlines()[-1]
+        self.assertEqual("""Variable c is not available.""", printed)
+
+        sys.stdout = sys.__stdout__
 
     def test_normal_fit(self):
         stochast = Stochast()

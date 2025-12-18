@@ -481,29 +481,29 @@ namespace Deltares::Probabilistic::Test
 
     void testDistributions::testGEV()
     {
-        Stochast frechet = Stochast();
-        frechet.setDistributionType(DistributionType::GeneralizedExtremeValue);
-        frechet.getProperties()->Scale = 2.0;
-        frechet.getProperties()->Shape = 0.0;
-        frechet.getProperties()->Shift = 3.0;
-
-        testFit(frechet, 1.0);
-
         Stochast gumbel = Stochast();
         gumbel.setDistributionType(DistributionType::GeneralizedExtremeValue);
-        gumbel.getProperties()->Scale = 2.0;
-        gumbel.getProperties()->Shape = 0.2;
-        gumbel.getProperties()->Shift = 0.0;
+        gumbel.getProperties()->Scale = 1.0;
+        gumbel.getProperties()->Shape = 0.0;
+        gumbel.getProperties()->Shift = 2.0;
 
-        testFit(gumbel, 5.0);
+        testFit(gumbel);
+
+        Stochast frechet = Stochast();
+        frechet.setDistributionType(DistributionType::GeneralizedExtremeValue);
+        frechet.getProperties()->Scale = 0.5;
+        frechet.getProperties()->Shape = 1.0;
+        frechet.getProperties()->Shift = 1.0;
+
+        testFit(frechet, 0.4);
 
         Stochast weibull = Stochast();
         weibull.setDistributionType(DistributionType::GeneralizedExtremeValue);
         weibull.getProperties()->Scale = 2.0;
         weibull.getProperties()->Shape = -0.5;
-        weibull.getProperties()->Shift = 0.0;
+        weibull.getProperties()->Shift = 1.0;
 
-        testFit(weibull, 1.0);
+        testFit(weibull, 0.5);
     }
 
     void testDistributions::testPareto()

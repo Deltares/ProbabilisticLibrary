@@ -39,7 +39,7 @@ namespace Deltares
             double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(StochastProperties& stochast, double x) override;
             void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
-            bool canFit() override { return true; }
+            bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
             bool canInvert() override { return true; }
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             std::vector<double> getSpecialPoints(StochastProperties& stochast) override;

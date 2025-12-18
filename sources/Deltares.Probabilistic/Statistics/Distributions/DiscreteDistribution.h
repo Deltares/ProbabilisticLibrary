@@ -38,7 +38,7 @@ namespace Deltares
             double getRepresentativeU(StochastProperties& stochast, double u) override;
             double getPDF(StochastProperties& stochast, double x) override;
             double getCDF(StochastProperties& stochast, double x) override;
-            bool canFit() override { return true; }
+            bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
             void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
             void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
             void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;

@@ -342,6 +342,7 @@ namespace Deltares
             stochast.Maximum = max + add;
 
             double mean = Numeric::NumericSupport::getMean(values);
+
             stochast.Shift = 3 * mean - (min + max);
 
             stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
@@ -351,9 +352,9 @@ namespace Deltares
 
             std::vector minValues = { stochast.Minimum, stochast.Minimum };
             std::vector maxValues = { stochast.Maximum, stochast.Maximum };
-            std::vector properties = {Shift, ShiftB };
+            std::vector properties = { Shift, ShiftB };
 
-            std::vector<double> parameters = fitter.fitByLogLikelihood(values,this, stochast,minValues,maxValues,properties);
+            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
 
             stochast.Shift = std::max(stochast.Minimum, parameters[0]);
             stochast.ShiftB = std::min(stochast.Maximum, parameters[1]);

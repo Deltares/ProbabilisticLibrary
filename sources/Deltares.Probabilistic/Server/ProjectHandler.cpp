@@ -1221,7 +1221,7 @@ namespace Deltares
                 if (property_ == "inverted") return stochast->isInverted();
                 else if (property_ == "truncated") return stochast->isTruncated();
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
-                else if (property_ == "can_fit_prior") return stochast->canFitPrior();
+                else if (property_ == "can_fit_prior") return stochast->canFit(false, true);
                 else if (property_ == "is_array") return stochast->modelParameter->isArray;
                 else if (property_ == "is_valid") return stochast->isValid();
                 else if (property_ == "is_used_mean") return true;

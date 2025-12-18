@@ -1,2 +1,2 @@
-python setup.py bdist_wheel
+python -m build --outdir dist
 pause
