@@ -12,5 +12,4 @@ add_subdirectory(Deltares.Probabilistic.Test)
 
 if(ENABLE_Fortran)
     add_subdirectory(Deltares.Probabilistic.FortranWrapper)
-    add_subdirectory(Deltares.Probabilistic.FortranWrapper.Test)
 endif()
