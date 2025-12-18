@@ -25,10 +25,6 @@
 #include "../../Deltares.Probabilistic/Reliability/StartPointCalculator.h"
 #include "../projectBuilder.h"
 
-using namespace Deltares::Reliability;
-using namespace Deltares::Statistics;
-using namespace Deltares::Models;
-
 namespace Deltares::Probabilistic::Test
 {
     void TestStartPointCalculator::AllStartPointTests() const
@@ -43,10 +39,10 @@ namespace Deltares::Probabilistic::Test
     void TestStartPointCalculator::TestMethodOne()
     {
         auto modelRunner = projectBuilder().BuildProject();
-        auto calculator = StartPointCalculator();
+        auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = StartMethodType::FixedValue;
+        calculator.Settings->StartMethod = Reliability::StartMethodType::FixedValue;
         calculator.Settings->startVector = { 1.0, 1.0 };
 
         auto r = calculator.getStartPoint(*modelRunner);
@@ -59,10 +55,10 @@ namespace Deltares::Probabilistic::Test
     void TestStartPointCalculator::TestMethodRaySearch() const
     {
         auto modelRunner = projectBuilder().BuildProject();
-        auto calculator = StartPointCalculator();
+        auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = StartMethodType::RaySearch;
+        calculator.Settings->StartMethod = Reliability::StartMethodType::RaySearch;
         calculator.Settings->MaximumLengthStartPoint = 20.0;
         calculator.Settings->dsdu = 3.0;
 
@@ -76,10 +72,10 @@ namespace Deltares::Probabilistic::Test
     void TestStartPointCalculator::TestMethodSphereSearch() const
     {
         auto modelRunner = projectBuilder().BuildProject();
-        auto calculator = StartPointCalculator();
+        auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = StartMethodType::SphereSearch;
+        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
 
         auto r = calculator.getStartPoint(*modelRunner);
 
@@ -93,10 +89,10 @@ namespace Deltares::Probabilistic::Test
     void TestStartPointCalculator::TestMethodSphereSearchAllDirections() const
     {
         auto modelRunner = projectBuilder().BuildProject();
-        auto calculator = StartPointCalculator();
+        auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = StartMethodType::SphereSearch;
+        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
         calculator.Settings->allQuadrants = true;
         calculator.Settings->maxStepsSphereSearch = 16;
 
@@ -112,10 +108,10 @@ namespace Deltares::Probabilistic::Test
     void TestStartPointCalculator::TestMethodSphereSearchWithDeterminist() const
     {
         auto modelRunner = projectBuilder().BuildProjectWithDeterminist(3.0);
-        auto calculator = StartPointCalculator();
+        auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = StartMethodType::SphereSearch;
+        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
 
         auto r = calculator.getStartPoint(*modelRunner);
 

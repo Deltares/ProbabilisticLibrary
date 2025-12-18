@@ -72,7 +72,7 @@ namespace Deltares::Probabilistic::Test
         {
             message = e.what();
         }
-        EXPECT_EQ(message, "Error in Dgammq: a <= 0 violated; a = -1.0000");
+        EXPECT_EQ(message, "Error in Dgammq: a <= 0 violated; a =  -1.0000");
 
         try
         {
@@ -82,7 +82,7 @@ namespace Deltares::Probabilistic::Test
         {
             message = e.what();
         }
-        EXPECT_EQ(message, "Error in Dgammq: x < 0 violated; x = -1.0000");
+        EXPECT_EQ(message, "Error in Dgammq: x < 0 violated; x =  -1.0000");
 
         try
         {

@@ -19,38 +19,14 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "probLibException.h"
-#include <format>
+#pragma once
 
-namespace Deltares::Reliability
+namespace Deltares::Probabilistic::Test
 {
-    probLibException::probLibException(const std::string& message, const double number)
-        : message(std::format("{} {}" , message, toString(number)))
+    class TestExceptions
     {
-    }
-
-    probLibException::probLibException(const std::string& message, const int number)
-        : message(std::format("{} {}", message , number))
-    {
-    }
-
-    probLibException::probLibException(const std::string& message, const size_t number)
-        : message(std::format("{} {}", message, number))
-    {
-    }
-
-    std::string probLibException::toString(const double number)
-    {
-        constexpr double threshold = 1e5;
-        if (std::abs(number) > threshold)
-        {
-            return std::format("{:.4e}", number);
-        }
-        else
-        {
-            return std::format("{:.4f}", number);
-        }
-    }
-
-
+    public:
+        static void testProblibExceptions();
+    };
 }
+

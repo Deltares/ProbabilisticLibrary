@@ -26,12 +26,12 @@ namespace Deltares::Probabilistic::Test
     class TestStandardNormal
     {
     public:
-        void AllStandardNormalTests() const;
+        void allStandardNormalTests() const;
     private:
-        void TestPQbetaConversions() const;
-        void TestReturnTime() const;
-        void TestFreqFromBeta() const;
-        void TestLogQFromBeta() const;
+        void testPQbetaConversions() const;
+        void testReturnTime() const;
+        void testFreqFromBeta() const;
+        void testLogQFromBeta() const;
         const double margin = 1e-9;
     };
 }

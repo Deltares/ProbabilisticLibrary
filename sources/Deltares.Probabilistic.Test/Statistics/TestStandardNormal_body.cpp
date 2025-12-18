@@ -19,24 +19,24 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+#include <numbers>
 #include <gtest/gtest.h>
 #include "TestStandardNormal.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 
-using namespace Deltares::Statistics;
-
 namespace Deltares::Probabilistic::Test
 {
-    void TestStandardNormal::AllStandardNormalTests() const
+    void TestStandardNormal::allStandardNormalTests() const
     {
-        TestPQbetaConversions();
-        TestReturnTime();
-        TestFreqFromBeta();
-        TestLogQFromBeta();
+        testPQbetaConversions();
+        testReturnTime();
+        testFreqFromBeta();
+        testLogQFromBeta();
     }
 
-    void TestStandardNormal::TestPQbetaConversions() const
+    void TestStandardNormal::testPQbetaConversions() const
     {
+        using namespace Deltares::Statistics;
         constexpr double beta = 0.0;
         const auto [p,q] = StandardNormal::getPQFromU(beta);
         ASSERT_EQ(p, q); // both 0.5
@@ -47,8 +47,9 @@ namespace Deltares::Probabilistic::Test
         ASSERT_EQ(b, StandardNormal::BetaMax);
     }
 
-    void TestStandardNormal::TestReturnTime() const
+    void TestStandardNormal::testReturnTime() const
     {
+        using namespace Deltares::Statistics;
         for (int i = -70; i < 70; i++)
         {
             const double beta = 0.1 * static_cast<double>(i);
@@ -64,16 +65,16 @@ namespace Deltares::Probabilistic::Test
 
     // Test of method getFreqFromU
     // Comparison with results pre-computed with Matlab
-    void TestStandardNormal::TestFreqFromBeta() const
+    void TestStandardNormal::testFreqFromBeta() const
     {
         // expected frequency, pre-computed with Matlab
-        const auto freq_expected = std::vector({ 0.693147180559945, 0.172753779023450, 0.0230129093289635,
+        const auto freq_expected = std::vector({ std::numbers::ln2, 0.172753779023450, 0.0230129093289635,
             0.00135080996474820, 3.16717433774893e-5, 2.86651613008105e-7, 9.86587645037701e-10, 1.27981254388584e-12 });
 
         for (size_t i = 0; i < freq_expected.size(); i++)
         {
             const auto beta = static_cast<double>(i);
-            const auto freq = StandardNormal::getFreqFromU(beta);
+            const auto freq = Statistics::StandardNormal::getFreqFromU(beta);
             EXPECT_NEAR(freq, freq_expected[i], margin);
         }
 
@@ -81,7 +82,7 @@ namespace Deltares::Probabilistic::Test
 
     // Test of function LogQFromBeta
     // Comparison with results pre-computed with Matlab
-    void TestStandardNormal::TestLogQFromBeta() const
+    void TestStandardNormal::testLogQFromBeta() const
     {
         // expected -log(Q), pre-computed with Matlab
         const auto logQ_expected = std::vector({0.366512920581664, 1.75588794089519, 3.77169994533666,
@@ -90,7 +91,7 @@ namespace Deltares::Probabilistic::Test
         for (size_t i = 0; i < logQ_expected.size(); i++)
         {
             const auto beta = static_cast<float>(i);
-            const auto logQ = StandardNormal::getLogQFromU(beta);
+            const auto logQ = Statistics::StandardNormal::getLogQFromU(beta);
             EXPECT_NEAR(logQ, logQ_expected[i], margin);
         }
     }

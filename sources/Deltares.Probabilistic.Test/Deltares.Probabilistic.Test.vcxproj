@@ -196,6 +196,8 @@
     <ClInclude Include="Sensitivity\TestSensitivity_body.cpp" />
     <ClInclude Include="Utils\testutils.h" />
     <ClInclude Include="Utils\testutils_body.cpp" />
+    <ClInclude Include="Utils\TestExceptions.h" />
+    <ClInclude Include="Utils\TestExceptions_body.cpp" />
     <ClInclude Include="unittests_body.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +247,7 @@
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />
     <ClCompile Include="unittests.cpp" />
     <ClCompile Include="Utils\testutils.cpp" />
+    <ClCompile Include="Utils\TestExceptions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Deltares.Probabilistic\Deltares.Probabilistic.vcxproj">

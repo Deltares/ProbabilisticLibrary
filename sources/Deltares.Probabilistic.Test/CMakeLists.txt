@@ -122,6 +122,8 @@ add_executable(Deltares.Probabilistic.Test
     Sensitivity/TestSensitivity_body.cpp
     Utils/testutils.h
     Utils/testutils_body.cpp
+    Utils/TestExceptions.h
+    Utils/TestExceptions_body.cpp
 )
 
 set_target_properties(Deltares.Probabilistic.Test

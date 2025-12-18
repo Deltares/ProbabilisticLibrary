@@ -46,6 +46,7 @@
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
 #include "Proxies/TestProxies.h"
+#include "Utils/TestExceptions.h"
 #include "Reliability/Waarts/TestWaartsLinearResistance.h"
 #include "Reliability/Waarts/TestWaartsNoisyLimitState.h"
 #include "Reliability/Waarts/TestWaartsResistanceOneQuadraticTerm.h"
@@ -187,6 +188,11 @@ TEST(UnitTests, testStartPointCalculator)
 {
     auto tstStartPoint = TestStartPointCalculator();
     tstStartPoint.AllStartPointTests();
+}
+
+TEST(UnitTests, testExceptions)
+{
+    TestExceptions::testProblibExceptions();
 }
 
 TEST(ReliabilityMethodTest, TestFORM)
@@ -526,7 +532,7 @@ TEST(XfromUTests, testTruncatedNormal)
 TEST(UnitTests, testStandardNormal)
 {
     auto tstStdNormal = TestStandardNormal();
-    tstStdNormal.AllStandardNormalTests();
+    tstStdNormal.allStandardNormalTests();
 }
 
 TEST(CopulasTest, testClayton)

@@ -85,11 +85,7 @@ namespace Deltares::Probabilistic::Test
 
     WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
-        expected.beta = 2.98;
-        expected.alpha_margin = 0.1;
-        expected.success = false;
-        return expected;
+        return ExpectedValuesDirectionalSampling();
     }
 
     WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesAdaptiveImportanceSampling()
