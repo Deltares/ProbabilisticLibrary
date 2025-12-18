@@ -42,8 +42,7 @@ namespace Deltares
             bool isVarying(StochastProperties& stochast) override;
             bool canTruncate() override { return this->innerDistribution->canTruncate(); }
             bool canInvert() override { return true; }
-            bool canFit() override { return this->innerDistribution->canFit(); }
-            bool canFitPrior() override { return this->innerDistribution->canFitPrior(); }
+            bool canFit(const bool useShift, const bool usePrior) override { return this->innerDistribution->canFit(useShift, usePrior); }
             double getMean(StochastProperties& stochast) override;
             double getDeviation(StochastProperties& stochast) override;
             void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;

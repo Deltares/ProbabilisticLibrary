@@ -124,6 +124,26 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(2.0, stochast.mean, delta=margin)
         self.assertAlmostEqual(2.5, stochast.deviation, delta=margin)
 
+    def test_triangular(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.triangular
+
+        stochast.fit([3.0, 4.0, 5.0, 7.0, 9.0])
+        self.assertAlmostEqual(1.8, stochast.minimum, delta=margin)
+        self.assertAlmostEqual(4.8, stochast.shift, delta=margin)
+        self.assertAlmostEqual(10.2, stochast.maximum, delta=margin)
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        stochast.fit([3.0, 4.0, 5.0, 7.0, 9.0], 4.8)
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: Fit with shift is not supported for distribution type triangular.\n""", printed)
+
     def test_exponential_fit(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.exponential
