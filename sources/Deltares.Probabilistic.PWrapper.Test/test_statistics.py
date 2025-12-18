@@ -411,6 +411,27 @@ class Test_statistics(unittest.TestCase):
         # registered stochasts
         self.assertAlmostEqual(0.8, correlation_matrix[(stochast1, stochast2)], delta=margin)
         self.assertAlmostEqual(0.8, correlation_matrix[('a', 'b')], delta=margin)
+        self.assertAlmostEqual(0.8, correlation_matrix['a', 'b'], delta=margin)
+
+        # unregistered stochasts
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        stochast3 = Stochast()
+        stochast3.name = 'c'
+
+        correlation_matrix['a', 'c'] = 0.7
+
+        printed = sys.stdout.getvalue()
+        self.assertEqual("""Variable c is not available, value is not set.\n""", printed)
+
+        self.assertTrue(np.isnan(correlation_matrix['a', 'c']))
+
+        printed = sys.stdout.getvalue().splitlines()[-1]
+        self.assertEqual("""Variable c is not available.""", printed)
+
+        sys.stdout = sys.__stdout__
 
     def test_normal_fit(self):
         stochast = Stochast()

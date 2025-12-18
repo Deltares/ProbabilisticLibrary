@@ -1608,13 +1608,14 @@ class CorrelationMatrix(FrozenObject):
 		self._variables = FrozenList(update_variables)
 
 	def __getitem__(self, stochasts : list[Stochast|str]|tuple[Stochast|str,Stochast|str]) -> float:
-		"""Gets the correlation value between stochasts
+		"""Gets the correlation value between variables
 
         Parameters
         ----------
         stochasts: list[Stochast|str]|tuple[Stochast|str,Stochast|str]
-            Stochasts between which the correlation value is returned. In case of a list, the length
-            of the list must be 2."""
+            Variables between which the correlation value is returned. In case of a list, the length
+            of the list must be 2. Only variables which are available in the `probabilistic_library.project.ModelProject`
+            to which this correlation matrix belongs, can be retrieved."""
 
 		if not isinstance(stochasts, tuple) or len(stochasts) != 2:
 			raise ArgumentError(_msg_expected_two_arguments)
@@ -1626,16 +1627,22 @@ class CorrelationMatrix(FrozenObject):
 			else:
 				stochast_list.append(stochasts[i])
 
+		for index in range(len(stochasts)):
+			if stochast_list[index] is None:
+				print (f'Variable {stochasts[index]} is not available.')
+				return nan
+
 		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id)
 
 	def __setitem__(self, stochasts, value):
-		"""Sets the correlation value between stochasts
+		"""Sets the correlation value between variables
 
         Parameters
         ----------
         stochasts: list[Stochast|str]|tuple[Stochast|str,Stochast|str]
-            Stochasts between which the correlation value is returned. In case of a list, the length
-            of the list must be 2.
+            Variables between which the correlation value is returned. In case of a list, the length
+            of the list must be 2. Only variables which are available in the `probabilistic_library.project.ModelProject`
+            to which this correlation matrix belongs, can be set.
 
         value: float
             The correlation value, must be between -1 and 1 (inclusive)"""
@@ -1649,6 +1656,11 @@ class CorrelationMatrix(FrozenObject):
 				stochast_list.append(self._variables[stochasts[i]])
 			else:
 				stochast_list.append(stochasts[i])
+
+		for index in range(len(stochasts)):
+			if stochast_list[index] is None:
+				print (f'Variable {stochasts[index]} is not available, value is not set.')
+				return
 
 		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
 
