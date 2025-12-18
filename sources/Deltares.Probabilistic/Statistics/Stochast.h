@@ -344,21 +344,11 @@ namespace Deltares
 
             /**
              * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values
+             * \param useShift Indicates whether a value for shift is provided for the fit procedure
+             * \param usePrior Indicates whether a prior distribution is provided for the fit procedure
              * \return Indication
              */
-            bool canFit() const;
-
-            /**
-             * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values and a given shift value
-             * \return Indication
-             */
-            bool canFitShift() const;
-
-            /**
-             * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values and a prior distribution
-             * \return Indication
-             */
-            bool canFitPrior() const;
+            bool canFit(const bool useShift = false, const bool usePrior = false) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values

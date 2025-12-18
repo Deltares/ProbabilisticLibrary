@@ -276,7 +276,7 @@ namespace Deltares
                     }
                     else if (distributionChangingType == DistributionChangeType::FitFromHistogramValues)
                     {
-                        if (canFit() && !getProperties()->HistogramValues.empty())
+                        if (canFit(false, false) && !getProperties()->HistogramValues.empty())
                         {
                             fitFromHistogramValues();
                         }
@@ -536,19 +536,9 @@ namespace Deltares
             }
         }
 
-        bool Stochast::canFit() const
+        bool Stochast::canFit(const bool useShift, const bool usePrior) const
         {
-            return distribution->canFit();
-        }
-
-        bool Stochast::canFitShift() const
-        {
-            return distribution->canFitShift();
-        }
-
-        bool Stochast::canFitPrior() const
-        {
-            return distribution->canFitPrior();
+            return distribution->canFit(useShift, usePrior);
         }
 
         Logging::ValidationReport Stochast::getFitValidationReport(std::vector<double>& values, const std::shared_ptr<Stochast>& prior, const double shift) const
@@ -557,14 +547,14 @@ namespace Deltares
 
             Logging::ValidationSupport::checkNotEmpty(report, values.size(), "values");
 
-            if (!this->canFit())
+            if (!this->canFit(false, false))
             {
                 Logging::ValidationSupport::add(report, "Fit is not supported for distribution type " + Stochast::getDistributionTypeString(distributionType) + ".", name);
             }
 
             if (!values.empty() && !std::isnan(shift))
             {
-                if (!this->canFitShift())
+                if (!this->canFit(true, false))
                 {
                     Logging::ValidationSupport::add(report, "Fit with shift is not supported for distribution type " + Stochast::getDistributionTypeString(distributionType) + ".", name);
                 }
@@ -583,7 +573,7 @@ namespace Deltares
 
             if (prior != nullptr)
             {
-                if (!this->canFitPrior())
+                if (!this->canFit(false, true))
                 {
                     Logging::ValidationSupport::add(report, "Fit with prior is not supported for distribution type " + Stochast::getDistributionTypeString(distributionType) + ".", name);
                 }

@@ -96,27 +96,11 @@ namespace Deltares::Statistics
 
         /**
          * \brief Indicates whether the stochast can be fitted to data, i.e. parameters in stochast can be estimated based on a given set of x-values
+         * \param useShift Indicates whether a value for shift is provided for the fit procedure
+         * \param usePrior Indicates whether a prior distribution is provided for the fit procedure
          * \return Indication
          */
-        virtual bool canFit() { return false; }
-
-        /**
-         * \brief Indicates whether the stochast can be fitted to data with a given value for shift
-         * \return Indication
-         */
-        virtual bool canFitShift()
-        {
-            return std::ranges::any_of(getParameters(), [](DistributionPropertyType parameter)
-            {
-                return parameter == DistributionPropertyType::Shift;
-            });
-        }
-
-        /**
-         * \brief Indicates whether the stochast can be fitted to data with use of a prior stochast
-         * \return Indication
-         */
-        virtual bool canFitPrior() { return false; }
+        virtual bool canFit(const bool useShift = false, const bool usePrior = false) { return false; }
 
         /**
          * \brief Indicates whether it is meaningful to compare x-values produced by this distribution (no: qualitative, yes: not qualitative)
