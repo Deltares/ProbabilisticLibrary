@@ -76,9 +76,9 @@ ApplicationPayload.wxs
 *.maf
 *.mtc*
 doc/*.log
-doc/funcdesign.pdf
-doc/scientific_background.pdf
-doc/starting_up.pdf
+docs/funcdesign.pdf
+docs/scientific_background.pdf
+docs/starting_up.pdf
 
 # Windows shortcuts
 *.lnk
