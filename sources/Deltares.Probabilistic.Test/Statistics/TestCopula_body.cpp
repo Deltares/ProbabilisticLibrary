@@ -50,7 +50,7 @@ namespace Deltares::Probabilistic::Test
         double a = 1.0;
         double b = 1.0;
         frank_copula.update_uspace(a, b);
-        EXPECT_NEAR(b, 1.1216920258, margin);
+        EXPECT_NEAR(b, 1.1216995066, margin);
     }
 
     void TestCopula::TestGaussian()

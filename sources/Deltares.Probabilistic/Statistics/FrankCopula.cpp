@@ -27,31 +27,17 @@
 
 namespace Deltares::Statistics
 {
-    double FrankCopula::copulaRootFunc(double u, double v, double t) const
-    {
-        const double C = -1.0 / theta;
-        const double gx = 1.0 + expm1(-theta*u) * expm1(-theta*v) / expm1(-theta);
-        const double gxdx = -expm1(-theta * u) * exp(-theta * v) * theta / expm1(-theta);
-
-        double out1 = gxdx * C / gx;
-        out1 = out1 - t;
-        return out1;
-    }
-
     void FrankCopula::update(const double& u, double& t) const
     {
-        Numeric::RootFinderMethod method = [this, u, t](double v)
-            {
-                return copulaRootFunc(v, u, t);
-            };
-
-        constexpr double toleranceBisection = 0.00001;
-        auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
-
-        double minStart = 0.0;
-        double maxStart = 1.0;
-
-        t = bisection.CalculateValue(minStart, maxStart, 0.0, method);
+        if (theta < 700.0)
+        {
+            const double factor = (t - 1.0) * std::exp(-theta * u);
+            t = 1.0 + std::log((factor - t) / (factor * std::exp(theta) - t)) / theta;
+        }
+        else
+        {
+            t = u;
+        }
     }
 
     void FrankCopula::validate(Logging::ValidationReport& report) const

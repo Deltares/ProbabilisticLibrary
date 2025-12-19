@@ -34,7 +34,6 @@ namespace Deltares::Statistics
         void validate(Logging::ValidationReport& report)  const override;
     private:
         const double theta;
-        double copulaRootFunc(double u, double v, double t) const;
     };
 }
 

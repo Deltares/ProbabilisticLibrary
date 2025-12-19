@@ -43,6 +43,12 @@ namespace Deltares::Statistics
 
     void GumbelCopula::update(const double& u, double& t) const
     {
+        if (theta > 400.0)
+        {
+            t = u;
+            return;
+        }
+
         Numeric::RootFinderMethod method = [this, u, t](double v)
             {
                 return copulaRootFunc(v, u, t);
