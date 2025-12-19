@@ -28,12 +28,12 @@ namespace Deltares::Statistics
     class GumbelCopula : public BaseCopula
     {
     public:
-        explicit GumbelCopula(const double alpha) : alpha(alpha) {}
+        explicit GumbelCopula(const double theta) : theta(theta) {}
         void update(const double& u, double& t) const override;
-        CorrelationValueAndType getCorrelation() const override { return { alpha, CorrelationType::Gumbel }; }
+        CorrelationValueAndType getCorrelation() const override { return { theta, CorrelationType::Gumbel }; }
         void validate(Logging::ValidationReport& report) const override;
     private:
-        const double alpha;
+        const double theta;
         double copulaRootFunc(double u, double v, double t) const;
     };
 }

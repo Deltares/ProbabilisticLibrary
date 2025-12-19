@@ -118,7 +118,7 @@ namespace Deltares::Probabilistic::Test
         report.messages.clear();
         auto frank_copula = Statistics::FrankCopula(0.0);
         frank_copula.validate(report);
-        EXPECT_EQ("Rho in Frank copula should be <> 0.0, but is 0.0", report.messages[0]->Text);
+        EXPECT_EQ("Theta in Frank copula should be <> 0.0, but is 0.0", report.messages[0]->Text);
 
         report.messages.clear();
         auto clayton_copula = Statistics::ClaytonCopula(-2.0);
@@ -128,7 +128,7 @@ namespace Deltares::Probabilistic::Test
         report.messages.clear();
         auto gumbel_copula = Statistics::GumbelCopula(0.99);
         gumbel_copula.validate(report);
-        EXPECT_EQ("Alpha value 0.99 is less than 1.", report.messages[0]->Text);
+        EXPECT_EQ("Theta value 0.99 is less than 1.", report.messages[0]->Text);
 
         report.messages.clear();
         auto diagonal_band_copula = Statistics::DiagonalBandCopula(-1.0);

@@ -31,7 +31,7 @@ namespace Deltares::Statistics
     {
         const double ut = -log(u);
         const double vt = -log(v);
-        const double k = alpha;
+        const double k = theta;
 
         double factor1 = exp( -pow( pow(ut, k) + pow(vt, k), (1.0 / k)));
         double factor2 = pow(1.0 + pow(ut / vt, k), (1.0 / k - 1.0));
@@ -71,7 +71,7 @@ namespace Deltares::Statistics
 
     void GumbelCopula::validate(Logging::ValidationReport & report) const
     {
-        Logging::ValidationSupport::checkMinimum(report, 1.0, alpha, "Alpha", "Gumbel copula", Logging::MessageType::Error);
+        Logging::ValidationSupport::checkMinimum(report, 1.0, theta, "Theta", "Gumbel copula", Logging::MessageType::Error);
     }
 }
 

@@ -28,9 +28,9 @@ namespace Deltares::Statistics
 {
     double FrankCopula::copulaRootFunc(double u, double v, double t) const
     {
-        const double C = -1.0 / alpha;
-        const double gx = 1.0 + expm1(-alpha*u) * expm1(-alpha*v) / expm1(-alpha);
-        const double gxdx = -expm1(-alpha * u) * exp(-alpha * v) * alpha / expm1(-alpha);
+        const double C = -1.0 / theta;
+        const double gx = 1.0 + expm1(-theta*u) * expm1(-theta*v) / expm1(-theta);
+        const double gxdx = -expm1(-theta * u) * exp(-theta * v) * theta / expm1(-theta);
 
         double out1 = gxdx * C / gx;
         out1 = out1 - t;
@@ -64,10 +64,10 @@ namespace Deltares::Statistics
 
     void FrankCopula::validate(Logging::ValidationReport& report) const
     {
-        if (alpha == 0.0)
+        if (theta == 0.0)
         {
             auto msg = std::make_shared<Logging::Message>();
-            msg->Text = "Rho in Frank copula should be <> 0.0, but is 0.0";
+            msg->Text = "Theta in Frank copula should be <> 0.0, but is 0.0";
             msg->Type = Logging::MessageType::Error;
             report.messages.push_back(msg);
         }
