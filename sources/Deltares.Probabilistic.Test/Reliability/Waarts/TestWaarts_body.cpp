@@ -38,7 +38,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORM>();
-        auto expected = ExpectedValuesFORM();
+        auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -46,7 +46,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::CrudeMonteCarlo>();
-        auto expected = ExpectedValuesCrudeMonteCarlo();
+        auto expected = expectedValuesCrudeMonteCarlo();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -54,7 +54,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::DirectionalSampling>();
-        auto expected = ExpectedValuesDirectionalSampling();
+        auto expected = expectedValuesDirectionalSampling();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -62,7 +62,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
-        auto expected = ExpectedValuesNumericalIntegration();
+        auto expected = expectedValuesNumericalIntegration();
         expected.success = false;
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
@@ -71,7 +71,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::ImportanceSampling>();
-        auto expected = ExpectedValuesImportanceSampling();
+        auto expected = expectedValuesImportanceSampling();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -79,7 +79,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::AdaptiveImportanceSampling>();
-        auto expected = ExpectedValuesAdaptiveImportanceSampling();
+        auto expected = expectedValuesAdaptiveImportanceSampling();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -87,7 +87,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORMThenDirectionalSampling>();
-        auto expected = ExpectedValuesFDIR();
+        auto expected = expectedValuesFDIR();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -95,7 +95,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::DirectionalSamplingThenFORM>();
-        auto expected = ExpectedValuesDSFI();
+        auto expected = expectedValuesDSFI();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 

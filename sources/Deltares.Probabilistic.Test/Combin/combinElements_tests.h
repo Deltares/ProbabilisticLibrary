@@ -29,9 +29,9 @@ namespace Deltares::Probabilistic::Test
     class combinElementsTests
     {
     public:
-        void RunAllCombineTwoElementsTests();
-        void RunAllCombineMultipleElementsTests();
-        void RunAllLengthEffectTests();
+        void runAllCombineTwoElementsTests();
+        void runAllCombineMultipleElementsTests();
+        void runAllLengthEffectTests();
     private:
         void testCombineTwoElementsNoCorrelation1();
         void testCombineTwoElementsNoCorrelation2();
@@ -65,8 +65,8 @@ namespace Deltares::Probabilistic::Test
         void testCombineMultipleElementsSpatialCorrelated2();
         void testCombineMultipleElementsSpatialCorrelated3();
         static void testLengthEffectFourStochasts();
-        void UpscaleLengthTests11();
-        void UpscaleLengthTests16();
+        void upscaleLengthTests11();
+        void upscaleLengthTests16();
         void testCombineElementsFullCorrelation1();
         void testCombineElementsFullCorrelation2();
         void testCombineElementsFullCorrelation(const Reliability::combineAndOr andOr);

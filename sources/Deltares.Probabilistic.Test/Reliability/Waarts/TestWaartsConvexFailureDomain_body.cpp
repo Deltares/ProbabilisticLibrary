@@ -50,7 +50,7 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsConvexFailureDomain::ExpectedValues()
+    WaartsResult TestWaartsConvexFailureDomain::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 2.6;
@@ -58,36 +58,36 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsConvexFailureDomain::ExpectedValuesFORM()
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesFORM()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.50;
         return expected;
     }
 
-    WaartsResult TestWaartsConvexFailureDomain::ExpectedValuesFDIR()
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesFDIR()
     {
-        return ExpectedValuesFORM();
+        return expectedValuesFORM();
     }
 
-    WaartsResult TestWaartsConvexFailureDomain::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.69;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsConvexFailureDomain::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesAdaptiveImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.67;
         return expected;
     }
 
-    WaartsResult TestWaartsConvexFailureDomain::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.success = false;
         return expected;
     }

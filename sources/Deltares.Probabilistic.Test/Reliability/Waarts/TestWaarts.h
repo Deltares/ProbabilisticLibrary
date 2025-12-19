@@ -57,14 +57,14 @@ namespace Deltares::Probabilistic::Test
         static void RunSingleWaartsTest(const std::shared_ptr<Models::ModelRunner>& modelRunner,
             Reliability::ReliabilityMethod& calculator, const WaartsResult& expected);
         virtual std::shared_ptr<Models::ModelRunner> WaartsModel() = 0;
-        virtual WaartsResult ExpectedValues() = 0;
-        virtual WaartsResult ExpectedValuesFORM() { return ExpectedValues(); }
-        virtual WaartsResult ExpectedValuesCrudeMonteCarlo() { return ExpectedValues(); }
-        virtual WaartsResult ExpectedValuesDirectionalSampling() { return ExpectedValues(); }
-        virtual WaartsResult ExpectedValuesNumericalIntegration() { return ExpectedValues(); }
-        virtual WaartsResult ExpectedValuesImportanceSampling() { return ExpectedValues(); }
-        virtual WaartsResult ExpectedValuesAdaptiveImportanceSampling() { return ExpectedValues(); }
-        virtual WaartsResult ExpectedValuesFDIR() { return ExpectedValues(); }
-        virtual WaartsResult ExpectedValuesDSFI() { return ExpectedValues(); }
+        virtual WaartsResult expectedValues() = 0;
+        virtual WaartsResult expectedValuesFORM() { return expectedValues(); }
+        virtual WaartsResult expectedValuesCrudeMonteCarlo() { return expectedValues(); }
+        virtual WaartsResult expectedValuesDirectionalSampling() { return expectedValues(); }
+        virtual WaartsResult expectedValuesNumericalIntegration() { return expectedValues(); }
+        virtual WaartsResult expectedValuesImportanceSampling() { return expectedValues(); }
+        virtual WaartsResult expectedValuesAdaptiveImportanceSampling() { return expectedValues(); }
+        virtual WaartsResult expectedValuesFDIR() { return expectedValues(); }
+        virtual WaartsResult expectedValuesDSFI() { return expectedValues(); }
     };
 }

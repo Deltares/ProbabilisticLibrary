@@ -46,18 +46,18 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    void TestWaartsLinearResistance::RunNumInt(const Reliability::DesignPointMethod method)
+    void TestWaartsLinearResistance::runNumInt(const Reliability::DesignPointMethod method)
     {
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
         auto form = dynamic_cast<Reliability::NumericalIntegration*>(calculator.get());
         form->Settings.designPointMethod = method;
-        auto expected = ExpectedValuesNumericalIntegration();
+        auto expected = expectedValuesNumericalIntegration();
         expected.success = false;
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
-    WaartsResult TestWaartsLinearResistance::ExpectedValues()
+    WaartsResult TestWaartsLinearResistance::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 3.54;
@@ -66,18 +66,18 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsLinearResistance::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsLinearResistance::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.alpha_margin = 0.15;
         expected.x_margin = 0.5;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsLinearResistance::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsLinearResistance::expectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.x_margin = 0.1;
         expected.success = false;
         return expected;

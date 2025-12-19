@@ -62,7 +62,7 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsParallelSystem::ExpectedValues()
+    WaartsResult TestWaartsParallelSystem::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 3.5;
@@ -70,16 +70,16 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsParallelSystem::ExpectedValuesFORM()
+    WaartsResult TestWaartsParallelSystem::expectedValuesFORM()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 1.64;
         return expected;
     }
 
-    WaartsResult TestWaartsParallelSystem::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsParallelSystem::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 3.29;
         return expected;
     }

@@ -33,14 +33,14 @@ namespace Deltares::Probabilistic::Test
         void WaartsFDIR() override;
     private:
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
-        WaartsResult ExpectedValues() override;
-        WaartsResult ExpectedValuesFORM() override;
-        WaartsResult ExpectedValuesFDIR() override;
-        WaartsResult ExpectedValuesDSFI() override;
-        WaartsResult ExpectedValuesNumericalIntegration() override;
-        WaartsResult ExpectedValuesCrudeMonteCarlo() override;
-        WaartsResult ExpectedValuesImportanceSampling() override;
-        WaartsResult ExpectedValuesAdaptiveImportanceSampling() override;
-        WaartsResult ExpectedValuesDirectionalSampling() override;
+        WaartsResult expectedValues() override;
+        WaartsResult expectedValuesFORM() override;
+        WaartsResult expectedValuesFDIR() override;
+        WaartsResult expectedValuesDSFI() override;
+        WaartsResult expectedValuesNumericalIntegration() override;
+        WaartsResult expectedValuesCrudeMonteCarlo() override;
+        WaartsResult expectedValuesImportanceSampling() override;
+        WaartsResult expectedValuesAdaptiveImportanceSampling() override;
+        WaartsResult expectedValuesDirectionalSampling() override;
     };
 }

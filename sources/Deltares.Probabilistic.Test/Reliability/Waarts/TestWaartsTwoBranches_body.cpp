@@ -65,7 +65,7 @@ namespace Deltares::Probabilistic::Test
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORM>();
         auto form = dynamic_cast<Reliability::FORM*>(calculator.get());
         form->Settings->FilterAtNonConvergence = true;
-        auto expected = ExpectedValuesFORM();
+        auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -76,36 +76,36 @@ namespace Deltares::Probabilistic::Test
         auto cm = dynamic_cast<Reliability::CrudeMonteCarlo*>(calculator.get());
         cm->Settings->MaximumSamples = 10000000;
         cm->Settings->randomSettings->Seed = 1; // default seed (0), gives beta = 40
-        auto expected = ExpectedValuesCrudeMonteCarlo();
+        auto expected = expectedValuesCrudeMonteCarlo();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
-    WaartsResult TestWaartsTwoBranches::ExpectedValues()
+    WaartsResult TestWaartsTwoBranches::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 5.03;
         return expected;
     }
 
-    WaartsResult TestWaartsTwoBranches::ExpectedValuesFORM()
+    WaartsResult TestWaartsTwoBranches::expectedValuesFORM()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.45;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsTwoBranches::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsTwoBranches::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 5.07;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsTwoBranches::ExpectedValuesDirectionalSampling()
+    WaartsResult TestWaartsTwoBranches::expectedValuesDirectionalSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 5.04;
         expected.alpha = { 0.380261 , -0.913978 ,-0.141584 };
         expected.x = { 9.041, 4.61003, 4.71414 };
@@ -113,12 +113,12 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsTwoBranches::ExpectedValuesFDIR()
+    WaartsResult TestWaartsTwoBranches::expectedValuesFDIR()
     {
-        return ExpectedValuesDirectionalSampling();
+        return expectedValuesDirectionalSampling();
     }
 
-    WaartsResult TestWaartsTwoBranches::ExpectedValuesDSFI()
+    WaartsResult TestWaartsTwoBranches::expectedValuesDSFI()
     {
         auto expected = WaartsResult();
         expected.beta = 5.04;
@@ -126,9 +126,9 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsTwoBranches::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsTwoBranches::expectedValuesAdaptiveImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 5.01;
         expected.alpha = {0.465031, -0.871085, -0.157981};
         expected.x = {8.83589, 4.36116, 4.79095};

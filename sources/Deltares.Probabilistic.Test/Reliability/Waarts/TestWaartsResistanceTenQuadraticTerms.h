@@ -29,11 +29,11 @@ namespace Deltares::Probabilistic::Test
     class TestWaartsResistanceTenQuadraticTerms : public TestWaarts
     {
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
-        WaartsResult ExpectedValues() override;
-        WaartsResult ExpectedValuesCrudeMonteCarlo() override;
-        WaartsResult ExpectedValuesImportanceSampling() override;
-        WaartsResult ExpectedValuesDirectionalSampling() override;
-        WaartsResult ExpectedValuesDSFI() override;
-        WaartsResult ExpectedValuesAdaptiveImportanceSampling() override;
+        WaartsResult expectedValues() override;
+        WaartsResult expectedValuesCrudeMonteCarlo() override;
+        WaartsResult expectedValuesImportanceSampling() override;
+        WaartsResult expectedValuesDirectionalSampling() override;
+        WaartsResult expectedValuesDSFI() override;
+        WaartsResult expectedValuesAdaptiveImportanceSampling() override;
     };
 }

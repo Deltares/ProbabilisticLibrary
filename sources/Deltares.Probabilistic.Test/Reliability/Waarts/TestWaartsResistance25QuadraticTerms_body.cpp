@@ -55,7 +55,7 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValues()
+    WaartsResult TestWaartsResistance25QuadraticTerms::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 2.92;
@@ -67,45 +67,45 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsResistance25QuadraticTerms::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.67;
         expected.alpha.clear();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesDirectionalSampling()
+    WaartsResult TestWaartsResistance25QuadraticTerms::expectedValuesDirectionalSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.64;
         expected.alpha_margin = 0.1;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsResistance25QuadraticTerms::expectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.61;
         expected.alpha.clear();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsResistance25QuadraticTerms::expectedValuesAdaptiveImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.56;
         expected.alpha_margin = 0.2;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistance25QuadraticTerms::ExpectedValuesDSFI()
+    WaartsResult TestWaartsResistance25QuadraticTerms::expectedValuesDSFI()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.64;
         expected.success = false;
         return expected;

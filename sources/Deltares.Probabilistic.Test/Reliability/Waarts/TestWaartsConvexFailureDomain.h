@@ -29,11 +29,11 @@ namespace Deltares::Probabilistic::Test
     class TestWaartsConvexFailureDomain : public TestWaarts
     {
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
-        WaartsResult ExpectedValues() override;
-        WaartsResult ExpectedValuesFORM() override;
-        WaartsResult ExpectedValuesFDIR() override;
-        WaartsResult ExpectedValuesCrudeMonteCarlo() override;
-        WaartsResult ExpectedValuesAdaptiveImportanceSampling() override;
-        WaartsResult ExpectedValuesImportanceSampling() override;
+        WaartsResult expectedValues() override;
+        WaartsResult expectedValuesFORM() override;
+        WaartsResult expectedValuesFDIR() override;
+        WaartsResult expectedValuesCrudeMonteCarlo() override;
+        WaartsResult expectedValuesAdaptiveImportanceSampling() override;
+        WaartsResult expectedValuesImportanceSampling() override;
     };
 }

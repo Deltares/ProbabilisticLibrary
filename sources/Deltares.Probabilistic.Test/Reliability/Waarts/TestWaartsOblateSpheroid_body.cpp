@@ -55,35 +55,35 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsOblateSpheroid::ExpectedValues()
+    WaartsResult TestWaartsOblateSpheroid::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 1.1;
         return expected;
     }
 
-    WaartsResult TestWaartsOblateSpheroid::ExpectedValuesFORM()
+    WaartsResult TestWaartsOblateSpheroid::expectedValuesFORM()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 3.38;
         return expected;
     }
 
-    WaartsResult TestWaartsOblateSpheroid::ExpectedValuesFDIR()
+    WaartsResult TestWaartsOblateSpheroid::expectedValuesFDIR()
     {
-        return ExpectedValuesFORM();
+        return expectedValuesFORM();
     }
 
-    WaartsResult TestWaartsOblateSpheroid::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsOblateSpheroid::expectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsOblateSpheroid::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsOblateSpheroid::expectedValuesAdaptiveImportanceSampling()
     {
-        return ExpectedValuesImportanceSampling();
+        return expectedValuesImportanceSampling();
     }
 
 }

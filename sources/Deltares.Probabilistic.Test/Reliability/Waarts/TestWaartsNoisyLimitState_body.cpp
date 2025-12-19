@@ -57,7 +57,7 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsNoisyLimitState::ExpectedValues()
+    WaartsResult TestWaartsNoisyLimitState::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 2.3;
@@ -65,21 +65,21 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsNoisyLimitState::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsNoisyLimitState::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsNoisyLimitState::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsNoisyLimitState::expectedValuesImportanceSampling()
     {
-        return ExpectedValuesCrudeMonteCarlo();
+        return expectedValuesCrudeMonteCarlo();
     }
 
-    WaartsResult TestWaartsNoisyLimitState::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsNoisyLimitState::expectedValuesAdaptiveImportanceSampling()
     {
-        return ExpectedValuesCrudeMonteCarlo();
+        return expectedValuesCrudeMonteCarlo();
     }
 
 }

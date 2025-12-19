@@ -56,7 +56,7 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValues()
+    WaartsResult TestWaartsResistanceTenQuadraticTerms::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 3.20;
@@ -64,9 +64,9 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsResistanceTenQuadraticTerms::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 3.04;
         expected.alpha = { 0.679947, -0.622061, -0.165165, -0.0979174, -0.201122, 0.00966454, -0.0959883, -0.08764, -0.0737432, -0.0224048, -0.224647 };
         expected.alpha_margin = 0.1;
@@ -74,31 +74,31 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesDirectionalSampling()
+    WaartsResult TestWaartsResistanceTenQuadraticTerms::expectedValuesDirectionalSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.98;
         expected.alpha_margin = 0.1;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsResistanceTenQuadraticTerms::expectedValuesImportanceSampling()
     {
-        return ExpectedValuesDirectionalSampling();
+        return expectedValuesDirectionalSampling();
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsResistanceTenQuadraticTerms::expectedValuesAdaptiveImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.95;
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceTenQuadraticTerms::ExpectedValuesDSFI()
+    WaartsResult TestWaartsResistanceTenQuadraticTerms::expectedValuesDSFI()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.98;
         expected.success = false;
         return expected;

@@ -57,7 +57,7 @@ namespace Deltares::Probabilistic::Test
         auto form = dynamic_cast<Reliability::FORM*>(calculator.get());
         form->Settings->StartPointSettings->StartMethod = Reliability::RaySearch;
         form->Settings->StartPointSettings->startVector = { 1.0, 0.0 };
-        auto expected = ExpectedValuesFORM();
+        auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -68,7 +68,7 @@ namespace Deltares::Probabilistic::Test
         auto form = dynamic_cast<Reliability::FORMThenDirectionalSampling*>(calculator.get());
         form->formSettings->StartPointSettings->StartMethod = Reliability::RaySearch;
         form->formSettings->StartPointSettings->startVector = { 1.0, 0.0 };
-        auto expected = ExpectedValuesFORM();
+        auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -78,11 +78,11 @@ namespace Deltares::Probabilistic::Test
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
         auto numint = dynamic_cast<Reliability::NumericalIntegration*>(calculator.get());
         numint->Settings.designPointMethod = Reliability::NearestToMean;
-        auto expected = ExpectedValuesNumericalIntegration();
+        auto expected = expectedValuesNumericalIntegration();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
-    WaartsResult TestWaartsConcaveFailureDomain::ExpectedValues()
+    WaartsResult TestWaartsConcaveFailureDomain::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 1.26;
@@ -91,31 +91,31 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsConcaveFailureDomain::ExpectedValuesNumericalIntegration()
+    WaartsResult TestWaartsConcaveFailureDomain::expectedValuesNumericalIntegration()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 1.25;
         expected.alpha = { 0.46, -0.79 };
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsConcaveFailureDomain::ExpectedValuesFORM()
+    WaartsResult TestWaartsConcaveFailureDomain::expectedValuesFORM()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 1.66;
         expected.alpha.clear();
         return expected;
     }
 
-    WaartsResult TestWaartsConcaveFailureDomain::ExpectedValuesFDIR()
+    WaartsResult TestWaartsConcaveFailureDomain::expectedValuesFDIR()
     {
-        return ExpectedValuesFORM();
+        return expectedValuesFORM();
     }
 
-    WaartsResult TestWaartsConcaveFailureDomain::ExpectedValuesDSFI()
+    WaartsResult TestWaartsConcaveFailureDomain::expectedValuesDSFI()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.alpha = { 0.431047, -0.90233};
         expected.x = {-0.715352, 1.49748};
         expected.alpha_margin = 0.01;
@@ -123,9 +123,9 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsConcaveFailureDomain::ExpectedValuesDirectionalSampling()
+    WaartsResult TestWaartsConcaveFailureDomain::expectedValuesDirectionalSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.alpha = {-0.496362, -0.868116};
         expected.x = {0.630058, 1.10195};
         expected.alpha_margin = 0.01;

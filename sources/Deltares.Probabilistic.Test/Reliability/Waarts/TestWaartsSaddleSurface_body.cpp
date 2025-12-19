@@ -55,7 +55,7 @@ namespace Deltares::Probabilistic::Test
         auto form = dynamic_cast<Reliability::FORM*>(calculator.get());
         form->Settings->StartPointSettings->StartMethod = Reliability::StartMethodType::FixedValue;
         form->Settings->StartPointSettings->startVector = { 1.0, 1.0 };
-        auto expected = ExpectedValuesFORM();
+        auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -66,16 +66,16 @@ namespace Deltares::Probabilistic::Test
         auto form = dynamic_cast<Reliability::FORMThenDirectionalSampling*>(calculator.get());
         form->formSettings->StartPointSettings->StartMethod = Reliability::StartMethodType::FixedValue;
         form->formSettings->StartPointSettings->startVector = { 1.0, 1.0 };
-        auto expected = ExpectedValuesFORM();
+        auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValues()
+    WaartsResult TestWaartsSaddleSurface::expectedValues()
     {
         throw Reliability::probLibException("Must be implemented for all reliability methods (too much differences between methods)");
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValuesFORM()
+    WaartsResult TestWaartsSaddleSurface::expectedValuesFORM()
     {
         auto expected = WaartsResult();
         expected.beta = 2.45;
@@ -84,12 +84,12 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValuesFDIR()
+    WaartsResult TestWaartsSaddleSurface::expectedValuesFDIR()
     {
-        return ExpectedValuesFORM();
+        return expectedValuesFORM();
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValuesNumericalIntegration()
+    WaartsResult TestWaartsSaddleSurface::expectedValuesNumericalIntegration()
     {
         auto expected = WaartsResult();
         expected.beta = 2.35;
@@ -98,7 +98,7 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsSaddleSurface::expectedValuesCrudeMonteCarlo()
     {
         auto expected = WaartsResult();
         expected.beta = 2.34;
@@ -108,7 +108,7 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsSaddleSurface::expectedValuesImportanceSampling()
     {
         auto expected = WaartsResult();
         expected.beta = 2.35;
@@ -118,7 +118,7 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsSaddleSurface::expectedValuesAdaptiveImportanceSampling()
     {
         auto expected = WaartsResult();
         expected.beta = 2.38;
@@ -128,7 +128,7 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValuesDSFI()
+    WaartsResult TestWaartsSaddleSurface::expectedValuesDSFI()
     {
         auto expected = WaartsResult();
         expected.beta = 2.34;
@@ -137,7 +137,7 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSaddleSurface::ExpectedValuesDirectionalSampling()
+    WaartsResult TestWaartsSaddleSurface::expectedValuesDirectionalSampling()
     {
         auto expected = WaartsResult();
         expected.beta = 2.34;

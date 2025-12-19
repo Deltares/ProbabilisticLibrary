@@ -29,10 +29,10 @@ namespace Deltares::Probabilistic::Test
     class TestWaartsOblateSpheroid : public TestWaarts
     {
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
-        WaartsResult ExpectedValues() override;
-        WaartsResult ExpectedValuesFORM() override;
-        WaartsResult ExpectedValuesFDIR() override;
-        WaartsResult ExpectedValuesImportanceSampling() override;
-        WaartsResult ExpectedValuesAdaptiveImportanceSampling() override;
+        WaartsResult expectedValues() override;
+        WaartsResult expectedValuesFORM() override;
+        WaartsResult expectedValuesFDIR() override;
+        WaartsResult expectedValuesImportanceSampling() override;
+        WaartsResult expectedValuesAdaptiveImportanceSampling() override;
     };
 }

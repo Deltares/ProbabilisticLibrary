@@ -30,11 +30,11 @@ namespace Deltares::Probabilistic::Test
     class TestWaartsLinearResistance : public TestWaarts
     {
     public:
-        void RunNumInt(const Reliability::DesignPointMethod method);
+        void runNumInt(const Reliability::DesignPointMethod method);
     private:
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
-        WaartsResult ExpectedValues() override;
-        WaartsResult ExpectedValuesCrudeMonteCarlo() override;
-        WaartsResult ExpectedValuesImportanceSampling() override;
+        WaartsResult expectedValues() override;
+        WaartsResult expectedValuesCrudeMonteCarlo() override;
+        WaartsResult expectedValuesImportanceSampling() override;
     };
 }

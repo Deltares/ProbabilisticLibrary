@@ -46,7 +46,7 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsResistanceOneQuadraticTerm::ExpectedValues()
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 3.45;
@@ -56,18 +56,18 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceOneQuadraticTerm::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.alpha.clear();
         expected.x.clear();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsResistanceOneQuadraticTerm::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::expectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.success = false;
         return expected;
     }

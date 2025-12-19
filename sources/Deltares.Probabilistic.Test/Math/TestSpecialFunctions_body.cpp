@@ -28,7 +28,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void TestSpecialFunctions::IncompleteGammaTest()
+    void TestSpecialFunctions::incompleteGammaTest()
     {
         using namespace Deltares::Numeric;
         auto references = std::vector<std::vector<double>>();
@@ -60,7 +60,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void TestSpecialFunctions::IncompleteGammaExceptionalCasesTest()
+    void TestSpecialFunctions::incompleteGammaExceptionalCasesTest()
     {
         using namespace Deltares::Numeric;
         std::string message;

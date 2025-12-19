@@ -34,11 +34,11 @@ namespace Deltares::Probabilistic::Test
         void WaartsNumericalIntegration() override;
     private:
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
-        WaartsResult ExpectedValues() override;
-        WaartsResult ExpectedValuesNumericalIntegration() override;
-        WaartsResult ExpectedValuesFORM() override;
-        WaartsResult ExpectedValuesFDIR() override;
-        WaartsResult ExpectedValuesDSFI() override;
-        WaartsResult ExpectedValuesDirectionalSampling() override;
+        WaartsResult expectedValues() override;
+        WaartsResult expectedValuesNumericalIntegration() override;
+        WaartsResult expectedValuesFORM() override;
+        WaartsResult expectedValuesFDIR() override;
+        WaartsResult expectedValuesDSFI() override;
+        WaartsResult expectedValuesDirectionalSampling() override;
     };
 }

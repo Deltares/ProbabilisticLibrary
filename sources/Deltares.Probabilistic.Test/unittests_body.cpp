@@ -80,37 +80,37 @@ TEST(UnitTests, testCombiner)
 TEST(UnitTests, testCombinTwoElements)
 {
     auto h = combinElementsTests();
-    h.RunAllCombineTwoElementsTests();
+    h.runAllCombineTwoElementsTests();
 }
 
 TEST(UnitTests, testCombinMultipleElements)
 {
     auto h = combinElementsTests();
-    h.RunAllCombineMultipleElementsTests();
+    h.runAllCombineMultipleElementsTests();
 }
 
 TEST(UnitTests, testLengthEffect)
 {
     auto h = combinElementsTests();
-    h.RunAllLengthEffectTests();
+    h.runAllLengthEffectTests();
 }
 
 TEST(UnitTests, AllUpscaleInTimeTests)
 {
     auto h = UpscaleTests();
-    h.RunAllUpscaleInTimeTests();
+    h.runAllUpscaleInTimeTests();
 }
 
 TEST(UnitTests, AllEquivalentAlphaTests)
 {
     auto h = UpscaleTests();
-    h.RunAllEquivalentAlphaTests();
+    h.runAllEquivalentAlphaTests();
 }
 
 TEST(UnitTests, AllUpscaleToLargestBlockTests)
 {
     auto h = UpscaleTests();
-    h.RunAllUpscaleToLargestBlockTests();
+    h.runAllUpscaleToLargestBlockTests();
 }
 
 TEST(UnitTests, testIntEqualElements)
@@ -602,12 +602,12 @@ TEST(UnitTests, testVector1D)
 
 TEST(UnitTests, testIncompleteGamma)
 {
-    TestSpecialFunctions::IncompleteGammaTest();
+    TestSpecialFunctions::incompleteGammaTest();
 }
 
 TEST(UnitTests, testIncompleteGammaExceptionalCases)
 {
-    TestSpecialFunctions::IncompleteGammaExceptionalCasesTest();
+    TestSpecialFunctions::incompleteGammaExceptionalCasesTest();
 }
 
 TEST(UnitTests, testCobylaOptimization)
@@ -643,19 +643,19 @@ TEST(WaartsTests, testLinearResistanceNumericalIntegration)
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfGravity)
 {
     auto tester = TestWaartsLinearResistance();
-    tester.RunNumInt(CenterOfGravity);
+    tester.runNumInt(CenterOfGravity);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfAngles)
 {
     auto tester = TestWaartsLinearResistance();
-    tester.RunNumInt(CenterOfAngles);
+    tester.runNumInt(CenterOfAngles);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationNearestToMean)
 {
     auto tester = TestWaartsLinearResistance();
-    tester.RunNumInt(NearestToMean);
+    tester.runNumInt(NearestToMean);
 }
 
 TEST(WaartsTests, testLinearResistanceImportanceSampling)

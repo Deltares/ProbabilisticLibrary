@@ -57,7 +57,7 @@ namespace Deltares::Probabilistic::Test
         return modelRunner;
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValues()
+    WaartsResult TestWaartsSeriesSystem::expectedValues()
     {
         // note that the alpha and x values of the design point of this case strongly depends on the method used.
         auto expected = WaartsResult();
@@ -68,23 +68,23 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValuesFORM()
+    WaartsResult TestWaartsSeriesSystem::expectedValuesFORM()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 3.00;
         expected.alpha = { -sqrt(0.5), -sqrt(0.5) };
         expected.x = {2.12146, 2.12146};
         return expected;
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValuesFDIR()
+    WaartsResult TestWaartsSeriesSystem::expectedValuesFDIR()
     {
-        return ExpectedValuesFORM();
+        return expectedValuesFORM();
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsSeriesSystem::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.88;
         expected.alpha = {0.670837, 0.741605};
         expected.x = {-1.93078, -2.13446};
@@ -92,35 +92,35 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValuesDirectionalSampling()
+    WaartsResult TestWaartsSeriesSystem::expectedValuesDirectionalSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.89;
         expected.alpha = {0.742148, 0.670236};
         expected.x = {-2.14284, -1.93521};
         return expected;
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValuesDSFI()
+    WaartsResult TestWaartsSeriesSystem::expectedValuesDSFI()
     {
-        auto expected = ExpectedValuesDirectionalSampling();
+        auto expected = expectedValuesDirectionalSampling();
         expected.alpha ={0.717144, 0.696925};
         expected.x = {-2.15094, -2.0903};
         return expected;
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValuesNumericalIntegration()
+    WaartsResult TestWaartsSeriesSystem::expectedValuesNumericalIntegration()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.alpha = {-0.259111, -0.965847};
         expected.x = {0.736722, 2.74616};
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsSeriesSystem::expectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.85;
         expected.alpha = {0.579354, 0.815076};
         expected.x = { -1.65229, -2.32456 };
@@ -128,9 +128,9 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsSeriesSystem::ExpectedValuesAdaptiveImportanceSampling()
+    WaartsResult TestWaartsSeriesSystem::expectedValuesAdaptiveImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = 2.33;
         expected.alpha = { -0.602854, -0.797851};
         expected.x = {1.40778, 1.86313};

@@ -26,8 +26,8 @@ namespace Deltares::Probabilistic::Test
     class TestSpecialFunctions
     {
     public:
-        static void IncompleteGammaTest();
-        static void IncompleteGammaExceptionalCasesTest();
+        static void incompleteGammaTest();
+        static void incompleteGammaExceptionalCasesTest();
     };
 }
 

@@ -29,27 +29,27 @@ namespace Deltares::Probabilistic::Test
     class UpscaleTests
     {
     public:
-        void RunAllUpscaleInTimeTests();
-        void RunAllEquivalentAlphaTests();
-        void RunAllUpscaleToLargestBlockTests();
+        void runAllUpscaleInTimeTests();
+        void runAllEquivalentAlphaTests();
+        void runAllUpscaleToLargestBlockTests();
     private:
-        void UpscaleInTimeTests1();
-        void UpscaleInTimeTests2();
-        void UpscaleInTimeTests3();
-        void UpscaleInTimeTests4();
-        void UpscaleInTimeTests5();
-        void UpscaleInTimeTests6();
-        void UpscaleInTimeTests7();
-        void UpscaleInTimeTests8();
-        void EquivalentAlphaTesting1();
-        void EquivalentAlphaTesting2();
-        void EquivalentAlphaTesting3();
-        void EquivalentAlphaTesting4();
-        void EquivalentAlphaTesting5();
-        void EquivalentAlphaTesting6();
-        void UpscaleToLargestBlockTests1();
-        void UpscaleToLargestBlockTests2();
-        void UpscaleToLargestBlockTests3();
+        void upscaleInTimeTests1();
+        void upscaleInTimeTests2();
+        void upscaleInTimeTests3();
+        void upscaleInTimeTests4();
+        void upscaleInTimeTests5();
+        void upscaleInTimeTests6();
+        void upscaleInTimeTests7();
+        void upscaleInTimeTests8();
+        void equivalentAlphaTesting1();
+        void equivalentAlphaTesting2();
+        void equivalentAlphaTesting3();
+        void equivalentAlphaTesting4();
+        void equivalentAlphaTesting5();
+        void equivalentAlphaTesting6();
+        void upscaleToLargestBlockTests1();
+        void upscaleToLargestBlockTests2();
+        void upscaleToLargestBlockTests3();
         Reliability::upscaling upscaler = Reliability::upscaling();
         Reliability::combineElements combiner = Reliability::combineElements();
         testutils test_utilities = testutils();

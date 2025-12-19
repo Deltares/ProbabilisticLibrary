@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include <cmath>
 #include <memory>
 #include "combinElements_tests.h"
@@ -31,8 +31,7 @@ using namespace Deltares::Statistics;
 
 namespace Deltares::Probabilistic::Test
 {
-
-    void combinElementsTests::RunAllCombineTwoElementsTests()
+    void combinElementsTests::runAllCombineTwoElementsTests()
     {
         testCombineTwoElementsNoCorrelation1();
         testCombineTwoElementsNoCorrelation2();
@@ -74,7 +73,7 @@ namespace Deltares::Probabilistic::Test
         testCombineTwoElementsPartialCorrelation99a();
     }
 
-    void combinElementsTests::RunAllCombineMultipleElementsTests()
+    void combinElementsTests::runAllCombineMultipleElementsTests()
     {
         testCombineMultipleElementsProb1();
         testCombineMultipleElementsProb2();
@@ -87,11 +86,11 @@ namespace Deltares::Probabilistic::Test
         testCombineThreeElementsPartialCorrelation4();
     }
 
-    void combinElementsTests::RunAllLengthEffectTests()
+    void combinElementsTests::runAllLengthEffectTests()
     {
         testLengthEffectFourStochasts();
-        UpscaleLengthTests11();
-        UpscaleLengthTests16();
+        upscaleLengthTests11();
+        upscaleLengthTests16();
         testCombineMultipleElementsSpatialCorrelated1();
         testCombineMultipleElementsSpatialCorrelated2();
         testCombineMultipleElementsSpatialCorrelated3();
@@ -908,7 +907,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(1, dp.ContributingDesignPoints.size());
     }
 
-    void combinElementsTests::UpscaleLengthTests11()
+    void combinElementsTests::upscaleLengthTests11()
     {
         vector1D alpha_cross_section = { 0.0, 0.6, 0.0, -0.8, 0.0 };
         alpha_cross_section.normalize();
@@ -929,7 +928,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void combinElementsTests::UpscaleLengthTests16()
+    void combinElementsTests::upscaleLengthTests16()
     {
         vector1D alpha_cross_section = { 1.0, -2.0, 4.0, 0.0, -3.0 };
         alpha_cross_section.normalize();

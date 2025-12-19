@@ -29,8 +29,8 @@ namespace Deltares::Probabilistic::Test
     class TestWaartsParallelSystem : public TestWaarts
     {
         std::shared_ptr<Models::ModelRunner> WaartsModel() override;
-        WaartsResult ExpectedValues() override;
-        WaartsResult ExpectedValuesFORM() override;
-        WaartsResult ExpectedValuesCrudeMonteCarlo() override;
+        WaartsResult expectedValues() override;
+        WaartsResult expectedValuesFORM() override;
+        WaartsResult expectedValuesCrudeMonteCarlo() override;
     };
 }

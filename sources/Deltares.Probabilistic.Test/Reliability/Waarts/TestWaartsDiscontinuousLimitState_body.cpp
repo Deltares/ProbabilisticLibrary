@@ -64,11 +64,11 @@ namespace Deltares::Probabilistic::Test
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::CrudeMonteCarlo>();
         auto cm = dynamic_cast<Reliability::CrudeMonteCarlo*>(calculator.get());
         cm->Settings->MaximumSamples = 250000;
-        auto expected = ExpectedValuesCrudeMonteCarlo();
+        auto expected = expectedValuesCrudeMonteCarlo();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
-    WaartsResult TestWaartsDiscontinuousLimitState::ExpectedValues()
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 3.83;
@@ -76,33 +76,33 @@ namespace Deltares::Probabilistic::Test
         return expected;
     }
 
-    WaartsResult TestWaartsDiscontinuousLimitState::ExpectedValuesFORM()
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValuesFORM()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.beta = -40.0;
         expected.alpha.clear();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsDiscontinuousLimitState::ExpectedValuesDSFI()
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValuesDSFI()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.alpha = { 0.96, -0.27 };
         return expected;
     }
 
-    WaartsResult TestWaartsDiscontinuousLimitState::ExpectedValuesCrudeMonteCarlo()
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValuesCrudeMonteCarlo()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.alpha.clear();
         expected.success = false;
         return expected;
     }
 
-    WaartsResult TestWaartsDiscontinuousLimitState::ExpectedValuesImportanceSampling()
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValuesImportanceSampling()
     {
-        auto expected = ExpectedValues();
+        auto expected = expectedValues();
         expected.success = false;
         return expected;
     }
