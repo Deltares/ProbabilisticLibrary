@@ -33,11 +33,6 @@ jobs:
       - name: Show current pyproject.toml
         run: cat sources/Deltares.Probabilistic.PWrapper/pyproject.toml
 
-      - name: Setup environment
-        uses: conda-incubator/setup-miniconda@v3.2.0
-        with:
-          miniforge-variant: Miniforge3
-          environment-file: sources/Deltares.Probabilistic.PWrapper/environment.yml
 
       # 4️⃣ Install Python dependencies
       - name: Install Python dependencies
