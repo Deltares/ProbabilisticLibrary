@@ -1,10 +1,11 @@
-name: docs
+name: docs2
 
 on:
   workflow_dispatch:
   push:
     branches:
       - master
+      - feature/PROB-207-docs-as-subpage
 
 permissions:
   contents: read
