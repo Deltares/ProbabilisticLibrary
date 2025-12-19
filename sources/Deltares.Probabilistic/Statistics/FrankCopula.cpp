@@ -23,6 +23,7 @@
 #include "FrankCopula.h"
 
 #include "../Math/RootFinders/BisectionRootFinder.h"
+#include <cmath>
 
 namespace Deltares::Statistics
 {
@@ -35,15 +36,6 @@ namespace Deltares::Statistics
         double out1 = gxdx * C / gx;
         out1 = out1 - t;
         return out1;
-    }
-
-    /// summary
-    /// helper function for copulaRootFunc exp(x) - 1.0
-    /// @param x 
-    /// @return exp(x) - 1.0
-    double FrankCopula::expm1(const double x)
-    {
-        return exp(x) - 1.0;
     }
 
     void FrankCopula::update(const double& u, double& t) const

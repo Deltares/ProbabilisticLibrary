@@ -35,7 +35,6 @@ namespace Deltares::Statistics
     private:
         const double theta;
         double copulaRootFunc(double u, double v, double t) const;
-        static double expm1(const double x);
     };
 }
 
