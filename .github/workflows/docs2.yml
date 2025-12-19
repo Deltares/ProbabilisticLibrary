@@ -30,7 +30,9 @@ jobs:
         run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
 
       # 4️⃣ Install Python dependencies
-      - run: poetry install
+      - name: Install Python dependencies
+        run: poetry install
+        working-directory: sources/Deltares.Probabilistic.PWrapper
 
       # 5️⃣ Set up Node.js for Mermaid CLI
       - uses: actions/setup-node@v3
@@ -41,7 +43,9 @@ jobs:
       - run: npm install -g @mermaid-js/mermaid-cli
 
       # 7️⃣ Build Sphinx documentation
-      - run: poetry run sphinx-build -b html -a -E docs docs/build/html
+      - name: Build Sphinx docs
+        run: poetry run sphinx-build -b html -a -E docs docs/build/html
+        working-directory: sources/Deltares.Probabilistic.PWrapper
 
       # 8️⃣ Upload HTML docs as artifact for GitHub Pages
       - uses: actions/upload-pages-artifact@v4
