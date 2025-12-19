@@ -133,6 +133,19 @@ mermaid_version = "10.4.0"  # specify Mermaid version if needed
 mermaid_output_format = "png"  # or "svg"
 mermaid_cmd_args = ["--width", "800"]  # optional CLI args
 
+mmdc_path = shutil.which("mmdc")
+if mmdc_path is None:
+    raise RuntimeError(
+        "Mermaid CLI 'mmdc' not found. "
+        "Install with 'npm install -g @mermaid-js/mermaid-cli' "
+        "and make sure the npm global folder is on PATH."
+    )
+
+mermaid_cmd = mmdc_path  # this is necessary to render the mermaid diagrams
+
+
+
+
 
 autosummary_generate = True  # generates stub .rst files automatically
 

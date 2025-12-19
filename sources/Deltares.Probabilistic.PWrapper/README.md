@@ -1,2 +1,6 @@
 
-in folder Deltares.Probabilistic.PWrapper, run: Deltares.Probabilistic.PWrapper>    sphinx-build -b html ../../docs ../../docs/build/html
+in folder Deltares.Probabilistic.PWrapper, run:  sphinx-build -b html ../../docs ../../docs/build/html
+
+
+TO build with mermaids, first instyall Mermaid CLI:
+npm install -g @mermaid-js/mermaid-cli
