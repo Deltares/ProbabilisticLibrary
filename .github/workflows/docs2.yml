@@ -25,6 +25,7 @@ jobs:
       # 3️⃣ Install Poetry
       - name: Install Poetry
         run: curl -sSL https://install.python-poetry.org | python3 -
+        working-directory: sources/Deltares.Probabilistic.PWrapper
 
       - name: Add Poetry to PATH
         run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
