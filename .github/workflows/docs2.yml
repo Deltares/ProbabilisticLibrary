@@ -30,6 +30,9 @@ jobs:
       - name: Add Poetry to PATH
         run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
 
+      - name: Show current pyproject.toml
+        run: cat sources/Deltares.Probabilistic.PWrapper/pyproject.toml
+
       # 4️⃣ Install Python dependencies
       - name: Install Python dependencies
         run: poetry install
