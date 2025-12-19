@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # 1️⃣ Checkout the repository
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # 2️⃣ Set up Python
       - uses: actions/setup-python@v6
@@ -41,11 +41,7 @@ jobs:
 
       # 4️⃣ Install Python dependencies
       - name: Install Python dependencies
-        run: |
-            poetry cache clear --all pypi
-            poetry install
-            # or using &&
-            # poetry cache clear --all pypi && poetry install
+        run: poetry install
         working-directory: sources/Deltares.Probabilistic.PWrapper
 
       # 5️⃣ Set up Node.js for Mermaid CLI
