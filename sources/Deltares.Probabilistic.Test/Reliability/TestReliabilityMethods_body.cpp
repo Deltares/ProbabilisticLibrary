@@ -39,7 +39,7 @@ using namespace Deltares::Models;
 
 namespace Deltares::Probabilistic::Test
 {
-    void TestReliabilityMethods::TestFORM()
+    void TestReliabilityMethods::testFORM()
     {
         auto calculator = FORM();
 
@@ -57,7 +57,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Alphas[1]->X, 0.9, 1e-2);
     }
 
-    void TestReliabilityMethods::TestFORMArray()
+    void TestReliabilityMethods::testFORMArray()
     {
         auto calculator = FORM();
 
@@ -73,7 +73,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Alphas[5]->X, 0.18, 1e-2);
     }
 
-    void TestReliabilityMethods::TestFORMVaryingArray()
+    void TestReliabilityMethods::testFORMVaryingArray()
     {
         auto calculator = FORM();
 
@@ -91,7 +91,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_EQ(designPoint->Alphas[0]->getIdentifier(), "s[0]");
     }
 
-    void TestReliabilityMethods::TestValidation()
+    void TestReliabilityMethods::testValidation()
     {
         auto project = ReliabilityProject();
         project.settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityFORM;
@@ -123,7 +123,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(true, project.isValid());
     }
 
-    void TestReliabilityMethods::TestLatinHyperCube()
+    void TestReliabilityMethods::testLatinHyperCube()
     {
         const auto chunckSizes = std::vector<int>({ 1, 15, 2000 });
         for (const auto& chunkSize : chunckSizes)
@@ -142,7 +142,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void TestReliabilityMethods::TestNumericalBisection()
+    void TestReliabilityMethods::testNumericalBisection()
     {
         constexpr double margin = 1e-9;
         auto calculator = NumericalBisection();
@@ -159,7 +159,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Alphas[1]->X, -1.20282, 1e-4);
     }
 
-    void TestReliabilityMethods::TestNumericalBisectionLinear()
+    void TestReliabilityMethods::testNumericalBisectionLinear()
     {
         auto calculator = std::make_shared<NumericalBisection>();
 
@@ -177,7 +177,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Alphas[1]->X, 0.931459, 1e-4);
     }
 
-    void TestReliabilityMethods::TestCobylaReliability()
+    void TestReliabilityMethods::testCobylaReliability()
     {
         auto calculator = CobylaReliability();
 
@@ -192,7 +192,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
     }
 
-    void TestReliabilityMethods::TestSubSetSimulationReliabilityNearestToMean()
+    void TestReliabilityMethods::testSubSetSimulationReliabilityNearestToMean()
     {
         auto calculator = SubsetSimulation();
         calculator.Settings->SampleMethod = AdaptiveConditional;
@@ -209,7 +209,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_FALSE(designPoint->convergenceReport->IsConverged);
     }
 
-    void TestReliabilityMethods::TestSubSetSimulationReliabilityCenterOfGravity()
+    void TestReliabilityMethods::testSubSetSimulationReliabilityCenterOfGravity()
     {
         auto calculator = SubsetSimulation();
         calculator.Settings->SampleMethod = AdaptiveConditional;
@@ -226,7 +226,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_FALSE(designPoint->convergenceReport->IsConverged);
     }
 
-    void TestReliabilityMethods::TestFDIRReliability()
+    void TestReliabilityMethods::testFDIRReliability()
     {
         auto calculator = FORMThenDirectionalSampling();
 
@@ -241,7 +241,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
     }
 
-    void TestReliabilityMethods::TestDSFIReliability()
+    void TestReliabilityMethods::testDSFIReliability()
     {
         auto calculator = DirectionalSamplingThenFORM();
 
@@ -256,7 +256,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
     }
 
-    void TestReliabilityMethods::TestFragilityCurveIntegration()
+    void TestReliabilityMethods::testFragilityCurveIntegration()
     {
         auto calculator = FragilityCurveIntegration();
 
@@ -273,7 +273,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
     }
 
-    void TestReliabilityMethods::TestNumericalIntegrationReliability()
+    void TestReliabilityMethods::testNumericalIntegrationReliability()
     {
         // test to see how num int handles sign for u==0:
         auto testValuesOffset = { -1e-100, 0.0, 1e-100 };
@@ -295,7 +295,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void TestReliabilityMethods::TestCrudeMonteCarloReliability()
+    void TestReliabilityMethods::testCrudeMonteCarloReliability()
     {
         auto calculator = CrudeMonteCarlo();
         auto modelRunner = projectBuilder().BuildProjectWithDeterminist(0.0);
@@ -306,7 +306,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
     }
 
-    void TestReliabilityMethods::TestCrudeMonteCarloWithCopulaReliability()
+    void TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability()
     {
         auto calculator = CrudeMonteCarlo();
         auto modelRunner = projectBuilder().BuildProjectWithDeterministAndCopula(0.0);
@@ -317,7 +317,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Beta, -0.0147896, 1e-5);
     }
 
-    void TestReliabilityMethods::TestAdaptiveImportanceSampling()
+    void TestReliabilityMethods::testAdaptiveImportanceSampling()
     {
         auto calculator = AdaptiveImportanceSampling();
         auto modelRunner = projectBuilder().BuildProjectWithPolynome();
@@ -328,7 +328,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Beta, 2.85, 0.01);
     }
 
-    void TestReliabilityMethods::TestClustersAdpImpSampling()
+    void TestReliabilityMethods::testClustersAdpImpSampling()
     {
         auto expectedBetas = std::vector({ 0.80438, 0.753699, 0.78369, 0.7956208, 0.754192 });
         auto expectedCentersA = std::vector( { -0.697351, 0.71673, -0.69555, -0.718478, 0.707038, -0.707175, 0.714029, 0.700116 });
@@ -370,7 +370,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void TestReliabilityMethods::TestDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType,
+    void TestReliabilityMethods::testDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType,
         const double dsdu)
     {
         auto calculator = DirectionalSampling();

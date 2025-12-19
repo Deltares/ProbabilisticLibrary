@@ -67,7 +67,7 @@ using namespace Deltares::Probabilistic::Test;
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
-    //::testing::GTEST_FLAG(filter) = "ReliabilityMethodTest.TestClustersAdpImpSampling";
+    //::testing::GTEST_FLAG(filter) = "ReliabilityMethodTest.testClustersAdpImpSampling";
     return RUN_ALL_TESTS();
 }
 
@@ -187,7 +187,7 @@ TEST(UnitTests, testKMeanClustering)
 TEST(UnitTests, testStartPointCalculator)
 {
     auto tstStartPoint = TestStartPointCalculator();
-    tstStartPoint.AllStartPointTests();
+    tstStartPoint.allStartPointTests();
 }
 
 TEST(UnitTests, testExceptions)
@@ -197,117 +197,117 @@ TEST(UnitTests, testExceptions)
 
 TEST(ReliabilityMethodTest, TestFORM)
 {
-    TestReliabilityMethods::TestFORM();
+    TestReliabilityMethods::testFORM();
 }
 
 TEST(ReliabilityMethodTest, TestFORMArray)
 {
-    TestReliabilityMethods::TestFORMArray();
+    TestReliabilityMethods::testFORMArray();
 }
 
 TEST(ReliabilityMethodTest, TestFORMVaryingArray)
 {
-    TestReliabilityMethods::TestFORMVaryingArray();
+    TestReliabilityMethods::testFORMVaryingArray();
 }
 
 TEST(ReliabilityMethodTest, TestValidation)
 {
-    TestReliabilityMethods::TestValidation();
+    TestReliabilityMethods::testValidation();
 }
 
 TEST(ReliabilityMethodTest, TestLatinHyperCube)
 {
-    TestReliabilityMethods::TestLatinHyperCube();
+    TestReliabilityMethods::testLatinHyperCube();
 }
 
 TEST(ReliabilityMethodTest, TestCobylaReliability)
 {
-    TestReliabilityMethods::TestCobylaReliability();
+    TestReliabilityMethods::testCobylaReliability();
 }
 
 TEST(ReliabilityMethodTest, TestNumBisection1)
 {
-    TestReliabilityMethods::TestNumericalBisection();
+    TestReliabilityMethods::testNumericalBisection();
 }
 
 TEST(ReliabilityMethodTest, TestNumBisection2)
 {
-    TestReliabilityMethods::TestNumericalBisectionLinear();
+    TestReliabilityMethods::testNumericalBisectionLinear();
 }
 
 TEST(ReliabilityMethodTest, TestSubSetSimulationReliabilityNearestToMean)
 {
-    TestReliabilityMethods::TestSubSetSimulationReliabilityNearestToMean();
+    TestReliabilityMethods::testSubSetSimulationReliabilityNearestToMean();
 }
 
 TEST(ReliabilityMethodTest, TestSubSetSimulationReliabilityCenterOfGravity)
 {
-    TestReliabilityMethods::TestSubSetSimulationReliabilityCenterOfGravity();
+    TestReliabilityMethods::testSubSetSimulationReliabilityCenterOfGravity();
 }
 
 TEST(ReliabilityMethodTest, TestFDIRReliability)
 {
-    TestReliabilityMethods::TestFDIRReliability();
+    TestReliabilityMethods::testFDIRReliability();
 }
 
 TEST(ReliabilityMethodTest, TestDSFIReliability)
 {
-    TestReliabilityMethods::TestDSFIReliability();
+    TestReliabilityMethods::testDSFIReliability();
 }
 
 TEST(ReliabilityMethodTest, TestFragilityCurveIntegration)
 {
-    TestReliabilityMethods::TestFragilityCurveIntegration();
+    TestReliabilityMethods::testFragilityCurveIntegration();
 }
 
 TEST(ReliabilityMethodTest, TestNumericalIntegrationReliability)
 {
-    TestReliabilityMethods::TestNumericalIntegrationReliability();
+    TestReliabilityMethods::testNumericalIntegrationReliability();
 }
 
 TEST(ReliabilityMethodTest, TestCrudeMCReliability)
 {
-    TestReliabilityMethods::TestCrudeMonteCarloReliability();
+    TestReliabilityMethods::testCrudeMonteCarloReliability();
 }
 
 TEST(ReliabilityMethodTest, testCrudeMCwithCopula)
 {
-    TestReliabilityMethods::TestCrudeMonteCarloWithCopulaReliability();
+    TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
 }
 
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSampling)
 {
-    TestReliabilityMethods::TestAdaptiveImportanceSampling();
+    TestReliabilityMethods::testAdaptiveImportanceSampling();
 }
 
 TEST(ReliabilityMethodTest, TestClustersAdpImpSampling)
 {
-    TestReliabilityMethods::TestClustersAdpImpSampling();
+    TestReliabilityMethods::testClustersAdpImpSampling();
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranches)
 {
-    TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Monotone, 1.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingProxyModels)
 {
-    TestReliabilityMethods::TestDirSamplingProxyModels(true, ModelVaryingType::Monotone, 1.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Monotone, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesNotMonotone)
 {
-    TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Varying, 1.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Varying, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingProxyModelsNotMonotone)
 {
-    TestReliabilityMethods::TestDirSamplingProxyModels(true, ModelVaryingType::Varying, 1.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Varying, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesLargerStepsize)
 {
-    TestReliabilityMethods::TestDirSamplingProxyModels(false, ModelVaryingType::Monotone, 3.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 3.0);
 }
 TEST(DistributionTests, testConditionalStochast)
 {

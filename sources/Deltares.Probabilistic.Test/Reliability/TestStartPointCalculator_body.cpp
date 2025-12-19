@@ -27,13 +27,13 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void TestStartPointCalculator::AllStartPointTests() const
+    void TestStartPointCalculator::allStartPointTests() const
     {
         TestMethodOne();
-        TestMethodRaySearch();
-        TestMethodSphereSearch();
-        TestMethodSphereSearchAllDirections();
-        TestMethodSphereSearchWithDeterminist();
+        testMethodRaySearch();
+        testMethodSphereSearch();
+        testMethodSphereSearchAllDirections();
+        testMethodSphereSearchWithDeterminist();
     }
 
     void TestStartPointCalculator::TestMethodOne()
@@ -52,7 +52,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(r->Values[1], 1.0);
     }
 
-    void TestStartPointCalculator::TestMethodRaySearch() const
+    void TestStartPointCalculator::testMethodRaySearch() const
     {
         auto modelRunner = projectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
@@ -69,7 +69,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(r->Values[1], 12.0, margin);
     }
 
-    void TestStartPointCalculator::TestMethodSphereSearch() const
+    void TestStartPointCalculator::testMethodSphereSearch() const
     {
         auto modelRunner = projectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
@@ -86,7 +86,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(r->Values[1], 0.0, margin);
     }
 
-    void TestStartPointCalculator::TestMethodSphereSearchAllDirections() const
+    void TestStartPointCalculator::testMethodSphereSearchAllDirections() const
     {
         auto modelRunner = projectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
@@ -105,7 +105,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(r->Values[1], -0.94784827888, margin);
     }
 
-    void TestStartPointCalculator::TestMethodSphereSearchWithDeterminist() const
+    void TestStartPointCalculator::testMethodSphereSearchWithDeterminist() const
     {
         auto modelRunner = projectBuilder().BuildProjectWithDeterminist(3.0);
         auto calculator = Reliability::StartPointCalculator();

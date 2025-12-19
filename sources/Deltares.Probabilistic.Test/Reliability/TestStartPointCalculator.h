@@ -26,13 +26,13 @@ namespace Deltares::Probabilistic::Test
     class TestStartPointCalculator
     {
     public:
-        void AllStartPointTests() const;
+        void allStartPointTests() const;
     private:
         static void TestMethodOne();
-        void TestMethodRaySearch() const;
-        void TestMethodSphereSearch() const;
-        void TestMethodSphereSearchAllDirections() const;
-        void TestMethodSphereSearchWithDeterminist() const;
+        void testMethodRaySearch() const;
+        void testMethodSphereSearch() const;
+        void testMethodSphereSearchAllDirections() const;
+        void testMethodSphereSearchWithDeterminist() const;
         const double margin = 1e-9;
     };
 }
