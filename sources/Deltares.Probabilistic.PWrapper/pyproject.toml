@@ -1,4 +1,5 @@
 [project]
+# Required otherwise Github action build will fail
 name = "probabilistic_library"
 
 [tool.poetry]
@@ -11,7 +12,7 @@ readme = "README.md"
 packages = [{ include = "probabilistic_library" }]
 
 [tool.poetry.dependencies]
-python = ">=3.11,<4.0"
+python = ">=3.11,<3.14"
 numpy = "*"
 matplotlib = "*"
 
