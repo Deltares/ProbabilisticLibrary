@@ -50,8 +50,8 @@ jobs:
       # 7️⃣ Build Sphinx documentation
       - name: Build Sphinx docs
         run: |
-          poetry --directory sources/Deltares.Probabilistic.PWrapper \
-          run sphinx-build -b html -a -E docs docs/build/html
+         poetry --directory sources/Deltares.Probabilistic.PWrapper \
+         run sphinx-build -b html -a -E ../../docs ../../docs/build/html
 
 
       # 8️⃣ Upload HTML docs as artifact for GitHub Pages
