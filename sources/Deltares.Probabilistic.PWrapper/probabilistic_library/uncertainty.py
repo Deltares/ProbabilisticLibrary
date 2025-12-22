@@ -19,57 +19,7 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
-"""
-This module contains all uncertainty related functionality.
 
-The entry point for performing an uncertainty analysis is `probabilistic_library.project.UncertaintyProject`. A model
-can be attached to an uncertainty project, then stochastic variables, correlation matrix and settings are provided. When
-the uncertainty project is run, an uncertainty result is generated, which contains a stochastic variable, which resembles
-the variation of the output of the model.
-
-```mermaid
-classDiagram
-    class ModelProject{
-        +model ZModel
-        +variables list[Stochast]
-        +correlation_matrix CorrelationMatrix
-    }
-    class UncertaintyProject{
-        +parameter ModelParameter
-        +settings UncertaintySettings
-        +results list[UncertaintyResult]
-        +result UncertaintyResult
-        +run()
-    }
-    class Stochast{}
-    class CorrelationMatrix{}
-    class ProbabilityValue{}
-    class UncertaintySettings{
-        +method UncertaintyMethod
-        +quantiles list[ProbabilityValue]
-    }
-    class StochastSettings{
-        +variable Stochast
-    }
-    class UncertaintyResult{
-        +parameter ModelParameter
-        +variable Stochast
-        +realizations list[Evaluation]
-    }
-    class Evaluation{}
-
-    UncertaintyProject <|-- ModelProject
-    Stochast "*" <-- ModelProject
-    CorrelationMatrix <-- ModelProject
-    UncertaintySettings <-- UncertaintyProject
-    StochastSettings "*" <-- UncertaintySettings
-    ProbabilityValue "*" <-- UncertaintySettings
-    Stochast <-- StochastSettings
-    UncertaintyResult "*" <-- UncertaintyProject
-    Stochast <-- UncertaintyResult
-    Evaluation "*" <-- UncertaintyResult
-```
-"""
 
 import sys
 from math import isnan
@@ -149,7 +99,7 @@ class UncertaintySettings(FrozenObject):
 		        'is_valid',
 		        'validate']
 
-		
+
 	@property
 	def max_parallel_processes(self) -> int:
 		"""The number of parallel executions of model evaluations"""
@@ -198,7 +148,7 @@ class UncertaintySettings(FrozenObject):
 	def uncertainty_method(self) -> UncertaintyMethod:
 		"""Defines the uncertainty algorithm"""
 		return UncertaintyMethod[interface.GetStringValue(self._id, 'uncertainty_method')]
-		
+
 	@uncertainty_method.setter
 	def uncertainty_method(self, value : UncertaintyMethod):
 		interface.SetStringValue(self._id, 'uncertainty_method', str(value))
@@ -207,7 +157,7 @@ class UncertaintySettings(FrozenObject):
 	def is_repeatable_random(self) -> bool:
 		"""Indicates whether in each run the same random samples will be generated"""
 		return interface.GetBoolValue(self._id, 'is_repeatable_random')
-		
+
 	@is_repeatable_random.setter
 	def is_repeatable_random(self, value : bool):
 		interface.SetBoolValue(self._id, 'is_repeatable_random', value)
@@ -216,7 +166,7 @@ class UncertaintySettings(FrozenObject):
 	def random_seed(self) -> int:
 		"""Seed number for the random generator"""
 		return interface.GetIntValue(self._id, 'random_seed')
-		
+
 	@random_seed.setter
 	def random_seed(self, value : int):
 		interface.SetIntValue(self._id, 'random_seed', value)
@@ -225,7 +175,7 @@ class UncertaintySettings(FrozenObject):
 	def minimum_samples(self) -> int:
 		"""The minimum number of samples to be used"""
 		return interface.GetIntValue(self._id, 'minimum_samples')
-		
+
 	@minimum_samples.setter
 	def minimum_samples(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_samples', value)
@@ -234,7 +184,7 @@ class UncertaintySettings(FrozenObject):
 	def maximum_samples(self) -> int:
 		"""The maximum number of samples to be used"""
 		return interface.GetIntValue(self._id, 'maximum_samples')
-		
+
 	@maximum_samples.setter
 	def maximum_samples(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_samples', value)
@@ -243,7 +193,7 @@ class UncertaintySettings(FrozenObject):
 	def maximum_iterations(self) -> int:
 		"""The maximum number of iterations to be used, only for FORM"""
 		return interface.GetIntValue(self._id, 'maximum_iterations')
-		
+
 	@maximum_iterations.setter
 	def maximum_iterations(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
@@ -252,7 +202,7 @@ class UncertaintySettings(FrozenObject):
 	def minimum_directions(self) -> int:
 		"""The minimum number of directions to be used, only for directional sampling"""
 		return interface.GetIntValue(self._id, 'minimum_directions')
-		
+
 	@minimum_directions.setter
 	def minimum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_directions', value)
@@ -261,7 +211,7 @@ class UncertaintySettings(FrozenObject):
 	def maximum_directions(self) -> int:
 		"""The maximum number of directions to be used, only for directional sampling"""
 		return interface.GetIntValue(self._id, 'maximum_directions')
-		
+
 	@maximum_directions.setter
 	def maximum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_directions', value)
@@ -270,7 +220,7 @@ class UncertaintySettings(FrozenObject):
 	def minimum_u(self) -> float:
 		"""The minimum u-value to be applied to a stochastic variable, used for FORM"""
 		return interface.GetValue(self._id, 'minimum_u')
-		
+
 	@minimum_u.setter
 	def minimum_u(self, value : float):
 		interface.SetValue(self._id, 'minimum_u', value)
@@ -279,7 +229,7 @@ class UncertaintySettings(FrozenObject):
 	def maximum_u(self) -> float:
 		"""The maximum u-value to be applied to a stochastic variable, used for FORM"""
 		return interface.GetValue(self._id, 'maximum_u')
-		
+
 	@maximum_u.setter
 	def maximum_u(self, value : float):
 		interface.SetValue(self._id, 'maximum_u', value)
@@ -288,7 +238,7 @@ class UncertaintySettings(FrozenObject):
 	def global_step_size(self) -> float:
 		"""Step size between fragility values, which is the result if a FORM calculation"""
 		return interface.GetValue(self._id, 'global_step_size')
-		
+
 	@global_step_size.setter
 	def global_step_size(self, value : float):
 		interface.SetValue(self._id, 'global_step_size', value)
@@ -297,7 +247,7 @@ class UncertaintySettings(FrozenObject):
 	def step_size(self) -> float:
 		"""Step size in calculating the model gradient, used by FORM"""
 		return interface.GetValue(self._id, 'step_size')
-		
+
 	@step_size.setter
 	def step_size(self, value : float):
 		interface.SetValue(self._id, 'step_size', value)
@@ -306,7 +256,7 @@ class UncertaintySettings(FrozenObject):
 	def gradient_type(self) -> GradientType:
 		"""Method to determine the gradient of a model"""
 		return GradientType[interface.GetStringValue(self._id, 'gradient_type')]
-		
+
 	@gradient_type.setter
 	def gradient_type(self, value : GradientType):
 		interface.SetStringValue(self._id, 'gradient_type', str(value))
@@ -315,7 +265,7 @@ class UncertaintySettings(FrozenObject):
 	def variance_factor(self) -> float:
 		"""Variance factor, used by importance sampling"""
 		return interface.GetValue(self._id, 'variance_factor')
-		
+
 	@variance_factor.setter
 	def variance_factor(self, value : float):
 		interface.SetValue(self._id, 'variance_factor', value)
@@ -324,7 +274,7 @@ class UncertaintySettings(FrozenObject):
 	def variation_coefficient(self) -> float:
 		"""Convergence criterion, used by Monte Carlo family algorithms"""
 		return interface.GetValue(self._id, 'variation_coefficient')
-		
+
 	@variation_coefficient.setter
 	def variation_coefficient(self, value : float):
 		interface.SetValue(self._id, 'variation_coefficient', value)
@@ -335,9 +285,9 @@ class UncertaintySettings(FrozenObject):
 
         The convergence is calculated as if it were a reliability analysis. The reliability analysis is tuned
         in such a way (by modification of the failure definition) that it produces the given probability."""
-        
+
 		return interface.GetValue(self._id, 'probability_for_convergence')
-		
+
 	@probability_for_convergence.setter
 	def probability_for_convergence(self, value : float):
 		interface.SetValue(self._id, 'probability_for_convergence', value)
@@ -347,30 +297,30 @@ class UncertaintySettings(FrozenObject):
 		"""Indicates that the number of samples is derived from the variation coefficient and the probability of
         failure (only for Crude Monte Carlo)"""
 		return interface.GetBoolValue(self._id, 'derive_samples_from_variation_coefficient')
-		
+
 	@derive_samples_from_variation_coefficient.setter
 	def derive_samples_from_variation_coefficient(self, value : bool):
 		interface.SetBoolValue(self._id, 'derive_samples_from_variation_coefficient', value)
 
-	@property   
+	@property
 	def calculate_correlations(self) -> bool:
 		"""Indicates that correlations between output parameters must be calculated"""
 		return interface.GetBoolValue(self._id, 'calculate_correlations')
-		
+
 	@calculate_correlations.setter
 	def calculate_correlations(self, value : bool):
-		interface.SetBoolValue(self._id, 'calculate_correlations', value) 
+		interface.SetBoolValue(self._id, 'calculate_correlations', value)
 
-	@property   
+	@property
 	def calculate_input_correlations(self) -> bool:
 		"""Indicates that correlations between output parameters and input parameters must be calculated"""
 		return interface.GetBoolValue(self._id, 'calculate_input_correlations')
-		
+
 	@calculate_input_correlations.setter
 	def calculate_input_correlations(self, value : bool):
-		interface.SetBoolValue(self._id, 'calculate_input_correlations', value) 
+		interface.SetBoolValue(self._id, 'calculate_input_correlations', value)
 
-	@property   
+	@property
 	def stochast_settings(self) -> list[StochastSettings]:
 		"""List of settings specified per stochastic variable"""
 		return self._stochast_settings
@@ -436,7 +386,7 @@ class UncertaintyResult(FrozenObject):
 		self._quantile_realizations = None
 		self._variables = FrozenList(variables)
 		super()._freeze()
-		
+
 	def __del__(self):
 		try:
 			interface.Destroy(self._id)
@@ -454,7 +404,7 @@ class UncertaintyResult(FrozenObject):
 		        'plot_realizations',
 		        'get_plot',
 		        'get_plot_realizations']
-		
+
 	def __str__(self):
 		return self.identifier
 
@@ -470,7 +420,7 @@ class UncertaintyResult(FrozenObject):
 			variable_id = interface.GetIdValue(self._id, 'variable')
 			if variable_id > 0:
 				self._variable = Stochast(variable_id);
-				
+
 		return self._variable
 
 	@property
@@ -483,9 +433,9 @@ class UncertaintyResult(FrozenObject):
 			for realization_id in realization_ids:
 				realizations.append(Evaluation(realization_id))
 			self._realizations = FrozenList(realizations)
-				
+
 		return self._realizations
-	
+
 	@property
 	def quantile_realizations(self) -> list[Evaluation]:
 		"""List of samples corresponding with the list of quantiles in the uncertainty settings.
@@ -496,9 +446,9 @@ class UncertaintyResult(FrozenObject):
 			for realization_id in quantile_realization_ids:
 				quantile_realizations.append(Evaluation(realization_id))
 			self._quantile_realizations = FrozenList(quantile_realizations)
-				
+
 		return self._quantile_realizations
-	
+
 	@property
 	def messages(self) -> list[Message]:
 		"""List of messages generated by the reliability algorithm. Depends on the setting `UncertaintySettings.save_messages` whether this
@@ -509,7 +459,7 @@ class UncertaintyResult(FrozenObject):
 			for message_id in message_ids:
 				messages.append(Message(message_id))
 			self._messages = FrozenList(messages)
-				
+
 		return self._messages
 
 	def print(self, decimals=4):
@@ -599,7 +549,7 @@ class UncertaintyResult(FrozenObject):
 
 		# plot realizations
 		plt.figure()
-		plt.grid(True)    
+		plt.grid(True)
 		plt.scatter(x_values, y_values, color='b')
 
 		x_values = [realization.input_values[index[0]] for realization in self.quantile_realizations]

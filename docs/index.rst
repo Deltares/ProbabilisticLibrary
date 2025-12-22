@@ -1,59 +1,71 @@
-Welcome to the Community Page of the Deltares Probabilistic Suite
-=================================================================
+Probabilistic Suite Community
+=============================
 
-This is the documentation of RA2CE (*just say race!*) - the Resilience Assessment and
-Adaptation for Critical infrastructurE Toolkit Python Package developed by Deltares.
-RA2CE helps to quantify resilience of critical infrastructure networks, prioritize
-interventions and adaptation measures and select the most appropriate action perspective
-to increase resilience considering future conditions.
+Welcome to the **Probabilistic Suite Community**.
+This site is the central hub for users and developers of the **Deltares Probabilistic Suite**, a framework for uncertainty, reliability, and risk-based analyses.
 
-Or navigate directly to another section:
+The Probabilistic Suite consists of a high-performance computational core, Python libraries for automation, and the **Probabilistic Toolkit (PTK)** graphical user interface.
+This community site focuses on **open examples, tutorials, documentation, and knowledge sharing**, with a strong emphasis on Python-based workflows.
 
-Model Project Diagram
-====================
 
-.. mermaid::
+----
 
-    classDiagram
-        class ModelProject{
-            +model ZModel
-            +variables list[Stochast]
-            +correlation_matrix CorrelationMatrix
-        }
-        class UncertaintyProject{
-            +parameter ModelParameter
-            +settings UncertaintySettings
-            +results list[UncertaintyResult]
-            +result UncertaintyResult
-            +run()
-        }
-        class Stochast{}
-        class CorrelationMatrix{}
-        class ProbabilityValue{}
-        class UncertaintySettings{
-            +method UncertaintyMethod
-            +quantiles list[ProbabilityValue]
-        }
-        class StochastSettings{
-            +variable Stochast
-        }
-        class UncertaintyResult{
-            +parameter ModelParameter
-            +variable Stochast
-            +realizations list[Evaluation]
-        }
-        class Evaluation{}
+What is the Probabilistic Suite?
+--------------------------------
 
-        UncertaintyProject <|-- ModelProject
-        Stochast "*" <-- ModelProject
-        CorrelationMatrix <-- ModelProject
-        UncertaintySettings <-- UncertaintyProject
-        StochastSettings "*" <-- UncertaintySettings
-        ProbabilityValue "*" <-- UncertaintySettings
-        Stochast <-- StochastSettings
-        UncertaintyResult "*" <-- UncertaintyProject
-        Stochast <-- UncertaintyResult
-        Evaluation "*" <-- UncertaintyResult
+The Probabilistic Suite enables quantitative analysis of uncertainty and risk in engineering and scientific models.
+
+It consists of the following components:
+
+- **Probabilistic Library (C++)**
+  High-performance routines for reliability, uncertainty, and sensitivity analyses.
+
+- **Python Library**
+  A Python interface to the probabilistic kernel, enabling scripting, automation, and integration with other tools.
+
+- **Probabilistic Toolkit (PTK)**
+  A graphical user interface for setting up, executing, and visualizing probabilistic analyses.
+
+Together, these components allow users to move seamlessly from exploratory analysis to automated workflows and large-scale studies.
+
+----
+
+
+
+
+What you will find on this site
+-------------------------------
+
+This GitHub Pages site is maintained by the Probabilistic Suite community and provides:
+
+- **Getting Started guides**
+  Step-by-step instructions to install the Python libraries and run your first analyses.
+
+- **Tutorials**
+  In-depth explanations of probabilistic methods, workflows, and best practices.
+
+- **Gallery of Examples**
+  Practical, reproducible examples written in Python, covering common use cases and advanced scenarios.
+
+- **Community-driven knowledge**
+  Examples, improvements, and discussions contributed by users and developers.
+
+----
+
+Community and contributions
+----------------------------
+
+The Probabilistic Suite Community is open and evolving.
+
+Contributions are welcome in the form of:
+
+- New example notebooks or scripts
+- Questions and answers in the discussion forum
+- Improvements to documentation or tutorials
+- Bug reports or feature suggestions
+
+
+----
 
 
 
@@ -62,8 +74,10 @@ Model Project Diagram
    :maxdepth: 1
    :titlesonly:
 
-
+   installation.rst
+   tutorials.rst
    api_reference/index.rst
+   gallery_examples/index.rst
 
 
 
