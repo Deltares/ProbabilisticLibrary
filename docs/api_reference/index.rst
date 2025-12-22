@@ -1,5 +1,5 @@
-Docstrings Reference
-====================
+API Reference
+=============
 
 The Probabilistic Library provides functionality to perform reliability, uncertainty and sensitivity analyses via a probabilistic_library.project.ReliabilityProject, probabilistic_library.project.UncertaintyProject or probabilistic_library.project.SensitivityProject.
 
