@@ -170,7 +170,7 @@ suppress_warnings = ["ref.unknown_target"]
 # a list of builtin themes.
 #
 html_theme = "pydata_sphinx_theme"
-html_logo = "_resources/PTK_logo.svg"
+html_logo = "_resources/PTK_logo.png"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
@@ -185,14 +185,14 @@ html_theme_options = {
         {
             "name": "Forum",
             "url": "https://github.com/Deltares/ProbabilisticLibrary/discussions",  # required
-            "icon": "../../_resources/PTK_logo.png",
+            # "icon": "../../_resources/PTK_logo.png",
             "type": "url",
         },
 
         {
             "name": "Repo",
             "url": "https://github.com/Deltares/ProbabilisticLibrary",  # required
-            "icon": "../../_resources/PTK_logo.png",
+            # "icon": "../../_resources/PTK_logo.png",
             "type": "url",
         },
         {
@@ -249,39 +249,6 @@ latex_elements = {
     # 'figure_align': 'htbp',
 }
 
-
-
-# -- Options for manual page output ------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (
-        master_doc,
-        "ra2ce",
-        "Risk Assessment and Adaptation for Critical infrastructurE Documentation",
-        [author],
-        1,
-    )
-]
-
-
-# -- Options for Texinfo output ----------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        master_doc,
-        "ra2ce",
-        "RA2CE Documentation",
-        author,
-        "ra2ce",
-        "Risk Assessment and Adaptation for Critical infrastructurE Documentation",
-        "Miscellaneous",
-    ),
-]
 
 # Allow errors in notebooks
 nbsphinx_allow_errors = True
