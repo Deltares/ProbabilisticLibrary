@@ -30,6 +30,7 @@ namespace Deltares::Statistics
     {
     public:
         explicit GumbelCopula4(const double theta);
+        void update_uspace(double& a, double& b) override;
         void update(double& u, double& t) override;
         CorrelationValueAndType getCorrelation() const override { return { theta, CorrelationType::Gumbel }; }
         void validate(Logging::ValidationReport& report) const override;

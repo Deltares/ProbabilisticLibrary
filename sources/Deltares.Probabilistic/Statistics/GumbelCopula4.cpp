@@ -26,6 +26,8 @@
 
 #include <cmath>
 #include "GumbelCopula4.h"
+
+#include "StandardNormal.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
 #include "../Logging/ValidationSupport.h"
 
@@ -35,6 +37,15 @@ namespace Deltares::Statistics
     GumbelCopula4::GumbelCopula4(const double theta) : theta(theta)
     {
         random.initialize(true, 3067);
+    }
+
+    void GumbelCopula4::update_uspace(double& a, double& b)
+    {
+        double u = StandardNormal::getPFromU(a);
+        double t = StandardNormal::getPFromU(b);
+        update(u, t);
+        b = StandardNormal::getUFromP(t);
+        a = StandardNormal::getUFromP(u);
     }
 
     void GumbelCopula4::update(double& u, double& t)
