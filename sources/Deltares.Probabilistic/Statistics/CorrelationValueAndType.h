@@ -27,6 +27,7 @@ enum class CorrelationType
     Clayton,
     Frank,
     Gumbel,
+    Gumbel4, // gumbel copula calculated with 4 random numbers
     Gaussian,
     DiagonalBand,
 };

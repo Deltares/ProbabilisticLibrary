@@ -35,14 +35,14 @@ namespace Deltares::Statistics
         /// </summary>
         /// <param name="a"> value of first stochast in u-space </param>
         /// <param name="b"> value of second stochast in u-space </param>
-        void update_uspace(const double& a, double& b) const override;
+        void update_uspace(double& a, double& b) override;
 
         /// <summary>
         /// update a pair of correlated stochastic variables
         /// </summary>
         /// <param name="u"> probability of failure of first stochast </param>
         /// <param name="t"> probability of failure of second stochast </param>
-        void update(const double& u, double& t) const override;
+        void update(double& u, double& t) override;
 
         CorrelationValueAndType getCorrelation() const override { return { rho, CorrelationType::Gaussian }; }
 

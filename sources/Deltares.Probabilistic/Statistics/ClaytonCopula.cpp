@@ -27,7 +27,7 @@
 
 namespace Deltares::Statistics
 {
-    void ClaytonCopula ::update(const double& u, double& t) const
+    void ClaytonCopula ::update(double& u, double& t)
     {
         if (theta == -1.0)
         {

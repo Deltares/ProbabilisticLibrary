@@ -29,7 +29,7 @@ namespace Deltares::Statistics
     {
     public:
         explicit DiagonalBandCopula(const double alpha) : alpha(alpha) {}
-        void update(const double& u, double& t) const override;
+        void update(double& u, double& t) override;
         CorrelationValueAndType getCorrelation() const override { return { alpha, CorrelationType::DiagonalBand }; }
         void validate(Logging::ValidationReport& report) const override;
     private:

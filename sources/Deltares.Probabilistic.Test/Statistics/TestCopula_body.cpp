@@ -60,7 +60,7 @@ namespace Deltares::Probabilistic::Test
         auto correlation = Statistics::GaussianCopula(0.5);
         auto correlation_with_type = correlation.getCorrelation();
         EXPECT_NEAR(0.5, correlation_with_type.value, margin);
-        constexpr double u1 = 0.9;
+        double u1 = 0.9;
         double u2 = 0.8;
         correlation.update_uspace(u1, u2);
         const double expected = u1 * 0.5 + 0.8 * sqrt(0.75);

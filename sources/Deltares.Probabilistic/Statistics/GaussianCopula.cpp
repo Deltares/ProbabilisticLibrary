@@ -27,12 +27,12 @@
 
 namespace Deltares::Statistics
 {
-    void GaussianCopula::update_uspace(const double& a, double& b) const
+    void GaussianCopula::update_uspace(double& a, double& b)
     {
         b = a * rho + b * sqrt(1.0 - rho * rho);
     }
 
-    void GaussianCopula::update(const double& u, double& t) const
+    void GaussianCopula::update(double& u, double& t)
     {
         double a = StandardNormal::getUFromP(u);
         double b = StandardNormal::getUFromP(t);

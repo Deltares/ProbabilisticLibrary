@@ -27,7 +27,7 @@
 
 namespace Deltares::Statistics
 {
-    void FrankCopula::update(const double& u, double& t) const
+    void FrankCopula::update(double& u, double& t)
     {
         if (theta < 700.0)
         {

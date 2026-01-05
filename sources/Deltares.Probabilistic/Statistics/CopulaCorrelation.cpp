@@ -25,6 +25,7 @@
 #include "ClaytonCopula.h"
 #include "FrankCopula.h"
 #include "GumbelCopula.h"
+#include "GumbelCopula4.h"
 #include "DiagonalBandCopula.h"
 #include "GaussianCopula.h"
 #include <format>
@@ -57,6 +58,9 @@ namespace Deltares::Statistics
             break;
         case Gumbel:
             pair.copula = std::make_shared<GumbelCopula>(value);
+            break;
+        case Gumbel4:
+            pair.copula = std::make_shared<GumbelCopula4>(value);
             break;
         case DiagonalBand:
             pair.copula = std::make_shared<DiagonalBandCopula>(value);

@@ -25,7 +25,7 @@
 
 namespace Deltares::Statistics
 {
-    void BaseCopula::update_uspace(const double& a, double& b) const
+    void BaseCopula::update_uspace(double& a, double& b)
     {
         double u = StandardNormal::getPFromU(a);
         double t = StandardNormal::getPFromU(b);

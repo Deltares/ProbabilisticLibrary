@@ -41,7 +41,7 @@ namespace Deltares::Statistics
         return out1;
     }
 
-    void GumbelCopula::update(const double& u, double& t) const
+    void GumbelCopula::update(double& u, double& t)
     {
         if (theta > 400.0)
         {

@@ -1538,6 +1538,7 @@ class CopulaType(Enum):
     clayton = 'clayton'
     frank = 'frank'
     gumbel = 'gumbel'
+    gumbel4 = 'gumbel4'
     gaussian = 'gaussian'
     diagonal_band = 'diagonal_band'
 

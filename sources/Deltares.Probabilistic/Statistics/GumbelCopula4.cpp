@@ -20,21 +20,34 @@
 // All rights reserved.
 //
 
-#pragma once
-#include "BaseCopula.h"
+#include <cmath>
+#include "GumbelCopula4.h"
+#include "../Math/RootFinders/BisectionRootFinder.h"
+#include "../Logging/ValidationSupport.h"
 
 namespace Deltares::Statistics
 {
-    class GumbelCopula : public BaseCopula
+
+    GumbelCopula4::GumbelCopula4(const double theta) : theta(theta)
     {
-    public:
-        explicit GumbelCopula(const double theta) : theta(theta) {}
-        void update(double& u, double& t) override;
-        CorrelationValueAndType getCorrelation() const override { return { theta, CorrelationType::Gumbel }; }
-        void validate(Logging::ValidationReport& report) const override;
-    private:
-        const double theta;
-        double copulaRootFunc(double u, double v, double t) const;
-    };
+        random.initialize(true, 3067);
+    }
+
+    void GumbelCopula4::update(double& u, double& t)
+    {
+        u = (u - 0.5) * M_PI;
+        const double u2 = u + M_PI_2;
+        const double e = -std::log(t);
+        const double inverseTheta = 1.0 / theta;
+        t = std::cos(u - u2 * inverseTheta) / e;
+        const double gamma = std::pow(std::sin(u2 * inverseTheta) / t, inverseTheta) * t / std::cos(u);
+        u = std::exp(-std::pow(-std::log(random.next()), inverseTheta) / gamma);
+        t = std::exp(-std::pow(-std::log(random.next()), inverseTheta) / gamma);
+    }
+
+    void GumbelCopula4::validate(Logging::ValidationReport & report) const
+    {
+        Logging::ValidationSupport::checkMinimum(report, 1.0, theta, "Theta", "Gumbel copula", Logging::MessageType::Error);
+    }
 }
 

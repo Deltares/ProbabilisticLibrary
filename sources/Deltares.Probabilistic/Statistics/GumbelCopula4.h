@@ -22,19 +22,20 @@
 
 #pragma once
 #include "BaseCopula.h"
+#include "../Math/RandomValueGenerator.h"
 
 namespace Deltares::Statistics
 {
-    class GumbelCopula : public BaseCopula
+    class GumbelCopula4 : public BaseCopula
     {
     public:
-        explicit GumbelCopula(const double theta) : theta(theta) {}
+        explicit GumbelCopula4(const double theta);
         void update(double& u, double& t) override;
         CorrelationValueAndType getCorrelation() const override { return { theta, CorrelationType::Gumbel }; }
         void validate(Logging::ValidationReport& report) const override;
     private:
         const double theta;
-        double copulaRootFunc(double u, double v, double t) const;
+        Numeric::RandomValueGenerator random;
     };
 }
 
