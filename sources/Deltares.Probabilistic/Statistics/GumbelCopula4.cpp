@@ -20,6 +20,10 @@
 // All rights reserved.
 //
 
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+
 #include <cmath>
 #include "GumbelCopula4.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
