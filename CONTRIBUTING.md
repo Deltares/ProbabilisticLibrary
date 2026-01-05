@@ -47,7 +47,7 @@ You can contribute in two ways:
 
 We’re happy to help guide you through the process — whether it’s your first contribution or your fiftieth!
 
-🏁 IV. Finishing your work  
+🏁 IX. Finishing your work  
 Once your pull request (PR) has been approved — great job! 🎉
 You can now **merge your changes** into the ` master ` branch.
 
