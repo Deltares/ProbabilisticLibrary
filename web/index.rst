@@ -77,7 +77,7 @@ Contributions are welcome in the form of:
    installation.rst
    tutorials.rst
    api_reference/index.rst
-   gallery_examples/index.rst
+   gallery/gallery.rst
 
 
 
