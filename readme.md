@@ -17,6 +17,8 @@ and can be found here:
 ## Python wrapper
 
 You can access the routines of the library using a Python wrapper. 
+A description of the Python classes is given here:
+[API documentation](https://deltares.github.io/ProbabilisticLibrary/probabilistic_library.html)
 
 ### Installation
 
