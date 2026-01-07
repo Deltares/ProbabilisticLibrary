@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import subprocess
 import sys
 from distutils.dir_util import copy_tree
 from pathlib import Path
@@ -17,6 +18,16 @@ sys.path.insert(
 
 
 
+# Ensure the current conda env's Library\bin is on PATH (Windows only)
+if sys.platform.startswith("win") and "CONDA_PREFIX" in os.environ:
+    conda_bin = os.path.join(os.environ["CONDA_PREFIX"], "Library", "bin")
+    os.environ["PATH"] = conda_bin + os.pathsep + os.environ.get("PATH", "")
+
+# Optional: verify pandoc is detected
+try:
+    subprocess.run(["pandoc", "--version"], check=True)
+except Exception as e:
+    print("Warning: Pandoc not found! nbsphinx will fail to render notebooks.", e)
 
 # -- Helper functions ---------------------------------
 def remove_dir_content(path: str) -> None:
@@ -33,11 +44,26 @@ def remove_dir_content(path: str) -> None:
 # # -- Copy notebooks to include in docs -------
 if os.path.isdir("build"):
     remove_dir_content("build")
-if os.path.isdir("_examples"):
-    remove_dir_content("_examples")
+# if os.path.isdir("_examples"):
+#     remove_dir_content("_examples")
 
-os.makedirs("_examples")
+# os.makedirs("_examples")
 # copy_tree("../examples", "_examples")
+
+def copy_notebooks(src_folder, dst_folder):
+    if os.path.exists(dst_folder):
+        shutil.rmtree(dst_folder)
+    os.makedirs(dst_folder, exist_ok=True)
+
+    for root, _, files in os.walk(src_folder):
+        for f in files:
+            if f.endswith(".ipynb"):
+                src_file = os.path.join(root, f)
+                dst_file = os.path.join(dst_folder, f)
+                shutil.copy2(src_file, dst_file)
+
+# Copy notebooks from sources into web/_examples
+# copy_notebooks("../sources/Deltares.Probabilistic.PWrapper.Notebooks", "_examples")
 
 # Exclude some of the examples content:
 _files_to_include = ["summary_"]
