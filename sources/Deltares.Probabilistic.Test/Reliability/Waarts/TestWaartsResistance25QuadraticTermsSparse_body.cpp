@@ -42,26 +42,22 @@ namespace Deltares::Probabilistic::Test
             return Z;
         });
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         for (int i = 0; i < 2; i++)
         {
-            stochast.push_back(projectBuilder::getDeterministicStochast(0.0)); // not used stochast
+            stochasts.push_back(projectBuilder::getDeterministicStochast(0.0)); // not used stochast
         }
         for (int i = 0; i < numberOfQuadraticTerms; i++)
         {
-            stochast.push_back(projectBuilder::getNormalStochast(0.2, 0.1));
+            stochasts.push_back(projectBuilder::getNormalStochast(0.2, 0.1));
         }
         for (int i = 0; i < 2; i++)
         {
-            stochast.push_back(projectBuilder::getDeterministicStochast(0.0)); // not used stochast
+            stochasts.push_back(projectBuilder::getDeterministicStochast(0.0)); // not used stochast
         }
-        stochast.push_back(projectBuilder::getNormalStochast(0.5, 0.1));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        corr->Init(30);
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
+        stochasts.push_back(projectBuilder::getNormalStochast(0.5, 0.1));
+
+        return getModelRunner(z, stochasts, 30);
     }
 
     WaartsResult TestWaartsResistance25QuadraticTermsSparse::expectedValues()
@@ -84,7 +80,7 @@ namespace Deltares::Probabilistic::Test
         auto expected = expectedValues();
         expected.beta = 2.56;
         expected.alpha.clear();
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -93,7 +89,7 @@ namespace Deltares::Probabilistic::Test
         auto expected = expectedValues();
         expected.beta = 2.64;
         expected.alpha_margin = 0.1;
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -102,7 +98,7 @@ namespace Deltares::Probabilistic::Test
         auto expected = expectedValues();
         expected.beta = 2.69;
         expected.alpha.clear();
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -111,7 +107,7 @@ namespace Deltares::Probabilistic::Test
         auto expected = expectedValues();
         expected.beta = 2.56;
         expected.alpha_margin = 0.2;
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -119,7 +115,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto expected = expectedValues();
         expected.beta = 2.64;
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 }

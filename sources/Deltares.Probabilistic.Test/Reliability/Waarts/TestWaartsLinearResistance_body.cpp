@@ -36,14 +36,10 @@ namespace Deltares::Probabilistic::Test
             return v->Z;
         });
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochast.push_back(projectBuilder::getNormalStochast(7.0, 1.0));
-        stochast.push_back(projectBuilder::getNormalStochast(2.0, 1.0));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(projectBuilder::getNormalStochast(7.0, 1.0));
+        stochasts.push_back(projectBuilder::getNormalStochast(2.0, 1.0));
+        return getModelRunner(z, stochasts);
     }
 
     void TestWaartsLinearResistance::runNumInt(const Reliability::DesignPointMethod method)
@@ -53,7 +49,7 @@ namespace Deltares::Probabilistic::Test
         auto form = dynamic_cast<Reliability::NumericalIntegration*>(calculator.get());
         form->Settings.designPointMethod = method;
         auto expected = expectedValuesNumericalIntegration();
-        expected.success = false;
+        expected.converged = false;
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -71,7 +67,7 @@ namespace Deltares::Probabilistic::Test
         auto expected = expectedValues();
         expected.alpha_margin = 0.15;
         expected.x_margin = 0.5;
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -79,7 +75,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto expected = expectedValues();
         expected.x_margin = 0.1;
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 

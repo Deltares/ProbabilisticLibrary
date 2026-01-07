@@ -40,14 +40,10 @@ namespace Deltares::Probabilistic::Test
             return v->Z;
         });
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochast.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
-        stochast.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        return getModelRunner(z, stochasts);
     }
 
     WaartsResult TestWaartsConvexFailureDomain::expectedValues()
@@ -74,7 +70,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto expected = expectedValues();
         expected.beta = 2.69;
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -88,7 +84,7 @@ namespace Deltares::Probabilistic::Test
     WaartsResult TestWaartsConvexFailureDomain::expectedValuesImportanceSampling()
     {
         auto expected = expectedValues();
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 

@@ -38,7 +38,7 @@ namespace Deltares::Probabilistic::Test
         double alpha_margin = 0.05;
         std::vector<double> x;
         double x_margin = 0.05;
-        bool success = true;
+        bool converged = true;
         bool printResults = false;
     };
 
@@ -56,6 +56,8 @@ namespace Deltares::Probabilistic::Test
     protected:
         static void RunSingleWaartsTest(const std::shared_ptr<Models::ModelRunner>& modelRunner,
             Reliability::ReliabilityMethod& calculator, const WaartsResult& expected);
+        static std::shared_ptr<Models::ModelRunner> getModelRunner(const std::shared_ptr<Models::ZModel>& model,
+            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, const int nStochasts = 0);
         virtual std::shared_ptr<Models::ModelRunner> WaartsModel() = 0;
         virtual WaartsResult expectedValues() = 0;
         virtual WaartsResult expectedValuesFORM() { return expectedValues(); }

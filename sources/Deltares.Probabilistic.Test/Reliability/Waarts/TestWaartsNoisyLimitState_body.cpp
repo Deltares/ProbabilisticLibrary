@@ -43,18 +43,14 @@ namespace Deltares::Probabilistic::Test
             return v->Z;
         });
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochast.push_back(projectBuilder::getLogNormalStochast(120.0, 12.0));
-        stochast.push_back(projectBuilder::getLogNormalStochast(120.0, 12.0));
-        stochast.push_back(projectBuilder::getLogNormalStochast(120.0, 12.0));
-        stochast.push_back(projectBuilder::getLogNormalStochast(120.0, 12.0));
-        stochast.push_back(projectBuilder::getLogNormalStochast(50.0, 15.0));
-        stochast.push_back(projectBuilder::getLogNormalStochast(40.0, 12.0));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(projectBuilder::getLogNormalStochast(120.0, 12.0));
+        stochasts.push_back(projectBuilder::getLogNormalStochast(120.0, 12.0));
+        stochasts.push_back(projectBuilder::getLogNormalStochast(120.0, 12.0));
+        stochasts.push_back(projectBuilder::getLogNormalStochast(120.0, 12.0));
+        stochasts.push_back(projectBuilder::getLogNormalStochast(50.0, 15.0));
+        stochasts.push_back(projectBuilder::getLogNormalStochast(40.0, 12.0));
+        return getModelRunner(z, stochasts);
     }
 
     WaartsResult TestWaartsNoisyLimitState::expectedValues()
@@ -68,7 +64,7 @@ namespace Deltares::Probabilistic::Test
     WaartsResult TestWaartsNoisyLimitState::expectedValuesCrudeMonteCarlo()
     {
         auto expected = expectedValues();
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 

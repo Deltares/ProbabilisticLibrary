@@ -38,14 +38,10 @@ namespace Deltares::Probabilistic::Test
             return v->Z;
         });
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochast.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
-        stochast.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        return getModelRunner(z, stochasts);
     }
 
     void TestWaartsSaddleSurface::WaartsFORM()
@@ -104,7 +100,7 @@ namespace Deltares::Probabilistic::Test
         expected.beta = 2.34;
         expected.alpha = { 0.823269, 0.567651 };
         expected.x = {-1.92779, - 1.32923};
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -114,7 +110,7 @@ namespace Deltares::Probabilistic::Test
         expected.beta = 2.35;
         expected.alpha = { -0.754939, -0.655795 };
         expected.x = {1.77368, 1.54074};
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -124,7 +120,7 @@ namespace Deltares::Probabilistic::Test
         expected.beta = 2.38;
         expected.alpha = {-0.804692,-0.593693};
         expected.x = {1.91793, 1.41503};
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 

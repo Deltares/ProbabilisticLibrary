@@ -63,7 +63,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
         auto expected = expectedValuesNumericalIntegration();
-        expected.success = false;
+        expected.converged = false;
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
@@ -99,21 +99,41 @@ namespace Deltares::Probabilistic::Test
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }
 
+    std::shared_ptr<Models::ModelRunner> TestWaarts::getModelRunner(const std::shared_ptr<Models::ZModel>& model,
+        const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, const int nStochasts)
+    {
+        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
+        if (nStochasts > 0)
+        {
+            corr->Init(nStochasts);
+        }
+        auto uConverter = std::make_shared <Models::UConverter>(stochasts, corr);
+        uConverter->initializeForRun();
+        auto modelRunner = std::make_shared<Models::ModelRunner>(model, uConverter);
+        return modelRunner;
+    }
+
     void TestWaarts::RunSingleWaartsTest(const std::shared_ptr<Models::ModelRunner>& modelRunner,
         Reliability::ReliabilityMethod& calculator, const WaartsResult& expected)
     {
         auto designPoint = calculator.getDesignPoint(modelRunner);
+
         ASSERT_FALSE(designPoint == nullptr);
-        EXPECT_NEAR(expected.beta, designPoint->Beta, expected.beta_margin);
+
         if (expected.printResults)
         {
-            std::cout << "DesignPoint:" << std::endl;
-            std::cout << "Beta = " << designPoint->Beta << std::endl;
+            std::cout << "DesignPoint:" << "\n";
+            std::cout << "Beta = " << designPoint->Beta << "\n";
             for (size_t i = 0; i < designPoint->Alphas.size(); i++)
             {
-                std::cout << "Alpha: " << i << " , " << designPoint->Alphas[i]->Alpha << " , " << designPoint->Alphas[i]->X << std::endl;
+                std::cout << "Alpha: " << i << " , " << designPoint->Alphas[i]->Alpha << " , " << designPoint->Alphas[i]->X << "\n";
             }
+            std::cout << "Converged = " << designPoint->convergenceReport->IsConverged << "\n";
+            std::cout.flush();
         }
+
+        EXPECT_NEAR(expected.beta, designPoint->Beta, expected.beta_margin);
+
         if (!expected.alpha.empty())
         {
             ASSERT_EQ(expected.alpha.size(), designPoint->Alphas.size());
@@ -122,6 +142,7 @@ namespace Deltares::Probabilistic::Test
                 EXPECT_NEAR(expected.alpha[i], designPoint->Alphas[i]->Alpha, expected.alpha_margin);
             }
         }
+
         if (!expected.x.empty())
         {
             ASSERT_EQ(expected.x.size(), designPoint->Alphas.size());
@@ -130,6 +151,7 @@ namespace Deltares::Probabilistic::Test
                 EXPECT_NEAR(expected.x[i], designPoint->Alphas[i]->X, expected.x_margin);
             }
         }
-        EXPECT_EQ(expected.success, designPoint->convergenceReport->IsConverged);
+
+        EXPECT_EQ(expected.converged, designPoint->convergenceReport->IsConverged);
     }
 }

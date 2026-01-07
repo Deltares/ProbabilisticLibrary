@@ -42,17 +42,13 @@ namespace Deltares::Probabilistic::Test
             return Z;
         });
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochast.push_back(projectBuilder::getNormalStochast(10.0, 0.5));
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(projectBuilder::getNormalStochast(10.0, 0.5));
         for (int i = 1; i <= numberOfQuadraticTerms; i++)
         {
-            stochast.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+            stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
         }
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
+        return getModelRunner(z, stochasts);
     }
 
     WaartsResult TestWaartsOblateSpheroid::expectedValues()
@@ -77,7 +73,7 @@ namespace Deltares::Probabilistic::Test
     WaartsResult TestWaartsOblateSpheroid::expectedValuesImportanceSampling()
     {
         auto expected = expectedValues();
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 

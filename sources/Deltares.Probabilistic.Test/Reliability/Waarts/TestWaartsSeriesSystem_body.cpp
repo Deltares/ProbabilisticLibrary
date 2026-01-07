@@ -47,14 +47,10 @@ namespace Deltares::Probabilistic::Test
             return seriesSystem;
         });
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochast.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
-        stochast.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        return getModelRunner(z, stochasts);
     }
 
     WaartsResult TestWaartsSeriesSystem::expectedValues()
@@ -88,7 +84,7 @@ namespace Deltares::Probabilistic::Test
         expected.beta = 2.88;
         expected.alpha = {0.670837, 0.741605};
         expected.x = {-1.93078, -2.13446};
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -114,7 +110,7 @@ namespace Deltares::Probabilistic::Test
         auto expected = expectedValues();
         expected.alpha = {-0.259111, -0.965847};
         expected.x = {0.736722, 2.74616};
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -124,7 +120,7 @@ namespace Deltares::Probabilistic::Test
         expected.beta = 2.85;
         expected.alpha = {0.579354, 0.815076};
         expected.x = { -1.65229, -2.32456 };
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
@@ -134,7 +130,7 @@ namespace Deltares::Probabilistic::Test
         expected.beta = 2.33;
         expected.alpha = { -0.602854, -0.797851};
         expected.x = {1.40778, 1.86313};
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 

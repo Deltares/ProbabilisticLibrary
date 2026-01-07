@@ -50,23 +50,19 @@ namespace Deltares::Probabilistic::Test
             return parallelSystem;
         });
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         for(int i = 0; i < nrStochasts; i++)
         {
-            stochast.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+            stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
         }
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
-        auto uConverter = std::make_shared <Models::UConverter>(stochast, corr);
-        uConverter->initializeForRun();
-        auto modelRunner = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return modelRunner;
+        return getModelRunner(z, stochasts);
     }
 
     WaartsResult TestWaartsParallelSystem::expectedValues()
     {
         auto expected = WaartsResult();
         expected.beta = 3.5;
-        expected.success = false;
+        expected.converged = false;
         return expected;
     }
 
