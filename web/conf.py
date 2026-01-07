@@ -44,11 +44,10 @@ def remove_dir_content(path: str) -> None:
 # # -- Copy notebooks to include in docs -------
 if os.path.isdir("build"):
     remove_dir_content("build")
-# if os.path.isdir("_examples"):
-#     remove_dir_content("_examples")
+if os.path.isdir("_examples"):
+    remove_dir_content("_examples")
 
-# os.makedirs("_examples")
-# copy_tree("../examples", "_examples")
+os.makedirs("_examples")
 
 def copy_notebooks(src_folder, dst_folder):
     if os.path.exists(dst_folder):
@@ -58,12 +57,14 @@ def copy_notebooks(src_folder, dst_folder):
     for root, _, files in os.walk(src_folder):
         for f in files:
             if f.endswith(".ipynb"):
+                if 'Case' in f:
+                    continue
                 src_file = os.path.join(root, f)
                 dst_file = os.path.join(dst_folder, f)
                 shutil.copy2(src_file, dst_file)
 
 # Copy notebooks from sources into web/_examples
-# copy_notebooks("../sources/Deltares.Probabilistic.PWrapper.Notebooks", "_examples")
+copy_notebooks("../sources/Deltares.Probabilistic.PWrapper.Notebooks", "_examples")
 
 # Exclude some of the examples content:
 _files_to_include = ["summary_"]
