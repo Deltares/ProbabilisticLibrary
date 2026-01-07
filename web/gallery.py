@@ -4,16 +4,14 @@ from nbconvert.preprocessors import ExecutePreprocessor
 import os
 
 directory = os.path.dirname(os.path.abspath(__file__))
-
-notebook_path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
-
-os.chdir(directory)
-os.chdir('..')
-
 current_dir = os.getcwd()
-
 path = current_dir
+
 gallery_path = path + "/gallery"
+notebook_path = path + "/../sources/Deltares.Probabilistic.PWrapper.Notebooks"
+notebook_web_path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
+
+os.chdir(notebook_path)
 
 if not os.path.exists(gallery_path):
    # Create a new directory because it does not exist
@@ -45,13 +43,13 @@ class Category:
 
     def create_image_cell (self, index, header, image):
         self.empty = False
-        link = notebook_path + image.replace('.png', '.ipynb')
+        link = notebook_web_path + image.replace('.png', '.ipynb')
         contents = f'[<img src="{image}">]({link})[{header}]({link})'
         self.cells.append(Cell(index, contents))
 
     def create_text_cell (self, index, header, notebook):
         self.empty = False
-        link = notebook_path + notebook
+        link = notebook_web_path + notebook
         contents = f'[{header}]({link})'
         self.cells.append(Cell(index, contents))
 
@@ -78,7 +76,7 @@ def convert_file(file_name):
 
     print(file_name)
 
-    pl_notebook = nbformat.read(path + "/" + file_name, as_version = nbformat.NO_CONVERT )
+    pl_notebook = nbformat.read(notebook_path + "/" + file_name, as_version = nbformat.NO_CONVERT )
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
 
     image = file_name.replace('.ipynb', '.png')
@@ -123,7 +121,7 @@ def convert_file(file_name):
                     categories[i].create_text_cell(index, header, file_name)
 
         if has_plot:
-            out = ep.preprocess(pl_notebook, {'metadata': {'path': path}})
+            out = ep.preprocess(pl_notebook, {'metadata': {'path': notebook_path}})
 
 categories : list[Category] = []
 categories.append(Category('Statistics'))
@@ -131,7 +129,7 @@ categories.append(Category('Reliability'))
 categories.append(Category('Uncertainty'))
 categories.append(Category('Model'))
 
-for file in os.listdir(path):
+for file in os.listdir(notebook_path):
     if file.endswith(".ipynb"):
         convert_file(file)
 
