@@ -39,6 +39,11 @@ jobs:
         run: poetry install
         working-directory: sources/Deltares.Probabilistic.PWrapper
 
+      - name: Install Pandoc
+        run: sudo apt-get install -y pandoc   # for ubuntu
+            # For Windows runners, you can use Chocolatey:
+          # choco install pandoc -y
+
       # 5️⃣ Set up Node.js for Mermaid CLI
       - uses: actions/setup-node@v3
         with:
