@@ -47,7 +47,7 @@ You can contribute in two ways:
 
 We’re happy to help guide you through the process — whether it’s your first contribution or your fiftieth!
 
-🏁 IV. Finishing your work  
+🏁 IX. Finishing your work  
 Once your pull request (PR) has been approved — great job! 🎉
 You can now **merge your changes** into the ` master ` branch.
 
@@ -80,7 +80,7 @@ Do not use abbreviations, only for commonly known things. When using abbreviatio
 | --- | --- | --- |
 | Namespace | PascalCase | The namespace may not be used as a class name ; nested namespaces are joined on one line with '::' |
 | Class name | PascalCase | To differentiate from STL types which ISO recommends (do not use "C" or "T" prefixes) |
-| Function name | PascalCase | Lower case start is almost universal except for .Net world |
+| Function name | camelCase | Lower case start is almost universal except for .Net world |
 | Parameters/Locals | snake\_case | - |
 | Member variables | snake\_case | - |
 | Enums and its members | PascalCase | Most except very old standards agree with this one |
@@ -89,6 +89,9 @@ Do not use abbreviations, only for commonly known things. When using abbreviatio
 | File names | Match case of class name in file | In principle one class per file. A small helper struct, class or enum is allowed in the same file. |
 
 Function names are a verb (optionally followed by noun). For example: run, doWork, calculateReliability. All other names are noun (optionally preceded with adjective). For example: worker, reliabilityCalculator, reliability.
+
+The naming convention for Google test cases is: TEST(CategoryName, testMethodName).
+
 
 ## Bracketing
 

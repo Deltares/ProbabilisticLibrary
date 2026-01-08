@@ -22,7 +22,7 @@
 #include <fstream>
 #include <filesystem>
 #include <cstdio>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "hohenbichler_tests.h"
 #include "../Utils/testutils.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"

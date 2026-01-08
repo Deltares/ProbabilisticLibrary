@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "testCholeskiDecomposition.h"
 #include "../Utils/testutils.h"
 
