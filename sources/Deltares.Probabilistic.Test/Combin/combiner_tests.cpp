@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include <fstream>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "combiner_tests.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerFormCombiner.h"

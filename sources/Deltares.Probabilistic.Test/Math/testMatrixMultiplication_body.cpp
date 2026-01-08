@@ -21,7 +21,7 @@
 //
 #include <cmath>
 #include <numbers>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "testMatrixMultiplication.h"
 #include "../../Deltares.Probabilistic/Math/matrix.h"
 

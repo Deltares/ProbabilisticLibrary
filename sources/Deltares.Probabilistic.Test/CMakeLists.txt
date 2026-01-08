@@ -34,61 +34,42 @@ if (ENABLE_UNIT_TESTS)
   endif()
 endif()
 
-add_executable(Deltares.Probabilistic.Test
-    unittests_body.cpp
-    projectBuilder.h
-    projectBuilder_body.cpp
-    Reliability/testStartPointCalculator.h
-    Reliability/testStartPointCalculator_body.cpp
-    Reliability/testReliabilityMethods.h
-    Reliability/testReliabilityMethods_body.cpp
-    Math/testCholeskiDecomposition.h
-    Math/testCholeskiDecomposition_body.cpp
-    Math/testKMean.h
-    Math/testKMean_body.cpp
-    Math/testMatrix.h
-    Math/testMatrix_body.cpp
-    Math/testMatrixInverse.h
-    Math/testMatrixInverse_body.cpp
-    Math/testMatrixMultiplication.h
-    Math/testMatrixMultiplication_body.cpp
-    Math/testNumericSupport.h
-    Math/testNumericSupport_body.cpp
-    Math/testRandom.h
-    Math/testRandom_body.cpp
-    Math/testRootfinder.h
-    Math/testRootfinder_body.cpp
-    Math/testVector1D.h
-    Math/testVector1D_body.cpp
-    Combin/hohenbichler_tests.h
-    Combin/hohenbichler_tests.cpp
-    Combin/intEqualElements_tests.h
-    Combin/intEqualElements_tests.cpp
-    Combin/upscale_tests.h
-    Combin/upscale_tests.cpp
-    Combin/combinElements_tests.h
-    Combin/combinElements_tests.cpp
-    Combin/combiner_tests.h
-    Combin/combiner_tests.cpp
-    Distributions/testDistributions.h
-    Distributions/testDistributions_body.cpp
-    Optimization/testCobyla.h
-    Optimization/testCobyla_body.cpp
-    Model/TestRunModel.h
-    Model/TestRunModel_body.cpp
-    Proxies/TestProxies.h
-    Proxies/TestProxies_body.cpp
-    Statistics/testStandardNormal.h
-    Statistics/testStandardNormal_body.cpp
-    Statistics/TestCopula.h
-    Statistics/TestCopula_body.cpp
-    Uncertainty/TestUncertainty.h
-    Uncertainty/TestUncertainty_body.cpp
-    Sensitivity/TestSensitivity.h
-    Sensitivity/TestSensitivity_body.cpp
-    Utils/testutils.h
-    Utils/testutils_body.cpp
+file(GLOB testfiles
+    "unittests_body.cpp"
+    "projectBuilder.h"
+    "projectBuilder_body.cpp"
+    "Reliability/*.h"
+    "Reliability/*_body.cpp"
+    "Reliability/Waarts/*.h"
+    "Reliability/Waarts/*_body.cpp"
+    "Math/*.h"
+    "Math/*_body.cpp"
+    "Combin/combinElements_tests.*"
+    "Combin/combiner_tests.*"
+    "Combin/hohenbichler_tests.*"
+    "Combin/intEqualElements_tests.*"
+    "Combin/UpscaleTests.*"
+    "Statistics/*.h"
+    "Statistics/*_body.cpp"
+    "Distributions/*.h"
+    "Distributions/*_body.cpp"
+    "Optimization/*.h"
+    "Optimization/*_body.cpp"
+    "Proxies/*.h"
+    "Proxies/*_body.cpp"
+    "Model/*.h"
+    "Model/*_body.cpp"
+    "Uncertainty/*.h"
+    "Uncertainty/*_body.cpp"
+    "Model/*.h"
+    "Model/*_body.cpp"
+    "Sensitivity/*.h"
+    "Sensitivity/*_body.cpp"
+    "Utils/*.h"
+    "Utils/*_body.cpp"
 )
+
+add_executable(Deltares.Probabilistic.Test ${testfiles})
 
 set_target_properties(Deltares.Probabilistic.Test
   PROPERTIES
@@ -103,8 +84,19 @@ if(WIN32)
   target_link_options(Deltares.Probabilistic.Test PRIVATE "$<$<CONFIG:Debug>:/Debug>")
 endif()
 
-add_test(
-  NAME Deltares-Probabilistic-unit-tests
-  COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test>
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-)
+get_property(CODECOV GLOBAL PROPERTY WITH_CODECOV)
+# codecov tests are primary run on TeamCity, so add option for xml output that TeamCity can read.
+if(CODECOV)
+  add_test(
+    NAME Deltares-Probabilistic-unit-tests
+    COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test> --gtest_output=xml:test_results.xml
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  )
+else()
+  add_test(
+    NAME Deltares-Probabilistic-unit-tests
+    COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test>
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  )
+endif()
+

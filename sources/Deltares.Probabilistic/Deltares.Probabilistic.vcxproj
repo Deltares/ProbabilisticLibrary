@@ -590,6 +590,7 @@
     <ClCompile Include="Statistics\Distributions\HistogramDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ExternalDistribution.cpp" />
     <ClCompile Include="Utils\probLibString.cpp" />
+    <ClCompile Include="Utils\probLibException.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Math\RandomValueGenerator.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
