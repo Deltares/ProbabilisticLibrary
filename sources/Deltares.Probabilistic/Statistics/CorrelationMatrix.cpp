@@ -35,7 +35,9 @@ namespace Deltares
 
         bool CorrelationMatrix::IsValid() const
         {
-            return true;
+            auto report = Logging::ValidationReport();
+            Validate(report);
+            return report.isValid();
         }
 
         std::vector<double> CorrelationMatrix::ApplyCorrelation(const std::vector<double>& uValues)
@@ -194,6 +196,21 @@ namespace Deltares
                 const int index2 = stochastIndex.at(stochast2);
 
                 SetCorrelation(index1, index2, value, type);
+            }
+        }
+
+        void CorrelationMatrix::Validate(Logging::ValidationReport& report) const
+        {
+            try
+            {
+                auto cholesky = matrix.CholeskyDecomposition();
+            }
+            catch (const probLibException& e)
+            {
+                auto message = std::make_shared<Logging::Message>();
+                message->Type = Logging::MessageType::Error;
+                message->Text = e.what();
+                report.messages.push_back(message);
             }
         }
 

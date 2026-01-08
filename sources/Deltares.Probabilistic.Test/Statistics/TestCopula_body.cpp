@@ -26,6 +26,7 @@
 #include "../../Deltares.Probabilistic/Statistics/GaussianCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/DiagonalBandCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/CopulaCorrelation.h"
+#include "../../Deltares.Probabilistic/Statistics/CorrelationMatrix.h"
 
 #include <gtest/gtest.h>
 
@@ -160,6 +161,19 @@ namespace Deltares::Probabilistic::Test
         copulas2.SetCorrelation(stochast3, stochast1, 2.0, CorrelationType::Frank);
         copulas2.Validate(report);
         EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations C-A and A-B", report.messages[0]->Text);
+    }
+
+    void TestCopula::TestGaussianValidationMessages()
+    {
+        auto matrix = Statistics::CorrelationMatrix();
+        matrix.Init(3);
+        matrix.SetCorrelation(0, 1, -0.9, CorrelationType::Gaussian);
+        matrix.SetCorrelation(0, 2, -0.9, CorrelationType::Gaussian);
+        matrix.SetCorrelation(1, 2, -0.9, CorrelationType::Gaussian);
+        auto report = Logging::ValidationReport();
+        matrix.Validate(report);
+        ASSERT_EQ(report.messages.size(), 1);
+        EXPECT_NE(report.messages[0]->Text.find("Cholesky decomposition fails"), std::string::npos);
     }
 
 }

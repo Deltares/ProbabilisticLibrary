@@ -482,6 +482,11 @@ TEST(copulas_test, testValidationMessages)
     TestCopula::TestValidationMessages();
 }
 
+TEST(copulas_test, testGaussianValidationMessages)
+{
+    TestCopula::TestGaussianValidationMessages();
+}
+
 TEST(unittst, testUncertainty)
 {
     auto tstUncertainty = TestUncertainty();

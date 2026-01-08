@@ -32,6 +32,7 @@ namespace Deltares::Probabilistic::Test
         static void TestGumbel();
         static void TestValidation();
         static void TestValidationMessages();
+        static void TestGaussianValidationMessages();
     };
 }
 

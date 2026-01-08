@@ -1263,5 +1263,21 @@ Alpha values:
 
         self.assertAlmostEqual(1.92, dp.reliability_index, delta=margin)
 
+    def test_validation_gaussian_correlation(self):
+        project = project_builder.get_hunt_project()
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.correlation_type = CorrelationType.gaussian
+        project.correlation_matrix[(project.variables[0], project.variables[1])] = -0.9
+        project.correlation_matrix[(project.variables[0], project.variables[2])] = -0.9
+        project.correlation_matrix[(project.variables[1], project.variables[2])] = -0.9
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "Error: Cholesky decomposition fails: negative argument sqrt\n")
+
+
 if __name__ == '__main__':
     unittest.main()
