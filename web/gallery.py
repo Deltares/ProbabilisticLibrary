@@ -18,59 +18,130 @@ if not os.path.exists(gallery_path):
    os.makedirs(gallery_path)
 
 max_cells_per_line = 3
+cell_counter = 1
+cell_size = 32
 
 class Cell:
-    def __init__(self, index, contents):
+    cell_counter = 0
+
+    def __init__(self, index, name, header):
         self.index = index
-        self.contents = contents
+        self.id = cell_counter
+        Cell.cell_counter += 1
+
+        id = str(Cell.cell_counter)
+
+        self.def_lines : list[str] = []
+        self.def_lines.append(f'.. |{id}_img| image:: {name}.png')
+        self.def_lines.append(f'   :width: 180px')
+        self.def_lines.append(f'   :alt: {header}')
+        self.def_lines.append(f'')
+        self.def_lines.append(f'.. |{id}_nb| replace:: `{header} <../_examples/{name}.ipynb>`__')
+        self.def_lines.append(f'')
+
+        self.nb_lines : list[str] = []
+        self.nb_lines.append(f'   ../_examples/{name}.ipynb')
+
+        self.table_lines : list[str] = []
+        self.table_lines.append(f'| |{id}_img|')
+        self.table_lines.append(f'| |{id}_nb|')
+
 
     def __lt__(self, other):
         return self.index < other.index
 
 class Category:
     def __init__(self, name):
-        self.lines : list[str] = []
+        self.table_lines : list[str] = []
+        self.notebook_lines : list[str] = []
         self.cells : list[Cell] = []
         self.name = name
         self.empty = True
-        self.lines.append(f'## {name}')
-        self.start_table();
 
-    def start_table(self):
-        self.lines.append('')
-        self.lines.append('| | | |')
-        self.lines.append('|:-:|:-:|:-:|')
-
-    def create_image_cell (self, index, header, image):
+    def create_cell (self, index, header, image):
         self.empty = False
-        link = notebook_web_path + image.replace('.png', '.ipynb')
-        contents = f'[<img src="{image}">]({link})[{header}]({link})'
-        self.cells.append(Cell(index, contents))
+        name = image.replace('.png', '')
+        name = name.replace('.ipynb', '')
+        self.cells.append(Cell(index, name, header))
 
-    def create_text_cell (self, index, header, notebook):
-        self.empty = False
-        link = notebook_web_path + notebook
-        contents = f'[{header}]({link})'
-        self.cells.append(Cell(index, contents))
-
-    def finalize(self):
+    def get_def_lines(self):
         self.cells.sort()
 
-        contents = []
+        def_lines : list[str] = []
         for cell in self.cells:
-            contents.append(cell.contents)
-            if len(contents) == max_cells_per_line:
-                self.write_line(contents)
-                contents = []
+            def_lines.extend(cell.def_lines)
 
-        self.write_line(contents)
+        return def_lines
 
-    def write_line(self, contents):
-        if len(contents) > 0:
-            while len(contents) < max_cells_per_line:
-                contents.append(' ')
-            self.lines.append('| ' + str.join(' | ', contents) + ' |')
-            contents.clear()
+    def get_table_lines(self):
+        self.cells.sort()
+
+        table_lines : list[str] = []
+        table_lines.append(self.name)
+        table_lines.append('---------')
+        table_lines.append('')
+
+        header_line = ''
+        first_line = ''
+        second_line = ''
+        counter = 0
+
+        for cell in self.cells:
+            header_line += self._extend('+', '-', cell_size)
+            first_line += self._extend(cell.table_lines[0], ' ', cell_size)
+            second_line += self._extend(cell.table_lines[1], ' ', cell_size)
+
+            counter += 1
+            if counter == max_cells_per_line:
+                header_line += '+'
+                first_line += '|'
+                second_line += '|'
+                table_lines.append(header_line)
+                table_lines.append(first_line)
+                table_lines.append(second_line)
+
+                header_line = ''
+                first_line = ''
+                second_line = ''
+                counter = 0
+
+        if counter > 0 and counter < max_cells_per_line:
+            while counter < max_cells_per_line:
+                header_line += self._extend('+', '-', cell_size)
+                first_line += self._extend('|', ' ', cell_size)
+                second_line += self._extend('|', ' ', cell_size)
+                counter += 1
+
+            header_line += '+'
+            first_line += '|'
+            second_line += '|'
+
+            table_lines.append(header_line)
+            table_lines.append(first_line)
+            table_lines.append(second_line)
+
+        bottom_line = ''
+        for i in range(max_cells_per_line):
+            bottom_line += self._extend('+', '-', cell_size)
+        bottom_line += '+'
+        table_lines.append(bottom_line)
+
+        table_lines.append('')
+        return table_lines
+
+    def get_nb_lines(self):
+        self.cells.sort()
+
+        nb_lines : list[str] = []
+        for cell in self.cells:
+            nb_lines.extend(cell.nb_lines)
+
+        return nb_lines
+
+    def _extend(self, text, trailing, size):
+        while len(text) < size:
+            text += trailing
+        return text
 
 def convert_file(file_name):
 
@@ -116,12 +187,12 @@ def convert_file(file_name):
         for i in range(len(categories)):
             if category.lower() == categories[i].name.lower():
                 if has_plot:
-                    categories[i].create_image_cell(index, header, image)
+                    categories[i].create_cell(index, header, image)
                 else:
-                    categories[i].create_text_cell(index, header, file_name)
+                    categories[i].create_cell(index, header, file_name)
 
-        if has_plot:
-            out = ep.preprocess(pl_notebook, {'metadata': {'path': notebook_path}})
+        # if has_plot:
+        #     out = ep.preprocess(pl_notebook, {'metadata': {'path': notebook_path}})
 
 categories : list[Category] = []
 categories.append(Category('Statistics'))
@@ -136,8 +207,22 @@ for file in os.listdir(notebook_path):
 lines : list[str] = []
 for cat in categories:
     if not cat.empty:
-        cat.finalize()
-        lines.extend(cat.lines)
+        lines.extend(cat.get_def_lines())
 
-with open(gallery_path + "/gallery.md", "w") as file:
+for cat in categories:
+    if not cat.empty:
+        lines.extend(cat.get_table_lines())
+
+lines.append('')
+lines.append('.. toctree::')
+lines.append('   :maxdepth: 1')
+lines.append('   :caption: Tutorials')
+lines.append('')
+
+for cat in categories:
+    if not cat.empty:
+        lines.extend(cat.get_nb_lines())
+
+
+with open(gallery_path + "/gallery.rst", "w") as file:
     file.writelines(line + '\n' for line in lines)

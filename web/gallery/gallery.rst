@@ -1,201 +1,207 @@
-.. |dist_funcs_img| image:: overview_distribution_functions.png
+.. |12_img| image:: overview_distribution_functions.png
    :width: 180px
    :alt: Distribution functions
 
-.. |composite_img| image:: composite_distribution.png
+.. |12_nb| replace:: `Distribution functions <../_examples/overview_distribution_functions.ipynb>`__
+
+.. |1_img| image:: composite_distribution.png
    :width: 180px
    :alt: Composite distribution
 
-.. |conditional_img| image:: conditional_variable.png
+.. |1_nb| replace:: `Composite distribution <../_examples/composite_distribution.ipynb>`__
+
+.. |2_img| image:: conditional_variable.png
    :width: 180px
    :alt: Conditional variable
 
-.. |conversion_img| image:: conversion_functions.png
+.. |2_nb| replace:: `Conditional variable <../_examples/conditional_variable.ipynb>`__
+
+.. |3_img| image:: conversion_functions.png
    :width: 180px
    :alt: Conversion functions
 
-.. |correlations_img| image:: correlations.png
-   :width: 180px
-   :alt: Correlations
+.. |3_nb| replace:: `Conversion functions <../_examples/conversion_functions.ipynb>`__
 
-.. |fitting_prior_img| image:: fitting_with_prior_distribution.png
+.. |4_img| image:: correlations.png
+   :width: 180px
+   :alt: Correlations between variables
+
+.. |4_nb| replace:: `Correlations between variables <../_examples/correlations.ipynb>`__
+
+.. |6_img| image:: fitting_with_prior_distribution.png
    :width: 180px
    :alt: Fitting with prior distribution
 
-.. |operations_img| image:: operations_on_distribution_functions.png
+.. |6_nb| replace:: `Fitting with prior distribution <../_examples/fitting_with_prior_distribution.ipynb>`__
+
+.. |11_img| image:: operations_on_distribution_functions.png
    :width: 180px
-   :alt: Operations on distributions
+   :alt: Operations on distribution functions
 
-.. |uncertainty_img| image:: statistical_uncertainty.png
+.. |11_nb| replace:: `Operations on distribution functions <../_examples/operations_on_distribution_functions.ipynb>`__
+
+.. |22_img| image:: statistical_uncertainty.png
    :width: 180px
-   :alt: Statistical uncertainty
+   :alt: Effect of statistical uncertainty
 
-.. |form_img| image:: form.png
+.. |22_nb| replace:: `Effect of statistical uncertainty <../_examples/statistical_uncertainty.ipynb>`__
+
+.. |7_img| image:: FORM_simple_correlations.png
    :width: 180px
-   :alt: FORM
+   :alt: FORM and correlations
 
+.. |7_nb| replace:: `FORM and correlations <../_examples/FORM_simple_correlations.ipynb>`__
 
-.. |hybrid_img| image:: hybrid.png
+.. |8_img| image:: hybrid_reliability_methods.png
    :width: 180px
-   :alt: Hybrid methods
+   :alt: Hybrid reliability methods
 
+.. |8_nb| replace:: `Hybrid reliability methods <../_examples/hybrid_reliability_methods.ipynb>`__
 
-.. |limit_state_img| image:: limit_state.png
+.. |10_img| image:: limit_state_function_with_arrays.png
    :width: 180px
-   :alt: Limit state function
+   :alt: Model with arrays as input
 
+.. |10_nb| replace:: `Model with arrays as input <../_examples/limit_state_function_with_arrays.ipynb>`__
 
-.. |system_img| image:: system.png
+.. |14_img| image:: reliability_analysis_system.png
    :width: 180px
-   :alt: System reliability
+   :alt: System reliability analysis
 
+.. |14_nb| replace:: `System reliability analysis <../_examples/reliability_analysis_system.ipynb>`__
 
-.. |parallel_img| image:: parallel.png
+.. |13_img| image:: parallel_overtopping.png
    :width: 180px
-   :alt: Parallel computing
+   :alt: Parallel computing and reusing realizations
 
+.. |13_nb| replace:: `Parallel computing and reusing realizations <../_examples/parallel_overtopping.ipynb>`__
 
-.. |fragility_img| image:: fragility.png
+.. |5_img| image:: failure_probability_fragility_curve.png
    :width: 180px
    :alt: Fragility curves
 
+.. |5_nb| replace:: `Fragility curves <../_examples/failure_probability_fragility_curve.ipynb>`__
 
-.. |length_img| image:: length.png
+.. |9_img| image:: length_effect.png
    :width: 180px
-   :alt: Spatial upscaling
+   :alt: Spatial upscaling (length-effect)
 
+.. |9_nb| replace:: `Spatial upscaling (length-effect) <../_examples/length_effect.ipynb>`__
 
-.. |bligh_img| image:: bligh.png
+.. |15_img| image:: reliability_methods_bligh.png
    :width: 180px
-   :alt: Numerical methods Bligh
+   :alt: Numerical methods
 
+.. |15_nb| replace:: `Numerical methods <../_examples/reliability_methods_bligh.ipynb>`__
 
-.. |hunt_img| image:: hunt.png
+.. |16_img| image:: reliability_methods_hunt.png
    :width: 180px
-   :alt: Sampling methods Hunt
+   :alt: Sampling methods
 
+.. |16_nb| replace:: `Sampling methods <../_examples/reliability_methods_hunt.ipynb>`__
 
-.. |gradient_img| image:: gradient.png
+.. |17_img| image:: reliability_methods_overtopping.png
    :width: 180px
-   :alt: Gradient methods
+   :alt: Gradient methods (FORM, Cobyla)
 
+.. |17_nb| replace:: `Gradient methods (FORM, Cobyla) <../_examples/reliability_methods_overtopping.ipynb>`__
 
-.. |piping_img| image:: piping.png
+.. |18_img| image:: reliability_with_piping_model.png
    :width: 180px
-   :alt: Reliability with piping
+   :alt: Reliability analysis with a model
 
+.. |18_nb| replace:: `Reliability analysis with a model <../_examples/reliability_with_piping_model.ipynb>`__
 
-.. |visualization_img| image:: visualization.png
+.. |25_img| image:: visualize_results.png
    :width: 180px
-   :alt: Visualization results
+   :alt: Visualization of reliability results
 
+.. |25_nb| replace:: `Visualization of reliability results <../_examples/visualize_results.ipynb>`__
 
-.. |safety_img| image:: safety_levels.png
+.. |23_img| image:: uncertainty_analysis.png
+   :width: 180px
+   :alt: Uncertainty analysis
+
+.. |23_nb| replace:: `Uncertainty analysis <../_examples/uncertainty_analysis.ipynb>`__
+
+.. |20_img| image:: safety_levels.png
    :width: 180px
    :alt: Safety levels
 
+.. |20_nb| replace:: `Safety levels <../_examples/safety_levels.ipynb>`__
 
-.. |sensitivity_img| image:: sensitivity_analysis.png
+.. |21_img| image:: sensitivity_analysis.png
    :width: 180px
    :alt: Sensitivity analysis
 
+.. |21_nb| replace:: `Sensitivity analysis <../_examples/sensitivity_analysis.ipynb>`__
 
-.. |run_model_img| image:: run_model.png
+.. |19_img| image:: run_model.png
    :width: 180px
-   :alt: Run model
+   :alt: Running a single calculation
 
+.. |19_nb| replace:: `Running a single calculation <../_examples/run_model.ipynb>`__
 
-.. |validation_img| image:: validation.png
+.. |24_img| image:: validation.png
    :width: 180px
    :alt: Validation
 
-
-
-
-
-.. |composite_nb| replace:: `Composite distribution <../_examples/composite_distribution.ipynb>`__
-.. |dist_funcs_nb| replace:: `Distribution functions <../_examples/overview_distribution_functions.ipynb>`__
-.. |conditional_nb| replace:: `Conditional variable <../_examples/conditional_variable.ipynb>`__
-.. |conversion_nb| replace:: `Conversion functions <../_examples/conversion_functions.ipynb>`__
-.. |correlations_nb| replace:: `Correlations between variables <../_examples/correlations.ipynb>`__
-.. |fitting_prior_nb| replace:: `Fitting with prior distribution <../_examples/fitting_with_prior_distribution.ipynb>`__
-.. |operations_nb| replace:: `Operations on distribution functions <../_examples/operations_on_distribution_functions.ipynb>`__
-.. |uncertainty_nb| replace:: `Effect of statistical uncertainty <../_examples/statistical_uncertainty.ipynb>`__
-.. |form_nb| replace:: `FORM and correlations <../_examples/FORM_simple_correlations.ipynb>`__
-.. |hybrid_nb| replace:: `Hybrid reliability <../_examples/hybrid_reliability_methods.ipynb>`__
-.. |limit_state_nb| replace:: `Model with arrays <../_examples/limit_state_function_with_arrays.ipynb>`__
-.. |system_nb| replace:: `System reliability analysis <../_examples/reliability_analysis_system.ipynb>`__
-.. |parallel_nb| replace:: `Parallel computing & reuse <../_examples/parallel_overtopping.ipynb>`__
-.. |fragility_nb| replace:: `Fragility curves <../_examples/failure_probability_fragility_curve.ipynb>`__
-.. |length_nb| replace:: `Spatial upscaling <../_examples/length_effect.ipynb>`__
-.. |bligh_nb| replace:: `Numerical methods <../_examples/reliability_methods_bligh.ipynb>`__
-.. |hunt_nb| replace:: `Sampling methods <../_examples/reliability_methods_hunt.ipynb>`__
-.. |gradient_nb| replace:: `Gradient methods <../_examples/reliability_methods_overtopping.ipynb>`__
-.. |piping_nb| replace:: `Reliability analysis <../_examples/reliability_with_piping_model.ipynb>`__
-.. |visualization_nb| replace:: `Visualization <../_examples/visualize_results.ipynb>`__
-.. |safety_nb| replace:: `Safety levels <../_examples/safety_levels.ipynb>`__
-.. |sensitivity_nb| replace:: `Sensitivity analysis <../_examples/sensitivity_analysis.ipynb>`__
-.. |run_model_nb| replace:: `Running a single calculation <../_examples/run_model.ipynb>`__
-.. |validation_nb| replace:: `Validation <../_examples/validation.ipynb>`__
+.. |24_nb| replace:: `Validation <../_examples/validation.ipynb>`__
 
 Statistics
-----------
+---------
 
-+------------------------------+------------------------------+------------------------------+
-| |dist_funcs_img|             | |composite_img|              | |conditional_img|            |
-| |dist_funcs_nb|              | |composite_nb|               | |conditional_nb|             |
-+------------------------------+------------------------------+------------------------------+
-| |conversion_img|             | |correlations_img|           | |fitting_prior_img|          |
-| |conversion_nb|              | |correlations_nb|            | |fitting_prior_nb|           |
-+------------------------------+------------------------------+------------------------------+
-| |operations_img|             | |uncertainty_img|            |                              |
-| |operations_nb|              | |uncertainty_nb|             |                              |
-+------------------------------+------------------------------+------------------------------+
++-------------------------------+-------------------------------+-------------------------------+
+| |12_img|                      | |1_img|                       | |2_img|                       |
+| |12_nb|                       | |1_nb|                        | |2_nb|                        |
++-------------------------------+-------------------------------+-------------------------------+
+| |3_img|                       | |4_img|                       | |6_img|                       |
+| |3_nb|                        | |4_nb|                        | |6_nb|                        |
++-------------------------------+-------------------------------+-------------------------------+
+| |11_img|                      | |22_img|                      |                               |
+| |11_nb|                       | |22_nb|                       |                               |
++-------------------------------+-------------------------------+-------------------------------+
 
 Reliability
------------
+---------
 
-+------------------------------+------------------------------+------------------------------+
-| |form_img|                   | |hybrid_img|                 | |limit_state_img|            |
-| |form_nb|                    | |hybrid_nb|                  | |limit_state_nb|             |
-+------------------------------+------------------------------+------------------------------+
-| |system_img|                 | |parallel_img|               | |fragility_img|              |
-| |system_nb|                  | |parallel_nb|                | |fragility_nb|               |
-+------------------------------+------------------------------+------------------------------+
-| |length_img|                 | |bligh_img|                  | |hunt_img|                   |
-| |length_nb|                  | |bligh_nb|                   | |hunt_nb|                    |
-+------------------------------+------------------------------+------------------------------+
-| |gradient_img|               | |piping_img|                 | |visualization_img|          |
-| |gradient_nb|                | |piping_nb|                  | |visualization_nb|           |
-+------------------------------+------------------------------+------------------------------+
++-------------------------------+-------------------------------+-------------------------------+
+| |7_img|                       | |8_img|                       | |10_img|                      |
+| |7_nb|                        | |8_nb|                        | |10_nb|                       |
++-------------------------------+-------------------------------+-------------------------------+
+| |14_img|                      | |13_img|                      | |5_img|                       |
+| |14_nb|                       | |13_nb|                       | |5_nb|                        |
++-------------------------------+-------------------------------+-------------------------------+
+| |9_img|                       | |15_img|                      | |16_img|                      |
+| |9_nb|                        | |15_nb|                       | |16_nb|                       |
++-------------------------------+-------------------------------+-------------------------------+
+| |17_img|                      | |18_img|                      | |25_img|                      |
+| |17_nb|                       | |18_nb|                       | |25_nb|                       |
++-------------------------------+-------------------------------+-------------------------------+
 
 Uncertainty
------------
+---------
 
-
-
-+------------------------------+------------------------------+------------------------------+
-| |uncertainty_img|             | |safety_img|                | |sensitivity_img|            |
-| |uncertainty_nb|              | |safety_nb|                 | |sensitivity_nb|             |
-+------------------------------+------------------------------+------------------------------+
-
++-------------------------------+-------------------------------+-------------------------------+
+| |23_img|                      | |20_img|                      | |21_img|                      |
+| |23_nb|                       | |20_nb|                       | |21_nb|                       |
++-------------------------------+-------------------------------+-------------------------------+
 
 Model
------
+---------
 
-+------------------------------+------------------------------+------------------------------+
-| |run_model_img|              | |validation_img|             |                              |
-| |run_model_nb|               | |validation_nb|              |                              |
-+------------------------------+------------------------------+------------------------------+
-
++-------------------------------+-------------------------------+-------------------------------+
+| |19_img|                      | |24_img|                      |                               |
+| |19_nb|                       | |24_nb|                       |                               |
++-------------------------------+-------------------------------+-------------------------------+
 
 
 .. toctree::
    :maxdepth: 1
-   :caption: Notebooks
+   :caption: Tutorials
 
-   ../_examples/composite_distribution.ipynb
    ../_examples/overview_distribution_functions.ipynb
+   ../_examples/composite_distribution.ipynb
    ../_examples/conditional_variable.ipynb
    ../_examples/conversion_functions.ipynb
    ../_examples/correlations.ipynb
@@ -214,8 +220,8 @@ Model
    ../_examples/reliability_methods_overtopping.ipynb
    ../_examples/reliability_with_piping_model.ipynb
    ../_examples/visualize_results.ipynb
+   ../_examples/uncertainty_analysis.ipynb
    ../_examples/safety_levels.ipynb
    ../_examples/sensitivity_analysis.ipynb
    ../_examples/run_model.ipynb
    ../_examples/validation.ipynb
-
