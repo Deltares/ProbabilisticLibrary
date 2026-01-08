@@ -78,7 +78,7 @@ class Category:
 
         table_lines : list[str] = []
         table_lines.append(self.name)
-        table_lines.append('---------')
+        table_lines.append(self._extend('', '-', len(self.name)))
         table_lines.append('')
 
         header_line = ''
@@ -191,8 +191,8 @@ def convert_file(file_name):
                 else:
                     categories[i].create_cell(index, header, file_name)
 
-        # if has_plot:
-        #     out = ep.preprocess(pl_notebook, {'metadata': {'path': notebook_path}})
+        if has_plot:
+            out = ep.preprocess(pl_notebook, {'metadata': {'path': notebook_path}})
 
 categories : list[Category] = []
 categories.append(Category('Statistics'))
@@ -205,6 +205,11 @@ for file in os.listdir(notebook_path):
         convert_file(file)
 
 lines : list[str] = []
+
+lines.append('Tutorials')
+lines.append('=========')
+lines.append('')
+
 for cat in categories:
     if not cat.empty:
         lines.extend(cat.get_def_lines())
@@ -224,5 +229,5 @@ for cat in categories:
         lines.extend(cat.get_nb_lines())
 
 
-with open(gallery_path + "/gallery.rst", "w") as file:
+with open(gallery_path + "/tutorials.rst", "w") as file:
     file.writelines(line + '\n' for line in lines)

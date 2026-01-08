@@ -4,7 +4,7 @@ Probabilistic Suite Community
 Welcome to the **Probabilistic Suite Community**.
 This site is the central hub for users and developers of the **Deltares Probabilistic Suite**, a framework for uncertainty, reliability, and risk-based analyses.
 
-The Probabilistic Suite consists of a high-performance computational core, Python libraries for automation, and the **Probabilistic Toolkit (PTK)** graphical user interface.
+The Probabilistic Suite consists of a high-performance **computational core**, **Python libraries** for automation, and the **Probabilistic Toolkit (PTK)** graphical user interface.
 This community site focuses on **open examples, tutorials, documentation, and knowledge sharing**, with a strong emphasis on Python-based workflows.
 
 
@@ -18,13 +18,13 @@ The Probabilistic Suite enables quantitative analysis of uncertainty and risk in
 It consists of the following components:
 
 - **Probabilistic Library (C++)**
-  High-performance routines for reliability, uncertainty, and sensitivity analyses.
+  `High-performance routines <https://github.com/Deltares/ProbabilisticLibrary>`_ for reliability, uncertainty, and sensitivity analyses.
 
 - **Python Library**
-  A Python interface to the probabilistic kernel, enabling scripting, automation, and integration with other tools.
+  A `Python interface <https://pypi.org/project/probabilistic-library>`_ to the probabilistic kernel, enabling scripting, automation, and integration with other tools.
 
 - **Probabilistic Toolkit (PTK)**
-  A graphical user interface for setting up, executing, and visualizing probabilistic analyses.
+  A `graphical user interface <https://www.deltares.nl/en/software-and-data/products/probabilistic-toolkit-ptk>`_ for setting up, executing, and visualizing probabilistic analyses.
 
 Together, these components allow users to move seamlessly from exploratory analysis to automated workflows and large-scale studies.
 
@@ -75,10 +75,7 @@ Contributions are welcome in the form of:
    :titlesonly:
 
    installation.rst
-   tutorials.rst
+   gallery/tutorials.rst
    api_reference/index.rst
-   gallery/gallery.rst
-
-
 
 Lost..? Try the :ref:`search`.

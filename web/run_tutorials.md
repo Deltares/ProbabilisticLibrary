@@ -1,13 +1,15 @@
 
 # Functionality
 
-The batch file `run_gallery.bat` generates the markdown file for the gallery (`gallery.md`) and all needed image files. The files are placed in the [directory](https://github.com/Deltares/ProbabilisticLibrary/tree/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/utils). After running the batch file, the gallery contents should be pushed to the repository.
+The batch file `run_tutorials.bat` generates the rst file for the tutorials (`tutorials.rst`) and all needed image files. The files are placed in the [directory](https://github.com/Deltares/ProbabilisticLibrary/tree/master/web/gallery). After running the batch file, the gallery contents should be pushed to the repository.
 
 # Requirements
 
 ```
 pip install nbconvert
 ```
+
+The batch script is run in environment prob_lib_dev
 
 # Preparation of notebooks
 
