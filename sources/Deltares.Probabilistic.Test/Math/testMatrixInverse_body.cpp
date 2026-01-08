@@ -21,7 +21,7 @@
 //
 #include <cmath>
 #include <numbers>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "testMatrixInverse.h"
 #include "../Utils/testutils.h"
 

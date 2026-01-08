@@ -29,6 +29,7 @@ namespace Deltares
     {
         class ExponentialDistribution : public Distribution
         {
+        public:
             void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
             double getXFromU(StochastProperties& stochast, double u) override;
             double getUFromX(StochastProperties& stochast, double x) override;

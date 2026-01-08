@@ -22,7 +22,7 @@
 #include <numbers>
 
 #include "testMatrix.h"
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "../Utils/testutils.h"
 
 namespace Deltares::Probabilistic::Test
