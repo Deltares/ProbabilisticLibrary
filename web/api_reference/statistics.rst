@@ -1,5 +1,5 @@
-Statistic
-=========
+Statistics
+==========
 
 This module contains all statistics related functionality.
 

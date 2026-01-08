@@ -1,7 +1,5 @@
-Reliability module
-==================
-
-
+Reliability
+===========
 
 This module contains all reliability related functionality.
 

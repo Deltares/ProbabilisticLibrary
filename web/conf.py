@@ -225,13 +225,13 @@ html_theme_options = {
             "name": "Python",
             "url": "https://pypi.org/project/probabilistic-library",
             "icon": "../../_resources/pypi.svg",
-            "type": "local",
+            "type": "url",
         },
         {
             "name": "PTK",
             "url": "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk",
             "icon": "../../_resources/deltares.jpg",
-            "type": "local",
+            "type": "url",
         },
 
 

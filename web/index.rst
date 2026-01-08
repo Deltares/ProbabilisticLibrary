@@ -36,16 +36,13 @@ Together, these components allow users to move seamlessly from exploratory analy
 What you will find on this site
 -------------------------------
 
-This GitHub Pages site is maintained by the Probabilistic Suite community and provides:
+This GitHub Pages site is maintained by Deltares and the Probabilistic Suite community and provides:
 
 - **Getting Started guides**
   Step-by-step instructions to install the Python libraries and run your first analyses.
 
 - **Tutorials**
   In-depth explanations of probabilistic methods, workflows, and best practices.
-
-- **Gallery of Examples**
-  Practical, reproducible examples written in Python, covering common use cases and advanced scenarios.
 
 - **Community-driven knowledge**
   Examples, improvements, and discussions contributed by users and developers.
@@ -63,7 +60,7 @@ Contributions are welcome in the form of:
 - Questions and answers in the discussion forum
 - Improvements to documentation or tutorials
 - Bug reports or feature suggestions
-
+- Code, providing new features or improvements
 
 ----
 
