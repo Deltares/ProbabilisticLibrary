@@ -32,7 +32,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void TestCopula::TestClayton()
+    void TestCopula::testClayton()
     {
         constexpr double margin = 1e-9;
 
@@ -43,7 +43,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(b, 1.23779153247, margin);
     }
 
-    void TestCopula::TestFrank()
+    void TestCopula::testFrank()
     {
         constexpr double margin = 1e-9;
 
@@ -54,7 +54,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(b, 1.1216995066, margin);
     }
 
-    void TestCopula::TestGaussian()
+    void TestCopula::testGaussian()
     {
         constexpr double margin = 1e-12;
 
@@ -68,7 +68,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(expected, u2, margin);
     }
 
-    void TestCopula::TestGumbel()
+    void TestCopula::testGumbel()
     {
         constexpr double margin = 1e-4;
 
@@ -79,7 +79,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(b, 0.1355, margin) << "comparison with Matlab fails";
     }
 
-    void TestCopula::TestValidation()
+    void TestCopula::testValidation()
     {
         auto gaussian_copula = Statistics::GaussianCopula(1.5);
         EXPECT_FALSE(gaussian_copula.isValid());
@@ -109,7 +109,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(copulas_empty.CountCorrelations() , 0);
     }
 
-    void TestCopula::TestValidationMessages()
+    void TestCopula::testValidationMessages()
     {
         auto report = Logging::ValidationReport();
         auto gaussian_copula = Statistics::GaussianCopula(1.5);
@@ -163,7 +163,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations C-A and A-B", report.messages[0]->Text);
     }
 
-    void TestCopula::TestGaussianValidationMessages()
+    void TestCopula::testGaussianValidationMessages()
     {
         auto matrix = Statistics::CorrelationMatrix();
         matrix.Init(3);

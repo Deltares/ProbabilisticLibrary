@@ -537,37 +537,37 @@ TEST(UnitTests, testStandardNormal)
 
 TEST(CopulasTest, testClayton)
 {
-    TestCopula::TestClayton();
+    TestCopula::testClayton();
 }
 
 TEST(CopulasTest, testFrank)
 {
-    TestCopula::TestFrank();
+    TestCopula::testFrank();
 }
 
 TEST(CopulasTest, testGaussian)
 {
-    TestCopula::TestGaussian();
+    TestCopula::testGaussian();
 }
 
 TEST(CopulasTest, testGumbel)
 {
-    TestCopula::TestGumbel();
+    TestCopula::testGumbel();
 }
 
 TEST(CopulasTest, testValidation)
 {
-    TestCopula::TestValidation();
+    TestCopula::testValidation();
 }
 
 TEST(CopulasTest, testValidationMessages)
 {
-    TestCopula::TestValidationMessages();
+    TestCopula::testValidationMessages();
 }
 
 TEST(CopulasTest, testGaussianValidationMessages)
 {
-    TestCopula::TestGaussianValidationMessages();
+    TestCopula::testGaussianValidationMessages();
 }
 
 TEST(UnitTests, testUncertainty)

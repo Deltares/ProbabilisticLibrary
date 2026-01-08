@@ -26,13 +26,13 @@ namespace Deltares::Probabilistic::Test
     class TestCopula
     {
     public:
-        static void TestClayton();
-        static void TestFrank();
-        static void TestGaussian();
-        static void TestGumbel();
-        static void TestValidation();
-        static void TestValidationMessages();
-        static void TestGaussianValidationMessages();
+        static void testClayton();
+        static void testFrank();
+        static void testGaussian();
+        static void testGumbel();
+        static void testValidation();
+        static void testValidationMessages();
+        static void testGaussianValidationMessages();
     };
 }
 
