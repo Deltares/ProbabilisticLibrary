@@ -165,11 +165,13 @@ namespace Deltares::Probabilistic::Test
 
     void TestCopula::testGaussianValidationMessages()
     {
+        using enum CorrelationType;
+
         auto matrix = Statistics::CorrelationMatrix();
         matrix.Init(3);
-        matrix.SetCorrelation(0, 1, -0.9, CorrelationType::Gaussian);
-        matrix.SetCorrelation(0, 2, -0.9, CorrelationType::Gaussian);
-        matrix.SetCorrelation(1, 2, -0.9, CorrelationType::Gaussian);
+        matrix.SetCorrelation(0, 1, -0.9, Gaussian);
+        matrix.SetCorrelation(0, 2, -0.9, Gaussian);
+        matrix.SetCorrelation(1, 2, -0.9, Gaussian);
         auto report = Logging::ValidationReport();
         matrix.Validate(report);
         ASSERT_EQ(report.messages.size(), 1);
