@@ -187,7 +187,7 @@ namespace Deltares::Probabilistic::Test
     {
         using enum CorrelationType;
 
-        auto matrix = Statistics::CorrelationMatrix();
+        auto matrix = Statistics::CorrelationMatrix(true);
         matrix.Init(3);
         matrix.SetCorrelation(0, 1, -0.9, Gaussian);
         matrix.SetCorrelation(0, 2, -0.9, Gaussian);

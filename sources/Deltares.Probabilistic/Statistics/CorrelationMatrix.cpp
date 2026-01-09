@@ -166,7 +166,6 @@ namespace Deltares
 
         void CorrelationMatrix::SetCorrelation(const int i, const int j, double value, CorrelationType type)
         {
-            dirty = true;
             if (std::max(i, j) >= static_cast<int>(dim))
             {
                 throw probLibException("dimension mismatch in SetCorrelation");
@@ -211,30 +210,30 @@ namespace Deltares
 
         void CorrelationMatrix::Validate(Logging::ValidationReport& report)
         {
-            if (dirty)
+            if ( ! allow_validation) return;
+
+            bool validation_result;
+            std::string validation_message;
+            if (hasFullyCorrelated())
             {
-                if (hasFullyCorrelated())
+                validation_result = ! HasConflictingCorrelations();
+                if ( ! validation_result)
                 {
-                    validation_result = ! HasConflictingCorrelations();
-                    if ( ! validation_result)
-                    {
-                        validation_message = "found conflicting correlations";
-                    }
+                    validation_message = "found conflicting correlations";
                 }
-                else
+            }
+            else
+            {
+                try
                 {
-                    try
-                    {
-                        choleskyMatrix = matrix.CholeskyDecomposition();
-                        validation_result = true;
-                    }
-                    catch (const probLibException& e)
-                    {
-                        validation_result = false;
-                        validation_message = e.what();
-                    }
+                    choleskyMatrix = matrix.CholeskyDecomposition();
+                    validation_result = true;
                 }
-                dirty = false;
+                catch (const probLibException& e)
+                {
+                    validation_result = false;
+                    validation_message = e.what();
+                }
             }
 
             if ( ! validation_result)
@@ -255,10 +254,7 @@ namespace Deltares
 
         void CorrelationMatrix::CholeskyDecomposition()
         {
-            if (dirty)
-            {
-                choleskyMatrix = matrix.CholeskyDecomposition();
-            }
+            choleskyMatrix = matrix.CholeskyDecomposition();
         }
 
         void CorrelationMatrix::InverseCholeskyDecomposition()

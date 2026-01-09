@@ -80,12 +80,12 @@ namespace Deltares
             }
             else if (stochastCorrelationMatrix->IsIdentity())
             {
-                this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+                this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>(false);
                 this->correlationMatrix->Init(static_cast<int>(this->stochasts.size()));
             }
             else
             {
-                this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+                this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>(false);
                 this->correlationMatrix->Init(static_cast<int>(this->stochasts.size()));
 
                 for (int i = 0; i < static_cast<int>(this->stochasts.size()); i++)
@@ -152,7 +152,7 @@ namespace Deltares
             }
             else
             {
-                varyingCorrelationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+                varyingCorrelationMatrix = std::make_shared<Statistics::CorrelationMatrix>(false);
                 varyingCorrelationMatrix->Init(static_cast<int>(varyingStochasts.size()));
                 varyingCorrelationMatrix->Filter(correlationMatrix, varyingStochastIndex);
             }

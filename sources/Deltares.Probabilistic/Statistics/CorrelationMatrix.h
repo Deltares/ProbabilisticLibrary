@@ -43,6 +43,7 @@ namespace Deltares
         class CorrelationMatrix : public BaseCorrelation
         {
         public:
+            CorrelationMatrix(const bool allow_validation) : allow_validation(allow_validation) {}
             void Init(const int maxStochasts) override;
             void Init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override;
 
@@ -82,9 +83,7 @@ namespace Deltares
             std::vector<correlationPair> inputCorrelations;
             static std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation);
             size_t dim = 0;
-            bool dirty = true; // dirty flag to avoid to many Cholesky decompositions.
-            bool validation_result = true;
-            std::string validation_message;
+            bool allow_validation = false;
         };
     }
 }
