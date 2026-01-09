@@ -200,18 +200,49 @@ namespace Deltares
             }
         }
 
+        bool CorrelationMatrix::hasFullyCorrelated() const
+        {
+            for (const auto& c : inputCorrelations)
+            {
+                if (c.isFullyCorrelated) return true;
+            }
+            return false;
+        }
+
         void CorrelationMatrix::Validate(Logging::ValidationReport& report)
         {
-            try
+            if (dirty)
             {
-                choleskyMatrix = matrix.CholeskyDecomposition();
+                if (hasFullyCorrelated())
+                {
+                    validation_result = ! HasConflictingCorrelations();
+                    if ( ! validation_result)
+                    {
+                        validation_message = "found conflicting correlations";
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        choleskyMatrix = matrix.CholeskyDecomposition();
+                        validation_result = true;
+                    }
+                    catch (const probLibException& e)
+                    {
+                        validation_result = false;
+                        validation_message = e.what();
+                    }
+                }
                 dirty = false;
             }
-            catch (const probLibException& e)
+
+            if ( ! validation_result)
             {
                 auto message = std::make_shared<Logging::Message>();
                 message->Type = Logging::MessageType::Error;
-                message->Text = e.what();
+                message->Text = validation_message;
+                message->Subject = "Correlation Matrix";
                 report.messages.push_back(message);
             }
         }
@@ -427,7 +458,7 @@ namespace Deltares
         /// <param name="correlation"></param>
         /// <param name="otherCorrelation"></param>
         /// <returns></returns>
-        std::vector<int> CorrelationMatrix::GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const
+        std::vector<int> CorrelationMatrix::GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation)
         {
             auto nonConnectingStochasts = std::vector<int>();
             for (auto& stochast :

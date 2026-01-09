@@ -545,6 +545,11 @@ TEST(CopulasTest, testFrank)
     TestCopula::testFrank();
 }
 
+TEST(CopulasTest, testFrankExtremeTheta)
+{
+    TestCopula::testFrankExtremeTheta();
+}
+
 TEST(CopulasTest, testGaussian)
 {
     TestCopula::testGaussian();

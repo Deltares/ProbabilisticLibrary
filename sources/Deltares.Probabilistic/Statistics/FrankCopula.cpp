@@ -28,14 +28,19 @@ namespace Deltares::Statistics
 {
     void FrankCopula::update(const double& u, double& t) const
     {
-        if (theta < 700.0)
+        constexpr double max_input_exp = 700.0;
+        if (theta > max_input_exp)
         {
-            const double factor = (t - 1.0) * std::exp(-theta * u);
-            t = 1.0 + std::log((factor - t) / (factor * std::exp(theta) - t)) / theta;
+            t = u;
+        }
+        else if (theta < -max_input_exp)
+        {
+            t = 1.0 - u;
         }
         else
         {
-            t = u;
+            const double factor = (t - 1.0) * std::exp(-theta * u);
+            t = 1.0 + std::log((factor - t) / (factor * std::exp(theta) - t)) / theta;
         }
     }
 

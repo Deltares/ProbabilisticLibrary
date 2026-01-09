@@ -75,13 +75,16 @@ namespace Deltares
             Numeric::Matrix inverseCholeskyMatrix = Numeric::Matrix(0, 0);
             void CholeskyDecomposition();
             void InverseCholeskyDecomposition();
+            bool hasFullyCorrelated() const;
             std::map<std::shared_ptr<Stochast>, int> stochastIndex;
             std::vector<std::shared_ptr<Stochast>> stochasts;
             std::vector<IndexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;
-            std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
+            static std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation);
             size_t dim = 0;
             bool dirty = true; // dirty flag to avoid to many Cholesky decompositions.
+            bool validation_result = true;
+            std::string validation_message;
         };
     }
 }

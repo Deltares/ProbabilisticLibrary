@@ -54,6 +54,26 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(b, 1.1216995066, margin);
     }
 
+    void TestCopula::testFrankExtremeTheta()
+    {
+        constexpr double margin = 1e-2;
+
+        // test near switch code at theta = 700:
+        for (int i = 690; i < 711; i++)
+        {
+            auto frank_copula = Statistics::FrankCopula(i);
+            double a = 0.85;
+            double b = 1.0;
+            frank_copula.update_uspace(a, b);
+            EXPECT_NEAR(b, a, margin);
+
+            auto frank_copula_neg = Statistics::FrankCopula(-i);
+            b = 1.0;
+            frank_copula_neg.update_uspace(a, b);
+            EXPECT_NEAR(b, -a, margin);
+        }
+    }
+
     void TestCopula::testGaussian()
     {
         constexpr double margin = 1e-12;
