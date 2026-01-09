@@ -201,11 +201,7 @@ namespace Deltares
 
         bool CorrelationMatrix::hasFullyCorrelated() const
         {
-            for (const auto& c : inputCorrelations)
-            {
-                if (c.isFullyCorrelated) return true;
-            }
-            return false;
+            return std::ranges::any_of(inputCorrelations, [](const auto& corr) {return corr.isFullyCorrelated; });
         }
 
         void CorrelationMatrix::Validate(Logging::ValidationReport& report) const
