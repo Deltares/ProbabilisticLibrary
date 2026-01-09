@@ -7,15 +7,15 @@ directory = os.path.dirname(os.path.abspath(__file__))
 current_dir = os.getcwd()
 path = current_dir
 
-gallery_path = path + "/gallery"
+tutorials_path = path + "/tutorials"
 notebook_path = path + "/../sources/Deltares.Probabilistic.PWrapper.Notebooks"
 notebook_web_path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
 
 os.chdir(notebook_path)
 
-if not os.path.exists(gallery_path):
+if not os.path.exists(tutorials_path):
    # Create a new directory because it does not exist
-   os.makedirs(gallery_path)
+   os.makedirs(tutorials_path)
 
 max_cells_per_line = 3
 cell_counter = 1
@@ -171,7 +171,7 @@ def convert_file(file_name):
                         line = 'plot_object = ' + line.replace('.show()', '')
                         plot_line = True
                     if plot_line:
-                        image_path = gallery_path + "/" + image
+                        image_path = tutorials_path + "/" + image
                         line = line + f'\nplot_object.title("{header}")' 
                         line = line + f'\nplot_object.savefig("{image_path}")' 
                     new_lines.append(line)
@@ -229,5 +229,5 @@ for cat in categories:
         lines.extend(cat.get_nb_lines())
 
 
-with open(gallery_path + "/tutorials.rst", "w") as file:
+with open(tutorials_path + "/tutorials.rst", "w") as file:
     file.writelines(line + '\n' for line in lines)

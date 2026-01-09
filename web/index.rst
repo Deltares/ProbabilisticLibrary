@@ -57,10 +57,10 @@ The Probabilistic Suite Community is open and evolving.
 Contributions are welcome in the form of:
 
 - New example notebooks or scripts
-- Questions and answers in the discussion forum
-- Improvements to documentation or tutorials
+- Questions and answers in the `discussion forum <https://github.com/Deltares/ProbabilisticLibrary/discussions>`_
+- Improvements to documentation or `tutorials <./tutorials/tutorials.rst>`_
 - Bug reports or feature suggestions
-- Code, providing new features or improvements
+- `Code <https://github.com/Deltares/ProbabilisticLibrary>`_ for new features or improvements
 
 ----
 
@@ -72,7 +72,7 @@ Contributions are welcome in the form of:
    :titlesonly:
 
    installation.rst
-   gallery/tutorials.rst
+   tutorials/tutorials.rst
    api_reference/index.rst
 
 Lost..? Try the :ref:`search`.
