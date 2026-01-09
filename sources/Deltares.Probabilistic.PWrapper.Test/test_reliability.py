@@ -1276,7 +1276,7 @@ Alpha values:
         project.validate()
         printed = sys.stdout.getvalue()
         sys.stdout = sys.__stdout__
-        self.assertEqual(printed, "Error: Cholesky decomposition fails: negative argument sqrt\n")
+        self.assertEqual(printed, "Error: Cholesky decomposition fails.\n")
 
 
 if __name__ == '__main__':

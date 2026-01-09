@@ -27,6 +27,8 @@
 
 namespace Deltares::Statistics
 {
+    using namespace Deltares::Logging;
+
     double GumbelCopula::copulaRootFunc(double u, double v, double t) const
     {
         const double ut = -log(u);
@@ -75,9 +77,9 @@ namespace Deltares::Statistics
         }
     }
 
-    void GumbelCopula::validate(Logging::ValidationReport & report) const
+    void GumbelCopula::validate(ValidationReport & report) const
     {
-        Logging::ValidationSupport::checkMinimum(report, 1.0, theta, "Theta", "Gumbel copula", Logging::MessageType::Error);
+        ValidationSupport::checkMinimum(report, 1.0, theta, "Theta", "Gumbel copula", MessageType::Error);
     }
 }
 

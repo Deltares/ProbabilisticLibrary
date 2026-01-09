@@ -94,13 +94,13 @@ namespace Deltares::Statistics
         /// checks the object is valid
         /// </summary>
         /// <returns> flag: true = valid </returns>
-        virtual bool IsValid() const = 0;
+        virtual bool IsValid() = 0;
 
         /// <summary>
         /// fill the report with validation messages for this object
         /// </summary>
         /// <param name="report"> report to extend with validation messages </param>
-        virtual void Validate(Logging::ValidationReport& report) const = 0;
+        virtual void Validate(Logging::ValidationReport& report) = 0;
 
         /// <summary>
         /// set the correlation between two stochastic variables \n

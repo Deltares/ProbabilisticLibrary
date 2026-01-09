@@ -33,7 +33,7 @@ namespace Deltares
         using namespace Deltares::Reliability;
         using namespace Deltares::Numeric;
 
-        bool CorrelationMatrix::IsValid() const
+        bool CorrelationMatrix::IsValid()
         {
             auto report = Logging::ValidationReport();
             Validate(report);
@@ -166,7 +166,8 @@ namespace Deltares
 
         void CorrelationMatrix::SetCorrelation(const int i, const int j, double value, CorrelationType type)
         {
-            if (std::max(i, j) >= (int)dim)
+            dirty = true;
+            if (std::max(i, j) >= static_cast<int>(dim))
             {
                 throw probLibException("dimension mismatch in SetCorrelation");
             }
@@ -199,11 +200,12 @@ namespace Deltares
             }
         }
 
-        void CorrelationMatrix::Validate(Logging::ValidationReport& report) const
+        void CorrelationMatrix::Validate(Logging::ValidationReport& report)
         {
             try
             {
-                auto cholesky = matrix.CholeskyDecomposition();
+                choleskyMatrix = matrix.CholeskyDecomposition();
+                dirty = false;
             }
             catch (const probLibException& e)
             {
@@ -222,7 +224,10 @@ namespace Deltares
 
         void CorrelationMatrix::CholeskyDecomposition()
         {
-            choleskyMatrix = matrix.CholeskyDecomposition();
+            if (dirty)
+            {
+                choleskyMatrix = matrix.CholeskyDecomposition();
+            }
         }
 
         void CorrelationMatrix::InverseCholeskyDecomposition()

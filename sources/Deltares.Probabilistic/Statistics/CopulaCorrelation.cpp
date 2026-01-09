@@ -102,14 +102,14 @@ namespace Deltares::Statistics
         }
     }
 
-    bool CopulaCorrelation::IsValid() const
+    bool CopulaCorrelation::IsValid()
     {
         auto report = Logging::ValidationReport();
         Validate(report);
         return report.messages.empty();
     }
 
-    void CopulaCorrelation::Validate(Logging::ValidationReport& report) const
+    void CopulaCorrelation::Validate(Logging::ValidationReport& report)
     {
         for (size_t i = 0; i < copulas.size(); i++)
         {
@@ -147,6 +147,7 @@ namespace Deltares::Statistics
                     msg->Text = std::format(fmt, pair1, pair2);
                 }
                 msg->Type = Logging::MessageType::Error;
+                msg->Subject = "Copula correlation";
                 report.messages.push_back(msg);
             }
         }
@@ -185,14 +186,14 @@ namespace Deltares::Statistics
         }
     }
 
-    std::vector<double> CopulaCorrelation::ApplyCorrelation(const std::vector<double>& uValues)
+    std::vector<double> CopulaCorrelation::ApplyCorrelation(const std::vector<double>& u_values)
     {
-        auto newUvalues = uValues;
+        auto new_u_values = u_values;
         for (const auto& copula : copulas)
         {
-            copula.copula->update_uspace(newUvalues[copula.index1], newUvalues[copula.index2]);
+            copula.copula->update_uspace(new_u_values[copula.index1], new_u_values[copula.index2]);
         }
-        return newUvalues;
+        return new_u_values;
     }
 
     CorrelationValueAndType CopulaCorrelation::GetCorrelation(const int i, const int j) const

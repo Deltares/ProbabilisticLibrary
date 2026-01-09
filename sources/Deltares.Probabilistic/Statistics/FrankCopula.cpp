@@ -22,7 +22,6 @@
 
 #include "FrankCopula.h"
 
-#include "../Math/RootFinders/BisectionRootFinder.h"
 #include <cmath>
 
 namespace Deltares::Statistics
@@ -47,6 +46,7 @@ namespace Deltares::Statistics
             auto msg = std::make_shared<Logging::Message>();
             msg->Text = "Theta in Frank copula should be <> 0.0, but is 0.0";
             msg->Type = Logging::MessageType::Error;
+            msg->Subject = "Frank copula";
             report.messages.push_back(msg);
         }
     }

@@ -972,6 +972,28 @@ The copula $C$ is defined for probabilities, where our methods work with standar
 We have $u$ as the independent variable, and we look for $v$ as the dependent variable.
 The technique to find $v$ for a given $u$ differs for each copula.
 
+For the Frank copula, we can solve the equation $C\left(u,v\right) = w$ for $v$ analytically:
+\begin{align}		
+	v = -\frac{1}{\theta} \ln \left( 1 + \frac{\left(e^{-\theta} - 1\right) \left(e^{-\theta w} - 1\right)}{e^{-\theta u} - 1} \right)
+\end{align}
+
+For the Clayton copula, we can also solve the equation $C\left(u,v\right) = w$ for $v$ analytically:
+\begin{align}		
+	v = \left( \left( w^{-\theta} - u^{-\theta} + 1 \right) \right)^{-\frac{1}{\theta}}	
+\end{align}
+
+For very high values ($\theta > 10^8$), the next formula is used to avoid numerical problems:
+\begin{align}		
+	v = u * (1 - (log(1-u) + log(u)) / theta);
+\end{align}
+
+For the Gumbel copula, no analytical solution is available.
+Therefore, we use a numerical bisection method to find $v$ such that $C\left(u,v\right) = w$.
+
+For the Frank copula, if $\theta$ > 700, numerical problems occur due to overflow of the exponential function.
+In that case, we approximate the Frank copula with the comonotonic copula, which means that $u=v$.
+For the Gumbel copula, we do the same, but now for $\theta$ > 400.
+
 In case of the Gaussian copula, we can use the Cholesky decomposition as explained in the previous section.
 
 \section{Conversion between standard normal variables ($U$-domain) and real variables ($X$-domain)}\label{Section_2.2.3}

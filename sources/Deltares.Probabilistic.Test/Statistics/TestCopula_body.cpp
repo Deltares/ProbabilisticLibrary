@@ -175,7 +175,7 @@ namespace Deltares::Probabilistic::Test
         auto report = Logging::ValidationReport();
         matrix.Validate(report);
         ASSERT_EQ(report.messages.size(), 1);
-        EXPECT_NE(report.messages[0]->Text.find("Cholesky decomposition fails"), std::string::npos);
+        EXPECT_EQ(report.messages[0]->Text, "Cholesky decomposition fails.");
     }
 
 }

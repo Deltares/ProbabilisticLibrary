@@ -49,8 +49,8 @@ namespace Deltares::Statistics
             stochasts = stochast_list;
         }
 
-        bool IsValid() const override;
-        void Validate(Logging::ValidationReport& report) const override;
+        bool IsValid() override;
+        void Validate(Logging::ValidationReport& report) override;
 
         void SetCorrelation(const int i, const int j, double value, CorrelationType type) override;
         void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2,
@@ -63,7 +63,7 @@ namespace Deltares::Statistics
         int CountCorrelations() const override { return static_cast<int>(copulas.size()); }
         int GetDimension() override { return max_stochasts; }
         std::shared_ptr<Stochast> GetStochast(int index) override { return nullptr; }
-        std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
+        std::vector<double> ApplyCorrelation(const std::vector<double>& u_values) override;
         void InitializeForRun() override
         {
             // empty; after init and setCorrelation this class is ready to use

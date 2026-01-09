@@ -46,8 +46,8 @@ namespace Deltares
             void Init(const int maxStochasts) override;
             void Init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override;
 
-            bool IsValid() const override;
-            void Validate(Logging::ValidationReport& report) const override;
+            bool IsValid() override;
+            void Validate(Logging::ValidationReport& report) override;
 
             std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
@@ -81,6 +81,7 @@ namespace Deltares
             std::vector<correlationPair> inputCorrelations;
             std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
             size_t dim = 0;
+            bool dirty = true; // dirty flag to avoid to many Cholesky decompositions.
         };
     }
 }
