@@ -106,7 +106,7 @@ _dst_diagrams = "docs/_diagrams/"
 
 # General information about the project.
 project = "Probabilistic Library"
-copyright = "2025, Deltares"
+copyright = "2026, Deltares"
 author = "Rob Brinkman\\Karolina Wojciechowska\\Edwin Spee\\Matthias Hauth"
 
 
@@ -212,26 +212,26 @@ html_theme_options = {
         {
             "name": "Forum",
             "url": "https://github.com/Deltares/ProbabilisticLibrary/discussions",  
-            "icon": "../../_resources/PTK_small_logo.png",
+            "icon": "_static/PTK_small_logo.png",
             "type": "url",
         },
         {
             "name": "Repo",
             "url": "https://github.com/Deltares/ProbabilisticLibrary", 
-            "icon": "../../_resources/github.svg",
+            "icon": "_static/github.svg",
             "type": "url",
         },
         {
             "name": "Python",
             "url": "https://pypi.org/project/probabilistic-library",
-            "icon": "../../_resources/pypi.svg",
-            "type": "local",
+            "icon": "_static/pypi.svg",
+            "type": "url",
         },
         {
             "name": "PTK",
             "url": "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk",
-            "icon": "../../_resources/deltares.jpg",
-            "type": "local",
+            "icon": "_static/deltares.jpg",
+            "type": "url",
         },
 
 

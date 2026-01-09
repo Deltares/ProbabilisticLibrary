@@ -78,7 +78,7 @@ Below is a minimal example showing how to perform a statistical conversion in Py
    beta = StandardNormal.get_u_from_p(0.95)
    print(beta)
 
-For more realistic and complete examples, see the **Tutorials** section.
+For more realistic and complete examples, see the `tutorials <./tutorials/tutorials.rst>`_ section.
 
 ----
 
@@ -102,7 +102,7 @@ Next steps
 
 Now that you are set up, you can:
 
-- Explore the `Tutorials <./gallery/tutorials.rst>`_ to learn about probabilistic methods and workflows
+- Explore the `Tutorials <./tutorials/tutorials.rst>`_ to learn about probabilistic methods and workflows
 - Read the `API Reference <./api_reference/index.rst>`_ for detailed class and function documentation
 
 ----
@@ -112,5 +112,5 @@ Need help?
 
 If you encounter issues or have questions:
 
-- Check the documentation and examples
-- Ask questions or report issues via the community forum
+- Check the `tutorials <./tutorials/tutorials.rst>`_ and `documentation <./api_reference/index.rst>`_
+- Ask questions or report issues via the `community forum <https://github.com/Deltares/ProbabilisticLibrary/discussions>`_

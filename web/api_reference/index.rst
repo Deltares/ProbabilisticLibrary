@@ -13,8 +13,8 @@ s
    :maxdepth: 2
 
    project
+   statistics
+   reliability
    uncertainty
    sensitivity
-   reliability
-   statistics
    utils
