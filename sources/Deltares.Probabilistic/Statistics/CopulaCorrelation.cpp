@@ -102,14 +102,14 @@ namespace Deltares::Statistics
         }
     }
 
-    bool CopulaCorrelation::IsValid()
+    bool CopulaCorrelation::IsValid() const
     {
         auto report = Logging::ValidationReport();
         Validate(report);
-        return report.messages.empty();
+        return report.isValid();
     }
 
-    void CopulaCorrelation::Validate(Logging::ValidationReport& report)
+    void CopulaCorrelation::Validate(Logging::ValidationReport& report) const
     {
         for (size_t i = 0; i < copulas.size(); i++)
         {

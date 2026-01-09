@@ -33,7 +33,7 @@ namespace Deltares
         using namespace Deltares::Reliability;
         using namespace Deltares::Numeric;
 
-        bool CorrelationMatrix::IsValid()
+        bool CorrelationMatrix::IsValid() const
         {
             auto report = Logging::ValidationReport();
             Validate(report);
@@ -208,7 +208,7 @@ namespace Deltares
             return false;
         }
 
-        void CorrelationMatrix::Validate(Logging::ValidationReport& report)
+        void CorrelationMatrix::Validate(Logging::ValidationReport& report) const
         {
             if ( ! allow_validation) return;
 
@@ -226,7 +226,7 @@ namespace Deltares
             {
                 try
                 {
-                    choleskyMatrix = matrix.CholeskyDecomposition();
+                    auto cholesky_matrix = matrix.CholeskyDecomposition();
                     validation_result = true;
                 }
                 catch (const probLibException& e)

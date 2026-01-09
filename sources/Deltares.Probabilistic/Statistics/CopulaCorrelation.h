@@ -49,8 +49,8 @@ namespace Deltares::Statistics
             stochasts = stochast_list;
         }
 
-        bool IsValid() override;
-        void Validate(Logging::ValidationReport& report) override;
+        bool IsValid() const override;
+        void Validate(Logging::ValidationReport& report) const override;
 
         void SetCorrelation(const int i, const int j, double value, CorrelationType type) override;
         void SetCorrelation(const std::shared_ptr<Stochast>& stochast1, const std::shared_ptr<Stochast>& stochast2,
