@@ -113,7 +113,7 @@ namespace Deltares::Statistics
     {
         for (size_t i = 0; i < copulas.size(); i++)
         {
-            auto& c = copulas[i];
+            const auto& c = copulas[i];
             c.copula->validate(report);
             if (c.index1 == c.index2)
             {
@@ -132,7 +132,7 @@ namespace Deltares::Statistics
             }
             for (size_t j = 0; j < i; j++)
             {
-                auto& other = copulas[j];
+                const auto& other = copulas[j];
                 if (!c.AreLinked(other)) continue;
                 auto msg = std::make_shared<Logging::Message>();
                 constexpr auto fmt = "Multiple correlations not allowed for copulas, found for correlations {:} and {:}";
