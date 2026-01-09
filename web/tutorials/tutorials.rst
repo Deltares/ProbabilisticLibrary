@@ -202,6 +202,7 @@ Model
 .. toctree::
    :maxdepth: 1
    :caption: Tutorials
+   :hidden:
 
    ../_examples/overview_distribution_functions.ipynb
    ../_examples/composite_distribution.ipynb
