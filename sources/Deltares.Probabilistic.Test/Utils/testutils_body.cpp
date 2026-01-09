@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "testutils.h"
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include <cmath>
 #include <fstream>
 #include <iterator>
