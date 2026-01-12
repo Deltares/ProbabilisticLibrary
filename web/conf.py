@@ -212,26 +212,26 @@ html_theme_options = {
         {
             "name": "Forum",
             "url": "https://github.com/Deltares/ProbabilisticLibrary/discussions",  
-            "icon": "_static/PTK_small_logo.png",
-            "type": "url",
+            "icon": "../../_resources/PTK_small_logo.png",
+            "type": "local",
         },
         {
             "name": "Repo",
             "url": "https://github.com/Deltares/ProbabilisticLibrary", 
-            "icon": "_static/github.svg",
-            "type": "url",
+            "icon": "../../_resources/github.svg",
+            "type": "local",
         },
         {
             "name": "Python",
             "url": "https://pypi.org/project/probabilistic-library",
-            "icon": "_static/pypi.svg",
-            "type": "url",
+            "icon": "../../_resources/pypi.svg",
+            "type": "local",
         },
         {
             "name": "PTK",
             "url": "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk",
-            "icon": "_static/deltares.jpg",
-            "type": "url",
+            "icon": "../../_resources/deltares.jpg",
+            "type": "local",
         },
 
 
