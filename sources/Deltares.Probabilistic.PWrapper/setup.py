@@ -33,7 +33,7 @@ setuptools.setup(
     author_email="software.support@deltares.nl",
     description="Package which provides probabilistic methods",
     long_description=long_description,
-    long_description_content_type='text/markdown'
+    long_description_content_type='text/markdown',
     packages=setuptools.find_packages(),
     package_data={'probabilistic_library':['bin/*Deltares.Probabilistic.*.*']},    
     classifiers=[
