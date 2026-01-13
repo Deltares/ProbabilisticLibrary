@@ -20,13 +20,20 @@
 # All rights reserved.
 #
 import setuptools
+
+from pathlib import Path
+
+top_directory = Path(__file__).parents[2]
+long_description = (top_directory / "README.md").read_text()
  
 setuptools.setup(
     name="probabilistic_library",
-    version="26.1.1-rc",
+    version="26.1.1-rc1",
     author="Deltares",
     author_email="software.support@deltares.nl",
     description="Package which provides probabilistic methods",
+    long_description=long_description,
+    long_description_content_type='text/markdown'
     packages=setuptools.find_packages(),
     package_data={'probabilistic_library':['bin/*Deltares.Probabilistic.*.*']},    
     classifiers=[
