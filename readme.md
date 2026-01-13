@@ -13,20 +13,16 @@ The scientific background can be found here:
 
 You can access the routines of the library using a Python wrapper. 
 A description of the Python classes is given here:
-[API documentation](https://deltares.github.io/ProbabilisticLibrary/probabilistic_library.html)
+[API documentation](https://deltares.github.io/ProbabilisticLibrary/api_reference/index.html.html)
 
 ### Installation
 
-Request the wheel of the Probabilistic Library from Deltares.
-
-Install the wheel as follows:
-```
-pip install probabilistic_library-25.3.1-py3-none-any.whl --force-reinstall
-```
+The installation file can be found in the [Python Package Index](https://pypi.org/project/probabilistic-library).
+The Probabilistic Library should be installed with pip, see the [getting started](https://deltares.github.io/ProbabilisticLibrary/installation.html#install-using-pip) explanation.
 
 ### Tutorials
 
-See the [Tutorials](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions on how to use the Probabilistic Library. Jupyter notebooks are available for each item and demonstrate how to use the Probabilistic Library.
+See the [Tutorials](https://deltares.github.io/ProbabilisticLibrary/tutorials/tutorials.html) for several demonstrations and instructions on how to use the Probabilistic Library. Jupyter notebooks are available for each item and demonstrate how to use the Probabilistic Library.
 
 ## License
 
