@@ -108,7 +108,11 @@ namespace Deltares
                 else
                 {
                     double log = distributionObj->getLogLikelihood(stochast, x);
-                    if (!std::isnan(log))
+                    if (std::isnan(log))
+                    {
+                        return log;
+                    }
+                    else
                     {
                         prevX = x;
                         prevLog = log;

@@ -98,7 +98,7 @@ namespace Deltares
         double ConditionalWeibullDistribution::getExponent(const StochastProperties& stochast, double x)
         {
             x /= stochast.Scale;
-            if (x <= 0.0) return -StandardNormal::BetaMax;
+            if (x <= 0.0) return 1.0;
             const double xLog = pow(x, stochast.Shape);
             const double logF = std::pow(stochast.Shift / stochast.Scale, stochast.Shape) - xLog;
             const double f = stochast.ShapeB * exp(logF);
