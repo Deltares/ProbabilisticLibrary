@@ -24,7 +24,7 @@ import setuptools
 from pathlib import Path
 
 top_directory = Path(__file__).parents[2]
-long_description = (top_directory / "README.md").read_text()
+long_description = (top_directory / "readme.md").read_text()
  
 setuptools.setup(
     name="probabilistic_library",
