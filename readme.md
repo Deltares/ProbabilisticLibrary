@@ -17,20 +17,18 @@ A description of the Python classes is given here:
 
 ### Installation
 
-Request the wheel of the Probabilistic Library from Deltares.
-
-Install the wheel as follows:
+Install the library as follows:
 ```
-pip install probabilistic_library-25.3.1-py3-none-any.whl --force-reinstall
+pip install probabilistic-library
 ```
 
 ### Tutorials
 
-See the [Tutorials](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions on how to use the Probabilistic Library. Jupyter notebooks are available for each item and demonstrate how to use the Probabilistic Library.
+See the [Tutorials](https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions on how to use the Probabilistic Library. Jupyter notebooks are available for each item and demonstrate how to use the Probabilistic Library.
 
 ## License
 
-This library is released under the LGPL license. For full text of this license, refer to the [LICENSE](LICENSE) file.
+This library is released under the LGPL license. For full text of this license, refer to the [LICENSE](https://github.com/Deltares/ProbabilisticLibrary/blob/master/LICENSE) file.
 
 ## Developers section
 
