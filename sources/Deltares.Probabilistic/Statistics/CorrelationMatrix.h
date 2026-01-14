@@ -43,14 +43,12 @@ namespace Deltares
         class CorrelationMatrix : public BaseCorrelation
         {
         public:
+            explicit CorrelationMatrix(const bool allow_validation) : allow_validation(allow_validation) {}
             void Init(const int maxStochasts) override;
             void Init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override;
 
             bool IsValid() const override;
-            void Validate(Logging::ValidationReport& report) const override
-            {
-                // empty; currently nothing to check
-            }
+            void Validate(Logging::ValidationReport& report) const override;
 
             std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
@@ -78,12 +76,14 @@ namespace Deltares
             Numeric::Matrix inverseCholeskyMatrix = Numeric::Matrix(0, 0);
             void CholeskyDecomposition();
             void InverseCholeskyDecomposition();
+            bool hasFullyCorrelated() const;
             std::map<std::shared_ptr<Stochast>, int> stochastIndex;
             std::vector<std::shared_ptr<Stochast>> stochasts;
             std::vector<IndexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;
-            std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
+            static std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation);
             size_t dim = 0;
+            bool allow_validation = false;
         };
     }
 }

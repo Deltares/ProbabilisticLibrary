@@ -27,6 +27,8 @@
 
 namespace Deltares::Statistics
 {
+    using namespace Deltares::Logging;
+
     void GaussianCopula::update_uspace(const double& a, double& b) const
     {
         b = a * rho + b * sqrt(1.0 - rho * rho);
@@ -40,10 +42,10 @@ namespace Deltares::Statistics
         t = StandardNormal::getUFromP(b);
     }
 
-    void GaussianCopula::validate(Logging::ValidationReport& report) const
+    void GaussianCopula::validate(ValidationReport& report) const
     {
-        Logging::ValidationSupport::checkMinimum(report, -1.0, rho, "Rho", "Gaussian copula", Logging::MessageType::Error);
-        Logging::ValidationSupport::checkMaximum(report,  1.0, rho, "Rho", "Gaussian copula", Logging::MessageType::Error);
+        ValidationSupport::checkMinimum(report, -1.0, rho, "Rho", "Gaussian copula", MessageType::Error);
+        ValidationSupport::checkMaximum(report,  1.0, rho, "Rho", "Gaussian copula", MessageType::Error);
     }
 
 }

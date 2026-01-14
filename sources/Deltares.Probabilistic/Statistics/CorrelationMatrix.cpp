@@ -35,7 +35,9 @@ namespace Deltares
 
         bool CorrelationMatrix::IsValid() const
         {
-            return true;
+            auto report = Logging::ValidationReport();
+            Validate(report);
+            return report.isValid();
         }
 
         std::vector<double> CorrelationMatrix::ApplyCorrelation(const std::vector<double>& uValues)
@@ -164,7 +166,7 @@ namespace Deltares
 
         void CorrelationMatrix::SetCorrelation(const int i, const int j, double value, CorrelationType type)
         {
-            if (std::max(i, j) >= (int)dim)
+            if (std::max(i, j) >= static_cast<int>(dim))
             {
                 throw probLibException("dimension mismatch in SetCorrelation");
             }
@@ -194,6 +196,49 @@ namespace Deltares
                 const int index2 = stochastIndex.at(stochast2);
 
                 SetCorrelation(index1, index2, value, type);
+            }
+        }
+
+        bool CorrelationMatrix::hasFullyCorrelated() const
+        {
+            return std::ranges::any_of(inputCorrelations, [](const auto& corr) {return corr.isFullyCorrelated; });
+        }
+
+        void CorrelationMatrix::Validate(Logging::ValidationReport& report) const
+        {
+            if ( ! allow_validation) return;
+
+            bool validation_result;
+            std::string validation_message;
+            if (hasFullyCorrelated())
+            {
+                validation_result = ! HasConflictingCorrelations();
+                if ( ! validation_result)
+                {
+                    validation_message = "found conflicting correlations";
+                }
+            }
+            else
+            {
+                try
+                {
+                    auto cholesky_matrix = matrix.CholeskyDecomposition();
+                    validation_result = true;
+                }
+                catch (const probLibException& e)
+                {
+                    validation_result = false;
+                    validation_message = e.what();
+                }
+            }
+
+            if ( ! validation_result)
+            {
+                auto message = std::make_shared<Logging::Message>();
+                message->Type = Logging::MessageType::Error;
+                message->Text = validation_message;
+                message->Subject = "Correlation Matrix";
+                report.messages.push_back(message);
             }
         }
 
@@ -405,7 +450,7 @@ namespace Deltares
         /// <param name="correlation"></param>
         /// <param name="otherCorrelation"></param>
         /// <returns></returns>
-        std::vector<int> CorrelationMatrix::GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const
+        std::vector<int> CorrelationMatrix::GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation)
         {
             auto nonConnectingStochasts = std::vector<int>();
             for (auto& stochast :

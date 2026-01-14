@@ -27,11 +27,13 @@
 
 namespace Deltares::Statistics
 {
+    using namespace Deltares::Logging;
+
     double GumbelCopula::copulaRootFunc(double u, double v, double t) const
     {
         const double ut = -log(u);
         const double vt = -log(v);
-        const double k = alpha;
+        const double k = theta;
 
         double factor1 = exp( -pow( pow(ut, k) + pow(vt, k), (1.0 / k)));
         double factor2 = pow(1.0 + pow(ut / vt, k), (1.0 / k - 1.0));
@@ -43,6 +45,12 @@ namespace Deltares::Statistics
 
     void GumbelCopula::update(const double& u, double& t) const
     {
+        if (theta > 400.0)
+        {
+            t = u;
+            return;
+        }
+
         Numeric::RootFinderMethod method = [this, u, t](double v)
             {
                 return copulaRootFunc(v, u, t);
@@ -69,9 +77,9 @@ namespace Deltares::Statistics
         }
     }
 
-    void GumbelCopula::validate(Logging::ValidationReport & report) const
+    void GumbelCopula::validate(ValidationReport & report) const
     {
-        Logging::ValidationSupport::checkMinimum(report, 1.0, alpha, "Alpha", "Gumbel copula", Logging::MessageType::Error);
+        ValidationSupport::checkMinimum(report, 1.0, theta, "Theta", "Gumbel copula", MessageType::Error);
     }
 }
 

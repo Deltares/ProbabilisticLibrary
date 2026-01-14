@@ -25,7 +25,6 @@
 
 #include "basicSettings.h"
 #include "createDistribution.h"
-#include "../Deltares.Probabilistic/Utils/probLibException.h"
 #include "../Deltares.Probabilistic/Math/vector1D.h"
 
 #include "funcWrapper.h"
@@ -148,7 +147,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
                                                [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }
         );
 
-        auto corr = std::make_shared<CorrelationMatrix>();
+        auto corr = std::make_shared<CorrelationMatrix>(false);
         if (nrCorrelations > 0)
         {
             corr->Init((int)nStoch);
