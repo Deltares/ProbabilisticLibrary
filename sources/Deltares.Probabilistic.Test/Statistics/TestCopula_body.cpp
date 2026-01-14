@@ -26,12 +26,13 @@
 #include "../../Deltares.Probabilistic/Statistics/GaussianCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/DiagonalBandCopula.h"
 #include "../../Deltares.Probabilistic/Statistics/CopulaCorrelation.h"
+#include "../../Deltares.Probabilistic/Statistics/CorrelationMatrix.h"
 
 #include <gtest/gtest.h>
 
 namespace Deltares::Probabilistic::Test
 {
-    void TestCopula::TestClayton()
+    void TestCopula::testClayton()
     {
         constexpr double margin = 1e-9;
 
@@ -42,7 +43,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(b, 1.23779153247, margin);
     }
 
-    void TestCopula::TestFrank()
+    void TestCopula::testFrank()
     {
         constexpr double margin = 1e-9;
 
@@ -50,10 +51,30 @@ namespace Deltares::Probabilistic::Test
         double a = 1.0;
         double b = 1.0;
         frank_copula.update_uspace(a, b);
-        EXPECT_NEAR(b, 1.1216920258, margin);
+        EXPECT_NEAR(b, 1.1216995066, margin);
     }
 
-    void TestCopula::TestGaussian()
+    void TestCopula::testFrankExtremeTheta()
+    {
+        constexpr double margin = 1e-2;
+
+        // test near switch code at theta = 700:
+        for (int i = 690; i < 711; i++)
+        {
+            auto frank_copula = Statistics::FrankCopula(i);
+            double a = 0.85;
+            double b = 1.0;
+            frank_copula.update_uspace(a, b);
+            EXPECT_NEAR(b, a, margin);
+
+            auto frank_copula_neg = Statistics::FrankCopula(-i);
+            b = 1.0;
+            frank_copula_neg.update_uspace(a, b);
+            EXPECT_NEAR(b, -a, margin);
+        }
+    }
+
+    void TestCopula::testGaussian()
     {
         constexpr double margin = 1e-12;
 
@@ -67,7 +88,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(expected, u2, margin);
     }
 
-    void TestCopula::TestGumbel()
+    void TestCopula::testGumbel()
     {
         constexpr double margin = 1e-4;
 
@@ -78,7 +99,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(b, 0.1355, margin) << "comparison with Matlab fails";
     }
 
-    void TestCopula::TestValidation()
+    void TestCopula::testValidation()
     {
         auto gaussian_copula = Statistics::GaussianCopula(1.5);
         EXPECT_FALSE(gaussian_copula.isValid());
@@ -108,7 +129,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(copulas_empty.CountCorrelations() , 0);
     }
 
-    void TestCopula::TestValidationMessages()
+    void TestCopula::testValidationMessages()
     {
         auto report = Logging::ValidationReport();
         auto gaussian_copula = Statistics::GaussianCopula(1.5);
@@ -118,7 +139,7 @@ namespace Deltares::Probabilistic::Test
         report.messages.clear();
         auto frank_copula = Statistics::FrankCopula(0.0);
         frank_copula.validate(report);
-        EXPECT_EQ("Rho in Frank copula should be <> 0.0, but is 0.0", report.messages[0]->Text);
+        EXPECT_EQ("Theta in Frank copula should be <> 0.0, but is 0.0", report.messages[0]->Text);
 
         report.messages.clear();
         auto clayton_copula = Statistics::ClaytonCopula(-2.0);
@@ -128,7 +149,7 @@ namespace Deltares::Probabilistic::Test
         report.messages.clear();
         auto gumbel_copula = Statistics::GumbelCopula(0.99);
         gumbel_copula.validate(report);
-        EXPECT_EQ("Alpha value 0.99 is less than 1.", report.messages[0]->Text);
+        EXPECT_EQ("Theta value 0.99 is less than 1.", report.messages[0]->Text);
 
         report.messages.clear();
         auto diagonal_band_copula = Statistics::DiagonalBandCopula(-1.0);
@@ -160,6 +181,21 @@ namespace Deltares::Probabilistic::Test
         copulas2.SetCorrelation(stochast3, stochast1, 2.0, CorrelationType::Frank);
         copulas2.Validate(report);
         EXPECT_EQ("Multiple correlations not allowed for copulas, found for correlations C-A and A-B", report.messages[0]->Text);
+    }
+
+    void TestCopula::testGaussianValidationMessages()
+    {
+        using enum CorrelationType;
+
+        auto matrix = Statistics::CorrelationMatrix(true);
+        matrix.Init(3);
+        matrix.SetCorrelation(0, 1, -0.9, Gaussian);
+        matrix.SetCorrelation(0, 2, -0.9, Gaussian);
+        matrix.SetCorrelation(1, 2, -0.9, Gaussian);
+        auto report = Logging::ValidationReport();
+        matrix.Validate(report);
+        ASSERT_EQ(report.messages.size(), 1);
+        EXPECT_EQ(report.messages[0]->Text, "Cholesky decomposition fails.");
     }
 
 }

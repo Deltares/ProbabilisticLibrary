@@ -63,7 +63,7 @@ namespace Deltares::Statistics
         int CountCorrelations() const override { return static_cast<int>(copulas.size()); }
         int GetDimension() override { return max_stochasts; }
         std::shared_ptr<Stochast> GetStochast(int index) override { return nullptr; }
-        std::vector<double> ApplyCorrelation(const std::vector<double>& uValues) override;
+        std::vector<double> ApplyCorrelation(const std::vector<double>& u_values) override;
         void InitializeForRun() override
         {
             // empty; after init and setCorrelation this class is ready to use

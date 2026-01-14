@@ -82,7 +82,7 @@ namespace Deltares
 
         std::shared_ptr<CorrelationMatrix> SparseCorrelationMatrix::getCorrelationMatrix(std::vector<std::shared_ptr<Stochast>> stochasts)
         {
-            std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>();
+            std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>(false);
 
             correlationMatrix->Init(stochasts);
 

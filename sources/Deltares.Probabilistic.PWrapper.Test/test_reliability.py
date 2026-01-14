@@ -1263,5 +1263,33 @@ Alpha values:
 
         self.assertAlmostEqual(1.92, dp.reliability_index, delta=margin)
 
+    def test_validation_gaussian_correlation(self):
+        project = project_builder.get_hunt_project()
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.correlation_type = CorrelationType.gaussian
+        project.correlation_matrix[(project.variables[0], project.variables[1])] = -0.9
+        project.correlation_matrix[(project.variables[0], project.variables[2])] = -0.9
+        project.correlation_matrix[(project.variables[1], project.variables[2])] = -0.9
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "Error: Correlation Matrix => Cholesky decomposition fails.\n")
+
+    def test_validation_fully_correlation(self):
+        project = project_builder.get_hunt_project()
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.correlation_type = CorrelationType.gaussian
+        project.correlation_matrix[(project.variables[0], project.variables[1])] = 1.0
+        project.correlation_matrix[(project.variables[0], project.variables[2])] = 1.0
+        self.assertFalse(project.is_valid())
+
+        project.correlation_matrix[(project.variables[1], project.variables[2])] = 1.0
+        self.assertTrue(project.is_valid())
+
+
 if __name__ == '__main__':
     unittest.main()

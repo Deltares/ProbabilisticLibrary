@@ -102,7 +102,7 @@ namespace Deltares::Probabilistic::Test
     std::shared_ptr<Models::ModelRunner> TestWaarts::getModelRunner(const std::shared_ptr<Models::ZModel>& model,
         const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, const int nStochasts)
     {
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>();
+        auto corr = std::make_shared<Statistics::CorrelationMatrix>(false);
         if (nStochasts > 0)
         {
             corr->Init(nStochasts);

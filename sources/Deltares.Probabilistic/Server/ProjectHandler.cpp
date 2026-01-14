@@ -171,7 +171,7 @@ namespace Deltares
                 conditionalValueIds[conditionalValues[id]] = id;
                 break;
             case ObjectType::CorrelationMatrix:
-                correlations[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
+                correlations[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>(true);
                 correlationIds[correlations[id]] = id;
                 break;
             case ObjectType::CopulaCorrelation:

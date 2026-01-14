@@ -43,7 +43,7 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Stochast> s(new Stochast(dist, params));
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
         std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
@@ -59,7 +59,7 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Stochast> s(new Stochast(dist, params));
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
         std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
@@ -76,7 +76,7 @@ namespace Deltares::Probabilistic::Test
         stochasts.push_back(stochast);
         stochasts.push_back(stochast);
 
-        std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>();
+        std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>(true);
         std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(stochasts, correlationMatrix);
         uConverter->initializeForRun();
 
@@ -93,7 +93,7 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Stochast> s(new Stochast(dist, params));
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
         std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
@@ -111,7 +111,7 @@ namespace Deltares::Probabilistic::Test
         s->modelParameter->arraySize = 5;
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
         std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
@@ -136,7 +136,7 @@ namespace Deltares::Probabilistic::Test
         }
         stochasts.push_back(s);
         stochasts.push_back(s);
-        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
         std::shared_ptr<UConverter> uConverter(new UConverter(stochasts, corr));
         uConverter->initializeForRun();
         std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
@@ -154,7 +154,7 @@ namespace Deltares::Probabilistic::Test
         s->modelParameter->arraySize = 1;
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
         std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
@@ -169,7 +169,7 @@ namespace Deltares::Probabilistic::Test
         stochast.push_back(getNormalStochast(0.0, 1.0));
         stochast.push_back(getDeterministicStochast(valueDeterminist));
         stochast.push_back(getNormalStochast(0.0, 1.0));
-        auto corr = std::make_shared<CorrelationMatrix>();
+        auto corr = std::make_shared<CorrelationMatrix>(true);
         auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
         auto m = std::make_shared<ModelRunner>(z, uConverter);
@@ -202,7 +202,7 @@ namespace Deltares::Probabilistic::Test
         stochast.push_back(getDeterministicStochast(1.0));
         stochast.push_back(getLogNormalStochast(1.0, 0.5));
         stochast.push_back(getLogNormalStochast(1.0, 0.5));
-        auto corr = std::make_shared<CorrelationMatrix>();
+        auto corr = std::make_shared<CorrelationMatrix>(true);
         auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
         auto m = std::make_shared<ModelRunner>(z, uConverter);
@@ -227,7 +227,7 @@ namespace Deltares::Probabilistic::Test
         stochast.push_back(getNormalStochast(10.0, 0.5));
         stochast.push_back(getNormalStochast(0.0, 1.0));
         stochast.push_back(getNormalStochast(4.0, 1.0));
-        auto corr = std::make_shared<CorrelationMatrix>();
+        auto corr = std::make_shared<CorrelationMatrix>(true);
         auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
         const auto m = std::make_shared<ModelRunner>(z, uConverter);
@@ -406,7 +406,7 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(getDeterministicStochast(1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlation = std::make_shared<CorrelationMatrix>();
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
         project->model = std::make_shared<ZModel>(projectBuilder::sum);
@@ -421,7 +421,7 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(getUniformStochast(-1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlation = std::make_shared<CorrelationMatrix>();
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
         project->model = std::make_shared<ZModel>(linear);
@@ -436,7 +436,7 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(getUniformStochast(-1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlation = std::make_shared<CorrelationMatrix>();
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
         project->model = std::make_shared<ZModel>(projectBuilder::linearMultiple);
@@ -453,7 +453,7 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(getTriangularStochast(0, 0, 1));
         project->stochasts.push_back(getTriangularStochast(0, 0, 1));
 
-        project->correlation = std::make_shared<CorrelationMatrix>();
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
         project->model = std::make_shared<ZModel>(projectBuilder::linear);

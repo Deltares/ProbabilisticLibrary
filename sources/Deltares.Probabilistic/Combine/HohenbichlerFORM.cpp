@@ -108,7 +108,7 @@ namespace Deltares {
                 auto s = std::make_shared<Stochast>(dist, params);
                 stochast.push_back(s);
             }
-            auto corr = std::make_shared<CorrelationMatrix>();
+            auto corr = std::make_shared<CorrelationMatrix>(false);
             auto uConverter = std::make_shared<UConverter>(stochast, corr);
             uConverter->initializeForRun();
             auto zModel = std::make_shared<ZModel>([&w](std::shared_ptr<ModelSample> v) { return w.zfunc(v); });
