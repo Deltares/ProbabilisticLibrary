@@ -40,6 +40,10 @@ A model can be assigned to a project, which can be either a Python script or a m
         Stochast <-- ModelProject
         CorrelationMatrix <-- ModelProject
 
+.. automodule:: probabilistic_library.project
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 .. autoclass:::: probabilistic_library.project.ZModel
    :members:
@@ -70,15 +74,6 @@ A model can be assigned to a project, which can be either a Python script or a m
    :members:
    :undoc-members:
    :show-inheritance:
-
-
-Project for a running a model. This is the main entry point for running a model.
-
-This class is based on the ModelProject class. The model to use is defined in this class in ModelProject.model.
-When a model is set, variables and settings are generated.
-
-To run the model, use the run method. This results are stored in realization.
-
 
 .. mermaid::
 
