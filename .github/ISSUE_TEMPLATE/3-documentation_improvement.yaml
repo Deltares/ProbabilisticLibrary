@@ -9,7 +9,7 @@ body:
     attributes:
       label: GeoLab-Suite version checks
       options:
-        - label: I have checked that the issue still exists on the latest version of the docs in `master` [here](https://github.com/Deltares/ProbabilisticLibrary/tree/master/doc).
+        - label: I have checked that this bug exists on the latest version of Probabilistic library [here](https://github.com/Deltares/ProbabilisticLibrary).
           required: true
   - type: dropdown
     id: kind

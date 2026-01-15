@@ -10,7 +10,7 @@ body:
     id: description
     attributes:
       description: >
-        Please provide a clear and concise description of the task you're requesting
+        Please provide a clear and concise description of the task you're requesting.
       label: Task Description
     validations:
       required: true
@@ -18,11 +18,11 @@ body:
     id: use-case
     attributes:
       description: >
-        Please describe a situation in which this task would be useful to you, with code or cli examples if possible
+        Please describe a situation in which this task would be useful to you, with code or cli examples if possible.
       label: Use case
   - type: textarea
     id: context
     attributes:
       description: >
-        Please add any other context about the task here
+        Please add any other context about the task here.
       label: Additional Context

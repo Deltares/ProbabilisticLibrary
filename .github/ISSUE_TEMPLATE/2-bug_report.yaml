@@ -8,25 +8,17 @@ body:
   - type: checkboxes
     id: checks
     attributes:
-      label: GeoLab-Suite version checks
+      label: Probabilistic library version checks
       options:
         - label: I have checked that this issue has not already been reported.
           required: true
-        - label: I have checked that this bug exists on the latest version of Probabilistic library in `main` [here](https://github.com/Deltares/ProbabilisticLibrary).
+        - label: I have checked that this bug exists on the latest version of Probabilistic library [here](https://github.com/Deltares/ProbabilisticLibrary).
           required: true
-  - type: textarea
-    id: example
-    attributes:
-      description: >
-        Please provide a minimal example.
-      label: Reproducible example
-    validations:
-      required: true
   - type: textarea
     id: current-behaviour
     attributes:
       description: >
-        Please provide a description of the incorrect behaviour shown in the reproducible example.
+        Please provide a description of the incorrect behaviour.
       label: Current behaviour
     validations:
       required: true
