@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report an incorrect behavior of the GeoLab-Suite.
+description: Report an incorrect behavior of Probabilistic library
 labels: [bug, "triage required"]
 type: bug
 projects: ["Deltares/117"]
@@ -12,7 +12,7 @@ body:
       options:
         - label: I have checked that this issue has not already been reported.
           required: true
-        - label: I have checked that this bug exists on the latest version of GeoLab-Suite in `main` [here](https://github.com/Deltares/GeoLab-Suite).
+        - label: I have checked that this bug exists on the latest version of Probabilistic library in `main` [here](https://github.com/Deltares/ProbabilisticLibrary).
           required: true
   - type: textarea
     id: example

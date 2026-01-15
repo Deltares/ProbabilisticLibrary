@@ -9,7 +9,7 @@ body:
     attributes:
       label: GeoLab-Suite version checks
       options:
-        - label: I have checked that the issue still exists on the latest version of the docs in `main` [here](https://github.com/Deltares/GeoLab-Suite/docs).
+        - label: I have checked that the issue still exists on the latest version of the docs in `master` [here](https://github.com/Deltares/ProbabilisticLibrary/tree/master/doc).
           required: true
   - type: dropdown
     id: kind

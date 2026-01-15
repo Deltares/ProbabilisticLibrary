@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-description: Suggest an improvement for GeoLab-Suite
+description: Suggest an improvement for Probabilistic library
 labels: [enhancement, "triage required"]
 type: feature
 projects: ["Deltares/117"]
