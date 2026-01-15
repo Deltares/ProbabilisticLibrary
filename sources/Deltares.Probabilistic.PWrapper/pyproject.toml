@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
 [project]
 # Required otherwise Github action build will fail
 name = "probabilistic_library"
