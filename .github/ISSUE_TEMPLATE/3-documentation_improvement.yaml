@@ -7,8 +7,10 @@ projects: ["Deltares/124"]
 body:
   - type: checkboxes
     attributes:
-      label: GeoLab-Suite version checks
+      label: Probabilistic library version checks
       options:
+        - label: I have checked that this issue has not already been reported.
+          required: true
         - label: I have checked that this bug exists on the latest version of Probabilistic library [here](https://github.com/Deltares/ProbabilisticLibrary).
           required: true
   - type: dropdown
@@ -21,13 +23,15 @@ body:
         - Documentation is unclear
         - Documentation is missing
     validations:
-      required: true
+      required: false
   - type: textarea
     id: location
     attributes:
       description: >
         If the docs are wrong or unclear please provide the URL of the documentation in question.
       label: Location of the documentation
+    validations:
+      required: true
   - type: textarea
     id: problem
     attributes:
