@@ -2,7 +2,7 @@ Probabilistic Suite Community
 =============================
 
 Welcome to the **Probabilistic Suite Community**.
-This site is the central hub for users and developers of the **Deltares Probabilistic Suite**, a framework for uncertainty, reliability, and risk-based analyses.
+This site is the central hub for users and developers of the **Deltares Probabilistic Suite**, a framework for uncertainty, reliability and enables risk-based analyses.
 
 The Probabilistic Suite consists of a high-performance **computational core**, **Python libraries** for automation, and the **Probabilistic Toolkit (PTK)** graphical user interface.
 This community site focuses on **open examples, tutorials, documentation, and knowledge sharing**, with a strong emphasis on Python-based workflows.

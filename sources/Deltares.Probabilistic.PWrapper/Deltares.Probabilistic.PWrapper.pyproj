@@ -26,6 +26,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="probabilistic_library\interface.py" />
+    <Compile Include="probabilistic_library\logging.py" />
     <Compile Include="probabilistic_library\reliability.py" />
     <Compile Include="probabilistic_library\project.py" />
     <Compile Include="probabilistic_library\uncertainty.py" />
@@ -35,9 +36,6 @@
     </Compile>
     <Compile Include="probabilistic_library\__init__.py" />
     <Compile Include="setup.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="probabilistic_library\" />

@@ -6,8 +6,8 @@ This module contains all the basic functionality for a project.
 A project forms the foundation for performing analyses, such as reliability, uncertainty or sensitivity analyses.
 In addition to reliability analyses, additional functionalities are available to combine or upscale reliability results.
 
-A model can be assigned to a project, which can be either a Python script or a PTK model (the ptk wheel is required for this).
-When a model is assigned, stochastic variables and a correlation matrix are automatically generated.
+A model can be assigned to a project, which can be either a Python script or a model run by the `PTK <https://www.deltares.nl/en/software-and-data/products/probabilistic-toolkit-ptk>`_
+(the ptk wheel is required for this). When a model is assigned, stochastic variables and a correlation matrix are automatically generated.
 
 
 .. mermaid::
