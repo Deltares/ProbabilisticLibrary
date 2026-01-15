@@ -58,8 +58,10 @@ namespace Deltares::Probabilistic::Test
             EXPECT_NEAR(u, uCalculated, 5.0 * margin);
         }
 
-        testFit(distCondWeibull, 0.75);
-        testFitShift(distCondWeibull, 0.75);
+        distCondWeibull.getProperties()->Scale = 0.1;
+
+        testFit(distCondWeibull, 0.5);
+        testFitShift(distCondWeibull, 0.5);
     }
 
     void testDistributions::testConditionalWeibullNonIntegerShape()

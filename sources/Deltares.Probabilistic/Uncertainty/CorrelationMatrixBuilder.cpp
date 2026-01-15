@@ -96,7 +96,7 @@ namespace Deltares::Uncertainty
 
     std::shared_ptr<Statistics::CorrelationMatrix> CorrelationMatrixBuilder::getCorrelationMatrix()
     {
-        std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+        std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>(true);
 
         correlationMatrix->Init(this->stochasts);
 

@@ -41,7 +41,7 @@ namespace Deltares
             public:
                 CorrelationMatrix()
                 {
-                    shared = new SharedPointerProvider(new Statistics::CorrelationMatrix());
+                    shared = new SharedPointerProvider(new Statistics::CorrelationMatrix(false));
                 }
 
                 CorrelationMatrix(std::shared_ptr<Statistics::CorrelationMatrix> nativeCorrelationMatrix)
