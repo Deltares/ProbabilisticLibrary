@@ -1,5 +1,9 @@
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/downloads/release/python-31110/) 
 [![docs2](https://github.com/Deltares/ProbabilisticLibrary/actions/workflows/docs.yml/badge.svg)](https://github.com/Deltares/ProbabilisticLibrary/actions/workflows/docs.yml)
+[![C++][c++-image]][c++standard]
+
+[c++-image]: https://img.shields.io/badge/C++-20-blue.svg?style=flat&logo=c%2B%2B
+[c++standard]: https://isocpp.org/std/the-standard
 
 # Probabilistic Library
 This is the repository of the Probabilistic Library of Deltares.
