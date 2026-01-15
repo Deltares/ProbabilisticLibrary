@@ -11,7 +11,7 @@ license = {text = "LGPL-3.0"}
 requires-python = ">=3.10"
 dependencies = ["numpy", "matplotlib"]
 authors = [
-    { name = "Deltares", email = "software.support@deltares.nl" },
+    { name = "Deltares", email = "d-prob-community@deltares.nl" },
 ]
 classifiers = [
     "Operating System :: OS Independent",
@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk"
+Homepage = "https://deltares.github.io/ProbabilisticLibrary/"
 Documentation = "https://github.com/Deltares/ProbabilisticLibrary/tree/master/doc"
 Repository = "https://github.com/Deltares/ProbabilisticLibrary"
 issues = "https://github.com/Deltares/ProbabilisticLibrary/issues"

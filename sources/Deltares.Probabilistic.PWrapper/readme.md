@@ -1,3 +1,6 @@
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/downloads/release/python-31110/) 
+[![docs2](https://github.com/Deltares/ProbabilisticLibrary/actions/workflows/docs.yml/badge.svg)](https://github.com/Deltares/ProbabilisticLibrary/actions/workflows/docs.yml)
+
 # Probabilistic Library
 
 This is the Probabilistic Library of Deltares.
