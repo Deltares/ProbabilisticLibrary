@@ -45,4 +45,4 @@ body:
     attributes:
       description: >
         Please explain your suggested fix and why it's better than the existing documentation.
-      label: Suggested fix for documentation
+      label: Suggested fix

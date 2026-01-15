@@ -20,7 +20,7 @@ body:
     attributes:
       description: >
         Please provide a clear and concise description of the feature you're requesting.
-      label: Enhancement Description
+      label: Enhancement description
     validations:
       required: true
   - type: textarea
@@ -34,4 +34,4 @@ body:
     attributes:
       description: >
         Please add any other context about the enhancement here.
-      label: Additional Context
+      label: Additional context
