@@ -15,12 +15,6 @@ body:
     validations:
       required: true
   - type: textarea
-    id: use-case
-    attributes:
-      description: >
-        Please describe a situation in which this task would be useful to you, with code or cli examples if possible.
-      label: Use case
-  - type: textarea
     id: context
     attributes:
       description: >

@@ -31,7 +31,7 @@ body:
         If the docs are wrong or unclear please provide the URL of the documentation in question.
       label: Location of the documentation
     validations:
-      required: true
+      required: false
   - type: textarea
     id: problem
     attributes:
