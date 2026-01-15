@@ -1,8 +1,8 @@
 name: Bug Report
 description: Report an incorrect behavior of Probabilistic library
-labels: [bug, "triage required"]
+labels: [bug]
 type: bug
-projects: ["Deltares/117"]
+projects: ["Deltares/124"]
 
 body:
   - type: checkboxes

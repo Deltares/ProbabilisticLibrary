@@ -1,9 +1,9 @@
 ---
 name: Feature Request
 description: Suggest an improvement for Probabilistic library
-labels: [enhancement, "triage required"]
+labels: [enhancement]
 type: feature
-projects: ["Deltares/117"]
+projects: ["Deltares/124"]
 
 body:
   - type: dropdown

@@ -1,9 +1,9 @@
 ---
 name: Other task request
 description: Create a task that needs to be done and does not fit in any other category.
-labels: ["help wanted", "triage required"]
+labels: []
 type: task
-projects: ["Deltares/117"]
+projects: ["Deltares/124"]
 
 body:
   - type: textarea
