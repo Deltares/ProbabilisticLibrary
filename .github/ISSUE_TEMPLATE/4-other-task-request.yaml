@@ -1,6 +1,6 @@
 ---
 name: Other task request
-description: Create a task that needs to be done and does not fit in any other category.
+description: Create a task that needs to be done and does not fit in any other category
 labels: []
 type: task
 projects: ["Deltares/124"]
