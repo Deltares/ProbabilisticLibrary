@@ -17,7 +17,7 @@ You can access the routines of the library using a Python wrapper.
 A description of the Python classes is given here:
 [API documentation](https://deltares.github.io/ProbabilisticLibrary/probabilistic_library.html)
 
-### Tutorials
+## Tutorials
 
 See the [Tutorials](https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions on how to use the Probabilistic Library. Jupyter notebooks are available for each item and demonstrate how to use the Probabilistic Library.
 
