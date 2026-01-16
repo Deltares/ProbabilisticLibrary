@@ -8,14 +8,15 @@ dynamic = ["version"]
 readme = "readme.md"
 description = "Package which provides probabilistic methods"
 license = {text = "LGPL-3.0"}
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = ["numpy", "matplotlib"]
 authors = [
-    { name = "Deltares", email = "d-prob-community@deltares.nl" },
+    { name = "Deltares", email = "d-prob-support@deltares.nl" },
 ]
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Development Status ::  5 - Production/Stable",
 ]
 
 [project.urls]
