@@ -28,14 +28,12 @@ namespace Deltares::Statistics
     class FrankCopula : public BaseCopula
     {
     public:
-        explicit FrankCopula(const double alpha) : alpha(alpha) {}
+        explicit FrankCopula(const double theta) : theta(theta) {}
         void update(const double& u, double& t) const override;
-        CorrelationValueAndType getCorrelation() const override { return { alpha, CorrelationType::Frank }; }
+        CorrelationValueAndType getCorrelation() const override { return { theta, CorrelationType::Frank }; }
         void validate(Logging::ValidationReport& report)  const override;
     private:
-        const double alpha;
-        double copulaRootFunc(double u, double v, double t) const;
-        static double expm1(const double x);
+        const double theta;
     };
 }
 

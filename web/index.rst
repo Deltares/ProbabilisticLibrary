@@ -2,7 +2,7 @@ Probabilistic Suite Community
 =============================
 
 Welcome to the **Probabilistic Suite Community**.
-This site is the central hub for users and developers of the **Deltares Probabilistic Suite**, a framework for uncertainty, reliability, and risk-based analyses.
+This site is the central hub for users and developers of the **Deltares Probabilistic Suite**, a framework for uncertainty, reliability and enables risk-based analyses.
 
 The Probabilistic Suite consists of a high-performance **computational core**, **Python libraries** for automation, and the **Probabilistic Toolkit (PTK)** graphical user interface.
 This community site focuses on **open examples, tutorials, documentation, and knowledge sharing**, with a strong emphasis on Python-based workflows.
@@ -28,6 +28,9 @@ It consists of the following components:
 
 Together, these components allow users to move seamlessly from exploratory analysis to automated workflows and large-scale studies.
 
+The algorithms implemented in the Probabilistic Suite are described in detail in the `scientific background <https://github.com/Deltares/ProbabilisticLibrary/releases/download/25.3.1/scientific_background.pdf>`_.
+
+
 ----
 
 
@@ -42,7 +45,7 @@ This GitHub Pages site is maintained by Deltares and the Probabilistic Suite com
   Step-by-step instructions to install the Python libraries and run your first analyses.
 
 - **Tutorials**
-  In-depth explanations of probabilistic methods, workflows, and best practices.
+  Usage of probabilistic methods, workflows, and best practices.
 
 - **Community-driven knowledge**
   Examples, improvements, and discussions contributed by users and developers.
@@ -56,10 +59,9 @@ The Probabilistic Suite Community is open and evolving.
 
 Contributions are welcome in the form of:
 
-- New example notebooks or scripts
 - Questions and answers in the `discussion forum <https://github.com/Deltares/ProbabilisticLibrary/discussions>`_
-- Improvements to documentation or `tutorials <./tutorials/tutorials.rst>`_
-- Bug reports or feature suggestions
+- Improvements to `documentation <./api_reference/index.rst>`_ or `tutorials <./tutorials/tutorials.rst>`_
+- `Bug reports <https://github.com/Deltares/ProbabilisticLibrary/issues>`_ or feature suggestions
 - `Code <https://github.com/Deltares/ProbabilisticLibrary>`_ for new features or improvements
 
 ----
@@ -74,5 +76,5 @@ Contributions are welcome in the form of:
    installation.rst
    tutorials/tutorials.rst
    api_reference/index.rst
-
+   
 Lost..? Try the :ref:`search`.

@@ -50,21 +50,21 @@ namespace Deltares
                 }
                 else
                 {
-                    throw probLibException("Cholesky decomposition fails: negative argument sqrt");
+                    throw probLibException("Cholesky decomposition fails.");
                 }
 
                 for (size_t i = j + 1; i < nStochasts; i++)
                 {
-                    double sumcol = 0.0;
+                    double sum_col = 0.0;
                     if (cholesky(j, j) == 0.0)
                     {
-                        throw probLibException("Cholesky decomposition fails: division by zero");
+                        throw probLibException("Cholesky decomposition fails.");
                     }
                     for (size_t k = 0; k < j; k++)
                     {
-                        sumcol += cholesky(i, k) * cholesky(j, k);
+                        sum_col += cholesky(i, k) * cholesky(j, k);
                     }
-                    cholesky(i, j) = (m_data[pos(i, j)] - sumcol) / cholesky(j, j);
+                    cholesky(i, j) = (m_data[pos(i, j)] - sum_col) / cholesky(j, j);
                 }
             }
             return cholesky;

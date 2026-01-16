@@ -1,4 +1,4 @@
-name: docs2
+name: docs
 
 on:
   workflow_dispatch:

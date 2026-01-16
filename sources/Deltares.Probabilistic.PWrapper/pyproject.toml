@@ -1,16 +1,24 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
 [project]
 # Required otherwise Github action build will fail
 name = "probabilistic_library"
 version = "25.3.1"
+requires-python = ">=3.10"
+dependencies = ["numpy", "matplotlib"]
+authors = [{ name = "Deltares", email = "d-prob-community@deltares.nl" },]
+license = { text = "LGPL-3.0" }
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
 
 [tool.poetry]
 name = "probabilistic_library"
 version = "0.1.0"
 description = "Package which provides probabilistic methods"
-authors = ["Deltares <software.support@deltares.nl>"]
-license = "LGPL-3.0"
-readme = "README.md"
-packages = [{ include = "probabilistic_library" }]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.14"
@@ -35,6 +43,7 @@ sphinxcontrib-mermaid = "^0.8.0"
 pylint = "^4.0.4"
 pyan3 = "^1.2.0"
 py2puml = "^0.10.0"
+dependencies = ["numpy", "matplotlib"]
 
 [project.urls]
 Homepage = "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk"

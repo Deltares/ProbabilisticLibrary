@@ -22,53 +22,36 @@
 
 #include "FrankCopula.h"
 
-#include "../Math/RootFinders/BisectionRootFinder.h"
+#include <cmath>
 
 namespace Deltares::Statistics
 {
-    double FrankCopula::copulaRootFunc(double u, double v, double t) const
-    {
-        const double C = -1.0 / alpha;
-        const double gx = 1.0 + expm1(-alpha*u) * expm1(-alpha*v) / expm1(-alpha);
-        const double gxdx = -expm1(-alpha * u) * exp(-alpha * v) * alpha / expm1(-alpha);
-
-        double out1 = gxdx * C / gx;
-        out1 = out1 - t;
-        return out1;
-    }
-
-    /// summary
-    /// helper function for copulaRootFunc exp(x) - 1.0
-    /// @param x 
-    /// @return exp(x) - 1.0
-    double FrankCopula::expm1(const double x)
-    {
-        return exp(x) - 1.0;
-    }
-
     void FrankCopula::update(const double& u, double& t) const
     {
-        Numeric::RootFinderMethod method = [this, u, t](double v)
-            {
-                return copulaRootFunc(v, u, t);
-            };
-
-        constexpr double toleranceBisection = 0.00001;
-        auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
-
-        double minStart = 0.0;
-        double maxStart = 1.0;
-
-        t = bisection.CalculateValue(minStart, maxStart, 0.0, method);
+        constexpr double max_input_exp = 700.0;
+        if (theta > max_input_exp)
+        {
+            t = u;
+        }
+        else if (theta < -max_input_exp)
+        {
+            t = 1.0 - u;
+        }
+        else
+        {
+            const double factor = (t - 1.0) * std::exp(-theta * u);
+            t = 1.0 + std::log((factor - t) / (factor * std::exp(theta) - t)) / theta;
+        }
     }
 
     void FrankCopula::validate(Logging::ValidationReport& report) const
     {
-        if (alpha == 0.0)
+        if (theta == 0.0)
         {
             auto msg = std::make_shared<Logging::Message>();
-            msg->Text = "Rho in Frank copula should be <> 0.0, but is 0.0";
+            msg->Text = "Theta in Frank copula should be <> 0.0, but is 0.0";
             msg->Type = Logging::MessageType::Error;
+            msg->Subject = "Frank copula";
             report.messages.push_back(msg);
         }
     }

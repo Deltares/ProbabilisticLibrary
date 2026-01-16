@@ -1,0 +1,22 @@
+---
+name: Other task request
+description: Create a task that needs to be done and does not fit in any other category
+labels: []
+type: task
+projects: ["Deltares/124"]
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      description: >
+        Please provide a clear and concise description of the task you're requesting.
+      label: Task description
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      description: >
+        Please add any other context about the task here.
+      label: Additional context

@@ -6,8 +6,8 @@ This module contains all the basic functionality for a project.
 A project forms the foundation for performing analyses, such as reliability, uncertainty or sensitivity analyses.
 In addition to reliability analyses, additional functionalities are available to combine or upscale reliability results.
 
-A model can be assigned to a project, which can be either a Python script or a PTK model (the ptk wheel is required for this).
-When a model is assigned, stochastic variables and a correlation matrix are automatically generated.
+A model can be assigned to a project, which can be either a Python script or a model run by the `PTK <https://www.deltares.nl/en/software-and-data/products/probabilistic-toolkit-ptk>`_
+(the ptk wheel is required for this). When a model is assigned, stochastic variables and a correlation matrix are automatically generated.
 
 
 .. mermaid::
@@ -40,6 +40,10 @@ When a model is assigned, stochastic variables and a correlation matrix are auto
         Stochast <-- ModelProject
         CorrelationMatrix <-- ModelProject
 
+.. automodule:: probabilistic_library.project
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 .. autoclass:::: probabilistic_library.project.ZModel
    :members:
@@ -70,15 +74,6 @@ When a model is assigned, stochastic variables and a correlation matrix are auto
    :members:
    :undoc-members:
    :show-inheritance:
-
-
-Project for a running a model. This is the main entry point for running a model.
-
-This class is based on the ModelProject class. The model to use is defined in this class in ModelProject.model.
-When a model is set, variables and settings are generated.
-
-To run the model, use the run method. This results are stored in realization.
-
 
 .. mermaid::
 
