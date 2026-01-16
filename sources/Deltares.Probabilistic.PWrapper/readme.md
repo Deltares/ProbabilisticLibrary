@@ -6,33 +6,20 @@
 [c++standard]: https://isocpp.org/std/the-standard
 
 # Probabilistic Library
-This is the repository of the Probabilistic Library of Deltares.
 
+This is the Probabilistic Library of Deltares.
 The library provides a set of routines that enable reliability, uncertainty, and sensitivity analyses.
 
 ## Scientific background
 
-The scientific background can be found here:
+The scientific background of the library can be found here:
 [scientific_background.pdf](https://github.com/Deltares/ProbabilisticLibrary/releases/download/25.3.1/scientific_background.pdf)
 
 ## Python wrapper
 
-You can access the routines of the library using a Python wrapper. 
 A description of the Python classes is given here:
 [API documentation](https://deltares.github.io/ProbabilisticLibrary/probabilistic_library.html)
 
-### Installation
+## Tutorials
 
-Install the library as follows:
-```
-pip install probabilistic-library
-```
-
-### Tutorials
-
-See the [Tutorials](/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions on how to use the Probabilistic Library. Jupyter notebooks are available for each item and demonstrate how to use the Probabilistic Library.
-
-## License
-
-This library is released under the LGPL license. For full text of this license, refer to the [LICENSE](LICENSE) file.
-
+See the [Tutorials](https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions on how to use the Probabilistic Library.

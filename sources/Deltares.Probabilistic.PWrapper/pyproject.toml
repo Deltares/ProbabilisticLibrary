@@ -5,20 +5,22 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "probabilistic_library"
 dynamic = ["version"]
+readme = "readme.md"
 description = "Package which provides probabilistic methods"
-license = { text = "LGPL-3.0" }
-requires-python = ">=3.10"
+license = {text = "LGPL-3.0"}
+requires-python = ">=3.11"
 dependencies = ["numpy", "matplotlib"]
 authors = [
-    { name = "Deltares", email = "software.support@deltares.nl" },
+    { name = "Deltares", email = "d-prob-support@deltares.nl" },
 ]
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Development Status ::  5 - Production/Stable",
 ]
 
 [project.urls]
-Homepage = "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk"
+Homepage = "https://deltares.github.io/ProbabilisticLibrary/"
 Documentation = "https://github.com/Deltares/ProbabilisticLibrary/tree/master/doc"
 Repository = "https://github.com/Deltares/ProbabilisticLibrary"
 issues = "https://github.com/Deltares/ProbabilisticLibrary/issues"
