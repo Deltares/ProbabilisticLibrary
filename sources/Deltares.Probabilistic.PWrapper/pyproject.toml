@@ -3,19 +3,47 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
+# Required otherwise Github action build will fail
 name = "probabilistic_library"
-dynamic = ["version"]
-description = "Package which provides probabilistic methods"
-license = { text = "LGPL-3.0" }
+version = "25.3.1"
 requires-python = ">=3.10"
 dependencies = ["numpy", "matplotlib"]
-authors = [
-    { name = "Deltares", email = "software.support@deltares.nl" },
-]
+authors = [{ name = "Deltares", email = "d-prob-community@deltares.nl" },]
+license = { text = "LGPL-3.0" }
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
 ]
+
+[tool.poetry]
+name = "probabilistic_library"
+version = "0.1.0"
+description = "Package which provides probabilistic methods"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.14"
+numpy = "*"
+matplotlib = "*"
+
+[tool.poetry.group.docs.dependencies]
+jupytext = "^1.14.5"
+nbsphinx = "^0.9.1"
+myst-parser = "^4.0.0"
+sphinx = "8.2.3"
+sphinx-book-theme = "^1.0.1"
+sphinx-copybutton = "^0.5.2"
+sphinx-rtd-theme = "^3.0.0"
+sphinx-autosummary-accessors = "^2023.4.0"
+sphinx-design = "^0.6.1"
+ipykernel = "^6.25.1"
+pandoc = "^2.3"
+pillow = "^10.1.0"
+sphinx-autodoc-typehints = "^3.2.0"
+sphinxcontrib-mermaid = "^0.8.0"
+pylint = "^4.0.4"
+pyan3 = "^1.2.0"
+py2puml = "^0.10.0"
+dependencies = ["numpy", "matplotlib"]
 
 [project.urls]
 Homepage = "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk"

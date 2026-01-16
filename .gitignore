@@ -76,9 +76,9 @@ ApplicationPayload.wxs
 *.maf
 *.mtc*
 doc/*.log
-doc/funcdesign.pdf
-doc/scientific_background.pdf
-doc/starting_up.pdf
+docs/funcdesign.pdf
+docs/scientific_background.pdf
+docs/starting_up.pdf
 
 # Windows shortcuts
 *.lnk
@@ -108,3 +108,4 @@ testpytk*
 /sources/Deltares.Probabilistic.PWrapper/*.egg-info/top_level.txt
 /sources/Deltares.Probabilistic.PWrapper/html/probabilistic_library
 /sources/Deltares.Probabilistic.PWrapper/docs
+/web/_examples

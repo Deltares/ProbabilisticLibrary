@@ -20,70 +20,6 @@
 # All rights reserved.
 #
 
-"""
-This module contains all reliability related functionality.
-
-The entry point for performing a reliability analysis is `probabilistic_library.project.ReliabilityProject`. A model can be attached to a reliability project, then
-stochastic variables, correlation matrix and settings are provided. When the reliability project is run, a `DesignPoint` is generated,
-which contains the results of the reliability analysis.
-
-```mermaid
-classDiagram
-    class ModelProject{
-        +model ZModel
-        +variables list[Stochast]
-        +correlation_matrix CorrelationMatrix
-    }
-    class ReliabilityProject{
-        +settings Settings
-        +design_point DesignPoint
-        +run()
-    }
-    class Stochast{}
-
-    class CorrelationMatrix{}
-
-    class LimitStateFunction{
-        +parameter ModelParameter,
-        +critical_value float
-    }
-
-    class Settings{
-        +method ReliabilityMethod
-        +limit_state_function LimitStateFunction
-    }
-    class StochastSettings{
-        +variable Stochast
-    }
-
-    class DesignPoint{
-        +reliability_index float
-        +alphas List[Alpha]
-        +contributing_design_points List[DesignPoint]
-        +realizations List[Evaluation]
-    }
-    class Alpha{
-        +variable Stochast
-        +alpha float
-    }
-
-    class ReliabilityResult{}
-
-    ReliabilityProject <|-- ModelProject
-    Stochast "*" <-- ModelProject
-    CorrelationMatrix <-- ModelProject
-    Settings <-- ReliabilityProject
-    LimitStateFunction <-- Settings
-    ModelParameter "parameter, compare" <-- LimitStateFunction
-    StochastSettings "*" <-- Settings
-    Stochast <-- StochastSettings
-    DesignPoint <-- ReliabilityProject
-    Alpha "*" <-- DesignPoint
-    DesignPoint "*, contributing" <-- DesignPoint
-    ReliabilityResult "*" <-- DesignPoint
-```
-"""
-
 from __future__ import annotations
 from math import isnan
 import matplotlib.pyplot as plt
@@ -311,7 +247,7 @@ class Settings(FrozenObject):
 	def design_point_method(self) -> DesignPointMethod:
 		"""Defines the algorithm how the design point is derived"""
 		return DesignPointMethod[interface.GetStringValue(self._id, 'design_point_method')]
-		
+
 	@design_point_method.setter
 	def design_point_method(self, value : DesignPointMethod):
 		interface.SetStringValue(self._id, 'design_point_method', str(value))
@@ -347,7 +283,7 @@ class Settings(FrozenObject):
 	def is_repeatable_random(self) -> bool:
 		"""Indicates whether in each run the same random samples will be generated"""
 		return interface.GetBoolValue(self._id, 'is_repeatable_random')
-		
+
 	@is_repeatable_random.setter
 	def is_repeatable_random(self, value : bool):
 		interface.SetBoolValue(self._id, 'is_repeatable_random', value)
@@ -356,7 +292,7 @@ class Settings(FrozenObject):
 	def random_seed(self) -> int:
 		"""Seed number for the random generator"""
 		return interface.GetIntValue(self._id, 'random_seed')
-		
+
 	@random_seed.setter
 	def random_seed(self, value : int):
 		interface.SetIntValue(self._id, 'random_seed', value)
@@ -374,7 +310,7 @@ class Settings(FrozenObject):
 	def minimum_samples(self) -> int:
 		"""The minimum number of samples to be used"""
 		return interface.GetIntValue(self._id, 'minimum_samples')
-		
+
 	@minimum_samples.setter
 	def minimum_samples(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_samples', value)
@@ -383,7 +319,7 @@ class Settings(FrozenObject):
 	def maximum_samples(self) -> int:
 		"""The maximum number of samples to be used"""
 		return interface.GetIntValue(self._id, 'maximum_samples')
-		
+
 	@maximum_samples.setter
 	def maximum_samples(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_samples', value)
@@ -432,12 +368,12 @@ class Settings(FrozenObject):
 	@epsilon_beta.setter
 	def epsilon_beta(self, value : float):
 		interface.SetValue(self._id, 'epsilon_beta', value)
-		
+
 	@property
 	def step_size(self) -> float:
 		"""Step size in finding the gradient of a model, defined in u-space"""
 		return interface.GetValue(self._id, 'step_size')
-		
+
 	@step_size.setter
 	def step_size(self, value : float):
 		interface.SetValue(self._id, 'step_size', value)
@@ -446,7 +382,7 @@ class Settings(FrozenObject):
 	def gradient_type(self) -> GradientType:
 		"""Method to determine the gradient of a model"""
 		return GradientType[interface.GetStringValue(self._id, 'gradient_type')]
-		
+
 	@gradient_type.setter
 	def gradient_type(self, value : GradientType):
 		interface.SetStringValue(self._id, 'gradient_type', str(value))
@@ -464,7 +400,7 @@ class Settings(FrozenObject):
 	def relaxation_loops(self) -> int:
 		"""Number of relaxation loops. In case of no convergence, the relaxation factor is decreased until convergence is found, used by FORM"""
 		return interface.GetIntValue(self._id, 'relaxation_loops')
-		
+
 	@relaxation_loops.setter
 	def relaxation_loops(self, value):
 		interface.SetIntValue(self._id, 'relaxation_loops', value)
@@ -473,7 +409,7 @@ class Settings(FrozenObject):
 	def maximum_variance_loops(self) -> int:
 		"""Maximum number of importance sampling loops, used by adaptive importance sampling"""
 		return interface.GetIntValue(self._id, 'maximum_variance_loops')
-		
+
 	@maximum_variance_loops.setter
 	def maximum_variance_loops(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_variance_loops', value)
@@ -482,7 +418,7 @@ class Settings(FrozenObject):
 	def minimum_variance_loops(self) -> int:
 		"""Minimum number of importance sampling loops, used by adaptive importance sampling"""
 		return interface.GetIntValue(self._id, 'minimum_variance_loops')
-		
+
 	@minimum_variance_loops.setter
 	def minimum_variance_loops(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_variance_loops', value)
@@ -491,7 +427,7 @@ class Settings(FrozenObject):
 	def variation_coefficient(self) -> float:
 		"""Convergence criterion, used by Monte Carlo family algorithms"""
 		return interface.GetValue(self._id, 'variation_coefficient')
-		
+
 	@variation_coefficient.setter
 	def variation_coefficient(self, value : float):
 		interface.SetValue(self._id, 'variation_coefficient', value)
@@ -501,7 +437,7 @@ class Settings(FrozenObject):
 		"""Indicates the fraction of failed samples. Criterion for adaptive importance sampling whether to perform
         another importance sampling loop"""
 		return interface.GetValue(self._id, 'fraction_failed')
-		
+
 	@fraction_failed.setter
 	def fraction_failed(self, value : float):
 		interface.SetValue(self._id, 'fraction_failed', value)
@@ -537,7 +473,7 @@ class StochastSettings(FrozenObject):
 
     These settings are part of reliability settings or uncertainty settings. When using a project, these
     settings are generated automatically."""
-		
+
 	def __init__(self, variable):
 		self._id = interface.Create('stochast_settings')
 		self._variable = variable
@@ -556,7 +492,7 @@ class StochastSettings(FrozenObject):
 				'is_initialization_allowed',
 				'is_variance_allowed',
 				'intervals']
-		
+
 	def __str__(self):
 		if self._variable is None:
 			return ''
@@ -578,7 +514,7 @@ class StochastSettings(FrozenObject):
 	def min_value(self) -> float:
 		"""The minimum value which will be assigned to the stochastic variable in an analysis"""
 		return interface.GetValue(self._id, 'min_value')
-		
+
 	@min_value.setter
 	def min_value(self, value : float):
 		interface.SetValue(self._id, 'min_value', value)
@@ -587,7 +523,7 @@ class StochastSettings(FrozenObject):
 	def max_value(self) -> float:
 		"""The maximum value which will be assigned to the stochastic variable in an analysis"""
 		return interface.GetValue(self._id, 'max_value')
-		
+
 	@max_value.setter
 	def max_value(self, value : float):
 		interface.SetValue(self._id, 'max_value', value)
@@ -596,7 +532,7 @@ class StochastSettings(FrozenObject):
 	def start_value(self) -> float:
 		"""The value of the starting point for this stochastic variable in an analysis"""
 		return interface.GetValue(self._id, 'start_value')
-		
+
 	@start_value.setter
 	def start_value(self, value : float):
 		interface.SetValue(self._id, 'start_value', value)
@@ -605,7 +541,7 @@ class StochastSettings(FrozenObject):
 	def intervals(self) -> int:
 		"""The number of intervals for this stochastic variable, used by numerical integration"""
 		return interface.GetIntValue(self._id, 'intervals')
-		
+
 	@intervals.setter
 	def intervals(self, value : int):
 		interface.SetIntValue(self._id, 'intervals', value)
@@ -614,7 +550,7 @@ class StochastSettings(FrozenObject):
 	def variance_factor(self) -> float:
 		"""The variance factor for this stochastic variable, used by importance sampling"""
 		return interface.GetValue(self._id, 'variance_factor')
-		
+
 	@variance_factor.setter
 	def variance_factor(self, value : float):
 		interface.SetValue(self._id, 'variance_factor', value)
@@ -623,7 +559,7 @@ class StochastSettings(FrozenObject):
 	def is_initialization_allowed(self) -> bool:
 		"""Indicates whether the value in the starting point can be generated (true) or that the start_value is used (false)"""
 		return interface.GetBoolValue(self._id, 'is_initialization_allowed')
-		
+
 	@is_initialization_allowed.setter
 	def is_initialization_allowed(self, value : bool):
 		interface.SetBoolValue(self._id, 'is_initialization_allowed', value)
@@ -632,7 +568,7 @@ class StochastSettings(FrozenObject):
 	def is_variance_allowed(self) -> bool:
 		"""Indicates whether the starting point is updated for this stochastic variable, used by adaptive importance sampling"""
 		return interface.GetBoolValue(self._id, 'is_variance_allowed')
-		
+
 	@is_variance_allowed.setter
 	def is_variance_allowed(self, value: bool):
 		interface.SetBoolValue(self._id, 'is_variance_allowed', value)
@@ -654,7 +590,7 @@ class LimitStateFunction(FrozenObject):
 
     A limit state function should be added to a reliability project. If not added, the reliability
     algorithm uses the first value of the model output array and interprets it as the z-value."""
-		
+
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('limit_state_function')
@@ -669,7 +605,7 @@ class LimitStateFunction(FrozenObject):
 		return ['parameter',
 		        'compare_type',
 		        'critical_value']
-		
+
 	def __str__(self):
 		return self.parameter + ' ' + str(self.compare_type) + ' ' + str(self.critical_value)
 
@@ -677,7 +613,7 @@ class LimitStateFunction(FrozenObject):
 	def parameter(self) -> str:
 		"""The output `probabilistic_library.project.ModelParameter` to be used"""
 		return interface.GetStringValue(self._id, 'parameter')
-		
+
 	@parameter.setter
 	def parameter(self, value : str | ModelParameter):
 		interface.SetStringValue(self._id, 'parameter', str(value))
@@ -686,7 +622,7 @@ class LimitStateFunction(FrozenObject):
 	def compare_type(self) -> CompareType:
 		"""The way the output parameter is compared with a critical value (greater than, less than)"""
 		return CompareType[interface.GetStringValue(self._id, 'compare_type')]
-		
+
 	@compare_type.setter
 	def compare_type(self, value : CompareType):
 		interface.SetStringValue(self._id, 'compare_type', str(value))
@@ -699,7 +635,7 @@ class LimitStateFunction(FrozenObject):
 			return interface.GetStringValue(self._id, 'compare_parameter')
 		else:
 			return interface.GetValue(self._id, 'critical_value')
-		
+
 	@critical_value.setter
 	def critical_value(self, value : float | ModelParameter | str):
 		if type(value) is float or type(value) is int:
@@ -746,7 +682,7 @@ class DesignPoint(FrozenObject):
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
 		super()._freeze()
-		
+
 	def __del__(self):
 		interface.Destroy(self._id)
 
@@ -772,7 +708,7 @@ class DesignPoint(FrozenObject):
 		        'get_plot_alphas',
 		        'get_plot_realizations',
  		        'get_plot_convergence']
-		
+
 	def __str__(self):
 		return self.identifier
 
@@ -780,7 +716,7 @@ class DesignPoint(FrozenObject):
 	def identifier(self) -> str:
 		"""Identifying text of the design point, generated by the reliability algorithm"""
 		return interface.GetStringValue(self._id, 'identifier')
-		
+
 	@identifier.setter
 	def identifier(self, value : str):
 		interface.SetStringValue(self._id, 'identifier', value)
@@ -789,7 +725,7 @@ class DesignPoint(FrozenObject):
 	def ids(self) -> DesignPointIds:
 		"""Additional information"""
 		return self._ids
-		
+
 	@ids.setter
 	def ids(self, value : DesignPointIds):
 		self._ids = value
@@ -813,7 +749,7 @@ class DesignPoint(FrozenObject):
 		alphas.extend(self.alphas)
 		alphas.append(alpha)
 		self._alphas = FrozenList(alphas)
-		
+
 		values = [a._id for a in self._alphas]
 		interface.SetArrayIntValue(self._id, 'alphas', values)
 
@@ -821,32 +757,32 @@ class DesignPoint(FrozenObject):
 	def probability_failure(self) -> float:
 		"""Probability of failure, related to the reliability index"""
 		return interface.GetValue(self._id, 'probability_failure')
-		
+
 	@property
 	def convergence(self) -> float:
 		"""Achieved convergence with the reliability algorithm"""
 		return interface.GetValue(self._id, 'convergence')
-		
+
 	@property
 	def is_converged(self) -> bool:
 		"""Indicates whether convergence is reached"""
 		return interface.GetBoolValue(self._id, 'is_converged')
-		
+
 	@property
 	def total_directions(self) -> int:
 		"""The total number of directions, used by the directional sampling algorithm"""
 		return interface.GetIntValue(self._id, 'total_directions')
-		
+
 	@property
 	def total_iterations(self) -> int:
 		"""The total number of iterations, used by FORM"""
 		return interface.GetIntValue(self._id, 'total_iterations')
-		
+
 	@property
 	def total_model_runs(self) -> int:
 		"""The total number of samples"""
 		return interface.GetIntValue(self._id, 'total_model_runs')
-		
+
 	@property
 	def alphas(self) -> list[Alpha]:
 		"""List of contributions per stochastic variable to this design point
@@ -864,7 +800,7 @@ class DesignPoint(FrozenObject):
 				alphas.append(Alpha(alpha_id, self._known_variables))
 			self._alphas = FrozenList(alphas)
 		return self._alphas
-	
+
 	@property
 	def contributing_design_points(self) -> list[DesignPoint]:
 		"""List of intermediate design points
@@ -888,7 +824,7 @@ class DesignPoint(FrozenObject):
 					if not added:
 						contributing_design_points.append(DesignPoint(design_point_id, self._known_variables, self._known_design_points))
 			self._contributing_design_points = FrozenList(contributing_design_points)
-				
+
 		return self._contributing_design_points
 
 	@property
@@ -901,9 +837,9 @@ class DesignPoint(FrozenObject):
 			for realization_id in realization_ids:
 				realizations.append(Evaluation(realization_id))
 			self._realizations = FrozenList(realizations)
-				
+
 		return self._realizations
-	
+
 	@property
 	def reliability_results(self) -> list[ReliabilityResult]:
 		"""List of convergence reports during the reliability analysis. Depends on the setting `Settings.save_convergence`
@@ -914,9 +850,9 @@ class DesignPoint(FrozenObject):
 			for reliability_result_id in reliability_result_ids:
 				reliability_results.append(ReliabilityResult(reliability_result_id))
 			self._reliability_results = FrozenList(reliability_results)
-				
+
 		return self._reliability_results
-	
+
 	@property
 	def messages(self) -> list[Message]:
 		"""List of messages generated by the reliability algorithm. Depends on the setting `Settings.save_messages` whether this
@@ -927,9 +863,9 @@ class DesignPoint(FrozenObject):
 			for message_id in message_ids:
 				messages.append(Message(message_id))
 			self._messages = FrozenList(messages)
-				
+
 		return self._messages
-	
+
 	def get_variables(self) -> list[Stochast]:
 		"""Gets a list of all stochastic variables in this design point or contributing design points"""
 		variables = []
@@ -1062,11 +998,11 @@ class DesignPoint(FrozenObject):
 
 		# plot realizations
 		plt.figure()
-		plt.grid(True)    
+		plt.grid(True)
 		plt.scatter(x_values, y_values, color=colors, alpha=0.5)
-		plt.scatter(self.alphas[index_x].x, 
-                    self.alphas[index_y].x, 
-                    label='design point' if self.identifier == '' else self.identifier, 
+		plt.scatter(self.alphas[index_x].x,
+                    self.alphas[index_y].x,
+                    label='design point' if self.identifier == '' else self.identifier,
                     color="black")
 		plt.xlabel(self.alphas[index_x].identifier)
 		plt.ylabel(self.alphas[index_y].identifier)
@@ -1076,12 +1012,12 @@ class DesignPoint(FrozenObject):
 		return plt
 
 	def plot_convergence(self):
-		"""Shows a plot of the convergence against the iteration or sample index. 
+		"""Shows a plot of the convergence against the iteration or sample index.
         Only available when `Settings.save_convergence` was set"""
 		self.get_plot_convergence().show()
 
 	def get_plot_convergence(self) -> plt:
-		"""Gets a plot object of the convergence against the iteration or sample index. 
+		"""Gets a plot object of the convergence against the iteration or sample index.
         Only available when `Settings.save_convergence` was set"""
 
 		if len(self.reliability_results) == 0:
@@ -1092,7 +1028,7 @@ class DesignPoint(FrozenObject):
 		index = [x.index for x in self.reliability_results]
 		beta = [x.reliability_index for x in self.reliability_results]
 		conv = [x.convergence for x in self.reliability_results]
-    
+
 		plt.close()
 
 		ax1 = plt.subplot()
@@ -1121,7 +1057,7 @@ class Alpha(FrozenObject):
 			self._id = interface.Create('alpha')
 		else:
 			self._id = id
-			
+
 		self._variable = None
 		self._known_variables = known_variables
 		super()._freeze()
@@ -1152,7 +1088,7 @@ class Alpha(FrozenObject):
 
 				if self._variable is None:
 					self._variable = Stochast(variable_id);
-				
+
 		return self._variable
 
 	def __str__(self):
@@ -1163,7 +1099,7 @@ class Alpha(FrozenObject):
 		"""Identifying string of the variable or, in case of an array variable, accompanied with its index number"""
 		return interface.GetStringValue(self._id, 'identifier')
 
-	# internal method		
+	# internal method
 	def _set_variable(self, variable):
 		self._variable = variable
 
@@ -1181,18 +1117,18 @@ class Alpha(FrozenObject):
 	def alpha(self) -> float:
 		"""Alpha value, the contribution of the uncertainty of the variable"""
 		return interface.GetValue(self._id, 'alpha')
-		
+
 	@property
 	def alpha_correlated(self) -> float:
 		"""Alpha value after transformation for correlation, used to determine the physical value 'x'"""
 		return interface.GetValue(self._id, 'alpha_correlated')
-		
+
 	@property
 	def influence_factor(self) -> float:
 		"""Influence factor of the uncertainty of the variable
         This value equals alpha squared. All influence factors of a design point sum up to 1."""
 		return interface.GetValue(self._id, 'influence_factor')
-		
+
 	@property
 	def index(self) -> int:
 		"""Index number of the variable, if it is defined as an array variable"""
@@ -1405,7 +1341,7 @@ class FragilityCurve(FrozenObject):
 
 class FragilityCurveProject(FrozenObject):
 	"""Project to calculate the reliability of a fragility curve when the distribution of the x-values of
-    the fragility_valus of the fragility curve is known. 
+    the fragility_valus of the fragility curve is known.
 
     This class is used internally by the `FragilityCurve.integrate` method."""
 
@@ -1480,7 +1416,7 @@ class CombineSettings(FrozenObject):
 	def __init__(self):
 		self._id = interface.Create('combine_settings')
 		super()._freeze()
-		
+
 	def __del__(self):
 		interface.Destroy(self._id)
 
@@ -1492,7 +1428,7 @@ class CombineSettings(FrozenObject):
 	def combiner_method(self) -> CombinerMethod:
 		"""Algorithm which performs the combination of design points"""
 		return CombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
-		
+
 	@combiner_method.setter
 	def combiner_method(self, value : CombinerMethod):
 		interface.SetStringValue(self._id, 'combiner_method', str(value))
@@ -1501,7 +1437,7 @@ class CombineSettings(FrozenObject):
 	def combine_type(self) -> CombineType:
 		"""Type of combining design points (series, parallel)"""
 		return CombineType[interface.GetStringValue(self._id, 'combine_type')]
-		
+
 	@combine_type.setter
 	def combine_type(self, value : CombineType):
 		interface.SetStringValue(self._id, 'combine_type', str(value))
@@ -1513,7 +1449,7 @@ class ExcludingCombineSettings(FrozenObject):
 	def __init__(self):
 		self._id = interface.Create('excluding_combine_settings')
 		super()._freeze()
-		
+
 	def __del__(self):
 		interface.Destroy(self._id)
 
@@ -1524,15 +1460,15 @@ class ExcludingCombineSettings(FrozenObject):
 	def combiner_method(self) -> ExcludingCombinerMethod:
 		"""Algorithm which performs the exclusive combination of design points"""
 		return ExcludingCombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
-		
+
 	@combiner_method.setter
 	def combiner_method(self, value : ExcludingCombinerMethod):
 		interface.SetStringValue(self._id, 'combiner_method', str(value))
 
-		
+
 class ReliabilityResult(FrozenObject):
 	"""Contains the intermediate reliability index and convergence during a reliability analysis"""
-		
+
 	def __init__(self, id = None):
 		if id == None:
 			self._id = interface.Create('reliability_result')
@@ -1547,18 +1483,18 @@ class ReliabilityResult(FrozenObject):
 		return ['index',
 				'reliability_index',
 				'convergence']
-	
-	@property   
+
+	@property
 	def index(self) -> int:
 		"""Index of a realization or iteration in the reliability analysis to which the reliability index and convergence belong"""
 		return interface.GetIntValue(self._id, 'index')
-		
-	@property   
+
+	@property
 	def reliability_index(self) -> float:
 		"""Intermediate reliability index in the reliability analysis"""
 		return interface.GetValue(self._id, 'reliability_index')
-		
-	@property   
+
+	@property
 	def convergence(self) -> float:
 		"""Intermediate convergence index in the reliability analysis"""
 		return interface.GetValue(self._id, 'convergence')

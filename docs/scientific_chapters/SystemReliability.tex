@@ -1,0 +1,1078 @@
+\chapter{Probabilistic computation techniques for system reliability\label{chp:systemreliability}}
+
+\section{Linearisation of $Z$-functions}\label{Section_2.2.5}
+$Z$-functions in e.g. flood risk analysis generally describe a combination of hydrodynamics and geotechnical processes. Due to the complexity of the $Z$-function it is sometimes practical to use linear approximations. The linearisation can result in significant reductions of the computation time. This is for instance the case with the probabilistic computation method FORM, (see \Aref{sec:methodform}) which is generally much faster than other probabilistic computation techniques such as Monte Carlo (see \Aref{sec:crudemontecarlo}). 
+
+Another advantage of the linearisation is that it enables (semi-)analytical approaches to complex system analysis, that otherwise would not have been possible. Such an approach is for instance used in the `Hohenbichler method' (see \Aref{Section_2.4.2}) which is applied to compute the total probability of failure of a system of components.
+
+The disadvantage of the linearisation is of course the fact that it is an approximation of the $Z$-function, which means an error is likely to be introduced in the estimate of the failure probability. As long as this error is small compared to other modeling errors and uncertainties this poses no real problem, but this needs to be verified as much as possible.
+
+The linearisation of the $Z$-function is generally applied in the $U$-space, in which the $U$-variables are independent standard normally distributed random variables. In other words: the function $Z(u)$ is linearized, where $U$ is the vector of standard normally distributed variables $U_1$, \dots  $U_n$. The linear approximation of the $Z$-function has the following form:
+\begin{equation}
+Z_L =B+A_{{\rm 1}} U_{{\rm 1}} +{\rm  }\ldots + A_{{\rm n}} U_{{\rm n}} \label{eq:2-17}  
+\end{equation}
+
+The linearisation is done by taking the tangent of the $Z$-function in a selected location $U=u_d$. This means the $A$-values are chosen as follows: 
+\begin{equation}
+A_{i} =\frac{\partial {Z}}{\partial u_{{\rm i}} } \left(u_{d} \right)\quad ;i=1...n  \label{eq:2-18}  
+\end{equation}
+
+This linearisation process is depicted in \Fref{fig:2.7} and \Fref{fig:2.8}.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.42in, height=4.06in, keepaspectratio=false]{\pathProbLibPictures example_Zfun.png}
+\caption{Example of function $Z(U_1, U_2)$}\label{fig:2.7}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.25in, height=3.94in, keepaspectratio=false]{\pathProbLibPictures lin_Zun.png}
+\caption{Linearisation of the $Z$-function (dark red plane) of the $Z$-function of \Fref{fig:2.7} in a selected location (white dot). }\label{fig:2.8}
+\end{figure}
+
+Clearly, the linearised $Z$-function is different from the actual $Z$-function. This means an error will be introduced in the estimation of the probability of failure, $P(Z<0)$. To reduce this error as much as possible, the linearisation is generally done in the design point, $u_d$. This is the location on the hyperplane $Z=0$ with the highest probability density. The method FORM, as described in \Aref{sec:methodform} is based on this principle.
+
+Generally, the main objective is to compute the probability of failure, i.e.\ $P(Z<0)$ $\approx$ $P(Z_L<0)$. In that case, the right hand side of equation \eqref{eq:2-17} can be multiplied or divided by a constant. If this constant is taken to be the norm of vector $A$ = ($A_1$, \dots  ,$A_n$) the linear $Z$-function has the following form: 
+\begin{equation}
+Z_L =\beta +\alpha _{1} U_{1} +...+\alpha _{n} U_{n} =\beta +\sum _{i=1}^{n}\alpha _{i} U_{i} \label{eq:2-19}
+\end{equation}
+
+In which:
+\begin{equation} 
+\beta =\frac{B}{\left\| A\right\| } ;\quad \alpha _{i} =\frac{A_{i} }{\left\| A\right\| } ,i=1...n;\quad \left\| A\right\| =\sqrt{\sum _{i=1}^{n}A_{i} ^{2}  } \label{eq:2-20}  
+\end{equation}
+
+The norm of vector $\alpha$=($\alpha_1$, \dots  ,$\alpha_n$) is then equal to 1:
+\begin{equation} 
+\sqrt{\sum _{i=1}^{n}\alpha _{i}^{2}  } =1 \label{eq:2-21}  
+\end{equation}
+
+This means the linearised $Z$-function has been normalised. Since the $U$-variables are independent standard normally distributed values, this means: 
+\begin{equation}
+\sum _{i=1}^{n}\alpha _{i} U_{i}  \sim N(0,1) \label{eq:2-22}  
+\end{equation}
+
+In other words: the sum of the product of $\alpha$-values and $U$-variables, $\Sigma$$\alpha_i U_i$, is standard normally distributed. This means that in order to compute $P(Z_L<0)$, $\Sigma$$\alpha_i U_i$ can be replaced by a single standard normally distributed variable $U^{*}$:
+\begin{equation}
+Z_{L} =\beta +U^{*} \label{eq:2-23}  
+\end{equation}
+
+Note that, since the density function of $U^{*}$ is symmetric around $U^{*}=0$, $Z_L$ can also be described as follows: 
+\begin{equation}
+Z_{L} =\beta -U^{*} \label{eq:2-24}  
+\end{equation}
+
+In equation \eqref{eq:2-23}, failure occurs if $Z_L$$<$0, i.e.\ if $U^{*}$$<$-$\beta$. The probability that this occurs is equal to $\Phi$(-$\beta$), where $\Phi$ is the standard normal distribution function and $\beta$ is the reliability index which was introduced in \Aref{Section_2.2.4}. While $\beta$ is an indicator for the probability of failure, the $\alpha$-values are indicators for the relative importance of the associated random variables, as will be shown below. From equation \eqref{eq:2-19} it can be seen that:
+\begin{equation}
+P\left(Z_{L} <0\right)=P\left(\beta +\sum _{i=1}^{n}\alpha _{i} U_{i}  <0\right) \label{eq:2-25}  
+\end{equation}
+
+If we increase the mean of variable $U_i$ ($\overline{u}_i$) with a small value $\varepsilon_i$ this will have an effect on the probability of failure. The magnitude of this effect is an indicator of the relative importance of variable $U_i$. For this purpose, define the random variable $U_i$' as follows: 
+\begin{equation}
+U_{i}^{'} =U_{i} +\varepsilon _{i}  \label{eq:2-26}  
+\end{equation}
+
+Since $U_i$ is standard normally distributed, $U_i$' is normally distributed with mean $\varepsilon_i$ and standard deviation $1$. Subsequently, $U_i$ in equation \eqref{eq:2-19} is replaced by $U_i$', resulting in a new $Z$-function $Z_L$':
+\begin{equation}
+\begin{array}{l} {Z_{L}^{'} =\beta +\alpha _{1} U_{1} +...+\alpha _{i} U_{i}^{'} +...+\alpha _{n} U_{n} } \\ {\quad  =\beta +\alpha _{1} U_{1} +...+\alpha _{i} \left(U_{i} +\varepsilon _{i} \right)+...+\alpha _{n} U_{n} } \\ {\quad  =\left(\beta +\alpha _{i} \varepsilon _{i} \right)+\alpha _{1} U_{1} +...+\alpha _{i} U_{i} +...+\alpha _{n} U_{n} } \end{array} \label{eq:2-27}  
+\end{equation}
+
+So the perturbation of the mean of variable $U_i$ results in a new $Z$-function with reliability index $\beta$' instead of $\beta$, with:
+\begin{equation}
+\beta ^{'} =\beta +\alpha _{i} \varepsilon _{i}  \label{eq:2-28}  
+\end{equation}
+
+This means:
+\begin{equation} 
+\frac{\partial \beta }{\partial \bar{u}_{i} } =\frac{\partial \beta }{\partial \varepsilon _{i} } =\frac{\beta '-\beta }{\varepsilon _{i} } =\frac{\left(\beta +\alpha _{i} \varepsilon _{i} \right)-\beta }{\varepsilon _{i} } =\frac{\alpha _{i} \varepsilon _{i} }{\varepsilon _{i} } =\alpha _{i}  \label{eq:2-29}  
+\end{equation}
+
+In other words: $\alpha_i$ is a measure of the sensitivity of reliability index $\beta$ to changes in the mean value of variable $U_i$. This also means $\alpha_i$ is a measure of the sensitivity of the probability of failure to changes in the mean value of variable $U_i$. This information is used in the Hohenbichler method for combining probabilities of components in a system (see \Aref{Section_2.4.2}).
+
+\Note{as stated before, linearized $Z$-functions are the basis for various computation techniques that are explained in the following sections. A full understanding of this linearisation process and the meaning of $\alpha$-values and $\beta$ is therefore essential for further reading of this document.}
+
+\section{Failure probability for a single component}\label{Section_2.3}
+In this section, aspects of computing the failure probability for a single component are addressed.
+
+\subsection{Introduction}\label{Section_2.3.1}
+
+This section describes in detail the computation techniques presented in \Tref{tab:2.2}. 
+
+
+\pagebreak
+\begin{longtable}{|p{\textwidth-24pt-70mm}|p{70mm}|}
+\caption{Computation techniques available in the \probLib for the computation of failure probability of a cross section of a longitudinal segment.}\label{tab:2.2}\\ \hline 
+\textbf{Method} & \textbf{Variant} \\ \hline 
+Numerical integration & -- \\ \hline 
+Monte Carlo & Crude\newline Importance sampling\newline Directional sampling \\ \hline 
+FORM (First Order Reliability Method) & -- \\ \hline 
+\end{longtable}
+
+
+\subsection{Numerical Integration\label{sec:numericalintegration}}
+Numerical integration solves equation \eqref{eq:2-4} by discretizing the random variables $X_1$\dots $X_n$. Each variable is discretized over a range that is relevant for failure, and subsequently each combination of discretized values of the $X$-variables is used to compute the limit state function. The probabilities of all the combinations that lead to $Z<0$ are summed, which provides the estimate of the overall probability of failure. This summation can be written as follows:
+
+\begin{align}
+\hat{P}_{f} =&\sum _{i_{1} =1}^{m_{1} }\sum _{i_{2} =1}^{m_{2} }\dots\sum _{i_{n} =1}^{m_{n} }1_{\left[Z<0\right]}    f_{X} (x_{0,1} +(i_{1} -0.5)\Delta x_{1} ,x_{0,2}\label{eq:2-30} \\ \nonumber
+ &+(i_{2} -0.5)\Delta x_{2} ,\dots,x_{0,n} +(i_{n} -0.5)\Delta x_{n} )\Delta x_{1} \Delta x_{2} \dots\Delta x_{n} 
+\end{align}
+where:
+
+\begin{tabular}{p{0.4in}p{0.2in}p{4in}} 
+$\hat{P}_{f} $ & = & Estimated probability of failure \\
+$1_{\left[Z<0\right]} $ & = & Indicator function, equal to $1$ for $Z$ $<$ $0$, equal to $0$ for $Z$ $\geq$ $0$ \\
+$x_{0,k}$ & = & Lower range limit for the $k^{th}$ variable \\
+$\Delta$$x_k$ & = & Interval width of the $k^{th}$ variable \\
+$m_k$ & = & Upper bound of $k$ such that $x_{0,k}$+ $m_k$$\Delta$$x_k$ is the upper bound of the $k^{th}$ variable  \\
+\end{tabular}
+
+In equation \eqref{eq:2-30}, for each variable $X_k$ an equidistant grid with step size $\Delta$$x_k$ is used, but non-equidistant grids can also be used in numerical integration. \Fref{fig:2.9} presents a schematic view of the method, for an example of two random variables $X_1$ and $X_2$. A 2-dimensional grid is defined and the $Z$-function is evaluated at the centre of the grid cells. Red grid points indicate failure $(Z<0)$, green grid points indicate no failure ($Z\geq0$). The total probability of failure (see equation \eqref{eq:2-30}) is estimated as follows: multiply the probability density of the grid cells in the failure domain (red dots) with the size of the grid cells ($\Delta$$x_1$ $\times$ $\Delta$$x_2$) and take the sum of these probabilities.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.75in, height=3.56in, keepaspectratio=false]{\pathProbLibPictures NI_grid.png}
+\caption{Schematic view of the method of numerical integration for an example of two random variables. A 2-dimensional grid is defined and the $Z$-function is evaluated at the centre of the grid cells. Red grid points indicate failure $(Z<0)$, green grid point indicate no failure ($Z\geq0$).}\label{fig:2.9}
+\end{figure}
+
+Like every probabilistic estimation technique, the result of the numerical integration procedure will be an approximation of the actual probability of failure. The errors that are introduced in this method are caused by the following assumptions and approximations:
+
+Each grid cell is assumed to be entirely situated in the failure domain or entirely situated outside the domain of failure domain. In reality, grid cells can be partly in the failure domain as can be seen in \Fref{fig:2.9}.
+
+The probability density is assumed to be constant over the entire grid cell. The domain of potential outcomes of the random variables may not be entirely covered. In the implementation of the procedure, it may be beneficial to transform the $X$-variables to standard normally distributed $U$-variables (see \Aref{Section_2.2.3}). One of the benefits of working in the $U$-space is that the $U$-variables are independent, which simplifies equation \eqref{eq:2-30} as follows:
+
+{\footnotesize{\begin{equation} 
+\hat{P}_{f} =\sum _{i_{1} =1}^{m_{1} }\dots \sum _{i_{n} =1}^{m_{n} }1_{\left[Z<0\right]}  \phi \left(u_{0,1} +\left(i_{1} -0.5\right)\Delta u_{1} \right)\cdot \dots\cdot \phi \left(u_{0,n} +\left(i_{n} -0.5\right)\Delta u_{n} \right)\Delta u_{1} ...\Delta u_{n} \label{eq:2-31} 
+\end{equation}}}
+where:
+
+\begin{tabular}{p{\textwidth-36pt-129mm}p{4mm}p{125mm}}  
+$\hat{P}_{f} $ & = & Estimated probability of failure \\ 
+$\phi $ & = & standard normal density function \\ 
+$u_{0,k} $ & = & Lower range limit for the $k^{th}$ variable, in the $U$-space \\  
+$\Delta u_{k} $ & = & Interval width of the $k^{th}$ variable, in the $U$-space \\  
+$m_{k} $ & = & Upper bound of $k$ such that $u_{0,k} +m_{k} \cdot \Delta u_{k}$ is the upper bound of the $k^{th}$ variable \\  
+\end{tabular}
+
+
+\subsection{Crude Monte Carlo\label{sec:crudemontecarlo}}
+Crude Monte Carlo sampling refers to the repeated sampling of the variables from the multivariate probability distribution function $f_X (x)$ (or, if the variables are mutually independent, sampling from the respective distribution functions $f_{X_i}$($x_1$),\dots , $f_{X_n}$($x_n$)). A single sample $x_i$ refers to a vector of length $n$, where $n$ is the number of random variables. For each sample $x_i$, the resulting value of limit state function $Z(x_i)$ is computed. The probability of failure is estimated as the ratio of samples for which $Z(x_i)$ $<$ $0$, $N_f$, to the total number of samples, $N$:
+\begin{equation}
+\hat{P}_{f} =\frac{N_{f} }{N} =\frac{\sum _{i=1}^{N}{\rm I}\left(Z\left(x_{i} \right)\right) }{N}  \label{eq:2-32}
+\end{equation}
+where $I$ is the indicator function, which is equal to unity when $Z<0$, equal to zero when $Z\geq0$. \Fref{fig:2.10} shows a schematic view of the procedure for an example with two random variables $X_1$ and $X_2$. Each dot represents a sampled pair ($x_1$, $x_2$). Red grid points indicate failure $(Z<0)$, green grid point indicate no failure ($Z\geq0$). The estimated probability of failure is equal to the number of the red dots divided by the total number of dots.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.07in, height=3.05in, keepaspectratio=false]{\pathProbLibPictures CMC_sampling.png}
+\caption{Schematic view of Monte Carlo sampling for an example with two random variables. Each dot represents a sampled pair ($x_1$, $x_2$). Red dots indicate failure $(Z<0)$, green dots indicate no failure ($Z\geq0$).}\label{fig:2.10}
+\end{figure}
+
+The required number of samples, $N$, to provide a reliable estimate of the probability of failure depends on the actual failure probability $P_f$ and on the acceptable error in the estimate of $P_f$. Additionally, it depends on the acceptable probability that the real error is within the accepted range. This is because even though taking a large number of samples will most likely result in small errors (law of large numbers), it can never be fully guaranteed due to the random character of the Monte Carlo sampling. However, it is possible to take $N$ large enough to guarantee with for example 95\% or 99\% certainty that the error in the estimate is within the acceptable range. This probability, $P_k$, can be expressed as:
+\begin{equation}
+P_{k} =\Phi \left(k\right)-\Phi \left(-k\right)\quad ;k>0. \label{eq:2-33} 
+\end{equation}
+where $\Phi$ represents the standard normal distribution function, and $k$ represents a sort of reliability index that the error is within the accepted range. The relation between $k$ and $P_k$ is schematically depicted in \Fref{fig:2.11}.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.02in, height=3.02in, keepaspectratio=false]{\pathProbLibPictures relation_k_Pk.png}
+\caption{Relation between $k$ and $P_k$ according to equation \eqref{eq:2-34}. Function $\phi$ is the standard normal density function}\label{fig:2.11}
+\end{figure}
+
+For example, a probability of 95\% corresponds with a $k$-value of $1.96$, because 95\% of samples from a standard normal distribution function have a value between $-1.96$ and $1.96$. In formula, $k$ is defined as:
+\begin{equation} 
+k=\Phi ^{-1} \left(\frac{1+P_{k} }{2} \right) \label{eq:2-34}  
+\end{equation}
+where $P_k$ is the desired probability that the actual error is within the defined acceptable range. The required number of samples $N$ can be estimated with the following formula (Melchers, 2002): 
+\begin{equation}
+N=\frac{k^{2} }{\varepsilon ^{2} } \left(\frac{1-P_{f} }{P_{f} } \right)\label{eq:2-35} 
+\end{equation}
+where $\varepsilon$ is the acceptable relative error in the estimate of $P_f$:
+\begin{equation}
+\varepsilon =\left(\frac{\left|\hat{P}_{f} -P_{f} \right|}{P_{f} } \right) \label{eq:2-36}  
+\end{equation}
+where $\hat{P}_{f} $ is the Monte Carlo estimator of failure probability $P_f$.
+
+Note that the required number of samples depends on the failure probability, which is not known in advance. Therefore, an estimate of the order of magnitude of the failure probability must be assumed, which can subsequently be revised during the Monte Carlo sampling procedure.
+
+\Tref{tab:2.3} shows the required number of samples for combinations of $\varepsilon$ and $P_f$. The value of $k$ in this example is taken equal to $1.96$. The numbers from this table show that, taking into account that each sample involves an evaluation of the $Z$-function, crude Monte Carlo is a rather inefficient method (i.e.\ a large number of $Z$-function evaluations is required) especially for estimating small failure probabilities. 
+
+\begin{longtable}{|p{0.6in}|p{0.4in}|p{0.4in}|p{0.4in}|}
+\caption{Required number of samples with crude Monte Carlo for combinations of the acceptable relative error $\varepsilon$ and actual probability of failure $P_f$. The value of $k$ in equation \eqref{eq:2-34} is taken equal to $1.96$.} \label{tab:2.3} \\ \hline 
+~ & \multicolumn{3}{|p{1.5in}|}{$\varepsilon$} \\ \hline 
+~$P_f$ & $0.10$ & $0.05$ & $0.01$ \\ \hline 
+$10^{-2}$ & $4\cdot10^{4}$ & $2\cdot10^{5}$ & $2\cdot10^{7}$ \\ \hline 
+$10^{-3}$ & $4\cdot10^{5}$ & $2\cdot10^{6}$ & $2\cdot10^{8}$ \\ \hline 
+$10^{-4}$ & $4\cdot10^{6}$ & $2\cdot10^{7}$ & $2\cdot10^{9}$ \\ \hline
+$10^{-5}$ & $4\cdot10^{7}$ & $2\cdot10^{8}$ & $2\cdot10^{10}$ \\ \hline
+\end{longtable}
+
+\subsection{Monte Carlo Importance Sampling}\label{Section_2.3.4}
+In this section, aspects of importance sampling as an addition computational component to Monte Carlo type methods are addressed.
+
+\subsubsection{General description}\label{Section_2.3.4.1}
+Importance sampling is a method to increase the efficiency of the crude Monte Carlo method; that is, to decrease the number of samples and $Z$-function evaluations required to produce a reliable estimate of the failure probability. This is done by replacing the initial probability density, $f_X$, of the input variables by a more efficient one, $h_X$, in which ''efficient'' refers to the proportion of the samples which will result in failure. An increasing percentage of samples in the failure domain results in a reduction in the variance of the estimator of the failure probability, hence a smaller number of samples is required for a reliable estimate. 
+
+There are a number of ways in which importance sampling can be applied; two of these are described in this section. The first increases the variance of the density function, resulting in a higher likelihood that failure events are sampled. The second essentially shifts the density function towards the failure domain so that, again, the likelihood of a failure sample increases. These two methods are illustrated in \Fref{fig:2.12}; the left-hand side illustrates the concept of a shifting of the density function, and the right-hand side illustrates the concept of increased variance. 
+
+\begin{figure}[H]\centering
+\includegraphics*[width=2.30in, height=3.07in, keepaspectratio=false]{\pathProbLibPictures IS_density.png} \includegraphics*[width=3.06in, height=3.01in, keepaspectratio=false]{\pathProbLibPictures IS_variance.png} 
+\caption{Concept of importance sampling; left shows the concept of density shifting, right shows the concept of increased variance. The limit state function (LSF) is illustrated. Note that the LSF's are linear in this figure, but this is by no means a requirement for the applicability of importance sampling.}\label{fig:2.12}
+\end{figure}
+
+Because the sampling hasn't taken place from the initial distribution, the typical estimator of the failure probability (see equation \eqref{eq:2-32}) needs to be corrected for this fact. This is done via the following formula:
+\begin{equation}
+\hat{P}_{f} =\frac{\sum _{i=1}^{N}{\rm I}\left(Z\left(x_{i} \right)\right)\frac{f_{X} \left(x_{i} \right)}{h_{X} \left(x_{i} \right)}  }{N}  \label{eq:2-37} 
+\end{equation}
+where $\hat{P}_f$ is the estimated probability of failure, $I$ is the indicator function (equal to unity when $Z<0$, equal to zero when $Z\geq0$), $N$ is the total number of samples taken, $f_X$ is the density function of $x$ and $h_X$ is the importance sampling density function. 
+
+Equation \eqref{eq:2-37} can be explained by comparing it with equation \eqref{eq:2-32}, which describes the crude Monte Carlo method. In both equations, the indicator $I$ is equal to one if the sampled vector $x_i$ is in the failure domain and equal to $0$ if $x_i$ is outside the failure domain. In the crude Monte Carlo method, each sampled failure event scores a point and the more points scored, the higher the estimated probability of failure. In the importance sampling method it needs to be taken into account that the sampling of vector $x_i$ was influenced by the fact that the density function was changed: $h_X($x$)$ was applied instead of the real density function $f_X($x$)$. This means the probability of sampling $x_i$ was increased by a factor $c = h_X(x_i)/f_X(x_i)$. This manipulation in the density function needs to be compensated for in the ''scoring''. Therefore, a sampled event $x_i$ in the failure domain does not score a full point, but ''only'' $1/c = f_X(x_i)/h_X(x_i)$.
+
+So, the difference between equation \eqref{eq:2-37} and \eqref{eq:2-32} is the correction term $f_X/h_X$. This correction is necessary to make the estimate of $P_f$ unbiased (provided h is well chosen) and accordingly that the error in the estimate can be made as small as desired by taking a sufficiently large number of samples, N. For importance sampling there is no simple generic error estimate like equation \eqref{eq:2-35} for Crude Monte Carlo sampling, because the error estimate depends on the choice of $h_X($x$)$. The efficiency of importance sampling therefore also depends strongly on the choice of $h_X($x$)$. Prior knowledge of the problem under consideration is therefore necessary to be able to define an efficient importance sampling method. Without such knowledge, there is even the potential danger that the important area for the limit state function (LSF) will be missed. 
+
+\subsubsection{Implementation of the method of increased variance}\label{Section_2.3.4.2}
+The implementation of this general formula in the \probLib for the case of increased variance will now be described. Equations \eqref{eq:2-38} through \eqref{eq:2-44} show how the formula programmed in the \probLib can be derived from the general expression in equation \eqref{eq:2-37}. A random sampling of standard normal variables is first done; let us refer to these variables as $U_1$, where $U_1$ is the vector containing all the variables. Subsequently, each $u_1$-value is multiplied by a constant factor, $a$, and increased with a shift, $b$, to obtain a sample $u = b+a \cdot u_1$ (in the \probLib, $a$ and $b$ can differ per variable). Thus, the initial distribution of each $u_1$-value is standard normal. The new set of variables, $U$, then has a normal distribution with a mean value equal to $b$ and a standard deviation equal to $a$. The general form of the normal distribution is given below for reference. 
+\begin{equation}
+f\left(x\right)=\frac{1}{\sqrt{2\pi \sigma ^{2} } } \exp \left[-\frac{\left(x-\mu \right)^{2} }{2\sigma ^{2} } \right] \label{eq:2-38} 
+\end{equation}
+
+The ratio $f(u)/h(u)$ is then derived as follows, shown for the case of one variable:
+\begin{equation}
+f\left(u\right)=\frac{1}{\sqrt{2\pi \left(1\right)^{2} } } \exp \left[-\frac{\left(u-0\right)^{2} }{2\left(1\right)^{2} } \right]=\frac{1}{\sqrt{2\pi } } \exp \left[-\frac{u^{2} }{2} \right] \label{eq:2-39} 
+\end{equation}
+\begin{equation}
+h\left(u\right)=\frac{1}{\sqrt{2\pi a ^{2} } } \exp \left[-\frac{\left(u-b \right)^{2} }{2a ^{2} } \right]  \label{eq:2-40} 
+\end{equation}
+\begin{equation}
+\frac{f\left(u\right)}{h\left(u\right)} =\frac{\frac{1}{\sqrt{2\pi } } \exp \left[-\frac{u^{2} }{2} \right]}{\frac{1}{\sqrt{2\pi a^{2} } } \exp \left[-\frac{(u-b)^{2} }{2a^{2} } \right]} =a\frac{\exp \left[-\frac{u^{2} }{2} \right]}{\exp \left[-\frac{(u-b)^{2} }{2a^{2} } \right]}  \label{eq:2-41} 
+\end{equation}
+
+Writing $u$ in terms of $u_1$, the equation becomes:
+\begin{equation}
+\frac{f\left(u\right)}{h\left(u\right)} =a\frac{\exp \left[-\frac{u^{2} }{2} \right]}{\exp \left[-\frac{\left(b+au_{1}-b \right)^{2} }{2a^{2} } \right]} =a\frac{\exp \left[-\frac{u^{2} }{2} \right]}{\exp \left[-\frac{u_{1} ^{2} }{2} \right]} \label{eq:2-43} 
+\end{equation}
+
+Note that the one-variable example can easily be expanded to more variables, using the property that the $u$-values are independent, and hence their probability densities can be multiplied for the multi-variate case. The multi-variate form of equation \eqref{eq:2-43} is:
+\begin{equation}
+\frac{f\left(u\right)}{h\left(u\right)} =\prod_{k} a_{k} \frac{\exp \left[-\frac{1}{2} \sum _{k}u_{k} ^{2}  \right]}{\exp \left[-\frac{1}{2} \sum _{k}u_{1k} ^{2}  \right]}  \label{eq:2-44} 
+\end{equation}
+where $k$ runs over the total number of random variables. Equation \eqref{eq:2-44} is the form in which the ratio is programmed in the \probLib.
+
+\subsection{Monte Carlo Directional Sampling\label{sec:directionalsampling}}
+Directional Sampling (see, e.g. \cite{Bjerager1988}), also referred to as Directional Simulation is a type of Monte Carlo method which aims to (strongly) reduce the number of samples in comparison with the Crude Monte Carlo method.
+
+Directional sampling is depicted in Figure \ref{fig:2.13}. The first step in the method is to sample a direction in the standard-Normal space. This is done by sampling ${\mathbf{u}} = \left( {{u_1},{u_2},...,{u_n}} \right)$. For the $i^{th}$ sample, ${{\mathbf{u}}_i} = \left( {{u_{{1_i}}},{u_{{2_i}}},...,{u_{{n_i}}}} \right)$, the directional unit vector ${\boldsymbol{\theta}_i}$ is obtained by normalizing $\bf u_i$ as described in Eq. \ref{eq:theta}. The next step in the method is to determine, for the given direction $\theta_i$, the value (or length) $\lambda_i$ such that the limit state function evaluated at $\lambda_i \cdot \theta_i$ equals zero. The procedure to determine the length $\lambda$ is described in the following subsection. The conditional failure probability for the $i^{th}$ sample, $P_{i}$,  is then calculated using the Chi-square ($\chi^2$) distribution (see Eq. \ref{eq:DS_Pfcond}). The $\chi_n^2$ distribution with $n$ degrees of freedom is the distribution function of the sum of the squares of $n$ independent standard normal random variables. Because we work in the standard normal space, the probability that $\left\| {{{\mathbf{u}}_i}} \right\| \leq \lambda_{i}$ is described by this distribution function. The final step is to estimate the failure probability as the mean of the conditional probabilities over all $N$ sampled directions (Equation \ref{eq:Pfhat}). 
+
+\begin{equation}
+\label{eq:theta}
+{\bf{\theta_i }} = \frac{{\bf{u_i}}}{{\left\| {\bf{u_i}} \right\|}} = \left( {{{\bar u}_1},{{\bar u}_2},...,{{\bar u}_n}} \right)
+\end{equation}
+
+\begin{equation}
+\label{eq:DS_Pfcond}
+P_{i} = 1-\chi _{n}^{2} \left(\lambda _{i}^{2} \right)
+\end{equation}
+
+\begin{equation}
+\label{eq:Pfhat}
+{\hat P_f} = \frac{1}{N}\sum\limits_{i = 1}^N {{P_{i}}} 
+\end{equation}
+
+
+\begin{figure}[H]\centering
+\includegraphics[scale=1]{\pathProbLibPictures directionalSampling_basicConcept}
+\caption{Schematic view of the directional sampling method in the standard normal space. The distances $\lambda_i$ to the limit state ($Z=0$)  are shown for unit-length directional vectors $\theta_i$ for three directional samples ($i = 1,2,3$). }\label{fig:2.13}
+\end{figure}
+
+Similar to other Monte Carlo methods, the outcome of the estimated probability of failure is a random variable and the error in the estimate can be made as small as possible by taking a sufficient number of samples. For directional sampling, the standard deviation, $\sigma$, of the estimated probability of failure can be quantified as follows (see, e.g. \cite{Grooteman2011},\cite{Melchers2002} page 84):
+\begin{equation}
+\sigma _{\hat{p}_{f} } =\sqrt{\frac{1}{N\left(N-1\right)} \sum _{i=1}^{N}\left(P_{i} -\hat{P}_{f} \right)^{2}  }  \label{eq:covdirs}  
+\end{equation}
+
+From this equation, relative errors and confidence intervals can be estimated. Note that the error in the estimated failure probability is a random variable that approaches a normal distribution function, as $N$ increases. This follows from the central limit theorem (see, e.g. \cite{GrimmettStirzaker1983}). The error in the estimated probability of failure will decrease with increasing number of sampled directions. Equation \eqref{eq:covdirs} can be used to determine the number of sampled directions required for an acceptably reliable estimate of the failure probability. 
+
+
+\subsubsection{Determining the distance to the limit state}
+There are two search procedures in the \probLib to find $\lambda_i$, the distance  to the limit state $Z=0$ in the $i^{th}$ sampled direction. The first method is illustrated in Figure \ref{fig:DS_Z}. Starting with $\lambda_i = 0$, the value of $\lambda_i$ is incrementally increased by a fixed amount (the default is $\Delta \lambda =1$). For the $k^{th}$ iteration, the limit state function is evaluated at ${\mathbf{U}} = k\Delta\lambda \cdot \boldsymbol{\theta}_i$. This continues until the limit state function becomes negative. For example, in Figure \ref{fig:DS_Z}, this occurs at $k=6$. The algorithm then interpolates between $(k-1)\Delta\lambda$ and $k\Delta\lambda$ until it converges to $Z=0$ with a convergence criteria on $\lambda_i$ such that consecutive estimates lie within some small distance of each other (e.g. 0.001). 
+
+
+\begin{figure}[H]
+\centering 
+\includegraphics[scale=1]{\pathProbLibPictures directionalSampling_currentMethodZ}
+  	\caption{Method 1 to determine $\lambda_i$, the distance to the limit state $Z=0$ for the $i^{th}$ sampled direction.}
+  	\label{fig:DS_Z}
+\end{figure}
+
+The second method is illustrated in Figure \ref{fig:DS_Z_new}. It is a gradient-based method that requires fewer limit state function evaluations (LSFEs) than Method 1 (described above). The algorithm first considers two values for $\lambda_i$: $\lambda^0_i=0$, and $\lambda^1_i = \lambda_{step}$, where the default value is $\lambda_{step}=3$. The superscript indicates the iteration in the algorithm. The limit state function is evaluated at both values, $Z^0=Z(\lambda^0_i \cdot \boldsymbol{\theta}_i)$ and $Z^1 =Z(\lambda^1_i \cdot \boldsymbol{\theta}_i)$. Based on the two points $[\lambda^0_i,Z^0]$ and $[\lambda^1_i,Z^1]$, linear extrapolation is used to estimate the value $\lambda^2_i$ for which $Z=0$. This extrapolation is indicated in Figure \ref{fig:DS_Z_new} with the line `Gradient, step 1'. The limit state function is then evaluated again $Z^2 = Z(\lambda^2_i \cdot \boldsymbol{\theta}_i)$, and based on the points $[\lambda^1_i,Z^1]$ and $[\lambda^2_i,Z^2]$, linear extrapolation is again used to determine $\lambda^3_i$, the value for which $Z=0$ (in Figure \ref{fig:DS_Z_new} this is the line `Gradient, step 2'). Note that for each iteration, the extrapolation is constrained so that if $\lambda^k_i - \lambda^{k-1}_i>\lambda_{step}$, then $\lambda^k_i$ is set equal to $\lambda^{k-1}_i + \lambda_{step}$. The iterative process continues until either:
+\begin{itemize}
+\item
+$Z(\lambda^k_i \cdot \boldsymbol{\theta}_i)$ becomes negative, at which point interpolation between $[\lambda^{k-1}_i,Z^{k-1}]$ and $[\lambda^{k}_i,Z^{k}]$ takes place in the same manner as Method 1,
+\item
+$\lambda^{k-1}_i$ and $\lambda^k_i$ differ by less than a small value $\epsilon$ (default is $\epsilon=0.001$), which indicates one-sided convergence to $Z=0$, or
+\item
+$\lambda^k_i > \lambda_{max}$ (default is $\lambda_{max}=20$), at which point $\lambda_i$ is set to $\lambda_{max}$, which is equivalent to a failure probability of zero.
+\end{itemize}
+
+
+\begin{figure}[H]
+\centering 
+\includegraphics[scale=1]{\pathProbLibPictures directionalSampling_newMethodOnly.pdf}
+  	\caption{Method 2 (gradient-based) to determine $\lambda_i$, the distance to the limit state $Z=0$ for the $i^{th}$ sampled direction.}
+  	\label{fig:DS_Z_new}
+\end{figure}
+
+The situation can arise where the gradient at the first iteration (the one derived using $[\lambda^0_i,Z^0]$ and $[\lambda^1_i,Z^1]$) is positive. This means that for increasing distance in the failure space, the limit state function is getting further away from $Z=0$. If this occurs, the algorithm evaluates the limit state function at ${\mathbf{U}} = \lambda_{max} \cdot \boldsymbol{\theta}_i$. If the value of the limit state function is positive, $\lambda_i$ is set equal to $\lambda_{max}$. If the value is negative, we set $\lambda^2_i=\lambda^1_i+\lambda_{step}$, and the iterative process continues to find $\lambda_i$.
+
+\subsection{First-order reliability method (FORM)\label{sec:methodform}}%\label{Section_2.3.6}
+The term first-order refers to the linearisation of the limit state function, as previously described in \Aref{Section_2.2.5}. This linearisation takes place at a location referred to as the design point. A ''location'' in this case refers to a specific realization $x_1$, \dots ,$x_n$ of the $X$-variables, or $u_1$, \dots , $u_n$ of the $U$-variables. The design point is the location along the limit state  $(Z~=~0)$, where the probability density is maximal. This location is not known in advance and is determined via an iterative procedure, which will be explained in this section.
+
+The FORM procedure is generally executed in the standard normal space ($U$-variables). The standard normally distributed variables have by definition a mean value of zero and a standard deviation of $1$, and are mutually independent. The advantage of working in the standard normal space is that in this space the design point has a clear interpretation. Namely, in the standard normal space, the design point is the location along the limit state $(Z~=~0)$ which is closest to the origin (see \Fref{fig:2.15} for an illustration). This can be easily explained by the fact that for standard normally distributed variables the density is highest for $u=0$ and decreases with increasing value of \textbar $u$\textbar . So in the u space the density decreases with increasing distance from the origin. Therefore, the design point is the point along the limit state that is closest to the origin.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.59in, height=3.26in, keepaspectratio=false]{\pathProbLibPictures design_point_u_space.png}
+\caption{Illustration of the design point in the $U$-space}\label{fig:2.15}
+\end{figure}
+
+The distance from the origin to the design point is equal to the reliability index $\beta$ that was introduced in \Aref{Section_2.2.4}. This means if the location of the design point is known, the reliability index, $\beta$, is known and hence the estimated probability of failure can be derived from equation \eqref{eq:2-15}. This is how the probability of failure is estimated in the FORM method. Note that this is an estimate, and not the precise probability of failure. This is because the limit state function  $(Z~=~0)$, was linearized to provide the estimate. The error in the estimate therefore depends on the extent in which the real limit state function is non-linear. This is illustrated in \Fref{fig:2.16} below, where the solid line indicates the true limit state and the dashed line represents the FORM approximation. The shaded area represents the true failure domain, the area to the upper right of the dashed line is the assumed failure domain.
+
+The reason why FORM in general provides good estimates of the failure probability is the fact that the linearisation is done in the design point, which means in the vicinity of the design point the linear $Z$-function is a good approximation of the real $Z$-function. The design point is the location on the limit state with the highest probability density. This means the failure events with the highest probability of occurrence will generally be in the vicinity of the design point. So, the linearised $Z$-function is generally a good approximation for the areas that matter the most in terms of probability of failure.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=3.88in, height=2.78in, keepaspectratio=false]{\pathProbLibPictures FORM_approx.png}
+\caption{Illustration of the FORM approximation}\label{fig:2.16}
+\end{figure}
+
+As demonstrated in \Aref{Section_2.2.5}, the linearized limit state function $Z_L$ is essentially a hyper-plane and is described mathematically as follows:
+\begin{equation}
+Z_{L} =\beta +\alpha _{1} U_{1} +...+\alpha _{n} U_{n} =\beta +\sum _{i=1}^{n}\alpha _{i} U_{i} \label{eq:2-47}  
+\end{equation}
+
+Note that the $\alpha$-values have been normalized, as described in \Aref{Section_2.2.5}. This means the sum of the squares of the $\alpha$-values is equal to $1$. In the remainder of this document, $\alpha$-values are always assumed to be normalized in case they are used as coefficients in an equation with $U$-variables (unless mentioned otherwise). Given that the design point is the point along the $Z=0$ line that lies closest to the origin, the coordinates of the design point can be determined using geometry as follows:
+\begin{equation}
+u_{d,i} =-\alpha _{i} \beta \quad ;i=1...n \label{eq:2-48}  
+\end{equation}
+where $u_{d,i}$ is the value of the $i^{th}$ random variable in the design point. As demonstrated in \Aref{Section_2.2.4}, the probability of failure can be estimated directly from the value of $\beta$:
+\begin{equation} 
+P\left(Z<0\right)=\Phi \left(-\beta \right)=1-\Phi \left(\beta \right) \label{eq:2-49}  
+\end{equation}
+where $\Phi$ is the standard normal distribution function. In other words, once the design point is known, the $Z$-function can be linearised as described in \Aref{Section_2.2.5}, and subsequently the probability of failure can be estimated from equation \eqref{eq:2-49}. The challenge in the FORM procedure is therefore not to compute the failure probability but to locate the design point. 
+
+The procedure to locate the design point is described below. The procedure and formulas will be presented in general form. Furthermore, the procedure will be clarified in a number of figures for the following example $Z$-function: 
+\begin{equation*}{\rm Z }={\rm 5} - U_{1}^{0.8}  U_{2} ^{{\rm 1}.{\rm 2}} \end{equation*}
+where $U_1$ and $U_2$ are standard normal random variables. \Fref{fig:2.17} shows the contourlines of this $Z$-function.
+Generally, these contour lines are not known in advance, otherwise the search for the design point would be straightforward.
+Therefore, an iterative search procedure is required.
+The procedure starts at a ''user defined'' starting location in the $U$-space and jumps to a selected location in each following iteration step.
+In other words: in each iteration step the location in the $U$-space is determined that will serve as the starting point for the next iteration step.
+The procedure ends when the design point is found.
+Each iteration step consists of the following five sub-steps:
+
+The five steps in a FORM iteration.
+\begin{enumerate}
+\item Linearisation of the $Z$-function in $u^t$, where $u^t$ is the starting location of iteration $t$;
+
+\item Normalisation of the linearised $Z$-function in $u^t$;
+
+\item Estimation of the location of the design point, based on the $Z$-function of step 2;
+
+\item Selection of location $u^{t+1}$, which will serve as the starting location of iteration $t+1$;
+
+\item Verification if the iteration procedure has converged.
+\end{enumerate}
+
+These five steps are described in more detail below. Note that location $u^t$ refers to a vector of $u$-values: $u^t = (u_1^t,\dots ,u_n^t)$.
+
+\textbf{[1]} The starting location of each iteration, $t$, is determined in the previous iteration, $t-1$.
+The starting location in the first iteration step can either be selected ''arbitrarily'' or by more advanced methods in which the $U$-space is partially explored in advance of the FORM procedure.
+In the current example the starting location in the first iteration step is chosen to be $u_i=1$; $i=1...n$ (red dot in \Fref{fig:2.17}).
+
+In each iteration, first the $Z$-function is determined for the selected location at the beginning of the iteration, i.e.\ $Z(u_1,\dots ,u_n)$ is quantified. Subsequently, the $Z$-function is linearised in the current location. For this purpose, the partial derivatives of $Z$ to the individual $U$-variables are quantified. Generally, the $Z$-function is too complex to have an analytical expression of the partial derivatives, which means a numerical estimation technique is required. For this purpose, the $Z$-function is evaluated for small perturbations ($\Delta u$) of the $u$-values as shown in \Fref{fig:2.18}. The partial derivates can then be estimated as follows:
+\begin{equation}
+\frac{\partial Z}{\partial u_{i} } \left(u_{1} ,...,u_{n} \right)\approx \frac{Z\left(u_{1} ,...,u_{i} +\Delta u_{i} ,...,u_{n} \right)-Z\left(u_{1} ,...,u_{n} \right)}{\Delta u_{i} } \quad ;i=1...n \label{eq:2-50} 
+\end{equation}
+
+Note that equation \eqref{eq:2-50} describes a one-sided discretisation method. The \probLib actually uses a two-sided method, in which also a negative perturbation is applied on $u_i$:
+\begin{equation}
+\frac{\partial Z}{\partial u_{i} } \left(u_{1} ,...,u_{n} \right)\approx \frac{Z\left(u_{1} ,...,u_{i} +0.5\Delta u_{i} ,...,u_{n} \right)-Z\left(u_{1} ,...,u_{i} -0.5\Delta u_{i} ,...,u_{n} \right)}{\Delta u_{i} }  \\
+ ;i=1...n \label{eq:2-51}
+\end{equation}
+
+A two-sided method is generally more robust (because of often non-smooth limit state functions), but requires approximately twice as much computation time. The linearised $Z$-function is described by: 
+\begin{equation}
+Z_{{\rm L}} =B+A_{{\rm 1}} U_{{\rm 1}} +{\rm  }\ldots +A_{{\rm n}} U_{{\rm n}}  \label{eq:2-52} 
+\end{equation}
+
+In which the $A$-values are the partial derivatives as derived in equation \eqref{eq:2-50} and $B$ is derived by substituting the known $Z$-value in the current location $(u_1,\dots ,u_n)$: 
+\begin{equation}
+B={\rm Z}\left(u_{1} ,...,u_{n} \right)-A_{{\rm 1}} u_{{\rm 1}} -...-A_{{\rm n}} u_{{\rm n}}  \label{eq:2-53} 
+\end{equation}
+
+The linearised function is (temporarily) assumed to be valid for the entire $U$-space. This results in linear contour lines as shown in \Fref{fig:2.19}. 
+
+\Note{In the \probLib, the following methods are available to determine the starting location of the $u$-vector in the first iteration step:}
+\begin{itemize}
+\item All values of the $u$-vector are equal to $0.0$.
+\item All values of the $u$-vector are equal to $1.0$.
+\item The vector is defined by the user.
+\item Method ray search: the start vector $u$ is found iteratively on a ray specified by the $u_{Ray}$-vector. In the $u_{Ray}$-
+vector, the load variables take value $1.0$ and the strength variables take value $0.0$.
+\item Method sphere search: the start vector $u$ is found iteratively and the search takes place within a sphere with the
+radius of $10$. The start vector is then defined as the $u$-vector (within the sphere) for which the smallest value of the $Z$-function is found.
+\end{itemize}
+
+\textbf{[2]} Subsequently, the linearised $Z$-function is normalized by dividing equation \eqref{eq:2-52} by \textbar \textbar $A$\textbar \textbar , i.e.\ the norm of the $A$-vector (as earlier described in \Aref{Section_2.2.5}). The normalized linear $Z$-function is described as: 
+\begin{equation}
+Z_{L} =\beta +\alpha _{1} U_{1} +...+\alpha _{n} U_{n}  \label{eq:2-54} 
+\end{equation}
+
+In which:
+\begin{equation}
+\beta =\frac{B}{\left\| A\right\| } ;\quad \alpha _{i} =\frac{A_{i} }{\left\| A\right\| } ,i=1...n;\quad \left\| A\right\| =\sqrt{\sum _{i=1}^{n}A_{i} ^{2}  }  \label{eq:2-55}  
+\end{equation}
+
+The normalization changes the contour lines of the linearised $Z$-function (compare \Fref{fig:2.19} with \Fref{fig:2.20}). The orientation of the lines is still the same, but the distances between the contour lines have changed. The location of the contour line $Z=0$, however, remains the same. 
+
+\textbf{[3]} From the linear contour lines it is easy to estimate the location of the design point. This is done by drawing the line through the origin that is perpendicular to the contour line $Z_L$=0 (see \Fref{fig:2.21}). In formula this means the estimated location of the design point is as described in equation \eqref{eq:2-48}. The values of $\alpha$ and $\beta$ in equation \eqref{eq:2-48} are set equal to the ones derived from equation \eqref{eq:2-55}.
+
+\textbf{[4]} The estimated location of the design point can be chosen as the next location in the iteration procedure.
+Note, however, that this is most likely not the actual location of the design point, since it was derived from the linearised $Z$-function and not from the real $Z$-function.
+This is the reason why the design point will not be located straight away, i.e.\ a number of iteration steps are required.
+This is also the reason why in practical applications generally a relaxation parameter, $R$, is used in each iteration step: 
+\begin{align}
+u^{t+1} =R u_{d}^{t} +\left(1-R \right)u^{t}  \label{eq:2-56}
+\end{align}
+
+In which:\begin{align*}
+t &= \text{iteration step}\\
+R &= \text{the relaxation parameter ($0\leq R \leq1$)}\\
+u^t &= \text{the selected location at the beginning iteration step $t$}\\
+u^{t+1} &= \text{the selected location at the beginning iteration step $t+1$}\\
+u_d^t &= \text{the estimated location of the design point in iteration step $t$}
+\end{align*}
+
+The functionality of the relaxation parameter can be explained as follows: in each iteration step, the $Z$-function is linearised in location $u^t$. The linearised function, $Z_L$ is the tangent of the actual $Z$-function at location $u^t$. In the vicinity of $u^t$, $Z_L$ is generally a good approximation of $Z$. However, with increasing distance from $u^t$, differences between $Z$ and $Z_L$ may increase, as can be seen from e.g.\ \Fref{fig:2.8}. Since the estimated location of the design point, $u_d^t$, is based on $Z_L$, this estimate may be unreliable if the distance between $u^t$ and $u_d^t$ is large. This might even lead to non-convergence of the iteration procedure. It is therefore better to prevent that the distance between two subsequent iteration steps becomes too large, and for this reason the relaxation parameter is used. The relaxation parameter helps making the iterative procedure more robust.
+
+\Fref{fig:2.22} demonstrates the application of the relaxation parameter. It shows the location at the beginning of the iteration, $u^t$, (red dot), the estimated location, $u_d^t$, of the design point (yellow dot) and the location at the beginning of the next iteration, $u^{t+1}$ (green dot). Location $u^{t+1}$ is chosen somewhere on the line between the current location and the estimated location of the design point. For values of $R<0.5$, $u^{t+1}$ will be closer to $u^t$ for values of $R>0.5$, $u^{t+1}$ will be closer to $u_d^t$. 
+
+\textbf{[5]} \Fref{fig:2.23} shows the resulting iteration steps of the example problem. The iteration procedure continues until location $u_d^t$ satisfies the following 2 criteria: 
+\begin{align}
+\frac{\left|Z\left(u_{d}^{t} \right)\right|}{\left\| A\right\| } =\left|Z_{L} \left(u_{d}^{t} \right)\right|<\varepsilon _{1} \label{eq:2-57} \\
+\beta ^{t} -\varepsilon _{2} <\left\| u_{d}^{t} \right\| <\beta ^{t} +\varepsilon _{2} \label{eq:2-58}  
+\end{align}
+where:
+
+\begin{tabular}{p{0.2in}p{0.2in}p{4in}} 
+$\varepsilon_{1,2}$ & = & Small numbers, quantifying convergence criteria \\  
+$\beta^t$ & = & Estimate of reliability index $\beta$ in iteration step 2 \\  
+\end{tabular}
+
+Criterion \eqref{eq:2-57} guarantees that the $Z$-function is sufficiently close to $0$, i.e.\ that $u_d^t$ is on (or in the neighbourhood of) the limit state $Z=0$. Note that for this purpose the value of $Z$ is normalized by dividing it by the norm of the vector of $A$-values. The second criterion guarantees that the distance from $u_d^t$ to the origin is (approximately) equal to the estimated reliability index $\beta$, which makes $u_d^t$ the point on $Z=0$ with the highest probability density. 
+
+\Note{the FORM procedure has the advantage that it requires relatively little computation time, i.e.\ a relatively small number of $Z$-function evaluations. The disadvantage of this method is that the iterative algorithm sometimes does not converge and results may become less accurate. This is especially the case if the $Z$-function is highly non-linear.}
+
+\Note{when FORM does not converge, then the results are corrected by averaging the results from the last ten iterations. The procedure is described below assuming $n$ iterations and $m$ random variables:
+\begin{itemize}
+\item For each variable determine the mean value of the last ten $u$-values: $u_{k}=\frac{1}{10}\sum_{i=n-9}^{n}u_{i,k}$ and $k=1...m$.
+\item Determine the mean value of the last ten reliability indices and determine the sign of the resulting value (the sign is $-1.0$ when the mean value is less than zero and the sign is $1.0$ otherwise).
+\item Calculate the final reliability index as: $\beta=sign\cdot \sqrt{\sum_{k=1}^{m}u_{k}^2}$.
+\item For each variable calculate the final $\alpha$-value as: $\alpha_k=-\frac{u_k}{\beta}$.
+\end{itemize} It has been shown that the above correction leads to more stable results.}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\columnwidth]{\pathProbLibPictures FORM_contour.png}
+\caption{Contour lines of the example $Z$-function and the starting location (red dot) of the FORM procedure}\label{fig:2.17}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\columnwidth]{\pathProbLibPictures FORM_sampling.png}
+\caption{Sampling the $Z$-function in all directions to estimate the derivative of $Z$ to all $u$-variables.}\label{fig:2.18}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\columnwidth]{\pathProbLibPictures FORM_contour_lin.png}
+\caption{Contour lines of the linearised $Z$-function}\label{fig:2.19}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\columnwidth]{\pathProbLibPictures FORM_contour_norm.png}
+\caption{Contour lines of the normalised linearised $Z$-function}\label{fig:2.20}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\columnwidth]{\pathProbLibPictures FORM_design_point.png}
+\caption{Estimated location of the design point based on the normalised linearised $Z$-function }\label{fig:2.21}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\columnwidth]{\pathProbLibPictures FORM_relaxation.png}
+\caption{Proces of relaxation. The red dot is the location of the current iteration step, the yellow dot is the estimated location of the design point based on the normalised linearised $Z$-function. The green dot shows the selected location of the next iteration, which is somewhere on the line between the red dot and the yellow dot.}\label{fig:2.22}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\columnwidth]{\pathProbLibPictures FORM_iteration.png}
+\caption{Resulting steps in the iteration procedure.}\label{fig:2.23}
+\end{figure}
+
+\subsection{Computing $\alpha $ values for other methods than FORM}\label{Section_2.3.7}
+
+In the previous section it was demonstrated that the FORM procedure not only provides an estimate of the probability of failure, but also a design point with a set of associated $\alpha$-variables that provide information on the relative influence of the random variables on the reliability index $\beta$ (see also \Aref{Section_2.2.5} on the meaning of $\alpha$-variables). In \Aref{sec:combinationprocedure} it will be demonstrated that these $\alpha$-variables are very practical for estimating failure probabilities of systems that consist of a set of components. 
+
+The other probabilistic techniques that were described in the previous sections, i.e.\ numerical integration and the various Monte Carlo techniques, do not provide $\alpha$-variables as output. Nevertheless, there are methods available to estimate $\alpha$-variables for Monte Carlo methods and numerical integration (see, e.g., Van Gelder [2002]). For example, for Monte Carlo, the following methods can be applied:
+\begin{enumerate}
+\item Centre of gravity,
+\item Method of angles and
+\item Nearest to the mean.
+\end{enumerate}
+The third method can also be used for numerical integration, as will be explained below. These methods all take into account the fact that the design point is the location in the failure domain that is closest to the origin (in the $U$-space). For all methods, the quality of the estimates increases with increasing number of samples. The methods are explained below:
+
+\paragraph*{Centre of gravity}
+
+Suppose a crude Monte Carlo run is done with $n$ samples of which $M$ lead to failure. This means there are $M$ sampled combinations of $u_1, \dots, u_n$, for which $Z(u_1, \dots, u_n)<0$. For each of the $n$ random variables the mean value over the $M$ failure-events is derived as follows:
+\begin{align} 
+\bar{u}_{j} =\frac{1}{M} \sum _{i=1}^{M}u_{ij}  \quad ;j=1...n \label{eq:2-59}
+\end{align}
+where $u_{ij}$ is the $i^{th}$ failure sample of the $j^{th}$ random variable. The resulting point $\bar{u} = (\bar{u}_1,\dots , \bar{u}_n)$ is the centre of gravity in the failure domain in the $U$-space. This is an estimate of the probability weighted mean of the locations in the failure domain. Note that the actual probability weighted mean is equal to:
+\begin{align}
+\bar{u}_{j} =\frac{1}{P\left[Z<0\right]} \int _{Z<0}^{}f_{U} (u) {\kern 1pt} u_{j} du \label{eq:2-60}
+\end{align}
+
+From the estimated centre of gravity this location a line is drawn towards the origin in the $U$-space (see \Fref{fig:2.24}). The location where this line crosses the limit state  $(Z~=~0)$, is the estimated location of the design point. This guarantees that the first characteristic of the design point, i.e. that it is located on the limit state $Z=0$, is taken care of. The second characteristic, that it is the location on the limit state with the highest density is not guaranteed. However, the use of the centre of gravity makes that the estimated location of the design point is likely to be close to the real design point. The likelihood increases with increasing number of samples.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=3.27in, height=2.62in, keepaspectratio=false]{\pathProbLibPictures center_of_gravity.png}
+\caption{Schematic view of the method centre of gravity.}\label{fig:2.24}
+\end{figure}
+
+If importance sampling has been applied in the sampling procedure, the method needs to be corrected for: 
+\begin{align}
+\bar{u}_{j} =\frac{1}{M} \sum _{i=1}^{M}u_{ij} \frac{f_{U} \left(u_{i1} ,...,u_{in} \right)}{h_{U} \left(u_{i1} ,...,u_{in} \right)}  \quad ;i=1...n \label{eq:2-61} 
+\end{align}
+where $f_U$ is the probability density function of vector $U$ and $h_U$ is the applied density function of the importance sampling method.
+
+\paragraph*{Method of angles}
+
+The method of angles is similar to the method of centre of gravity. For each of the M samples that lead to failure the angle with the origin in the $U$-space is derived. After completion of the MC-procedure the mean angle of all $M$ samples is derived. Note that the mean is derived with respect to the sine and cosine of the angles of all samples. 
+
+\paragraph*{Method ''nearest to the mean''}
+
+In the method of ''nearest to the mean'' the distance to the origin of all samples in the failure domain is derived: 
+\begin{align}
+\left|u_{i} \right|=\sqrt{\sum _{j=1}^{n}u_{ij} ^{2}  } \quad ;i=1...M \label{eq:2-62} 
+\end{align}
+
+The sample with the smallest distance to the origin is taken to be the design point. This method can also be applied for other Monte Carlo techniques (directional sampling, importance sampling) and even for numerical integration. In the latter case, the design point is taken equal to the grid point in the failure domain that is closest to the origin in $U$-space. 
+
+\subsection{Rationale}\label{Section_2.3.8}
+
+In the \probLib, a variety of probabilistic techniques has been implemented, including the first order reliability method (FORM), various Monte-Carlo techniques (crude, directional sampling, importance sampling) and numerical integration. Each of these techniques requires a considerable number of evaluations of the $Z$-function at (randomly) selected $x$-values. The choice of the most suitable probabilistic computation technique depends on the problem under consideration. 
+
+If the computation time of one $Z$-function evaluation is significant, crude Monte Carlo and numerical integration are generally not the preferred candidates because both methods generally require a large number of $Z$-function evaluations. For crude Monte Carlo, the required number of $Z$-function evaluations is inversely proportional to the failure probability. This is because a small probability of failure means it takes a large number of samples to obtain even a single failure event and it takes more than one failure event to obtain a reliable estimate of the failure probability. For numerical integration, the number of $Z$-function evaluations is defined by the number of random variables and the number of grids for each random variable. Generally, numerical integration is too time-consuming if more than just a few random variables are involved. In theory, Monte Carlo and numerical integration are exact methods but in practice some error can be expected because the number of $Z$-function evaluations is limited. 
+
+Directional Sampling is a more advanced Monte Carlo method in comparison with crude Monte Carlo. For most practical problems it reduces the amount of $Z$-function evaluations in comparison with crude Monte Carlo. For a large number of random variables, the efficiency of directional sampling decreases (see e.g. \cite{Waarts2000}, pp 73). Importance sampling is another efficient Monte Carlo variant. The efficiency of importance sampling is accommodated by prescience of the location of the limit state function. Without prescience, the performance of importance sampling techniques is volatile.
+
+FORM has the advantage that it requires relatively little computation time. The disadvantage of this method is that the iterative algorithm to find the design point sometimes does not converge or converges to a local design point. Furthermore, the $Z$-function is linearised in the method, which means errors are introduced if the actual $Z$-function is highly non-linear.
+
+Combining two different probabilistic methods may result in the combined advantage of the underlying methods. For instance, a relatively fast method like FORM can be applied first to locate the design point and subsequently a more precise method like importance sampling can be applied to derive the probability of failure by sampling in the vicinity of the design point. FORM is usually more accurate in estimating design points, whereas a more robust Monte Carlo method will sometimes provide a more accurate estimate of the failure probability. Vice versa, Monte Carlo sampling can be applied to provide a starting point for FORM in the neighbourhood of the design point, to increase the chance that FORM converges to the correct design point. This increases the robustness of the FORM procedure.
+
+
+
+\section{Combining failure probabilities for components - generic methods\label{sec:combinationprocedure}}
+In this section, generic methods for the combination of the results for individual components are described. The general formulations of failure probabilities for parallel and series systems of $k$ components are as follows:
+\begin{align}
+&\text{Series:}  P_{f} =P\left[Z_{1} <0\cup ...\cup Z_{k} <0\right]=P\left[\bigcup _{i=1}^{k}Z_{i} <0 \right]=1-P\left[\bigcap _{i=1}^{k}Z_{i} \ge 0 \right] \label{eq:2-63} \\
+&\text{Parallel:} P_{f} =P\left[Z_{1} <0\cap ...\cap Z_{k} <0\right]=P\left[\bigcap _{i=1}^{k}Z_{i} <0 \right]=1-P\left[\bigcup _{i=1}^{k}Z_{i} \ge 0 \right] \label{eq2-64} 
+\end{align}
+
+If the events $[Z_i<0]$, $i=1...k$ are mutually independent, this can be simplified to:
+\begin{align}
+&\text{Series:}  P_{f} =1-\prod _{i=1}^{k}\left\{1-P\left[Z_{i} <0\right]\right\}  \label{eq:2-65} \\
+&\text{Parallel:} P_{f} =\prod _{i=1}^{k}P\left[Z_{i} <0\right]  \label{eq:2-66} 
+\end{align}
+
+The failure probabilities, $P[Z_i<0]$, for the individual components are determined by the probabilistic computation techniques as described in \Aref{Section_2.3}. System analysis for mutually independent components is therefore a relatively straightforward procedure. If the components are mutually correlated, the complexity of the system analysis increases. The correlations need to be taken into account as it increases the probability of failure of parallel systems and decreases the probability of failure of series systems. The following sections describe various general techniques that can be applied to carry out system analysis for systems with mutually correlated components.
+
+\subsection{Combining $n$ system components: the Hohenbichler method}\label{Section_2.4.2}
+In this section, the Hohenbichler method for combining multiple components is highlighted.
+
+\subsubsection{Introduction}\label{Section_2.4.2.1}
+The Hohenbichler method initially is a method for computing conditional probabilities of two $Z$-functions: $P(Z_2<0$\textbar $Z_1<0)$, taking into account the mutual correlation between these two $Z$-functions. The application of this method can be extended to compute failure probabilities of:
+\begin{enumerate}
+\item A parallel system of two components;
+\item A series system of two components;
+\item Parallel and series systems of multiple components.
+\end{enumerate}
+This is explained as follows:
+
+\textbf{[1]}
+$A$ parallel system with two components refers to a system in which both components must fail in order for failure to occur (keyword: AND). That is, the probability of failure is given as follows:
+\begin{align}
+P(F)=P\left(Z_{1} <0 \cap  Z_{2} <0\right)  \label{eq:2-67} 
+\end{align}
+
+A parallel system and the schematization of the associated failure probability $P(Z_1<0~\cap~Z_2<0)$ is schematically depicted in \Fref{fig:2.25} below. 
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.08in, height=3.44in, keepaspectratio=false]{\pathProbLibPictures failure_parallel.png}
+\caption{ Failure domain for a parallel system of two components -- the shaded area indicates the combinations of $Z$-values thatwill lead to failure of the system.}\label{fig:2.25}
+\end{figure}
+
+The failure probability of this system can be written equivalently as the product of a probability and a conditional probability:
+\begin{align}
+P(F)=P\left(Z_{1} <0\right)\cdot P\left(Z_{2} <0|Z_{1} <0\right)  \label{eq:2-68}  
+\end{align}
+
+The first term, $P(Z_1<1)$ can be computed with the methods as described in \Aref{Section_2.3}. The second term, $P(Z_2<0$\textbar $Z_1<0)$, can be determined with the Hohenbichler method, as will be demonstated in subsequent sections. This shows that the Hohenbichler method can also be applied to compute the failure probability of a parallel system of two components.
+
+\textbf{[2]}
+$A$ series system with two components refers to a system in which at least one component must fail in order for failure to occur (keyword: OR):
+\begin{align}
+P(F)=P\left(Z_{1} <0  \cup   Z_{2} <0\right) \label{eq:2-69}  
+\end{align}
+
+This probability can be rewritten as follows:
+\begin{align}
+P(F)=P\left(Z_{1} <0  \cup   Z_{2} <0\right)=P\left(Z_{1} <0\right)+P\left(Z_{2} <0\right)-P\left(Z_{1} <0  \cap  Z_{2} <0\right)  \label{eq:2-70} 
+\end{align}
+
+The first two terms on the right hand side of equation \eqref{eq:2-70} describe failure probabilities of single components, which can be derived with the techniques that were described in \Aref{Section_2.3}. The last term describes a parallel system of two components, for which the computational method was described in [1]. This shows that the Hohenbichler method can alos be applied to compute the failure probability of a series system of two components.
+
+\textbf{[3]}
+Consider a series system of $n$ components. The failure probability for the system is given by: 
+\begin{align}
+P(F)=P(Z_{1} <0  \cup   Z_{2} <0\cup   Z_{3} <0  \cup ...\cup Z_{n} <0) \label{eq:2-71}
+\end{align}
+
+If we define $Z_{12}=Z_1\cup Z_2$, this equation can be rewritten as an arbitrary system of $n-1$ components:
+\begin{align}
+P(F)=P(Z_{12} <0  \cup   Z_{3} <0  \cup ...\cup Z_{n} <0) \label{eq:2-72}
+\end{align}
+
+Repeating this procedure $n-1$ times will result in a system of one component. So, the probability of failure for a system of $n$ components can be derived by the successive combining of combinations of two components. The method of Hohenbichler can be used to combine two components, as demonstrated above, and therefore it can also be used to combine $n$ components of a series system. A similar approach can be applied for a parallel system of $n$ components. In other words: successive application of the method can than be used to compute the probability of failure of a system of $n$ components.
+
+The basic principles of the Hohenbichler method for computing the conditional probability of failure of two components is described in \Aref{Section_2.4.2.2}. The follow-up sections elaborate on some of the finer details.
+
+\Note{the Hohenbichler method makes use of linearisation of the $Z$-functions, as described in \Aref{Section_2.2.5}. The probability of failure for a system as derived by the method of Hohenbichler is therefore an approximation of the real probability of failure. Errors made in the approximation will depend on the system under consideration.}
+
+\subsubsection{Hohenbichler method for a system with fully correlated variables}\label{Section_2.4.2.2}
+
+As stated in the previous section, the Hohenbichler method initially is a method for computing conditional probabilities of two $Z$-functions: $P(Z_2<0$\textbar $Z_1<0)$, taking into account the mutual correlation, $\rho$, between these two $Z$-functions. In this section, first the computational procedure will be described, followed by a detailed explanation.
+
+The two $Z$-functions are described by a set of $U$-variables. In this section, the set of $U$-variables are assumed to be the same for the two $Z$-functions. In \Aref{Hohenbichler_method_for_the_general_case_of_partial_correlation} the slightly more complex case will be dealt with in which the set of $U$-variables are different for the two $Z$-functions.
+
+\paragraph*{Computational procedure}
+
+The following information is available from the single component probabilistic analysis as described in \Aref{Section_2.3}:
+\begin{itemize}
+\item The reliability index $\beta_1$ of $Z_1$
+
+\item The reliability index $\beta_2$ of $Z_2$
+
+\item The influence variable, $\alpha $, for each random variable involved. 
+\end{itemize}
+First, the correlation between the $Z$-functions of the two components needs to be quantified:
+\begin{align}
+\rho \left(Z_{1} ,Z_{2} \right)=\sum _{j=1}^{n}\alpha _{1j} \cdot \alpha _{2j}  \label{eq:2-73} 
+\end{align}
+
+Subsequently, the conditional probability is computed by solving the following integral:
+\begin{align}
+P\left[Z_{2} <0|Z_{1} <0\right]=\frac{\int _{\beta _{1} }^{\infty }\Phi \left(-\frac{\beta _{2} -\rho u_{1} }{\sqrt{1-\rho ^{2} } } \right)\phi \left(u_{1} \right)du_{1}  }{\Phi \left(-\beta _{1} \right)} \label{eq:2-74} 
+\end{align}
+where $\phi$ is the standard normal density function. The outcome of this integral can be approximated very accurately through numerical integration at relatively low computational costs.
+
+\paragraph*{Detailed explanation}
+
+Since the $\alpha$- and $\beta$-values of the two $Z$-functions are known, the $Z$-functions can be described in the standard linearised form (see \Aref{Section_2.2.5}):
+\begin{align}
+\begin{array}{l} {Z_{1} =\beta _{1} +\alpha _{11} U_{11} +...+\alpha _{1n} U_{1n} } \\ {Z_{2} =\beta _{2} +\alpha _{21} U_{21} +...+\alpha _{2n} U_{2n} } \end{array} \label{0.72)} 
+\end{align}
+where $U_{ij}$ refers to the $j^{th}$ random variable of the $i^{th}$ $Z$-function. The $U$-variables can be different for the different $Z$-functions. However, for the sake of simplicity, we assume for the moment that they are the same: 
+\begin{align}
+U_{1k} =U_{2k} \quad ;k=1...n \label{0.73)} 
+\end{align}
+
+In \Aref{Hohenbichler_method_for_the_general_case_of_partial_correlation} the slightly more complex case will be dealt with in which $U_{1k}$$\neq$$U_{2k}$. Since $U_{1j}$ and $U_{1k}$, $j\neq k$, are mutually independent, it can easily be verified that the correlation between $Z_1$ and $Z_2$ is equal to:
+\begin{align}
+\rho \left(Z_{1} ,Z_{2} \right)=\sum _{j=1}^{n}\alpha _{1j} \cdot \alpha _{2j}  \label{eq:2-77} 
+\end{align}
+
+The linearised $Z$-functions can be re-written (see \Aref{Section_2.2.5}) as follows:
+\begin{align}
+\begin{array}{l} {Z_{1} =\beta _{1} -U_{1} \quad ; U_{1} =-\left(\alpha _{11} U_{11} +...+\alpha _{1n} U_{1n} \right)} \\ {Z_{2} =\beta _{2} -U_{2} \quad ; U_{2} =-\left(\alpha _{21} U_{21} +...+\alpha _{2n} U_{2n} \right)} \end{array}\label{eq:2-78} 
+\end{align}
+where $U_1$ and $U_2$ are two newly defined standard normally distributed variables. Because the $\beta $-values in equation \eqref{eq:2-78} are constant, the correlation between the components $Z_1$ and $Z_2$ is equivalent to the correlation between the variables $U_1$ and $U_2$:
+\begin{align}
+\rho \left(Z_{1} ,Z_{2} \right)=\rho \left(U_{1} ,U_{2} \right)=\rho \label{eq:2-79} 
+\end{align}
+
+In other words, equation \eqref{eq:2-78} is only valid if $U_1$ and $U_2$ are mutually correlated with correlation coefficient $\rho $. To assure that this is the case, $U_2$ is written as a function of $U_1$: 
+\begin{align}
+U_{2} =\rho  U_{1} +U_{2}^{*} \sqrt{1-\rho ^{2} } \label{eq:2-80} 
+\end{align}
+
+In this equation, $U_2^{*}$ is also standard normally distributed and independent of $U_1$. The first term in this equation represents the dependent part of $U_2$ and the second term represents the independent part. Note in equation \eqref{eq:2-80} that if $\rho  = 1$, $U_2$ = $U_1$ (100\% correlated), and if $\rho = 0$, then $U_2$ = $U_2^{*}$ (100\% uncorrelated). To verify the applicability of equation \eqref{eq:2-80} it needs to be shown that [1] $U_2$ is standard normally distributed and [2] that $U_1$ and $U_2$ have a mutual correlation coefficient that is equal to $\rho $. To prove [1], we apply the following general rule (see, e.g. \cite{GrimmettStirzaker1983}): If $X$ and $Y$ are independent normally distributed random variables, then $aX+bY$ is also normally distributed with a mean, $\mu$, and standard deviation, $\sigma$, equal to:
+\begin{align}
+\begin{array}{l} {\mu =a\mu _{X} +b\mu _{Y} } \\ {\sigma =\sqrt{a^{2} \sigma _{X}^{2} +b^{2} \sigma _{Y}^{2} } } \end{array}\label{0.78)} 
+\end{align}
+
+Application of this rule on equation \eqref{eq:2-80}, where $U_1$ and $U_2^{*}$ are both normally distributed with mean $0$ and standard deviation $1$, gives:
+\begin{align}
+\begin{array}{l} {\mu(U_2) =\rho \cdot 0+\sqrt{1-\rho ^{2} } \cdot 0=0} \\ {\sigma (U_2) =\sqrt{\rho ^{2} \cdot 1+\left(1-\rho ^{2} \right)\cdot 1} =1} \end{array}\label{0.79)} 
+\end{align}
+
+Which proves that $U_2$ is standard normally distributed. To prove [2], the correlation coefficient between $U_1$ and $U_2$ is derived. The correlation coefficient of $U_1$ and $U_2$ is defined as:
+\begin{align}
+\rho \left(U_{1} ,U_{2} \right)=\frac{cov\left(U_{1} ,U_{2} \right)}{\left[\sigma \left(U_{1} \right)\sigma \left(U_{2} \right)\right]} =\frac{cov\left(U_{1} ,U_{2} \right)}{\left[1\cdot 1\right]} =cov\left(U_{1} ,U_{2} \right)\label{0.80)} 
+\end{align}
+
+The covariance of $U_1$ and $U_2$ is equal to:
+\begin{align}
+cov\left(U_{1} ,U_{2} \right) \begin{array}{l} {=E\left[U_{1} U_{2} -\mu \left(U_{1} \right)\mu \left(U_{2} \right)\right]=E\left[U_{1} U_{2} \right]} \\ {=E\left[U_{1} \left(\rho  U_{1} +U_{2}^{*} \sqrt{1-\rho ^{2} } \right)\right]} \\ {=E\left[\rho U_{1}^{2} +U_{1} U_{2}^{*} \sqrt{1-\rho ^{2} } \right]=E\left[\rho U_{1}^{2} \right]} \\ {=\rho E\left[U_{1}^{2} \right]=\rho Var\left[U_{1} \right]=\rho } \end{array}\label{0.81)} 
+\end{align}
+
+Which proves that the application of equation \eqref{eq:2-80} preserves the correlation between $U_1$ and $U_2$ and hence the correlation between $Z_1$ and $Z_2$. The combination of equations \eqref{eq:2-78} and \eqref{eq:2-80} provides the following alternative description for function $Z_2$:
+\begin{align}
+Z_{2} =\beta _{2} -\rho U_{1} -U_{2}^{*} \sqrt{1-\rho ^{2} } \label{ZEqnNum229315} 
+\end{align}
+
+This expression represents a line in the $Z_2=0$ plane. The hatched area in \Fref{fig:2.26} indicates the area in the $U$-space that contributes to the failure probability 
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.86in, height=3.66in, keepaspectratio=false]{\pathProbLibPictures failure_U_space.png}
+\caption{ The $Z_1 = 0$ and $Z_2=0$ contours in the $U$-space; hatched area indicates the area that contributes to the failure probability.}\label{fig:2.26}
+\end{figure}
+
+Consider the following general formulation for conditional failure probability:
+\begin{align}
+P\left[Z_{2} <0|Z_{1} <0\right]=\frac{P\left[Z_{2} <0\cap Z_{1} <0\right]}{P\left[Z_{1} <0\right]} \label{0.83)} 
+\end{align}
+
+From equation \eqref{eq:2-78} it can be seen that $Z_1<0$ if and only if $U_1$$>$$\beta_1$. This means:
+\begin{align}
+P\left[Z_{2} <0|Z_{1} <0\right]=\frac{P\left[Z_{2} <0\cap U_{1} >\beta _{1} \right]}{P\left[U_{1} >\beta _{1} \right]} =\frac{P\left[Z_{2} <0\cap U_{1} >\beta _{1} \right]}{\Phi \left(-\beta _{1} \right)} \label{ZEqnNum645275} 
+\end{align}
+
+Substitution of equation \eqref{ZEqnNum229315} in equation \eqref{ZEqnNum645275} gives:
+\begin{align}
+P\left[Z_{2} <0|Z_{1} <0\right]=\frac{P\left[\beta _{2} -\rho U_{1} -\sqrt{1-\rho ^{2} } U_{2}^{*} <0\cap U_{1} >\beta _{1} \right]}{\Phi \left(-\beta _{1} \right)} \label{0.85)} 
+\end{align}
+
+The numerator can be computed by integration over all potential realisations of $U_1$$>$$\beta$, using the theorem of total probability:
+\begin{align}
+P\left[Z_{2} <0|Z_{1} <0\right]=\frac{\int _{\beta _{1} }^{\infty }P\left[\beta _{2} -\rho u_{1} -\sqrt{1-\rho ^{2} } U_{2}^{*} <0\right]\phi \left(u_{1} \right)du_{1}  }{\Phi \left(-\beta _{1} \right)} \label{ZEqnNum437286} 
+\end{align}
+
+The probability in the numerator can be rewritten as follows:
+\begin{align}
+\begin{array}{l} {P\left[\beta _{2} -\rho u_{1} -\sqrt{1-\rho ^{2} } U_{2}^{*} <0\right]=P\left[U_{2}^{*} >\frac{\beta _{2} -\rho u_{1} }{\sqrt{1-\rho ^{2} } } \right]} \\ {=P\left[U_{2}^{*} <-\frac{\beta _{2} -\rho u_{1} }{\sqrt{1-\rho ^{2} } } \right]=\Phi \left(-\frac{\beta _{2} -\rho u_{1} }{\sqrt{1-\rho ^{2} } } \right)} \end{array}\label{ZEqnNum775381} 
+\end{align}
+
+Substitution of equation \eqref{ZEqnNum775381} in equation \eqref{ZEqnNum437286} gives:
+\begin{align}
+P\left[Z_{2} <0|Z_{1} <0\right]=\frac{\int _{\beta _{1} }^{\infty }\Phi \left(-\frac{\beta _{2} -\rho u_{1} }{\sqrt{1-\rho ^{2} } } \right)\phi \left(u_{1} \right)du_{1}  }{\Phi \left(-\beta _{1} \right)} \label{ZEqnNum284113} 
+\end{align}
+
+Note that due to the symmetry of the normal density function, $\phi$, this equation can be re-written as follows: 
+\begin{align}
+P\left[Z_{2} <0|Z_{1} <0\right]=\frac{\int _{-\infty }^{-\beta _{1} }\Phi \left(-\frac{\beta _{2} +\rho u_{1} }{\sqrt{1-\rho ^{2} } } \right)\phi \left(u_{1} \right)du_{1}  }{\Phi \left(-\beta _{1} \right)} \label{ZEqnNum584503} 
+\end{align}
+
+Both equations \eqref{ZEqnNum284113} and \eqref{ZEqnNum584503} can be solved by numerical integration at a relatievely low computational cost. Alternative methods using FORM or Monte Carlo can be applied as well, but for this specific application numerical integration is recommended as it takes little computation time and it is very robust and reliable.
+
+\subsubsection{Derivation of equivalent $\alpha$-values}\label{Section_2.4.2.3}
+
+The previous section describes the Hohenbichler method for combining the probability of failure of two single components. The result is the combined probability of failure. The goal of a systems approach to failure probability is to combine the failure probabilities of all the contributing components to determine the failure probability of the whole system. This combining of probabilities takes place in a sequential fashion. That is, first two components are combined into one component, and this new component is then combined with an additional component, and so on, until only one component (the entire system) remains. 
+
+The combining of failure probabilities over components relies on $\alpha $-values, see equation \eqref{eq:2-77}. This means we require $\alpha$-values for $Z_1$$~\cup~$$Z_2$, in order to be able to quantify the correlation with a third component, $Z_3$. The required $\alpha$-values are referred to as `equivalent' $\alpha$-values. Basically, a $Z$-function description, $Z^e$, is required that represents the combined components $Z_1$ and $Z_2$. This $Z$-function needs to have the same probability of failure as $Z_1$ and $Z_2$:
+\begin{align}
+P(Z^{e} <0)=P\left(Z_{1} <0  \cup Z_{2} <0\right)\label{0.90)} 
+\end{align}
+
+The equivalent $\alpha$-values should be such that they describe this $Z$-function in the standard linearised way: 
+\begin{align}
+Z^{e} =\beta ^{e} +\alpha _{1}^{e} U_{1} +...+\alpha _{n}^{e} U_{n} \label{ZEqnNum596963} 
+\end{align}
+
+\paragraph*{Computational procedure}
+
+To compute the equivalent $\alpha$-values, the following procedure is applied:
+
+\textbf{[1]} Derive conditional failure probability $P(Z_2<0$\textbar $Z_1<0)$ with the Hohenbichler method as described in the previous section using the following values as input: reliability index $\beta_1$ of $Z_1$, reliability index $\beta_2$ of $Z_2$ and the influence variable, $\alpha $, for each random variable involved. Subsequently, compute $P[Z_1\cup Z_2]$ (or $P[Z_1\cap Z_2]$ if a parallel system is considered) with the techniques described in \Aref{sec:combinationprocedure}. Also compute the associated ''equivalent'' reliability index, $\beta^e$:
+\begin{align}
+\beta ^{e} =\Phi ^{-1} \left(P\left[Z_{1} \cup Z_{2} \right]\right)\label{ZEqnNum851771} 
+\end{align}
+
+\textbf{[2]} For each variable $U_k$ , $k=1...n$, carry out steps [2a] and [2b]
+
+\textbf{[2a]} Repeat the procedure of step 1 with input reliability indices $\beta_1$' = $\beta_1$ + $\varepsilon$$\alpha_{1k}$ and $\beta_2$' = $\beta_2$ + $\varepsilon$$\alpha_{2k}$, where $\varepsilon$ is a small perturbation. Refer to the resulting reliability index as: $\beta_k^e$($\varepsilon$).
+
+\textbf{[2b]} Compute the equivalent $\alpha$-value of variable $U_k$ as follows:
+\begin{align}
+\alpha _{k}^{e} =\frac{\beta _{k}^{e} \left(\varepsilon \right)-\beta ^{e} }{\varepsilon } \label{ZEqnNum303161} 
+\end{align}
+
+The result is set of $n$ equivalent $\alpha $-values, $\alpha_1^e$,..., $\alpha_n^e$ (step 2) and an equivalent reliability index $\beta^e$ (step 1). These values define the equivalent $Z$-function as described in equation \eqref{ZEqnNum596963}.
+
+\paragraph*{Detailed explanation}
+
+The equivalent value $\beta^e$ is the reliability index that is derived with the Hohenbichler method as described in \Aref{Section_2.4.2.2}. In order to derive the $\alpha$-values of function $Z^e$, recall from \Aref{Section_2.2.5} that the $\alpha$-values of a $Z$-function are related to the reliability index $\beta$ as follows: 
+\begin{align}
+\frac{\partial \beta ^{e} }{\partial \bar{u}_{k} } =\alpha _{k}^{e} \label{ZEqnNum799990} 
+\end{align}
+where $\bar{u}_k$ is the mean value of variable $U_k$. In order to estimate the sensitivity of the equivalent reliability index $\beta^e$ to small perturbations in the mean value of variable $U_k$, we require a set of definitions. First, consider the two following linear $Z$-functions of $n$ components:
+\begin{align}
+Z_{i} =\beta _{i} +\alpha _{i1} U_{1} +...+\alpha _{ik} U_{k} +...+\alpha _{in} U_{n} \quad     ;i=1,2\label{ZEqnNum883757} 
+\end{align}
+
+Furthermore, define $Z_{ik}$($\varepsilon$), $i=1,2$, as the $Z$-functions that result from increasing the mean value of variable $U_k$ in equation \eqref{ZEqnNum883757} with a small perturbation $\varepsilon$. To analyse $Z_{ik}$($\varepsilon$), define:
+\begin{align}
+U_{k}^{'} =U_{k} +\varepsilon \label{ZEqnNum189970} 
+\end{align}
+
+Since $U_k$ is standard normally distributed, $U_k'$ is normally distributed with mean $\varepsilon$ and standard deviation $1$. Function $Z_{ik}$($\varepsilon$) is obtained by replacing $U_k$ in equation \eqref{ZEqnNum883757} by $U_k'$:
+\begin{align}
+\begin{array}{l} 
+{Z_{ik} \left(\varepsilon \right)=\beta _{i} +\alpha _{i1} U_{1} +...+\alpha _{ik} U_{k}^{'} +...+\alpha _{in} U_{n} \quad   \quad \quad    ;i=1,2} \\
+ {\quad \quad    =\beta _{i} +\alpha _{i1} U_{1} +...+\alpha _{ik} \left(U_{k} +\varepsilon \right)+...+\alpha _{in} U_{n} \quad     ;i=1,2} \\
+ {\quad \quad    =\left(\beta _{i} +\alpha _{ik} \varepsilon \right)+\alpha _{i1} U_{1} +...+\alpha _{ik} U_{k} +...+\alpha _{in} U_{n} \quad ;i=1,2} \end{array}\label{ZEqnNum876903} 
+\end{align}
+
+The equivalent reliability index, $\beta_k^e$, for this perturbed system of two components is computed as follows: 
+\begin{align}
+\beta _{k} ^{e} \left(\varepsilon \right)=\Phi ^{-1} \left(1-P\left[Z_{1k} \left(\varepsilon \right)<0\cup Z_{2k} \left(\varepsilon \right)<0\right]\right)\label{ZEqnNum789988} 
+\end{align}
+
+The equivalent $\alpha$-value, $\alpha_k^e$, can be derived from:
+\begin{align}
+\alpha _{k}^{e} =\frac{\partial \beta _{k} ^{e} }{\partial \varepsilon } =\frac{\partial }{\partial \varepsilon } \left[\Phi ^{-1} \left(1-P\left[Z_{1k} \left(\varepsilon \right)<0\cup Z_{2k} \left(\varepsilon \right)<0\right]\right)\right]\label{ZEqnNum109184} 
+\end{align}
+
+Generally, $Z$-functions are too complex to derive equation \eqref{ZEqnNum109184} analytically. Therefore, a numerical approach is required in which the mean of variable $U_i$ is perturbed by a small value $\varepsilon_i$ and subsequently the change in the value of $\beta^e$ is quantified.
+
+From equations \eqref{ZEqnNum883757} and \eqref{ZEqnNum876903} it follows:
+\begin{align}
+Z_{ik} \left(\varepsilon \right)=Z_{i} +\alpha _{ik} \varepsilon     ;i=1,2\label{0.100)} 
+\end{align}
+
+So if $Z_i$ has a reliability index $\beta_i$, $Z_{ik}$($\varepsilon$) has a reliability index equal to $\beta_i$ + $\varepsilon$$\alpha_{ik}$. So $Z_i$ and $Z_{ik}$($\varepsilon$) have different reliability indices, but the $\alpha$-values of these two $Z$-functions are the same. This explains why in step 2 of the procedure as described in the previous section, $Z$-functions with reliability indices $\beta_i$+$\varepsilon$$\alpha_{ik}$ are evaluated with the Hohenbichler method to quantify the sensitivity of the equivalent $Z$-function to small perturbations $\varepsilon$ in the mean value of variable $U_k$. 
+
+\paragraph*{Example}
+
+\Fref{fig:2.27} shows an example of two $Z$-functions, $Z_1$ and $Z_2$, and the equivalent $Z$-function, $Z^{e}$. The variables of the $Z$-functions are displayed in \Tref{tab:2.4}. The failure probability $P(Z_1<0\cup Z_2<0)$ as derived with the Hohenbichler method in this example is equal to $6.120 \cdot 10^{-3}$, whereas the failure probability based on Monte Carlo sampling with $10^{8}$ samples (i.e.\ a very accurate method) is equal to $6.121 \cdot 10^{-3}$. This shows that the Hohenbichler method in principle is an exact method for combining 2 lineair $Z$-functions (linear as a function of the $u$-variables). However, errors will be introduced [a] if the real $Z$-functions are non-linear or [b] when combining more than 2 components.
+
+\begin{longtable}{|p{\textwidth-84pt-90mm}|p{15mm}|p{15mm}|p{15mm}|p{15mm}|p{15mm}|p{15mm}|}
+\caption{Description of the $Z$-functions of \Fref{fig:2.27}.}\label{tab:2.4} \\ \hline 
+\textbf{Function} & \multicolumn{3}{|p{45mm}|}{\textbf{Before normalization}} & \multicolumn{3}{|p{45mm}|}{\textbf{After normalisation}} \\ \hline 
+Variable: & $\alpha_1$ & $\alpha_2$ & $\beta$ & $\alpha_1$ & $\alpha_2$ & $\beta$ \\ \hline 
+$Z_1$ & $-2$ & $-1$ & $6$ & $-0.89$ & $-0.45$ & $2.68$ \\ \hline 
+$Z_2$ & $-1$ & $-2$ & $6$ & $-0.45$ & $-0.89$ & $2.68$ \\ \hline 
+\end{longtable}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.70in, height=3.53in, keepaspectratio=false]{\pathProbLibPictures equivalent_planes.png}
+\caption{Replacement of ''$Z_1<0$ $U$ $Z_2$ $<$ 0'' with ''$Z^e$ $<$ 0''. Failure domains of the three $Z$-functions are on the upper right side of the respective lines.}\label{fig:2.27}
+\end{figure}
+
+\subsubsection{Hohenbichler method for the general case of partial correlation}\label{Hohenbichler_method_for_the_general_case_of_partial_correlation}%\label{Section_2.4.2.4}
+
+In the previous sections, $Z_1$ and $Z_2$ were functions of the same variables $U_1$,\dots ,$U_n$. In the current section the more general case is considered: 
+\begin{align}
+\begin{array}{l} {Z_{1} =\beta _{1} +\alpha _{11} U_{11} +...+\alpha _{1n} U_{1n} } \\ {Z_{2} =\beta _{2} +\alpha _{21} U_{21} +...+\alpha _{2n} U_{2n} } \end{array} \label{ZEqnNum784001} 
+\end{align}
+where $U_{ik}$ refers to the $k^{th}$ random variable of the $i^{th}$ $Z$-function. In this case, variables $U_{1k}$ and $U_{2k}$ are partially correlated. All other correlations are equal to zero:
+\begin{align}
+\rho \left(U_{1j} ,U_{2k} \right)=\left\{\begin{array}{c} {\rho _{12k} \quad ;j=k} \\ {0\quad \quad  ;j\ne k} \end{array}\right.  \label{ZEqnNum773527} 
+\end{align}
+
+For components $1$ and $2$, the $k^{th}$ random variable (i.e.\ $U_{1k}$ and $U_{2k}$) in principle refers to the same load or strength variable, but the sampled values can be different because they refer to different components. For instance, the $k^{th}$ variable may refer to the thickness of a clay layer. This thickness will be different for different dike segments. 
+
+Note that equation \eqref{ZEqnNum784001} also covers the case in which the two $Z$-functions depend on different sets of random variables, for instance because two dike segments are combined that are situated along different water systems, or if one component is a dike segment and the other one is a dune segment. In that case, the combined sets of random variables will be used in equation \eqref{ZEqnNum784001} and some of the $\alpha$-values will be equal to zero.
+
+\paragraph*{Computational procedure}
+
+To compute the equivalent $\alpha$-values, the following procedure is applied:
+
+\textbf{[1]} Derive conditional failure probability $P(Z_2<0$\textbar $Z_1<0)$ with the Hohenbichler method as described \Aref{Section_2.4.2.2} using the following values as input: reliability index $\beta_1$ of $Z_1$, reliability index $\beta_2$ of $Z_2$ and the influence variable, $\alpha $, for each random variable involved. Subsequently, compute $P[Z_1\cup Z_2]$ (or $P[Z_1\cap Z_2]$ if a parallel system is considered) with the techniques described in \Aref{sec:combinationprocedure}. Also compute the associated ''equivalent'' reliability index, $\beta^e$:
+\begin{align}
+\beta ^{e} =\Phi ^{-1} \left(P\left[Z_{1} \cup Z_{2} \right]\right)\label{eq:smXX1} 
+\end{align}
+
+\textbf{[2]} For each variable $U_k$, $k=1...n$, carry out steps [2a] -- [2e]: 
+
+\textbf{[2a]} Repeat the procedure of step 1 with input reliability indices $\beta_1$' = $\beta_1$ + $\varepsilon$$\alpha_{1k}$ and $\beta_2$' = $\beta_2$ + $\varepsilon\rho_{12k}\alpha_{2k}$. The resulting equivalent reliability index is referred to as: $\beta_c$.
+
+\textbf{[2b]} Compute the following equivalent $\alpha$-value:
+\begin{align}
+\alpha _{k}^{I} =\frac{\beta ^{c} -\beta ^{e} }{\varepsilon } \label{0.104)} 
+\end{align}
+
+\textbf{[2c]} Repeat the procedure of step 1 with input reliability indices $\beta_1$' = $\beta_1$ and $\beta_2$' = $\beta_2$ + $c$, with $c$ equal to 
+\begin{align}
+c=\varepsilon \alpha _{2,k} \sqrt{1-\left(\rho _{12k} \right)^{2} } \label{0.105)} 
+\end{align}
+
+The resulting equivalent reliability index is referred to as: $\beta^u$.
+
+\textbf{[2d]} Compute the following equivalent $\alpha$-value:
+\begin{align}
+\alpha _{k}^{II} =\frac{\beta ^{u} -\beta ^{e} }{\varepsilon } \label{0.106)} 
+\end{align}
+
+\textbf{[2e]} Compute:
+\begin{align}
+\alpha _{k}^{e} =\sqrt{\left(\alpha _{k}^{I} \right)^{2} +\left(\alpha _{k}^{II} \right)^{2} } \label{0.107)} 
+\end{align}
+
+The result of steps 2a -- 2e is set of $n$ equivalent $\alpha $-values, $\alpha_1^e$...$\alpha_n^e$.
+
+\textbf{[3]} Carry out a normalization step
+\begin{align}
+\alpha _{k;final}^{e} =\frac{\alpha _{k}^{e} }{\sqrt{\sum _{j=1}^{n}\left(\alpha _{j}^{e} \right)^{2}  } } \quad ;k=1...n\label{ZEqnNum410058} 
+\end{align}
+
+\paragraph*{Detailed explanation}
+
+From equation \eqref{ZEqnNum773527} it follows that the correlation between $Z_1$ and $Z_2$ is equal to: 
+\begin{align}
+\rho \left(Z_{1} ,Z_{2} \right)=\sum _{k=1}^{n}\alpha _{1k} \alpha _{2k} \rho _{12k}  \label{ZEqnNum590491} 
+\end{align}
+
+In order to determine the probability of failure $P$($Z_1<0$ $~\cup~$ $Z_2$$<$0), the exact same method as described in \Aref{Section_2.4.2.2} is used. In order to derive the equivalent $\alpha$-values, the procedure becomes somewhat more complicated than the procedure with full correlation that was described in \Aref{Section_2.4.2.3}. The approach is to describe the $U$-variables of $Z_2$ as a function of the $U$-variables of $Z_1$:
+\begin{align}
+u_{2k} =U_{1k} \rho _{12k} +U_{2k}^{*} \sqrt{(1-\rho _{12k}^{2} )} \quad ;k=1...n\label{ZEqnNum645187} 
+\end{align}
+
+The first term in this function represents the part of $U_{2k}$ that is fully correlated to $U_{1k}$, the second term describes the part that is fully uncorrelated to $U_{1k}$. Variable $U_{2k}^{*}$ is standard normally distributed and independent of variable $U_{1k}$. To verify the applicability of equation \eqref{ZEqnNum645187} it needs to be shown that [1] $U_{2k}$ is standard normally distributed and [2] that $U_{1k}$ and $U_{2k}$ have a mutual correlation coefficient that is equal to $\rho_{12k}$. Note that this was proven earlier in the follow-up of equation \eqref{eq:2-80}. Inserting the expression for $U_{2k}$, given by equation \eqref{ZEqnNum645187}, into the formula for $Z_2$ (equation \eqref{ZEqnNum784001}) gives:
+\begin{equation}
+Z_{2} =\beta _{2} +\alpha _{21} \left(U_{11} \rho _{121} +U_{21}^{*} \sqrt{(1-\rho _{121}^{2} )} \right)+\dots+\alpha _{2n} \left(U_{1n} \rho _{12n} +U_{2n}^{*} \sqrt{(1-\rho _{12n}^{2} )} \right)\label{0.111)} 
+\end{equation}
+
+which can be written more compactly as follows:
+\begin{align}
+Z_{2} =\beta _{2} +\sum _{k=1}^{n}\alpha _{2k} \left(U_{1k} \rho _{12k} +U_{2k}^{*} \sqrt{(1-\rho _{12k}^{2} )} \right) \label{ZEqnNum452558} 
+\end{align}
+
+Note that the expression for $Z_1$ in equation \eqref{ZEqnNum784001} can also be written more compactly as follows:
+\begin{align}
+Z_{1} =\beta _{1} +\sum _{k=1}^{n}\alpha _{1k} U_{1k}  \label{ZEqnNum898859} 
+\end{align}
+
+The procedure for determining the equivalent $\alpha$-values is similar to that introduced for the case of full correlation (\Aref{Section_2.4.2.3}). So again, an equivalent $Z$-function of the following form is derived:
+\begin{align}
+Z^{e} =\beta ^{e} +\alpha _{1}^{e} U_{1} +...+\alpha _{n}^{e} U_{n} =\beta ^{e} +\sum _{k=1}^{n}\alpha _{k}^{e} U_{k}  \label{ZEqnNum630877} 
+\end{align}
+
+The main difference with \Aref{Section_2.4.2.3} is that the random variable $U_{k}$ in equation \eqref{ZEqnNum630877} will represent the two variables $U_{1k}$ and $U_{2k}$ of the functions $Z_1$ and $Z_2$., whereas in \Aref{Section_2.4.2.3}, $U_{1k}$ and $U_{2k}$ were fully correlated and therefore described by a single variable $U_k$. The approach in the current section is that first a separate equivalent $\alpha$-value is computed for variables $U_{1k}$ and $U_{2k}^{*}$. Subsequently, these two equivalent $\alpha$-values are combined into a single equivalent $\alpha$-value. 
+
+The first step is to derive the partial derivative of $\beta^e$ to variable $U_{1k}$. Similar to \Aref{Section_2.4.2.3} this is done by quantifying the change in $\beta^e$ as a result of a small perturbation in the value of $u_{1k}$. $\beta^e$ is related to the two $Z$-functions as follows:
+\begin{align}
+\beta ^{e} =\Phi ^{-1} \left[1-P\left\{Z_{1} <0\cup Z_{2} <0\right\}\right]\label{ZEqnNum481314} 
+\end{align}
+
+Substituting equations \eqref{ZEqnNum452558} and \eqref{ZEqnNum898859} into equation \eqref{ZEqnNum481314} gives:
+{\begin{align}
+\beta ^{e} =&\Phi ^{-1} [1-P\{\beta _{1} +\sum _{k=1}^{n}\alpha _{1k} U_{1k}  <0\cup \beta _{2} \label{ZEqnNum308662}\\\nonumber&+\sum _{k=1}^{n}\alpha _{2k} \left(U_{1k} \rho _{12k} +U_{2k}^{*} \sqrt{(1-\rho _{12k}^{2} )} \right) <0\}]  
+\end{align}
+
+A small perturbation, $\varepsilon$, on the mean value of $u_{1k}$ will have the following effect on $\beta^e$: 
+\begin{align}
+\beta _{k;c} ^{e} (\varepsilon )=\Phi ^{-1} [1-P\{ Z_{1} <-\alpha _{1k} \varepsilon \cup Z_{2} <-\alpha _{2k} \varepsilon \rho _{12k} \} ] \label{ZEqnNum346117} 
+\end{align}
+
+This value can be computed once again with the Hohenbichler method (or alternative methods for combining two components). The equivalent $\alpha$-value for variable $U_{1k}$ can than be obtained from:
+\begin{align}
+\alpha _{k}^{I} =\frac{\beta _{k;c} ^{e} (\varepsilon )-\beta ^{e} }{\varepsilon } \label{0.118)} 
+\end{align}
+
+Subsequently, a similar sensitivity analysis is done for $U_{2k}^{*}$. A small perturbation, $\varepsilon$, in the mean value of $U_{2k}^{*}$ has the following effect on $\beta_k^e$ (see equations \eqref{ZEqnNum481314} and \eqref{ZEqnNum308662}):
+\begin{align}
+\beta _{k;u} ^{e} (\varepsilon )=\Phi ^{-1} [1-P\{ Z_{1} <0   \cup    Z_{2} <-\alpha _{2k} \varepsilon \sqrt{1-\rho _{12k}^{2} } \} ]\label{ZEqnNum705847} 
+\end{align}
+
+This value can be computed once again with the Hohenbichler method (or alternative methods for combining two components). The equivalent $\alpha$-value for variable $U_{2k}^{*}$ can than be obtained from:
+\begin{align}
+\alpha _{k}^{II} =\frac{\beta _{k;u} ^{e} (\varepsilon )-\beta ^{e} }{\varepsilon } \label{0.120)} 
+\end{align}
+
+The two derived $\alpha$-values can then be combined as follows:
+\begin{align}
+\alpha _{k}^{e} =\sqrt{\left(\alpha _{k}^{I} \right)^{2} +\left(\alpha _{k}^{II} \right)^{2} } \label{ZEqnNum745223} 
+\end{align}
+
+This is the required equivalent $\alpha$-value for the $k^{th}$ random variable in the combined $Z$-function $Z^e$. Equation \eqref{ZEqnNum745223} can be explained as follows. The $Z$-functions of the two components, $Z_1$ and $Z_2$ are a function of mutually independent standard normally distributed variables $U_{11}$, $U_{21}^{*}$, \dots  , $U_{1n}$, $U_{2n}^{*}$ (see equations \eqref{ZEqnNum784001} and \eqref{ZEqnNum452558}). For each of these variables an equivalent $\alpha$-value was derived: $\alpha_1^I$, $\alpha_1^{II}$,\dots  $\alpha_n^I$, $\alpha_n^{II}$. This means the combined $Z$-function of the two components can be written as follows: 
+\begin{align}
+\begin{array}{l} {Z^{e} =\beta ^{e} +\alpha _{1}^{I} U_{11} +\alpha _{1}^{II} U_{21}^{*} +...+\alpha _{n}^{I} U_{1n} +\alpha _{n}^{II} U_{2n}^{*} } \\ {\quad  =\beta ^{e} +\sum _{k=1}^{n}\left(\alpha _{k}^{I} U_{1k} +\alpha _{k}^{II} U_{2k}^{*} \right) } \end{array}
+\end{align}
+
+If we compare this equation with equation \eqref{ZEqnNum630877} it is clear that the ''new'' random variable $U_k$ replaces the pair of random variables $U_{1k}$ and $U_{2k}^{*}$ and also that the equivalent $\alpha$-value, $\alpha_k^e$, replaces $\alpha_k^{I}$ and $\alpha_k^{II}$.This can only be done if the standard deviation of $\alpha_k^e U_k$ is equal to the standard deviation of: $\alpha_k^{I} U_{1k}+\alpha_k^{II} U_{2k}^{*}$. This is the case if we chose $\alpha_k^e$ according to equation \eqref{ZEqnNum745223}.
+
+\Note{application of equation \eqref{ZEqnNum745223} will result in a value of $\alpha_k^e$ that is non-negative. For load variables this is incorrect, as they have negative $\alpha$-values. Therefore, for load variables, $\alpha_k^e$ should be taken equal to:}
+\begin{align}
+\alpha _{k}^{e} =-\sqrt{\left(\alpha _{k}^{I} \right)^{2} +\left(\alpha _{k}^{II} \right)^{2} }
+\end{align}
+
+If it is not known whether the $k^{th}$ variable is a load variable, this information can be obtained by reading the sign of $\alpha _{k}^{I}$ and $\alpha _{k}^{II}$.
+
+\Note{since the equivalent $\alpha$-values are derived numerically, the sum of the squares of the equivalent $\alpha$-values may differ from $1$. In that case an additional normalization step is required:}
+\begin{align}
+\alpha _{k;final}^{e} =\frac{\alpha _{k}^{e} }{\sqrt{\sum _{j=1}^{n}\left(\alpha _{j}^{e} \right)^{2}  } } \quad ;k=1...n\label{0.122)} 
+\end{align}
+
+\subsubsection{Systems with an arbitrary number of components}\label{Section_2.4.2.5}
+
+We have just considered the case of probability of failure of a parallel system of two components. In this section we extend the concept to an arbitrary number of components. Suppose we have an arbitrary system of $n$ components. The failure probability for the system is given by: 
+\begin{align}
+P(F)=P(Z_{1} <0  \cup   Z_{2} <0  \cup ...\cup Z_{n} <0)\label{0.123)}  
+\end{align}
+
+An example is the computation of the failure probability due to the mechanism overtopping over $n$ defense segments. The function $Z_i$ is the limit state function for component $i$ and the occurrence $Z_i$ $<$ $0$ indicates failure of component $i$. 
+
+The procedure of combining is to first combine two components, so that the problem with $n$ components reduces to a problem with $n-1$ components. The next step combines two components again so that the problem reduces to one with $n-2$ components, and continues in this fashion until only one component remains, where this last component represents the entire system. 
+
+The order of the combination is important. The determination of equivalent $\alpha$-values, discussed in the previous section, is an approximating method, which makes the entire combination procedure an approximating method. The accuracy of the resulting failure probability is influenced by the sequence in which the components are combined. The most accurate results are obtained by combining the most correlated components first. This is clarified by the example below with three $Z$-functions in \Tref{tab:2.5} and \Fref{fig:2.28}. 
+
+\begin{longtable}{|p{0.7in}|p{0.5in}|p{0.5in}|p{0.5in}|}
+\caption{Description of the $Z$-functions of \Fref{fig:2.28}}\label{tab:2.5} \\ \hline 
+ & \multicolumn{3}{|p{1.5in}|}{\textbf{Variable}} \\ \hline 
+\textbf{Function} & $\mathbf{\alpha_1}$ & $\mathbf{\alpha_2}$ & $\mathbf{\beta}$ \\ \hline 
+$Z_1$ & $-1$ & $0$ & $2$ \\ \hline 
+$Z_2$ & $0$ & $-1$ & $2$ \\ \hline 
+$Z_3$ & $-1$ & $0$ & $2.5$ \\ \hline 
+\end{longtable}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.41in, height=3.31in, keepaspectratio=false]{\pathProbLibPictures three_Zfun.png}
+\caption{Functions $Z_1$, $Z_2$ and $Z_3$ of the current example}\label{fig:2.28}
+\end{figure}
+
+In this example, functions $Z_1$ and $Z_3$ are mutually fully correlated, whereas they are fully uncorrelated with function $Z_2$. We will demonstrate that the best strategy is to first combine the two correlated $Z$-functions ($Z_1$ and $Z_3$). First of all the exact solution for this relatively easy example is derived. It is clear from \Fref{fig:2.28} that if $Z_3$$<$0 $\Rightarrow$ $Z_1<0$. This means:
+\begin{align}
+P(Z_{1} <0    \cup   Z_{3} <0)=P(Z_{1} <0  )\label{ZEqnNum715861} 
+\end{align}
+
+And therefore:
+\begin{align}
+P(F)=P(Z_{1} <0  \cup   Z_{2} <0  \cup   Z_{3} <0)=P(Z_{1} <0  \cup   Z_{2} <0  )\label{0.125)} 
+\end{align}
+
+Since $Z_1$ and $Z_2$ are independent, the failure probability is equal to:
+\begin{equation}
+P(Z_{1} <0  \cup   Z_{2} <0)=1-P(Z_{1} \ge 0 )P(Z_{2} \ge 0 )=1-\Phi \left(\beta _{1} \right)\Phi \left(\beta _{2} \right)=1-\Phi \left(2\right)^{2} \approx 0.045\label{0.126)} 
+\end{equation}
+
+If we combine $Z_1$ and $Z_3$ first with the Hohenbichler method, the exact same result is obtained. If we combine $Z_1$ and $Z_2$ first, the estimated failure probability is equal to $0.0482$, whereas if we combine $Z_2$ and $Z_3$ first, the probability of failure is equal to $0.0492$. This demonstrates that in this example indeed the best strategy is to first combine the two components with the largest mutual correlation. To understand why this is the case, \Fref{fig:2.29} shows the equivalent function, $Z^e$ of $Z_1$$~\cup~$$Z_3$. This function turns out to be exactly the same as $Z_1$. Recall from equation \eqref{ZEqnNum715861} that this means that $Z^e$ is an exact representation of $Z_1$$~\cup~$$Z_3$. 
+
+\Fref{fig:2.30} shows the equivalent function, $Z^e$ of $Z_1$$~\cup~$$Z_2$. Clearly, this function is a compromise between $Z_1<0$$~\cup~$$Z_2$$<0$ and it is clear why this introduces some errors after combining with function $Z_3$$<$0 (for instance because $Z_3$ now defines part of the failure domain, whereas in the original problem statement it was redundant). 
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.63in, height=3.47in, keepaspectratio=false]{\pathProbLibPictures equivalent_Zfun_1.png}
+\caption{Function $Z_2$ and the equivalent $Z$-function of $Z_1$$~\cup~$$Z_3$.}\label{fig:2.29}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.15in, height=3.11in, keepaspectratio=false]{\pathProbLibPictures equivalent_Zfun_2.png}
+\caption{Functions $Z_1$=0, $Z_2$ =0 and the equivalent $Z$-function of $Z_1<0$$~\cup~$$Z_2$$<$0.}\label{fig:2.30}
+\end{figure}
+
+\Fref{fig:2.31} helps illustrate the concept of combining components with the largest mutual correlation, with an example. Shown are four components with reliability functions $Z_1$, $Z_2$, $Z_3$, and $Z_4$. Let functions $Z_1$ and $Z_2$ be the most strongly correlated. These two components are then first combined and replaced by the equivalent reliability function $Z_2^e$. For the three remaining components, the correlations between them are again computed. Consider the case where $Z_3$ and $Z_4$ are now the most correlated; the following step will be the combination of $Z_3$ and $Z_4$, resulting in the equivalent reliability function $Z_4^e$. The final step is the combination of $Z_2^e$ and $Z_4^e$. 
+
+\begin{figure}[H]\centering
+\includegraphics*[width=3.41in, height=1.83in, keepaspectratio=false]{\pathProbLibPictures combin_4_components.png}
+\caption{Example of combining failure probabilities over four components}\label{fig:2.31}
+\end{figure}
