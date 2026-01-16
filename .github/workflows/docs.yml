@@ -52,6 +52,7 @@ jobs:
       # 6️⃣ Install Mermaid CLI globally
       - run: npm install -g @mermaid-js/mermaid-cli
 
+
       # 7️⃣ Build Sphinx documentation
       - name: Build Sphinx docs
         run: |
