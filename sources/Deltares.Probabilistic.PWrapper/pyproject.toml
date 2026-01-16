@@ -43,7 +43,6 @@ sphinxcontrib-mermaid = "^0.8.0"
 pylint = "^4.0.4"
 pyan3 = "^1.2.0"
 py2puml = "^0.10.0"
-dependencies = ["numpy", "matplotlib"]
 
 [project.urls]
 Homepage = "https://www.deltares.nl/software-en-data/producten/probabilistic-toolkit-ptk"
