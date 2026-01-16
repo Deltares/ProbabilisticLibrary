@@ -28,7 +28,7 @@ It consists of the following components:
 
 Together, these components allow users to move seamlessly from exploratory analysis to automated workflows and large-scale studies.
 
-The algorithms implemented in the Probabilistic Suite are described in detail in the `scientific background <./_static/scientific_background.pdf>`_.
+The algorithms implemented in the Probabilistic Suite are described in detail in the `scientific background <https://github.com/Deltares/ProbabilisticLibrary/releases/download/25.3.1/scientific_background.pdf>`_.
 
 
 ----

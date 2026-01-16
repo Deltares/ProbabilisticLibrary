@@ -1,7 +1,7 @@
 
 # Functionality
 
-The batch file `run_tutorials.bat` generates the rst file for the tutorials (`tutorials.rst`) and all needed image files. The files are placed in the [directory](https://github.com/Deltares/ProbabilisticLibrary/tree/master/web/gallery). After running the batch file, the gallery contents should be pushed to the repository.
+The batch file `run_tutorials.bat` generates the rst file for the tutorials (`tutorials.rst`) and all needed image files. The files are placed in the [directory](https://github.com/Deltares/ProbabilisticLibrary/tree/master/web/tutorials). After running the batch file, the tutorials contents should be pushed to the repository.
 
 # Requirements
 
