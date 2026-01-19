@@ -20,5 +20,5 @@
 # All rights reserved.
 #
 
-__version__ = "26.1.1-rc5"
+__version__ = "26.1.1-rc6"
 
