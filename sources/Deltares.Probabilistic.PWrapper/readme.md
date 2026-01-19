@@ -18,8 +18,8 @@ The scientific background of the library can be found here:
 ## Python wrapper
 
 A description of the Python classes is given here:
-[API documentation](https://deltares.github.io/ProbabilisticLibrary/probabilistic_library.html)
+[API documentation](https://deltares.github.io/ProbabilisticLibrary/api_reference/index.html)
 
 ## Tutorials
 
-See the [Tutorials](https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/gallery/gallery.md) for several demonstrations and instructions on how to use the Probabilistic Library.
+See the [Tutorials](https://deltares.github.io/ProbabilisticLibrary/tutorials/tutorials.html) for several demonstrations and instructions on how to use the Probabilistic Library.
