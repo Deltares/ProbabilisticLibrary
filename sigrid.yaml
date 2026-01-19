@@ -2,14 +2,10 @@ default_excludes: true
 component_base_dirs:
   - "sources/Deltares.Probabilistic"
   - "sources/Deltares.Probabilistic.CWrapper"
-  - "sources/Deltares.Probabilistic.FortranWrapper"
   - "sources/Deltares.Probabilistic.Wrapper"
   - ""
 exclude:
   - ".*/ASA/.*"
-  - ".*/feedback/.*"
-  - ".*/feedback_dll/.*"
-  - ".*/general/.*f90"
   - ".*/Cobyla.cpp"
   - ".*/rescale.cpp"
   - ".*/stop.cpp"
@@ -20,11 +16,6 @@ languages:
     test:
        include:
          - ".*sources/Deltares.Probabilistic.Test/.*[.].cpp"
-  - name: "fortran"
-    production:
-    test:
-       include:
-         - ".*sources/Deltares.Probabilistic.FortranWrapper.Test/.*[.][fF]90"
   - name: "csharp"
     production:
     test:
