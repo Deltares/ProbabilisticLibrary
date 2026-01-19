@@ -1,5 +1,11 @@
-# Probabilistic Library
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/downloads/release/python-31110/) 
+[![C++][c++-image]][c++standard]
+[![docs2](https://github.com/Deltares/ProbabilisticLibrary/actions/workflows/docs.yml/badge.svg)](https://github.com/Deltares/ProbabilisticLibrary/actions/workflows/docs.yml)
 
+[c++-image]: https://img.shields.io/badge/C++-20-blue.svg?style=flat&logo=c%2B%2B
+[c++standard]: https://isocpp.org/std/the-standard
+
+# Probabilistic Library
 This is the repository of the Probabilistic Library of Deltares.
 
 The library provides a set of routines that enable reliability, uncertainty, and sensitivity analyses.
@@ -17,24 +23,12 @@ A description of the Python classes is given here:
 
 ### Installation
 
-The installation file can be found in the [Python Package Index](https://pypi.org/project/probabilistic-library).
-The Probabilistic Library should be installed with pip, see the [getting started](https://deltares.github.io/ProbabilisticLibrary/installation.html#install-using-pip) explanation.
+Install the library as follows:
+```
+pip install probabilistic-library
+```
 
 ### Tutorials
 
 See the [Tutorials](https://deltares.github.io/ProbabilisticLibrary/tutorials/tutorials.html) for several demonstrations and instructions on how to use the Probabilistic Library. Jupyter notebooks are available for each item and demonstrate how to use the Probabilistic Library.
 
-## License
-
-This library is released under the LGPL license. For full text of this license, refer to the [LICENSE](LICENSE) file.
-
-## Developers section
-
-Please check our [Wiki](https://github.com/Deltares/ProbabilisticLibrary/wiki) for more details.
-
-## Contact
-For the wheel or additional information, contact:
-* Edwin Spee
-* Rob Brinkman
-* Karolina Wojciechowska
-* Matthias Hauth
