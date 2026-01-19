@@ -1,0 +1,40 @@
+name: Bug Report
+description: Report an incorrect behavior of Probabilistic library
+labels: [bug]
+type: bug
+projects: ["Deltares/124"]
+
+body:
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Probabilistic library version checks
+      options:
+        - label: I have checked that this issue has not already been reported.
+          required: true
+        - label: I have checked that this bug exists on the latest version of Probabilistic library [here](https://github.com/Deltares/ProbabilisticLibrary).
+          required: true
+  - type: textarea
+    id: current-behaviour
+    attributes:
+      description: >
+        Please provide a description of the incorrect behaviour.
+      label: Current behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      description: >
+        Please provide a description of what you think the behaviour should be.
+      label: Desired behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      description: >
+        Please add any other context about the bug here.
+      label: Additional context
+    validations:
+      required: false

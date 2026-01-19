@@ -1,51 +1,70 @@
 name: docs
 
-# build the documentation whenever there are new commits on main
 on:
   workflow_dispatch:
   push:
     branches:
       - master
-    # Alternative: only build for tags.
-    # tags:
-    #   - '*'
+      - feature/PROB-207-docs-as-subpage
 
-# security: restrict permissions for CI jobs.
 permissions:
   contents: read
 
 jobs:
-  # Build the documentation and upload the static HTML files as an artifact.
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: mkdir -p tmp/wiki/
-    
-      - uses: actions/checkout@v3
-        with:
-          repository: ${{ github.repository }}.wiki
-          path: tmp/wiki
-    
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
+      # 1️⃣ Checkout the repository
+      - uses: actions/checkout@v4
+
+      # 2️⃣ Set up Python
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.14'
+          python-version: '3.11'
 
-      # ADJUST THIS: install all dependencies (including pdoc)
-      # We use a custom build script for pdoc itself, ideally you just run `pdoc -o docs/ ...` here.
-      - run: pip install pdoc
-      - run: pip install mermaid-python
-      - run: pip install matplotlib
-      - run: pdoc -o docs --mermaid ./sources/Deltares.Probabilistic.PWrapper/probabilistic_library
+      # 3️⃣ Install Poetry
+      - name: Install Poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
+        working-directory: sources/Deltares.Probabilistic.PWrapper
 
+      - name: Add Poetry to PATH
+        run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
+
+      - name: Show current pyproject.toml
+        run: cat sources/Deltares.Probabilistic.PWrapper/pyproject.toml
+
+
+      # 4️⃣ Install Python dependencies
+      - name: Install Python dependencies
+        run: poetry install
+        working-directory: sources/Deltares.Probabilistic.PWrapper
+
+      - name: Install Pandoc
+        run: sudo apt-get install -y pandoc   # for ubuntu
+            # For Windows runners, you can use Chocolatey:
+          # choco install pandoc -y
+
+      # 5️⃣ Set up Node.js for Mermaid CLI
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # 6️⃣ Install Mermaid CLI globally
+      - run: npm install -g @mermaid-js/mermaid-cli
+
+
+      # 7️⃣ Build Sphinx documentation
+      - name: Build Sphinx docs
+        run: |
+         poetry --directory sources/Deltares.Probabilistic.PWrapper \
+         run sphinx-build -b html -a -E ../../web ../../web/build/html
+
+
+      # 8️⃣ Upload HTML docs as artifact for GitHub Pages
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: docs/
+          path: web/build/html
 
-  # Deploy the artifact to GitHub pages.
-  # This is a separate job so that only actions/deploy-pages has the necessary permissions.
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -58,4 +77,3 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
-

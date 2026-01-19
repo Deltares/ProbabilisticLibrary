@@ -1,0 +1,1564 @@
+\chapter{Reliability}
+\label{chp:Reliability}
+
+Reliability analysis is essential for assessing the performance and safety of engineering systems under uncertainty. By evaluating the likelihood of failure and identifying critical factors influencing system behavior, reliability analysis supports risk-informed decision-making.
+
+This chapter covers the reliability methods available in \probLib for assessing the reliability of both individual components and systems of multiple components. Additionally, it explores methods for upscaling reliability, extending assessments from small-scale components to a larger scale.
+
+\section{Probability of failure of a single component}\label{Section_2.2.2}
+The probability of failure for a single component can be written formally as follows:
+\begin{equation}
+P_{f} = P(Z(X_1, X_2, \dots, X_n)<0) \label{eq:2-1}
+\end{equation}
+where:
+
+\begin{tabular}{p{0.2in}p{2.3in}}  
+$P_{f} $ & is the failure probability \\  
+$Z$ & is the limit state function \\  
+$X$ & is the vector of random variables \\  
+\end{tabular}
+
+The limit state function, $Z$, defines failure in terms of load and strength variables such that $Z<0$ represents failure. Function $Z$ is often denoted:
+\begin{equation}
+Z=R-S\label{eq:2-2}
+\end{equation}
+where:
+
+\begin{tabular}{p{0.1in}p{2.1in}}  
+$R$ & is the strength, or resistance \\  
+$S$ & is the load \\  
+\end{tabular}
+
+\Note{in case of a flood defense, the load typically consists of the combination of water levels and waves and in some cases currents. The strength is a combination of dike characteristics that reflect the ability of the dike to resist high loads. A simple example is overflow of a river levee in a river (see \Fref{fig:2.2}). The load in this simple example is the water level in the river, $h_{river}$, and the strength of the levee is captured by its height, $h_{levee}$. The limit state function for this example is simply:}
+\begin{equation} 
+Z=R-S=h_{levee} -h_{river}\label{eq:2-3} 
+\end{equation}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.05in, height=2.74in, keepaspectratio=false]{\pathProbLibPictures riverlevee_overflow}
+\caption{Illustration of a river levee exposed to the threat of overflow.}\label{fig:2.2}
+\end{figure}
+
+The limit state function, $Z$, is a function of a number of random variables representing both load and strength variables. The probability of failure can be written as follows:
+\begin{equation}
+P_{f} =\int \int _{Z<0}...  \int f_{X_{1} ,...,X_{n} } \left(x_{1} ,...,x_{n} \right)dx_{1}  dx_{2} ...dx_{n} =\int _{Z<0}f_{X} \left(x\right)  dx \label{eq:2-4}
+\end{equation}
+where $f$ is the joint probability distribution of the random variables and $X$ is the vector of variables: $X$ = ($X_1$,\dots $X_n$).
+Note that random variables are typically denoted with a capital letter ($X$), while potential realizations of the random variables are denoted with lower case letters ($x$). 
+
+While an analytical solution to equation \eqref{eq:2-4} would be ideal,
+it is typically not available because the $Z$-function is too complex.
+Therefore, the probability of failure needs to be estimated with probabilistic computation techniques.
+Different techniques are available for this purpose.
+These techniques will be described in detail in the \autoref{sec:ReliabilityMethods}.
+
+
+\section{Reliability index $\beta$}\label{Section_2.2.4}
+The reliability index, $\beta$, is a measure for the reliability of a system, i.e. a measure for the probability of failure of the system.
+Similar to the probability of failure, $\beta$ is often defined for a given period of time, e.g. a year.
+The reliability index is best explained by an example in which the resistance, $R$, and load, $S$, of the system are both described as the sum of independent normally distributed random variables.
+The sum of a set of independent normally distributed random variables is also a random variable (see, e.g. \cite{GrimmettStirzaker1983}).
+This means in this case, $R$ and $S$ are also normally distributed variables and the same can be stated about the $Z$-function $(Z=R-S)$.
+Define $\mu_R$, $\mu_S$ and $\mu_Z$ as the respective mean values of $R$, $S$ and $Z$ and $\sigma_R$, $\sigma_S$ and $\sigma_Z$ as the respective standard deviations of $R$, $S$ and $Z$.
+The following relations hold:
+\begin{equation} 
+\begin{array}{l} {\mu _{Z} =\mu _{R} -\mu _{S} } \\ {\sigma _{Z} =\sqrt{\sigma _{R} ^{2} +\sigma _{S} ^{2} } } \end{array}  \label{eq:2-12}  
+\end{equation}
+
+\Fref{fig:2.5} shows an example with $\mu_R=6$, $\mu_S=2$, $\sigma_R = \sigma_S=1$ and consequently $\mu_Z = 4$ and $\sigma_Z=\surd2$.
+In reliability analysis, $\mu_Z$ is generally a positive value because otherwise,
+failure $(Z<0)$ would occur even during ''average'' conditions.
+Since $Z$ is normally distributed, $P[Z<0]$ is equal to:
+\begin{equation} 
+P\left(Z<0\right)=\Phi \left(-\frac{\mu _{Z} }{\sigma _{Z} } \right)=1-\Phi \left(\frac{\mu _{Z} }{\sigma _{Z} } \right) \label{eq:2-13}  
+\end{equation}
+where $\Phi$ is the standard normal distribution function.
+Based on this equation, the reliability index, $\beta$, is defined as:
+\begin{equation}
+\beta =\frac{\mu _{Z} }{\sigma _{Z} }  \label{eq:2-14} 
+\end{equation}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.29in, height=3.94in, keepaspectratio=false]{\pathProbLibPictures functions_SRZ}
+\caption{Example of normally distributed $S$, $R$ and $Z$ functions with $\mu_R=2$, $\mu_S=6$, $\sigma_R=1$, $\sigma_S=1$, $\mu_Z= 4$ and $\sigma_Z=\surd2$.}\label{fig:2.5}
+\end{figure}
+
+For the specific case where the $Z$-function is normally distributed,
+the relation between $\beta$ and the probability of failure is:
+\begin{equation} 
+P\left(Z<0\right)=\Phi \left(-\beta \right)=1-\Phi \left(\beta \right) \label{eq:2-15}  
+\end{equation}
+
+Or inversely:
+\begin{equation}
+\beta =\Phi ^{-1} \left(1-P\left(Z<0\right)\right)  \label{eq:2-16}  
+\end{equation}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.35in, height=3.27in, keepaspectratio=false]{\pathProbLibPictures beta_vs_probability}
+\caption{Schematic view of the relation between the reliability index $\beta$ and the probability of failure, $P[Z<0]$. Z is normally distributed with mean $\beta$ and standard deviation 1}\label{fig:2.6}
+\end{figure}
+
+This shows why the reliability index $\beta$ is a measure for reliability. Note that if the $Z$-function is not normally distributed, equation \eqref{eq:2-15} does not necessarily hold if $\beta$ is defined as in equation \eqref{eq:2-14}. This is why $\beta$ is a measure for reliability, not an exact representative of the probability of failure. However, often $\beta$ is computed directly from equation \eqref{eq:2-16} in which case it is an exact representative of the probability of failure by definition. \Tref{tab:2.1} shows a range of $\beta$-values and associated probabilities of exceedance.
+
+\begin{longtable}{|p{1.0in}|p{1.0in}|}
+\caption{Values of reliability index $\beta$ and associated probability of failure.} \label{tab:2.1} \\ \hline
+$\beta $ & $P$ \\ \hline 
+$1.0$ & $1.59\cdot 10^{-1}$ \\ \hline 
+$1.5$ & $6.68\cdot 10^{-2}$ \\ \hline 
+$2.0$ & $2.28\cdot 10^{-2}$ \\ \hline 
+$2.5$ & $6.21\cdot 10^{-3}$ \\ \hline 
+$3.0$ & $1.35\cdot 10^{-3}$ \\ \hline 
+$3.5$ & $2.33\cdot 10^{-4}$ \\ \hline 
+$4.0$ & $3.17\cdot 10^{-5}$ \\ \hline 
+$4.5$ & $3.40\cdot 10^{-6}$ \\ \hline 
+$5.0$ & $2.87\cdot 10^{-7}$ \\ \hline 
+\end{longtable}
+
+Small values of $\beta$ indicate large probabilities of failure, large values of $\beta$ indicate small probabilities of failure. This can be easily explained with some examples in which, for the sake of simplicity, $Z$ is assumed to be normally distributed. If $\beta=1$, failure occurs if a random sample of $Z$ is more than $1\cdot\sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-1)\approx0.16$. On the other hand, if $\beta=4$, failure occurs if a random sample of $Z$ is more than $4 \cdot \sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-4)\approx3.2 \cdot 10^{-5}$. In other words: larger values of $\beta$ indicate that more extreme events are required for failure to occur, hence a lower probability of failure, hence a larger reliability of the system.
+
+
+\section{Reliability methods}
+\label{sec:ReliabilityMethods}
+
+Equation \eqref{eq:2-4} describes the general formulation of the probability of failure of a single component. While an analytical solution to equation \eqref{eq:2-4} would be ideal, it is typically not possible because the $Z$-function is too complex. Therefore, the probability of failure needs to be estimated with probabilistic computational techniques. The computational techniques available within the \probLib are summarized in this section. 
+
+The reason to implement a set of probabilistic computational techniques in the \probLib is that each technique has its (dis)advantages with respect to criteria such as robustness, accuracy and required computation time. The ''best'' technique to be applied therefore depends on the problem under consideration.
+
+A theoretical background of the most well-known computation techniques is presented in \Aref{chp:systemreliability}.
+
+\subsection{Numerical Integration}
+\label{sec:NumericalIntegration}
+
+Numerical integration is the most time-consuming but most accurate method for calculating failure probability. A step size, along with the minimum and maximum values of the input variables, is required for the evaluation.
+
+If the underlying model fails for a certain realization, its results will be ignored. The user must determine whether the number of failed realizations is acceptable.
+
+The minimum and maximum values for which the integration runs are defined in the $u$-space. Numerical integration fills the remaining space between these values and $-8$ and $8$ with additional cells to ensure complete coverage of the integration domain.
+
+\Note{$u=8$ corresponds to a probability of approximately $6\times10^{−16}$, which is orders of magnitude smaller than the probabilities of typical scenarios.}
+
+\begin{figure}[H]
+	\label{fig:NumericalIntegration}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures numericalintegration.jpg}
+	\caption{Numerical integration: realizations for two stochasts}
+\end{figure}
+
+
+\newpage
+\subsection{Numerical Bisection}
+\label{sec:NumericalBisection}
+
+Numerical Bisection is similar to Numerical Integration, but in this method, the integration cells are generated by bisecting the entire domain.
+
+Whenever an integration cell has the same qualitative result (fail, not fail, or not counting) at all its corner points, we assume that the result remains the same throughout the cell. Consequently, no additional calculations are performed inside the cell or along its edges.
+
+If a cell contains corner points with different qualitative results, it is split into smaller cells, and new corner points are evaluated.
+
+This process continues until the remaining cells -- those with mixed results -- represent a probability lower than an acceptable threshold in reliability. The user can specify this threshold.
+
+\begin{figure}[H]
+	\label{fig:NumericalBisection}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures numericalbisection.jpg}
+	\caption{Numerical Bisection: realizations for two random variables}
+\end{figure}
+
+
+\subsection{Crude Monte Carlo}
+\label{sec:CrudeMonteCarlo}
+
+\subsubsection{Algorithm}
+
+Crude Monte Carlo is the standard Monte Carlo simulation method. Random realizations are generated in proportion to their probability density. The number of realizations that result in failure is counted, as well as the number that do not lead to failure. The probability of failure is then calculated as follows:
+
+\begin{align} 
+\label{eq:MonteCarlo}
+p_{\text{failure}} = \frac{N_{\text{failure}}}{N}
+\end{align}
+
+where:
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$p_{\text{failure}}$ & is the probability of failure \\  
+	$N_{\text{failure}}$ & is the number of realizations which were interpreted as failing \\ 
+	$N$ & is the total number of realizations
+\end{longtable}
+
+\begin{figure}[H]
+	\label{fig:MonteCarlo}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures montecarlo.jpg}
+	\caption{Crude Monte Carlo: realizations for two random variables}
+\end{figure}
+
+\subsubsection{Convergence}
+\label{sec:MCConvergence}
+
+The Monte Carlo simulation also leads to a standard deviation of the probability of failure. This standard deviation $\sigma_p$ is based on a confidence level $\alpha$:
+
+\begin{align} 
+\label{eq:MonteCarloStandardDeviation}
+\sigma_p = z \sqrt{\frac{p \left(1 - p\right)}{N}}
+\end{align}
+
+with:
+
+\begin{align} 
+\label{eq:MonteCarloStandardConfidence}
+z = \Phi^{-1}\left(1 - \frac{\alpha}{2}\right)
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$\sigma_p$ & is the standard deviation of the probability of failure \\  
+	$p$ & is the probability of failure $p_{\text{failure}}$ \\
+	$N$ & is the total number of realizations \\
+	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$ ($z$ is equal to $1$ in the \probLib) \\
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
+	$\alpha$ & is the confidence level
+\end{longtable}
+
+The standard deviation $\sigma_p$ can be expressed as a variation coefficient $\varepsilon$:
+
+\begin{align} 
+\label{eq:MonteCarloVariationCoefficient}
+\varepsilon = \left\{\begin{array}{ll}p < \tfrac{1}{2} & \tfrac{\sigma_p}{p} = z \sqrt{\frac{1 - p}{N p}}\\
+p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)} = z \sqrt{\frac{p}{N \left(1 - p\right)}}
+\end{array}	
+\right.
+\end{align}
+
+The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. The Monte Carlo simulation will stop when $\varepsilon \leq \varepsilon_{\text{max}}$ (and limited to the minimum and maximum number of realizations). The confidence level $\alpha$ cannot be set by the user. Its value is such that $z$ is $1$.
+
+\begin{figure}[H]
+	\label{fig:MonteCarloConvergence}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures montecarloconvergence.jpg}
+	\caption{Crude Monte Carlo convergence}
+\end{figure}
+
+When the underlying model fails for a certain realization, its results are ignored. The user should decide whether the number of failed realizations is acceptable.
+
+The minimum and maximum values for which the integration will run are defined in the $u$-space. The Monte Carlo analysis will then check whether the remaining area leads to failure or not.
+
+\subsection{Importance Sampling}
+\label{sec:ImportanceSampling}
+
+\subsubsection{Algorithm}
+\label{sec:ImportanceSamplingAlgorithm}
+
+Importance sampling is a method to increase the efficiency of the Crude Monte Carlo method; that is, to decrease the number of samples and $Z$-function evaluations required to produce a reliable estimate of the failure probability. This is done by replacing the initial probability density of the input variables by a more efficient one, in which ''efficient'' refers to the proportion of the samples which will result in failure. An increasing percentage of samples in the failure domain results in a reduction in the variance of the estimator of the failure probability, hence a smaller number of samples is required for a reliable estimate. 
+
+In Crude Monte Carlo, realizations are drawn proportionally to their probability density $\varphi\left(u_i\right)$, since the \probLib uses the standard normal space. With Importance Sampling, each realization $u$ is mapped to $u_{\text{imp}}$. The \probLib supports the following translation for each variable individually:
+
+\begin{align} 
+\label{eq:ImportanceSamplingVariance}
+u_{\text{imp}} = \mu_{\text{var}} + \sigma_{\text{var}} \cdot u_{\text{var}}
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$\mu_{\text{var}}$ & is the user defined mean value per variable. The combination of all variables is the mean realization of the Importance Sampling algorithm; \\
+	$\sigma_{\text{var}}$ & is the user defined standard deviation per variable.
+\end{longtable}
+
+A correction is applied in the calculation of failure to compensate for this translation. This is done by giving each realization a weight, which is calculated as follows (the multiplication with $\sigma_{\text{var}}$ is performed to compensate for the dimensionality):
+
+\begin{align} 
+\label{eq:ImportanceSamplingVarWeight}
+w_{\text{var}} = \frac{\sigma_{\text{var}} \cdot \varphi\left(u_\text{imp}\right)}{\varphi\left(u_{\text{var}}\right)}
+\end{align}
+
+and
+
+\begin{align} 
+\label{eq:ImportanceSamplingWeight}
+W_{\text{realization}} = \prod_{\text{variables}} w_{\text{var}}
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$\varphi$ & is the standard normal probability density function, see \autoref{eq:StandardNormalPDF} \\  
+	$w_{\text{var}}$ & is the weight factor per variable per realization \\
+	$W_{\text{realization}}$ & is the weight factor of the realization \\
+\end{longtable}
+
+Corresponding to \autoref{eq:MonteCarlo}, the probability of failure is equal to:
+
+\begin{align} 
+\label{eq:ImportanceSampling}
+p_{\text{failure}} = \frac{\sum_{\text{failing realizations}} W}{\sum_{\text{all realizations}} W}
+\end{align}
+
+To avoid numerical issues and because:
+
+\begin{align} 
+\label{eq:ImportanceSamplingLimit}
+\lim_{N \to \infty} {\sum_{\text{all realizations}} W} = N
+\end{align}
+
+The probability of failure is calculated as follows:
+
+\begin{align} 
+\label{eq:ImportanceSamplingCalculated}
+p_{\text{failure}} = \frac{\sum_{\text{failing realizations}} W}{N}
+\end{align}
+
+\subsubsection{Convergence}
+
+Corresponding to \autoref{eq:MonteCarloStandardDeviation} and \autoref{eq:MonteCarloVariationCoefficient}, the standard deviation and variance coefficient become:
+
+\begin{align} 
+\label{eq:ImportanceSamplingStandardDeviation}
+\sigma_p = z \sqrt{\frac{p \left(W_{\text{design point}} - p\right)}{N}}
+\end{align}
+
+and 
+
+\begin{align} 
+\label{eq:ImportanceSamplingVariationCoefficient}
+\varepsilon = \left\{\begin{array}{ll}p < \tfrac{1}{2} & \tfrac{\sigma_p}{p} = z \sqrt{\frac{W_{\text{design point}} - p}{N p}}\\
+p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)} = z \sqrt{\frac{W_{\text{design point}} - \left(1 - p\right)}{N \left(1 - p\right)}}
+\end{array}	
+\right.
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$z$ & is a value related to the confidence level (see \autoref{eq:MonteCarloStandardConfidence}). In the \probLib, $z$ is $1$ \\
+	$W_{\text{design point}}$ & is the weight of the realization of the design point \\  
+	$N$ & is the total number of realizations \\  
+\end{longtable}
+
+When the underlying model does not succeed for a certain realization, its results will be ignored. The user should decide whether the number of non succeeded realizations is acceptable.
+
+\begin{figure}[H]
+	\label{fig:ImportanceSampling}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures ImportanceSampling.jpg}
+	\caption{Importance Sampling: realizations for two random variables}
+\end{figure}
+
+\subsubsection{Mean realization}
+\label{sec:StartPoint}
+
+The mean realization (see {\autoref{eq:ImportanceSamplingVariance}) is essential for the successful behaviour of the Importance Sampling algorithm. The mean realization can be user defined or derived automatically. The following options are available:
+	
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	\textbf{None} & The mean realization is user defined. \\
+	\textbf{Direction} & Along a user defined direction is searched until the limit state is found, limited by a maximum distance from the origin. This option still requires some knowledge where to find the mean realization.  \\
+	\textbf{Sphere} & Over a sphere is searched until the limit state is found. Only at angles $0^\circ$, $90^\circ$, $180^\circ$ and $270^\circ$ is searched. If the limit state is not found, the radius of the sphere is increased. This is a time consuming option. \\  
+	\textbf{Sensitivity} & Along the direction of the steepest gradient is searched until the limit state is found, limited by a maximum distance from the origin. The steepest gradient is found by taking the gradient for each variable individually and then combining them. This is the preferred option. \\  
+\end{longtable}
+
+\subsection{Adaptive Importance Sampling}
+\label{sec:AdaptiveImportanceSampling}
+
+\subsubsection{Algorithm}
+
+Adaptive Importance Sampling is an improvement on the Importance Sampling method. In general, Importance Sampling is sensitive to the user-provided starting point. If the starting point is not chosen carefully, the method may yield unsatisfactory results. In Adaptive Importance Sampling, iterative loops are used to refine the starting point. To achieve this, the K-Means algorithm is applied to identify multiple starting points based on the samples that led to failure in the previous iteration.
+
+The Adaptive Importance Sampling algorithm is displayed in \autoref{fig:ImportanceSamplingLoops}.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, scale=0.5]
+	\node [round] (Start) {Start};
+	\node [block, right=of Start] (Initialize) {Initialize starting point};
+	\node [block, below=of Initialize] (ImportanceSampling) {Importance Sampling};
+	\node [block, below=of ImportanceSampling] (IfConverged) {Converged?};
+	\node [block, below=of IfConverged] (IfFinalRound) {Final round?};
+	\node [block, left= of IfFinalRound] (IfEnoughFailures) {Enough failures?};
+	\node [block, right= of IfFinalRound] (Recalculate) {Recalculate};
+	\node [round, below=of Recalculate] (End) {End};
+	\node [block, above=of IfEnoughFailures] (Increase) {Increase variance};
+	\node [block, left=of Increase] (Move) {Use design point};
+	
+	\draw [->] (Start) -- (Initialize);
+	\draw [->] (Initialize) -- (ImportanceSampling);
+	\draw [->] (ImportanceSampling) -- (IfConverged);
+	\draw [->] (IfConverged) -| node {yes} (Recalculate);
+	\draw [->] (IfConverged) -- node {no} (IfFinalRound) ;
+	\draw [->] (IfFinalRound) -- node {yes} (Recalculate) ;
+	\draw [->] (Recalculate) -- (End);
+	\draw [->] (IfFinalRound) -- node {no} (IfEnoughFailures);
+	\draw [->] (IfEnoughFailures) -- node {no} (Increase);
+	\draw [->] (IfEnoughFailures) -| node {yes} (Move);
+	\draw [->] (Increase) |- (ImportanceSampling);
+	\draw [->] (Move) |- (ImportanceSampling);
+	
+	\end{tikzpicture}
+	\caption{Adaptive Importance Sampling}
+	\label{fig:ImportanceSamplingLoops}
+\end{figure}
+
+These loops are executed until a required fraction of failed realizations $\varepsilon_\text{failed}$ is reached:
+
+\begin{align}
+\label{eq:ISFractionFailed}
+\text{min}\left(\frac{N_\text{failed}}{N}, 1 - \frac{N_\text{failed}}{N}\right) \geq \varepsilon_\text{failed}
+\end{align}
+
+where:
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$N$ & is the total number of failed realizations \\
+	$N_\text{failed}$ & is the number of failed realizations
+\end{longtable}
+
+The following is performed in each step:
+
+\begin{longtable}{p{40mm}p{\textwidth-24pt-40mm}}  
+	\textbf{Initialize starting point} & Find the starting point with one of the starting point algorithms (see \autoref{sec:StartPoint}). \\
+	\textbf{Importance Sampling} & The Importance Sampling algorithm (see \autoref{sec:ImportanceSamplingAlgorithm}). The number of samples in each Importance Sampling can be set to a maximum. When the auto break option is used, the algorithm decides when to break a loop and continue with the next loop (see \autoref{sec:AutoBreakLoops}). \\
+	\textbf{Converged?} & Checks whether there is convergence (see \autoref{eq:ISFractionFailed}).  \\
+	\textbf{Final round?} & Checks whether the last allowed round is reached, in order to prevent endless loops. \\
+	\textbf{Recalculate} & Recalculates the last round with a possibly higher number of realizations. \\
+	\textbf{Enough failures?} & Checks whether enough failures are found. Depending on this value, the kind of modification of Importance Sampling settings is determined. \\
+	\textbf{Increase variance} & Increases the variance (see \autoref{sec:ImportanceSamplingAlgorithm}) for the next loop. \\
+	\textbf{Use design point} & Uses the design point found in the last loop as starting point in the next loop. In case no design point was found, the realization closest to the limit state is used. \\
+\end{longtable}
+
+The following features are available to reduce calculation time:
+
+\begin{itemize}
+\item The maximum number of realizations for non-final loops can be specified separately from the maximum number of realizations in the final loop.
+\item Subsequent loops can be skipped if the reliability index exceeds a predefined threshold determined in the first loop.
+\item When the design point is carried over to the next loop, it will be rounded to a specified value. Specify $0$ if no rounding is desired.
+\item When using scenario tables, previous calculation results can be reused.
+\end{itemize}
+
+\subsubsection{Auto break loops}
+\label{sec:AutoBreakLoops}
+
+The number of realizations in the loops in Adaptive Importance Sampling can be determined automatically. This algorithm is based on the convergence criterion $\varepsilon_\text{weight}$, which specifies the maximum relative weight of all failing samples. Usually this value is $0.1$.
+
+The loop is broken when the required number of runs with the current starting point ($n_\text{additional}$) is more than the expected number of runs with an improved starting point ($n_\text{expected}$):
+
+\begin{align}
+\label{eq:ISAutoBreak}
+n_\text{additional} > n_\text{expected} 
+\end{align}
+
+with:
+
+\begin{align}
+\label{eq:ISAutoBreakAdditional}
+n_\text{additional} = n_\text{current} \cdot \left(\frac{W_\text{max}}{W_\text{total} \cdot \varepsilon_\text{weight}} - 1\right)
+\end{align}
+
+and
+
+\begin{align}
+\label{eq:ISAutoBreakExpected}
+n_\text{expected} = \frac{2 \left(\beta_\text{current} + 1\right)}{\varepsilon_\text{weight}}
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$n_\text{current}$ & the number of samples already made in the current loop \\
+	$W_\text{max}$ & the maximum weight of a failed sample in the current loop \\
+	$W_\text{total}$ & the total weight of the failed samples in the current loop \\
+	$\beta_\text{current}$ & the reliability index based on the samples in the current loop \\
+	$\varepsilon_\text{weight}$ & convergence criterion,
+	which specifies the maximum relative weight of all failing samples, default is $0.1$
+\end{longtable}
+
+
+\subsection{Subset simulation}
+\label{sec:SubsetSimulation}
+
+Subset Simulation [\cite{Au2001}] is a staged version of Crude Monte Carlo (see \Autoref{sec:CrudeMonteCarlo}). It consists of multiple iterations, with the first iteration identical to Crude Monte Carlo. The simulation stops once the Crude Monte Carlo convergence criterion is met, i.e., when $\varepsilon \leq \varepsilon_{\text{max}}$ (see \Autoref{eq:MonteCarloVariationCoefficient}).
+
+If the convergence criterion is not met, a new Crude Monte Carlo iteration is performed, using a fraction $k$ of the realizations from the previous run. The realizations closest to failure are selected, and new realizations are generated from them using a Markov Chain or Adaptive Conditional Sampling [\cite{PAPAIOANNOU201589}].
+
+For each old realization, $\tfrac{1}{k}$ new realizations are generated. A new realization is generated in the following way, with $u$-values for each variable var:
+
+\begin{align} 
+\label{eq:SubsetSimulationMarkovChain}
+u_{\text{var, new}} = \left\{\begin{array}{ll} r_{\text{var}} \geq R_{\text{[0, 1]}}  & u_{\text{var, prop}}\\
+r_{\text{var}} < R_{\text{[0, 1]}}  & u_{\text{var, prev}}
+\end{array}	
+\right.
+\end{align}
+
+with:
+
+\begin{align} 
+\label{eq:SubsetSimulationRatio}
+r_{\text{var}} = \frac{\varphi \left(u_{\text{var, prop}}\right)}{\varphi \left(u_{\text{var, prev}}\right)}
+\end{align}
+
+and
+
+\begin{align} 
+\label{eq:SubsetSimulationProposed}
+u_{\text{var, prop}} = u_{\text{var, prev}} + R_{\text{[-1, 1]}} \cdot \Delta \sigma
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$u_{\text{var, prev}}$ & is the $u$-value per variable of the previous realization \\
+	$u_{\text{var, prop}}$ & is a proposed new $u$-value per variable \\
+	$u_{\text{var, new}}$ & is the new $u$-value per variable \\
+	$R_{\text{[0, 1]}}$ & is a random value between $0$ and $1$ \\  
+	$R_{\text{[-1, 1]}}$ & is a random value between $-1$ and $1$ \\  
+	$r_{\text{var}}$ & is the ratio of probability density between $u_{\text{var, prop}}$ and $u_{\text{var, prev}}$ \\  
+	$\varphi$ & is the probability density function of a standard normal distribution (see \autoref{eq:StandardNormalPDF}) \\  
+	$\Delta \sigma$ & is the user given maximum deviation from the previous $u$-value.
+	In case the option 'Adaptive Conditional' is used,
+	this value is derived automatically and updated during the process
+\end{longtable}
+
+The proposed sample $u_{\text{prop}}$ is used if the corresponding $z$-value is less than the $z_{\text{k}}$, which is the highest $z$-value in the subset used to generate new realizations, otherwise the original sample is used.
+
+The probability of failure is calculated as follows:
+
+\begin{align} 
+\label{eq:SubsetSimulation}
+p = k^{\text{i}} \cdot p_{\text{i, MC}}
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$i$ & is the iteration index, the first being $0$ \\
+	$k$ & is the fraction taken from the realizations (recommended value $0.1$) \\  
+	$p_{\text{i, MC}}$ & is the probability of failure calculated with Crude Monte Carlo using the realizations of the $i^{\text{th}}$ iteration
+\end{longtable}
+
+\newpage
+\subsection{Directional Sampling}
+\label{sec:DirectionalSampling}
+
+\subsubsection{Algorithm}
+Directional Sampling is a type of Monte Carlo method which aims to (strongly) reduce the number of samples in comparison with the Crude Monte Carlo method. In Directional Sampling, realizations are represented as directions, rather than points in the parameter space. Along this direction/vector, the point of failure is identified, and the corresponding distance, $\beta$, to the origin is determined. The remaining probability of failure beyond this point is calculated and added to the total probability of failure as follows:
+
+\begin{align} 
+\label{eq:DirectionalSampling}
+p_{\text{failure}} = \frac{\sum w_{\text{dir}}}{N_{\text{realizations}}}
+\end{align}
+
+with:
+
+\begin{align} 
+\label{eq:DirectionalSamplingWeight}
+w_{\text{dir}} = \Gamma \left(\frac{N_{\text{variables}}}{2} , \frac{{\beta_{\text{dir}}}^2}{2} \right)
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$w_{\text{dir}}$ & is the weight of a direction or the failure probability in this direction \\
+	$\beta_{\text{dir}}$ & is the distance along a direction where the first point of failure is found \\
+	$\Gamma$ & is the upper incomplete regularized gamma function
+\end{longtable}
+
+\subsubsection{Convergence}
+
+The standard deviation of the failing probability is calculated as follows:
+
+\begin{align} 
+\label{eq:DirectionalSamplingStandardDeviation}
+\sigma_p = \sqrt{\frac{\sum \left(w_{\text{dir}} - p \right)^2}{N \cdot \left(N - 1\right)}}
+\end{align}
+
+The variation coefficient is calculated as follows:
+
+\begin{align} 
+\label{eq:DirectionalSamplingVariationCoefficient}
+\varepsilon = \left\{\begin{array}{ll}p < \tfrac{1}{2} & \tfrac{\sigma_p}{p}\\
+p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)}
+\end{array}	
+\right.
+\end{align}
+
+The Directional Sampling simulation stops if the variation coefficient $\varepsilon$ is less than the user given maximum variation coefficient $\varepsilon_{\text{max}}$. Also, the number of minimum and maximum directions should be satisfied.
+
+The minimum and maximum number of iterations refer to an internal procedure to determine the point along the direction where failure occurs.
+
+\begin{figure}[H]
+	\label{fig:DirectionalSampling}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures DirectionalSampling.jpg}
+	\caption{Directional Sampling: realizations for two random variables}
+\end{figure}
+
+\subsection{Latin Hypercube}
+\label{sec:LatinHypercube}
+
+The Latin Hypercube algorithm is a type of Monte Carlo sampling method. It uses a fixed number of realizations, $N$. The algorithm divides the $u$-space into $N$ equal sections, starting from $u_\text{min}$ and ending at $u_\text{max}$. It ensures that each section is represented in the realizations, guaranteeing that extreme values are included. However, note that the weights of the realizations may vary. If $u_\text{min}$ and $u_\text{max}$ differ from $-8$ and $8$ -- beyond which calculations are numerically infeasible -- the remaining space is treated as a single cell and included in the failure analysis.
+
+Latin Hypercube uses the same convergence definition as Crude Monte Carlo (see \Autoref{sec:MCConvergence}). However, since a fixed number of realizations is used, convergence is calculated only for informational purposes. The main advantage of Latin Hypercube is its computational efficiency. However, it provides only a rough approximation of the probability of failure.
+
+\subsection{Cobyla}
+\label{sec:Cobyla}
+
+The Cobyla algorithm searches for the point in the $u$-space that has the highest probability density and indicates failure. This point is assumed to be representative of the design point.
+
+The Cobyla algorithm is an implementation of Powell's nonlinear derivative-free constrained optimization method, which uses a linear approximation approach \cite{Powell1994}. It is a sequential trust-region algorithm that employs linear approximations to both the objective and constraint functions. These approximations are formed by linear interpolation at $n + 1$ points in the variable space, and the algorithm aims to maintain a well-shaped simplex throughout iterations.
+
+Because the Cobyla algorithm provides a rough estimation of the reliability and design point, it should be used primarily as an initial method in a reliability study.
+
+\newpage
+\subsection{FORM}
+\label{sec:FORM}
+
+\subsubsection{Algorithm}
+
+The FORM procedure starts from a certain user defined starting point in the parameter space. From there it tries to find a point which is closer to the design point by taking the gradient of the $z$-value in the $u$-space of the parameters. The $z$-value is an indication whether failure occurs and is derived from the failure definition. After a number of steps, the point is close enough to the design point and the calculation stops. 
+
+The FORM analysis searches for the design point: when the design point is found, the reliability index $\beta$ can be evaluated as the distance between the origin and the design point (see \autoref{fig:FORMDesignPoint}). The corresponding probability of failure is:
+
+\begin{align}
+p_\text{failure} = 1 - \Phi \left(\beta\right)
+\end{align}
+
+where $\Phi$ is the cumulative density function in the standard normal space (see \autoref{eq:StandardNormalCDF}).
+
+The probability of failure found in this way is regarded to be a good approximation of the "real" probability of failure. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.00\textwidth]{\pathProbLibPictures FORMDesignPoint.png}
+	\caption{Schematic representation of FORM}
+	\label{fig:FORMDesignPoint}
+\end{figure}
+
+To find the design point, the FORM analysis starts at a given starting point, usually the origin, in the standard normal space and iterates to the design point.
+
+In each iteration step, the current point is moved closer to the design point. Using the steepest descend, the next point is found, until a convergence criterion is fulfilled. To get from the current point $u_{\text{i}}$ to the next point $u_{\text{i+1}}$, the predicted point $u_{\text{pred}}$ is determined. 
+
+To calculate $u_{\text{pred}}$, we assume that $z$ is linear with $u$ close to the design point. The gradient is taken between $u_i$ and $u_\text{pred}$: 
+
+\begin{align}
+\label{eq:UZLinear}
+\lvert \frac{\partial z}{\partial u} \rvert = \frac{z_\text{pred} - z_i}{u_\text{pred} - u_i} = - \frac{z_i}{u_\text{pred} - u_i}
+\end{align}
+
+which is equivalent to:
+
+\begin{align}
+\label{eq:BetaPredicted}
+u_\text{pred} = u_i - \frac{z_i}{\lvert \frac{\partial z}{\partial u} \rvert }
+\end{align}
+
+where:
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$i$ & is the iteration index number; \\  
+	$\lvert \frac{\partial z}{\partial u} \rvert$ & is the calculated vector length of the derivative to all variables \\ 
+	$z_\text{pred}$ & is the limit state value at the design point, which is by definition equal to zero\\  
+	$z_i$ & is the calculated limit state value at iteration $i$ \\  
+	$u_\text{pred}$ & is the predicted vector of the design point \\  
+	$u_i$ & is the iteration vector of $u$ at iteration $i$ \\  
+\end{longtable}
+
+The step from the current point to the next point is a step into the direction of $u_{\text{pred}}$. The step is not taken completely, but partially with a relaxation factor $f_{\text{relax}}$, in order to prevent numerical instabilities.
+
+\begin{align}\label{eq:FORM}
+u_\text{j, i+1} = - \alpha_\text{j, i} \cdot \lvert  u_\text{i, pred} \rvert \cdot f_\text{relax} + u_\text{j, i} \cdot \left(1 - f_\text{relax}\right)
+\end{align}
+
+with the $\alpha$ value per variable:
+
+\begin{align}\label{eq:Alpha}
+\alpha_{j} = \frac{\frac{\partial z_\text{j}}{\partial u_\text{j}}}{\lvert \frac{\partial z}{\partial u} \rvert}
+\end{align}
+
+where:
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$j$ & is the index of a variable \\  
+	$\lvert u \rvert$ & is the vector length of the current point \\  
+	$f_\text{relax}$ & is the given relaxation factor. The relaxation factor prevents the algorithm from too big steps, which may cause divergence \\  	
+\end{longtable}
+
+and finally leads to the reliability index $\beta$ as:
+
+\begin{align}
+\label{eq:FORMBeta}
+\beta = \lvert u_i \rvert
+\end{align}
+
+The benefit of this method is that it is quick. The disadvantages include the possibility of finding a local design point, which may correspond to a non-representative failure probability. Another disadvantage is that numerical problems may occur since the $z$-value must be continuous.
+
+It is not always possible to determine whether a design point is a local design point, so the user must apply this method with care and evaluate whether it is suitable for the type of models they are using. Numerical problems can be detected in the convergence chart. If this occurs, one can decrease the relaxation factor or modify the gradient step size (both adjustments may either improve or worsen the results).
+
+\subsubsection{Convergence}
+
+Convergence is reached when the $u_i$, the value of the last iteration $i$, is close enough to the predicted value $u_{\text{pred}}$, so:
+
+\begin{align}
+\label{eq:FORMConvergence}
+\lvert u_i - u_\text{pred} \rvert<\varepsilon
+\end{align}
+
+where:
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$u_i$ & is the point at iteration $i$ \\
+	$u_\text{pred}$ & is the predicted final value of $u$, see \autoref{eq:UZLinear} \\
+	$\varepsilon$ & is a user given value maximum allowed difference in reliability \\  
+\end{longtable}
+
+and, together with \autoref{eq:FORMConvergence}, the convergence criterion:
+
+\begin{align}
+\label{eq:FORMConv1}
+\frac{\lvert z \rvert}{\lvert \frac{\partial z}{\partial u} \rvert } < \varepsilon
+\end{align}
+
+Alternatively to \autoref{eq:UZLinear}, the gradient is taken between $u_0$ (all $u$-values equal to $0$) and $u_\text{pred}$. Then we get for the linear relation:
+
+\begin{align}
+\label{eq:UZLinear2}
+\lvert \frac{\partial z}{\partial u} \rvert = \frac{z_\text{pred} - z_0}{u_\text{pred} - u_0} = - \frac{z_0}{u_\text{pred}}
+\end{align}
+
+The value $z_0$ is calculated with the value for $z$ in the last iteration $z_i$ and the gradient:
+
+\begin{align}
+\label{eq:UZLinear3}
+z_0 = z_i - \sum_j \frac{\partial z_i}{\partial u_j} \cdot u_j
+\end{align}
+
+which leads to:
+
+\begin{align}
+\label{eq:BetaPredicted2}
+\lvert u_\text{pred}\rvert = \frac{\lvert z_0 \rvert}{\lvert \frac{\partial z}{\partial u} \rvert }
+\end{align}
+
+The convergence criterion is defined as the relative difference in length of $u_\text{pred}$ and $u$:
+
+\begin{align}
+\label{eq:FORMConv2}
+\frac{\lvert u_\text{pred}^2 - u^2 \rvert}{u^2} < \varepsilon
+\end{align}
+
+\begin{figure}[H]
+	\label{fig:FORM}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures form.jpg}
+	\caption{FORM: example of iteration path to design point}
+\end{figure}
+
+\subsubsection{Starting point}
+
+The FORM algorithm starts at a specified starting point. In most cases, beginning at the default location is sufficient.
+
+The available starting point options are the same as those for Importance Sampling (see \Autoref{sec:StartPoint}).
+
+\subsubsection{Loops}
+
+In case calculation options have been specified, which do not lead to convergence, loops can be used to modify the calculation options. If the number of loops is greater than $1$, the relaxation factor $f_\text{relax}$ is modified until convergence is reached. The relaxation factor is modified as follows:
+
+\begin{align}
+\label{eq:FORMRelax}
+f_\text{relax} = \tfrac{1}{2} \cdot f_\text{relax, prev}
+\end{align}
+
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$f_\text{relax, prev}$ & is the relaxation factor in the previous loop. \\
+\end{longtable}
+
+\subsection{FORM then Directional Sampling}
+\label{sec:FDIR}
+
+The "FORM then Directional Sampling" method is a reliability approach based on FORM (see \Autoref{sec:FORM}) and Directional Sampling (see \Autoref{sec:DirectionalSampling}).
+
+The method begins with a FORM calculation. If it succeeds (FORM converges), the process is complete, and the FORM result is returned. If FORM fails to converge, a Directional Sampling calculation is performed instead, and its result is used.
+
+The rationale behind this approach is to leverage FORM whenever possible due to its high efficiency while providing a fallback to Directional Sampling in cases where FORM does not converge.
+
+\subsection{Directional Sampling then FORM}
+\label{sec:DSFI}
+
+The "Directional Sampling then FORM" method is a reliability approach based on Directional Sampling (see \Autoref{sec:DirectionalSampling}) and FORM (see \Autoref{sec:FORM}).
+
+The method begins with a Directional Sampling reliability calculation, followed by a FORM calculation. It returns the reliability index ($\beta$) from Directional Sampling and the $\alpha$-values from FORM. Since FORM starts from the design point identified by Directional Sampling, it typically requires only a few iterations.
+
+The rationale behind this approach is that Directional Sampling quickly estimates the $\beta$ value but requires many samples to accurately determine all $\alpha$-values. In contrast, FORM efficiently refines the $\alpha$-values when initialized close to the design point.
+
+Note that the starting point of FORM depends on the method for "Contribution per variable" (see \autoref{sec:Contribution per variable}).
+
+\section{Contribution per variable}
+\label{sec:Contribution per variable}
+
+For all numerical integration-based methods (Numerical Integration and Numerical Bisection) and Monte Carlo-based methods (Crude Monte Carlo, Importance Sampling, Directional Sampling, and Subset Simulation), the contribution per variable is calculated after determining the reliability index ($\beta$). The applied methods are explained in the following sections.
+
+\subsection{Center of gravity}
+\label{sec:CenterOfGravity}
+
+The "Center of gravity" method calculates the weighted mean of all failing realizations. This is done as follows:
+
+\begin{align}
+\label{eq:CenterOfGravity}
+\alpha_{\text{j}} =  f_{\text{normal}} \cdot \frac{\sum_{\text{failing realizations i}} u_{\text{i,j}} \cdot W_{\text{i}}}{\sum_{\text{failing realizations i}} W_{\text{i}}} 
+\end{align}
+
+where:
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$i$ & indicates a realization in the applied technique \\
+	$j$ & indicates a variable \\
+	$u$ & is a realization in the applied technique \\
+	$W_{\text{i}}$ & is the weight of the realization (for Crude Monte Carlo: $1$) \\
+	$f_{\text{normal}}$ & is a normalizing factor so that $\sum \alpha^2_{\text{j}} = 1$
+\end{longtable*}
+
+\subsection{Center of angles}
+\label{sec:CenterOfAngles}
+
+In the "Center of angles" method, all realizations are defined using spherical coordinates instead of Cartesian coordinates. The weighted mean of the angles in the spherical coordinates is then calculated and converted back into Cartesian coordinates.
+
+\subsection{Nearest to mean}
+\label{sec:NearestToMean}
+
+The "Nearest to mean" method selects the realization with the highest probability density from all realizations that are considered failing according to the failure definition.
+
+Although this is the fastest method, it is not recommended for Monte Carlo techniques. The results are affected by the inherent randomness of Monte Carlo methods, which can lead to unreliable outcomes. For instance, unimportant variables may be assigned significant $\alpha$ values due to this randomness.
+
+
+\section{System analysis}
+\label{sec:SystemAnalysis}
+
+The probabilities of failure of the components are combined to derive the probability of failure of the whole system. This is being referred to as system analysis. System analysis generally deals with parallel systems, series systems or combinations of both. A parallel system refers to a system in which failure only occurs if all components fail. A series system refers to a system where failure occurs if at least one of the components fails. This concept is schematically depicted in \Fref{fig:SystemAnalysis}.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.96in, height=1.31in, keepaspectratio=false]{\pathProbLibPictures systemanalysis.png}
+\caption{Schematic view of a parallel system, series system and a combination of both. Components $1$, $2$ and $3$ can be viewed as bridges. The systems fails if a passenger can not walk from left to right over the bridges.}\label{fig:SystemAnalysis}
+\end{figure}
+
+In the \probLib, failure probabilities of components are combined using the equivalent planes method, which is described in the following section.
+
+A theoretical description of the method, with a focus on the Hohenbichler method, is presented in \Aref{Section_2.4.2}.
+
+\subsection{Equivalent planes}
+\label{sec:EquivalentPlanes}
+
+Design points can currently only be combined afterwards. In such case, the initial design points are calculated individually for each failure definition and then combined. This combination uses an equivalent plane $M$ for each design point, which provides an approximation. The equivalent plane is defined as follows:
+
+\begin{align}
+\label{eq:EquivalentPlane}
+M_{\text{i}}\left(u\right) = \beta_{\text{i}} + \sum_{\text{j}} \alpha_{i,j} \cdot u_{\text{j}}
+\end{align}
+
+and 
+
+\begin{align}
+\label{eq:EquivalentPlaneCombine}
+M_{\text{combined}}\left(u\right) = \left\{\begin{array}{ll}{\text{series}} & \min\limits_{\text{i}} M_{\text{i}}\left(u\right)\\
+\text{parallel} & \max\limits_{\text{i}} M_{\text{i}}\left(u\right)
+\end{array}	
+\right.
+\end{align}
+
+where:
+
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$M_{\text{i}}$ & is the result of the equivalent plane of design point $i$ \\
+	$M_{\text{combined}}$ & is the result of the combination of a number of design points $i$ \\
+	$\beta_{\text{i}}$ & is the reliability index of design point $i$ \\
+	$\alpha_{i,j}$ & is the alpha factor of variable $j$ in design point $i$
+\end{longtable*}
+
+\subsection{Combine methods}
+
+\subsubsection{Directional sampling}
+\label{sec:CombiningDesignPointsDS}
+
+Directional sampling (see \autoref{sec:DirectionalSampling}) is applied on the combined model $M_{\text{combined}}$
+(see \autoref{eq:EquivalentPlaneCombine}). The following settings are applied: 
+
+\begin{longtable*}{p{40mm}p{\textwidth-40mm}}  
+	Design point method & Center of gravity \\
+	Directions & 1000 - 10000 \\
+	Convergence factor & 0.1
+\end{longtable*}
+
+\subsubsection{Importance sampling}
+\label{sec:CombiningDesignPointsIS}
+
+Depending on the combination method (series or parallel) the following algorithms are applied:
+
+\paragraph*{Importance sampling - Series}
+
+Importance sampling (see \autoref{sec:ImportanceSampling}) is applied on the combined model $M_{\text{combined}}$
+(see \autoref{eq:EquivalentPlaneCombine}) in the following iterative way: the combined probability of the first $N+1$ design points is the probability of the first $N$ design points added with the contribution of design point $N+1$, where it does not overlap with one of the previous design points (see \autoref{eq:ImportanceSamplingSeries}).
+
+\begin{align}
+\label{eq:ImportanceSamplingSeries}
+P\left(X_{1 \ldots N+1}\right) = P\left(X_{1 \ldots N}\right) + P\left(X_{N+1}\right) \cap P\left(\overline{X_{1 \ldots N}}\right)
+\end{align}
+
+where:
+
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$P\left(X_{1 \ldots N}\right)$ & is the combined probability of the first $N$ design points \\
+	$P\left(X_{1 \ldots N+1}\right)$ & is the combined probability of the first $N+1$ design points \\
+	$P\left(\overline{X_{1 \ldots N}}\right)$ & is the complement of the combined probability of the first $N$ design points \\
+	$P\left(X_{N+1}\right)$ & is the probability of design point $N+1$
+\end{longtable*}
+
+\autoref{eq:ImportanceSamplingSeries} can be rewritten as:
+
+\begin{align}
+\label{eq:ImportanceSamplingSeriesCond}
+P\left(X_{1 \ldots N+1}\right) = P\left(X_{1 \ldots N}\right) + P\left(X_{N+1}\right) \cdot \left(1 - P\left(X_{1 \ldots N} | X_{N+1}\right)\right) 
+\end{align}
+
+
+The last term ($P\left(X_{1 \ldots N} | X_{N+1}\right)$) is calculated using Importance Sampling (see \autoref{sec:ImportanceSampling}).
+The starting point of the Importance Sampling is set to the design point of $X_{N+1}$. The calculation is stopped when the remainder of the design points represent a small probability of failure.
+
+\paragraph*{Importance sampling - Parallel}
+
+The parallel combination uses Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}).
+The sampling space is limited to the area which can lead to failure,
+which could be very small.
+Only values for $u_{\text{i}}$ are allowed for which the following condition is true:
+
+\begin{align}
+\forall k, u_{\text{min}} < u_{\text{j}} < u_{\text{min}} < u_{\text{j} } \exists u_{\text{i}} | M_{\text{k}}\left(u\right) = 0 \land u_{\text{min}} < u_{\text{i}} < u_{\text{max}}
+\end{align}
+
+where:
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$i$ & is the index of the $i^{\text{th}}$ variable \\
+	$j$ & is any other variable index ($j \neq i$) \\
+	$k$ & is the index of the design point \\
+	$u_{\text{min}}$ & is the computationally minimum possible value of $u$ ($-8$) \\
+	$u_{\text{max}}$ & is the computationally maximum possible value of $u$ ($8$) \\
+	$M_{\text{k}}\left(u\right)$ & is the equivalent plane of the $i^{\text{th}}$ design point (see \autoref{eq:EquivalentPlane})
+\end{longtable*}
+
+\subsubsection{Hohenbichler}\label{sec:Hohenbichler}
+
+The core of the Hohenbichler algorithm is the combination of two models $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}).
+This combination is calculated using FORM (see \autoref{sec:FORM}).
+
+The result of this combination is a design point, which is represented as an equivalent plane when it needs to be combined with a third design point. This process is repeated until all design points have been combined. 
+
+First, the two most contributing design points are combined, followed by the remaining design point with the highest probability of failure, and so on. This iterative approach ensures that the error associated with representing intermediate design points is minimized.
+
+\section{Upscaling for systems with identical components}\label{sec:upscaling}
+
+Upscaling refers to combining failure probabilities over ''identical components''.
+Upscaling is distinguished from the more generic system combine methods because the components being identical allows for a more convenient and efficient combination procedure.
+Identical in this case refers to the fact that the components have the same failure probability (i.e.\ the same reliability index $\beta $) and they are mutually correlated with the same correlation coefficient $\rho$: 
+\begin{align}
+\begin{array}{l} {\beta \left(Z_{i} \right)\quad    =\beta \quad ;i=1...n_{e} } \\ {\rho \left(Z_{i} ,Z_{j} \right)=\rho \quad ;i\ne j} \end{array}\label{ZEqnNum897176} 
+\end{align}
+where $n_e$ is the number of components, $\rho$ is the correlation coefficient ($\rho \geqslant 0$) and $Z_i$ is the $Z$-function of component $i$.
+Note that in general, the components also have in common the underlying set of random variables and the associated $\alpha$-values, but that is not a necessary condition for applying the method as described in this section.
+
+Examples of when upscaling may be applied are the combining of failure probabilities at one time scale to a larger time scale  and upscaling failure probabilities from a cross section of a defense segment to the longitudinal extent of the segment.
+Such applications are described in \Aref{Section_2.5.5}.
+The value of $\rho$ first needs to be determined from system knowledge.
+For now, $\rho$ is assumed to be known.
+
+\subsection{Computational procedure}\label{Section_2.4.3.1}
+
+The failure probability of this system can be computed by solving the following integral numerically:
+\begin{align}
+P(F)=\int _{v}^{}\left[1-\left\{1-\Phi \left(-\beta^{*}\right)\right\}^{n} \right]\phi (v)dv  \label{0.145)} 
+\end{align}
+
+In which $\phi$ is the standard normal density function and $\beta^{*}$ is equal to:
+\begin{align}
+\beta ^{*} =\frac{\beta -v\sqrt{\rho } }{\sqrt{1-\rho } } \label{0.144)} 
+\end{align}
+
+\subsubsection{Detailed explanation}\label{Section_2.4.3.2}
+
+The upscaling method makes use of linearized approximations of the $Z$-functions, as described in \Aref{Section_2.2.5}.
+The estimated probability of failure of the system is therefore an approximation of the true probability of failure.
+Errors made in the approximation will depend on the system under condideration.
+In \Aref{Section_2.2.5} it was shown that linearised $Z$-functions can be described as follows:
+\begin{align}
+Z_{i} =\beta -\alpha _{1} U_{i1} -...-\alpha _{n} U_{in} \quad ;i=1...n_{e} \label{ZEqnNum573383} 
+\end{align}
+
+Furthermore, it was shown that the sum of the product of $\alpha$-values and standard normally distributed $U$-values can be replaced by a single standard normally distributed $U$-variable:
+\begin{align}
+Z_{i} =\beta -U_{i} \quad ;i=1...n_{e} \label{ZEqnNum310338} 
+\end{align}
+where $U_i$ is a standard normally distributed variable and $\beta$ is the reliability index of each individual $Z$-function.
+The value of $\beta$ is considered to be known, i.e.\ it is determined by the probabilistic computation techniques as described in \Aref{sec:ReliabilityMethods}.
+This means $\beta$ is a constant in equation \eqref{ZEqnNum310338} and the mutual correlation of the $Z$-functions is therefore entirely determined by the mutual correlation of the $U$-variables:
+\begin{align}
+\rho \left(Z_{i} ,Z_{j} \right)=\rho \left(U_{i} ,U_{j} \right)=\rho \quad ;i\ne j\label{ZEqnNum614884} 
+\end{align}
+
+To describe a system that satisfies the relation of equation \eqref{ZEqnNum614884}, variable $U_i$ is written as a function of two independent standard normal random variables $U_i^{*}$ and $V$:
+\begin{align}
+U_{i} =U_{i}^{*} \sqrt{1-\rho } -V\sqrt{\rho } \label{ZEqnNum725764} 
+\end{align}
+
+The variables $U_i^{*}$, $i=1...n$ are taken to be mutually independent:
+\begin{align}
+\rho \left(U_{_{i} }^{*} ,U_{_{j} }^{*} \right)=0\quad ;i\ne j\label{ZEqnNum257919} 
+\end{align}
+
+%\Note{there is a difference between equation \eqref{ZEqnNum725764} and equation \eqref{eq:2-80}, where $\rho$ is used instead of $\sqrt{\rho}$, even though in both cases the correlation between $U_1$ and $U_2$ is equal to $\rho$.
+%The reason for this difference is the fact that in equation \eqref{eq:2-80}, variable $U_2$ is written as a function of $U_1$, whereas in this case, $U_1$ and $U_2$ are both written as a function of a separate variable $V$.}
+
+\Note{in the equations above, $\rho$ $>$ $0$.
+For $\rho$ = $0$, the Hohenbichler method in combination with the outcrossing approach should be used.
+The outcrossing method is discussed further on in this chapter.}
+
+To verify the applicability of equation \eqref{ZEqnNum725764} it needs to be shown that [1] $U_i$ is standard normally distributed and [2] that the relation of equation \eqref{ZEqnNum614884} holds.
+To prove [1], we apply the following general rule (see, e.g. \cite{GrimmettStirzaker1983}): If $X$ and $Y$ are independent normally distributed random variables, then $aX+bY$ is also normally distributed with a mean, $\mu$, and standard deviation, $\sigma$, equal to:
+\begin{align}
+\begin{array}{l} {\mu =a\mu _{X} +b\mu _{Y} } \\ {\sigma =\sqrt{a^{2} \sigma _{X}^{2} +b^{2} \sigma _{Y}^{2} } } \end{array} 
+\end{align}
+
+Application of this rule on equation \eqref{ZEqnNum725764}, where $U_i^{*}$ and $V$ are both normally distributed with mean $0$ and standard deviation $1$, gives:
+\begin{align}
+\begin{array}{l} {\mu =\sqrt{1-\rho } \cdot 0-\sqrt{\rho } \cdot 0=0} \\ {\sigma =\sqrt{\left(1-\rho \right)\cdot 1+\rho \cdot 1} =1} \end{array} 
+\end{align}
+
+Which proves that $U_i$ is standard normally distributed.
+To prove [2], i.e.\ that the relation of equation \eqref{ZEqnNum614884} holds, equations \eqref{ZEqnNum310338} and \eqref{ZEqnNum725764} are combined: 
+\begin{align}
+Z_{i} =\beta -U_{i}^{*} \sqrt{1-\rho } -V\sqrt{\rho } \quad ;i=1...n_{e} \label{ZEqnNum883030} 
+\end{align}
+
+The variable $V$ in equation \eqref{ZEqnNum883030} is part of each $Z$-function.
+This creates the desired mutual correlation between the functions $Z_i$, $i=1...n_e$.
+To prove this, it needs to be shown that variables $U_i$ and $U_j$, $i\neq j$, have a mutual correlation equal to $\rho$.
+The correlation between $U_i$ and $U_j$ is derived as follows:
+\begin{align}
+\rho \left(U_{i} ,U_{j} \right)=\frac{cov\left(U_{i} ,U_{j} \right)}{\left[\sigma \left(U_{i} \right)\sigma \left(U_{j} \right)\right]} =\frac{cov\left(U_{i} ,U_{j} \right)}{\left[1\cdot 1\right]} =cov\left(U_{i} ,U_{j} \right)\label{0.134)} 
+\end{align}
+
+The covariance of $U_i$ and $U_j$ is equal to:
+\begin{align}
+cov\left(U_{i} ,U_{j} \right) \begin{array}{l} {=E\left[U_{i} U_{j} -\mu \left(U_{i} \right)\mu \left(U_{j} \right)\right]=E\left[U_{i} U_{j} \right]} \\ {=E\left[\left(U_{i}^{*} \sqrt{1-\rho } -V\sqrt{\rho } \right)\left(U_{j}^{*} \sqrt{1-\rho } -V\sqrt{\rho } \right)\right]} \\ {=E\left[U_{i}^{*} U_{j}^{*} \left(1-\rho \right)-U_{i}^{*} V\sqrt{\rho \left(1-\rho \right)} -U_{j}^{*} V\sqrt{\rho \left(1-\rho \right)} +\rho V^{2} \right]} \\ {=E\left[0-0-0+\rho V^{2} \right]=\rho E\left[V^{2} \right]=\rho Var\left(V\right)=\rho } \end{array}\label{0.135)} 
+\end{align}
+
+This proves that equation \eqref{ZEqnNum883030} describes a system of $n_{e}$ components that are mutually correlated with a correlation coefficient $\rho$.
+The theorem of total probability is used to derive the probability of failure of this system: 
+\begin{align}
+P(F)=P\left(Z_{1} <0  \cup   \dots  \cup Z_{n} <0\right)=\int _{v}^{}P\left(Z_{1} <0  \cup   \dots  \cup Z_{n} <0|v\right)\phi \left(v\right)dv \label{ZEqnNum846568} 
+\end{align}
+where $\phi(v)$ is the probability density function of the standard normal distribution.
+The probability that at least $1$ component fails is equal to $1$ minus the probability that none of the components fails.
+Equation \eqref{ZEqnNum846568} can therefore be rewritten as:
+\begin{align}
+\begin{array}{l} {P(F)=\int _{v}^{}\left[1-P\left(Z_{1} \ge 0  \cap     \dots  \cap Z_{n} \ge 0|v\right)\right]\phi \left(v\right)dv } \\ {\quad \quad   =\int _{v}^{}\left[1-P\left\{\left(Z_{1} \ge 0|v\right)\cap  \dots  \cap  \left(Z_{n} \ge 0|v\right)\right\}\right]\phi \left(v\right)dv } \end{array}\label{ZEqnNum753473} 
+\end{align}
+
+For a given value of $V$, the individual failure probabilities of the $Z$-functions are mutually independent:
+\begin{align}
+P\left[\left(Z_{i} <0|v\right)\cap \left(Z_{j} <0|v\right)\right]=P\left(Z_{i} <0|v\right)P\left(Z_{j} <0|v\right)\quad ;i\ne j\label{ZEqnNum938061} 
+\end{align}
+
+This can be easily verified from equation \eqref{ZEqnNum725764}.
+If the value of $V$ is given, equation \eqref{ZEqnNum725764} only contains one random variable: $U_i^{*}$.
+Since the $U_i^{*}$-values are mutually independent (see equation \eqref{ZEqnNum257919}), the $Z$-functions of equation \eqref{ZEqnNum725764} are mutually independent as well, which leads to the equality in equation \eqref{ZEqnNum938061}.
+Substitution of equation \eqref{ZEqnNum938061} in equation \eqref{ZEqnNum753473} gives:
+\begin{align}
+P\left(F\right)=\int _{v}\left[1-\prod _{i=1}^{n_{e} }P\left(Z_{i} \ge 0  |v\right) \right]  \phi \left(v\right) dv\label{ZEqnNum169397} 
+\end{align}
+
+Because all components are identical, the following is true:
+\begin{align}
+P\left(Z_{1} \ge 0|v\right)=P\left(Z_{2} \ge 0|v\right)=...=P\left(Z_{n} \ge 0|v\right)\begin{array}{c} {\text{def}} \\ {=} \\ {} \end{array}P\left(Z\ge 0|v\right)\label{0.140)} 
+\end{align}
+
+This changes equation \eqref{ZEqnNum169397} into:
+\begin{align}
+P\left(F\right)=\int _{v}\left[1-P\left(Z\ge 0  |v\right)^{n_{e} } \right]  \phi \left(v\right)dv\label{ZEqnNum717936} 
+\end{align}
+
+The conditional probability of the $Z$-function in the integral is equal to: 
+\begin{align}
+P\left(Z\ge 0|v\right)=P\left(\beta -U^{*} \sqrt{1-\rho } -v\sqrt{\rho } \ge 0\right)=P\left(U^{*} \le \frac{\beta -v\sqrt{\rho } }{\sqrt{1-\rho } } \right)\label{ZEqnNum225981} 
+\end{align}
+
+Since $\nu$ is a given constant, $U^{*}$ is the only random variable in equation \eqref{ZEqnNum225981}, and since $U^{*}$ is standard normally distributed, the conditional probability is defined as:
+\begin{align}
+P\left(Z\ge 0|v\right)=\Phi \left(\frac{\beta -v\sqrt{\rho } }{\sqrt{1-\rho } } \right)\begin{array}{c} {\text{def}} \\ {=} \\ {} \end{array}\Phi \left(\beta ^{*} \right)\label{0.143)} 
+\end{align}
+where $\Phi$ is the standard normal distribution function and $\beta$ is equal to:
+\begin{align}
+\beta ^{*} =\frac{\beta -v\sqrt{\rho } }{\sqrt{1-\rho } } \label{0.144)} 
+\end{align}
+
+Equation \eqref{ZEqnNum717936} then changes into: 
+\begin{align}
+P(F)=\int _{v}^{}\left[1-\left\{1-\Phi \left(-\beta^{*}\right)\right\}^{n} \right]\phi (v)dv \label{ZEqnNum147042} 
+\end{align}
+
+The right hand side of equation \eqref{ZEqnNum147042} can be computed by numerical integration over the standard normally distributed variable $V$.
+Since $V$ is the only variable, the grid size of $V$ can be chosen small without requiring significant computation time.
+The error from the numerical integration of equation \eqref{ZEqnNum147042} can therefore be made as small as desired.
+This means the only potentially significant error that is introduced in this method is related to the linearisation of the $Z$-function, which was necessary to derive equation \eqref{ZEqnNum147042}.
+
+\subsubsection{Equivalent $\alpha$-values}\label{Section_2.4.3.3}
+
+As with the Hohenbichler method, equivalent $\alpha$-values can be computed for the component that represents the combination of $n_{e}$ identical components.
+This is necessary in case the resulting component is used in subsequent combining procedures where $\alpha$-values are required.
+A similar approach with perturbed $u$-values is used as in the Hohenbichler method.
+However, because in this special case the components are identical, this allows for some convenient simplifications that require less computation time.
+
+\paragraph*{Computational procedure}
+
+The method for deriving equivalent $\alpha$-values for the systems with identical components is as follows:
+
+\textbf{[1]} Apply the upscaling method of \Aref{Section_2.4.3.1} to $n_{e}$ components with reliability index $\beta$ and mutual correlation $\rho$ to derive the reliability index $\beta^e$ of the combined (upscaled) component.
+
+\textbf{[2]} Apply the upscaling method of \Aref{Section_2.4.3.1} on $n_{e}$ components with reliability index   $\beta$-$\varepsilon$$\surd$$\rho$ and mutual correlation $\rho$ to derive the reliability index $\beta^e$($\varepsilon$) of the combined (upscaled) component.
+
+\textbf{[3]} Determine $\alpha_v$: 
+\begin{align}
+\alpha _{v} =\frac{\beta ^{e} \left(\varepsilon \right)-\beta ^{e} }{\varepsilon } \label{0.159)} 
+\end{align}
+
+\textbf{[4]} For all random variables $k=1...n$, determine the equivalent $\alpha$-value, $\alpha_k^e$:
+\begin{align}
+\alpha _{k}^{e} =\sqrt{1-\alpha _{v}^{2} } \frac{\alpha _{k} \sqrt{1-\rho _{k} } }{\sqrt{1-\rho } } +\alpha _{v} \frac{\alpha _{k} \sqrt{\rho _{k} } }{\sqrt{\rho } } \label{0.163)} 
+\end{align}
+
+in which $\rho _{k}$ is the correlation between the $k^{th}$ random variable of an element with the corresponding ($k^{th}$) random variable in another element
+
+\textbf{[5]} Normalise the equivalent $\alpha$-values:
+\begin{align}
+\alpha _{k;final}^{e} =\frac{\alpha _{k}^{e} }{\sqrt{\sum _{j=1}^{n}\left(\alpha _{j}^{e} \right)^{2}  } } \quad ;k=1...n\label{0.122)} 
+\end{align}
+
+The equivalent $\alpha$-values of the $n$ variables for the combined $n_{e}$ components are obtained with only two applications of the upscaling method (steps 1 and 2 above).
+This is very efficient, when compared to the Hohenbichler method, which needs to be repeated $2n+1$ times to derive the equivalent $\alpha$-values for combining only two components.
+Another difference with the Hohenbichler method is that the method for identical components can be applied for non-integer values of $n_{e}$; this is not the case for the Hohenbichler method.
+The application with non-integer values of $n_{e}$ is useful for example for upscaling the failure probability of a cross section to the failure probability of a dike section, as will be explained later on in this document.
+
+\paragraph*{Detailed explanation}
+
+Consider the system of $n_e$ identical components as described in equation \eqref{ZEqnNum573383}:
+\begin{align}
+Z_{i} =\beta -\alpha _{1} U_{i1} -...-\alpha _{n} U_{in} \quad ;i=1...n_{e} \label{ZEqnNum188185} 
+\end{align}
+
+These components are combined according to the method as described in \Aref{Section_2.4.3.1}, resulting in a failure probability and associated reliability index $\beta^e$.
+The combined component can be described by: % (similar to equation \eqref{ZEqnNum645187}): 
+\begin{align}
+Z^{e} =\beta ^{e} -\alpha _{1}^{e} U_{1} -...-\alpha _{n}^{e} U_{n} \label{ZEqnNum266010} 
+\end{align}
+
+The superscript ''e'' in this equation refers to the fact that these are equivalent values and functions.
+In order to derive the $\alpha$-values of function $Z^e$, recall from \Aref{Section_2.2.5} that the $\alpha$-values of a $Z$-function are related to the reliability index $\beta^e$ as follows: 
+\begin{align}
+\frac{\partial \beta ^{e} }{\partial \bar{u}_{k} } =\alpha _{k}^{e} \quad ;k=1...n\label{0.148)} 
+\end{align}
+
+In which $\overline{u}_i$ is the mean of variable $U_i$.
+Note the value $\alpha_k^e$ represents the combined effect of variables $U_{1k}$...$U_{n_{e}k}$, and that these variables are mutually correlated.
+In order to determine $\alpha_k^e$, these variables need to be split in an independent and mutually dependent part, similar to the description in \Aref{Section_2.4.3.1}.
+Consider for this purpose equation \eqref{ZEqnNum188185}.
+The different $U$-variables within a single component are mutually uncorrelated, whereas corresponding $U$-values in different components are correlated.
+In formula:
+\begin{align}
+\begin{array}{l} {\rho \left(U_{ij} ,U_{ik} \right)=0\quad   ;j\ne k} \\ {\rho \left(U_{ik} ,U_{\ell k} \right)=\rho _{k} \quad ;i\ne \ell } \end{array}\label{ZEqnNum568983} 
+\end{align}
+
+Each $U$-variable can therefore be split in a correlated and uncorrelated part: 
+\begin{align}
+U_{ik} =U_{ik}^{*} \sqrt{1-\rho _{k} } +V_{k} \sqrt{\rho _{k} } \label{ZEqnNum383869} 
+\end{align}
+
+%In which $U_{ik}^{*}$ and  $V_k$ are mutually independent standard normally distributed variables. 
+Furthermore, the variables $U_{ik}^{*}$, $i=1...n_e$, $k=1...n$ and  $V_k$, $k=1...n$ are all taken to be mutually independent:
+\begin{align}
+\begin{array}{l} {\rho \left(U_{ij}^{*} ,U_{k\ell }^{*} \right)=0\quad ;i\ne j\cup k\ne \ell } \\ {\rho \left(U_{ij}^{*} ,V_{k} \right)=0} \\ {\rho \left(V_{j} ,V_{k} \right)=0\quad ;j\ne k} \end{array}\label{ZEqnNum753050} 
+\end{align}
+
+With this formulation, variables $U_{ik}$, $i=1...n_e$, $k=1...n$, automatically fulfill requirement \eqref{ZEqnNum568983}, as can be shown in the same manner as was done below equation \eqref{ZEqnNum257919} in the previous section.
+Substituting equation \eqref{ZEqnNum383869} in equation \eqref{ZEqnNum188185} gives:
+\begin{align}
+\begin{array}{l} {Z_{i} =\beta -\alpha _{1} \left(U_{i1}^{*} \sqrt{1-\rho _{1} } +V_{1} \sqrt{\rho _{1} } \right)-...-\alpha _{n} \left(U_{in}^{*} \sqrt{1-\rho _{n} } +V_{n} \sqrt{\rho _{n} } \right)\quad ;i=1...n_{e} } \\ {\quad =\beta -\sum _{k=1}^{n}\alpha _{k}  U_{ik}^{*} \sqrt{1-\rho _{k} } -\sum _{k=1}^{n}\alpha _{k} V_{k}  \sqrt{\rho _{k} } \quad ;i=1...n_{e} } \end{array}\label{0.152)} 
+\end{align}
+
+This equation can be replaced by:
+\begin{align}
+Z_{i} =\beta -U_{i}^{*} \sqrt{1-\rho } -V\sqrt{\rho } \quad ;i=1...n_{e} \label{ZEqnNum395894} 
+\end{align}
+
+In which:
+\begin{align}
+\begin{array}{l} {\rho =\sum _{k=1}^{n}\left(\alpha _{k} \right)^{2}  \rho _{k} } \\ {U_{i}^{*} =\frac{1}{\sqrt{1-\rho } } \sum _{k=1}^{n}\alpha _{k} U_{ik}^{*} \sqrt{1-\rho _{k} }  \quad ;i=1...n_{e} } \\ {V=\frac{1}{\sqrt{\rho } } \sum _{k=1}^{n}\alpha _{k} V_{k}  \sqrt{\rho _{k} } } \end{array}\label{ZEqnNum809022} 
+\end{align}
+
+The validity of this replacement can be easily verified by substituting the formulations of $U_i$ and $V$ of equation \eqref{ZEqnNum809022} into equation \eqref{ZEqnNum395894}.
+Equation \eqref{ZEqnNum395894} is equivalent to equation \eqref{ZEqnNum883030} if and only if $U_i^{*}$ and $V$ are mutually independent standard normally distributed variables.
+The mutual independency can easily be shown since all components $U_{ik}^{*}$, $i=1...n_e$, $k=1...n$, and  $V_k$, $k=1...n$ are mutually independent (see \eqref{ZEqnNum753050}. 
+
+To verify if $U_i^{*}$ and $V$ are standard normally distributed we apply the following general rule (see, e.g. \cite{GrimmettStirzaker1983}): If $X$ and $Y$ are independent normally distributed random variables, then $aX+bY$ is also normally distributed with a mean, $\mu$, and standard deviation, $\sigma$, equal to:
+\begin{align}
+\begin{array}{l} {\mu =a\mu _{X} +b\mu _{Y} } \\ {\sigma =\sqrt{a^{2} \sigma _{X}^{2} +b^{2} \sigma _{Y}^{2} } } \end{array}\label{0.155)} 
+\end{align}
+
+Application of this rule on equation \eqref{ZEqnNum809022}, where all components $U_{ik}^{*}$ and  $V_k$ are normally distributed with mean $0$ and standard deviation $1$, gives:
+\begin{align}
+\begin{array}{l} {\mu \left(U_{i} \right)=\frac{1}{\sqrt{\rho } } \sum _{k=1}^{n}\alpha _{k} \cdot 0\cdot \sqrt{1-\rho _{k} }  =0} \\ {\sigma \left(U_{i} \right)=\sqrt{\left(\frac{1}{\sqrt{1-\rho } } \right)^{2} \sum _{k=1}^{n}\left(\alpha _{k} \right)^{2} \cdot \left(1\right)^{2} \cdot \left(1-\rho _{k} \right) } =\sqrt{\frac{1}{1-\rho } \left[\sum _{k=1}^{n}\alpha _{k}^{2}  -\sum _{k=1}^{n}\alpha _{k}^{2} \rho _{k}  \right]} } \\ {\quad \quad   =\sqrt{\frac{1}{1-\rho } \left[1-\rho \right]} =\sqrt{1} =1} \end{array}\label{0.156)} 
+\end{align}
+
+This shows that $U_i^{*}$ and $V$ in equation \eqref{ZEqnNum395894} are mutually independent standard normally distributed variables.
+Taking into account the formulation of the $Z$-function in equation \eqref{ZEqnNum395894}, The equivalent coefficient $\alpha_k^e$ can now be derived as follows
+\begin{align}
+\alpha _{k}^{e} =\frac{\partial \beta ^{e} }{\partial \bar{u}_{k} } =\frac{\partial \beta ^{e} }{\partial \bar{u}} \frac{\partial \bar{u}}{\partial \bar{u}_{k} } +\frac{\partial \beta ^{e} }{\partial \bar{v}} \frac{\partial \bar{v}}{\partial \bar{u}_{k} } \label{ZEqnNum438636} 
+\end{align}
+where $\bar{u}$, $\bar{v}$ and $\bar{u}_k$ are the mean values of variables $U^{*}$, $V$ and $U_k$.
+So, the derivation of coefficients $\alpha_k$ $i=1...n_e$ it comes down now to determining the four partial derivatives of equation \eqref{ZEqnNum438636}.
+The first two can be determined directly from equation \eqref{ZEqnNum809022}:
+\begin{align}
+\begin{array}{l} {\frac{\partial \bar{u}}{\partial \bar{u}_{k} } =\frac{\alpha _{k} \sqrt{1-\rho _{k} } }{\sqrt{1-\rho } } } \\ {\frac{\partial \bar{v}}{\partial \bar{u}_{k} } =\frac{\alpha _{k} \sqrt{\rho _{k} } }{\sqrt{\rho } } } \end{array}\label{ZEqnNum945170} 
+\end{align}
+
+The partial derivative of $\beta^e$ to $\bar{v}$ is determined numerically:
+\begin{align}
+\alpha _{v} =\frac{\partial \beta ^{e} }{\partial \bar{v}} \approx \frac{\beta ^{e} \left(\varepsilon \right)-\beta ^{e} }{\varepsilon } \label{ZEqnNum432286} 
+\end{align}
+
+In which $\beta^e$($\varepsilon$) is the reliability index of the upscaled system of $n_e$ components, after perturbation of $\bar{v}$ with a small value $\varepsilon$. 
+\begin{align}
+\beta ^{e} \left(\varepsilon \right)=\Phi ^{-1} \left(1-P\left(Z^{e} \left(\varepsilon \right)<0\right)\right)=\Phi ^{-1} \left(1-\bigcup _{i=1}^{n_{e} }P\left(Z_{i} \left(\varepsilon \right)\right) \right)\label{ZEqnNum242869} 
+\end{align}
+
+In which function $Z_i$($\varepsilon$) is as follows: 
+\begin{align}
+\begin{array}{l} {Z_{i} \left(\varepsilon \right)=\beta -U_{i}^{*} \sqrt{1-\rho } -\left(V+\varepsilon \right)\sqrt{\rho } \quad ;i=1...n_{e} } \\ {\quad \quad    =\left(\beta -\sqrt{\rho } \varepsilon \right)-U_{i}^{*} \sqrt{1-\rho } -V\sqrt{\rho } \quad ;i=1...n_{e} } \end{array}\label{ZEqnNum791362} 
+\end{align}
+
+In other words: $Z_i$($\varepsilon$) is a $Z$-function with a reliability index $\beta_{Z_{\varepsilon}}$ following:
+\begin{equation}
+%\beta_Z = \frac{\mu_Z}{\sigma_Z} = \beta - \frac{\epsilon v}{\sqrt{\rho}}
+\beta_{Z_{\varepsilon}} = \frac{\mu_Z}{\sigma_Z} = \frac{\beta  - \sqrt \rho  \varepsilon }{1} = \beta  - \sqrt \rho  \varepsilon 
+%\{\beta _{{Z_\varepsilon }}} = \frac{{{\mu _{{Z_\varepsilon }}}}}{{{\sigma _{{Z_\varepsilon }}}}} = \frac{{\beta  - \sqrt \rho  \varepsilon }}{1} = \beta  - \sqrt \rho  \varepsilon \
+\end{equation}
+So $\beta^e$($\varepsilon$) is quantified by substituting equation \eqref{ZEqnNum791362} into equation \eqref{ZEqnNum242869} and subsequent application of the upscaling procedure of \Aref{Section_2.4.3.1}.
+Subsequently, $\beta^e$($\varepsilon$) is substituted in equation \eqref{ZEqnNum432286} in order to derive $\alpha_v$ the partial derivative of $\beta^e$ to $\bar{v}$.
+The next step is to derive the partial derivative of $\beta^e$ to $\bar{u}$.
+This can be derived as follows:
+\begin{align}
+\frac{\partial \beta ^{e} }{\partial \bar{u}} =\sqrt{1-\left(\frac{\partial \beta ^{e} }{\partial \bar{v}} \right)^{2} } =\sqrt{1-\alpha _{v}^{2} } \label{ZEqnNum165859} 
+\end{align}
+
+This can be explained as follows: the partial derivative of $\beta^e$ to $\bar{v}$ is the resulting $\alpha$-value for the dependent part of the $n_e$ components, represented by variable $V$.
+The partial derivative of $\beta^e$ to $\bar{u}$ is the resulting $\alpha$-value for the independent part of the $n_e$ components, represented by variable $U^{*}$.
+The sum of the squares of these $\alpha$-values should be equal to $1$. 
+
+Substitution of equations \eqref{ZEqnNum945170}, \eqref{ZEqnNum432286} and \eqref{ZEqnNum165859} into equation \eqref{ZEqnNum438636} provides the requested equivalent $\alpha$-values:
+\begin{align}
+\alpha _{k}^{e} =\frac{\partial \beta ^{e} }{\partial \bar{u}_{k} } =\sqrt{1-\alpha _{v}^{2} } \frac{\alpha _{k} \sqrt{1-\rho _{k} } }{\sqrt{1-\rho } } +\alpha _{v} \frac{\alpha _{k} \sqrt{\rho _{k} } }{\sqrt{\rho } } \label{ZEqnNum998801} 
+\end{align}
+
+The $Z$-function of the resulting component from the upscaling procedure (equation \eqref{ZEqnNum266010}) needs to have a standard deviation equal to $1$.
+This means the sum of the squares of the equivalent $\alpha$-values shoud be equal to $1$.
+Equation \eqref{ZEqnNum998801} guarantees that this is the case if all values of $\rho_k$ are equal to either $0$ or $1$, which is generally the case for upscaling in time (i.e.\ slow varying random load variables and strength variables have an autocorrelation equal to $1$, while fast varying random variables have an autocorrelation equal to 0).
+This can be deducted as follows: 
+\begin{align}
+\begin{array}{l} {\sum _{k=1}^{n}\left(\alpha _{k}^{e} \right)^{2}  =\sum _{k=1}^{n}\left[\left(1-\alpha _{v}^{2} \right)\frac{\alpha _{k}^{2} \left(1-\rho _{k} \right)}{1-\rho } +2\alpha _{v} \left(\sqrt{1-\alpha _{v}^{2} } \right)\frac{\alpha _{k} \sqrt{1-\rho _{k} } }{\sqrt{1-\rho } } \frac{\alpha _{k} \sqrt{\rho _{k} } }{\sqrt{\rho } } +\alpha _{v}^{2} \frac{\alpha _{k}^{2} \rho _{k} }{\rho } \right] } \\ {\quad \quad \quad    =\sum _{k=1}^{n}\left[\left(1-\alpha _{v}^{2} \right)\frac{\alpha _{k}^{2} \left(1-\rho _{k} \right)}{1-\rho } +\alpha _{v}^{2} \frac{\alpha _{k}^{2} \rho _{k} }{\rho } \right] } \\ {\quad \quad \quad    =\frac{\left(1-\alpha _{v}^{2} \right)}{1-\rho } \sum _{k=1}^{n}\alpha _{k}^{2} \left(1-\rho _{k} \right)+ \frac{\alpha _{v}^{2} }{\rho } \sum _{k=1}^{n}\alpha _{k}^{2} \rho _{k}  } \\ {\quad \quad \quad    =\frac{\left(1-\alpha _{v}^{2} \right)}{1-\rho } \left(1-\rho \right)+\frac{\alpha _{v}^{2} }{\rho } \rho =\left(1-\alpha _{v}^{2} \right)+\alpha _{v}^{2} =1} \end{array}\label{0.164)} 
+\end{align}
+
+\Note{in the second step of this equation, the middle term is removed because it is equal to zero (since either $\rho_k=0$ or $1-\rho_k = 0$).
+In the fourth step, equation \eqref{ZEqnNum809022} is used.
+If not all values of $\rho_k$ are equal to either $0$ or $1$, the sum of the squares of the equivalent $\alpha$-values is not necessarily equal to $1$.
+In that case, they have to be normalized as follows:}
+\begin{align}
+\alpha _{k}^{e} =\frac{\alpha _{k}^{e} }{\sqrt{\sum _{j=1}^{n}\left(\alpha _{j}^{e} \right)^{2}  } } ;k=1...n\label{0.165)} 
+\end{align}
+
+\subsection{Techniques for time and space dependent processes}\label{Section_2.4.5}
+In this section, aspects of upscaling in time and space are addressed.
+
+The techniques described in the previous sections all deal with system analysis of a discrete number of components which may represent dike sections, wind directions, etc.
+In some applications, however, $Z$ is a function of space and time, which means in principle the number of components is infinite.
+This is schematically depicted in \Fref{fig:2.32}.
+In the left panel, $Z$ is a time-dependent function and failure potentially can occur at any time.
+On the right, $Z$ is a function of space, and failure can occur at any location.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.93in, height=1.58in, keepaspectratio=false]{\pathProbLibPictures variation_in_time_and_space}
+\caption{Stochastic variation of the $Z$-function in time (left) and space (right)}\label{fig:2.32}
+\end{figure}
+
+This section describes some approaches to deal with these type of continuos descriptions of $Z$-functions.
+
+\subsubsection{Poisson counting process} \label{Section_2.4.5.2}
+The Poisson counting process describes the probability of occurrence of $n$ events, where a single event generally refers to an upcrossing or downcrossing of a threshold value.
+With respect to failure, the downcrossing of the threshold $Z=0$ is most relevant.
+In a Poisson process it is assumed that for small values of $\Delta t$ [a] the occurrence of an event in an interval $[t, t+\Delta t]$ is proportional to $\Delta t$ and [b] the probability of occurrence of two events occurring in $[t, t+\Delta t]$ is negligible.
+This means for small values of $\Delta t$, the probability of an event occurring in $[t, t+\Delta t]$ is approximately equal to:
+\begin{align}
+P\left(\mbox{1 event during } \left[t,t+\Delta t\right]\right)\approx \upsilon \Delta t\label{ZEqnNum344717} 
+\end{align}
+
+In this equation, $\nu$ is the `intensity' of the Poisson process.
+This is the single parameter that describes the Poisson process.
+Define $N(t)$ as the number of events occurring in the time interval  $[0,T]$.
+For a Poisson process the probability distribution of $N(t)$ is:
+\begin{align}
+P\left(N(t)=n\right)=\frac{\left(\nu t\right)^{n} e^{-\nu t} }{n!} \label{ZEqnNum870173} 
+\end{align}
+
+The time interval between two subsequent events is also a random variable and it is exponentially distributed.
+So if $t_{1}$ is the time interval between two events, then:
+\begin{align}
+P\left(T_{1} \le t_{1} \right)=1-e^{-\nu t_{1} } \label{ZEqnNum865643} 
+\end{align}
+
+The assumption of a Poisson process is often used to translate exceedance frequencies into exceedance probabilities.
+Suppose $\nu$ is expressed as ''number of events per year''.
+In that case $\nu$ is the annual frequency of occurrence.
+Then, according to equation \eqref{ZEqnNum865643}, the annual probability of occurrence is equal to: 
+\begin{align}
+P\left(T_{1} \le 1\right)=1-e^{-\nu } \label{ZEqnNum774553} 
+\end{align}
+
+This shows the relation between probability and frequency in case of a Poisson process.
+An event can be for instance the exceedance of a threshold level $x$, for load variable $X$.
+In that case, equation \eqref{ZEqnNum774553} can be applied to translate the annual frequency of exceedance of threshold $x$ into the annual probability of exceedance of threshold $x$, or vice versa.
+
+In the description above, $\nu$ was assumed to be time-independent.
+If this is not the case, equation \eqref{ZEqnNum870173} changes into:
+\begin{align}
+P\left(N(t)=n\right)=\frac{\left(\int _{0}^{t}\nu \left(\tau \right)d\tau  \right)^{n} e^{-\int _{0}^{t}\nu \left(\tau \right)d\tau  } }{n!} \label{0.171)} 
+\end{align}
+
+\subsubsection{Outcrossing}\label{Section_2.4.5.3} 
+
+If an event refers to failure in a continuous process, i.e.\ the downcrossing of threshold $Z=0$ in \Fref{fig:2.32}, then the outcrossing rate is defined as:
+\begin{align}
+v=\begin{array}{c} {\lim } \\ {\Delta t\downarrow 0} \end{array}  \frac{P\left[Z\left(t\right)\ge 0\cap Z\left(t+\Delta t\right)<0\right]}{\Delta t} \label{ZEqnNum351501} 
+\end{align}
+
+Note that the numerator in this equation is the probability that failure occurs in time interval $[t,t+\Delta t]$.
+The rate $\nu$ is similar to the one defined in the previous section and can also be time-dependent: $\nu$=$\nu(t)$.
+Assume for the moment that $\nu$ is a constant, i.e.\ independent of time.
+The probability that failure occurs in an interval  $(0,T]$, given the fact that no failure occurs at  $t=0$, is then equal to:
+\begin{align}
+P\left[\begin{array}{c} {\min } \\ {t\in \left(0,T\right]} \end{array} \left\{Z(t)\right\}<0\left| Z\left(0\right)\ge 0\right. \right]=1-e^{-vT} \label{0.173)} 
+\end{align}
+
+Note that this probability of failure is described by an exponential distribution function.
+The exponential distribution is by definition the distribution which describes failure probabilities for processes with a constant failure rate (see e.g. \cite{GrimmettStirzaker1983}).
+\Fref{fig:2.33} shows an example of an exponential distribution function.
+In this figure the failure rate, $\nu$, is taken equal to $1$, which makes this a standard exponential distribution function. 
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.45in, height=3.34in, keepaspectratio=false]{\pathProbLibPictures exponentional_distribution}
+\caption{Standard exponential distribution function:  $F(T) = 1-exp(-T)$.}\label{fig:2.33}
+\end{figure}
+
+The probability that no failure occurs in an interval  $(0,T]$, i.e.\  $t=0$ included, given the fact that no failure occurs at  $t=0$, is equal to:
+\begin{align}
+P\left[\begin{array}{c} {\min } \\ {t\in \left(0,T\right]} \end{array} \left\{Z(t)\right\}\ge 0\left| Z\left(0\right)\ge 0\right. \right]=e^{-vT} \label{0.174)} 
+\end{align}
+
+The probability that no failure occurs in an interval  $[0,T]$, i.e.\  $t=0$ included, is then equal to:
+\begin{align}
+P\left[\begin{array}{c} {\min } \\ {t\in \left[0,T\right]} \end{array} \left\{Z(t)\right\}\ge 0\right]=\left[1-P_{{\rm F}} \left(0\right)\right]e^{-vT} \label{0.175)} 
+\end{align}
+
+In which  $P_F(0)$ is the initial probability of failure (see below for more information on this probability), $i$.e the probability that $Z<0$ at  $t=0$.
+The probability, $P_f$, that failure occurs in an interval  $[0,T]$ is equal to:
+\begin{align}
+P_{F} \left(T\right)=P\left[\begin{array}{c} {\min } \\ {t\in \left[0,T\right]} \end{array} \left\{Z(t)\right\}<0\right]=1-{\rm  }\left[1-P_{{\rm F}} \left(0\right)\right]e^{-vT} \label{ZEqnNum473284} 
+\end{align}
+
+If the outcrossing rate, $\nu$, and the initial failure probability,  $P_F(0)$, are small, the probability of failure can be approximated by:
+\begin{align}
+P_{F} \left(T\right)\approx P_{{\rm F}} \left(0\right)+\nu T\label{ZEqnNum950209} 
+\end{align}
+
+This is an upper bound of the failure probability.
+In essence, this approximation ''double counts'' the probability of events in which two or more failures occur in the interval  $[0,T]$.
+If $\nu$ and  $P_F(0)$ are small, the probability of two or more failures occurring in the interval  $[0,T]$ is negligible and therefore equation \eqref{ZEqnNum950209} is a good approximation in that case.
+
+In the equations above, failure rate $\nu$ was assumed to be constant.
+If this is not the case, equation \eqref{ZEqnNum473284} changes into the following, more generic, equation: 
+\begin{align}
+P_{F} \left(T\right)=1-{\rm  }\left[1-P_{{\rm F}} \left(0\right)\right]\exp \left(-\int _{0}^{T}v\left(t\right)dt \right)\label{ZEqnNum131880} 
+\end{align}
+
+The equations above can also be used if $Z$ is a function of space.
+In that case, $t$ and $T$ need to be replaced by $x$ and $X$, where $x$ represents distance, e.g. the longitudinal distance along a dike section. 
+
+\Note{in \probLib, the outcrossing method is applied in time as well as in space.
+First, the probabilities of failure of the smallest ''components'' are computed with the probabilistic techniques for single components as described in \Aref{sec:ReliabilityMethods}.
+The smallest component is e.g. a cross section of a flood defense (space) during a tidal period (time) for a single failure mechanism.
+So, the initial result of the probabilistic procedure is the probability that failure occurs at a certain cross section within the time-span of a tidal period for a single mechanism.
+This result will be used as  $P_F(0)$ in the equations above, i.e. the initial failure probability.
+Subsequently the outcrossing approach is applied for upscaling the probability of failure (for the mechanism under consideration) from a cross-section to a dike section and from a tidal period to a year.
+
+The failure rate $\nu(t)$ or $\nu($x$)$ needs to be derived from spatial and temporal autocorrelations of the strength and load variables.
+This is described in more detail in \cite{TechRef}.
+In general, functions $\nu(t)$ and $\nu(x)$ are too complex to solve equation \eqref{ZEqnNum131880} analytically, which means approximating techniques are required.
+The \probLib uses different outcrossing approaches for space and time because of mutual differences in autocorrelation structures.
+
+Note that the component for which  $P_F(0)$ is computed in \probLib has a ''width'' equal to the assumed breach width.
+This means a (slight) reduction in the length of the remainder of the dike section and hence a (slight) reduction in the computed failure probability.
+The assumed breach width depends on the mechanism under consideration.
+The ''width'' in time is taken equal to a tidal period.
+This has to do with the fact that the input statistics of random load variables like sea water level, river discharge or wind speed represent probabilities of the maximum value in a tidal period (see also \cite{TechRef}).
+These values are therefore suitable to represent the whole tidal period.}
+
+\subsection{Spatial upscaling - from cross section to flood defence segment}\label{Section_2.5.5}
+In this section, upscaling in space is discussed.
+This type of upscaling is applicable to flood defence systems.
+
+\subsubsection{Computing the failure probability}\label{Section_2.5.5.1}
+
+The spatial upscaling technique as described in the current section is done over homogeneous reaches of the flood defense.
+Homogenous in this case means the statistical characteristics remain constant.
+It is therefore relevant that the flood defence system is divided into segments for which the assumption of homogeneity is valid.
+So, if a dike segment is inhomogeneous, it needs to be split up into smaller, homogenous, segments.
+
+Spatial upscaling is subject to a concept known as the length effect.
+The length effect essentially has to do with the increase in failure probability when going from a cross-section to a longitudinal segment and from a single segment to a flood defense system (interconnected segments).
+That is, the length effect refers to the effect that an increase in length has on the probability of failure.
+Note that this effect is also present when upscaling over time; the failure probability will increase as the considered time period increases. 
+
+The mathematical description of the length effect is the ratio of the failure probability of the larger length to that of the shorter.
+For the upscaling from cross-section to longitudinal segment (assuming statistical homogeneity!) this would be as follows: 
+\begin{align}
+\text{Length effect} = \frac{P_{f, segment} }{P_{f, cross-section} } \label{ZEqnNum163660} 
+\end{align}
+where $P_{f,segment}$ refers to the failure probability of the longitudinal segment and $P_{f,cross-section}$ refers to the failure probability of the cross section within that longitudinal segment.
+To derive the ratio of equation \eqref{ZEqnNum163660}, a notion of the spatial correlation within the segment is required, for each random variable, $X$, involved.
+In \probLib this correlation is described with the following model:
+\begin{align}
+\rho \left(\Delta y\right)=\rho _{x} +(1-\rho _{x} )\exp \left[-\left(\frac{\Delta y^{2} }{d_{x}^{2} } \right)\right]\label{ZEqnNum807806} 
+\end{align}
+where $\rho$ is the correlation between two locations within the segment ($\rho \geqslant 0$), $\Delta y$ is the distance between these two locations, $\rho_x$ is the residual correlation length of variable $X$ and $d_x$ is the spatial correlation length of variable $X$.
+Parameter $d_x$ determines how quickly the correlation of variable $X$ decreases over distance and $\rho_x$ is the minimum correlation of variable $X$ between two locations of the same (homogeneous) segment.
+The parameters $d_x$ and $\rho_x$ need to be determined for each variable $X$, based on a combination of measurements and expert judgement.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.09in, height=3.06in, keepaspectratio=false]{\pathProbLibPictures autocorrelation_function}
+\caption{Autocorrelation function, correlation within a dike section; in this picture, the correlation $\rho$ is visualized against $\Delta x$, made non-dimensional by the correlation distance $d_x$.}\label{fig:2.40}
+\end{figure}
+
+The correlation model of equation \eqref{ZEqnNum807806} and \Fref{fig:2.40} in principle is applied for each strength variable (load variables can generally be assumed to have correlation $1$ within a single segment).
+This results in a similar model for the $Z$-function, i.e.\ in values $d_Z$ and $\rho_Z$:
+\begin{align}
+\rho \left(\Delta y\right)\approx \rho _{Z} +(1-\rho _{Z} )\exp \left[-\left(\frac{\Delta y^{2} }{d_{Z}^{2} } \right)\right]  \label{eq:rhodely} 
+\end{align}
+
+The parameters $d_Z$ and $\rho_Z$ can be derived as follows: 
+\begin{align}
+\rho _{Z} =\sum _{i=1}^{n}\alpha _{i}^{2} \rho _{i}  \label{eq:sm2} 
+\end{align}
+\begin{align}
+\frac{1}{d_{Z}^{2} } =\frac{1}{1-\rho _{Z} } \sum _{i=1}^{n}\alpha _{i}^{2} (1-\rho _{i} )\frac{1}{d_{i}^{2} }  \label{ZEqnNum304048} 
+\end{align}
+
+In which: 
+
+\begin{tabular}{p{\textwidth-36pt-125mm}p{120mm}}
+$d_i$ & is the correlation length of random variable $i$ \\
+$\rho_i$& is the residual correlation length of random variable $i$ \\
+$\alpha_i$& is the influence coefficient of random variable $i$ \\
+\end{tabular}
+
+Note that coefficients $\alpha_1$, \dots ,$\alpha_n$ are determined in the probabilistic computation for a ''representative'' cross-section within the flood defence segment.
+For this purpose the probabilistic techniques for a single component are used (see \autoref{sec:ReliabilityMethods}).
+
+To derive the probability of failure of a dike segment, the segment is divided into components of equal length $\Delta L$.
+The number of components is equal to:
+\begin{align}
+n_{e} =\frac{L}{\Delta L} 
+\end{align}
+where $L$ is the length of the dike segment.
+The probability of failure for the entire dike segment is then equal to:
+\begin{align}
+P_{f,segment} \approx \left(1+n_{e} \right)P_{f,cross-section} =\left(1+\frac{L}{\Delta L} \right)P_{f,cross-section} \label{ZEqnNum665818} 
+\end{align}
+
+This means the continuous process, in which failure can occur at any location along the dike is now replaced by a discrete process in which the dike segment is composed of a finite number of components, each of which has a failure probability that is equal to the probability of failure of a cross-section.
+This simplification/approximation is only valid for a well selected value of $\Delta L$.
+If we assume that the spatial variation of $Z$ is a Gaussian ergodic process (i.e. $\rho_Z=0$), the length $\Delta L$ should be taken equal to:
+\begin{align}
+\Delta L=d_{Z} \sqrt{\pi } /\beta \quad ;{\rm if} ~ \rho _{Z} =0\label{ZEqnNum979631} 
+\end{align}
+where $\beta$ is the reliability index as derived in the probabilistic computation for a cross-section (see \autoref{sec:ReliabilityMethods}).
+The value of $\Delta L$ is a result of the outcrossing approach (see \Aref{Section_2.4.5.3}) in which the spatial variation of $Z$ is assumed to be a Gaussian ergodic process.
+The derivation of $\Delta L$, as described in equation \eqref{ZEqnNum979631}, is described in \cite{Jongejan2012}.
+
+With the assumption of a Gaussian ergodic process, the failure probability of a dike segment of length $L$ is approximately equal to (combine equations \eqref{ZEqnNum665818} and \eqref{ZEqnNum979631}):
+\begin{align}
+P_{f,segment} \approx \left(1+\frac{L\beta }{d_{Z} \sqrt{\pi } } \right) \Phi \left(-\beta \right)\quad ;{\rm if} ~ \rho _{Z} =0\label{eq:sm3} 
+\end{align}
+
+If $\rho_Z$$>$0, the assumption of a Gausian ergodic process does not hold and an alternative solution is required.
+In that case, $\rho_Z>0$ represents the part of the correlation function that does not contribute to the length effect, because it is the correlation that persists over the entire dike segment.
+In that case the $Z$-function is split in an ergodic part (with $\rho$ approaching zero over long distances) and a non ergodic part (with $\rho$ constant):
+\begin{align}
+Z=\beta -v\sqrt{\rho } -u\sqrt{1-\rho } \label{ZEqnNum628933} 
+\end{align}
+where $v$ is the non-ergodic constant and $u$ is the ergodic stochastic process with:
+\begin{align}
+\rho \left(\Delta y\right)=\exp \left[-\left(\frac{\Delta y^{2} }{d_{Z}^{2} } \right)\right] \label{eq:sm4} 
+\end{align}
+where $\rho$ is the correlation between two locations within the segment and $\Delta y$ is the distance between two locations.
+Using the theorem of total probability, the failure probability of the flood defense segment can be described as follows:
+\begin{align}
+P\left[Z<0\right]=\int _{}^{}P\left[Z<0|v\right]f_{V} \left(v\right)dv \label{ZEqnNum551150} 
+\end{align}
+where $f_V(v)$ is the standard normal density function.
+The conditional failure probability, $P[Z<0|v]$, in equation \eqref{ZEqnNum551150} can be written as (see Jongejan, 2012):
+\begin{align}
+\begin{array}{l} {P\left[Z<0|v\right]=1-\left(1-P\left(Z_{cross} <0\right)\right)e^{-N_{f} } } \\\\ {N_{f} = \displaystyle \frac{L}{2\pi } e^{-\frac{\beta^{*2} }{2} } \frac{\sqrt{2} }{d_{z} } } \\\\ {\beta^{*}= \displaystyle \frac{\beta _{cross} -v\sqrt{\rho _{z} } }{\sqrt{1-\rho _{z} } } } \end{array}\label{ZEqnNum591781} 
+\end{align}
+where $Z_{cross}$ and $\beta_{cross}$ are the $Z$-function and reliability index of the cross section and $\Phi$ is the standard normal distribution function.
+The combination of equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} provide the probability of failure for a flood defense segment.
+More details on the derivation of equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} can be found in \cite{Jongejan2012}.
+Equation \eqref{ZEqnNum591781} can be evaluated with high accuracy using for example numerical integration.
+
+\Note{in formula \ref{eq:sm3}  the width of the mechanism is not taken into account.
+In \probLib the width of the mechanism is taken equal to $\Delta L$.
+In the formula for $N_F$ the length $L$ is replaced by $L$ - $\Delta L$.
+The idea behind this correction is that for stretches smaller than $\Delta L$ it is not be possible to have an increase in failure probability as a result of the length effect.}
+
+%In earlier versions of PC-Ring, the following approximation for equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} was implemented to save computation time:
+%\begin{align}
+%P\left[Z<0\right]=\left(1+\frac{L\beta \sqrt{1-\rho _{z} } }{d_{Z} \sqrt{\pi } } \right)\Phi \left(-\beta %\right)\label{ZEqnNum246851}
+%\end{align}
+
+%This approximation is only valid for small values of $\rho_z$.
+%With the current day computation power, equation \eqref{ZEqnNum591781} can be evaluated in a split second, so it is recommended not to use the approximation as described with equation \eqref{ZEqnNum246851}.
+
+\Note{formula \eqref{ZEqnNum591781} is only valid for value of $\rho_z$ $>$ $0$.
+For values of $\rho_z = 0$ the Hohenbichler method is used in \probLib in combination with the outcrossing approach.}
+
+\subsubsection{Computing equivalent $\alpha$-values}\label{Section_2.5.5.2}
+
+As stated in the previous section, the flood defence segment can be thought of to consist of identical components of $n$ identical components of length $\Delta L$.
+Upscaling to a dike section in essence is therefore the same as upscaling over $n$ identical components.
+The last step in such an upscaling process, is the derivation of new equivalent $\alpha$-values for the individual random variables, see \Aref{Section_2.4.3.2}.
+The first step in this method is to determine the $\alpha$-value of the correlated part of the $Z$-function of equation \eqref{ZEqnNum628933}, i.e.\ variable $V$.
+This is done in the standard way by perturbing the mean value of $V$ with a small value $\varepsilon$ and quantifying the effect on the computed $\beta$-value of the dike section of a small perturbation ($\varepsilon$) in the mean value of $V$.
+The $\alpha$-value of $V$ is thus equal to
+\begin{align}
+\alpha _{v} =\frac{\partial \beta _{section} }{\partial \bar{v}} 
+\end{align}
+
+Equation \eqref{ZEqnNum998801} states that the equivalent value, $\alpha_k^e$, of variable $k$ can then be derived as follows: 
+\begin{align}
+\alpha _{k}^{e} =\sqrt{1-\alpha _{v}^{2} } \frac{\alpha _{k} \sqrt{1-\rho _{k} } }{\sqrt{1-\rho_Z} }+\alpha _{v} \frac{\alpha _{k} \sqrt{\rho _{k} } }{\sqrt{\rho_Z} } \label{ZEqnNum642181} 
+\end{align}
+
+In which $\alpha_k$ is the $\alpha$-value of variable $k$ before upscaling and $\rho_k$ is the correlation of variable $k$ between two components.
+Since components in this case have length $\Delta L$, this correlation is equal to (see equation \eqref{ZEqnNum807806}:
+\begin{align}
+\rho _{k} =\rho _{kr} +\left(1-\rho _{kr} \right)\cdot \exp \left[-\left(\frac{\Delta L}{d_{k} } \right)^{2} \right]\label{eq:sm5} 
+\end{align}
+where $\rho_{kr}$ is the residual correlation length of variable $k$ and $d_x$ is the spatial correlation length of variable $k$. 
+

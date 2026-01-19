@@ -20,59 +20,6 @@
 # All rights reserved.
 #
 
-"""
-This module contains all statistics related functionality.
-
-The most important class in this module is `Stochast`. It defines the stochastic properties of a
-stochastic variable, which is part of a project (which is the main entry point for performing
-a reliability, uncertainty or sensitivity analysis). 
-
-```mermaid
-classDiagram
-    class Stochast{
-        +distribution : DistributionType
-        +"defining properties" : float
-        +"derived properties" : float
-        +is_conditional : bool
-        +conditional_source : Stochast
-    }
-    class HistogramValue{
-        +lower_bound: float
-        +upper_bound: float
-        +amount: float
-        +reliability_index: float
-    }
-    class DiscreteValue{
-        +x: float
-        +amount: float
-    }
-    class FragilityValue{
-        +x: float
-        +reliability_index: float
-        +design_point : DesignPoint
-    }
-    class DesignPoint{
-    }
-    class ContributingStochast{
-        +probability float
-        +variable Stochast
-    }
-    class ConditionalValue{
-        +x: float
-        +"defining properties" 
-    }
-    HistogramValue "*" <-- Stochast
-    DiscreteValue "*" <-- Stochast
-    FragilityValue "*" <-- Stochast
-    Stochast "conditional source" <-- Stochast
-    Stochast "conditional source" <-- Stochast
-    ConditionalValue "*" <-- Stochast
-    Stochast <-- ContributingStochast
-    ContributingStochast "*" <-- Stochast
-    DesignPoint <-- FragilityValue
-```
-"""
-
 
 from __future__ import annotations
 from ctypes import ArgumentError
@@ -234,7 +181,7 @@ class Stochast(FrozenObject):
     `minimum`, `maximum`, `observations`, `truncated` and `inverted`. Depending on the distribution, a selection of these properties is used.
     To find out which properties are used by a distribution, `print` the variable, which only prints the properties in use. For some
     distributions, the list of `histogram_values`, `discrete_values` or `fragility_values` is used. Composite stochasts are supported,
-    where a stochast consists of several other stochasts, each with a certain fraction. 
+    where a stochast consists of several other stochasts, each with a certain fraction.
 
     A number of characteristics can be derived. They can also be set and then stochast properties are updated. These characteristics are:
     `mean`, (standard) `deviation`, `variation` (coefficient) and `design_value`. The design_value needs the input values `design_factor` and
@@ -327,7 +274,7 @@ class Stochast(FrozenObject):
 		self._variables = variables
 		if self._temp_source_str != None:
 			self.conditional_source = self._temp_source_str
-		
+
 	@property
 	def name(self) -> str:
 		"""The name of the stochast
@@ -365,7 +312,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def truncated(self) -> bool:
-		"""Indicates whether the stochast is truncated. 
+		"""Indicates whether the stochast is truncated.
         The truncation takes place at the `minimum` and `maximum` value"""
 		return interface.GetBoolValue(self._id, 'truncated')
 
@@ -375,7 +322,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def mean(self) -> float:
-		"""Mean value of the stochast. 
+		"""Mean value of the stochast.
         When set, defining properties are modified in such a way that the set value and `deviation` are maintained"""
 		return interface.GetValue(self._id, 'mean')
 
@@ -385,7 +332,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def deviation(self) -> float:
-		"""Standard deviation of the stochast. 
+		"""Standard deviation of the stochast.
         When set, defining properties are modified in such a way that the set value and `mean` are maintained"""
 		return interface.GetValue(self._id, 'deviation')
 
@@ -396,7 +343,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def variation(self) -> float:
-		"""Variation coefficient of the stochast. 
+		"""Variation coefficient of the stochast.
         When set, defining properties are modified in such a way that the set value and `mean` are maintained"""
 		return interface.GetValue(self._id, 'variation')
 
@@ -644,7 +591,7 @@ class Stochast(FrozenObject):
 
 	@property
 	def design_value(self) -> float:
-		"""The design value, which is a representable calculation value based on the stochastic definition. 
+		"""The design value, which is a representable calculation value based on the stochastic definition.
         When set, defining properties are adapted while keeping the variation property value unchanged"""
 		return interface.GetValue(self._id, 'design_value')
 
@@ -656,7 +603,7 @@ class Stochast(FrozenObject):
 	def is_array(self) -> bool:
 		"""Indicates whether this stochast should be used as a list of stochasts in a probabilistic analysis"""
 		return interface.GetBoolValue(self._id, 'is_array')
-		
+
 	@is_array.setter
 	def is_array(self, value : bool):
 		interface.SetBoolValue(self._id, 'is_array', value)
@@ -665,7 +612,7 @@ class Stochast(FrozenObject):
 	def array_size(self) -> int:
 		"""Size of the array when this stochast is an array (defined by is_array)"""
 		return interface.GetIntValue(self._id, 'array_size')
-		
+
 	@array_size.setter
 	def array_size(self, value : int):
 		interface.SetIntValue(self._id, 'array_size', value)
@@ -1027,7 +974,7 @@ class Stochast(FrozenObject):
 		cdf = [self.get_cdf(x) for x in values]
 
 		plt.close()
-    
+
 		ax1 = plt.subplot()
 		color = "tab:blue"
 		if self.name == '':
@@ -1071,7 +1018,7 @@ class Stochast(FrozenObject):
 		median_values = [self.get_x_from_u_and_source(0, x) for x in values]
 		low_values = [self.get_x_from_u_and_source(u_low, x) for x in values]
 		high_values = [self.get_x_from_u_and_source(u_high, x) for x in values]
-    
+
 		plt.close()
 
 		ax1 = plt.subplot()
@@ -1549,7 +1496,7 @@ class CorrelationMatrix(FrozenObject):
 	"""Correlation matrix for stochastic variables
 
     The correlation is defined as the Pearson correlation value. The correlation value must be between
-    -1 and 1 (inclusive). 
+    -1 and 1 (inclusive).
 
     By default, the correlation is 0 between different stochasts and 1 between the same stochasts. The correlation matrix
     is symmetric, which is maintained automatically.

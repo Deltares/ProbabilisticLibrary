@@ -1,0 +1,63 @@
+\chapter{Sensitivity}
+\label{chp:Sensitivity}
+
+Sensitivity analysis is a key tool for understanding how variations in input parameters affect the output of a model. By quantifying the influence of different variables, it helps identify the most critical factors, improve model robustness, and support decision-making under uncertainty.
+
+This chapter presents the methods available in the \probLib for conducting a sensitivity analysis.
+
+\section{Single value variation}
+\label{sec:SingleValueVariation}
+
+In single-value variation, variables are varied one at a time and set to a high and low value, while non-varied variables are fixed at their median ($u=0$).
+
+The main drawback of this method is that it does not account for the combined effects of input variables.
+
+\section{Sobol indices}
+\label{sec:SobolIndices}
+
+Sobol indices quantify the influence of a parameter using a Monte Carlo simulation [\cite{SALTELLI2010259}]. By mixing sample values from an initial Monte Carlo run, the Sobol indices are determined as follows.
+
+The first step consists of performing two Monte Carlo simulations, each with $N$ samples, resulting in sets $A$ and $B$. From the combined set, the variance $v$ of the model results is calculated.
+		
+Next, for each variable $p$, new sample sets $A^p$ and $B^p$ are generated, with the value for sample $i$ given by:  
+
+\begin{align}
+A^p = u_\text{i, j, A} = \left\{\begin{array}{ll} j = p & u_{\text{i, j, B}}\\
+j \neq p & u_{\text{i, j, A}}
+\end{array}	
+\right.
+\end{align}
+
+and 
+
+\begin{align}
+B^p = u_\text{i, j, B} = \left\{\begin{array}{ll} j = p & u_{\text{i, j, A}}\\
+	j \neq p & u_{\text{i, j, B}}
+	\end{array}	
+	\right.
+\end{align}
+
+Then, the model values $z$ corresponding to the samples $u$ are calculated. The first-order index and total index for variable $p$ are computed as follows:
+
+\begin{align}
+I_\text{first order} = \frac{1}{N} \cdot \frac{1}{v} \cdot \sum_{i = 1}^{N} z\left(A_i\right) z\left(B^p_i\right) - z\left(A_i\right) z\left(B_i\right)
+\end{align}
+
+and 
+
+\begin{align}
+I_\text{total} = \frac{1}{2N} \cdot \frac{1}{v} \cdot \sum_{i = 1}^{N} \left[z\left(A_i\right) -  z\left(A^p_i\right)\right]^2
+\end{align}
+
+where:
+
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$i$ & is the index number of the sample \\  
+	$j$ & is the variable index \\
+	$A_i$ & is the $i^{th}$ sample in sample set $A$ \\
+	$z\left(A_i\right)$ & is the model result of the $i^{th}$ sample in sample set $A$ \\
+	$N$ & is the number of samples in a Monte Carlo simulation \\  
+	$v$ & is the variance of the model results of the combined set $A$ and $B$ 
+\end{longtable*}
+
+The total index $I_\text{total}$ represents the overall influence of the parameter on the model result.

@@ -19,47 +19,6 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
-"""
-This module contains all the basic functionality for a project.
-
-A project forms the foundation for performing analyses, such as reliability, uncertainty or
-sensitivity analyses. In addition to reliability analyses, additional functionalities are
-available to combine or upscale reliability results.
-
-A model can be assigned to a project, which can be either a Python script or a PTK model
-(the ptk wheel is required for this). When a model is assigned, stochastic variables and
-a correlation matrix are automatically generated.
-
-```mermaid
-classDiagram
-    class ModelProject{
-        +model ZModel
-        +variables list[Stochast]
-        +correlation_matrix CorrelationMatrix
-    }
-    class Stochast{}
-    class CorrelationMatrix{}
-    class ZModel{
-        +name : string
-        +input_parameters : list[ModelParameter]
-        +output_parameters : list[ModelParameter]
-        ~run()
-        ~run_multiple()
-    }
-    class ZModelContainer{
-        +get_model() : ZModel
-    }
-    class ModelParameter{
-        +name : string
-    }
-
-    ZModel <-- ModelProject
-    ZModel "get_model" <-- ZModelContainer
-    ModelParameter "*, input, output " <-- ModelProject
-    Stochast <-- ModelProject
-    CorrelationMatrix <-- ModelProject
-```
-"""
 
 
 from __future__ import annotations
@@ -92,7 +51,7 @@ class ZModel(FrozenObject):
 
 	_callback = None
 	_multiple_callback = None
-	
+
 	def __init__(self, callback = None, output_parameter_size = 1):
 		self._model = None
 		source_code = None
@@ -215,13 +174,13 @@ class ZModel(FrozenObject):
 
 	def _set_callback(self, callback):
 		ZModel._callback = callback
-		
+
 	def _set_multiple_callback(self, multiple_callback):
 		ZModel._multiple_callback = multiple_callback
-		
+
 	def _set_model(self, value):
 		self._model = value
-		
+
 	def set_max_processes(self, value : int):
 		"""Sets the maximum number of parallel processes"""
 		self._max_processes = value
@@ -260,14 +219,14 @@ class ZModel(FrozenObject):
 				self._pool = Pool()
 			else:
 				self._pool = None
-	
+
 	def update(self):
 		"""Updates input and output parameters (this method is used internally by `ModelProject`)"""
 		if not self._model is None:
 			if self._model.is_dirty():
 				self._model.update_model()
 				return True
-			
+
 		return False
 
 	def _get_args(self, values):
@@ -335,13 +294,13 @@ class ZModel(FrozenObject):
 		for input_parameter in self.input_parameters:
 			if input_parameter.is_array:
 				print(pre + f'{input_parameter.name}[{input_parameter.array_size}]')
-			else: 
+			else:
 				print(pre + f'{input_parameter.name}')
 		print('Output parameters:')
 		for output_parameter in self.output_parameters:
 			if output_parameter.is_array:
 				print(pre + f'{output_parameter.name}[{output_parameter.array_size}]')
-			else: 
+			else:
 				print(pre + f'{output_parameter.name}')
 
 class ZModelContainer:
@@ -384,12 +343,12 @@ class ModelParameter(FrozenObject):
 				'default_value',
 				'is_array',
 				'array_size']
-	
+
 	@property
 	def name(self) -> str:
 		"""Name of the parameter"""
 		return interface.GetStringValue(self._id, 'name')
-		
+
 	@name.setter
 	def name(self, value):
 		interface.SetStringValue(self._id, 'name', value)
@@ -398,7 +357,7 @@ class ModelParameter(FrozenObject):
 	def index(self) -> int:
 		"""Sequence number of the parameter in the list of input or output parameters of a `ZModel`"""
 		return interface.GetIntValue(self._id, 'index')
-		
+
 	@index.setter
 	def index(self, value : int):
 		interface.SetIntValue(self._id, 'index', value)
@@ -407,7 +366,7 @@ class ModelParameter(FrozenObject):
 	def default_value(self) -> float:
 		"""Default value of the parameter"""
 		return interface.GetValue(self._id, 'default_value')
-		
+
 	@default_value.setter
 	def default_value(self, value : float):
 		interface.SetValue(self._id, 'default_value', value)
@@ -416,7 +375,7 @@ class ModelParameter(FrozenObject):
 	def is_array(self) -> bool:
 		"""Indicates whether the parameter is an array"""
 		return interface.GetBoolValue(self._id, 'is_array')
-		
+
 	@is_array.setter
 	def is_array(self, value : bool):
 		interface.SetBoolValue(self._id, 'is_array', value)
@@ -573,12 +532,12 @@ class ModelProject(FrozenObject):
 			raise ValueError('ZModel container expected')
 
 		interface.SetBoolValue(self._project_id, 'callback_assigned', self._model.is_model_valid())
-		
+
 	def _check_model(self):
 		if not self._model is None:
 			if self._model.update():
 				self._update_model()
-	
+
 	def _share(self, shared_project):
 		id1 = self._id
 		id2 = shared_project._id
@@ -666,7 +625,7 @@ class RunProjectSettings(FrozenObject):
 		        'reuse_calculations',
 		        'validate',
 		        'is_valid']
-		
+
 	@property
 	def run_values_type(self) -> RunValuesType:
 		"""Defines which value to extract from the stochastic variables"""
@@ -708,28 +667,6 @@ class RunProject(ModelProject):
 
     To run the model, use the `run` method. This results are stored in `realization`.
 
-    ```mermaid
-    classDiagram
-        class ModelProject{
-            +model ZModel
-            +variables list[Stochast]
-            +correlation_matrix CorrelationMatrix
-        }
-        class RunProject{
-            +settings RunProjectSettings
-            +realization Evalution
-            +run()
-        }
-        class RunProjectSettings{}
-        class Stochast{}
-        class CorrelationMatrix{}
-        class Evaluation{}
-        RunProject <|-- ModelProject
-        Stochast <-- ModelProject
-        CorrelationMatrix <-- ModelProject
-        RunProjectSettings <-- RunProject
-        Evaluation <-- RunProject
-    ```
     """
 
 	def __init__(self):
@@ -816,7 +753,7 @@ class SensitivityProject(ModelProject):
 		"""Output parameter for which the sensitivity analysis should be performed, if left blank it will
         be performed for all output parameters"""
 		return interface.GetStringValue(self._id, 'parameter')
-		
+
 	@parameter.setter
 	def parameter(self, value : str | ModelParameter):
 		interface.SetStringValue(self._id, 'parameter', str(value))
@@ -856,7 +793,7 @@ class SensitivityProject(ModelProject):
 				result._set_variables(self.variables)
 				results.append(result)
 			self._results = FrozenList(results)
-				
+
 		return self._results
 
 	@property
@@ -919,7 +856,7 @@ class UncertaintyProject(ModelProject):
 		"""Output parameter for which the uncertainty analysis should be performed, if left blank it will
         be performed for all output parameters"""
 		return interface.GetStringValue(self._id, 'parameter')
-		
+
 	@parameter.setter
 	def parameter(self, value : str | ModelParameter):
 		interface.SetStringValue(self._id, 'parameter', str(value))
@@ -962,7 +899,7 @@ class UncertaintyProject(ModelProject):
 				else:
 					stochasts.append(None)
 			self._stochasts = FrozenList(stochasts)
-				
+
 		return self._stochasts
 
 	@property
@@ -984,7 +921,7 @@ class UncertaintyProject(ModelProject):
 			for result_id in result_ids:
 				results.append(UncertaintyResult(result_id, self.variables))
 			self._results = FrozenList(results)
-				
+
 		return self._results
 
 	@property
@@ -998,7 +935,7 @@ class UncertaintyProject(ModelProject):
 			if correlationMatrixId > 0:
 				self._output_correlation_matrix = CorrelationMatrix(correlationMatrixId)
 				self._output_correlation_matrix._update_variables(self.variables.get_list() + self.stochasts.get_list())
-				
+
 		return self._output_correlation_matrix
 
 	@property
@@ -1027,7 +964,7 @@ class ReliabilityProject(ModelProject):
 		self._initialize_callbacks(self._id)
 		self._set_settings(Settings())
 		super()._freeze()
-        
+
 	def __del__(self):
 		interface.Destroy(self._id)
 
@@ -1097,39 +1034,12 @@ class ReliabilityProject(ModelProject):
 class CombineProject(FrozenObject):
 	"""Project for combining design points. This is the main entry point for performing combining design points.
 
-    The design points to be combined should be added to the list of `design_points`. 
+    The design points to be combined should be added to the list of `design_points`.
 
     To run the combination, use the `run` method. This results in a `design_point`, where the
     reliability index reflects the combined reliability index. The original `design_points` are
     added to the `probabilistic_library.reliability.DesignPoint.contributing_design_points` of the
     resulting design point.
-
-    ```mermaid
-    classDiagram
-        class CombineProject{
-            +design_points list[DesignPoint]
-            +design_point DesignPoint
-            +settings CombineSettings
-            +run()
-        }
-
-        class Stochast{}
-        class CombineSettings{
-            +combine_type CombineType
-            +combine_method CombineMethod
-        }
-        class CorrelationMatrix{}
-        class SelfCorrelationMatrix{}
-        class Stochast{}
-
-        DesignPoint "*, input" <-- CombineProject
-        DesignPoint "result" <-- CombineProject
-        CombineSettings <-- CombineProject
-        CorrelationMatrix <-- CombineProject
-        SelfCorrelationMatrix <-- CombineProject
-        Stochast "*" <-- CorrelationMatrix
-        Stochast "*" <-- SelfCorrelationMatrix
-    ```
     """
 
 	def __init__(self):
@@ -1233,25 +1143,6 @@ class ExcludingCombineProject(FrozenObject):
     reliability index reflects the combined reliability index. The original `design_points` are
     added to the `probabilistic_library.reliability.DesignPoint.contributing_design_points` of the resulting design point.
 
-    ```mermaid
-    classDiagram
-        class ExcludingCombineProject{
-            +design_points list[DesignPoint]
-            +scenarios list[Scenario]
-            +settings ExcludingCombineSettings
-            +design_point DesignPoint
-            +run()
-        }
-
-        class DesignPoint{}
-        class Scenario{}
-        class ExcludingCombineSettings{}
-
-        Scenario "*" <-- ExcludingCombineProject
-        DesignPoint "*, input" <-- ExcludingCombineProject
-        DesignPoint "result" <-- ExcludingCombineProject
-        ExcludingCombineSettings <-- ExcludingCombineProject
-    ```
     """
 
 	def __init__(self):

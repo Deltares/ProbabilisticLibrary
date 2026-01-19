@@ -3,6 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
+# Required otherwise Github action build will fail
 name = "probabilistic_library"
 dynamic = ["version"]
 readme = "readme.md"
@@ -18,6 +19,35 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Development Status :: 5 - Production/Stable",
 ]
+
+[tool.poetry]
+name = "probabilistic_library"
+version = "0.1.0"
+description = "Package which provides probabilistic methods"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.14"
+numpy = "*"
+matplotlib = "*"
+
+[tool.poetry.group.docs.dependencies]
+jupytext = "^1.14.5"
+nbsphinx = "^0.9.1"
+myst-parser = "^4.0.0"
+sphinx = "8.2.3"
+sphinx-book-theme = "^1.0.1"
+sphinx-copybutton = "^0.5.2"
+sphinx-rtd-theme = "^3.0.0"
+sphinx-autosummary-accessors = "^2023.4.0"
+sphinx-design = "^0.6.1"
+ipykernel = "^6.25.1"
+pandoc = "^2.3"
+pillow = "^10.1.0"
+sphinx-autodoc-typehints = "^3.2.0"
+sphinxcontrib-mermaid = "^0.8.0"
+pylint = "^4.0.4"
+pyan3 = "^1.2.0"
+py2puml = "^0.10.0"
 
 [project.urls]
 Homepage = "https://deltares.github.io/ProbabilisticLibrary/"

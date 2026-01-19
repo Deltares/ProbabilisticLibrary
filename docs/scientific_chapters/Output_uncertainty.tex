@@ -1,0 +1,104 @@
+\chapter{Output uncertainty}
+\label{chp:OutputUncertainty}
+
+Output uncertainty is an extension of sensitivity analysis. In this approach, all input parameters are varied according to their defined uncertainties, leading to uncertainty in the output parameters.
+
+This method is useful when one is interested in the potential future values of a physical property. For example, due to a load, subsidence of the soil surface may occur. It would be useful to know how much subsidence could take place over the next ten years. Another example is the movement of a gully due to a side stream. In this case, it is important to predict the gully's location in the coming year.
+
+This chapter presents the methods available in the \probLib for output uncertainty analysis.
+
+\section{Numerical Integration}
+
+Numerical Integration (see also \autoref{sec:NumericalIntegration}) varies all input parameters step by step, generating and calculating a realization for each step combination. The resulting realizations are collected into bins, forming a histogram distribution.
+
+\section{Crude Monte Carlo}
+
+Crude Monte Carlo (see also \autoref{sec:CrudeMonteCarlo}) is the 'standard' Monte Carlo simulation method. Random realizations are generated, and their results are categorized into bins. The more realizations a bin contains, the higher its estimated probability.
+
+The Crude Monte Carlo simulation produces a histogram distribution (see \autoref{sec:HistogramDistribution}) or, if all model results are identical, a deterministic distribution (see \autoref{sec:DeterministicDistribution}). The distribution is fitted using all model results.
+
+\section{Importance Sampling}
+
+Importance Sampling modifies randomly selected realizations so that more realizations are concentrated in a user-specified region. Each realization is transformed into another realization using the same approach as Importance Sampling for reliability (see \autoref{sec:ImportanceSampling}).
+
+This method is particularly useful when one is interested in the tail of the distribution.
+
+\section{Directional Sampling}
+
+Directional Sampling (see also \autoref{sec:DirectionalSampling}) is an accelerated sampling method that identifies the failure domain by sampling along randomly chosen directions. The method operates in a transformed standard space with standard Gaussian variables (mean = $0$, standard deviation = $1$).
+
+After transferring the model into the standard space, the value of model $Z_0$ is calculated for a sample at the center of space $u_0$. 
+
+$n$ points are randomly drawn in the variable space following a uniform distribution. The lines connecting these points to the origin serve as the random directions. In the next step, the required reliability index $\beta_{q}$ corresponding to the given quantile value or probability of exceedance, is evaluated and used to determine the distance $d_{i,0} = |\beta_{q}|$ from the origin. The distance is then used to obtain $n$ sample points in the sample space.
+
+Now, the value of the model $Z_{i,1}$ at each sample point ($d_{i,0}$ distance from the origin on each direction) is evaluated. Subsequently, the related $\beta$ value for each samples (i.e. directions) is calculated. If $\beta_{q}$ is greater than $\beta_0$, every direction with $Z_{i,1} < Z0$ is disregarded in the future probability calculations (i.e., they proceed in an undesired direction), otherwise, they are considered valid. Note that the number of samples $n$ is independent of their validity status. To calculate the probability of failure, equation \autoref{eq:DirectionalSamplingWeight} will be used. At this stage, the assumption of $\beta_{dir} = d_{i,0}$ for all directions is applied. See \ref{fig:DS-first} as the first step for generating the directions and samples, shown for the model $Z=X1_{X2}$, with $X1$ and $X2=N(0,1)$.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{\pathProbLibPictures DS-first.png}
+	\caption{Generation of first samples in random directions}
+	\label{fig:DS-first}
+\end{figure}
+
+The main goal is to find the same value of $Z$ in all directions, with a given tolerance, as the model response for a given exceedance probability. If the $Z$ are not the same for all directions, the following steps must be followed to achieve consistency.
+
+\textbf{[1]} - For each direction $i$, determine a new distance $d_{i,2}$ from the origin such that it satisfies the following condition:
+
+\begin{itemize}
+	\item the predicted model value $Z_{pred}$ is the same for all directions (prediction based on interpolation between $Z_0$ and $max(Z_{i,1})$) ;
+	\item the combined reliability, based on equation \autoref{eq:DirectionalSampling}, remains equal to $\beta_q$. Note that even when a direction is disregarded in previous steps, still the number of directions $n$, is not changed. 
+\end{itemize}
+
+\textbf{[2]} - $d_{i,2}$ is calculated based on the interpolation between $Z_{pred}$ and $Z_{i,1}$ values. Now the model response $Z_{i,2}$ at distance $d_{i,2}$ is evaluated. 
+
+The final steps will be repeated to reach $Z_{i}$, either up to a maximum of $𝑁$ iterations or until the convergence criteria are met. The final $Z_{i}$ then used as the output of the model at the given quantile value or probability of exceedance. The graph \ref{fig:DS-last} shows the output for 90\% quantile, where $Z=1,3826$ is evaluated. The reader may notice how even a limited number of valid samples shape the borders of the failure area for the given exceedence quantile, forming a linear line for the simple model of $Z=X1 + X2$. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{\pathProbLibPictures DS-last.png}
+	\caption{The second/final step of iterations for the valid directions}
+	\label{fig:DS-last}
+\end{figure}
+
+For the error criteria, the distribution of differences between the distances to the center of the $U$-space in all valid directions from the last and current iterations is considered. These differences form a distribution, and its 95\% quantile is used as an indicator of convergence. This quantile is then compared with a user-defined threshold.
+
+%It worthy to mention that the directions are disregarded in the analysis, if:
+%
+%\begin{itemize}
+%	\item calculated distance for them is much higher than $/beta_q$ or
+%	\item calculated distance for them is negative
+%\end{itemize}
+
+\section{FORM}
+
+FORM (First Order Reliability Method) is like FORM in reliability analysis (see also \autoref{sec:FORM}).
+Starting from the origin in $u$-space, steps of fixed length are taken along the steepest gradient.
+For each step a realization is performed and its result is added to a CDF curve
+(see \autoref{sec:CDFCurveDistribution}).
+
+Each subsequent step in the resulting CDF curve is calculated as follows:
+
+\begin{align}
+\label{eq:FORMCDF}
+\vec{u}_{i+1} = \vec{u}_{i} + L \cdot \nabla z \left(\vec{u_{i}}\right)
+\end{align}
+
+The reliability of the added point is:
+
+\begin{align}
+\label{eq:FORMReliability}
+\beta_{i+1} = \mid\mid\vec{u}_{i+1}\mid\mid
+\end{align}
+
+where:
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$\vec{u}$ & is a point in the parameter space defined in u-values \\  
+	$z\left(\vec{u}\right)$ & is the z value calculated at $\vec{u}$ \\  
+	$L$ & is the step size \\  
+	$\nabla z\left(\vec{u}\right)$ & is the steepest gradient of $z$ at $\vec u$ \\
+\end{longtable*}
+
+\section{FOSM}
+
+FOSM (First Order Second Moment) is a much faster technique than Crude Monte Carlo. It calculates the gradient at the origin and then predicts the shape of the resulting distributions. It assumes that the results follow a normal distribution.
+
+Although very fast, its assumption that results have a normal distribution is often not true. However, for quickly estimating the output uncertainty, it can be very useful.
