@@ -32,7 +32,3 @@ pip install probabilistic-library
 
 See the [Tutorials](https://deltares.github.io/ProbabilisticLibrary/tutorials/tutorials.html) for several demonstrations and instructions on how to use the Probabilistic Library. Jupyter notebooks are available for each item and demonstrate how to use the Probabilistic Library.
 
-## License
-
-This library is released under the LGPL license. For full text of this license, refer to the [LICENSE](LICENSE) file.
-

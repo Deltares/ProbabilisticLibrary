@@ -51,7 +51,7 @@ py2puml = "^0.10.0"
 
 [project.urls]
 Homepage = "https://deltares.github.io/ProbabilisticLibrary/"
-Documentation = "https://github.com/Deltares/ProbabilisticLibrary/tree/master/doc"
+Documentation = "https://github.com/Deltares/ProbabilisticLibrary/tree/master/docs"
 Repository = "https://github.com/Deltares/ProbabilisticLibrary"
 issues = "https://github.com/Deltares/ProbabilisticLibrary/issues"
 
