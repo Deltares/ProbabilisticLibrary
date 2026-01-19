@@ -23,10 +23,11 @@ import setuptools
 
 setuptools.setup(
     name="probabilistic_library",
-    version="26.1.1-rc7",
+    version="26.1.1-rc8",
     author="Deltares",
     author_email="d-prob-support@deltares.nl",
     description="Package which provides probabilistic methods",
     packages=setuptools.find_packages(),
+    package_data={'probabilistic_library':['bin/*Deltares.Probabilistic.*.*']},    
     python_requires='>=3.11',
 )
