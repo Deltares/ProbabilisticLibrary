@@ -39,7 +39,12 @@ if (UNIX)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp=libomp ")
 endif (UNIX)
 
-message(INFO "flags = ${CMAKE_CXX_FLAGS_DEBUG}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-instr-generate -fcoverage-mapping -w")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fprofile-instr-generate -fcoverage-mapping -w")
+SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fprofile-instr-generate -fcoverage-mapping -w")
+
+message(INFO " dbg flags = ${CMAKE_CXX_FLAGS_DEBUG}")
+message(INFO " release flags = ${CMAKE_CXX_FLAGS_RELEASE}")
 
 option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 
