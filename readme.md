@@ -13,7 +13,7 @@ The library provides a set of routines that enable reliability, uncertainty, and
 ## Scientific background
 
 The scientific background can be found here:
-[scientific_background.pdf](https://github.com/Deltares/ProbabilisticLibrary/releases/download/25.3.1/scientific_background.pdf)
+[scientific_background.pdf](https://github.com/Deltares/ProbabilisticLibrary/releases/download/26.1.1/scientific_background.pdf)
 
 ## Python wrapper
 
