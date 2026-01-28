@@ -2,16 +2,19 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>b3f45238-e095-435e-a838-8cb5552a7f0b</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
     <StartupFile>
     </StartupFile>
-    <SearchPath>
-    </SearchPath>
-    <WorkingDirectory>$(OutDir)</WorkingDirectory>
+    <SearchPath>..\Deltares.Probabilistic.Python</SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>Deltares.Probabilistic.PWrapper</Name>
-    <RootNamespace>Deltares.Probabilistic.PWrapper</RootNamespace>
+    <Name>Deltares.Probabilistic.Python.Test</Name>
+    <RootNamespace>Deltares.Probabilistic.PWrapper.Test</RootNamespace>
+    <TestFramework>unittest</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.</UnitTestRootDirectory>
     <IsWindowsApplication>False</IsWindowsApplication>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
@@ -25,20 +28,19 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="probabilistic_library\interface.py" />
-    <Compile Include="probabilistic_library\logging.py" />
-    <Compile Include="probabilistic_library\reliability.py" />
-    <Compile Include="probabilistic_library\project.py" />
-    <Compile Include="probabilistic_library\uncertainty.py" />
-    <Compile Include="probabilistic_library\utils.py" />
-    <Compile Include="probabilistic_library\statistic.py">
+    <Compile Include="project_builder.py" />
+    <Compile Include="test_combine.py" />
+    <Compile Include="test_length_effect.py" />
+    <Compile Include="test_sensitivity.py" />
+    <Compile Include="test_utils.py" />
+    <Compile Include="test_run_project.py" />
+    <Compile Include="test_uncertainty.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="probabilistic_library\__init__.py" />
-    <Compile Include="setup.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="probabilistic_library\" />
+    <Compile Include="test_statistics.py" />
+    <Compile Include="test_reliability.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
