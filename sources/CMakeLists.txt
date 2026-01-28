@@ -4,7 +4,7 @@ add_subdirectory(Deltares.Probabilistic.CWrapper)
 
 if(WIN32)
   if ( NOT TARGET tools)
-    add_subdirectory(Deltares.Probabilistic.Wrapper)
+    add_subdirectory(Deltares.Probabilistic.Net)
   endif()
 endif(WIN32)
 
