@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deltares.Probabilistic.Wrapper.Test", "Deltares.Probabilistic.Wrapper.Test\Deltares.Probabilistic.Wrapper.Test.csproj", "{2FDDF340-5B60-4A84-BA24-48C965013E02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deltares.Probabilistic.Net.Test", "Deltares.Probabilistic.Net.Test\Deltares.Probabilistic.Net.Test.csproj", "{2FDDF340-5B60-4A84-BA24-48C965013E02}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.CWrapper", "Deltares.Probabilistic.CWrapper\Deltares.Probabilistic.CWrapper.vcxproj", "{E82A904A-FE1C-4695-BE1F-0AFCE5861FB4}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -12,16 +12,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.CWra
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic", "Deltares.Probabilistic\Deltares.Probabilistic.vcxproj", "{E5635375-6FAF-459C-AB13-83A85B7134EB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.Wrapper", "Deltares.Probabilistic.Wrapper\Deltares.Probabilistic.Wrapper.vcxproj", "{8142BF85-77C9-4340-A643-C837F0EC93AF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.Net", "Deltares.Probabilistic.Net\Deltares.Probabilistic.Net.vcxproj", "{8142BF85-77C9-4340-A643-C837F0EC93AF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E5635375-6FAF-459C-AB13-83A85B7134EB} = {E5635375-6FAF-459C-AB13-83A85B7134EB}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.Test", "Deltares.Probabilistic.Test\Deltares.Probabilistic.Test.vcxproj", "{E1AB245A-8279-4746-9E79-B24B0FB3EA29}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.PWrapper", "Deltares.Probabilistic.PWrapper\Deltares.Probabilistic.PWrapper.pyproj", "{B3F45238-E095-435E-A838-8CB5552A7F0B}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.Python", "Deltares.Probabilistic.Python\Deltares.Probabilistic.Python.pyproj", "{B3F45238-E095-435E-A838-8CB5552A7F0B}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.PWrapper.Test", "Deltares.Probabilistic.PWrapper.Test\Deltares.Probabilistic.PWrapper.Test.pyproj", "{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.Python.Test", "Deltares.Probabilistic.Python.Test\Deltares.Probabilistic.Python.Test.pyproj", "{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
