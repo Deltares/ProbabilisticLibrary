@@ -2,7 +2,7 @@ name: Documentation Improvement
 description: Report wrong or missing documentation
 labels: [documentation]
 type: task
-projects: ["Deltares/124"]
+projects: ["Deltares/131"]
 
 body:
   - type: checkboxes
