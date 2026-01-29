@@ -17,7 +17,7 @@ generate_product_version(
 )
 
 add_library(Deltares.Probabilistic.CWrapper
-  SHARED
+  STATIC
     ${cwrapper_files}
     ${VersionFilesOutputVariable}
 )
