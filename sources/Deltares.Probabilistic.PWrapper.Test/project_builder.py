@@ -35,6 +35,10 @@ def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
 
+def failing_model(a, b):
+    val = [a + b, a - b]
+    return val
+
 class LinearKwargs (TypedDict):
     a : float
     b : float
@@ -201,6 +205,26 @@ def get_run_linear_project():
     project = RunProject()
 
     project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.triangular
+    stochast1.minimum = -1
+    stochast1.shift = 1
+    stochast1.maximum = 1
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.triangular
+    stochast2.minimum = -1
+    stochast2.shift = 1
+    stochast2.maximum = 1
+
+    return project
+
+def get_failing_model_project():
+
+    project = RunProject()
+
+    project.model = failing_model
 
     stochast1 = project.variables['a']
     stochast1.distribution =  DistributionType.triangular

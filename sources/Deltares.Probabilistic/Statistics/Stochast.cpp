@@ -386,6 +386,8 @@ namespace Deltares
         {
             if (IsVariableStochast)
             {
+                Logging::ValidationSupport::checkNotNull(report, VariableSource == nullptr, "Conditional source", name);
+
                 initializeConditionalValues();
                 ValueSet->validate(report, distributionType, truncated, inverted, name);
             }
