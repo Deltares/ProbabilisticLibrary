@@ -22,6 +22,7 @@
 #include "ProjectServer.h"
 
 #include <complex>
+#include <iostream>
 #include <string>
 #include <memory>
 
@@ -236,7 +237,15 @@ namespace Deltares
 
         void ProjectServer::Execute(int id, std::string method_)
         {
-            handlersTable[id]->Execute(id, method_);
+            if (handlersTable.contains(id))
+            {
+                std::cout << "Debug: handle id: " << id << std::endl;
+                handlersTable[id]->Execute(id, method_);
+            }
+            else
+            {
+                std::cout << "Error: Id not found: " << id << std::endl;
+            }
         }
     }
 }

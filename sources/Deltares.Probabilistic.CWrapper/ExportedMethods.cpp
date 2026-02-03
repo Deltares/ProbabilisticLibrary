@@ -34,6 +34,7 @@
 #endif
 
 Deltares::Server::ProjectServer* projectServer = new Deltares::Server::ProjectServer();
+std::string lastException = "";
 
 extern "C" DLL_PUBLIC void AddLibrary(char* library)
 {
@@ -269,6 +270,32 @@ extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, char* property, Deltares::Mo
 
 extern "C" DLL_PUBLIC void Execute(int id, char* method)
 {
-    std::string methodStr(method);
-    projectServer->Execute(id, methodStr);
+    try
+    {
+        lastException = "";
+        std::string methodStr(method);
+        projectServer->Execute(id, methodStr);
+    }
+    catch (const std::exception& e)
+    {
+        lastException = std::string(e.what());
+    }
 }
+
+extern "C" DLL_PUBLIC size_t GetExceptionLength()
+{
+    return lastException.length();
+}
+
+extern "C" DLL_PUBLIC void GetException(char* result_c, size_t size)
+{
+    const char* result_b = lastException.c_str();
+
+#ifdef __GNUC__
+    snprintf(result_c, size, "%s", result_b);
+#else
+    _snprintf_s(result_c, size, _TRUNCATE, result_b);
+#endif
+}
+
+

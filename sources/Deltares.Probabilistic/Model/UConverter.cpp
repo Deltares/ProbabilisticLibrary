@@ -168,7 +168,7 @@ namespace Deltares
 
             if (!valid)
             {
-                throw Reliability::probLibException("When using array variable stochasts, the size of the arrays must match");
+                throw Reliability::probLibException(stochast->definition->name + "When using array variable stochasts, the size of the arrays must match");
             }
         }
 
@@ -223,7 +223,7 @@ namespace Deltares
 
             if (!variableStochastIndexFound)
             {
-                throw Reliability::probLibException("Variable stochast source has not been set");
+                throw Reliability::probLibException(stochast->definition->name + ": Variable stochast source has not been set");
             }
         }
 
