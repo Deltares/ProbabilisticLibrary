@@ -274,6 +274,9 @@ class Stochast(FrozenObject):
 		self._variables = variables
 		if self._temp_source_str != None:
 			self.conditional_source = self._temp_source_str
+		if self._array_variables != None:
+			for array_variable in self._array_variables:
+				array_variable._set_variables(variables)
 
 	@property
 	def name(self) -> str:
@@ -637,6 +640,9 @@ class Stochast(FrozenObject):
 
 	def _array_variables_changed(self):
 		if not self._synchronizing:
+			for array_variable in self._array_variables:
+				if len(array_variable._variables) == 0:
+					array_variable._set_variables(self._variables)
 			interface.SetArrayIntValue(self._id, 'array_variables', [array_variable._id for array_variable in self._array_variables])
 
 	def get_quantile(self, quantile : float) -> float:

@@ -21,6 +21,8 @@
 //
 #include "Stochast.h"
 
+#include <iostream>
+
 #include "StandardNormal.h"
 #include "Distributions/DistributionLibrary.h"
 #include "Distributions/InvertedDistribution.h"
@@ -175,7 +177,38 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<Stochast> Stochast::getVariableSource()
+        bool Stochast::IsVariableSourceAllowed(int arrayIndex)
+        {
+            if (VariableSource == nullptr)
+            {
+                return false;
+            }
+
+            if (!VariableSource->modelParameter->isArray)
+            {
+                return true;
+            }
+
+            // if the array variables cover all array entries, no check is needed here
+            if (this->modelParameter->isArray && static_cast<int>(ArrayVariables.size()) >= this->modelParameter->arraySize)
+            {
+                return true;
+            }
+
+            int requiredSize = 1;
+            if (arrayIndex != -1)
+            {
+                requiredSize = arrayIndex + 1;
+            }
+            else if (this->modelParameter->isArray)
+            {
+                requiredSize = this->modelParameter->arraySize;
+            }
+
+            return requiredSize <= VariableSource->modelParameter->arraySize;
+        }
+
+        std::shared_ptr<Stochast> Stochast::getVariableSource(int arrayIndex)
         {
             if (distributionType == DistributionType::Composite)
             {
@@ -184,15 +217,26 @@ namespace Deltares
                     if (contributingStochast->Probability > 0 && contributingStochast->Stochast->isVariable())
                     {
                         std::shared_ptr<Stochast> stochast = std::static_pointer_cast<Stochast>(contributingStochast->Stochast);
-                        return stochast->VariableSource;
+                        return stochast->getVariableSource(arrayIndex);
                     }
                 }
 
                 return nullptr;
             }
+            else if (VariableSource != nullptr)
+            {
+                if (this->modelParameter->isArray && arrayIndex < static_cast<int>(VariableSource->ArrayVariables.size()))
+                {
+                    return VariableSource->ArrayVariables[arrayIndex];
+                }
+                else
+                {
+                    return VariableSource;
+                }
+            }
             else
             {
-                return VariableSource;
+                return nullptr;
             }
         }
 
@@ -384,9 +428,19 @@ namespace Deltares
 
         void Stochast::validate(Logging::ValidationReport& report)
         {
+            this->validate(report, -1);
+        }
+
+        void Stochast::validate(Logging::ValidationReport& report, int arrayIndex)
+        {
             if (IsVariableStochast)
             {
                 Logging::ValidationSupport::checkNotNull(report, VariableSource == nullptr, "Conditional source", name);
+
+                if (VariableSource != nullptr && !IsVariableSourceAllowed(arrayIndex))
+                {
+                    Logging::ValidationSupport::add(report, "Conditional source " + VariableSource->name + " has different array size.", name, Logging::MessageType::Error);
+                }
 
                 initializeConditionalValues();
                 ValueSet->validate(report, distributionType, truncated, inverted, name);
@@ -394,6 +448,14 @@ namespace Deltares
             else
             {
                 distribution->validate(report, *properties, name);
+            }
+
+            if (this->modelParameter->isArray)
+            {
+                for (size_t i = 0; i < this->ArrayVariables.size(); i++)
+                {
+                    this->ArrayVariables[i]->validate(report, static_cast<int>(i));
+                }
             }
         }
 
