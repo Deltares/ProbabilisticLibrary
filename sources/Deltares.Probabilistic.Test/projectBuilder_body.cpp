@@ -36,7 +36,7 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<ModelRunner> projectBuilder::BuildProject() const
     {
-        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v){ return zfunc(v); });
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v) { return zfunc(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Normal;
         std::vector<double> params{ 0.0, 1.0 };
@@ -179,7 +179,7 @@ namespace Deltares::Probabilistic::Test
     std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterministAndCopula(double valueDeterminist) const
     {
         auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
-            { return zfuncWithDeterminist(v); });
+        { return zfuncWithDeterminist(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         stochast.push_back(getNormalStochast(0.0, 1.0));
         stochast.push_back(getDeterministicStochast(valueDeterminist));
@@ -215,12 +215,12 @@ namespace Deltares::Probabilistic::Test
         if (useProxy)
         {
             z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
-                { return zfuncTwoBranchesProxy(v); });
+            { return zfuncTwoBranchesProxy(v); });
         }
         else
         {
             z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
-                { return zfuncTwoBranches(v); });
+            { return zfuncTwoBranches(v); });
         }
 
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
@@ -461,9 +461,33 @@ namespace Deltares::Probabilistic::Test
         return project;
     }
 
+    std::shared_ptr<ReliabilityProject> projectBuilder::getArrayVariableProject()
+    {
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
+
+        std::shared_ptr<Stochast> a = getUniformStochast(0, 1);
+        std::shared_ptr<Stochast> b = getUniformVariableStochast(a, 0, 1);
+
+        a->modelParameter->isArray = true;
+        a->modelParameter->arraySize = 5;
+
+        b->modelParameter->isArray = true;
+        b->modelParameter->arraySize = 5;
+
+        project->stochasts.push_back(a);
+        project->stochasts.push_back(b);
+
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
+        project->correlation->Init(project->stochasts);
+
+        project->model = std::make_shared<ZModel>(projectBuilder::sum);
+
+        return project;
+    }
+
     std::shared_ptr<Stochast> projectBuilder::getDeterministicStochast(double mean)
     {
-        std::vector<double> values = {mean};
+        std::vector<double> values = { mean };
         return std::make_shared<Stochast>(DistributionType::Deterministic, values);
     }
 
@@ -477,6 +501,31 @@ namespace Deltares::Probabilistic::Test
     {
         std::vector<double> values = { min, max };
         return std::make_shared<Stochast>(DistributionType::Uniform, values);
+    }
+
+    std::shared_ptr<Stochast>  projectBuilder::getUniformVariableStochast(const std::shared_ptr<Stochast>& source, double min, double max)
+    {
+        std::vector<double> values = { min, max };
+        double diff = max - min;
+
+        auto stochast =  std::make_shared<Stochast>(DistributionType::Uniform, values);
+
+        stochast->IsVariableStochast = true;
+        stochast->VariableSource = source;
+
+        auto value1 = std::make_shared<VariableStochastValue>();
+        value1->X = 0.2;
+        value1->Stochast->Minimum = min + 0.1 * diff;
+        value1->Stochast->Maximum = min + 0.3 * diff;
+        stochast->ValueSet->StochastValues.push_back(value1);
+
+        auto value2 = std::make_shared<VariableStochastValue>();
+        value2->X = 0.8;
+        value2->Stochast->Minimum = max - 0.3 * diff;
+        value2->Stochast->Maximum = max - 0.1 * diff;
+        stochast->ValueSet->StochastValues.push_back(value2);
+
+        return stochast;
     }
 
     std::shared_ptr<Stochast>  projectBuilder::getTriangularStochast(double min, double top, double max)
