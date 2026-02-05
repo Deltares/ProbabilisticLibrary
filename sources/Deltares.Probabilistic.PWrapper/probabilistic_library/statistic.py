@@ -258,7 +258,7 @@ class Stochast(FrozenObject):
 				'get_series',
 				'conditional',
 				'conditional_source',
-				'conditional_values'
+				'conditional_values',
 				'design_factor',
 				'design_quantile',
 				'design_value',
