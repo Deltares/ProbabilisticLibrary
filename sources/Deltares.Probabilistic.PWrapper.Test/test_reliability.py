@@ -1420,5 +1420,22 @@ Alpha values:
         sys.stdout = sys.__stdout__
         self.assertEqual(printed, "ok\n")
 
+        for i in range(project.variables['a'].array_size):
+            a_array = Stochast()
+            a_array.distribution = DistributionType.deterministic
+            a_array.mean = 2.5
+            project.variables['a'].array_variables.append(a_array)
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "ok\n")
+
+        # check whether it does not run into an exception
+        project.run()
+
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -121,7 +121,7 @@ namespace Deltares
 
         void DesignPoint::updateVariableStochast(std::shared_ptr<StochastPoint> fragilityCurveAlpha, std::shared_ptr<StochastPointAlpha> alpha) const
         {
-            std::shared_ptr<Statistics::Stochast> alphaSource = alpha->Stochast->getVariableSource(alpha->Index);
+            std::shared_ptr<Statistics::Stochast> alphaSource = alpha->Stochast->getVariableSource();
             for (std::shared_ptr<StochastPointAlpha> alpha2 : fragilityCurveAlpha->Alphas)
             {
                 if (alpha2->Stochast == alphaSource)

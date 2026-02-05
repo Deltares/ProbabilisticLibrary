@@ -208,7 +208,7 @@ namespace Deltares
             return requiredSize <= VariableSource->modelParameter->arraySize;
         }
 
-        std::shared_ptr<Stochast> Stochast::getVariableSource(int arrayIndex)
+        std::shared_ptr<Stochast> Stochast::getVariableSource()
         {
             if (distributionType == DistributionType::Composite)
             {
@@ -217,26 +217,15 @@ namespace Deltares
                     if (contributingStochast->Probability > 0 && contributingStochast->Stochast->isVariable())
                     {
                         std::shared_ptr<Stochast> stochast = std::static_pointer_cast<Stochast>(contributingStochast->Stochast);
-                        return stochast->getVariableSource(arrayIndex);
+                        return stochast->getVariableSource();
                     }
                 }
 
                 return nullptr;
             }
-            else if (VariableSource != nullptr)
-            {
-                if (this->modelParameter->isArray && arrayIndex < static_cast<int>(VariableSource->ArrayVariables.size()))
-                {
-                    return VariableSource->ArrayVariables[arrayIndex];
-                }
-                else
-                {
-                    return VariableSource;
-                }
-            }
             else
             {
-                return nullptr;
+                return VariableSource;
             }
         }
 
@@ -796,11 +785,11 @@ namespace Deltares
                 {"qualitative", Qualitative},
                 {"composite", Composite},
                 {"standard_normal", DistributionType::StandardNormal}
-            };
+        };
 
         DistributionType Stochast::getDistributionType(const std::string& distributionType)
         {
-            for(const auto& [name, type] : allDistributions)
+            for (const auto& [name, type] : allDistributions)
             {
                 if (name == distributionType)
                 {

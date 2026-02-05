@@ -21,7 +21,6 @@
 //
 #include "UConverter.h"
 
-#include <iostream>
 #include <map>
 
 #include "../Statistics/Stochast.h"
@@ -56,11 +55,12 @@ namespace Deltares
                         if (static_cast<int>(stochasts[i]->ArrayVariables.size()) > j)
                         {
                             stochasts[i]->ArrayVariables[j]->name = stochasts[i]->getIndexedStochastName(j);
-                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]->ArrayVariables[j], j));
+                            //stochasts[i]->ArrayVariables[j]->name = stochasts[i]->name;
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]->ArrayVariables[j], stochasts[i], j));
                         }
                         else
                         {
-                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i], j));
                         }
                         mapping[k++] = static_cast<int>(i);
                         k++;
@@ -68,7 +68,7 @@ namespace Deltares
                 }
                 else
                 {
-                    this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]));
+                    this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i]));
                     mapping[k++] = static_cast<int>(i);
                 }
             }
@@ -189,20 +189,20 @@ namespace Deltares
         {
             bool variableStochastIndexFound = false;
 
-            std::shared_ptr<Statistics::Stochast> requiredSource = stochast->definition->getVariableSource(stochast->index);
+            std::shared_ptr<Statistics::Stochast> requiredSource = stochast->definition->getVariableSource();
 
             if (requiredSource == nullptr)
             {
-                throw Reliability::probLibException(stochast->definition->name + ": Could not fine source stochast");
+                throw Reliability::probLibException(stochast->definition->name + ": Could not find source stochast");
             }
 
             for (size_t j = 0; j < this->stochasts.size(); j++)
             {
                 std::shared_ptr<ComputationalStochast> otherStochast = stochasts[j];
 
-                if (otherStochast->definition == requiredSource)
+                if (otherStochast->parent == requiredSource || otherStochast->definition == requiredSource)
                 {
-                    if (!otherStochast->definition->modelParameter->isArray || stochast->index == otherStochast->index)
+                    if (!otherStochast->parent->modelParameter->isArray || stochast->index == otherStochast->index)
                     {
                         variableStochastIndex[index] = static_cast<int>(j);
                         variableStochastIndexFound = true;
@@ -213,7 +213,7 @@ namespace Deltares
 
             if (!variableStochastIndexFound)
             {
-                throw Reliability::probLibException(stochast->definition->name + ": Variable stochast source has not been set");
+                throw Reliability::probLibException(stochast->definition->name + ": Variable stochast source " + requiredSource->name + " has not been found.\n");
             }
         }
 

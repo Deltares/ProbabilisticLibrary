@@ -34,6 +34,7 @@ namespace Deltares::Probabilistic::Test
         testRunModelDesignValues();
         testNoModel();
         testRunModelArraysVariable();
+        testRunModelVariableSourceIsNotVarying();
         testRunModelVariableWithArrayVariables();
     }
 
@@ -114,6 +115,40 @@ namespace Deltares::Probabilistic::Test
         // should fail, the source array is less than the target array
         project->stochasts[1]->modelParameter->arraySize = 7;
         ASSERT_FALSE(project->isValid());
+    }
+
+    void TestRunModel::testRunModelVariableSourceIsNotVarying() const
+    {
+        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getArrayVariableProject());
+
+        project->settings->runValuesType = Statistics::MeanValues;
+
+        ASSERT_TRUE(project->isValid());
+
+        project->stochasts[0]->setDistributionType(Statistics::DistributionType::Deterministic);
+        project->stochasts[0]->getProperties()->Location = 0.5;
+
+        ASSERT_TRUE(project->isValid());
+
+        project->run();
+
+        ASSERT_NEAR(project->evaluation->Z, 5.0, margin);
+        ASSERT_EQ(project->evaluation->InputValues.size(), 10);
+
+        // check with specified array variables
+        std::vector<double> values = { 0.8 };
+        auto arrayStochast = std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Deterministic, values);
+        for (int i = 0; i < project->stochasts[0]->modelParameter->arraySize; i++)
+        {
+            project->stochasts[0]->ArrayVariables.push_back(arrayStochast);
+        }
+
+        ASSERT_TRUE(project->isValid());
+
+        project->run();
+
+        ASSERT_NEAR(project->evaluation->Z, 8.0, margin);
+        ASSERT_EQ(project->evaluation->InputValues.size(), 10);
     }
 
     void TestRunModel::testRunModelVariableWithArrayVariables() const

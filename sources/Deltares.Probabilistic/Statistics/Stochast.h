@@ -462,7 +462,7 @@ namespace Deltares
              * \brief In case of a variable stochast, the stochast of which the x-value is used to define the stochastic parameters of this stochast
              * \returns Variable source
              */
-            std::shared_ptr<Stochast> getVariableSource(int arrayIndex);
+            std::shared_ptr<Stochast> getVariableSource();
 
             /**
              * \brief In case of a variable stochast, the interpolation table to convert from x-value of the other stochast to the stochastic parameters of this stochast
