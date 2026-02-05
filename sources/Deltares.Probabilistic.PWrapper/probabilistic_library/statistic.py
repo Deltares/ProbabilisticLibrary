@@ -550,7 +550,10 @@ class Stochast(FrozenObject):
 			value = self._variables[value]
 		if isinstance(value, Stochast):
 			interface.SetIntValue(self._id, 'conditional_source', value._id)
+			self._conditional_source = value
 			self._temp_source_str = None
+		else:
+			self._conditional_source = None
 
 	@property
 	def conditional_values(self) -> list[ConditionalValue]:

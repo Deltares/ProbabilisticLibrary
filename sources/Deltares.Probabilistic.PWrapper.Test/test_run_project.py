@@ -109,6 +109,7 @@ class Test_run_project(unittest.TestCase):
 
         # stochast not contained by project, should lead to exception
         project.variables['b'].conditional_source = Stochast()
+        project.variables['b'].conditional_source.name = 'x'
         project.variables['b'].conditional_values.append( ConditionalValue())
 
         project.validate()
@@ -118,7 +119,7 @@ class Test_run_project(unittest.TestCase):
         except Exception as e:
             msg = str(e)
 
-        self.assertEqual("""b: Variable stochast source has not been set""", msg)
+        self.assertEqual("""b: Variable stochast source x has not been found.\n""", msg)
 
     def test_no_model(self):
         project = RunProject()
