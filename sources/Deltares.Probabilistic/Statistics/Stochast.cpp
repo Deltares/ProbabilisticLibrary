@@ -428,7 +428,9 @@ namespace Deltares
 
                 if (VariableSource != nullptr && !IsVariableSourceAllowed(arrayIndex))
                 {
-                    Logging::ValidationSupport::add(report, "Conditional source " + VariableSource->name + " has different array size.", name, Logging::MessageType::Error);
+                    Logging::ValidationSupport::add(
+                        report, "Conditional source " + VariableSource->name + " has different array size.", name,
+                        Logging::MessageType::Error);
                 }
 
                 initializeConditionalValues();

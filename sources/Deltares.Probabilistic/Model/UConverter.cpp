@@ -55,7 +55,6 @@ namespace Deltares
                         if (static_cast<int>(stochasts[i]->ArrayVariables.size()) > j)
                         {
                             stochasts[i]->ArrayVariables[j]->name = stochasts[i]->getIndexedStochastName(j);
-                            //stochasts[i]->ArrayVariables[j]->name = stochasts[i]->name;
                             this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]->ArrayVariables[j], stochasts[i], j));
                         }
                         else

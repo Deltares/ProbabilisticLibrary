@@ -66,11 +66,9 @@ namespace Deltares
             /**
              * \brief Validates the stochastic parameters and puts the results in a report
              * \param report The validation report containing the validation results
-             * \param arrayIndex The index where this stochast inthe ArrayVariables of another staocht, -1 if not present
+             * \param arrayIndex The index where this stochast in the ArrayVariables of another stochast, -1 if not present
              */
             void validate(Logging::ValidationReport& report, int arrayIndex);
-
-
 
             static const std::vector<std::pair<const char*, DistributionType>> allDistributions;
 
@@ -454,7 +452,7 @@ namespace Deltares
             std::shared_ptr<Stochast> VariableSource = nullptr;
 
             /**
-             * \brief Indicates whether tha variable source is allowed with respect to array definitions
+             * \brief Indicates whether the variable source is allowed with respect to array definitions
              */
             bool IsVariableSourceAllowed(int arrayIndex);
 

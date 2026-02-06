@@ -31,3 +31,14 @@ void fillErrorMessage(tError & error, const std::string s)
     size_t last = std::min(s.length(), ERRORMSGLENGTH-1);
     error.errorMessage[last] = char(0);
 }
+
+void copyStringToCharPointer(const std::string& str, char* p, const size_t size)
+{
+    const char* cStr = str.c_str();
+
+#ifdef __GNUC__
+    snprintf(result_c, size, "%s", cStr);
+#else
+    _snprintf_s(p, size, _TRUNCATE, cStr);
+#endif
+}
