@@ -37,7 +37,7 @@ void copyStringToCharPointer(const std::string& str, char* p, const size_t size)
     const char* cStr = str.c_str();
 
 #ifdef __GNUC__
-    snprintf(result_c, size, "%s", cStr);
+    snprintf(p, size, "%s", cStr);
 #else
     _snprintf_s(p, size, _TRUNCATE, cStr);
 #endif
