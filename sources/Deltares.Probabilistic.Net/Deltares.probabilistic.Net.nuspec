@@ -13,6 +13,6 @@
     <copyright>Copyright © Deltares $([System.DateTime]::Today.ToString(yyyy))</copyright>
   </metadata>
   <files>
-    <file src="..\x64\Release\Deltares.Probabilistic.Wrapper.dll" target="lib\net80\Deltares.Probabilistic.Wrapper.dll" />
+    <file src="..\x64\Release\Deltares.Probabilistic.Net.dll" target="lib\net80\Deltares.Probabilistic.Net.dll" />
   </files>
 </package>
