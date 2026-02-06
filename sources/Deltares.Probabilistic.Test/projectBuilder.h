@@ -54,6 +54,7 @@ namespace Deltares::Probabilistic::Test
         static std::shared_ptr<Reliability::ReliabilityProject> getLinearProject();
         static std::shared_ptr<Reliability::ReliabilityProject> getLinearOutputProject();
         static std::shared_ptr<Reliability::ReliabilityProject> getTriangularLinearProject();
+        static std::shared_ptr<Reliability::ReliabilityProject> getArrayVariableProject();
 
         static const bool logZtoScreen = false;
         static std::shared_ptr<Statistics::Stochast>  getDeterministicStochast(double mean = 0);
@@ -73,6 +74,8 @@ namespace Deltares::Probabilistic::Test
         static void quadratic(std::shared_ptr<Models::ModelSample> sample);
 
         static std::shared_ptr<Statistics::Stochast>  getUniformStochast(double min = 0, double max = 1);
+        static std::shared_ptr<Statistics::Stochast>  getUniformVariableStochast(const std::shared_ptr<Statistics::Stochast>& source, double min, double max);
+
         static std::shared_ptr<Statistics::Stochast>  getTriangularStochast(double min = 0, double top = 0, double max = 1);
         static std::shared_ptr<Statistics::Stochast>  getGumbelStochast(double mean = 0, double stddev = 1);
     };

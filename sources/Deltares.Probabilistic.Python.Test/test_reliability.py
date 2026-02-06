@@ -523,6 +523,54 @@ def h(a,b,c):
         project.variables['a'].array_size = 5
         project.variables['b'].array_size = 5
 
+        for i in range(project.variables['b'].array_size):
+            b_array = Stochast()
+            b_array.distribution = DistributionType.uniform
+            b_array.minimum = i-3
+            b_array.maximum = i-1
+            b_array.conditional = True
+            b_array.conditional_source = 'a'
+            project_builder.assign_conditional_values(b_array)
+            project.variables['b'].array_variables.append(b_array)
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.validate()
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(0.51, beta, delta=margin)
+        self.assertEqual(11, len(alphas))
+
+        self.assertAlmostEqual(0, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.44, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(-0.046, alphas[6].alpha, delta=margin)
+
+        self.assertEqual(0, alphas[0].index)
+        self.assertEqual(0, alphas[1].index)
+        self.assertEqual(4, alphas[5].index)
+        self.assertEqual(0, alphas[6].index)
+
+        self.assertEqual(project.variables['L'], alphas[0].variable)
+        self.assertEqual(project.variables['a'], alphas[1].variable)
+        self.assertEqual(project.variables['a'], alphas[5].variable)
+        self.assertEqual(project.variables['b'].array_variables[0], alphas[6].variable)
+
+        self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)
+        self.assertAlmostEqual(0.18, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(0.18, alphas[6].x, delta=margin)
+
+    def test_form_linear_array_conditional(self):
+        project = project_builder.get_linear_array_project()
+
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
+
         project_builder.assign_conditional_values(project.variables['b'])
 
         project.variables['b'].conditional_source = 'a'
@@ -1289,6 +1337,104 @@ Alpha values:
 
         project.correlation_matrix[(project.variables[1], project.variables[2])] = 1.0
         self.assertTrue(project.is_valid())
+
+    def test_validation_conditional_array(self):
+        project = project_builder.get_linear_array_project()
+
+        self.assertEqual(False, project.variables['L'].is_array)
+        self.assertEqual(True, project.variables['a'].is_array)
+        self.assertEqual(True, project.variables['b'].is_array)
+
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
+
+        project_builder.assign_conditional_values(project.variables['b'])
+        project.variables['b'].conditional = True
+        project.variables['b'].conditional_source = 'a'
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "ok\n")
+
+        project.variables['b'].array_size = 6
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "Error: b => Conditional source a has different array size.\n")
+
+    def test_validation_conditional_array_filled(self):
+        project = project_builder.get_linear_array_project()
+
+        self.assertEqual(False, project.variables['L'].is_array)
+        self.assertEqual(True, project.variables['a'].is_array)
+        self.assertEqual(True, project.variables['b'].is_array)
+
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
+
+        project_builder.assign_conditional_values(project.variables['b'])
+        project.variables['b'].conditional = True
+        project.variables['b'].conditional_source = 'a'
+
+        for i in range(project.variables['b'].array_size):
+            b_array = Stochast()
+            b_array.distribution = DistributionType.uniform
+            b_array.minimum = i-3
+            b_array.maximum = i-1
+            b_array.conditional = True
+            b_array.conditional_source = 'a'
+            project_builder.assign_conditional_values(b_array)
+            project.variables['b'].array_variables.append(b_array)
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "ok\n")
+
+        project.variables['b'].array_size = 6
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "Error: b => Conditional source a has different array size.\n")
+
+        b_last = Stochast()
+        b_last.distribution = DistributionType.uniform
+        b_last.minimum = 10
+        b_last.maximum = 12
+        project.variables['b'].array_variables.append(b_last)
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "ok\n")
+
+        for i in range(project.variables['a'].array_size):
+            a_array = Stochast()
+            a_array.distribution = DistributionType.deterministic
+            a_array.mean = 2.5
+            project.variables['a'].array_variables.append(a_array)
+
+        sys.stdout = StringIO()
+        project.validate()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        self.assertEqual(printed, "ok\n")
+
+        # check whether it does not run into an exception
+        project.run()
+
 
 
 if __name__ == '__main__':

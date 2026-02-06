@@ -2,7 +2,7 @@ name: Bug Report
 description: Report an incorrect behavior of Probabilistic library
 labels: [bug]
 type: bug
-projects: ["Deltares/124"]
+projects: ["Deltares/131"]
 
 body:
   - type: checkboxes

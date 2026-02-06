@@ -63,6 +63,13 @@ namespace Deltares
              */
             std::shared_ptr<StochastProperties> getInterpolatedProperties(double xSource);
 
+            /**
+             * \brief Validates the stochastic parameters and puts the results in a report
+             * \param report The validation report containing the validation results
+             * \param arrayIndex The index where this stochast in the ArrayVariables of another stochast, -1 if not present
+             */
+            void validate(Logging::ValidationReport& report, int arrayIndex);
+
             static const std::vector<std::pair<const char*, DistributionType>> allDistributions;
 
         protected:
@@ -236,7 +243,7 @@ namespace Deltares
 
             /**
              * \brief Indicates whether different u-values can lead to different x-values
-             * \return Indication 
+             * \return Indication
              */
             bool isVarying() override;
 
@@ -262,7 +269,7 @@ namespace Deltares
             double getMean() override;
 
             /**
-             * \brief Sets the mean value of a stochast 
+             * \brief Sets the mean value of a stochast
              * \remark This will lead to a modification of the stochast parameters, such as the location. The standard deviation will not be changed.
              * \param mean Mean value
              */
@@ -403,7 +410,7 @@ namespace Deltares
              * \return List of x-values
              */
             std::vector<double> getDiscontinuityPoints() override;
-            
+
             /**
              * \brief Indicates whether the stochastic parameter have valid values for the current distribution type
              * \return Indication
@@ -412,7 +419,7 @@ namespace Deltares
 
             /**
              * \brief Validates the stochastic parameters and puts the results in a report
-             * \param report The validation report containing the validation results 
+             * \param report The validation report containing the validation results
              */
             void validate(Logging::ValidationReport& report) override;
 
@@ -443,6 +450,11 @@ namespace Deltares
              * \brief In case of a variable stochast, the stochast of which the x-value is used to define the stochastic parameters of this stochast
              */
             std::shared_ptr<Stochast> VariableSource = nullptr;
+
+            /**
+             * \brief Indicates whether the variable source is allowed with respect to array definitions
+             */
+            bool IsVariableSourceAllowed(int arrayIndex);
 
             /**
              * \brief In case of a variable stochast, the stochast of which the x-value is used to define the stochastic parameters of this stochast

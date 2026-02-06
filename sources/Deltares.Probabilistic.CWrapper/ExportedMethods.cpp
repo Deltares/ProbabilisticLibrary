@@ -26,6 +26,7 @@
 #include "../Deltares.Probabilistic/Server/ProjectServer.h"
 #include "../Deltares.Probabilistic/Server/ExternalServerHandler.h"
 #include "../Deltares.Probabilistic/Server/ExternalLibraryHandler.h"
+#include "stringHelper.h"
 
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__ ((visibility("default")))
@@ -34,6 +35,7 @@
 #endif
 
 Deltares::Server::ProjectServer* projectServer = new Deltares::Server::ProjectServer();
+std::string last_exception = "";
 
 extern "C" DLL_PUBLIC void AddLibrary(char* library)
 {
@@ -134,13 +136,8 @@ extern "C" DLL_PUBLIC void GetStringValue(int id, char* property, char* result_c
 {
     std::string propertyStr(property);
     std::string result = projectServer->GetStringValue(id, propertyStr);
-    const char* result_b = result.c_str();
 
-#ifdef __GNUC__
-    snprintf(result_c, size, "%s", result_b);
-#else
-    _snprintf_s(result_c, size, _TRUNCATE, result_b);
-#endif
+    copyStringToCharPointer(result, result_c, size);
 }
 
 extern "C" DLL_PUBLIC void SetStringValue(int id, char* property, char* value)
@@ -240,13 +237,7 @@ extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, char* property, int ind
     std::string propertyStr(property);
     std::string result = projectServer->GetIndexedStringValue(id, propertyStr, index);
 
-    const char* result_b = result.c_str();
-
-#ifdef __GNUC__
-    snprintf(result_c, size, "%s", result_b);
-#else
-    _snprintf_s(result_c, size, _TRUNCATE, result_b);
-#endif
+    copyStringToCharPointer(result, result_c, size);
 }
 
 extern "C" DLL_PUBLIC void SetCallBack(int id, char* property, Deltares::Models::ZValuesCallBack callBack)
@@ -269,6 +260,26 @@ extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, char* property, Deltares::Mo
 
 extern "C" DLL_PUBLIC void Execute(int id, char* method)
 {
-    std::string methodStr(method);
-    projectServer->Execute(id, methodStr);
+    try
+    {
+        last_exception = "";
+        std::string methodStr(method);
+        projectServer->Execute(id, methodStr);
+    }
+    catch (const std::exception& e)
+    {
+        last_exception = std::string(e.what());
+    }
 }
+
+extern "C" DLL_PUBLIC size_t GetExceptionLength()
+{
+    return last_exception.length();
+}
+
+extern "C" DLL_PUBLIC void GetException(char* result_c, size_t size)
+{
+    copyStringToCharPointer(last_exception, result_c, size);
+}
+
+

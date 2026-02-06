@@ -271,5 +271,18 @@ def GetCallBack(id_, property_):
 		message = sys.exc_info()[0]
 		_print_error(message)
 		raise
+
 def Execute(id_, method_):
 	lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))
+	_check_exception()
+
+def _check_exception():
+	lib.GetExceptionLength.restype = ctypes.c_int
+	size = lib.GetExceptionLength()
+
+	if size > 0:
+		exception = ctypes.create_string_buffer(size+1)
+		lib.GetException.restype = ctypes.c_void_p
+		lib.GetException(exception, ctypes.c_size_t(ctypes.sizeof(exception)))
+		exception_str = exception.value.decode()
+		raise ValueError(exception_str) 

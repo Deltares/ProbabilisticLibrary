@@ -3,7 +3,7 @@ name: Feature Request
 description: Suggest an improvement for Probabilistic library
 labels: [enhancement]
 type: feature
-projects: ["Deltares/124"]
+projects: ["Deltares/131"]
 
 body:
   - type: dropdown

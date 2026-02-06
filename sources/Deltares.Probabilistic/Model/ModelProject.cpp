@@ -82,7 +82,7 @@ namespace Deltares
                 stochast->validate(report);
             }
 
-            if ( correlation != nullptr)
+            if (correlation != nullptr)
             {
                 correlation->Validate(report);
             }

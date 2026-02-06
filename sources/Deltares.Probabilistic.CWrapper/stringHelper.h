@@ -31,3 +31,6 @@ struct tError
 };
 
 void fillErrorMessage(tError & error, const std::string s);
+
+void copyStringToCharPointer(const std::string& str, char* p, const size_t size);
+
