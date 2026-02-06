@@ -25,7 +25,7 @@ from io import StringIO
 
 from probabilistic_library.utils import FrozenList, FrozenObject
 from probabilistic_library.project import RunProject, RunValuesType
-from probabilistic_library.statistic import Stochast, DistributionType
+from probabilistic_library.statistic import Stochast, DistributionType, ConditionalValue
 
 import project_builder
 
@@ -100,6 +100,26 @@ class Test_run_project(unittest.TestCase):
 
         # expecting new result
         self.assertAlmostEqual(1.7, project.realization.output_values[0], delta=margin)
+
+    def test_project_exception(self):
+        project = project_builder.get_failing_model_project()
+        project.settings.run_values_type = RunValuesType.mean_values
+
+        project.variables['b'].conditional = True
+
+        # stochast not contained by project, should lead to exception
+        project.variables['b'].conditional_source = Stochast()
+        project.variables['b'].conditional_source.name = 'x'
+        project.variables['b'].conditional_values.append( ConditionalValue())
+
+        project.validate()
+
+        try:
+            project.run();
+        except Exception as e:
+            msg = str(e)
+
+        self.assertEqual("""b: Variable stochast source x has not been found.\n""", msg)
 
     def test_no_model(self):
         project = RunProject()

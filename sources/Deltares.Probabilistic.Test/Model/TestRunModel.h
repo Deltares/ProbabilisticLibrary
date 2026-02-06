@@ -33,6 +33,9 @@ namespace Deltares::Probabilistic::Test
         void testRunModelMeanValues() const;
         void testRunModelDesignValues() const;
         void testNoModel() const;
+        void testRunModelArraysVariable() const;
+        void testRunModelVariableSourceIsNotVarying() const;
+        void testRunModelVariableWithArrayVariables() const;
 
         const double margin = 0.02;
     };
