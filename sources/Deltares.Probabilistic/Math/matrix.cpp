@@ -50,10 +50,10 @@ namespace Deltares
             }
         }
 
-        Matrix::Matrix(Matrix&& m)
+        Matrix::Matrix(Matrix&& m) noexcept
             : m_data(m.m_data),
-            m_rows(m.m_rows),
-            m_columns(m.m_columns)
+              m_rows(m.m_rows),
+              m_columns(m.m_columns)
         {
             m.m_data = std::vector<double>(0);
             m.m_rows = 0;
@@ -82,7 +82,7 @@ namespace Deltares
             return *this;
         }
 
-        Matrix& Matrix::operator=(Matrix&& m)
+        Matrix& Matrix::operator=(Matrix&& m) noexcept
         {
             std::swap(m_data, m.m_data);
             std::swap(m_rows, m.m_rows);
@@ -348,7 +348,7 @@ namespace Deltares
             return qr;
         }
 
-        Numeric::vector1D QRMatrix::solve(const Numeric::vector1D& target) const
+        Numeric::vector1D QRMatrix::solve(const Numeric::vector1D& target) const noexcept
         {
             // see https://rosettacode.org/wiki/QR_decomposition#C++
 

@@ -24,8 +24,6 @@
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
 #include "../../Deltares.Probabilistic/Utils/probLibException.h"
 
-using namespace Deltares::Numeric;
-
 namespace Deltares::Probabilistic::Test
 {
     void testNumericSupport::allNumericSupportTests()
@@ -43,13 +41,13 @@ namespace Deltares::Probabilistic::Test
         constexpr double margin = 1e-9;
         auto x = std::vector{ 0.0, 1.0 };
         auto y = std::vector{ 3.0, 4.0 };
-        auto result = NumericSupport::interpolate(0.5, x, y);
+        auto result = Numeric::NumericSupport::interpolate(0.5, x, y);
         EXPECT_NEAR(result, 3.5, margin);
 
-        result = NumericSupport::interpolate(2.0, x, y, true);
+        result = Numeric::NumericSupport::interpolate(2.0, x, y, true);
         EXPECT_NEAR(result, 5.0, margin);
 
-        result = NumericSupport::interpolate(2.0, x, y);
+        result = Numeric::NumericSupport::interpolate(2.0, x, y);
         EXPECT_NEAR(result, 4.0, margin);
     }
 
@@ -58,13 +56,13 @@ namespace Deltares::Probabilistic::Test
         constexpr double margin = 1e-9;
         auto x = std::vector{ 1.0, 4.0 };
         auto y = std::vector{ 3.0, 4.0 };
-        auto result = NumericSupport::interpolate(2.0, x, y, false, Logarithmic);
+        auto result = Numeric::NumericSupport::interpolate(2.0, x, y, false, Numeric::Logarithmic);
         EXPECT_NEAR(result, 3.5, margin);
 
-        result = NumericSupport::interpolate(8.0, x, y, true, Logarithmic);
+        result = Numeric::NumericSupport::interpolate(8.0, x, y, true, Numeric::Logarithmic);
         EXPECT_NEAR(result, 4.5, margin);
 
-        result = NumericSupport::interpolate(8.0, x, y, false, Logarithmic);
+        result = Numeric::NumericSupport::interpolate(8.0, x, y, false, Numeric::Logarithmic);
         EXPECT_NEAR(result, 4.0, margin);
     }
 
@@ -73,13 +71,13 @@ namespace Deltares::Probabilistic::Test
         constexpr double margin = 1e-9;
         auto x = std::vector{ 1.0, 4.0 };
         auto y = std::vector{ 3.0, 4.0 };
-        auto result = NumericSupport::interpolate(2.0, x, y, false, Harmonic);
+        auto result = Numeric::NumericSupport::interpolate(2.0, x, y, false, Numeric::Harmonic);
         EXPECT_NEAR(result, 3.0 + 2.0/3.0, margin);
 
-        result = NumericSupport::interpolate(8.0, x, y, true, Harmonic);
+        result = Numeric::NumericSupport::interpolate(8.0, x, y, true, Numeric::Harmonic);
         EXPECT_NEAR(result, 4.0 + 1.0/6.0, margin);
 
-        result = NumericSupport::interpolate(8.0, x, y, false, Harmonic);
+        result = Numeric::NumericSupport::interpolate(8.0, x, y, false, Numeric::Harmonic);
         EXPECT_NEAR(result, 4.0, margin);
     }
 
@@ -87,41 +85,41 @@ namespace Deltares::Probabilistic::Test
     {
         auto numbers = std::vector { -2.0, 2.0, -3.0, 3.0, 1.0, -1.0, 0.0 };
 
-        auto maxval = NumericSupport::getMaximum(numbers);
+        auto maxval = Numeric::NumericSupport::getMaximum(numbers);
         EXPECT_EQ(maxval, 3.0);
 
-        auto minval = NumericSupport::getMinimum(numbers);
+        auto minval = Numeric::NumericSupport::getMinimum(numbers);
         EXPECT_EQ(minval, -3.0);
 
-        auto locmin = NumericSupport::getLocationMinimum(numbers);
+        auto locmin = Numeric::NumericSupport::getLocationMinimum(numbers);
         EXPECT_EQ(locmin, 2);
 
-        auto locmax = NumericSupport::getLocationMaximum(numbers);
+        auto locmax = Numeric::NumericSupport::getLocationMaximum(numbers);
         EXPECT_EQ(locmax, 3);
 
         for (auto& x : numbers) { x = std::abs(x); }
-        minval = NumericSupport::getMinimum(numbers);
+        minval = Numeric::NumericSupport::getMinimum(numbers);
         EXPECT_EQ(minval, 0.0);
 
-        locmax = NumericSupport::getLocationMinimum(numbers);
+        locmax = Numeric::NumericSupport::getLocationMinimum(numbers);
         EXPECT_EQ(locmax, 6);
     }
 
     void testNumericSupport::testGetFraction()
     {
-        auto q = NumericSupport::getFraction(3.4, 4.3);
+        auto q = Numeric::NumericSupport::getFraction(3.4, 4.3);
         EXPECT_NEAR(q, 3.4 * 4.3, 1e-9);
     }
 
     void testNumericSupport::testLimit()
     {
-        auto y = NumericSupport::limit(0.5, 1.0, 2.0);
+        auto y = Numeric::NumericSupport::limit(0.5, 1.0, 2.0);
         EXPECT_EQ(y, 1.0) << "expect value equal to lower limit";
 
-        y = NumericSupport::limit(2.5, 1.0, 2.0);
+        y = Numeric::NumericSupport::limit(2.5, 1.0, 2.0);
         EXPECT_EQ(y, 2.0) << "expect value equal to upper limit";
 
-        y = NumericSupport::limit(2.5, 2.0, 1.0);
+        y = Numeric::NumericSupport::limit(2.5, 2.0, 1.0);
         EXPECT_EQ(y, 2.0) << "expect value equal to maximum of the boundary values";
     }
 
