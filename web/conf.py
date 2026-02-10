@@ -11,7 +11,7 @@ import sphinx_autosummary_accessors
 
 sys.path.insert(
     0,
-    os.path.abspath("../sources/Deltares.Probabilistic.PWrapper")
+    os.path.abspath("../sources/Deltares.Probabilistic.Python")
 )
 
 
@@ -62,7 +62,7 @@ def copy_notebooks(src_folder, dst_folder):
                 shutil.copy2(src_file, dst_file)
 
 # Copy notebooks from sources into web/_examples
-copy_notebooks("../sources/Deltares.Probabilistic.PWrapper.Notebooks", "_examples")
+copy_notebooks("../sources/Deltares.Probabilistic.Python.Notebooks", "_examples")
 
 # Exclude some of the examples content:
 _files_to_include = ["summary_"]

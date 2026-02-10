@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Deltares.Probabilistic.Wrapper\Deltares.Probabilistic.Wrapper.vcxproj" />
+    <ProjectReference Include="..\Deltares.Probabilistic.Net\Deltares.Probabilistic.Net.vcxproj" />
   </ItemGroup>
 
 </Project>

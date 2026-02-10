@@ -8,8 +8,8 @@ current_dir = os.getcwd()
 path = current_dir
 
 tutorials_path = path + "/tutorials"
-notebook_path = path + "/../sources/Deltares.Probabilistic.PWrapper.Notebooks"
-notebook_web_path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.PWrapper.Notebooks/'
+notebook_path = path + "/../sources/Deltares.Probabilistic.Python.Notebooks"
+notebook_web_path = 'https://github.com/Deltares/ProbabilisticLibrary/blob/master/sources/Deltares.Probabilistic.Python.Notebooks/'
 
 os.chdir(notebook_path)
 

@@ -3,13 +3,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectHome>
+    </ProjectHome>
     <StartupFile>
     </StartupFile>
-    <SearchPath>..\Deltares.Probabilistic.PWrapper</SearchPath>
+    <SearchPath>..\Deltares.Probabilistic.Python</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>Deltares.Probabilistic.PWrapper.Test</Name>
+    <Name>Deltares.Probabilistic.Python.Test</Name>
     <RootNamespace>Deltares.Probabilistic.PWrapper.Test</RootNamespace>
     <TestFramework>unittest</TestFramework>
     <UnitTestPattern>test*.py</UnitTestPattern>
