@@ -86,7 +86,11 @@ namespace Deltares::Sensitivity
                 v[i] = v[i - s] ^ (v[i - s] >> s);
                 for (unsigned int k = 1; k <= s - 1; k++)
                 {
-                    v[i] ^= (((a >> (s - 1 - k)) & 1) * v[i - k]);
+                    unsigned int shift = s - 1 - k;
+                    if (shift <= sizeof(unsigned int))
+                    {
+                        v[i] ^= ((a >> shift) & 1) * v[i - k];
+                    }
                 }
             }
         }

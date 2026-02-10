@@ -28,9 +28,6 @@
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerFORM.h"
 
-using namespace Deltares::Reliability;
-using namespace Deltares::Statistics;
-
 namespace Deltares
 {
     namespace Probabilistic
@@ -54,7 +51,7 @@ namespace Deltares
                 const double beta2 = 3.0;
                 const double pf1 = 1.0e-4;
                 const double rho = 0.0;
-                double expectedpf2pf1 = StandardNormal::getQFromU(beta2);
+                double expectedpf2pf1 = Statistics::StandardNormal::getQFromU(beta2);
 
                 auto h = HohenbichlerFORM();
                 auto result = h.PerformHohenbichler(beta2, pf1, rho);
@@ -218,8 +215,8 @@ namespace Deltares
                 for (int iBeta = 0; iBeta < nBeta; iBeta++)
                 {
                     const double betaV = betaMin + dBeta * double(iBeta);
-                    const double p = StandardNormal::getPFromU(betaV);
-                    const double pfU = StandardNormal::getQFromU(betaV);
+                    const double p = Statistics::StandardNormal::getPFromU(betaV);
+                    const double pfU = Statistics::StandardNormal::getQFromU(betaV);
                     fileStream <<
                         "* ---------------------------------------------" << std::endl <<
                         "* Block of (beta, pfU, rhoInput) variations Nr. " << (iBeta+1) << "/" << nBeta << std::endl <<
@@ -245,8 +242,8 @@ namespace Deltares
                 for (int iBeta = 0; iBeta < nBeta; iBeta++)
                 {
                     const double betaV = betaMin + dBeta * double(iBeta);
-                    const double p = StandardNormal::getPFromU(betaV);
-                    const double pfU = StandardNormal::getQFromU(betaV);
+                    const double p = Statistics::StandardNormal::getPFromU(betaV);
+                    const double pfU = Statistics::StandardNormal::getQFromU(betaV);
                     fileStream <<
                         "* ---------------------------------------" << std::endl <<
                         "* Entry to (pfU, rhoInput) variations Nr. " << (iBeta+1) << "/" << nBeta << std::endl <<
