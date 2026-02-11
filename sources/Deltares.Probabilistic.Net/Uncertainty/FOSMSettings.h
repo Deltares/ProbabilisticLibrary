@@ -32,13 +32,11 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class FOSMSettings : IHasRunSettings
+            public ref class FOSMSettings : Models::Wrappers::IHasRunSettings
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Uncertainty::FOSMSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FOSMSettings());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 FOSMSettings() {}
                 ~FOSMSettings() { this->!FOSMSettings(); }
@@ -63,10 +61,10 @@ namespace Deltares
                 }
 
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 std::shared_ptr<Uncertainty::FOSMSettings> GetSettings()

@@ -31,8 +31,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
             public ref class FORM : public ReliabilityMethod
             {
             private:

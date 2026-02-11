@@ -30,8 +30,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
             public enum class VaryingType
             {
                 Monotone,

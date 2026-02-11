@@ -33,13 +33,11 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class ImportanceSamplingSettingsS : IHasRunSettings
+            public ref class ImportanceSamplingSettingsS : Models::Wrappers::IHasRunSettings
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Uncertainty::ImportanceSamplingSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::ImportanceSamplingSettingsS());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 ImportanceSamplingSettingsS()
                 {
@@ -90,12 +88,12 @@ namespace Deltares
                     void set(bool value) { shared->object->DeriveSamplesFromVariationCoefficient = value; }
                 }
 
-                Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
+                Models::Wrappers::RandomSettings^ RandomSettings = gcnew Models::Wrappers::RandomSettings();
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();

@@ -33,8 +33,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models;
-
             public ref class UConverter
             {
             private:

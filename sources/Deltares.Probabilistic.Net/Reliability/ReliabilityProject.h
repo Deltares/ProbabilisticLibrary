@@ -38,7 +38,7 @@ namespace Deltares
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Reliability::ReliabilityProject>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::ReliabilityProject());
-                ZLambda getZLambda();
+                Models::ZLambda getZLambda();
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
             public:
@@ -63,9 +63,9 @@ namespace Deltares
                 System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
                 Statistics::Wrappers::CorrelationMatrix^ CorrelationMatrix = gcnew Statistics::Wrappers::CorrelationMatrix();
 
-                ZSampleDelegate^ ZFunction = nullptr;
+                Models::Wrappers::ZSampleDelegate^ ZFunction = nullptr;
 
-                TagRepository^ TagRepository = nullptr;
+                Utils::Wrappers::TagRepository^ TagRepository = nullptr;
 
                 Reliability::Wrappers::ReliabilityMethod^ ReliabilityMethod = nullptr;
 

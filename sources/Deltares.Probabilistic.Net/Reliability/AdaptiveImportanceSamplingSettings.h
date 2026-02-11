@@ -35,9 +35,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class AdaptiveImportanceSamplingSettings : IHasRunSettings, IHasStochastSetting
+            public ref class AdaptiveImportanceSamplingSettings : Models::Wrappers::IHasRunSettings, IHasStochastSetting
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Reliability::AdaptiveImportanceSamplingSettings>* shared = nullptr;
@@ -127,10 +125,10 @@ namespace Deltares
                     void set(bool value) { shared->object->StartPointOnLimitState = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return ImportanceSamplingSettings->RunSettings; }
-                    void set(Wrappers::RunSettings^ value) { ImportanceSamplingSettings->RunSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return ImportanceSamplingSettings->RunSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { ImportanceSamplingSettings->RunSettings = value; }
                 }
 
                 StartPointCalculatorSettings^ StartPointSettings = gcnew Wrappers::StartPointCalculatorSettings();

@@ -33,13 +33,11 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class FORMSettingsS : IHasRunSettings
+            public ref class FORMSettingsS : Models::Wrappers::IHasRunSettings
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Uncertainty::FORMSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FORMSettingsS());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 FORMSettingsS() {}
                 ~FORMSettingsS() { this->!FORMSettingsS(); }
@@ -66,12 +64,12 @@ namespace Deltares
                 /**
                  * \brief Settings for calculating the gradient at a stochast point
                  */
-                Wrappers::GradientSettings^ GradientSettings = gcnew Wrappers::GradientSettings();
+                Models::Wrappers::GradientSettings^ GradientSettings = gcnew Models::Wrappers::GradientSettings();
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 std::shared_ptr<Uncertainty::FORMSettingsS> GetSettings()

@@ -41,9 +41,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Reliability;
-            using namespace Deltares::Statistics::Wrappers;
-
             public delegate void ZSampleDelegate(ModelSample^);
             public delegate bool ShouldExitDelegate(bool finalCall);
             public delegate bool ShouldInvertDelegate(int stochastIndex);
@@ -74,7 +71,7 @@ namespace Deltares
                  * \brief Constructor
                  * \remark Call Release() when done to prevent a memory leak
                  */
-                ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator);
+                ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts, Statistics::Wrappers::CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator);
                 ~ModelRunner() { this->!ModelRunner(); }
                 !ModelRunner()
                 {
@@ -96,7 +93,7 @@ namespace Deltares
                     shared->object->releaseCallBacks();
                 }
 
-                System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();
+                System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
 
                 virtual void CalcSamples(System::Collections::Generic::IList<ModelSample^>^ samples);
                 virtual void CalcSample(ModelSample^ sample);

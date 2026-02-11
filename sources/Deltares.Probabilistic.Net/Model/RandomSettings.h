@@ -29,8 +29,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models;
-
             public enum class RandomGeneratorType { MersenneTwister };
 
             public ref class RandomSettings

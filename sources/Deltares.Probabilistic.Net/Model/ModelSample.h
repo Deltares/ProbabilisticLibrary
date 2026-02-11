@@ -31,8 +31,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models;
-
             /**
              * \brief Sample with values defined in x-space
              */

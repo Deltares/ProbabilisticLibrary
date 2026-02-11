@@ -43,7 +43,7 @@ namespace Deltares
             typedef bool(__stdcall* ShouldInvertNativeDelegate) (int stochastIndex);
             typedef void(__stdcall* RemoveTaskNativeDelegate) (int iterationIndex);
 
-            ModelRunner::ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator)
+            ModelRunner::ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts, Statistics::Wrappers::CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator)
             {
                 this->zFunction = zFunction;
 

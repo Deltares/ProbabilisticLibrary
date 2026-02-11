@@ -49,7 +49,7 @@ namespace Deltares
 
                 FragilityCurveIntegrationSettings^ Settings = gcnew FragilityCurveIntegrationSettings();
 
-                DesignPoint^ GetDesignPoint(Stochast^ stochast, Stochast^ fragilityCurve, Stochast^ normalizingFragilityCurve);
+                DesignPoint^ GetDesignPoint(Statistics::Wrappers::Stochast^ stochast, Statistics::Wrappers::Stochast^ fragilityCurve, Statistics::Wrappers::Stochast^ normalizingFragilityCurve);
 
                 System::Object^ GetSettings() override { return Settings; }
 

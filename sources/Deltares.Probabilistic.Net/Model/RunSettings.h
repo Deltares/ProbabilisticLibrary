@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #pragma once
-#include "ProxySettings.h"
 #include "../../Deltares.Probabilistic/Model/RunSettings.h"
 #include "../../Deltares.Probabilistic/Logging/Message.h"
 #include "../Utils/SharedPointerProvider.h"
@@ -32,8 +31,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models;
-
             public ref class RunSettings
             {
             private:

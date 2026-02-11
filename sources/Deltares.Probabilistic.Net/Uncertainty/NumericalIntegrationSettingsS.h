@@ -32,13 +32,11 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class NumericalIntegrationSettingsS : IHasRunSettings
+            public ref class NumericalIntegrationSettingsS : Models::Wrappers::IHasRunSettings
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Uncertainty::NumericalIntegrationSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::NumericalIntegrationSettingsS());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 NumericalIntegrationSettingsS() {}
                 ~NumericalIntegrationSettingsS() { this->!NumericalIntegrationSettingsS(); }
@@ -58,10 +56,10 @@ namespace Deltares
 
                 System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 std::shared_ptr<Uncertainty::NumericalIntegrationSettingsS> GetSettings()

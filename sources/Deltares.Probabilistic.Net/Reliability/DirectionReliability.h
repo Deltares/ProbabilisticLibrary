@@ -30,8 +30,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
             public ref class DirectionReliability : public ReliabilityMethod
             {
             private:

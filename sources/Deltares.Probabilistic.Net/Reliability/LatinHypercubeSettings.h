@@ -36,14 +36,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class LatinHypercubeSettings : IHasRunSettings, IHasStochastSetting
+            public ref class LatinHypercubeSettings : Models::Wrappers::IHasRunSettings, IHasStochastSetting
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Reliability::LatinHyperCubeSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::LatinHyperCubeSettings());
-                Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Models::Wrappers::RandomSettings^ randomSettings = gcnew Models::Wrappers::RandomSettings();
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 LatinHypercubeSettings()
                 {
@@ -83,16 +81,16 @@ namespace Deltares
                     }
                 }
 
-                virtual property Wrappers::RandomSettings^ RandomSettings
+                virtual property Models::Wrappers::RandomSettings^ RandomSettings
                 {
-                    Wrappers::RandomSettings^ get() { return randomSettings; }
-                    void set(Wrappers::RandomSettings^ value) { randomSettings = value; }
+                    Models::Wrappers::RandomSettings^ get() { return randomSettings; }
+                    void set(Models::Wrappers::RandomSettings^ value) { randomSettings = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();

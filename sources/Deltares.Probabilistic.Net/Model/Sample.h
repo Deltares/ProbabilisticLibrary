@@ -34,8 +34,6 @@ namespace Deltares
             /// </summary>
             public enum class SpaceType { U, X };
 
-            using namespace Deltares::Models;
-
             public ref class Sample
             {
             private:

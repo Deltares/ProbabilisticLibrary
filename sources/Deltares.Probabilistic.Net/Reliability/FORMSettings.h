@@ -32,14 +32,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class FORMSettings : IHasRunSettings
+            public ref class FORMSettings : Models::Wrappers::IHasRunSettings
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Reliability::FORMSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::FORMSettings());
 
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
 
             public:
                 FORMSettings() {}
@@ -82,14 +80,14 @@ namespace Deltares
                     void set(int value) { shared->object->MaxIterationsGrowthFactor = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set (Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set (Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 StartPointCalculatorSettings^ StartPointCalculatorSettings = gcnew Wrappers::StartPointCalculatorSettings();
-                Wrappers::GradientSettings^ GradientCalculatorSettings = gcnew Wrappers::GradientSettings();
+                Models::Wrappers::GradientSettings^ GradientCalculatorSettings = gcnew Models::Wrappers::GradientSettings();
 
                 System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();
 
