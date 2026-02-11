@@ -2,11 +2,11 @@ add_subdirectory(Deltares.Probabilistic)
 
 add_subdirectory(Deltares.Probabilistic.CWrapper)
 
-if(WIN32)
-  if ( NOT TARGET tools)
+if ( NOT TARGET tools)
+  if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_subdirectory(Deltares.Probabilistic.Net)
   endif()
-endif(WIN32)
+endif()
 
 add_subdirectory(Deltares.Probabilistic.Test)
 
