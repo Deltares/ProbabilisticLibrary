@@ -23,7 +23,6 @@ Every contribution will include a header with **(c) Deltares**.
 New code should not lead to new dependencies.
 New dependencies are not allowed.
 If you believe one is truly needed, please discuss it with us before starting your work.
-You can find our current dependencies here: [wiki PL](https://github.com/Deltares/ProbabilisticLibrary/wiki/Tools-and-other-software).
 
 Quick summary:
 - **C++** code follows the **C++20** standard
