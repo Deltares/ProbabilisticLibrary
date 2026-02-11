@@ -36,7 +36,7 @@ namespace Deltares
             void loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
         public:
             StochastSettingsSet() {}
-            StochastSettingsSet(std::shared_ptr<Models::StochastPoint> stochastPoint)
+            explicit StochastSettingsSet(std::shared_ptr<Models::StochastPoint> stochastPoint)
             {
                 loadStochastPoint(stochastPoint);
             }

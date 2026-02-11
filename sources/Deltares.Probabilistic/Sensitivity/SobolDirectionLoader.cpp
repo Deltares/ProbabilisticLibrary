@@ -49,7 +49,7 @@ namespace Deltares::Sensitivity
             values[i] = static_cast<unsigned int>(1 << (scale - i));
         }
         SobolDirection direction = SobolDirection(1, 0, 0, values);
-        return direction;  
+        return direction;
     }
 
     SobolDirection SobolDirectionLoader::getDirection(int index)
@@ -86,11 +86,9 @@ namespace Deltares::Sensitivity
                 v[i] = v[i - s] ^ (v[i - s] >> s);
                 for (unsigned int k = 1; k <= s - 1; k++)
                 {
-                    unsigned int shift = s - 1 - k;
-                    if (shift <= sizeof(unsigned int))
-                    {
-                        v[i] ^= ((a >> shift) & 1) * v[i - k];
-                    }
+                    constexpr unsigned int maxShift = sizeof(unsigned int);
+                    unsigned int shift = std::min(s - 1 - k, maxShift);
+                    v[i] ^= ((a >> shift) & 1) * v[i - k];
                 }
             }
         }
