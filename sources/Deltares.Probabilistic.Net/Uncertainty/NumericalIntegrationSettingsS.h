@@ -32,13 +32,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class NumericalIntegrationSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::NumericalIntegrationSettingsS>* shared = new SharedPointerProvider(new Uncertainty::NumericalIntegrationSettingsS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::NumericalIntegrationSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::NumericalIntegrationSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 NumericalIntegrationSettingsS() {}

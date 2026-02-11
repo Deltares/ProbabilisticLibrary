@@ -36,19 +36,18 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class LatinHypercubeSettings : IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::LatinHyperCubeSettings>* shared = new SharedPointerProvider(new Reliability::LatinHyperCubeSettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::LatinHyperCubeSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::LatinHyperCubeSettings());
                 Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 LatinHypercubeSettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::LatinHyperCubeSettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::LatinHyperCubeSettings());
                 }
 
                 ~LatinHypercubeSettings() { this->!LatinHypercubeSettings(); }

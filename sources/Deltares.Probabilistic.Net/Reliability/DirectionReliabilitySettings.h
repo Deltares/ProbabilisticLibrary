@@ -30,7 +30,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public enum class VaryingType
@@ -43,7 +42,7 @@ namespace Deltares
             public ref class DirectionReliabilitySettings
             {
             private:
-                SharedPointerProvider<Reliability::DirectionReliabilitySettings>* shared = new SharedPointerProvider(new Reliability::DirectionReliabilitySettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::DirectionReliabilitySettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::DirectionReliabilitySettings());
             public:
                 DirectionReliabilitySettings() {}
                 ~DirectionReliabilitySettings() { this->!DirectionReliabilitySettings(); }

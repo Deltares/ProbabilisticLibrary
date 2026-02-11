@@ -52,7 +52,7 @@ namespace Deltares
             public ref class ModelRunner
             {
             private:
-                SharedPointerProvider<Models::ModelRunner>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Models::ModelRunner>* shared = nullptr;
 
                 std::shared_ptr<Models::ZModel> getZModel();
                 ZLambda getZLambda();
@@ -66,7 +66,7 @@ namespace Deltares
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 void invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples);
 
-                Deltares::Utils::Wrappers::TagRepository^ tagRepository = gcnew TagRepository();
+                Deltares::Utils::Wrappers::TagRepository^ tagRepository = gcnew Utils::Wrappers::TagRepository();
 
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
             public:
@@ -158,7 +158,7 @@ namespace Deltares
 
                     std::vector<double> zValues = shared->object->getZValues(nativeSamples);
 
-                    return NativeSupport::toManaged(zValues);
+                    return Utils::Wrappers::NativeSupport::toManaged(zValues);
                 }
 
                 RunSettings^ Settings = gcnew RunSettings();

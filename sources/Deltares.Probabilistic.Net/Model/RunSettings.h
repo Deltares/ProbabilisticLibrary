@@ -33,12 +33,11 @@ namespace Deltares
         namespace Wrappers
         {
             using namespace Deltares::Models;
-            using namespace Deltares::Utils::Wrappers;
 
             public ref class RunSettings
             {
             private:
-                SharedPointerProvider<Models::RunSettings>* shared = new SharedPointerProvider(new Models::RunSettings());
+                Utils::Wrappers::SharedPointerProvider<Models::RunSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Models::RunSettings());
 
             public:
                 RunSettings() { }

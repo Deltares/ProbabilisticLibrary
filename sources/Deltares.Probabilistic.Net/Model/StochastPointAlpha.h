@@ -38,16 +38,16 @@ namespace Deltares
             {
             private:
                 Statistics::Wrappers::Stochast^ parameter = gcnew Statistics::Wrappers::Stochast();
-                SharedPointerProvider<Models::StochastPointAlpha>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Models::StochastPointAlpha>* shared = nullptr;
 
             public:
                 StochastPointAlpha()
                 {
-                    shared = new SharedPointerProvider(new Models::StochastPointAlpha());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Models::StochastPointAlpha());
                 }
                 StochastPointAlpha(std::shared_ptr<Models::StochastPointAlpha> alpha)
                 {
-                    shared = new SharedPointerProvider(alpha);
+                    shared = new Utils::Wrappers::SharedPointerProvider(alpha);
                 }
                 ~StochastPointAlpha() { this->!StochastPointAlpha(); }
                 !StochastPointAlpha() { delete shared; }

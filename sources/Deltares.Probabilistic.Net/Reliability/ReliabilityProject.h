@@ -37,7 +37,7 @@ namespace Deltares
             public ref class ReliabilityProject
             {
             private:
-                SharedPointerProvider<Reliability::ReliabilityProject>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::ReliabilityProject());
+                Utils::Wrappers::SharedPointerProvider<Reliability::ReliabilityProject>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::ReliabilityProject());
                 ZLambda getZLambda();
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();

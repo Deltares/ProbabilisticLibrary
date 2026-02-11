@@ -35,18 +35,17 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class CobylaReliabilitySettings : IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::CobylaReliabilitySettings>* shared = new SharedPointerProvider(new Reliability::CobylaReliabilitySettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::CobylaReliabilitySettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::CobylaReliabilitySettings());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 CobylaReliabilitySettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::CobylaReliabilitySettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::CobylaReliabilitySettings());
                 }
 
                 ~CobylaReliabilitySettings() { this->!CobylaReliabilitySettings(); }

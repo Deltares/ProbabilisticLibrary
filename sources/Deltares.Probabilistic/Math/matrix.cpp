@@ -348,7 +348,7 @@ namespace Deltares
             return qr;
         }
 
-        Numeric::vector1D QRMatrix::solve(const Numeric::vector1D& target) const noexcept
+        Numeric::vector1D QRMatrix::solve(const Numeric::vector1D& target) const
         {
             // see https://rosettacode.org/wiki/QR_decomposition#C++
 

@@ -30,14 +30,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public enum class ClusterInitializationMethod {PlusPlus};
 
             public ref class ClusterSettings 
             {
             private:
-                SharedPointerProvider<Optimization::ClusterSettings>* shared = new SharedPointerProvider(new Optimization::ClusterSettings());
+                Utils::Wrappers::SharedPointerProvider<Optimization::ClusterSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Optimization::ClusterSettings());
             public:
                 ClusterSettings() { }
                 ~ClusterSettings() { this->!ClusterSettings(); }

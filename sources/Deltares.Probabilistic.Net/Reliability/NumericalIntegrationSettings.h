@@ -35,18 +35,17 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class NumericalIntegrationSettings : IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::NumericalIntegrationSettings>* shared = new SharedPointerProvider(new Reliability::NumericalIntegrationSettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::NumericalIntegrationSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::NumericalIntegrationSettings());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 NumericalIntegrationSettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::NumericalIntegrationSettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::NumericalIntegrationSettings());
                 }
 
                 ~NumericalIntegrationSettings() { this->!NumericalIntegrationSettings(); }

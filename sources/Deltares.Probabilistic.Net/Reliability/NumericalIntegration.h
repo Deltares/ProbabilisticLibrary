@@ -31,13 +31,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class NumericalIntegration : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::NumericalIntegration>* shared = new SharedPointerProvider(new Reliability::NumericalIntegration());
+                Utils::Wrappers::SharedPointerProvider<Reliability::NumericalIntegration>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::NumericalIntegration());
             public:
                 NumericalIntegration() {}
                 ~NumericalIntegration() { this->!NumericalIntegration(); }

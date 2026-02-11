@@ -32,7 +32,6 @@ namespace Deltares
         namespace Wrappers
         {
             using namespace Deltares::Models;
-            using namespace Deltares::Utils::Wrappers;
 
             /**
              * \brief Sample with values defined in x-space
@@ -41,20 +40,20 @@ namespace Deltares
             {
             private:
                 array<double>^ values = nullptr;
-                SharedPointerProvider<Models::ModelSample>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Models::ModelSample>* shared = nullptr;
 
             public:
                 ModelSample(std::shared_ptr<Models::ModelSample> sample)
                 {
-                    shared = new SharedPointerProvider(sample);
-                    this->values = NativeSupport::toManaged(sample->Values);
+                    shared = new Utils::Wrappers::SharedPointerProvider(sample);
+                    this->values = Utils::Wrappers::NativeSupport::toManaged(sample->Values);
                 }
 
                 ModelSample(array<double>^ values)
                 {
-                    std::vector<double> nativeValues = NativeSupport::toNative(values);
-                    shared = new SharedPointerProvider(new Models::ModelSample(nativeValues));
-                    this->values = NativeSupport::toManaged(shared->object->Values);
+                    std::vector<double> nativeValues = Utils::Wrappers::NativeSupport::toNative(values);
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Models::ModelSample(nativeValues));
+                    this->values = Utils::Wrappers::NativeSupport::toManaged(shared->object->Values);
                 }
 
                 ~ModelSample() { this->!ModelSample(); }
@@ -65,7 +64,7 @@ namespace Deltares
 
                 void SetNativeModelSample(const std::shared_ptr<Models::ModelSample> nativeModelSample)
                 {
-                    shared = new SharedPointerProvider(nativeModelSample);
+                    shared = new Utils::Wrappers::SharedPointerProvider(nativeModelSample);
 
                     if (this->values->Length == shared->object->Values.size())
                     {
@@ -76,7 +75,7 @@ namespace Deltares
                     }
                     else
                     {
-                        this->values = NativeSupport::toManaged(shared->object->Values);
+                        this->values = Utils::Wrappers::NativeSupport::toManaged(shared->object->Values);
                     }
                 }
 
@@ -126,7 +125,7 @@ namespace Deltares
 
                 void SetOutputValues(array<double>^ outputValues)
                 {
-                    shared->object->OutputValues = NativeSupport::toNative(outputValues);
+                    shared->object->OutputValues = Utils::Wrappers::NativeSupport::toNative(outputValues);
                 }
 
                 void SynchronizeInputValues()

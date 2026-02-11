@@ -34,13 +34,13 @@ namespace Deltares::Probabilistic::Test
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Normal;
         std::vector<double> params{ 0.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
         return m;
     }
 
@@ -50,13 +50,13 @@ namespace Deltares::Probabilistic::Test
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
         return m;
     }
 
@@ -84,13 +84,13 @@ namespace Deltares::Probabilistic::Test
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
         return m;
     }
 
@@ -100,15 +100,15 @@ namespace Deltares::Probabilistic::Test
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
         s->modelParameter->isArray = true;
         s->modelParameter->arraySize = 5;
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
         return m;
     }
 
@@ -122,7 +122,7 @@ namespace Deltares::Probabilistic::Test
         s->name = "s";
         for (int i = 0; i < s->modelParameter->arraySize; i++)
         {
-            std::shared_ptr<Statistics::Stochast> s1(new Statistics::Stochast());
+            std::shared_ptr<Statistics::Stochast> s1 = std::make_shared<Statistics::Stochast>();
             s1->setDistributionType(Statistics::DistributionType::Uniform);
             s1->getProperties()->Minimum = i - 3;
             s1->getProperties()->Maximum = i - 1;
@@ -130,10 +130,10 @@ namespace Deltares::Probabilistic::Test
         }
         stochasts.push_back(s);
         stochasts.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochasts, corr));
+        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, corr);
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
         return m;
     }
 
@@ -143,15 +143,15 @@ namespace Deltares::Probabilistic::Test
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
         s->modelParameter->isArray = false;
         s->modelParameter->arraySize = 1;
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
         return m;
     }
 

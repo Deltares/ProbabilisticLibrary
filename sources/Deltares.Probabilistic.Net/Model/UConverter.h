@@ -34,14 +34,13 @@ namespace Deltares
         namespace Wrappers
         {
             using namespace Deltares::Models;
-            using namespace Deltares::Utils::Wrappers;
 
             public ref class UConverter
             {
             private:
                 array<double>^ values = nullptr;
                 System::Object^ tag = nullptr;
-                SharedPointerProvider<Models::UConverter>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Models::UConverter>* shared = nullptr;
 
             public:
                 UConverter(System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts, Statistics::Wrappers::CorrelationMatrix^ correlationMatrix);

@@ -33,12 +33,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class StochastPoint : public Wrappers::BaseStochastPoint
             {
             private:
-                SharedPointerProvider<Models::StochastPoint>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Models::StochastPoint>* shared = nullptr;
 
                 System::Collections::Generic::List<StochastPointAlpha^>^ alphas = gcnew System::Collections::Generic::List<StochastPointAlpha^>();
             protected:
@@ -52,7 +50,7 @@ namespace Deltares
             public:
                 StochastPoint()
                 {
-                    shared = new SharedPointerProvider(new Models::StochastPoint());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Models::StochastPoint());
                 }
 
                 StochastPoint(std::shared_ptr<Models::StochastPoint> nativeStochastPoint)

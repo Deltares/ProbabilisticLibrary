@@ -35,18 +35,17 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class NumericalBisectionSettings : IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::NumericalBisectionSettings>* shared = new SharedPointerProvider(new Reliability::NumericalBisectionSettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::NumericalBisectionSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::NumericalBisectionSettings());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 NumericalBisectionSettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::NumericalBisectionSettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::NumericalBisectionSettings());
                 }
 
                 ~NumericalBisectionSettings() { this->!NumericalBisectionSettings(); }

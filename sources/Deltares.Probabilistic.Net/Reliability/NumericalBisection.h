@@ -31,13 +31,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class NumericalBisection : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::NumericalBisection>* shared = new SharedPointerProvider(new Reliability::NumericalBisection());
+                Utils::Wrappers::SharedPointerProvider<Reliability::NumericalBisection>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::NumericalBisection());
             public:
                 NumericalBisection() {}
                 ~NumericalBisection() { this->!NumericalBisection(); }

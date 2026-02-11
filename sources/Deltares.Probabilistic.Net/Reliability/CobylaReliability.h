@@ -31,13 +31,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class CobylaReliability : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::CobylaReliability>* shared = new SharedPointerProvider(new Reliability::CobylaReliability());
+                Utils::Wrappers::SharedPointerProvider<Reliability::CobylaReliability>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::CobylaReliability());
             public:
                 CobylaReliability() {}
                 ~CobylaReliability() { this->!CobylaReliability(); }

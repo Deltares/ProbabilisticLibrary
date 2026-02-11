@@ -37,14 +37,13 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
             using namespace Deltares::Statistics::Wrappers;
 
             public ref class DesignPoint : public Wrappers::StochastPoint
             {
             private:
-                SharedPointerProvider<Reliability::DesignPoint>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Reliability::DesignPoint>* shared = nullptr;
                 ConvergenceReport^ convergenceReport = gcnew Wrappers::ConvergenceReport();
                 System::Collections::Generic::List<Wrappers::ReliabilityResult^>^ reliabilityResults = gcnew System::Collections::Generic::List<ReliabilityResult^>();
                 System::Collections::Generic::List<Wrappers::Evaluation^>^ evaluations = gcnew System::Collections::Generic::List<Wrappers::Evaluation^>();

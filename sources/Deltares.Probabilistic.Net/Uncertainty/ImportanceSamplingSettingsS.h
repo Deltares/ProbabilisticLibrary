@@ -33,13 +33,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class ImportanceSamplingSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::ImportanceSamplingSettingsS>* shared = new SharedPointerProvider(new Uncertainty::ImportanceSamplingSettingsS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::ImportanceSamplingSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::ImportanceSamplingSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 ImportanceSamplingSettingsS()

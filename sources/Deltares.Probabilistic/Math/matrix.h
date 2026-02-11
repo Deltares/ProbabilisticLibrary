@@ -188,14 +188,15 @@ namespace Deltares
             size_t m_columns;
         };
 
-        class QRMatrix {
+        class QRMatrix
+        {
         public:
             QRMatrix(const Matrix& q_matrix, const Matrix& r_matrix) noexcept
                 : Q(q_matrix), R(r_matrix) {}
 
-            Numeric::vector1D solve(const Numeric::vector1D& target) const noexcept;
+            Numeric::vector1D solve(const Numeric::vector1D& target) const;
 
-            Matrix getProduct() const noexcept
+            Matrix getProduct() const
             {
                 return Q.matmul(R);
             }

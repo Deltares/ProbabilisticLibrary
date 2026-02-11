@@ -33,13 +33,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class CrudeMonteCarloSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::CrudeMonteCarloSettingsS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloSettingsS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::CrudeMonteCarloSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::CrudeMonteCarloSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 CrudeMonteCarloSettingsS()

@@ -34,20 +34,18 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class VariableStochastValueSet
             {
             private:
-                SharedPointerProvider<Statistics::VariableStochastValuesSet>* shared = new SharedPointerProvider(new Statistics::VariableStochastValuesSet());
+                Utils::Wrappers::SharedPointerProvider<Statistics::VariableStochastValuesSet>* shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::VariableStochastValuesSet());
 
-                CallBackList<VariableStochastValue^>^ stochastValues = gcnew CallBackList<VariableStochastValue^>();
+                Utils::Wrappers::CallBackList<VariableStochastValue^>^ stochastValues = gcnew Utils::Wrappers::CallBackList<VariableStochastValue^>();
 
-                void SynchronizeStochastValues(ListOperationType listOperationType, VariableStochastValue^ histogramValue);
+                void SynchronizeStochastValues(Utils::Wrappers::ListOperationType listOperationType, VariableStochastValue^ histogramValue);
             public:
                 VariableStochastValueSet()
                 {
-                    stochastValues->SetCallBack(gcnew ListCallBack<VariableStochastValue^>(this, &VariableStochastValueSet::SynchronizeStochastValues));
+                    stochastValues->SetCallBack(gcnew Utils::Wrappers::ListCallBack<VariableStochastValue^>(this, &VariableStochastValueSet::SynchronizeStochastValues));
                 }
                 ~VariableStochastValueSet() { this->!VariableStochastValueSet(); }
                 !VariableStochastValueSet() { delete shared; }

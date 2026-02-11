@@ -33,13 +33,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class FORMSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::FORMSettingsS>* shared = new SharedPointerProvider(new Uncertainty::FORMSettingsS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::FORMSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FORMSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 FORMSettingsS() {}

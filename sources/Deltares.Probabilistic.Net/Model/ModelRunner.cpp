@@ -62,7 +62,7 @@ namespace Deltares
 
                 const std::shared_ptr<Models::ProgressIndicator> progress = progressIndicator != nullptr ? progressIndicator->GetProgressIndicator() : nullptr;
 
-                this->shared = new SharedPointerProvider(new Models::ModelRunner(zModel, uConverter, progress));
+                this->shared = new Utils::Wrappers::SharedPointerProvider(new Models::ModelRunner(zModel, uConverter, progress));
             }
 
             Models::ZLambda ModelRunner::getZLambda()
@@ -200,13 +200,13 @@ namespace Deltares
 
             array<double>^ ModelRunner::GetOnlyVaryingValues(array<double>^ values)
             {
-                return NativeSupport::toManaged(shared->object->getOnlyVaryingValues(NativeSupport::toNative(values)));
+                return Utils::Wrappers::NativeSupport::toManaged(shared->object->getOnlyVaryingValues(Utils::Wrappers::NativeSupport::toNative(values)));
             }
 
             void ModelRunner::UpdateVariableSample(array<double>^ values, array<double>^ originalValues)
             {
-                std::vector<double> nativeValues = NativeSupport::toNative(values);
-                std::vector<double> nativeOriginalValues = NativeSupport::toNative(originalValues);
+                std::vector<double> nativeValues = Utils::Wrappers::NativeSupport::toNative(values);
+                std::vector<double> nativeOriginalValues = Utils::Wrappers::NativeSupport::toNative(originalValues);
                 shared->object->updateVariableSample(nativeValues, nativeOriginalValues);
 
                 for (size_t i = 0; i < values->Length; i++)

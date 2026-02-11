@@ -835,16 +835,16 @@ class Stochast(FrozenObject):
         decimals : int, optional
             The number of decimals to apply"""
 
-		self._print_variable()
+		pre = '  '
+		self._print_variable(pre)
 		print('Definition:')
 		if self.conditional:
-			self._print_conditional(decimals)
+			self._print_conditional(pre, decimals)
 		else:
-			self._print_unconditional(decimals)
-			self._print_design_and_derived(decimals)
+			self._print_unconditional(pre, decimals)
+			self._print_design_and_derived(pre, decimals)
 
-	def _print_variable(self):
-		pre = '  '
+	def _print_variable(self, pre):
 		if self.name == '':
 			print(f'Variable:')
 		else:
@@ -858,8 +858,7 @@ class Stochast(FrozenObject):
 		elif self.truncated and self.inverted:
 			print(pre + f'distribution = {self.distribution} (inverted, truncated')
 
-	def _print_conditional(self, decimals = 4):
-		pre = '  '
+	def _print_conditional(self, pre, decimals = 4):
 		if self.conditional_source == '' or self.conditional_source == None:
 			print(pre + f'conditional x values = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
 		else:
@@ -874,14 +873,16 @@ class Stochast(FrozenObject):
 				if len(values) > 0 and not isnan(values[0]):
 					print(pre + f'{prop} = [{", ".join([f"{value:.{decimals}g}" for value in values])}]')
 
-	def _print_unconditional(self, decimals = 4):
-		pre = '  '
+	def _print_unconditional(self, pre, decimals = 4):
 		for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
 			if interface.GetBoolValue(self._id, 'is_used_' + prop):
 				if prop == 'observations':
 					print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
 				else:
 					print(pre + f'{prop} = {interface.GetValue(self._id, prop):.{decimals}g}')
+		self._print_stochast_properties(pre, decimals)
+
+	def _print_stochast_properties(self, pre, decimals = 4):
 		if self.distribution == DistributionType.histogram:
 			for value in self.histogram_values:
 				print(pre + f'amount[{value.lower_bound:.{decimals}g}, {value.upper_bound:.{decimals}g}] = {value.amount:.{decimals}g}')
@@ -892,8 +893,7 @@ class Stochast(FrozenObject):
 			for value in self.discrete_values:
 				print(pre + f'amount[{value.x:.{decimals}g}] = {value.amount:.{decimals}g}')
 
-	def _print_design_and_derived(self, decimals = 4):
-		pre = '  '
+	def _print_design_and_derived(self, pre, decimals = 4):
 		is_design_default = isclose(self.design_quantile, 0.5, abs_tol=1.0e-9) and isclose(self.design_factor, 1.0, abs_tol=1.0e-9)
 		if not is_design_default:
 			print(pre + f'design_quantile = {self.design_quantile:.{decimals}g}')

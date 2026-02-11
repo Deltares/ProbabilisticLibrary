@@ -35,25 +35,24 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class ImportanceSamplingSettings : IHasRunSettings, IHasRandomSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::ImportanceSamplingSettings>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Reliability::ImportanceSamplingSettings>* shared = nullptr;
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
                 Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
                 Wrappers::StartPointCalculatorSettings^ startPointSettings = gcnew Wrappers::StartPointCalculatorSettings();
             public:
                 ImportanceSamplingSettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::ImportanceSamplingSettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::ImportanceSamplingSettings());
                     shared->object->randomSettings = RandomSettings->GetSettings();
                 }
                 ImportanceSamplingSettings(std::shared_ptr<Reliability::ImportanceSamplingSettings> settings)
                 {
-                    shared = new SharedPointerProvider(settings);
+                    shared = new Utils::Wrappers::SharedPointerProvider(settings);
                 }
                 ~ImportanceSamplingSettings() { this->!ImportanceSamplingSettings(); }
                 !ImportanceSamplingSettings() { delete shared; }

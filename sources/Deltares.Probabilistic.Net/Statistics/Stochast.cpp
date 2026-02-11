@@ -64,7 +64,7 @@ namespace Deltares
                 }
             }
 
-            void Stochast::SynchronizeHistogramValues(ListOperationType listOperationType, HistogramValue^ histogramValue)
+            void Stochast::SynchronizeHistogramValues(Utils::Wrappers::ListOperationType listOperationType, HistogramValue^ histogramValue)
             {
                 if (!synchronizing)
                 {
@@ -74,15 +74,15 @@ namespace Deltares
 
                     switch (listOperationType)
                     {
-                    case ListOperationType::Add: properties->HistogramValues.push_back(histogramValue->GetValue()); break;
-                    case ListOperationType::Remove: std::erase(properties->HistogramValues, histogramValue->GetValue()); break;
-                    case ListOperationType::Clear: properties->HistogramValues.clear(); break;
+                    case Utils::Wrappers::ListOperationType::Add: properties->HistogramValues.push_back(histogramValue->GetValue()); break;
+                    case Utils::Wrappers::ListOperationType::Remove: std::erase(properties->HistogramValues, histogramValue->GetValue()); break;
+                    case Utils::Wrappers::ListOperationType::Clear: properties->HistogramValues.clear(); break;
                     default: throw gcnew System::NotImplementedException("List operation type");
                     }
                 }
             }
 
-            void Stochast::SynchronizeDiscreteValues(ListOperationType listOperationType, DiscreteValue^ discreteValue)
+            void Stochast::SynchronizeDiscreteValues(Utils::Wrappers::ListOperationType listOperationType, DiscreteValue^ discreteValue)
             {
                 if (!synchronizing)
                 {
@@ -92,15 +92,15 @@ namespace Deltares
 
                     switch (listOperationType)
                     {
-                    case ListOperationType::Add: properties->DiscreteValues.push_back(discreteValue->GetValue()); break;
-                    case ListOperationType::Remove: std::erase(properties->DiscreteValues, discreteValue->GetValue()); break;
-                    case ListOperationType::Clear: properties->DiscreteValues.clear(); break;
+                    case Utils::Wrappers::ListOperationType::Add: properties->DiscreteValues.push_back(discreteValue->GetValue()); break;
+                    case Utils::Wrappers::ListOperationType::Remove: std::erase(properties->DiscreteValues, discreteValue->GetValue()); break;
+                    case Utils::Wrappers::ListOperationType::Clear: properties->DiscreteValues.clear(); break;
                     default: throw gcnew System::NotImplementedException("List operation type");
                     }
                 }
             }
 
-            void Stochast::SynchronizeFragilityValues(ListOperationType listOperationType, Wrappers::FragilityValue^ fragilityValue)
+            void Stochast::SynchronizeFragilityValues(Utils::Wrappers::ListOperationType listOperationType, Wrappers::FragilityValue^ fragilityValue)
             {
                 if (!synchronizing)
                 {
@@ -110,15 +110,15 @@ namespace Deltares
 
                     switch (listOperationType)
                     {
-                    case ListOperationType::Add: properties->FragilityValues.push_back(fragilityValue->GetValue()); break;
-                    case ListOperationType::Remove: std::erase(properties->FragilityValues, fragilityValue->GetValue()); break;
-                    case ListOperationType::Clear: properties->FragilityValues.clear(); break;
+                    case Utils::Wrappers::ListOperationType::Add: properties->FragilityValues.push_back(fragilityValue->GetValue()); break;
+                    case Utils::Wrappers::ListOperationType::Remove: std::erase(properties->FragilityValues, fragilityValue->GetValue()); break;
+                    case Utils::Wrappers::ListOperationType::Clear: properties->FragilityValues.clear(); break;
                     default: throw gcnew System::NotImplementedException("List operation type");
                     }
                 }
             }
 
-            void Stochast::SynchronizeContributingStochasts(ListOperationType listOperationType, ContributingStochast^ contributingStochast)
+            void Stochast::SynchronizeContributingStochasts(Utils::Wrappers::ListOperationType listOperationType, ContributingStochast^ contributingStochast)
             {
                 if (!synchronizing)
                 {
@@ -128,9 +128,9 @@ namespace Deltares
 
                     switch (listOperationType)
                     {
-                    case ListOperationType::Add: properties->ContributingStochasts.push_back(contributingStochast->GetValue()); break;
-                    case ListOperationType::Remove: std::erase(properties->ContributingStochasts, contributingStochast->GetValue()); break;
-                    case ListOperationType::Clear: properties->ContributingStochasts.clear(); break;
+                    case Utils::Wrappers::ListOperationType::Add: properties->ContributingStochasts.push_back(contributingStochast->GetValue()); break;
+                    case Utils::Wrappers::ListOperationType::Remove: std::erase(properties->ContributingStochasts, contributingStochast->GetValue()); break;
+                    case Utils::Wrappers::ListOperationType::Clear: properties->ContributingStochasts.clear(); break;
                     default: throw gcnew System::NotImplementedException("List operation type");
                     }
                 }

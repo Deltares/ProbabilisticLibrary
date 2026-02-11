@@ -35,23 +35,22 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class AdaptiveImportanceSamplingSettings : IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::AdaptiveImportanceSamplingSettings>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Reliability::AdaptiveImportanceSamplingSettings>* shared = nullptr;
             public:
                 AdaptiveImportanceSamplingSettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::AdaptiveImportanceSamplingSettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::AdaptiveImportanceSamplingSettings());
                     shared->object->startPointSettings = StartPointSettings->GetSettings();
                     shared->object->importanceSamplingSettings = ImportanceSamplingSettings->GetSettings();
                 }
                 AdaptiveImportanceSamplingSettings(std::shared_ptr<Reliability::AdaptiveImportanceSamplingSettings> settings)
                 {
-                    shared = new SharedPointerProvider(settings);
+                    shared = new Utils::Wrappers::SharedPointerProvider(settings);
                 }
                 ~AdaptiveImportanceSamplingSettings() { this->!AdaptiveImportanceSamplingSettings(); }
                 !AdaptiveImportanceSamplingSettings() { delete shared; }

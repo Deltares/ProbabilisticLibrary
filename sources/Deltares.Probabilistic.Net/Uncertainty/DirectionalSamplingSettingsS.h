@@ -34,13 +34,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class DirectionalSamplingSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::DirectionalSamplingSettingsS>* shared = new SharedPointerProvider(new Uncertainty::DirectionalSamplingSettingsS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::DirectionalSamplingSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::DirectionalSamplingSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 DirectionalSamplingSettingsS() {}

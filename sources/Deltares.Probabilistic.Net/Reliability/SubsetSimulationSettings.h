@@ -34,7 +34,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public enum class SampleMethod { MarkovChain, AdaptiveConditional };
@@ -42,7 +41,7 @@ namespace Deltares
             public ref class SubsetSimulationSettings : IHasRunSettings, IHasStochastSetting, IHasRandomSettings
             {
             private:
-                SharedPointerProvider<Reliability::SubsetSimulationSettings>* shared = new SharedPointerProvider(new Reliability::SubsetSimulationSettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::SubsetSimulationSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::SubsetSimulationSettings());
 
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
                 Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();

@@ -31,13 +31,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
             public ref class DirectionalSampling : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::DirectionalSampling>* shared = new SharedPointerProvider(new Reliability::DirectionalSampling());
+                Utils::Wrappers::SharedPointerProvider<Reliability::DirectionalSampling>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::DirectionalSampling());
             public:
                 DirectionalSampling() {}
                 ~DirectionalSampling() { this->!DirectionalSampling(); }
