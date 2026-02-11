@@ -253,7 +253,7 @@ namespace Deltares::Probabilistic::Test
         auto original_element = element;   // copy of original beta
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
-        auto element_3 = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, combineAndOr::combOr);
+        auto element_3 = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
 
         test_utilities.checkAlphaBeta(element, element_3.ab, 1.0e-3);
         EXPECT_EQ(element_3.n, 0);
@@ -272,7 +272,7 @@ namespace Deltares::Probabilistic::Test
         const auto original_element = element;
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
-        auto C = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, combineAndOr::combOr);
+        auto C = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
 
         EXPECT_NEAR(C.ab.getBeta(), element.getBeta(), 2e-3);
         EXPECT_EQ(C.n, 0);
@@ -293,7 +293,7 @@ namespace Deltares::Probabilistic::Test
         const auto original_element = elm; // copy of original elm
 
         upscaler.upscaleInTime(nr_elements, elm, in_rho_t);
-        auto C = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, combineAndOr::combOr);
+        auto C = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
 
         test_utilities.checkAlphaBeta(elm, C.ab, 1e-3);
         EXPECT_EQ(C.n, 0);
@@ -313,7 +313,7 @@ namespace Deltares::Probabilistic::Test
         auto ORG = elm; // copy of original elm
 
         upscaler.upscaleInTime(nr_elements, elm, inRhoT);
-        auto C = combiner.combineTwoElementsPartialCorrelation(ORG, ORG, inRhoT, combineAndOr::combOr);
+        auto C = combiner.combineTwoElementsPartialCorrelation(ORG, ORG, inRhoT, Reliability::combineAndOr::combOr);
 
         test_utilities.checkAlphaBeta(elm, C.ab, 1e-3);
         EXPECT_EQ(C.n, 0);
@@ -333,7 +333,7 @@ namespace Deltares::Probabilistic::Test
         const auto original_element = element; // copy of original elm
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
-        const auto C = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, combineAndOr::combOr);
+        const auto C = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
 
         EXPECT_NEAR(C.ab.getBeta(), element.getBeta(), 2e-3);
         EXPECT_EQ(C.n, 0);
@@ -354,7 +354,7 @@ namespace Deltares::Probabilistic::Test
         const auto original_element = element; // copy of original element
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
-        auto C = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, combineAndOr::combOr);
+        auto C = combiner.combineTwoElementsPartialCorrelation(original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
         test_utilities.checkAlphaBeta(element, C.ab, 1e-3, 2e-2);
         EXPECT_EQ(C.n, 0);
     }
