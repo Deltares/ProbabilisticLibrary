@@ -19,10 +19,10 @@ generate_product_version(
 get_property(CODECOV2 GLOBAL PROPERTY WITH_CODECOV2)
 
 if (CODECOV2)
+  # this avoids linking errors with clang code coverage build
   add_library(Deltares.Probabilistic.CWrapper
     STATIC
       ${cwrapper_files}
-      ${VersionFilesOutputVariable}
 )
 else()
   add_library(Deltares.Probabilistic.CWrapper
