@@ -220,7 +220,7 @@ namespace Deltares
                 {
                     // swap order stochasts for 2nd element:
                     auto jj = (i == 0 ? j : nStochasts - 1 - j);
-                    auto alpha = std::make_shared<StochastPointAlpha>();
+                    auto alpha = std::make_shared<Models::StochastPointAlpha>();
                     alpha->Alpha = alphaInput[jj];
                     alpha->Stochast = stochasts[jj];
                     alpha->U = -dp->Beta * alpha->Alpha;
@@ -230,7 +230,7 @@ namespace Deltares
                 if (i == 1)
                 {
                     // add stochasts with alpha = 0 to have different sized sets of design points
-                    auto alpha = std::make_shared<StochastPointAlpha>();
+                    auto alpha = std::make_shared<Models::StochastPointAlpha>();
                     alpha->Alpha = 0.0;
                     alpha->Stochast = stochasts[nStochasts];
                     alpha->U = 0.0;
@@ -258,7 +258,7 @@ namespace Deltares
                     dp->Beta = beta;
                     for (size_t j = 0; j < nStochasts; j++)
                     {
-                        auto alpha = std::make_shared<StochastPointAlpha>();
+                        auto alpha = std::make_shared<Models::StochastPointAlpha>();
                         alpha->Alpha = 1.0;
                         alpha->Stochast = stochasts[j];
                         alpha->U = -dp->Beta * alpha->Alpha;

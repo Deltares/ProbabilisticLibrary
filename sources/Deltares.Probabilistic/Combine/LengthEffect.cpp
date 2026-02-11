@@ -51,14 +51,14 @@ namespace Deltares
             const size_t nStochasts = crossSection->Alphas.size();
 
             auto up = upscaling();
-            auto alpha = vector1D(nStochasts);
+            auto alpha = Numeric::vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
                 alpha(i) = crossSection->Alphas[i]->Alpha;
             }
             auto dp = alphaBeta(crossSection->Beta, alpha);
-            vector1D rho1(nStochasts);
-            vector1D rho2(nStochasts);
+            Numeric::vector1D rho1(nStochasts);
+            Numeric::vector1D rho2(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
                 rho1(i) = selfCorrelations[i];
@@ -83,7 +83,7 @@ namespace Deltares
             for (size_t i = 0; i < nStochasts; i++)
             {
                 auto alphaValue = dpLength.getAlphaI(i);
-                auto alpha = std::make_shared<StochastPointAlpha>();
+                auto alpha = std::make_shared<Models::StochastPointAlpha>();
                 alpha->Alpha = alphaValue;
                 alpha->Stochast = crossSection->Alphas[i]->Stochast;
                 alpha->U = -dpL.Beta * alphaValue;

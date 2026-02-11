@@ -23,10 +23,11 @@
 #include "ImportanceSamplingCluster.h"
 #include "ImportanceSamplingSettings.h"
 #include "ReliabilityMethod.h"
+#include "../Model/Sample.h"
 
 namespace Deltares::Reliability
 {
-    typedef std::function<void(std::shared_ptr<Sample>)> RegisterSampleLambda;
+    typedef std::function<void(std::shared_ptr<Models::Sample>)> RegisterSampleLambda;
     typedef std::function<bool(std::shared_ptr<ImportanceSamplingCluster>)> BreakLoopLambda;
 
     /**
@@ -37,7 +38,7 @@ namespace Deltares::Reliability
     public:
         static double getConvergence(double pf, double minWeight, int samples);
         static double getDimensionality(const std::vector<double>& factors);
-        static double getSampleWeight(const std::shared_ptr<Sample>& sample, const std::shared_ptr<Sample>& center, double dimensionality, const std::vector<double>& factors);
+        static double getSampleWeight(const std::shared_ptr<Models::Sample>& sample, const std::shared_ptr<Models::Sample>& center, double dimensionality, const std::vector<double>& factors);
 
         /**
          * \brief Gets the weight for the sample
@@ -46,8 +47,8 @@ namespace Deltares::Reliability
          * \param dimensionality constant dependent on the number of stochasts
          * \return weight
          */
-        static double getWeight(const std::shared_ptr<Sample>& modifiedSample, const std::shared_ptr<Sample>& sample, double dimensionality);
-        static std::shared_ptr<Sample> getOriginalSample(const std::shared_ptr<Sample>& sample, const std::shared_ptr<Sample>& center, const std::vector<double>& factors);
+        static double getWeight(const std::shared_ptr<Models::Sample>& modifiedSample, const std::shared_ptr<Models::Sample>& sample, double dimensionality);
+        static std::shared_ptr<Models::Sample> getOriginalSample(const std::shared_ptr<Models::Sample>& sample, const std::shared_ptr<Models::Sample>& center, const std::vector<double>& factors);
     };
 }
 

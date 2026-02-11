@@ -48,7 +48,7 @@ namespace Deltares
              * \param progress Progress indicator (optional)
              * \return Design point resembling the combined reliability and alpha values
              */
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override;
+            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<Models::ProgressIndicator> progress = nullptr) override;
 
         private:
             /**
@@ -73,7 +73,7 @@ namespace Deltares
              * \param progress Progress indicator (optional)
              * \return Design point resembling the combined reliability and alpha values
              */
-            std::shared_ptr<DesignPoint> combineDesignPointsAdjusted(combineAndOr combineMethodType, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints);
+            std::shared_ptr<DesignPoint> combineDesignPointsAdjusted(combineAndOr combineMethodType, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints);
 
             /**
              * \brief Calculates the probability that a sample does not fail for previous design points when it fails to the current design point
@@ -85,7 +85,7 @@ namespace Deltares
              * \param progress Progress indicator (optional)
              * \return Probability
              */
-            std::shared_ptr<DesignPoint> getSeriesProbability(std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
+            std::shared_ptr<DesignPoint> getSeriesProbability(std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Models::ProgressIndicator> progress);
 
             /**
              * \brief Calculates the design point when combination type is parallel
@@ -95,7 +95,7 @@ namespace Deltares
              * \param progress Progress indicator (optional)
              * \return Design point
              */
-            std::shared_ptr<DesignPoint> getParallelProbability(std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
+            std::shared_ptr<DesignPoint> getParallelProbability(std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Models::ProgressIndicator> progress);
 
             /**
              * \brief Fills the settings for series algorithm

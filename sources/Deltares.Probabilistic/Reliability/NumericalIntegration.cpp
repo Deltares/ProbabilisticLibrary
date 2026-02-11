@@ -40,7 +40,7 @@ namespace Deltares
             int nStochasts = modelRunner->getVaryingStochastCount();
 
             // local variables
-            const auto u = std::make_shared<Sample>(nStochasts); //local vector with values in u-space
+            const auto u = std::make_shared<Models::Sample>(nStochasts); //local vector with values in u-space
 
             // Examine the position of the origin: if the origin has a negative z-value the design point must be searched
             // with positive values of the z-function. The explanation for searching with positive z-values as the origin
@@ -96,7 +96,7 @@ namespace Deltares
             return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
         }
 
-        double NumericalIntegration::getStochastProbability(int stochastIndex, Sample& parentSample, double density, double& totalDensity, int nSamples)
+        double NumericalIntegration::getStochastProbability(int stochastIndex, Models::Sample& parentSample, double density, double& totalDensity, int nSamples)
         {
             const double uDelta = 0.01;
             const int nStochasts = Settings.StochastSet->getVaryingStochastCount();
@@ -154,11 +154,11 @@ namespace Deltares
             }
             else
             {
-                std::vector<std::shared_ptr<Sample>> samples;
+                std::vector<std::shared_ptr<Models::Sample>> samples;
 
                 for (size_t j = 0; j < uValues.size() - 1; j++)
                 {
-                    std::shared_ptr<Sample> sample = parentSample.clone();
+                    std::shared_ptr<Models::Sample> sample = parentSample.clone();
                     sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                     const double contribution = pq.getDifference(uValues[j + 1]);

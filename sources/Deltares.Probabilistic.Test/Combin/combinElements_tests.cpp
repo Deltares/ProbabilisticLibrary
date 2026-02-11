@@ -28,6 +28,8 @@
 
 namespace Deltares::Probabilistic::Test
 {
+    using namespace Deltares::Numeric;
+
     void combinElementsTests::runAllCombineTwoElementsTests()
     {
         testCombineTwoElementsNoCorrelation1();
@@ -877,7 +879,7 @@ namespace Deltares::Probabilistic::Test
         for (int i = 0; i < alphaValues.size(); i++ )
         {
             auto alphaValue = alphaValues[i];
-            auto alpha = std::make_shared<StochastPointAlpha>();
+            auto alpha = std::make_shared<Models::StochastPointAlpha>();
             alpha->Alpha = alphaValue;
             alpha->Stochast = stochasts[i];
             section->Alphas.push_back(alpha);

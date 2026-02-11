@@ -46,19 +46,19 @@ namespace Deltares
             DesignPointMethod method = DesignPointMethod::NearestToMean;
             double minimumBeta = std::numeric_limits<double>::infinity();
             double sumWeights = 0;
-            std::shared_ptr<Sample> defaultSample = nullptr;
-            std::shared_ptr<Sample> meanSample = nullptr;
-            std::shared_ptr<Sample> sinSample = nullptr;
-            std::shared_ptr<Sample> cosSample = nullptr;
+            std::shared_ptr<Models::Sample> defaultSample = nullptr;
+            std::shared_ptr<Models::Sample> meanSample = nullptr;
+            std::shared_ptr<Models::Sample> sinSample = nullptr;
+            std::shared_ptr<Models::Sample> cosSample = nullptr;
             bool sampleAdded = false;
             bool weightedSampleAdded = false;
-            std::vector<std::shared_ptr<Sample>> nearestSamples;
+            std::vector<std::shared_ptr<Models::Sample>> nearestSamples;
 
             std::vector<int> qualitativeIndices;
             int qualitativeCount = 0;
             std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
-            void handleSample(const std::shared_ptr<Sample>& sample, double weight);
+            void handleSample(const std::shared_ptr<Models::Sample>& sample, double weight);
             void initializeSamples(int count, DesignPointMethod method);
             void initializeTotals();
 
@@ -68,9 +68,9 @@ namespace Deltares
             DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
 
             void initialize(double beta) const;
-            void addSample(const std::shared_ptr<Sample>& sample);
-            void removeSample(const std::shared_ptr<Sample>& sample);
-            std::shared_ptr<Sample> getSample();
+            void addSample(const std::shared_ptr<Models::Sample>& sample);
+            void removeSample(const std::shared_ptr<Models::Sample>& sample);
+            std::shared_ptr<Models::Sample> getSample();
 
             static std::string getDesignPointMethodString(DesignPointMethod method);
             static DesignPointMethod getDesignPointMethod(std::string method);

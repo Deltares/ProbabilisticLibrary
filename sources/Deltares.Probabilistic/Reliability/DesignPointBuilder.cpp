@@ -128,10 +128,10 @@ namespace Deltares
 
         void DesignPointBuilder::initializeTotals()
         {
-            defaultSample = std::make_shared<Sample>(count);
-            meanSample = std::make_shared<Sample>(count);
-            sinSample = std::make_shared<Sample>(count);
-            cosSample = std::make_shared<Sample>(count);
+            defaultSample = std::make_shared<Models::Sample>(count);
+            meanSample = std::make_shared<Models::Sample>(count);
+            sinSample = std::make_shared<Models::Sample>(count);
+            cosSample = std::make_shared<Models::Sample>(count);
 
             for (const auto& modeFinder : this->modeFinders)
             {
@@ -151,7 +151,7 @@ namespace Deltares
             }
         }
 
-        void DesignPointBuilder::addSample(const std::shared_ptr<Sample>& sample)
+        void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& sample)
         {
             sampleAdded = true;
 
@@ -174,14 +174,14 @@ namespace Deltares
             handleSample(sample, weight);
         }
 
-        void DesignPointBuilder::removeSample(const std::shared_ptr<Sample>& sample)
+        void DesignPointBuilder::removeSample(const std::shared_ptr<Models::Sample>& sample)
         {
             double weight = std::isnan(sample->Weight) ? -1 : -sample->Weight;
 
             handleSample(sample, weight);
         }
 
-        void DesignPointBuilder::handleSample(const std::shared_ptr<Sample>& sample, double weight)
+        void DesignPointBuilder::handleSample(const std::shared_ptr<Models::Sample>& sample, double weight)
         {
             constexpr double delta = 1E-10;
 
@@ -274,7 +274,7 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<Sample> DesignPointBuilder::getSample()
+        std::shared_ptr<Models::Sample> DesignPointBuilder::getSample()
         {
             if (!sampleAdded)
             {
@@ -290,7 +290,7 @@ namespace Deltares
                 }
                 case DesignPointMethod::CenterOfGravity:
                 {
-                    std::shared_ptr<Sample> gravityPoint = std::make_shared<Sample>(count);
+                    std::shared_ptr<Models::Sample> gravityPoint = std::make_shared<Models::Sample>(count);
 
                     for (int i = 0; i < count; i++)
                     {
@@ -315,7 +315,7 @@ namespace Deltares
                     }
 
                     auto coordinates = Numeric::NumericSupport::GetCartesianCoordinates(angleValues);
-                    std::shared_ptr<Sample> anglePoint = std::make_shared<Sample>(coordinates);
+                    std::shared_ptr<Models::Sample> anglePoint = std::make_shared<Models::Sample>(coordinates);
 
                     for (int j = 0; j < this->qualitativeCount; j++)
                     {

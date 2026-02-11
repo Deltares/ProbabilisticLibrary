@@ -35,7 +35,7 @@ namespace Deltares
                 std::vector<std::shared_ptr<DesignPoint>>& designPoints,
                 std::shared_ptr<Statistics::SelfCorrelationMatrix>
                 selfCorrelationMatrix = nullptr,
-                std::shared_ptr<ProgressIndicator> progress =
+                std::shared_ptr<Models::ProgressIndicator> progress =
                 nullptr) override;
 
         private:

@@ -39,17 +39,17 @@ namespace Deltares ::Reliability
     {
     public:
         cmbResult combineTwoElementsPartialCorrelation(const alphaBeta& element1,
-            const alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr);
+            const alphaBeta& element2, const Numeric::vector1D& rhoP, const combineAndOr combAndOr);
 
         cmbResult combineMultipleElements(const elements& Elements,
-            const vector1D& rho, const combineAndOr combAndOrIn);
+            const Numeric::vector1D& rho, const combineAndOr combAndOrIn);
 
         cmbResult combineMultipleElementsFull(const elements& Elements, const combineAndOr combAndOr);
 
         cmbResult combineMultipleElementsProb(elements& Elements,
             const std::vector<double>& percentages, const combineAndOr combAndOr);
 
-        static void calculateCombinationWithLargestCorrelation(const vector1D& rhoP,
+        static void calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
             const std::vector<alphaBeta>& alpha, size_t& i1max, size_t& i2max);
 
     private:

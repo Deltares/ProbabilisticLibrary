@@ -27,6 +27,8 @@
 
 namespace Deltares::Probabilistic::Test
 {
+    using namespace Deltares::Numeric;
+
     void matrix_tests::qr_decomposition() const
     {
         auto matrix_values =

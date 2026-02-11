@@ -45,7 +45,7 @@ namespace Deltares
             startPointCalculator.Settings = this->Settings->StartPointSettings;
             startPointCalculator.Settings->StochastSet = this->Settings->StochastSet;
 
-            const std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
+            const std::shared_ptr<Models::Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
 
             if (Settings->StartPointSettings->StartMethod != StartMethodType::FixedValue)
             {
@@ -93,7 +93,7 @@ namespace Deltares
             return designPoint;
         }
 
-        std::shared_ptr<DesignPoint> FORM::getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, std::shared_ptr<Sample> startPoint,
+        std::shared_ptr<DesignPoint> FORM::getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, std::shared_ptr<Models::Sample> startPoint,
             const double relaxationFactor, const int relaxationIndex)
         {
             constexpr double minGradientLength = 1E-08;
@@ -114,14 +114,14 @@ namespace Deltares
             int iteration = 0;
             double beta = nan("");
 
-            std::shared_ptr<Sample> sample = startPoint->clone();
-            std::shared_ptr<Sample> resultSample = startPoint->clone();
+            std::shared_ptr<Models::Sample> sample = startPoint->clone();
+            std::shared_ptr<Models::Sample> resultSample = startPoint->clone();
 
             auto gradientCalculator = Models::GradientCalculator();
             gradientCalculator.Settings = this->Settings->GradientSettings;
 
             auto lastBetas = std::vector<double>();
-            auto lastSamples = std::vector<std::shared_ptr<Sample>>();
+            auto lastSamples = std::vector<std::shared_ptr<Models::Sample>>();
 
             while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
             {
@@ -214,7 +214,7 @@ namespace Deltares
                 // no convergence, next iteration
                 if (!convergenceReport->IsConverged)
                 {
-                    const std::shared_ptr<Sample> newSample = std::make_shared<Sample>(nStochasts);
+                    const std::shared_ptr<Models::Sample> newSample = std::make_shared<Models::Sample>(nStochasts);
 
                     for (int k = 0; k < nStochasts; k++)
                     {
@@ -232,7 +232,7 @@ namespace Deltares
                 // compute design values
                 std::vector<double> uValues = NumericSupport::select(zGradient, [betaFac, zGradientLength](double p) { return - p * betaFac / zGradientLength; });
 
-                resultSample = std::make_shared<Sample>(uValues);
+                resultSample = std::make_shared<Models::Sample>(uValues);
 
                 iteration++;
             }
@@ -250,7 +250,7 @@ namespace Deltares
             return !foundNaN;
         }
 
-        bool FORM::isConverged(ModelRunner& modelRunner, const Sample& sample, ConvergenceReport& convergenceReport, double beta, double zGradientLength) const
+        bool FORM::isConverged(Models::ModelRunner& modelRunner, const Models::Sample& sample, ConvergenceReport& convergenceReport, double beta, double zGradientLength) const
         {
             const double uSquared = NumericSupport::GetSquaredSum(sample.Values);
 
@@ -283,7 +283,7 @@ namespace Deltares
             return report;
         }
 
-        std::pair<double, std::shared_ptr<Sample>> FORM::estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector<std::shared_ptr<Sample>>& last10u)
+        std::pair<double, std::shared_ptr<Models::Sample>> FORM::estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector<std::shared_ptr<Models::Sample>>& last10u)
         {
             const size_t nStochasts = last10u[0]->getSize();
             const size_t nIter = last10u.size();
@@ -311,7 +311,7 @@ namespace Deltares
             double signBeta = (meanBeta > 0.0 ? 1.0 : -1.0);
             double beta = signBeta * sqrt(sumUk);
 
-            auto alpha = std::make_shared<Sample>(nStochasts);
+            auto alpha = std::make_shared<Models::Sample>(nStochasts);
 
             for (size_t k = 0; k < nStochasts; k++)
             {

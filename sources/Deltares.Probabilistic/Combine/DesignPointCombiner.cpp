@@ -61,7 +61,7 @@ namespace Deltares
             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
             const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
             const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix,
-            const std::shared_ptr<ProgressIndicator>& progress) const
+            const std::shared_ptr<Models::ProgressIndicator>& progress) const
         {
             const std::shared_ptr<Combiner> combiner = getCombiner();
             std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
@@ -91,11 +91,11 @@ namespace Deltares
             if (correlationMatrix != nullptr && !correlationMatrix->IsIdentity())
             {
                 std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
-                Models::UConverter uConverter = UConverter(stochasts, correlationMatrix);
+                Models::UConverter uConverter = Models::UConverter(stochasts, correlationMatrix);
                 uConverter.initializeForRun();
 
-                std::shared_ptr<Sample> sample = combinedDesignPoint->getSample();
-                std::shared_ptr<StochastPoint> stochastPoint = uConverter.GetStochastPoint(sample, combinedDesignPoint->Beta);
+                std::shared_ptr<Models::Sample> sample = combinedDesignPoint->getSample();
+                std::shared_ptr<Models::StochastPoint> stochastPoint = uConverter.GetStochastPoint(sample, combinedDesignPoint->Beta);
 
                 for (size_t i = 0; i < combinedDesignPoint->Alphas.size(); i++)
                 {

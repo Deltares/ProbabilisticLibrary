@@ -109,17 +109,17 @@ namespace Deltares {
                 stochast.push_back(s);
             }
             auto corr = std::make_shared<CorrelationMatrix>(false);
-            auto uConverter = std::make_shared<UConverter>(stochast, corr);
+            auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
             uConverter->initializeForRun();
-            auto zModel = std::make_shared<ZModel>([&w](std::shared_ptr<ModelSample> v) { return w.zfunc(v); });
-            auto modelRunner = std::make_shared<ModelRunner>(zModel, uConverter);
+            auto zModel = std::make_shared<Models::ZModel>([&w](std::shared_ptr<Models::ModelSample> v) { return w.zfunc(v); });
+            auto modelRunner = std::make_shared<Models::ModelRunner>(zModel, uConverter);
             modelRunner->initializeForRun();
             auto relMethod = std::make_shared<FORM>();
             relMethod->Settings->RelaxationFactor = 0.4;
             relMethod->Settings->RelaxationLoops = maxTrialLoops;
             relMethod->Settings->EpsilonBeta = 0.01;
             relMethod->Settings->GradientSettings->StepSize = 0.1;
-            relMethod->Settings->GradientSettings->gradientType = GradientType::TwoDirections;
+            relMethod->Settings->GradientSettings->gradientType = Models::GradientType::TwoDirections;
             relMethod->Settings->MaxIterationsGrowthFactor  = 2;
             auto newResult = relMethod->getDesignPoint(modelRunner);
             auto converged = (newResult->convergenceReport->IsConverged ? 0 : 1);
