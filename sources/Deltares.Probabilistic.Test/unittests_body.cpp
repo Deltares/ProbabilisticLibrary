@@ -286,27 +286,27 @@ TEST(ReliabilityMethodTest, TestClustersAdpImpSampling)
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranches)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 1.0);
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Monotone, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingProxyModels)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Monotone, 1.0);
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(true, Deltares::Reliability::ModelVaryingType::Monotone, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesNotMonotone)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Varying, 1.0);
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Varying, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingProxyModelsNotMonotone)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Varying, 1.0);
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(true, Deltares::Reliability::ModelVaryingType::Varying, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesLargerStepsize)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 3.0);
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Monotone, 3.0);
 }
 TEST(DistributionTests, testConditionalStochast)
 {
@@ -652,19 +652,19 @@ TEST(WaartsTests, testLinearResistanceNumericalIntegration)
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfGravity)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(CenterOfGravity);
+    tester.runNumInt(Deltares::Reliability::CenterOfGravity);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfAngles)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(CenterOfAngles);
+    tester.runNumInt(Deltares::Reliability::CenterOfAngles);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationNearestToMean)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(NearestToMean);
+    tester.runNumInt(Deltares::Reliability::NearestToMean);
 }
 
 TEST(WaartsTests, testLinearResistanceImportanceSampling)

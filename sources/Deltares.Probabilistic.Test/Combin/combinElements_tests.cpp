@@ -29,6 +29,7 @@
 namespace Deltares::Probabilistic::Test
 {
     using namespace Deltares::Numeric;
+    using namespace Deltares::Reliability;
 
     void combinElementsTests::runAllCombineTwoElementsTests()
     {
