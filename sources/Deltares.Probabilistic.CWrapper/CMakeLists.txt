@@ -16,11 +16,21 @@ generate_product_version(
    ORIGINAL_FILENAME ${ver_git_commit_hash}
 )
 
-add_library(Deltares.Probabilistic.CWrapper
-  SHARED
-    ${cwrapper_files}
-    ${VersionFilesOutputVariable}
+get_property(CODECOV2 GLOBAL PROPERTY WITH_CODECOV2)
+
+if (CODECOV2)
+  # this avoids linking errors with clang code coverage build
+  add_library(Deltares.Probabilistic.CWrapper
+    STATIC
+      ${cwrapper_files}
 )
+else()
+  add_library(Deltares.Probabilistic.CWrapper
+    SHARED
+      ${cwrapper_files}
+      ${VersionFilesOutputVariable}
+)
+endif()
 
 set_target_properties(Deltares.Probabilistic.CWrapper
   PROPERTIES

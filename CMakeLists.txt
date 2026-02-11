@@ -1,5 +1,7 @@
 # set minimum cmake version
 
+option(CODECOVCLANG "CodeCoverage from clang on/off" OFF)
+
 option(CODECOV "CodeCoverage on/off" OFF)
 if (CODECOV)
     cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
@@ -28,6 +30,7 @@ if(WIN32)
 endif(WIN32)
 
 set_property(GLOBAL PROPERTY WITH_CODECOV ${CODECOV})
+set_property(GLOBAL PROPERTY WITH_CODECOV2 ${CODECOVCLANG})
 if (UNIX)
     if (CODECOV)
         include(Dart)
@@ -37,6 +40,11 @@ if (UNIX)
     endif()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Werror")
 endif (UNIX)
+
+if (CODECOVCLANG)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-instr-generate -fcoverage-mapping -w")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fprofile-instr-generate -fcoverage-mapping -w")
+endif()
 
 option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 
