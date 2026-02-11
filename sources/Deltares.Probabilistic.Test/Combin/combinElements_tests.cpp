@@ -26,6 +26,9 @@
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "../../Deltares.Probabilistic/Combine/LengthEffect.h"
 
+using namespace Deltares::Reliability;
+using namespace Deltares::Statistics;
+
 namespace Deltares::Probabilistic::Test
 {
     void combinElementsTests::runAllCombineTwoElementsTests()
@@ -109,7 +112,7 @@ namespace Deltares::Probabilistic::Test
     //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
         double p1 = elm1.getP();
         double p2 = elm2.getP();
-        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {0.246342425266045, 0.969182251096718}); // pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -134,7 +137,7 @@ namespace Deltares::Probabilistic::Test
     //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
         double p1 = elm1.getP();
         double p2 = elm2.getP();
-        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {0.246342425266045, 0.969182251096718}); // Is somewhere pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -161,7 +164,7 @@ namespace Deltares::Probabilistic::Test
     //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
         double p1 = elm1.getP();
         double p2 = elm2.getP();
-        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {0.969182251096718, 0.246342425266045}); // pre-computed
     //   NB. The expectedAlphaC(1) and expectedAlphaC(2) must now be in reversed order compared to
     //       the preceding tests testCombineTwoElementsNoCorrelation1 and testCombineTwoElementsNoCorrelation2
@@ -187,7 +190,7 @@ namespace Deltares::Probabilistic::Test
     //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
         double q1 = elm1.getQ();
         double q2 = elm2.getQ();
-        auto beta = Statistics::StandardNormal::getUFromQ(q1 * q2);
+        auto beta = StandardNormal::getUFromQ(q1 * q2);
         auto ref = alphaBeta(beta, {0.651828661927589, 0.758366267373285}); // Is somewhere pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combAnd);
@@ -211,7 +214,7 @@ namespace Deltares::Probabilistic::Test
     //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
         double q1 = elm1.getQ();
         double q2 = elm2.getQ();
-        auto beta = Statistics::StandardNormal::getUFromQ(q1 * q2);
+        auto beta = StandardNormal::getUFromQ(q1 * q2);
         auto ref = alphaBeta(beta, {0.970353143592546, 0.241688910290521}); // Is somewhere pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combAnd);
@@ -235,7 +238,7 @@ namespace Deltares::Probabilistic::Test
     //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
         double q1 = elm1.getQ();
         double q2 = elm2.getQ();
-        auto beta = Statistics::StandardNormal::getUFromQ(q1 * q2);
+        auto beta = StandardNormal::getUFromQ(q1 * q2);
         auto ref = alphaBeta(beta, {sqrt(0.5), sqrt(0.5)});
         // The alpha()-components of the combination must be equal because of equal beta1 and beta2
 
@@ -327,7 +330,7 @@ namespace Deltares::Probabilistic::Test
         double p1 = elm1.getP();
         double p2 = elm2.getP();
 
-        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {0.149904324474973, 0.988700507486318}); // pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -378,7 +381,7 @@ namespace Deltares::Probabilistic::Test
         double p1 = elm1.getP();
         double p2 = elm2.getP();
 
-        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {-0.689062334733955, -0.158849035402622, 0.157472623165194, 0.689320285321795}); // pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -862,11 +865,11 @@ namespace Deltares::Probabilistic::Test
     void combinElementsTests::testLengthEffectFourStochasts()
     {
         const int nStochasts = 4;
-        std::vector< std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
+        std::vector< std::shared_ptr<Stochast>> stochasts;
         for (size_t i = 0; i < nStochasts; i++)
         {
-            auto s = std::make_shared<Statistics::Stochast>();
-            s->setDistributionType (Statistics::DistributionType::Normal);
+            auto s = std::make_shared<Stochast>();
+            s->setDistributionType (DistributionType::Normal);
             s->setMeanAndDeviation(0.0, 1.0);
             stochasts.push_back(s);
         }
@@ -884,7 +887,7 @@ namespace Deltares::Probabilistic::Test
         }
 
         auto rhoXK = std::vector<double>({ 0.5, 0.5, 0.2, 0.2 });
-        auto rho = std::make_shared<Statistics::SelfCorrelationMatrix>();
+        auto rho = std::make_shared<SelfCorrelationMatrix>();
         for (size_t i = 0; i < nStochasts; i++)
         {
             rho->setSelfCorrelation(section->Alphas[i]->Stochast, rhoXK[i]);
@@ -992,7 +995,7 @@ namespace Deltares::Probabilistic::Test
         double q2 = elm2.getQ();
 
     //  Probability of failure is then, corresponding beta:
-        auto beta = Statistics::StandardNormal::getUFromQ(q1 + q2);
+        auto beta = StandardNormal::getUFromQ(q1 + q2);
         auto ref = alphaBeta(beta, elm2.getAlpha());
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -1100,7 +1103,7 @@ namespace Deltares::Probabilistic::Test
         double p1 = elm1.getP();
         double p2 = elm2.getP();
         double p3 = elm3.getP();
-        double betaC = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2 * p3);
+        double betaC = StandardNormal::getUFromQ(1.0 - p1 * p2 * p3);
     //
         auto ref = alphaBeta(betaC, {0.730696091970909, 0.572806816016527, 0.371450632929127}); // pre-computed
 

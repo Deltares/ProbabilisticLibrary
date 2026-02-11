@@ -148,10 +148,12 @@ namespace Deltares
                 while (received == DEFAULT_BUFLEN)
                 {
                     received = recv(server_socket, receiveBuffer, sizeof(receiveBuffer), 0);
-                    if (received >= 0)
+                    if (received < 0)
                     {
-                        answer += std::string(receiveBuffer, received);
+                        throw std::runtime_error("Receive failed");
                     }
+
+                    answer += std::string(receiveBuffer, received);
                 }
 
                 closesocket(server_socket);

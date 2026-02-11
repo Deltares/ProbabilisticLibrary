@@ -31,6 +31,9 @@
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerExcludingCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/WeightedSumCombiner.h"
 
+using namespace Deltares::Reliability;
+using namespace Deltares::Statistics;
+
 namespace Deltares
 {
     namespace Probabilistic
@@ -142,10 +145,10 @@ namespace Deltares
                 const auto length = Numeric::NumericSupport::GetLength(alphaInput);
                 for (auto &x : alphaInput) { x /= length; }
 
-                std::vector< std::shared_ptr<Statistics::Stochast>> stochasts;
+                std::vector< std::shared_ptr<Stochast>> stochasts;
                 for (size_t i = 0; i <= nStochasts; i++)
                 {
-                    auto s = std::make_shared<Statistics::Stochast>();
+                    auto s = std::make_shared<Stochast>();
                     stochasts.push_back(s);
                 }
 
@@ -155,7 +158,7 @@ namespace Deltares
                     addDesignPoint(beta, nStochasts, i, alphaInput, stochasts, Elements);
                 }
 
-                auto rho = std::make_shared<Statistics::SelfCorrelationMatrix>();
+                auto rho = std::make_shared<SelfCorrelationMatrix>();
                 for (size_t i = 0; i < nStochasts; i++)
                 {
                     rho->setSelfCorrelation(Elements[0]->Alphas[i]->Stochast, rhoXK[i]);
@@ -181,26 +184,26 @@ namespace Deltares
                 const auto length = Numeric::NumericSupport::GetLength(alphaInput);
                 for (auto& x : alphaInput) { x /= length; }
 
-                std::vector< std::shared_ptr<Statistics::Stochast>> stochasts;
+                std::vector< std::shared_ptr<Stochast>> stochasts;
                 for (size_t i = 0; i <= nStochasts; i++)
                 {
-                    auto s = std::make_shared<Statistics::Stochast>();
+                    auto s = std::make_shared<Stochast>();
                     stochasts.push_back(s);
                 }
 
                 auto designPoints = std::vector<std::shared_ptr<DesignPoint>>();
-                auto scenarios = std::vector<std::shared_ptr<Statistics::Scenario>>();
+                auto scenarios = std::vector<std::shared_ptr<Scenario>>();
 
                 for (size_t i = 0; i < nDesignPoints; i++)
                 {
                     addDesignPoint(beta, nStochasts, i, alphaInput, stochasts, designPoints);
 
-                    std::shared_ptr<Statistics::Scenario> scenario = std::make_shared<Statistics::Scenario>();
+                    std::shared_ptr<Scenario> scenario = std::make_shared<Scenario>();
                     scenario->probability = scenarioInput[i];
                     scenarios.push_back(scenario);
                 }
 
-                auto rho = std::make_shared<Statistics::SelfCorrelationMatrix>();
+                auto rho = std::make_shared<SelfCorrelationMatrix>();
                 for (size_t i = 0; i < nStochasts; i++)
                 {
                     rho->setSelfCorrelation(designPoints[0]->Alphas[i]->Stochast, rhoXK[i]);
@@ -244,10 +247,10 @@ namespace Deltares
                 constexpr int nElements = 2; // Number of elements
                 constexpr size_t nStochasts = 1;
 
-                std::vector< std::shared_ptr<Statistics::Stochast>> stochasts;
+                std::vector< std::shared_ptr<Stochast>> stochasts;
                 for (size_t i = 0; i <= nStochasts; i++)
                 {
-                    auto s = std::make_shared<Statistics::Stochast>();
+                    auto s = std::make_shared<Stochast>();
                     stochasts.push_back(s);
                 }
 
@@ -267,7 +270,7 @@ namespace Deltares
                     Elements.push_back(dp);
                 }
 
-                auto selfCorrelation = std::make_shared<Statistics::SelfCorrelationMatrix>();
+                auto selfCorrelation = std::make_shared<SelfCorrelationMatrix>();
                 for (size_t i = 0; i < nStochasts; i++)
                 {
                     selfCorrelation->setSelfCorrelation(Elements[0]->Alphas[i]->Stochast, rho);

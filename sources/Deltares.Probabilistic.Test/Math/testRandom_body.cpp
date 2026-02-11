@@ -25,6 +25,8 @@
 
 namespace Deltares::Probabilistic::Test
 {
+    using namespace Deltares::Numeric;
+
     void testRandom::allRandomTests()
     {
         mersenneTwisterTest1();
@@ -36,7 +38,7 @@ namespace Deltares::Probabilistic::Test
     void testRandom::mersenneTwisterTest1()
     {
         constexpr double margin = 1e-12;
-        auto mt = Numeric::RandomValueGenerator();
+        auto mt = RandomValueGenerator();
         mt.initialize(true, 1);
 
         double sum = 0.0;
@@ -49,7 +51,7 @@ namespace Deltares::Probabilistic::Test
 
     void testRandom::initializationTest()
     {
-        auto mt = Numeric::RandomValueGenerator();
+        auto mt = RandomValueGenerator();
         mt.initialize(false, 0);
 
         double val2 = mt.next();
@@ -58,7 +60,7 @@ namespace Deltares::Probabilistic::Test
 
     void testRandom::repetitiveTest()
     {
-        auto mt = Numeric::RandomValueGenerator();
+        auto mt = RandomValueGenerator();
 
         size_t size1 = 1000;
         size_t size2 = 1500;
@@ -105,9 +107,9 @@ namespace Deltares::Probabilistic::Test
 
     void testRandom::twoInstances()
     {
-        auto mt1 = Numeric::RandomValueGenerator();
+        auto mt1 = RandomValueGenerator();
         mt1.initialize(true, 0);
-        auto mt2 = Numeric::RandomValueGenerator();
+        auto mt2 = RandomValueGenerator();
         mt2.initialize(true, 0);
 
         double val1 = mt1.next();

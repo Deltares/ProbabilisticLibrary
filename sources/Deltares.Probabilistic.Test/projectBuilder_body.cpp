@@ -26,219 +26,225 @@
 
 #include "../Deltares.Probabilistic/Statistics/CopulaCorrelation.h"
 
+using namespace Deltares::Reliability;
+using namespace Deltares::Statistics;
+using namespace Deltares::Models;
+using namespace Deltares::Uncertainty;
+using namespace Deltares::Sensitivity;
+
 namespace Deltares::Probabilistic::Test
 {
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProject() const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildProject() const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v) { return zfunc(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        auto dist = Statistics::DistributionType::Normal;
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v) { return zfunc(v); });
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        auto dist = DistributionType::Normal;
         std::vector<double> params{ 0.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Stochast> s(new Stochast(dist, params));
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProject()
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearProject()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linear(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        auto dist = Statistics::DistributionType::Uniform;
+        auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linear(v); });
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Stochast> s(new Stochast(dist, params));
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearOutputOnlyProject()
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearOutputOnlyProject()
     {
-        auto zModel = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> sample) { return linearOutputOnly(sample); });
+        auto zModel = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> sample) { return linearOutputOnly(sample); });
         zModel->zValueConverter = std::make_shared<Deltares::Models::DefaultValueConverter>();
 
-        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, std::vector<double> { -1.0, 1.0 });
+        auto stochasts = std::vector<std::shared_ptr<Stochast>>();
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double> { -1.0, 1.0 });
         stochasts.push_back(stochast);
         stochasts.push_back(stochast);
 
-        std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>(true);
-        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, correlationMatrix);
+        std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>(true);
+        std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(stochasts, correlationMatrix);
         uConverter->initializeForRun();
 
-        std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(zModel, uConverter);
+        std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(zModel, uConverter);
         return modelRunner;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearOutputProject()
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearOutputProject()
     {
-        std::shared_ptr<Models::ZModel> z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearMultiple(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        auto dist = Statistics::DistributionType::Uniform;
+        std::shared_ptr<ZModel> z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linearMultiple(v); });
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Stochast> s(new Stochast(dist, params));
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearArrayProject()
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearArrayProject()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linear(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        auto dist = Statistics::DistributionType::Uniform;
+        auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linear(v); });
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Stochast> s(new Stochast(dist, params));
         s->modelParameter->isArray = true;
         s->modelParameter->arraySize = 5;
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearVaryingArrayProject()
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearVaryingArrayProject()
     {
-        std::shared_ptr<Models::ZModel> z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linear(v); });
-        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>();
+        std::shared_ptr<ZModel> z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linear(v); });
+        auto stochasts = std::vector<std::shared_ptr<Stochast>>();
+        std::shared_ptr<Stochast> s = std::make_shared<Stochast>();
         s->modelParameter->isArray = true;
         s->modelParameter->arraySize = 5;
         s->name = "s";
         for (int i = 0; i < s->modelParameter->arraySize; i++)
         {
-            std::shared_ptr<Statistics::Stochast> s1(new Statistics::Stochast());
-            s1->setDistributionType(Statistics::DistributionType::Uniform);
+            std::shared_ptr<Stochast> s1(new Stochast());
+            s1->setDistributionType(DistributionType::Uniform);
             s1->getProperties()->Minimum = i - 3;
             s1->getProperties()->Maximum = i - 1;
             s->ArrayVariables.push_back(s1);
         }
         stochasts.push_back(s);
         stochasts.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochasts, corr));
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochasts, corr));
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildQuadraticProject()
+    std::shared_ptr<ModelRunner> projectBuilder::BuildQuadraticProject()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return quadratic(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        auto dist = Statistics::DistributionType::Uniform;
+        auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return quadratic(v); });
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s(new Statistics::Stochast(dist, params));
+        std::shared_ptr<Stochast> s(new Stochast(dist, params));
         s->modelParameter->isArray = false;
         s->modelParameter->arraySize = 1;
         stochast.push_back(s);
         stochast.push_back(s);
-        std::shared_ptr<Statistics::CorrelationMatrix> corr(new Statistics::CorrelationMatrix(true));
-        std::shared_ptr<Models::UConverter> uConverter(new Models::UConverter(stochast, corr));
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix(true));
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m(new Models::ModelRunner(z, uConverter));
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist) const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist) const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
         { return zfuncWithDeterminist(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
         stochast.push_back(getNormalStochast(0.0, 1.0));
         stochast.push_back(getDeterministicStochast(valueDeterminist));
         stochast.push_back(getNormalStochast(0.0, 1.0));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>(true);
-        auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
+        auto corr = std::make_shared<CorrelationMatrix>(true);
+        auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        auto m = std::make_shared<Models::ModelRunner>(z, uConverter);
+        auto m = std::make_shared<ModelRunner>(z, uConverter);
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithDeterministAndCopula(double valueDeterminist) const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterministAndCopula(double valueDeterminist) const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
         { return zfuncWithDeterminist(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
         stochast.push_back(getNormalStochast(0.0, 1.0));
         stochast.push_back(getDeterministicStochast(valueDeterminist));
         stochast.push_back(getNormalStochast(0.0, 1.0));
-        auto corr = std::make_shared<Statistics::CopulaCorrelation>();
+        auto corr = std::make_shared<CopulaCorrelation>();
         corr->Init(3);
         corr->SetCorrelation(0, 2, 0.5, CorrelationType::Frank);
-        auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
+        auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        auto m = std::make_shared<Models::ModelRunner>(z, uConverter);
+        auto m = std::make_shared<ModelRunner>(z, uConverter);
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithPolynome() const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithPolynome() const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
         { return zfuncPolynome(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
         stochast.push_back(getDeterministicStochast(1.0));
         stochast.push_back(getDeterministicStochast(1.0));
         stochast.push_back(getLogNormalStochast(1.0, 0.5));
         stochast.push_back(getLogNormalStochast(1.0, 0.5));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>(true);
-        auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
+        auto corr = std::make_shared<CorrelationMatrix>(true);
+        auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        auto m = std::make_shared<Models::ModelRunner>(z, uConverter);
+        auto m = std::make_shared<ModelRunner>(z, uConverter);
         return m;
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectTwoBranches(bool useProxy) const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildProjectTwoBranches(bool useProxy) const
     {
-        std::shared_ptr<Models::ZModel> z;
+        std::shared_ptr<ZModel> z;
         if (useProxy)
         {
-            z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+            z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
             { return zfuncTwoBranchesProxy(v); });
         }
         else
         {
-            z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+            z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
             { return zfuncTwoBranches(v); });
         }
 
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
         stochast.push_back(getNormalStochast(10.0, 0.5));
         stochast.push_back(getNormalStochast(0.0, 1.0));
         stochast.push_back(getNormalStochast(4.0, 1.0));
-        auto corr = std::make_shared<Statistics::CorrelationMatrix>(true);
-        auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
+        auto corr = std::make_shared<CorrelationMatrix>(true);
+        auto uConverter = std::make_shared<UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        const auto m = std::make_shared<Models::ModelRunner>(z, uConverter);
+        const auto m = std::make_shared<ModelRunner>(z, uConverter);
         return m;
     }
 
-    std::shared_ptr<Reliability::FragilityCurve> projectBuilder::BuildFragilityCurve()
+    std::shared_ptr<FragilityCurve> projectBuilder::BuildFragilityCurve()
     {
-        std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = std::make_shared<Reliability::FragilityCurve>();
+        std::shared_ptr<FragilityCurve> fragilityCurve = std::make_shared<FragilityCurve>();
 
-        std::shared_ptr<Statistics::FragilityValue> value1 = std::make_shared<Statistics::FragilityValue>();
+        std::shared_ptr<FragilityValue> value1 = std::make_shared<FragilityValue>();
         value1->X = 0;
         value1->Reliability = 4.2;
 
         fragilityCurve->getProperties()->FragilityValues.push_back(value1);
 
-        std::shared_ptr<Statistics::FragilityValue> value2 = std::make_shared<Statistics::FragilityValue>();
+        std::shared_ptr<FragilityValue> value2 = std::make_shared<FragilityValue>();
         value2->X = 10;
         value2->Reliability = 2.6;
 
@@ -247,7 +253,7 @@ namespace Deltares::Probabilistic::Test
         return fragilityCurve;
     }
 
-    void projectBuilder::sum(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::sum(std::shared_ptr<ModelSample> sample)
     {
         sample->Z = 0.0;
         for (double value : sample->Values)
@@ -256,7 +262,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void projectBuilder::linear(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linear(std::shared_ptr<ModelSample> sample)
     {
         sample->Z = 1.8;
         for (double value : sample->Values)
@@ -265,7 +271,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void projectBuilder::linearOutputOnly(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linearOutputOnly(std::shared_ptr<ModelSample> sample)
     {
         double z = 1.8;
         for (double value : sample->Values)
@@ -276,7 +282,7 @@ namespace Deltares::Probabilistic::Test
         sample->OutputValues.push_back(z);
     }
 
-    void projectBuilder::linearMultiple(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linearMultiple(std::shared_ptr<ModelSample> sample)
     {
         sample->Z = 1.8;
         for (double value : sample->Values)
@@ -289,7 +295,7 @@ namespace Deltares::Probabilistic::Test
         sample->OutputValues.push_back(sample->Z);
     }
 
-    void projectBuilder::quadratic(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::quadratic(std::shared_ptr<ModelSample> sample)
     {
         sample->Z = 1.0;
         for (double value : sample->Values)
@@ -298,7 +304,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void projectBuilder::zfunc(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfunc(std::shared_ptr<ModelSample> sample) const
     {
         sample->Z = 3.0 + sample->Values[1] - 1.25 * sample->Values[0];
         if (logZtoScreen)
@@ -307,7 +313,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void projectBuilder::zfuncWithDeterminist(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfuncWithDeterminist(std::shared_ptr<ModelSample> sample) const
     {
         sample->Z = sample->Values[1] + sample->Values[0] - 1.25 * sample->Values[2];
         if (logZtoScreen)
@@ -316,7 +322,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void projectBuilder::zfuncPolynome(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfuncPolynome(std::shared_ptr<ModelSample> sample) const
     {
         double x = sample->Values[0];
         double y = sample->Values[1];
@@ -328,7 +334,7 @@ namespace Deltares::Probabilistic::Test
         sample->Z = 24 - p;
     }
 
-    void projectBuilder::zfuncTwoBranches(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfuncTwoBranches(std::shared_ptr<ModelSample> sample) const
     {
         double a = sample->Values[0];
         double b = sample->Values[1];
@@ -336,7 +342,7 @@ namespace Deltares::Probabilistic::Test
         sample->Z = c <= 5.0 ? a - b - c : c - b;
     }
 
-    void projectBuilder::zfuncTwoBranchesProxy(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfuncTwoBranchesProxy(std::shared_ptr<ModelSample> sample) const
     {
         const std::vector coeff = { 215.49, -41.012, -1.1379, -2.652, 2.0742, -0.53193, 0.23794 };
         double z = coeff[0];
@@ -348,11 +354,11 @@ namespace Deltares::Probabilistic::Test
         sample->Z = z;
     }
 
-    std::shared_ptr<Uncertainty::UncertaintyProject> projectBuilder::getUncertaintyProject(std::shared_ptr<Reliability::ReliabilityProject> project)
+    std::shared_ptr<UncertaintyProject> projectBuilder::getUncertaintyProject(std::shared_ptr<ReliabilityProject> project)
     {
-        std::shared_ptr<Uncertainty::UncertaintyProject> uncertaintyProject = std::make_shared<Uncertainty::UncertaintyProject>();
+        std::shared_ptr<UncertaintyProject> uncertaintyProject = std::make_shared<UncertaintyProject>();
 
-        for (std::shared_ptr<Statistics::Stochast> stochast : project->stochasts)
+        for (std::shared_ptr<Stochast> stochast : project->stochasts)
         {
             uncertaintyProject->stochasts.push_back(stochast);
         }
@@ -363,11 +369,11 @@ namespace Deltares::Probabilistic::Test
         return uncertaintyProject;
     }
 
-    std::shared_ptr<Sensitivity::SensitivityProject> projectBuilder::getSensitivityProject(std::shared_ptr<Reliability::ReliabilityProject> project)
+    std::shared_ptr<SensitivityProject> projectBuilder::getSensitivityProject(std::shared_ptr<ReliabilityProject> project)
     {
-        std::shared_ptr<Sensitivity::SensitivityProject> sensitivityProject = std::make_shared<Sensitivity::SensitivityProject>();
+        std::shared_ptr<SensitivityProject> sensitivityProject = std::make_shared<SensitivityProject>();
 
-        for (std::shared_ptr<Statistics::Stochast> stochast : project->stochasts)
+        for (std::shared_ptr<Stochast> stochast : project->stochasts)
         {
             sensitivityProject->stochasts.push_back(stochast);
         }
@@ -378,11 +384,11 @@ namespace Deltares::Probabilistic::Test
         return sensitivityProject;
     }
 
-    std::shared_ptr<Models::RunProject> projectBuilder::getRunProject(std::shared_ptr<Reliability::ReliabilityProject> project)
+    std::shared_ptr<RunProject> projectBuilder::getRunProject(std::shared_ptr<ReliabilityProject> project)
     {
-        std::shared_ptr<Models::RunProject> runProject = std::make_shared<Models::RunProject>();
+        std::shared_ptr<RunProject> runProject = std::make_shared<RunProject>();
 
-        for (std::shared_ptr<Statistics::Stochast> stochast : project->stochasts)
+        for (std::shared_ptr<Stochast> stochast : project->stochasts)
         {
             runProject->stochasts.push_back(stochast);
         }
@@ -393,74 +399,74 @@ namespace Deltares::Probabilistic::Test
         return runProject;
     }
 
-    std::shared_ptr<Reliability::ReliabilityProject> projectBuilder::getAddOneProject()
+    std::shared_ptr<ReliabilityProject> projectBuilder::getAddOneProject()
     {
-        std::shared_ptr<Reliability::ReliabilityProject> project = std::make_shared<Reliability::ReliabilityProject>();
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
 
         project->stochasts.push_back(getDeterministicStochast(1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlation = std::make_shared<Statistics::CorrelationMatrix>(true);
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
-        project->model = std::make_shared<Models::ZModel>(projectBuilder::sum);
+        project->model = std::make_shared<ZModel>(projectBuilder::sum);
 
         return project;
     }
 
-    std::shared_ptr<Reliability::ReliabilityProject> projectBuilder::getLinearProject()
+    std::shared_ptr<ReliabilityProject> projectBuilder::getLinearProject()
     {
-        std::shared_ptr<Reliability::ReliabilityProject> project = std::make_shared<Reliability::ReliabilityProject>();
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
 
         project->stochasts.push_back(getUniformStochast(-1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlation = std::make_shared<Statistics::CorrelationMatrix>(true);
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
-        project->model = std::make_shared<Models::ZModel>(linear);
+        project->model = std::make_shared<ZModel>(linear);
 
         return project;
     }
 
-    std::shared_ptr<Reliability::ReliabilityProject> projectBuilder::getLinearOutputProject()
+    std::shared_ptr<ReliabilityProject> projectBuilder::getLinearOutputProject()
     {
-        std::shared_ptr<Reliability::ReliabilityProject> project = std::make_shared<Reliability::ReliabilityProject>();
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
 
         project->stochasts.push_back(getUniformStochast(-1));
         project->stochasts.push_back(getUniformStochast(-1));
 
-        project->correlation = std::make_shared<Statistics::CorrelationMatrix>(true);
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
-        project->model = std::make_shared<Models::ZModel>(projectBuilder::linearMultiple);
-        project->model->outputParameters.push_back(std::make_shared<Models::ModelInputParameter>("Result1"));
-        project->model->outputParameters.push_back(std::make_shared<Models::ModelInputParameter>("Result2"));
+        project->model = std::make_shared<ZModel>(projectBuilder::linearMultiple);
+        project->model->outputParameters.push_back(std::make_shared<ModelInputParameter>("Result1"));
+        project->model->outputParameters.push_back(std::make_shared<ModelInputParameter>("Result2"));
 
         return project;
     }
 
-    std::shared_ptr<Reliability::ReliabilityProject> projectBuilder::getTriangularLinearProject()
+    std::shared_ptr<ReliabilityProject> projectBuilder::getTriangularLinearProject()
     {
-        std::shared_ptr<Reliability::ReliabilityProject> project = std::make_shared<Reliability::ReliabilityProject>();
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
 
         project->stochasts.push_back(getTriangularStochast(0, 0, 1));
         project->stochasts.push_back(getTriangularStochast(0, 0, 1));
 
-        project->correlation = std::make_shared<Statistics::CorrelationMatrix>(true);
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
-        project->model = std::make_shared<Models::ZModel>(projectBuilder::linear);
+        project->model = std::make_shared<ZModel>(projectBuilder::linear);
 
         return project;
     }
 
-    std::shared_ptr<Reliability::ReliabilityProject> projectBuilder::getArrayVariableProject()
+    std::shared_ptr<ReliabilityProject> projectBuilder::getArrayVariableProject()
     {
-        std::shared_ptr<Reliability::ReliabilityProject> project = std::make_shared<Reliability::ReliabilityProject>();
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
 
-        std::shared_ptr<Statistics::Stochast> a = getUniformStochast(0, 1);
-        std::shared_ptr<Statistics::Stochast> b = getUniformVariableStochast(a, 0, 1);
+        std::shared_ptr<Stochast> a = getUniformStochast(0, 1);
+        std::shared_ptr<Stochast> b = getUniformVariableStochast(a, 0, 1);
 
         a->modelParameter->isArray = true;
         a->modelParameter->arraySize = 5;
@@ -471,49 +477,49 @@ namespace Deltares::Probabilistic::Test
         project->stochasts.push_back(a);
         project->stochasts.push_back(b);
 
-        project->correlation = std::make_shared<Statistics::CorrelationMatrix>(true);
+        project->correlation = std::make_shared<CorrelationMatrix>(true);
         project->correlation->Init(project->stochasts);
 
-        project->model = std::make_shared<Models::ZModel>(projectBuilder::sum);
+        project->model = std::make_shared<ZModel>(projectBuilder::sum);
 
         return project;
     }
 
-    std::shared_ptr<Statistics::Stochast> projectBuilder::getDeterministicStochast(double mean)
+    std::shared_ptr<Stochast> projectBuilder::getDeterministicStochast(double mean)
     {
         std::vector<double> values = { mean };
-        return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Deterministic, values);
+        return std::make_shared<Stochast>(DistributionType::Deterministic, values);
     }
 
-    std::shared_ptr<Statistics::Stochast>  projectBuilder::getNormalStochast(double mean, double stddev)
+    std::shared_ptr<Stochast>  projectBuilder::getNormalStochast(double mean, double stddev)
     {
         std::vector<double> values = { mean, stddev };
-        return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Normal, values);
+        return std::make_shared<Stochast>(DistributionType::Normal, values);
     }
 
-    std::shared_ptr<Statistics::Stochast>  projectBuilder::getUniformStochast(double min, double max)
+    std::shared_ptr<Stochast>  projectBuilder::getUniformStochast(double min, double max)
     {
         std::vector<double> values = { min, max };
-        return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, values);
+        return std::make_shared<Stochast>(DistributionType::Uniform, values);
     }
 
-    std::shared_ptr<Statistics::Stochast>  projectBuilder::getUniformVariableStochast(const std::shared_ptr<Statistics::Stochast>& source, double min, double max)
+    std::shared_ptr<Stochast>  projectBuilder::getUniformVariableStochast(const std::shared_ptr<Stochast>& source, double min, double max)
     {
         std::vector<double> values = { min, max };
         double diff = max - min;
 
-        auto stochast =  std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, values);
+        auto stochast =  std::make_shared<Stochast>(DistributionType::Uniform, values);
 
         stochast->IsVariableStochast = true;
         stochast->VariableSource = source;
 
-        auto value1 = std::make_shared<Statistics::VariableStochastValue>();
+        auto value1 = std::make_shared<VariableStochastValue>();
         value1->X = 0.2;
         value1->Stochast->Minimum = min + 0.1 * diff;
         value1->Stochast->Maximum = min + 0.3 * diff;
         stochast->ValueSet->StochastValues.push_back(value1);
 
-        auto value2 = std::make_shared<Statistics::VariableStochastValue>();
+        auto value2 = std::make_shared<VariableStochastValue>();
         value2->X = 0.8;
         value2->Stochast->Minimum = max - 0.3 * diff;
         value2->Stochast->Maximum = max - 0.1 * diff;
@@ -522,21 +528,21 @@ namespace Deltares::Probabilistic::Test
         return stochast;
     }
 
-    std::shared_ptr<Statistics::Stochast>  projectBuilder::getTriangularStochast(double min, double top, double max)
+    std::shared_ptr<Stochast>  projectBuilder::getTriangularStochast(double min, double top, double max)
     {
         std::vector<double> values = { min, top, max };
-        return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Triangular, values);
+        return std::make_shared<Stochast>(DistributionType::Triangular, values);
     }
 
-    std::shared_ptr<Statistics::Stochast> projectBuilder::getLogNormalStochast(double mean, double stddev, double shift)
+    std::shared_ptr<Stochast> projectBuilder::getLogNormalStochast(double mean, double stddev, double shift)
     {
         std::vector<double> values = { mean, stddev, shift };
-        return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::LogNormal, values);
+        return std::make_shared<Stochast>(DistributionType::LogNormal, values);
     }
 
-    std::shared_ptr<Statistics::Stochast> projectBuilder::getGumbelStochast(double mean, double stddev)
+    std::shared_ptr<Stochast> projectBuilder::getGumbelStochast(double mean, double stddev)
     {
         std::vector<double> values = { mean, stddev };
-        return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Gumbel, values);
+        return std::make_shared<Stochast>(DistributionType::Gumbel, values);
     }
 }

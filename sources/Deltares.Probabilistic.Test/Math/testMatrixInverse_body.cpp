@@ -25,6 +25,8 @@
 #include "testMatrixInverse.h"
 #include "../Utils/testutils.h"
 
+using namespace Deltares::Numeric;
+
 namespace Deltares
 {
     namespace Probabilistic
@@ -38,9 +40,9 @@ namespace Deltares
                 positive_definite_tests();
             }
 
-            Numeric::Matrix matinv_tests::get3x3posDefiniteMatrix() const
+            Matrix matinv_tests::get3x3posDefiniteMatrix() const
             {
-                auto m1 = Numeric::Matrix(3, 3);
+                auto m1 = Matrix(3, 3);
                 m1(0, 0) = 0.2;
                 m1(0, 1) = 0.8;
                 m1(0, 2) = 1.1;
@@ -74,9 +76,9 @@ namespace Deltares
                 }
             }
 
-            Numeric::Matrix matinv_tests::get2x2singularMatrix() const
+            Matrix matinv_tests::get2x2singularMatrix() const
             {
-                auto m1 = Numeric::Matrix(2, 2);
+                auto m1 = Matrix(2, 2);
                 m1(0, 0) = 3.0;
                 m1(0, 1) = 12.0;
                 m1(1, 0) = 2.0;
@@ -105,9 +107,9 @@ namespace Deltares
                 EXPECT_EQ(m1(1, 1), 8.0);
             }
 
-            Numeric::Matrix matinv_tests::get2x2symmetrixMatrix() const
+            Matrix matinv_tests::get2x2symmetrixMatrix() const
             {
-                auto m1 = Numeric::Matrix(2, 2);
+                auto m1 = Matrix(2, 2);
                 m1(0, 0) = 1.0;
                 m1(0, 1) = 0.5;
                 m1(1, 0) = 0.5;
@@ -115,7 +117,7 @@ namespace Deltares
                 return m1;
             }
 
-            Numeric::Matrix matinv_tests::get16x16Matrix() const
+            Matrix matinv_tests::get16x16Matrix() const
             {
                 auto matrix =
                 {

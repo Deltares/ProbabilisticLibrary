@@ -25,6 +25,8 @@
 #include "testMatrixMultiplication.h"
 #include "../../Deltares.Probabilistic/Math/matrix.h"
 
+using namespace Deltares::Numeric;
+
 namespace Deltares
 {
     namespace Probabilistic
@@ -40,9 +42,9 @@ namespace Deltares
 
             void matmul_tests::matmul_test1() const
             {
-                auto m1 = Numeric::Matrix(3, 3);
-                auto m2 = Numeric::Matrix(3, 2);
-                auto m3 = Numeric::Matrix(3, 2);
+                auto m1 = Matrix(3, 3);
+                auto m2 = Matrix(3, 2);
+                auto m3 = Matrix(3, 2);
                 m1(0, 0) = 0.2;
                 m1(0, 1) = 0.8;
                 m1(0, 2) = 1.1;
@@ -76,8 +78,8 @@ namespace Deltares
 
             void matmul_tests::matmul_test2() const
             {
-                auto m1 = Numeric::Matrix(3, 3);
-                auto m2 = Numeric::Matrix(5, 5);
+                auto m1 = Matrix(3, 3);
+                auto m2 = Matrix(5, 5);
                 int success = 1;
                 try
                 {
@@ -94,12 +96,12 @@ namespace Deltares
 
             void matmul_tests::matvec_test() const
             {
-                auto m = Numeric::Matrix(2, 2); // identity matrix
+                auto m = Matrix(2, 2); // identity matrix
                 m(0, 0) = 1.0;
                 m(1, 1) = 1.0;
                 m(0, 1) = 0.0;
                 m(1, 0) = 0.0;
-                auto v = Numeric::vector1D({ std::numbers::pi, std::numbers::e });
+                auto v = vector1D({ std::numbers::pi, std::numbers::e });
                 auto r = m.matvec(v); // r = v as m is the identity matrix
                 for (size_t i = 0; i < v.size(); i++)
                 {

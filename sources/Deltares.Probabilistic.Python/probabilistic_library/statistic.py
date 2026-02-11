@@ -24,7 +24,7 @@
 from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
-from math import isnan, nan, isclose
+from math import isnan, nan
 
 from .utils import FrozenObject, FrozenList, PrintUtils, NumericUtils, CallbackList
 from .logging import Evaluation, Message, ValidationReport
@@ -87,38 +87,31 @@ class StandardNormal(FrozenObject):
 		        'get_t_from_u',
 		        'get_u_from_t']
 
-	@staticmethod
 	def _id() -> int:
 		if StandardNormal._id_value == 0:
 			StandardNormal._id_value = interface.Create('standard_normal')
 		return StandardNormal._id_value
 
-	@staticmethod
 	def get_u_from_q (q : float) -> float:
 		"""Gets u from q (probability of exceedence)"""
 		return interface.GetArgValue(StandardNormal._id(), 'u_from_q', q)
 
-	@staticmethod
 	def get_u_from_p (p : float) -> float:
 		"""Gets u from p (probability of non-exceedence)"""
 		return interface.GetArgValue(StandardNormal._id(), 'u_from_p', p)
 
-	@staticmethod
 	def get_q_from_u (u : float) -> float:
 		"""Gets q (probability of exceedence) from u"""
 		return interface.GetArgValue(StandardNormal._id(), 'q_from_u', u)
 
-	@staticmethod
 	def get_p_from_u (u : float) -> float:
 		"""Gets p (probability of non-exceedence) from u"""
 		return interface.GetArgValue(StandardNormal._id(), 'p_from_u', u)
 
-	@staticmethod
 	def get_t_from_u (u : float) -> float:
 		"""Gets return time from u"""
 		return interface.GetArgValue(StandardNormal._id(), 't_from_u', u)
 
-	@staticmethod
 	def get_u_from_t (t : float) -> float:
 		"""Gets u from return time"""
 		return interface.GetArgValue(StandardNormal._id(), 'u_from_t', t)
@@ -835,15 +828,6 @@ class Stochast(FrozenObject):
         decimals : int, optional
             The number of decimals to apply"""
 
-		self._print_variable()
-		print('Definition:')
-		if self.conditional:
-			self._print_conditional(decimals)
-		else:
-			self._print_unconditional(decimals)
-			self._print_design_and_derived(decimals)
-
-	def _print_variable(self):
 		pre = '  '
 		if self.name == '':
 			print(f'Variable:')
@@ -857,53 +841,46 @@ class Stochast(FrozenObject):
 			print(pre + f'distribution = {self.distribution} (inverted)')
 		elif self.truncated and self.inverted:
 			print(pre + f'distribution = {self.distribution} (inverted, truncated')
-
-	def _print_conditional(self, decimals = 4):
-		pre = '  '
-		if self.conditional_source == '' or self.conditional_source == None:
-			print(pre + f'conditional x values = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
+		print('Definition:')
+		if self.conditional:
+			if self.conditional_source == '' or self.conditional_source == None:
+				print(pre + f'conditional x values = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
+			else:
+				print(pre + f'conditional source = {self.conditional_source}')
+				print(pre + f'{self.conditional_source} = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
+			for prop in ['mean', 'deviation', 'location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
+				if interface.GetBoolValue(self._id, 'is_used_' + prop):
+					if prop == 'observations':
+						values = [interface.GetIntValue(value._id, prop) for value in self.conditional_values]
+					else:
+						values = [interface.GetValue(value._id, prop) for value in self.conditional_values]
+					if len(values) > 0 and not isnan(values[0]):
+						print(pre + f'{prop} = [{", ".join([f"{value:.{decimals}g}" for value in values])}]')
 		else:
-			print(pre + f'conditional source = {self.conditional_source}')
-			print(pre + f'{self.conditional_source} = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
-		for prop in ['mean', 'deviation', 'location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
-			if interface.GetBoolValue(self._id, 'is_used_' + prop):
-				if prop == 'observations':
-					values = [interface.GetIntValue(value._id, prop) for value in self.conditional_values]
-				else:
-					values = [interface.GetValue(value._id, prop) for value in self.conditional_values]
-				if len(values) > 0 and not isnan(values[0]):
-					print(pre + f'{prop} = [{", ".join([f"{value:.{decimals}g}" for value in values])}]')
-
-	def _print_unconditional(self, decimals = 4):
-		pre = '  '
-		for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
-			if interface.GetBoolValue(self._id, 'is_used_' + prop):
-				if prop == 'observations':
-					print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
-				else:
-					print(pre + f'{prop} = {interface.GetValue(self._id, prop):.{decimals}g}')
-		if self.distribution == DistributionType.histogram:
-			for value in self.histogram_values:
-				print(pre + f'amount[{value.lower_bound:.{decimals}g}, {value.upper_bound:.{decimals}g}] = {value.amount:.{decimals}g}')
-		elif self.distribution == DistributionType.cdf_curve:
-			for value in self.fragility_values:
-				print(pre + f'beta[{value.x:.{decimals}g}] = {value.reliability_index:.{decimals}g}')
-		elif self.distribution == DistributionType.discrete or self.distribution == DistributionType.qualitative:
-			for value in self.discrete_values:
-				print(pre + f'amount[{value.x:.{decimals}g}] = {value.amount:.{decimals}g}')
-
-	def _print_design_and_derived(self, decimals = 4):
-		pre = '  '
-		is_design_default = isclose(self.design_quantile, 0.5, abs_tol=1.0e-9) and isclose(self.design_factor, 1.0, abs_tol=1.0e-9)
-		if not is_design_default:
-			print(pre + f'design_quantile = {self.design_quantile:.{decimals}g}')
-			print(pre + f'design_factor = {self.design_factor:.{decimals}g}')
-		print('Derived values:')
-		print(pre + f'mean = {self.mean:.{decimals}g}')
-		print(pre + f'deviation = {self.deviation:.{decimals}g}')
-		print(pre + f'variation = {self.variation:.{decimals}g}')
-		if not is_design_default:
-			print(pre + f'design_value = {self.design_value:.{decimals}g}')
+			for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
+				if interface.GetBoolValue(self._id, 'is_used_' + prop):
+					if prop == 'observations':
+						print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
+					else:
+						print(pre + f'{prop} = {interface.GetValue(self._id, prop):.{decimals}g}')
+			if self.distribution == DistributionType.histogram:
+				for value in self.histogram_values:
+					print(pre + f'amount[{value.lower_bound:.{decimals}g}, {value.upper_bound:.{decimals}g}] = {value.amount:.{decimals}g}')
+			elif self.distribution == DistributionType.cdf_curve:
+				for value in self.fragility_values:
+					print(pre + f'beta[{value.x:.{decimals}g}] = {value.reliability_index:.{decimals}g}')
+			elif self.distribution == DistributionType.discrete or self.distribution == DistributionType.qualitative:
+				for value in self.discrete_values:
+					print(pre + f'amount[{value.x:.{decimals}g}] = {value.amount:.{decimals}g}')
+			if self.design_quantile != 0.5 or self.design_factor != 1.0:
+				print(pre + f'design_quantile = {self.design_quantile:.{decimals}g}')
+				print(pre + f'design_factor = {self.design_factor:.{decimals}g}')
+			print('Derived values:')
+			print(pre + f'mean = {self.mean:.{decimals}g}')
+			print(pre + f'deviation = {self.deviation:.{decimals}g}')
+			print(pre + f'variation = {self.variation:.{decimals}g}')
+			if self.design_quantile != 0.5 or self.design_factor != 1.0:
+				print(pre + f'design_value = {self.design_value:.{decimals}g}')
 
 	def get_special_values(self) -> list[float]:
 		"""Gets a list of special x-values, which is useful for plotting"""

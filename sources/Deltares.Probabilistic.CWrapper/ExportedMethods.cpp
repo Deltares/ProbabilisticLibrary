@@ -34,237 +34,237 @@
 #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
 #endif
 
-Deltares::Server::ProjectServer projectServer = Deltares::Server::ProjectServer();
+Deltares::Server::ProjectServer* projectServer = new Deltares::Server::ProjectServer();
 std::string last_exception = "";
 
-extern "C" DLL_PUBLIC void AddLibrary(const char* library)
+extern "C" DLL_PUBLIC void AddLibrary(char* library)
 {
     std::string libraryStr(library);
 
     if (libraryStr.ends_with(".exe"))
     {
         std::shared_ptr<Deltares::Server::ExternalServerHandler> externalHandler = std::make_shared<Deltares::Server::ExternalServerHandler>(libraryStr);
-        projectServer.AddHandler(externalHandler);
+        projectServer->AddHandler(externalHandler);
     }
     else if (libraryStr.ends_with(".dll"))
     {
         std::shared_ptr<Deltares::Server::ExternalLibraryHandler> externalHandler = std::make_shared<Deltares::Server::ExternalLibraryHandler>(libraryStr);
         externalHandler->Initialize();
-        projectServer.AddHandler(externalHandler);
+        projectServer->AddHandler(externalHandler);
     }
 }
 
-extern "C" DLL_PUBLIC int Create(const char* type)
+extern "C" DLL_PUBLIC int Create(char* type)
 {
     std::string typeStr = type;
-    int id = projectServer.Create(typeStr);
+    int id = projectServer->Create(typeStr);
     return id;
 }
 
 extern "C" DLL_PUBLIC void Destroy(int id)
 {
-    projectServer.Destroy(id);
+    projectServer->Destroy(id);
 }
 
 extern "C" DLL_PUBLIC void Exit()
 {
-    projectServer.Exit();
+    projectServer->Exit();
 }
 
-extern "C" DLL_PUBLIC double GetValue(int id, const char* property)
+extern "C" DLL_PUBLIC double GetValue(int id, char* property)
 {
     std::string propertyStr(property);
-    return projectServer.GetValue(id, propertyStr);
+    return projectServer->GetValue(id, propertyStr);
 }
 
-extern "C" DLL_PUBLIC void SetValue(int id, const char* property, double value)
+extern "C" DLL_PUBLIC void SetValue(int id, char* property, double value)
 {
     std::string propertyStr(property);
-    projectServer.SetValue(id, propertyStr, value);
+    projectServer->SetValue(id, propertyStr, value);
 }
 
-extern "C" DLL_PUBLIC int GetIntValue(int id, const char* property)
+extern "C" DLL_PUBLIC int GetIntValue(int id, char* property)
 {
     std::string propertyStr(property);
-    return projectServer.GetIntValue(id, propertyStr);
+    return projectServer->GetIntValue(id, propertyStr);
 }
 
-extern "C" DLL_PUBLIC void SetIntValue(int id, const char* property, int value)
+extern "C" DLL_PUBLIC void SetIntValue(int id, char* property, int value)
 {
     std::string propertyStr(property);
-    projectServer.SetIntValue(id, propertyStr, value);
+    projectServer->SetIntValue(id, propertyStr, value);
 }
 
-extern "C" DLL_PUBLIC int GetIdValue(int id, const char* property)
+extern "C" DLL_PUBLIC int GetIdValue(int id, char* property)
 {
     std::string propertyStr(property);
-    return projectServer.GetIdValue(id, propertyStr);
+    return projectServer->GetIdValue(id, propertyStr);
 }
 
-extern "C" DLL_PUBLIC double GetIntArgValue(int id1, int id2, const char* property)
+extern "C" DLL_PUBLIC double GetIntArgValue(int id1, int id2, char* property)
 {
     std::string propertyStr(property);
-    return projectServer.GetIntArgValue(id1, id2, propertyStr);
+    return projectServer->GetIntArgValue(id1, id2, propertyStr);
 }
 
-extern "C" DLL_PUBLIC void SetIntArgValue(int id1, int id2, const char* property, double value)
+extern "C" DLL_PUBLIC void SetIntArgValue(int id1, int id2, char* property, double value)
 {
     std::string propertyStr(property);
-    projectServer.SetIntArgValue(id1, id2, propertyStr, value);
+    projectServer->SetIntArgValue(id1, id2, propertyStr, value);
 }
 
-extern "C" DLL_PUBLIC bool GetBoolValue(int id, const char* property)
+extern "C" DLL_PUBLIC bool GetBoolValue(int id, char* property)
 {
     std::string propertyStr(property);
-    return projectServer.GetBoolValue(id, propertyStr);
+    return projectServer->GetBoolValue(id, propertyStr);
 }
 
-extern "C" DLL_PUBLIC void SetBoolValue(int id, const char* property, bool value)
+extern "C" DLL_PUBLIC void SetBoolValue(int id, char* property, bool value)
 {
     std::string propertyStr(property);
-    projectServer.SetBoolValue(id, propertyStr, value);
+    projectServer->SetBoolValue(id, propertyStr, value);
 }
 
-extern "C" DLL_PUBLIC size_t GetStringLength(int id, const char* property)
+extern "C" DLL_PUBLIC size_t GetStringLength(int id, char* property)
 {
     std::string propertyStr(property);
-    std::string result = projectServer.GetStringValue(id, propertyStr);
+    std::string result = projectServer->GetStringValue(id, propertyStr);
     return result.length();
 }
 
-extern "C" DLL_PUBLIC void GetStringValue(int id, const char* property, char* result_c, size_t size)
+extern "C" DLL_PUBLIC void GetStringValue(int id, char* property, char* result_c, size_t size)
 {
     std::string propertyStr(property);
-    std::string result = projectServer.GetStringValue(id, propertyStr);
+    std::string result = projectServer->GetStringValue(id, propertyStr);
 
     copyStringToCharPointer(result, result_c, size);
 }
 
-extern "C" DLL_PUBLIC void SetStringValue(int id, const char* property, const char* value)
+extern "C" DLL_PUBLIC void SetStringValue(int id, char* property, char* value)
 {
     std::string propertyStr(property);
     std::string valueStr(value);
-    projectServer.SetStringValue(id, propertyStr, valueStr);
+    projectServer->SetStringValue(id, propertyStr, valueStr);
 }
 
-extern "C" DLL_PUBLIC void FillArrayValue(int id, const char* property, double* values, int size)
+extern "C" DLL_PUBLIC void FillArrayValue(int id, char* property, double* values, int size)
 {
     std::string propertyStr(property);
-    projectServer.GetArrayValue(id, propertyStr, values, size);
+    projectServer->GetArrayValue(id, propertyStr, values, size);
 }
 
-extern "C" DLL_PUBLIC void SetArrayValue(int id, const char* property, double* values, int size)
+extern "C" DLL_PUBLIC void SetArrayValue(int id, char* property, double* values, int size)
 {
     std::string propertyStr(property);
-    projectServer.SetArrayValue(id, propertyStr, values, size);
+    projectServer->SetArrayValue(id, propertyStr, values, size);
 }
 
-extern "C" DLL_PUBLIC void SetArrayIntValue(int id, const char* property, int* values, int size)
+extern "C" DLL_PUBLIC void SetArrayIntValue(int id, char* property, int* values, int size)
 {
     std::string propertyStr(property);
-    projectServer.SetArrayIntValue(id, propertyStr, values, size);
+    projectServer->SetArrayIntValue(id, propertyStr, values, size);
 }
 
-extern "C"  DLL_PUBLIC double GetArgValue(int id, const char* property, double argument)
+extern "C"  DLL_PUBLIC double GetArgValue(int id, char* property, double argument)
 {
     std::string propertyStr(property);
-    return projectServer.GetArgValue(id, propertyStr, argument);
+    return projectServer->GetArgValue(id, propertyStr, argument);
 }
 
-extern "C" DLL_PUBLIC void SetArgValue(int id, const char* property, double argument, double value)
+extern "C" DLL_PUBLIC void SetArgValue(int id, char* property, double argument, double value)
 {
     std::string propertyStr(property);
-    projectServer.SetArgValue(id, propertyStr, argument, value);
+    projectServer->SetArgValue(id, propertyStr, argument, value);
 }
 
-extern "C"  DLL_PUBLIC void GetArgValues(int id, const char* property, double* values, int size, double* outputValues)
+extern "C"  DLL_PUBLIC void GetArgValues(int id, char* property, double* values, int size, double* outputValues)
 {
     std::string propertyStr(property);
-    projectServer.GetArgValues(id, propertyStr, values, size, outputValues);
+    projectServer->GetArgValues(id, propertyStr, values, size, outputValues);
 }
 
-extern "C"  DLL_PUBLIC double GetIndexedValue(int id, const char* property, int index)
+extern "C"  DLL_PUBLIC double GetIndexedValue(int id, char* property, int index)
 {
     std::string propertyStr(property);
-    return projectServer.GetIndexedValue(id, propertyStr, index);
+    return projectServer->GetIndexedValue(id, propertyStr, index);
 }
 
-extern "C" DLL_PUBLIC void SetIndexedValue(int id, const char* property, int index, double value)
+extern "C" DLL_PUBLIC void SetIndexedValue(int id, char* property, int index, double value)
 {
     std::string propertyStr(property);
-    projectServer.SetIndexedValue(id, propertyStr, index, value);
+    projectServer->SetIndexedValue(id, propertyStr, index, value);
 }
 
-extern "C" DLL_PUBLIC double GetIndexedIndexedValue(int id, const char* property, int index1, int index2)
+extern "C" DLL_PUBLIC double GetIndexedIndexedValue(int id, char* property, int index1, int index2)
 {
     std::string propertyStr(property);
-    return projectServer.GetIndexedIndexedValue(id, propertyStr, index1, index2);
+    return projectServer->GetIndexedIndexedValue(id, propertyStr, index1, index2);
 }
 
-extern "C" DLL_PUBLIC void SetIndexedIndexedValue(int id, const char* property, int index1, int index2, double value)
+extern "C" DLL_PUBLIC void SetIndexedIndexedValue(int id, char* property, int index1, int index2, double value)
 {
     std::string propertyStr(property);
-    projectServer.SetIndexedIndexedValue(id, propertyStr, index1, index2, value);
+    projectServer->SetIndexedIndexedValue(id, propertyStr, index1, index2, value);
 }
 
-extern "C" DLL_PUBLIC void SetIndexedIndexedIntValue(int id, const char* property, int index1, int index2, int value)
+extern "C" DLL_PUBLIC void SetIndexedIndexedIntValue(int id, char* property, int index1, int index2, int value)
 {
     std::string propertyStr(property);
-    projectServer.SetIndexedIndexedIntValue(id, propertyStr, index1, index2, value);
+    projectServer->SetIndexedIndexedIntValue(id, propertyStr, index1, index2, value);
 }
 
-extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, const char* property, int index)
+extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, char* property, int index)
 {
     std::string propertyStr(property);
-    return projectServer.GetIndexedIntValue(id, propertyStr, index);
+    return projectServer->GetIndexedIntValue(id, propertyStr, index);
 }
 
-extern "C" DLL_PUBLIC int GetIndexedIdValue(int id, const char* property, int index)
+extern "C" DLL_PUBLIC int GetIndexedIdValue(int id, char* property, int index)
 {
     std::string propertyStr(property);
-    return projectServer.GetIndexedIdValue(id, propertyStr, index);
+    return projectServer->GetIndexedIdValue(id, propertyStr, index);
 }
 
-extern "C" DLL_PUBLIC size_t GetIndexedStringLength(int id, const char* property, int index)
+extern "C" DLL_PUBLIC size_t GetIndexedStringLength(int id, char* property, int index)
 {
     std::string propertyStr(property);
-    std::string result = projectServer.GetIndexedStringValue(id, propertyStr, index);
+    std::string result = projectServer->GetIndexedStringValue(id, propertyStr, index);
     return result.length();
 }
 
-extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, const char* property, int index, char* result_c, size_t size)
+extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, char* property, int index, char* result_c, size_t size)
 {
     std::string propertyStr(property);
-    std::string result = projectServer.GetIndexedStringValue(id, propertyStr, index);
+    std::string result = projectServer->GetIndexedStringValue(id, propertyStr, index);
 
     copyStringToCharPointer(result, result_c, size);
 }
 
-extern "C" DLL_PUBLIC void SetCallBack(int id, const char* property, Deltares::Models::ZValuesCallBack callBack)
+extern "C" DLL_PUBLIC void SetCallBack(int id, char* property, Deltares::Models::ZValuesCallBack callBack)
 {
     std::string propertyStr(property);
-    projectServer.SetCallBack(id, propertyStr, callBack);
+    projectServer->SetCallBack(id, propertyStr, callBack);
 }
 
-extern "C" DLL_PUBLIC void SetMultipleCallBack(int id, const char* property, Deltares::Models::ZValuesMultipleCallBack callBack)
+extern "C" DLL_PUBLIC void SetMultipleCallBack(int id, char* property, Deltares::Models::ZValuesMultipleCallBack callBack)
 {
     std::string propertyStr(property);
-    projectServer.SetMultipleCallBack(id, propertyStr, callBack);
+    projectServer->SetMultipleCallBack(id, propertyStr, callBack);
 }
 
-extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, const char* property, Deltares::Models::EmptyCallBack callBack)
+extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, char* property, Deltares::Models::EmptyCallBack callBack)
 {
     std::string propertyStr(property);
-    projectServer.SetEmptyCallBack(id, propertyStr, callBack);
+    projectServer->SetEmptyCallBack(id, propertyStr, callBack);
 }
 
-extern "C" DLL_PUBLIC void Execute(int id, const char* method)
+extern "C" DLL_PUBLIC void Execute(int id, char* method)
 {
     try
     {
         last_exception = "";
         std::string methodStr(method);
-        projectServer.Execute(id, methodStr);
+        projectServer->Execute(id, methodStr);
     }
     catch (const std::exception& e)
     {

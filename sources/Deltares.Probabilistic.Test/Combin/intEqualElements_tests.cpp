@@ -24,6 +24,8 @@
 #include "intEqualElements_tests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 
+using namespace Deltares::Statistics;
+
 namespace Deltares
 {
     namespace Probabilistic
@@ -49,8 +51,8 @@ namespace Deltares
                 const int nrElements = 10;
                 const double betaT = intEqElm.integrateEqualElements(beta, rhoT, nrElements);
                 //  Compute analytically the expected betaT:
-                const double pF = 1.0 - pow(Statistics::StandardNormal::getPFromU(beta), nrElements);
-                const double expectedBetaT = Statistics::StandardNormal::getUFromQ(pF);
+                const double pF = 1.0 - pow(StandardNormal::getPFromU(beta), nrElements);
+                const double expectedBetaT = StandardNormal::getUFromQ(pF);
 
                 const double myMargin = 1.0e-5;
                 ASSERT_NEAR(betaT, expectedBetaT, myMargin);

@@ -33,6 +33,8 @@ namespace Deltares
     {
         namespace Wrappers
         {
+            using namespace Deltares::Utils::Wrappers;
+
             public ref class Evaluation
             {
             public:
@@ -51,7 +53,7 @@ namespace Deltares
 
                 System::Object^ Tag = nullptr;
 
-                void AssignTag(Utils::Wrappers::TagRepository^ tagRepository)
+                void AssignTag(TagRepository^ tagRepository)
                 {
                     if (tagRepository != nullptr)
                     {
