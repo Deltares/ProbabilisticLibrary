@@ -63,7 +63,7 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
-        auto element = alphaBeta(3.5, Numeric::vector1D(nr_stochasts));     //equal alpha values
+        auto element = Reliability::alphaBeta(3.5, Numeric::vector1D(nr_stochasts));     //equal alpha values
         element.assign(1.0);
         element.normalize();
         auto in_rho_t = Numeric::vector1D(nr_stochasts);
@@ -84,12 +84,12 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
-        auto element = alphaBeta(3.5, { 1.0, 0.0, 0.0, 0.0, 0.0 });
+        auto element = Reliability::alphaBeta(3.5, { 1.0, 0.0, 0.0, 0.0, 0.0 });
         const auto in_rho_t = Numeric::vector1D(nr_stochasts); // defaults to 0.0
 
         const auto p = element.getP();
         const auto beta = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
-        const auto ref = alphaBeta(beta, element.getAlpha());
+        const auto ref = Reliability::alphaBeta(beta, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
@@ -104,12 +104,12 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
-        auto element = alphaBeta(3.5, { 0.0, 0.6, 0.0, 0.8, 0.0 });
+        auto element = Reliability::alphaBeta(3.5, { 0.0, 0.6, 0.0, 0.8, 0.0 });
         const auto in_rho_t = Numeric::vector1D(nr_stochasts);
 
         const auto p = element.getP();
         const auto beta = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
-        const auto ref = alphaBeta(beta, element.getAlpha());
+        const auto ref = Reliability::alphaBeta(beta, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
@@ -124,12 +124,12 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
-        auto element = alphaBeta(3.5, { -1.0, 0.0, 0.0, 0.0, 0.0 });
+        auto element = Reliability::alphaBeta(3.5, { -1.0, 0.0, 0.0, 0.0, 0.0 });
         const auto in_rho_t = Numeric::vector1D(nr_stochasts);
 
         const auto p = element.getP();
         const auto beta = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
-        const auto ref = alphaBeta(beta, element.getAlpha());
+        const auto ref = Reliability::alphaBeta(beta, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
@@ -144,12 +144,12 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
-        auto element = alphaBeta(3.5, { 0.0, 0.6, 0.0, -0.8, 0.0 });
+        auto element = Reliability::alphaBeta(3.5, { 0.0, 0.6, 0.0, -0.8, 0.0 });
         const auto in_rho_t = Numeric::vector1D(nr_stochasts);
 
         const auto p = element.getP();
         const auto beta = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, nr_elements));
-        const auto ref = alphaBeta(beta, element.getAlpha());
+        const auto ref = Reliability::alphaBeta(beta, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
@@ -164,11 +164,11 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
-        auto element = alphaBeta(3.5, { 0.0, 0.6, 0.0, -0.8, 0.0 });
+        auto element = Reliability::alphaBeta(3.5, { 0.0, 0.6, 0.0, -0.8, 0.0 });
         auto in_rho_t = Numeric::vector1D(nr_stochasts);
         in_rho_t.assign(0.999999);
 
-        const auto ref = alphaBeta(3.49846239808633, element.getAlpha());
+        const auto ref = Reliability::alphaBeta(3.49846239808633, element.getAlpha());
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
@@ -185,7 +185,7 @@ namespace Deltares::Probabilistic::Test
         constexpr double nr_elements = 365.25; // Number of time elements (e.g. tidal periods)
 
         // case 1:
-        auto element = alphaBeta(11.57868694964,
+        auto element = Reliability::alphaBeta(11.57868694964,
             { -3.161166262316398E-6, 0.151673576904618, -8.746544990273167E-2,
              -8.746544990273167E-2, -0.156371455735438,    -0.912570913068033,
               0.250863571511060,     3.568922013287609E-4,  0.203773500205695,
@@ -201,7 +201,7 @@ namespace Deltares::Probabilistic::Test
 
         // case 2:
         // relative differences with case 1 approx. 1E-4
-        element = alphaBeta(11.5805537878769,
+        element = Reliability::alphaBeta(11.5805537878769,
             { -3.161065009975362E-6,  0.151647352510170,    -8.745032983732001E-2,
              -8.745032983732001E-2, -0.156344425365967,    -0.912591229826987,
               0.250861020035668,     3.568801510567352E-4,  0.203738889137470,
@@ -223,7 +223,7 @@ namespace Deltares::Probabilistic::Test
         constexpr size_t nr_stochasts = 2;       // Number of stochastic variables
         constexpr double nr_elements = 1.0; // Number of time elements (e.g. tidal periods)
 
-        auto element = alphaBeta(4.8, { 1.0, 0.001 });
+        auto element = Reliability::alphaBeta(4.8, { 1.0, 0.001 });
         element.normalize();
         auto in_rho_t = Numeric::vector1D(nr_stochasts);
         in_rho_t.assign(1.0);
@@ -247,7 +247,7 @@ namespace Deltares::Probabilistic::Test
         //  Initialisations:
         constexpr int nr_elements = 2;
 
-        auto element = alphaBeta(3.5, { 0.6, 0.8 });
+        auto element = Reliability::alphaBeta(3.5, { 0.6, 0.8 });
         auto in_rho_t = Numeric::vector1D({ 0.5, 0.5 });
 
         auto original_element = element;   // copy of original beta
@@ -266,7 +266,7 @@ namespace Deltares::Probabilistic::Test
     void UpscaleTests::equivalentAlphaTesting2()
     {
         constexpr double nr_elements = 2.0;
-        auto element = alphaBeta(3.5, { 0.6, 0.8 });
+        auto element = Reliability::alphaBeta(3.5, { 0.6, 0.8 });
         const auto in_rho_t = Numeric::vector1D({ 1.0, 0.5 });
 
         const auto original_element = element;
@@ -287,7 +287,7 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr double nr_elements = 2.0;
 
-        auto elm = alphaBeta(3.5, { 1.0, 0.0 });
+        auto elm = Reliability::alphaBeta(3.5, { 1.0, 0.0 });
         const auto in_rho_t = Numeric::vector1D({ 1.0, 0.0 });
 
         const auto original_element = elm; // copy of original elm
@@ -307,7 +307,7 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr double nr_elements = 2.0;
 
-        auto elm = alphaBeta(3.5, { 1.0, 0.0 });
+        auto elm = Reliability::alphaBeta(3.5, { 1.0, 0.0 });
         auto inRhoT = Numeric::vector1D({ 0.0, 1.0 });
 
         auto ORG = elm; // copy of original elm
@@ -327,7 +327,7 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr double nr_elements = 2.0;
 
-        auto element = alphaBeta(3.5, { 0.6, -0.8 });
+        auto element = Reliability::alphaBeta(3.5, { 0.6, -0.8 });
         const auto in_rho_t = Numeric::vector1D({ 1.0, 0.5 });
 
         const auto original_element = element; // copy of original elm
@@ -348,7 +348,7 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr double nr_elements = 2.0;
 
-        auto element = alphaBeta(3.5, { 0.6, -0.8 });
+        auto element = Reliability::alphaBeta(3.5, { 0.6, -0.8 });
         const auto in_rho_t = Numeric::vector1D({ 1.0, 0.0 });
 
         const auto original_element = element; // copy of original element
@@ -372,11 +372,11 @@ namespace Deltares::Probabilistic::Test
         duration.assign(1.0);                        // individual block durations
         const auto in_rho_t = Numeric::vector1D({ 0.1, 0.3, 0.5, 0.7, 0.9 }); // all rho values
 
-        const auto original_design_point = alphaBeta(beta, alpha); // Copy double of the original beta value
+        const auto original_design_point = Reliability::alphaBeta(beta, alpha); // Copy double of the original beta value
         const auto duration_org = duration;  // Copy of the original durations
         const double max_duration = duration.maxval();
 
-        alphaBeta elm;
+        Reliability::alphaBeta elm;
         upscaler.upscaleToLargestBlock(original_design_point, in_rho_t, duration_org, max_duration, elm, duration);
 
         test_utilities.checkAlphaBeta(elm, original_design_point, 0.001);
@@ -395,11 +395,11 @@ namespace Deltares::Probabilistic::Test
         auto in_rho_t = Numeric::vector1D(nr_stochasts); // all rho values
         in_rho_t.assign(1.0);
 
-        const auto original_design_point = alphaBeta(beta, alpha); // Copy of the original beta and alpha values
+        const auto original_design_point = Reliability::alphaBeta(beta, alpha); // Copy of the original beta and alpha values
         const auto duration_org = duration; // Copy of the original durations
         const auto max_duration = duration.maxval();
 
-        alphaBeta elm;
+        Reliability::alphaBeta elm;
         upscaler.upscaleToLargestBlock(original_design_point, in_rho_t, duration_org, max_duration, elm, duration);
 
         test_utilities.checkAlphaBeta(elm, original_design_point, 0.001);
@@ -417,15 +417,15 @@ namespace Deltares::Probabilistic::Test
         auto duration = Numeric::vector1D({ 20.0, 2.0, 1.0, 2.0, 10.0 });   // individual block durations
         const auto in_rho_t = Numeric::vector1D(nr_stochasts);               // all rho values set to zero
 
-        const auto original_design_point = alphaBeta(beta, alpha); // Copy of the original beta and alpha values
+        const auto original_design_point = Reliability::alphaBeta(beta, alpha); // Copy of the original beta and alpha values
         const auto duration_org = duration;  // Copy of the original durations
         const auto max_duration = duration.maxval();
 
         const double p = Statistics::StandardNormal::getPFromU(beta);
         const auto beta2 = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, 10));
-        const auto ref = alphaBeta(beta2, original_design_point.getAlpha());
+        const auto ref = Reliability::alphaBeta(beta2, original_design_point.getAlpha());
 
-        alphaBeta elm;
+        Reliability::alphaBeta elm;
         upscaler.upscaleToLargestBlock(original_design_point, in_rho_t, duration_org, max_duration, elm, duration);
 
         test_utilities.checkAlphaBeta(elm, ref, 0.001);

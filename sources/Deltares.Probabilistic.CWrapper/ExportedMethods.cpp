@@ -23,7 +23,7 @@
 #include <string>
 #include <memory>
 
-#include "../Deltares.Probabilistic/Server/projectServer.h"
+#include "../Deltares.Probabilistic/Server/ProjectServer.h"
 #include "../Deltares.Probabilistic/Server/ExternalServerHandler.h"
 #include "../Deltares.Probabilistic/Server/ExternalLibraryHandler.h"
 #include "stringHelper.h"
