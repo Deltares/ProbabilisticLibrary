@@ -62,7 +62,7 @@ def copy_notebooks(src_folder, dst_folder):
                 shutil.copy2(src_file, dst_file)
 
 # Copy notebooks from sources into web/_examples
-copy_notebooks("../sources/Deltares.Probabilistic.Python.Notebooks", "_examples")
+copy_notebooks("notebooks", "_examples")
 
 # Exclude some of the examples content:
 _files_to_include = ["summary_"]
