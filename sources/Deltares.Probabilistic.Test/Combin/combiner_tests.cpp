@@ -131,7 +131,7 @@ namespace Deltares
                 excluding_tester(excluding_combiner.get(), 1.0, 1.025286);
             }
 
-            void CombinerTest::tester(Combiner* comb, const double beta, const Reliability::alphaBeta& ref, const combineAndOr AndOr ) const
+            void CombinerTest::tester(Reliability::Combiner* comb, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr ) const
             {
                 constexpr int nElements = 2; // Number of elements
                 constexpr size_t nStochasts = 4;
@@ -213,7 +213,7 @@ namespace Deltares
 
             void CombinerTest::addDesignPoint(const double beta, const size_t nStochasts, size_t i, std::vector<double>& alphaInput, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts, std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>>& designPoints) const
             {
-                auto dp = std::make_shared<DesignPoint>();
+                auto dp = std::make_shared<Reliability::DesignPoint>();
                 dp->Beta = beta;
                 for (size_t j = 0; j < nStochasts; j++)
                 {
@@ -238,7 +238,7 @@ namespace Deltares
                 designPoints.push_back(dp);
             }
 
-            void CombinerTest::tester1stoch(Combiner* comb, const double rho, const double beta, const Reliability::alphaBeta& ref, const combineAndOr AndOr) const
+            void CombinerTest::tester1stoch(Reliability::Combiner* comb, const double rho, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const
             {
                 constexpr int nElements = 2; // Number of elements
                 constexpr size_t nStochasts = 1;
@@ -253,7 +253,7 @@ namespace Deltares
                 auto Elements = std::vector<std::shared_ptr<Reliability::DesignPoint>>();
                 for (size_t i = 0; i < nElements; i++)
                 {
-                    auto dp = std::make_shared<DesignPoint>();
+                    auto dp = std::make_shared<Reliability::DesignPoint>();
                     dp->Beta = beta;
                     for (size_t j = 0; j < nStochasts; j++)
                     {

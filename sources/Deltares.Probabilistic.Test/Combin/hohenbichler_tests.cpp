@@ -53,7 +53,7 @@ namespace Deltares
                 const double rho = 0.0;
                 double expectedpf2pf1 = Statistics::StandardNormal::getQFromU(beta2);
 
-                auto h = HohenbichlerFORM();
+                auto h = Reliability::HohenbichlerFORM();
                 auto result = h.PerformHohenbichler(beta2, pf1, rho);
                 double pf2pf1 = result.first;
 
@@ -69,7 +69,7 @@ namespace Deltares
 
                 const double expectedpf2pf1 = 0.999983622739076;
 
-                auto h = HohenbichlerFORM();
+                auto h = Reliability::HohenbichlerFORM();
                 auto result = h.PerformHohenbichler(beta2, pf1, rho);
                 double pf2pf1 = result.first;
 
@@ -84,7 +84,7 @@ namespace Deltares
                 const double rho = 1.0;
                 const double expectedpf2pf1 = 1.0;
 
-                auto h = HohenbichlerFORM();
+                auto h = Reliability::HohenbichlerFORM();
                 auto result = h.PerformHohenbichler(beta2, pf1, rho);
                 double pf2pf1 = result.first;
 
@@ -99,7 +99,7 @@ namespace Deltares
                 double rho = 0.5;
                 double expectedpf2pf1 = 0.11323892;
 
-                auto h = HohenbichlerFORM();
+                auto h = Reliability::HohenbichlerFORM();
                 double pf2pf1 = h.PerformHohenbichler(beta2, pf1, rho).first;
 
                 EXPECT_NEAR(pf2pf1, expectedpf2pf1, 1e-8);
@@ -124,7 +124,7 @@ namespace Deltares
                 const double rho = -1.0;
                 const double expectedpf2pf1 = 0.0;
 
-                auto h = HohenbichlerFORM();
+                auto h = Reliability::HohenbichlerFORM();
                 auto result = h.PerformHohenbichler(beta2, pf1, rho);
                 double pf2pf1 = result.first;
 
@@ -139,7 +139,7 @@ namespace Deltares
                 const double rho = -1.0;
                 const double expectedpf2pf1 = 0.998312630153354;
 
-                auto h = HohenbichlerFORM();
+                auto h = Reliability::HohenbichlerFORM();
                 auto result = h.PerformHohenbichler(beta2, pf1, rho);
                 double pf2pf1 = result.first;
 
@@ -158,7 +158,7 @@ namespace Deltares
                 const double rho = -1.0;
                 const double expectedpf2pf1 = 1.052261624672e-9;
 
-                auto h = HohenbichlerFORM();
+                auto h = Reliability::HohenbichlerFORM();
                 auto result = h.PerformHohenbichler(beta2, pf1, rho);
                 double pf2pf1 = result.first;
 
@@ -238,7 +238,7 @@ namespace Deltares
 
                 // Entry to the computation and saving results for plotting pfVpfU as function of rhoInput,
                 // for given variations of beta, and pfU:
-                auto h = HohenbichlerFORM();
+                auto h = Reliability::HohenbichlerFORM();
                 for (int iBeta = 0; iBeta < nBeta; iBeta++)
                 {
                     const double betaV = betaMin + dBeta * double(iBeta);

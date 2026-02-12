@@ -55,7 +55,7 @@ namespace Deltares
 
             static ProjectServer& Instance()
             {
-                static ProjectServer instance; // Thread‑safe
+                static ProjectServer instance;
                 return instance;
             }
 
