@@ -129,15 +129,15 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
 {
     try
     {
-        auto nStoch = (size_t)compIds->nrStochasts;
+        auto nStoch = static_cast<size_t>(compIds->nrStochasts);
         auto fw = funcWrapper(compIds->id, fx);
         auto nrCorrelations = compIds->nrCorrelations;
 
-        auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
+        auto stochasts = std::vector<std::shared_ptr<Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
         {
-            auto distHR = (EnumDistributions)c[i].distId;
-            auto s = createDistribution::createValid(distHR, c[i].params);
+            auto distHR = static_cast<EnumDistributions>(c[i].distId);
+            auto s = std::make_shared<Stochast>(createDistribution::createValid(distHR, c[i].params));
             stochasts.push_back(s);
         }
 
@@ -150,7 +150,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         auto corr = std::make_shared<CorrelationMatrix>(false);
         if (nrCorrelations > 0)
         {
-            corr->Init((int)nStoch);
+            corr->Init(static_cast<int>(nStoch));
             for (int i = 0; i < nrCorrelations; i++)
             {
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation, CorrelationType::Gaussian);

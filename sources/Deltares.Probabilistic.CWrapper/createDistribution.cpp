@@ -26,7 +26,7 @@
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 
-std::shared_ptr <Stochast> createDistribution::createValid(const EnumDistributions distHR, double p[4])
+Stochast createDistribution::createValid(const EnumDistributions distHR, double p[4])
 {
     std::vector<double> pValues(4);
     for (int i = 0; i < 4; i++)
@@ -35,19 +35,19 @@ std::shared_ptr <Stochast> createDistribution::createValid(const EnumDistributio
     }
 
     auto s = create(distHR, pValues);
-    if (!s->isValid())
+    if (!s.isValid())
     {
         throw probLibException("parameters are not valid for distribution.");
     }
     return s;
 }
 
-std::shared_ptr <Stochast> createDistribution::create(const EnumDistributions distHR, std::vector<double> p)
+Stochast createDistribution::create(const EnumDistributions distHR, std::vector<double> p)
 {
     DistributionType dist;
     bool truncated = false;
     bool setShapeScaleShift = false;
-    double truncatedMin; double truncatedMax;
+    double truncatedMin = 0.0; double truncatedMax = 0.0;
     switch (distHR)
     {
     case EnumDistributions::normal:
@@ -92,29 +92,29 @@ std::shared_ptr <Stochast> createDistribution::create(const EnumDistributions di
         p = { 0.0, 1.0, 0.0, 0.0 }; }
         break;
     default:
-        throw probLibException("Unknown distribution function - code: ", (int)distHR);
+        throw probLibException("Unknown distribution function - code: ", static_cast<int>(distHR));
     }
 
-    std::shared_ptr<Stochast> stochast;
+    Stochast stochast;
     if (setShapeScaleShift)
     {
-        std::shared_ptr< StochastProperties> properties = std::make_shared< StochastProperties>();
+        auto properties = std::make_shared< StochastProperties>();
         properties->Scale = p[0];
         properties->Shape = p[1];
         properties->Shift = p[2];
         properties->ShapeB = p[3];
-        stochast = std::make_shared<Stochast>(dist, properties);
+        stochast = Stochast(dist, properties);
     }
     else
     {
-        stochast = std::make_shared<Stochast>(dist, p);
+        stochast = Stochast(dist, p);
     }
 
     if (truncated)
     {
-        stochast->setTruncated(true);
-        stochast->getProperties()->Minimum = truncatedMin;
-        stochast->getProperties()->Maximum = truncatedMax;
+        stochast.setTruncated(true);
+        stochast.getProperties()->Minimum = truncatedMin;
+        stochast.getProperties()->Maximum = truncatedMax;
     }
 
     return stochast;

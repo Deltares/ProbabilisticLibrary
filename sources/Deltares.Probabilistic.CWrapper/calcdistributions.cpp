@@ -19,44 +19,63 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <memory>
 #include "stringHelper.h"
 #include "../Deltares.Probabilistic.CWrapper/createDistribution.h"
 
 using namespace Deltares::Reliability;
 
+/// <summary>
+/// wrapper for getXFromU
+/// </summary>
+/// <param name="u"> the u input value </param>
+/// <param name="type"> enum for distribution type </param>
+/// <param name="p"> array with 4 parameters defining the type </param>
+/// <param name="error_indication"> extra output for indication of an error situation </param>
+/// <returns> the x-value </returns>
 extern "C"
-void calculatedistributioninverse_c(double *u, double *y, EnumDistributions *type, double p[], tError *ierr)
+double calculateDistributionInverse(const double u, const EnumDistributions type, double p[], tError* error_indication)
 {
+    double x = 0.0;
     try
     {
-        auto s = createDistribution::createValid(*type, p);
-        *y = s->getXFromU(*u);
-        ierr->errorCode = 0;
+        auto s = createDistribution::createValid(type, p);
+        x = s.getXFromU(u);
+        error_indication->errorCode = 0;
     }
     catch (const std::exception& e)
     {
-        ierr->errorCode = -1;
-        std::string s = e.what();
-        fillErrorMessage(*ierr, s);
+        error_indication->errorCode = -1;
+        const std::string s = e.what();
+        fillErrorMessage(*error_indication, s);
     }
+    return x;
 }
 
+/// <summary>
+/// wrapper for getUFromX
+/// </summary>
+/// <param name="x"> the x input value </param>
+/// <param name="type"> enum for distribution type </param>
+/// <param name="p"> array with 4 parameters defining the type </param>
+/// <param name="error_indication"> extra output for indication of an error situation </param>
+/// <returns> the u-value </returns>
 extern "C"
-void calculatedistribution_c(double* x, double* u, EnumDistributions * type, double p[], tError * ierr)
+double calculateDistribution(const double x, const EnumDistributions type, double p[], tError* error_indication)
 {
+    double u = 0.0;
     try
     {
-        auto s = createDistribution::createValid(*type, p);
-        *u = s->getUFromX(*x);
-        ierr->errorCode = 0;
+        auto s = createDistribution::createValid(type, p);
+        u = s.getUFromX(x);
+        error_indication->errorCode = 0;
     }
     catch (const std::exception& e)
     {
-        ierr->errorCode = -1;
-        std::string s = e.what();
-        fillErrorMessage(*ierr, s);
+        error_indication->errorCode = -1;
+        const std::string s = e.what();
+        fillErrorMessage(*error_indication, s);
     }
+    return u;
 }
 
 
