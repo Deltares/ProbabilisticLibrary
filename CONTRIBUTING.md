@@ -180,7 +180,7 @@ We aim to make both our code and our scientific background easy to understand an
 Algorithms are explained in the [Scientific Background](https://github.com/Deltares/ProbabilisticLibrary/tree/master/doc) document, which follows the Deltares corporate identity.
 While generating this document can be complex, the main body is written in plain LaTeX, so external contributors can update it if needed.
 - **Python examples**:
-Python functionality should be demonstrated with examples in [Jupyter notebooks](https://github.com/Deltares/ProbabilisticLibrary/tree/master/sources/Deltares.Probabilistic.PWrapper.Notebooks).
+Python functionality should be demonstrated with examples in [Jupyter notebooks](https://github.com/Deltares/ProbabilisticLibrary/tree/master/web/notebooks).
 This helps users understand how to apply your code in real-world scenarios.
 - **Inline documentation**:
 Each **class**, and all **public methods and members**, should have clear inline documentation. Also all protected and private methods which need explanation.
