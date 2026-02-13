@@ -69,16 +69,16 @@ namespace Deltares
 
             project->correlation = model->getCorrelationMatrix(selfCorrelationMatrix);
 
-            ZLambda zFunction = [model](std::shared_ptr<ModelSample> sample)
+            Models::ZLambda zFunction = [model](std::shared_ptr<Models::ModelSample> sample)
             {
                 model->calculate(sample);
             };
 
-            std::shared_ptr<ZModel> zModel = std::make_shared<ZModel>(zFunction);
+            std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zFunction);
 
             if (model->canCalculateBetaDirection())
             {
-                ZBetaLambda zBetaFunction = [model](std::shared_ptr<ModelSample> sample, double beta)
+                Models::ZBetaLambda zBetaFunction = [model](std::shared_ptr<Models::ModelSample> sample, double beta)
                 {
                     return model->getBetaDirection(sample);
                 };

@@ -26,6 +26,7 @@
 #include "../Reliability/FragilityCurveProject.h"
 #include "../Reliability/LimitStateFunction.h"
 #include "../Reliability/Settings.h"
+#include "../Model/Evaluation.h"
 #include "../Model/RunProject.h"
 #include "../Model/RunProjectSettings.h"
 #include "../Uncertainty/UncertaintyProject.h"
@@ -97,7 +98,7 @@ namespace Deltares
             int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue, int newId);
             int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast, int newId);
             int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId);
-            int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId);
+            int GetEvaluationId(std::shared_ptr<Models::Evaluation> evaluation, int newId);
             int GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId);
             int GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId);
 
@@ -132,10 +133,10 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
-            std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
+            std::unordered_map<int, std::shared_ptr<Models::StochastPointAlpha>> alphas;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
-            std::unordered_map<int, std::shared_ptr<Reliability::Evaluation>> evaluations;
+            std::unordered_map<int, std::shared_ptr<Models::Evaluation>> evaluations;
             std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
@@ -159,7 +160,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Uncertainty::UncertaintyResult>, int> uncertaintyResultsIds;
             std::unordered_map<std::shared_ptr<Sensitivity::SensitivityResult>, int> sensitivityResultsIds;
             std::unordered_map<std::shared_ptr<Sensitivity::SensitivityValue>, int> sensitivityValuesIds;
-            std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
+            std::unordered_map<std::shared_ptr<Models::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
             std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, int> probabilityValueIds;
@@ -169,7 +170,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
             std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
             std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
-            std::unordered_map<std::shared_ptr<Reliability::Evaluation>, int> evaluationIds;
+            std::unordered_map<std::shared_ptr<Models::Evaluation>, int> evaluationIds;
             std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
             std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
 

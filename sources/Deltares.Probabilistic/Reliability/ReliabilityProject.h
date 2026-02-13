@@ -57,12 +57,12 @@ namespace Deltares
              * \brief Settings for performing a calculation
              * \remark Settings of the reliability calculation are held in the settings of the reliability method
              */
-            std::shared_ptr<RunSettings> runSettings = std::make_shared<RunSettings>();
+            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
 
             /**
              * \brief Callback for progress during the calculation
              */
-            std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
+            std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
 
             /**
              * \brief Results of the reliability calculation
@@ -100,7 +100,7 @@ namespace Deltares
             /**
              * \brief Sets the settings
              */
-            void setSettings(std::shared_ptr<ModelProjectSettings> newSettings) override
+            void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override
             {
                 settings = static_pointer_cast<Settings>(newSettings);
             }

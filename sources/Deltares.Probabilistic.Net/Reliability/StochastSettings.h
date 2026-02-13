@@ -32,12 +32,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class StochastSettings
             {
             private:
-                SharedPointerProvider<Deltares::Reliability::StochastSettings>* shared = new SharedPointerProvider(new Deltares::Reliability::StochastSettings());
+                Utils::Wrappers::SharedPointerProvider<Deltares::Reliability::StochastSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Deltares::Reliability::StochastSettings());
 
             public:
                 StochastSettings() {}

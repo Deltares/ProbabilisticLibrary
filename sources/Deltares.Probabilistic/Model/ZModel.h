@@ -33,13 +33,13 @@ namespace Deltares
 {
     namespace Models
     {
-        typedef std::function<void(std::shared_ptr<ModelSample>)> ZLambda;
-        typedef std::function<void(std::vector<std::shared_ptr<ModelSample>>)> ZMultipleLambda;
-        typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
+        using ZLambda = std::function<void(std::shared_ptr<ModelSample>)>;
+        using ZMultipleLambda = std::function<void(std::vector<std::shared_ptr<ModelSample>>)>;
+        using ZBetaLambda = std::function<double(std::shared_ptr<ModelSample>, double beta)>;
 
-        typedef void (*ZValuesCallBack)(double* data, int size, double* outputValues);
-        typedef void (*ZValuesMultipleCallBack)(int arraySize, double** data, int inputSize, double** outputValues);
-        typedef void (*EmptyCallBack)();
+        using ZValuesCallBack = void(*)(double* data, int size, double* outputValues);
+        using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
+        using EmptyCallBack = void(*)();
 
         class ZModel
         {

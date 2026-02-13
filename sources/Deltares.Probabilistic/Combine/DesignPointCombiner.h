@@ -69,7 +69,7 @@ namespace Deltares
                 std::vector<std::shared_ptr<DesignPoint>>& designPoints,
                 const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix = nullptr,
                 const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix = nullptr,
-                const std::shared_ptr<ProgressIndicator>& progress = nullptr) const;
+                const std::shared_ptr<Models::ProgressIndicator>& progress = nullptr) const;
 
             /**
              * \brief Combines a number of design points, where each design point contributes for a certain fraction

@@ -35,18 +35,15 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class CobylaReliabilitySettings : IHasRunSettings, IHasStochastSetting
+            public ref class CobylaReliabilitySettings : Models::Wrappers::IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::CobylaReliabilitySettings>* shared = new SharedPointerProvider(new Reliability::CobylaReliabilitySettings());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Utils::Wrappers::SharedPointerProvider<Reliability::CobylaReliabilitySettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::CobylaReliabilitySettings());
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 CobylaReliabilitySettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::CobylaReliabilitySettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::CobylaReliabilitySettings());
                 }
 
                 ~CobylaReliabilitySettings() { this->!CobylaReliabilitySettings(); }
@@ -88,10 +85,10 @@ namespace Deltares
                     }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();

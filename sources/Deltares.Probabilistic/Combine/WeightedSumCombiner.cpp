@@ -62,18 +62,18 @@ namespace Deltares
                     }
                     else
                     {
-                        std::shared_ptr<StochastPointAlpha> alpha = designPoints[i]->getAlpha(parameters[j]);
+                        std::shared_ptr<Models::StochastPointAlpha> alpha = designPoints[i]->getAlpha(parameters[j]);
                         u[j] = alpha != nullptr ? alpha->U : 0;
                     }
                 }
 
-                std::shared_ptr<Sample> sample = std::make_shared<Sample>(u);
+                std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(u);
                 sample->Weight = scenarios[i]->probability * designPoints[i]->getFailureProbability();
 
                 designPointBuilder.addSample(sample);
             }
 
-            std::shared_ptr<Sample> combinedSample = designPointBuilder.getSample();
+            std::shared_ptr<Models::Sample> combinedSample = designPointBuilder.getSample();
             combinedSample = combinedSample->getSampleAtBeta(combinedBeta);
 
             // create final design point
@@ -85,7 +85,7 @@ namespace Deltares
             for (size_t i = 0; i < parameters.size(); i++)
             {
                 const double alphaValue = -combinedSample->Values[i] / combinedDesignPoint->Beta;
-                std::shared_ptr<StochastPointAlpha> alpha = std::make_shared<StochastPointAlpha>();
+                std::shared_ptr<Models::StochastPointAlpha> alpha = std::make_shared<Models::StochastPointAlpha>();
                 alpha->Stochast = parameters[i];
                 alpha->Alpha = alphaValue;
                 alpha->AlphaCorrelated = alphaValue;

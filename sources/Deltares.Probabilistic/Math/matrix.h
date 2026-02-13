@@ -50,7 +50,7 @@ namespace Deltares
             /**
              * Move Constructor
              */
-            Matrix(Matrix&& m);
+            Matrix(Matrix&& m) noexcept;
 
             /**
              * Destructor
@@ -65,7 +65,7 @@ namespace Deltares
             /**
              * the assignment operator
              */
-            Matrix& operator=(Matrix&& m);
+            Matrix& operator=(Matrix&& m) noexcept;
 
             /**
              * the + operator
@@ -191,12 +191,21 @@ namespace Deltares
         class QRMatrix
         {
         public:
-            QRMatrix(const Matrix& q_matrix, const Matrix& r_matrix) noexcept : Q(q_matrix), R(r_matrix) {}
+            QRMatrix(const Matrix& q_matrix, const Matrix& r_matrix) noexcept
+                : Q(q_matrix), R(r_matrix) {}
+
             Numeric::vector1D solve(const Numeric::vector1D& target) const;
-            Matrix getProduct() const { return Q.matmul(R); }
+
+            Matrix getProduct() const
+            {
+                return Q.matmul(R);
+            }
 
             Matrix Q;
             Matrix R;
         };
+
+
+
     }
 }

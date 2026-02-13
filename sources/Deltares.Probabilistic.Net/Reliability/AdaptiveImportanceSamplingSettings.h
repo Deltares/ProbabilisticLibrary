@@ -35,23 +35,20 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class AdaptiveImportanceSamplingSettings : IHasRunSettings, IHasStochastSetting
+            public ref class AdaptiveImportanceSamplingSettings : Models::Wrappers::IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::AdaptiveImportanceSamplingSettings>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Reliability::AdaptiveImportanceSamplingSettings>* shared = nullptr;
             public:
                 AdaptiveImportanceSamplingSettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::AdaptiveImportanceSamplingSettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::AdaptiveImportanceSamplingSettings());
                     shared->object->startPointSettings = StartPointSettings->GetSettings();
                     shared->object->importanceSamplingSettings = ImportanceSamplingSettings->GetSettings();
                 }
                 AdaptiveImportanceSamplingSettings(std::shared_ptr<Reliability::AdaptiveImportanceSamplingSettings> settings)
                 {
-                    shared = new SharedPointerProvider(settings);
+                    shared = new Utils::Wrappers::SharedPointerProvider(settings);
                 }
                 ~AdaptiveImportanceSamplingSettings() { this->!AdaptiveImportanceSamplingSettings(); }
                 !AdaptiveImportanceSamplingSettings() { delete shared; }
@@ -128,10 +125,10 @@ namespace Deltares
                     void set(bool value) { shared->object->StartPointOnLimitState = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return ImportanceSamplingSettings->RunSettings; }
-                    void set(Wrappers::RunSettings^ value) { ImportanceSamplingSettings->RunSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return ImportanceSamplingSettings->RunSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { ImportanceSamplingSettings->RunSettings = value; }
                 }
 
                 StartPointCalculatorSettings^ StartPointSettings = gcnew Wrappers::StartPointCalculatorSettings();

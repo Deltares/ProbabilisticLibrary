@@ -34,7 +34,7 @@ namespace Deltares
             public ref class CrudeMonteCarloS : public UncertaintyMethod
             {
             private:
-                SharedPointerProvider<Uncertainty::CrudeMonteCarloS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::CrudeMonteCarloS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::CrudeMonteCarloS());
             public:
                 CrudeMonteCarloS() { }
                 ~CrudeMonteCarloS() { this->!CrudeMonteCarloS(); }

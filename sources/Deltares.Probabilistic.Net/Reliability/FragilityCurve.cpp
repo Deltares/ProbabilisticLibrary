@@ -52,7 +52,7 @@ namespace Deltares
                     System::Collections::Generic::List<Stochast^>^ stochasts = gcnew System::Collections::Generic::List<Stochast^>();
                     for (size_t i = 0; i < this->FragilityValues->Count; i++)
                     {
-                        FragilityValue^ fragilityValue = this->FragilityValues[i];
+                        Statistics::Wrappers::FragilityValue^ fragilityValue = this->FragilityValues[i];
                         if (fragilityValue->DesignPoint != nullptr)
                         {
                             Models::Wrappers::StochastPoint^ designPoint = static_cast<Models::Wrappers::StochastPoint^>(fragilityValue->DesignPoint);
@@ -68,7 +68,7 @@ namespace Deltares
 
                     stochastPoint->updateInfluenceFactors();
 
-                    return gcnew Reliability::Wrappers::StochastPoint(stochastPoint, stochasts);
+                    return gcnew Models::Wrappers::StochastPoint(stochastPoint, stochasts);
                 }
                 else
                 {

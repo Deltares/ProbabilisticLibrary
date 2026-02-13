@@ -35,6 +35,7 @@ namespace Deltares
     namespace Reliability
     {
         using namespace Deltares::Numeric;
+        using namespace Deltares::Models;
 
         std::shared_ptr<DesignPoint> SubsetSimulation::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
@@ -43,7 +44,7 @@ namespace Deltares
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
             auto designPointBuilder = DesignPointBuilder(nStochasts, Settings->designPointMethod, Settings->StochastSet);
-            randomSampleGenerator = RandomSampleGenerator(this->Settings->randomSettings, this->Settings->StochastSet);
+            randomSampleGenerator = Models::RandomSampleGenerator(this->Settings->randomSettings, this->Settings->StochastSet);
             randomSampleGenerator.initialize();
 
             // initialize convergence indicator and loops

@@ -33,12 +33,12 @@ namespace Deltares
             public ref class RandomValueGenerator
             {
             private:
-                SharedPointerProvider<Deltares::Numeric::RandomValueGenerator>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Deltares::Numeric::RandomValueGenerator>* shared = nullptr;
 
             public:
                 RandomValueGenerator()
                 {
-                    shared = new SharedPointerProvider(new Deltares::Numeric::RandomValueGenerator());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Deltares::Numeric::RandomValueGenerator());
                 }
 
                 void Initialize(bool repeatable, int seed)

@@ -37,18 +37,14 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-            using namespace Deltares::Statistics::Wrappers;
-
-            public ref class DesignPoint : public Wrappers::StochastPoint
+            public ref class DesignPoint : public Models::Wrappers::StochastPoint
             {
             private:
-                SharedPointerProvider<Reliability::DesignPoint>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Reliability::DesignPoint>* shared = nullptr;
                 ConvergenceReport^ convergenceReport = gcnew Wrappers::ConvergenceReport();
                 System::Collections::Generic::List<Wrappers::ReliabilityResult^>^ reliabilityResults = gcnew System::Collections::Generic::List<ReliabilityResult^>();
-                System::Collections::Generic::List<Wrappers::Evaluation^>^ evaluations = gcnew System::Collections::Generic::List<Wrappers::Evaluation^>();
-                System::Collections::Generic::List<Wrappers::Message^>^ messages = gcnew System::Collections::Generic::List<Wrappers::Message^>();
+                System::Collections::Generic::List<Models::Wrappers::Evaluation^>^ evaluations = gcnew System::Collections::Generic::List<Models::Wrappers::Evaluation^>();
+                System::Collections::Generic::List<Models::Wrappers::Message^>^ messages = gcnew System::Collections::Generic::List<Models::Wrappers::Message^>();
                 System::Collections::Generic::List<Wrappers::DesignPoint^>^ contributingDesignPoints = gcnew System::Collections::Generic::List<Wrappers::DesignPoint^>();
 
                 void setDesignPointInfo();
@@ -82,8 +78,8 @@ namespace Deltares
 
                 property System::String^ Identifier
                 {
-                    System::String^ get() { return NativeSupport::toManaged(shared->object->Identifier); }
-                    void set (System::String^ value) { shared->object->Identifier = NativeSupport::toNative(value); }
+                    System::String^ get() { return Utils::Wrappers::NativeSupport::toManaged(shared->object->Identifier); }
+                    void set (System::String^ value) { shared->object->Identifier = Utils::Wrappers::NativeSupport::toNative(value); }
                 }
 
                 property double ProbabilityFailure
@@ -112,14 +108,14 @@ namespace Deltares
                     System::Collections::Generic::List<ReliabilityResult^>^ get() { return reliabilityResults; }
                 }
 
-                property System::Collections::Generic::List<Wrappers::Evaluation^>^ Evaluations
+                property System::Collections::Generic::List<Models::Wrappers::Evaluation^>^ Evaluations
                 {
-                    System::Collections::Generic::List<Wrappers::Evaluation^>^ get() { return evaluations; }
+                    System::Collections::Generic::List<Models::Wrappers::Evaluation^>^ get() { return evaluations; }
                 }
 
-                property System::Collections::Generic::List<Wrappers::Message^>^ Messages
+                property System::Collections::Generic::List<Models::Wrappers::Message^>^ Messages
                 {
-                    System::Collections::Generic::List<Wrappers::Message^>^ get() { return messages; }
+                    System::Collections::Generic::List<Models::Wrappers::Message^>^ get() { return messages; }
                 }
 
                 property System::Collections::Generic::List<DesignPoint^>^ ContributingDesignPoints
@@ -127,7 +123,7 @@ namespace Deltares
                     System::Collections::Generic::List<DesignPoint^>^ get() { return contributingDesignPoints; }
                 }
 
-                void AssignTags(TagRepository^ tagRepository);
+                void AssignTags(Utils::Wrappers::TagRepository^ tagRepository);
 
                 std::shared_ptr<Reliability::DesignPoint> getDesignPoint() override
                 {

@@ -31,13 +31,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public ref class SubsetSimulation : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::SubsetSimulation>* shared = new SharedPointerProvider(new Reliability::SubsetSimulation());
+                Utils::Wrappers::SharedPointerProvider<Reliability::SubsetSimulation>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::SubsetSimulation());
             public:
                 SubsetSimulation() {}
                 ~SubsetSimulation() { this->!SubsetSimulation(); }

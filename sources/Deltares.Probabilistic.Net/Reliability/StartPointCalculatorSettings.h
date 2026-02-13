@@ -32,8 +32,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public enum class StartMethodType
             {
                 FixedValue,
@@ -45,7 +43,7 @@ namespace Deltares
             public ref class StartPointCalculatorSettings
             {
             private:
-                SharedPointerProvider<Reliability::StartPointCalculatorSettings>* shared = new SharedPointerProvider(new Reliability::StartPointCalculatorSettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::StartPointCalculatorSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::StartPointCalculatorSettings());
 
             public:
                 StartPointCalculatorSettings() {}

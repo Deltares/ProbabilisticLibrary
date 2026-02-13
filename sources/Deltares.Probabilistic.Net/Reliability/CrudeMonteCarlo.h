@@ -34,7 +34,7 @@ namespace Deltares
             public ref class CrudeMonteCarlo : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::CrudeMonteCarlo>* shared = new SharedPointerProvider(new Reliability::CrudeMonteCarlo());
+                Utils::Wrappers::SharedPointerProvider<Reliability::CrudeMonteCarlo>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::CrudeMonteCarlo());
             public:
                 CrudeMonteCarlo() { }
                 ~CrudeMonteCarlo() { this->!CrudeMonteCarlo(); }

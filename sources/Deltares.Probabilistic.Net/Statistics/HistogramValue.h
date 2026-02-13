@@ -30,26 +30,24 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class HistogramValue
             {
             private:
-                SharedPointerProvider<Statistics::HistogramValue>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Statistics::HistogramValue>* shared = nullptr;
             public:
                 HistogramValue()
                 {
-                    shared = new SharedPointerProvider(new Statistics::HistogramValue());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::HistogramValue());
                 }
 
                 HistogramValue(std::shared_ptr<Statistics::HistogramValue> histogramValue)
                 {
-                    shared = new SharedPointerProvider(histogramValue);
+                    shared = new Utils::Wrappers::SharedPointerProvider(histogramValue);
                 }
 
                 HistogramValue(double lowerBound, double upperBound, double amount)
                 {
-                    shared = new SharedPointerProvider(new Statistics::HistogramValue());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::HistogramValue());
                     this->LowerBound = lowerBound;
                     this->UpperBound = upperBound;
                     this->Amount = amount;

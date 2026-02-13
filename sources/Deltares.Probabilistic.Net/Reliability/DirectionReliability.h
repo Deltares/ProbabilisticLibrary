@@ -30,13 +30,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public ref class DirectionReliability : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::DirectionReliability>* shared = new SharedPointerProvider(new Reliability::DirectionReliability());
+                Utils::Wrappers::SharedPointerProvider<Reliability::DirectionReliability>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::DirectionReliability());
             public:
                 DirectionReliability() {}
                 ~DirectionReliability() { this->!DirectionReliability(); }

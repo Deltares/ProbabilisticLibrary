@@ -814,18 +814,20 @@ class DesignPoint(FrozenObject):
 			design_point_ids = interface.GetArrayIdValue(self._id, 'contributing_design_points')
 			for design_point_id in design_point_ids:
 				if design_point_id > 0:
-					added = False
-					if not self._known_design_points is None:
-						for design_point in self._known_design_points:
-							if design_point._id == design_point_id:
-								contributing_design_points.append(design_point)
-								added = True
-
-					if not added:
-						contributing_design_points.append(DesignPoint(design_point_id, self._known_variables, self._known_design_points))
+					self._add_design_point(design_point_id, contributing_design_points)
 			self._contributing_design_points = FrozenList(contributing_design_points)
 
 		return self._contributing_design_points
+
+	def _add_design_point(self, design_point_id, contributing_design_points):
+		added = False
+		if not self._known_design_points is None:
+			for design_point in self._known_design_points:
+				if design_point._id == design_point_id:
+					contributing_design_points.append(design_point)
+					added = True
+		if not added:
+			contributing_design_points.append(DesignPoint(design_point_id, self._known_variables, self._known_design_points))
 
 	@property
 	def realizations(self) -> list[Evaluation]:
@@ -1081,18 +1083,20 @@ class Alpha(FrozenObject):
 		if self._variable is None:
 			variable_id = interface.GetIdValue(self._id, 'variable')
 			if variable_id > 0:
-				if not self._known_variables is None:
-					for variable in self._known_variables:
-						if variable._id == variable_id:
-							self._variable = variable
-
-				if self._variable is None:
-					self._variable = Stochast(variable_id);
-
+				self._set_variable_id(variable_id)
 		return self._variable
 
 	def __str__(self):
 		return self.identifier
+
+	def _set_variable_id(self, variable_id):
+		if not self._known_variables is None:
+			for variable in self._known_variables:
+				if variable._id == variable_id:
+					self._variable = variable
+		if self._variable is None:
+			self._variable = Stochast(variable_id);
+
 
 	@property
 	def identifier(self) -> str:

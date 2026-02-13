@@ -36,7 +36,7 @@ namespace Deltares
                 System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints,
                 Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix,
                 Deltares::Statistics::Wrappers::CorrelationMatrix^ correlationMatrix,
-                Wrappers::ProgressIndicator^ progressIndicator)
+                Models::Wrappers::ProgressIndicator^ progressIndicator)
             {
                 std::vector<std::shared_ptr<Reliability::DesignPoint>> nativeDesignPoints;
 

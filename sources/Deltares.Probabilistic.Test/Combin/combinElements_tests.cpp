@@ -26,11 +26,10 @@
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "../../Deltares.Probabilistic/Combine/LengthEffect.h"
 
-using namespace Deltares::Reliability;
-using namespace Deltares::Statistics;
-
 namespace Deltares::Probabilistic::Test
 {
+    using namespace Deltares::Reliability;
+
     void combinElementsTests::runAllCombineTwoElementsTests()
     {
         testCombineTwoElementsNoCorrelation1();
@@ -107,12 +106,12 @@ namespace Deltares::Probabilistic::Test
         constexpr size_t nStochast = 2; // number of stochastic variables
         auto elm1 = alphaBeta(3.0, {1.0, 0.0});
         auto elm2 = alphaBeta(2.5, {0.0, 1.0});
-        auto rhoP   = vector1D(nStochast); // defaults to (0.0, 0.0)
+        auto rhoP   = Numeric::vector1D(nStochast); // defaults to (0.0, 0.0)
 
     //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
         double p1 = elm1.getP();
         double p2 = elm2.getP();
-        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {0.246342425266045, 0.969182251096718}); // pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -132,12 +131,12 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, {0.0, 1.0});
         auto elm2 = alphaBeta(3.0, {1.0, 0.0});
-        auto rhoP = vector1D({0.0, 0.0});
+        auto rhoP = Numeric::vector1D({0.0, 0.0});
 
     //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
         double p1 = elm1.getP();
         double p2 = elm2.getP();
-        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {0.246342425266045, 0.969182251096718}); // Is somewhere pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -159,12 +158,12 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, {1.0, 0.0});
         auto elm2 = alphaBeta(3.0, {0.0, 1.0});
-        auto rhoP = vector1D({0.0, 0.0});
+        auto rhoP = Numeric::vector1D({0.0, 0.0});
 
     //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
         double p1 = elm1.getP();
         double p2 = elm2.getP();
-        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {0.969182251096718, 0.246342425266045}); // pre-computed
     //   NB. The expectedAlphaC(1) and expectedAlphaC(2) must now be in reversed order compared to
     //       the preceding tests testCombineTwoElementsNoCorrelation1 and testCombineTwoElementsNoCorrelation2
@@ -185,12 +184,12 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, {1.0, 0.0});
         auto elm2 = alphaBeta(3.0, {0.0, 1.0});
-        auto rhoP = vector1D({0.0, 0.0});
+        auto rhoP = Numeric::vector1D({0.0, 0.0});
 
     //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
         double q1 = elm1.getQ();
         double q2 = elm2.getQ();
-        auto beta = StandardNormal::getUFromQ(q1 * q2);
+        auto beta = Statistics::StandardNormal::getUFromQ(q1 * q2);
         auto ref = alphaBeta(beta, {0.651828661927589, 0.758366267373285}); // Is somewhere pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combAnd);
@@ -209,12 +208,12 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(-2.5, {1.0, 0.0});
         auto elm2 = alphaBeta(-3.0, {0.0, 1.0});
-        auto rhoP = vector1D({0.0, 0.0});
+        auto rhoP = Numeric::vector1D({0.0, 0.0});
 
     //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
         double q1 = elm1.getQ();
         double q2 = elm2.getQ();
-        auto beta = StandardNormal::getUFromQ(q1 * q2);
+        auto beta = Statistics::StandardNormal::getUFromQ(q1 * q2);
         auto ref = alphaBeta(beta, {0.970353143592546, 0.241688910290521}); // Is somewhere pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combAnd);
@@ -233,12 +232,12 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(0.0, {1.0, 0.0});
         auto elm2 = alphaBeta(0.0, {0.0, 1.0});
-        auto rhoP = vector1D({0.0, 0.0});
+        auto rhoP = Numeric::vector1D({0.0, 0.0});
 
     //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
         double q1 = elm1.getQ();
         double q2 = elm2.getQ();
-        auto beta = StandardNormal::getUFromQ(q1 * q2);
+        auto beta = Statistics::StandardNormal::getUFromQ(q1 * q2);
         auto ref = alphaBeta(beta, {sqrt(0.5), sqrt(0.5)});
         // The alpha()-components of the combination must be equal because of equal beta1 and beta2
 
@@ -258,7 +257,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.0, {0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {0.8, 0.6});
-        auto rhoP   = vector1D({0.5, 0.5});
+        auto rhoP   = Numeric::vector1D({0.5, 0.5});
 
         auto ref = alphaBeta(2.43858507200259, {0.777037047950730, 0.629454864237314}); // pre-computed
 
@@ -279,7 +278,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.0, {0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {0.8, 0.6});
-        auto rhoP = vector1D({1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0});
 
         auto ref = alphaBeta(2.49715643746047, {0.795187280968291, 0.606363907390814});
 
@@ -301,7 +300,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, {0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {0.8, 0.6});
-        auto rhoP   = vector1D({1.0, 1.0});
+        auto rhoP   = Numeric::vector1D({1.0, 1.0});
 
         auto ref = alphaBeta(2.38813303477200, {sqrt(0.5), sqrt(0.5)});
         // The alpha()-components of the combination must be equal because of equal beta1 and beta2
@@ -324,13 +323,13 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, {-0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {0.8, 0.6});
-        auto rhoP   = vector1D({1.0, 1.0});
+        auto rhoP   = Numeric::vector1D({1.0, 1.0});
 
     //  Because of these alpha() and RhoP() the two elements are uncorrelated. The combined beta can then be derived analytically:
         double p1 = elm1.getP();
         double p2 = elm2.getP();
 
-        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {0.149904324474973, 0.988700507486318}); // pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -351,7 +350,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, {-0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {-0.8, 0.6});
-        auto rhoP   = vector1D({1.0, 1.0});
+        auto rhoP   = Numeric::vector1D({1.0, 1.0});
 
         auto ref = alphaBeta(2.38813303477200, {-0.713029134520995, 0.701134404607448});
         //expectedAlphaC= sqrt(0.5d0) * (/ -1.0d0, 1.0d0 /)   ! theoretically expected, but not exactly (re)produced
@@ -375,13 +374,13 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, {-0.5,  0.5, -0.5, 0.5});
         auto elm2 = alphaBeta(2.5, {-0.5, -0.5,  0.5, 0.5});
-        auto rhoP = vector1D({0.9, 0.9, 0.9, 0.9});
+        auto rhoP = Numeric::vector1D({0.9, 0.9, 0.9, 0.9});
 
     //  For these alpha() and RhoP() the two elements are uncorrelated, and beta of the present OR-combination can be derived analytically:
         double p1 = elm1.getP();
         double p2 = elm2.getP();
 
-        auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+        auto beta = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2);
         auto ref = alphaBeta(beta, {-0.689062334733955, -0.158849035402622, 0.157472623165194, 0.689320285321795}); // pre-computed
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -403,7 +402,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, {-1.0});
         auto elm2 = alphaBeta(2.5, { 1.0});
-        auto rhoP = vector1D({0.9});
+        auto rhoP = Numeric::vector1D({0.9});
 
         constexpr double expectedBeta = 2.24390055691005;
 
@@ -426,7 +425,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(2.5, { 1.0});
         auto elm2 = alphaBeta(2.5, {-1.0});
-        auto rhoP = vector1D({0.9});
+        auto rhoP = Numeric::vector1D({0.9});
 
         constexpr double expectedBeta  = 2.24390055691005;
 
@@ -454,7 +453,7 @@ namespace Deltares::Probabilistic::Test
         auto elm2 = alphaBeta(3.5, {0.900, 0.436});
         elm1.normalize();
         elm2.normalize();
-        auto rhoP = vector1D({1.0, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 0.0});
 
         auto ref = alphaBeta(3.31256284734426, {0.764786211092966, 0.644284138654728}); // pre-computed
 
@@ -482,7 +481,7 @@ namespace Deltares::Probabilistic::Test
         auto elm2 = alphaBeta(3.5, {0.900, 0.000, 0.436});
         elm1.normalize();
         elm2.normalize();
-        auto rhoP = vector1D({1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0});
 
         auto ref = alphaBeta(3.31256284734426,
         {0.764786211092966, 0.580277735143150, 0.279963928782266}); // pre-computed
@@ -509,7 +508,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8});
         auto elm2 = elm1;
-        auto rhoP = vector1D({1.0, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 0.0});
 
         auto ref = alphaBeta(3.3121491224946, {0.634952576684642, 0.772551115047758}); // pre-computed
 
@@ -535,7 +534,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
         auto elm2 = alphaBeta(3.5, {0.6, 0.0, 0.8});
-        auto rhoP = vector1D({1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0});
 
         auto ref = alphaBeta(3.31214912249458,
         {0.634952576684642, 0.546276132263498, 0.546276132263498}); // pre-computed
@@ -563,7 +562,7 @@ namespace Deltares::Probabilistic::Test
     //  For "old" combineTwoElementsPartialCorrelation, without correction of the alpha_equivalent
         auto elm1 = alphaBeta(3.5, {0.6, 0.8});
         auto elm2 = alphaBeta(3.8, {0.6, 0.8});
-        auto rhoP = vector1D({1.0, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 0.0});
 
         auto ref = alphaBeta(3.42801564331459, {0.631154181145020, 0.775657398355201}); // pre-computed
 
@@ -590,7 +589,7 @@ namespace Deltares::Probabilistic::Test
     //  For "old" combineTwoElementsPartialCorrelation, without correction of the alpha_equivalent
         auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
         auto elm2 = alphaBeta(3.8, {0.6, 0.0, 0.8});
-        auto rhoP = vector1D({1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0});
 
         auto ref = alphaBeta(3.42801564331459,
         {0.631154181145020, 0.735508613458735, 0.246315811817203}); // pre-computed
@@ -615,7 +614,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.5, {0.8, 0.6});
         auto elm2 = alphaBeta(9.5, {0.8, 0.6});
-        auto rhoP = vector1D({1.0, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 0.0});
 
         const auto& ref = elm1; // approx.
 
@@ -636,7 +635,7 @@ namespace Deltares::Probabilistic::Test
         constexpr size_t nStochast = 10;
         auto elm1 = alphaBeta(3.0, {0.6, 0.8, 0.4, 0.0, 0.2, 0.7, 0.3, 0.8, 0.9, 1.0});
         auto elm2 = alphaBeta(3.5, {0.1, 0.0, 0.7, 0.9, 0.8, 0.1, 0.9, 0.5, 0.3, 0.0});
-        auto rhoP = vector1D(nStochast);
+        auto rhoP = Numeric::vector1D(nStochast);
         rhoP.assign(1.0);
         elm1.normalize();
         elm2.normalize();
@@ -670,7 +669,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.5, {0.0, 0.6, 0.0, 0.8, 0.0});
         auto elm2 = alphaBeta(3.8, elm1.getAlpha());
-        auto rhoP = vector1D({0.0, 1.0, 0.5, 0.0, 1.0});
+        auto rhoP = Numeric::vector1D({0.0, 1.0, 0.5, 0.0, 1.0});
 
         auto ref = alphaBeta(3.42801564331459,
         {0.0, 0.631154181145020, 0.0, 0.775657398355201, 0.0}); // pre-computed and based on testCombineTwoElementsPartialCorrelation13
@@ -786,8 +785,8 @@ namespace Deltares::Probabilistic::Test
         constexpr int nElements = 20; // Number of elements
 
         auto CrossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
-        auto rhoXK = vector1D({0.5, 0.5, 0.2, 0.2});
-        auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
+        auto rhoXK = Numeric::vector1D({0.5, 0.5, 0.2, 0.2});
+        auto dXK   = Numeric::vector1D({500.0, 300.0, 500.0, 300.0});
         constexpr double sectionLength = 100.0;
 
         auto ref = alphaBeta(4.38787743765301, // pre-computed
@@ -815,8 +814,8 @@ namespace Deltares::Probabilistic::Test
         constexpr size_t nStochast = 4; // Number of stochastic variables
         constexpr size_t nElements = 20; // Number of elements
         auto crossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
-        auto rhoXK = vector1D({0.5, 0.5, 0.2, 0.2});
-        auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
+        auto rhoXK = Numeric::vector1D({0.5, 0.5, 0.2, 0.2});
+        auto dXK   = Numeric::vector1D({500.0, 300.0, 500.0, 300.0});
         double sectionLength = 100.0;
 
         auto ref = alphaBeta(4.61415014812874,
@@ -831,7 +830,7 @@ namespace Deltares::Probabilistic::Test
             elms[i] = section;
         }
 
-        auto rhoXAK = vector1D(nStochast);
+        auto rhoXAK = Numeric::vector1D(nStochast);
         for (size_t i = 0; i < nStochast; i++)
         {
             rhoXAK(i) = rhoXK(i) + (1.0 - rhoXK(i)) * exp(- pow(sectionLength,2) / pow(dXK(i),2) );
@@ -848,8 +847,8 @@ namespace Deltares::Probabilistic::Test
     {
         constexpr size_t nElements = 20; // Number of elements
         auto crossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
-        auto rhoXK = vector1D({0.5, 0.5, 0.2, 0.2});
-        auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
+        auto rhoXK = Numeric::vector1D({0.5, 0.5, 0.2, 0.2});
+        auto dXK   = Numeric::vector1D({500.0, 300.0, 500.0, 300.0});
         constexpr double sectionLength = 100.0;
 
         auto ref = alphaBeta(4.5064103581966,
@@ -865,11 +864,11 @@ namespace Deltares::Probabilistic::Test
     void combinElementsTests::testLengthEffectFourStochasts()
     {
         const int nStochasts = 4;
-        std::vector< std::shared_ptr<Stochast>> stochasts;
+        std::vector< std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
         for (size_t i = 0; i < nStochasts; i++)
         {
-            auto s = std::make_shared<Stochast>();
-            s->setDistributionType (DistributionType::Normal);
+            auto s = std::make_shared<Statistics::Stochast>();
+            s->setDistributionType (Statistics::DistributionType::Normal);
             s->setMeanAndDeviation(0.0, 1.0);
             stochasts.push_back(s);
         }
@@ -880,14 +879,14 @@ namespace Deltares::Probabilistic::Test
         for (int i = 0; i < alphaValues.size(); i++ )
         {
             auto alphaValue = alphaValues[i];
-            auto alpha = std::make_shared<StochastPointAlpha>();
+            auto alpha = std::make_shared<Models::StochastPointAlpha>();
             alpha->Alpha = alphaValue;
             alpha->Stochast = stochasts[i];
             section->Alphas.push_back(alpha);
         }
 
         auto rhoXK = std::vector<double>({ 0.5, 0.5, 0.2, 0.2 });
-        auto rho = std::make_shared<SelfCorrelationMatrix>();
+        auto rho = std::make_shared<Statistics::SelfCorrelationMatrix>();
         for (size_t i = 0; i < nStochasts; i++)
         {
             rho->setSelfCorrelation(section->Alphas[i]->Stochast, rhoXK[i]);
@@ -909,12 +908,12 @@ namespace Deltares::Probabilistic::Test
 
     void combinElementsTests::upscaleLengthTests11()
     {
-        vector1D alpha_cross_section = { 0.0, 0.6, 0.0, -0.8, 0.0 };
+        Numeric::vector1D alpha_cross_section = { 0.0, 0.6, 0.0, -0.8, 0.0 };
         alpha_cross_section.normalize();
         auto design_point = alphaBeta(5.0, alpha_cross_section);
         constexpr double section_length = 250.0;
-        const vector1D rhoXK = { 0.8, 0.8, 0.8, 0.8, 0.8 };
-        const vector1D dXK = { 200.0, 200.0, 200.0, 200.0, 200.0 };
+        const Numeric::vector1D rhoXK = { 0.8, 0.8, 0.8, 0.8, 0.8 };
+        const Numeric::vector1D dXK = { 200.0, 200.0, 200.0, 200.0, 200.0 };
 
         std::string message;
         auto [resulting_design_point, no_convergence_count] = upscaler.upscaleLength(design_point, rhoXK, dXK,
@@ -930,12 +929,12 @@ namespace Deltares::Probabilistic::Test
 
     void combinElementsTests::upscaleLengthTests16()
     {
-        vector1D alpha_cross_section = { 1.0, -2.0, 4.0, 0.0, -3.0 };
+        Numeric::vector1D alpha_cross_section = { 1.0, -2.0, 4.0, 0.0, -3.0 };
         alpha_cross_section.normalize();
         auto design_point = alphaBeta(5.0, alpha_cross_section);
         const std::vector section_lengths = { 100.0, 150.0, 170.0, 175.0, 177.0 };
-        vector1D rhoXK = { 0.8, 0.0, 1.0, 0.5, 1.0 };
-        const vector1D dXK = { 100.0, 200.0, 50.0, 150.0, 300.0 };
+        Numeric::vector1D rhoXK = { 0.8, 0.0, 1.0, 0.5, 1.0 };
+        const Numeric::vector1D dXK = { 100.0, 200.0, 50.0, 150.0, 300.0 };
 
         for (size_t iLength = 1; iLength < section_lengths.size(); iLength++)
         {
@@ -988,14 +987,14 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.0, { 1.0, 0.0});
         auto elm2 = alphaBeta(2.5, {-1.0, 0.0});
-        auto rhoP = vector1D({1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0});
 
     //  For an OR combination the resulting beta can analytically be computed
         double q1 = elm1.getQ();
         double q2 = elm2.getQ();
 
     //  Probability of failure is then, corresponding beta:
-        auto beta = StandardNormal::getUFromQ(q1 + q2);
+        auto beta = Statistics::StandardNormal::getUFromQ(q1 + q2);
         auto ref = alphaBeta(beta, elm2.getAlpha());
 
         auto elm3 = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
@@ -1014,7 +1013,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.0, { 1.0, 0.0});
         auto elm2 = alphaBeta(2.5, {-1.0, 0.0});
-        auto rhoP = vector1D({1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0});
 
     //  For the present alpha and beta it can be analytically shown that no failure can occur
     //  Theoretically the expected beta of the combination is then +infinity. Practically:
@@ -1038,7 +1037,7 @@ namespace Deltares::Probabilistic::Test
         auto elm1 = alphaBeta(3.5, {0.436, 0.900, 0.000, 0.000});
         auto elm2 = alphaBeta(3.5, {0.900, 0.000, 0.436, 0.000});
         auto elm3 = alphaBeta(3.5, {0.900, 0.000, 0.000, 0.436});
-        auto rhoP = vector1D({1.0, 1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0, 1.0});
         elm1.normalize();
         elm2.normalize();
         elm3.normalize();
@@ -1066,7 +1065,7 @@ namespace Deltares::Probabilistic::Test
         auto elm1 = alphaBeta(3.5, {0.8, 0.6, 0.0, 0.0});
         auto elm2 = alphaBeta(3.5, {0.8, 0.0, 0.6, 0.0});
         auto elm3 = alphaBeta(3.5, {0.8, 0.0, 0.0, 0.6});
-        auto rhoP = vector1D({1.0, 1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0, 1.0});
         elm1.normalize();
         elm2.normalize();
         elm3.normalize();
@@ -1094,7 +1093,7 @@ namespace Deltares::Probabilistic::Test
         auto elm1 = alphaBeta(3.3, {1.0, 0.0, 0.0});
         auto elm2 = alphaBeta(3.3, {0.0, 1.0, 0.0});
         auto elm3 = alphaBeta(3.5, {0.0, 0.0, 1.0});
-        auto rhoP = vector1D({1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0});
         elm1.normalize();
         elm2.normalize();
         elm3.normalize();
@@ -1103,7 +1102,7 @@ namespace Deltares::Probabilistic::Test
         double p1 = elm1.getP();
         double p2 = elm2.getP();
         double p3 = elm3.getP();
-        double betaC = StandardNormal::getUFromQ(1.0 - p1 * p2 * p3);
+        double betaC = Statistics::StandardNormal::getUFromQ(1.0 - p1 * p2 * p3);
     //
         auto ref = alphaBeta(betaC, {0.730696091970909, 0.572806816016527, 0.371450632929127}); // pre-computed
 
@@ -1127,7 +1126,7 @@ namespace Deltares::Probabilistic::Test
         auto elm1 = alphaBeta(3.3, {0.8, 0.5, 0.33});
         auto elm2 = alphaBeta(3.3, {0.6, 0.7, 0.39});
         auto elm3 = alphaBeta(3.5, {0.6, 0.5, 0.63});
-        auto rhoP = vector1D({1.0, 0.7, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 0.7, 0.0});
         elm1.normalize();
         elm2.normalize();
         elm3.normalize();
@@ -1160,7 +1159,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(-0.672801079367189, {0.955916666381498, 0.269308913244088, 0.117030065288253});
         auto elm2 = alphaBeta(-1.66664947542178, {0.941548934494231, 0.336876242987242, 2.938671066518333e-5});
-        auto rhoP = vector1D({1.0, 1.0, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 0.0});
 
         auto C = combiner.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -1176,7 +1175,7 @@ namespace Deltares::Probabilistic::Test
         auto elm1 = alphaBeta(5.399971745953011, {0.06022086662, 0.02505312816, 0.495556994, 0.2495783788, -0.1659764886,
               0.0, -0.01384083461, -0.6138122022, -0.2227598415, -0.04023371431, -0.4817341077, -0.008127376587});
         auto elm2 = alphaBeta(-7.941444487, { 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
-        auto rho_p = vector1D(nr_stochasts);
+        auto rho_p = Numeric::vector1D(nr_stochasts);
 
         for(int i = 0; i < nr_stochasts; i++)
         {
@@ -1196,7 +1195,7 @@ namespace Deltares::Probabilistic::Test
              0.250204506356159, -0.166420575897874, 0.0, -1.387784052625228e-2, -0.615454520428767,
             -0.223262061487340, -3.997037183391337e-2, -0.477587328687524, -8.197362860397718e-3});
         auto elm2 = alphaBeta(-7.94144448741598, { 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
-        auto rho_p = vector1D(nr_stochasts);
+        auto rho_p = Numeric::vector1D(nr_stochasts);
 
         for (int i = 0; i < nr_stochasts; i++)
         {
@@ -1212,7 +1211,7 @@ namespace Deltares::Probabilistic::Test
     void combinElementsTests::TestCombineTwoElementsPartialCorrelationRealCaseC()
     {
         constexpr int nr_stochasts = 2;
-        auto rho_p = vector1D(nr_stochasts);
+        auto rho_p = Numeric::vector1D(nr_stochasts);
         for (int i = 0; i < nr_stochasts; i++)
         {
             rho_p(i) = 1.0;
@@ -1319,7 +1318,7 @@ namespace Deltares::Probabilistic::Test
         auto elm2 = alphaBeta(3.5, {0.9, 0.0, 0.436});
         elm1.normalize();
         elm2.normalize();
-        auto rhoP = vector1D({1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0});
 
         auto ref = alphaBeta(3.31256284734426,
         {0.764785923688505, 0.580278077398837, 0.279964004504562}); // pre-computed with alpha() correction
@@ -1348,7 +1347,7 @@ namespace Deltares::Probabilistic::Test
         auto elm2 = alphaBeta(3.5, {0.9, 0.436});
         elm1.normalize();
         elm2.normalize();
-        auto rhoP = vector1D({1.0, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 0.0});
 
         auto ref = alphaBeta(3.31256284734426,
         {0.764785923688505, 0.64428447981301}); // pre-computed with alpha() correction
@@ -1375,7 +1374,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8});
         auto elm2 = elm1;
-        auto rhoP = vector1D({1.0, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 0.0});
 
         auto ref = alphaBeta(3.31214912249458,
         {0.634952167871736, 0.772551451047102}); // pre-computed with alpha() correction
@@ -1402,7 +1401,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
         auto elm2 = alphaBeta(3.5, {0.6, 0.0, 0.8});
-        auto rhoP = vector1D({1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0});
 
         auto ref = alphaBeta(3.31214912249458,
         {0.634952167871736, 0.546276369850913, 0.546276369850913}); // pre-computed with alpha() correction
@@ -1429,7 +1428,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8});
         auto elm2 = alphaBeta(3.8, {0.6, 0.8});
-        auto rhoP = vector1D({1.0, 0.0});
+        auto rhoP = Numeric::vector1D({1.0, 0.0});
 
         auto ref = alphaBeta(3.42801564331459,
         {0.631154181145020, 0.775657398355201}); // pre-computed with alpha() correction
@@ -1456,7 +1455,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
         auto elm2 = alphaBeta(3.8, {0.6, 0.0, 0.8});
-        auto rhoP = vector1D({1.0, 1.0, 1.0});
+        auto rhoP = Numeric::vector1D({1.0, 1.0, 1.0});
 
         auto ref = alphaBeta(3.42801564331459,
         {0.631154181145020, 0.735508613458735, 0.246315811817203}); // pre-computed with alpha() correction
@@ -1485,7 +1484,7 @@ namespace Deltares::Probabilistic::Test
         auto elm2 = alphaBeta(3.5, {0.1, 0.0, 0.7, 0.9, 0.8, 0.1, 0.9, 0.5, 0.3, 0.0});
         elm1.normalize();
         elm2.normalize();
-        auto rhoP = vector1D(10);
+        auto rhoP = Numeric::vector1D(10);
         rhoP.assign(1.0);
 
     //  Expected beta and alpha() when the alpha() correction in combineElements() is used:

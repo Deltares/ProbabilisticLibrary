@@ -34,29 +34,26 @@ namespace Deltares
             /// </summary>
             public enum class SpaceType { U, X };
 
-            using namespace Deltares::Models;
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class Sample
             {
             private:
-                SharedPointerProvider<Models::Sample>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Models::Sample>* shared = nullptr;
                 array<double>^ values = nullptr;
                 bool dirty = false;
             public:
                 Sample(std::shared_ptr<Models::Sample> sample)
                 {
-                    this->shared = new SharedPointerProvider(sample);
+                    this->shared = new Utils::Wrappers::SharedPointerProvider(sample);
                     this->SpaceType = Wrappers::SpaceType::U;
                 }
 
                 Sample(array<double>^ values)
                 {
-                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+                    std::vector<double> nativeValues = Utils::Wrappers::NativeSupport::toNative(values);
 
                     Models::Sample* sample = new Models::Sample(nativeValues);
 
-                    shared = new SharedPointerProvider(sample);
+                    shared = new Utils::Wrappers::SharedPointerProvider(sample);
                     this->values = values;
                 }
 
@@ -72,7 +69,7 @@ namespace Deltares
                     {
                         if (values == nullptr)
                         {
-                            values = NativeSupport::toManaged(shared->object->Values);
+                            values = Utils::Wrappers::NativeSupport::toManaged(shared->object->Values);
                         }
 
                         dirty = true;

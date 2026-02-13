@@ -34,16 +34,13 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class DirectionalSamplingSettings : IHasRandomSettings, IHasRunSettings, IHasStochastSetting
+            public ref class DirectionalSamplingSettings : Models::Wrappers::IHasRandomSettings, Models::Wrappers::IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::DirectionalSamplingSettings>* shared = new SharedPointerProvider<Reliability::DirectionalSamplingSettings>(new Reliability::DirectionalSamplingSettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::DirectionalSamplingSettings>* shared = new Utils::Wrappers::SharedPointerProvider<Reliability::DirectionalSamplingSettings>(new Reliability::DirectionalSamplingSettings());
 
-                Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Models::Wrappers::RandomSettings^ randomSettings = gcnew Models::Wrappers::RandomSettings();
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
 
             public:
                 DirectionalSamplingSettings() {}
@@ -92,16 +89,16 @@ namespace Deltares
                     }
                 }
 
-                virtual property Wrappers::RandomSettings^ RandomSettings
+                virtual property Models::Wrappers::RandomSettings^ RandomSettings
                 {
-                    Wrappers::RandomSettings^ get() { return randomSettings; }
-                    void set(Wrappers::RandomSettings^ value) { randomSettings = value; }
+                    Models::Wrappers::RandomSettings^ get() { return randomSettings; }
+                    void set(Models::Wrappers::RandomSettings^ value) { randomSettings = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 DirectionReliabilitySettings^ DirectionalSettings = gcnew DirectionReliabilitySettings();

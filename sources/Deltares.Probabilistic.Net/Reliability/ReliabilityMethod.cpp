@@ -29,7 +29,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            DesignPoint^ ReliabilityMethod::GetDesignPoint(Wrappers::ModelRunner^ modelRunner)
+            DesignPoint^ ReliabilityMethod::GetDesignPoint(Models::Wrappers::ModelRunner^ modelRunner)
             {
                 const std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethod = this->GetReliabilityMethod();
 

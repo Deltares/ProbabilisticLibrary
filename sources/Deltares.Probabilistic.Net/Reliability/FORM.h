@@ -31,13 +31,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public ref class FORM : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::FORM>* shared = new SharedPointerProvider(new Reliability::FORM());
+                Utils::Wrappers::SharedPointerProvider<Reliability::FORM>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::FORM());
             public:
                 FORM() {}
                 ~FORM() { this->!FORM(); }

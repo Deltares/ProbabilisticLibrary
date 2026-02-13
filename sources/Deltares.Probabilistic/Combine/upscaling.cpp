@@ -33,9 +33,10 @@
 
 using namespace Deltares::Statistics;
 
-namespace Deltares {
-    namespace Reliability {
-
+namespace Deltares
+{
+    namespace Reliability
+    {
         using namespace Deltares::Numeric;
 
         // \brief Method for combining failure probabilities over equal elements, with exceptions for correlations close to zero

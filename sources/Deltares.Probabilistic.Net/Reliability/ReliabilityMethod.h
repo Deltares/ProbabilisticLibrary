@@ -40,7 +40,7 @@ namespace Deltares
                     return nullptr;
                 };
 
-                DesignPoint^ GetDesignPoint(Wrappers::ModelRunner^ modelRunner);
+                DesignPoint^ GetDesignPoint(Models::Wrappers::ModelRunner^ modelRunner);
 
                 virtual System::Object^ GetSettings() { return nullptr; }
 

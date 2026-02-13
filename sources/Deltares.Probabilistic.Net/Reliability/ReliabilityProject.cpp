@@ -61,9 +61,9 @@ namespace Deltares
                 shared->object->runSettings = this->Settings->GetSettings();
                 shared->object->progressIndicator = this->ProgressIndicator != nullptr ? this->ProgressIndicator->GetProgressIndicator() : nullptr;
 
-                ZLambda zLambda = getZLambda();
+                Models::ZLambda zLambda = getZLambda();
 
-                shared->object->model = std::make_shared<ZModel>(zLambda);
+                shared->object->model = std::make_shared<Models::ZModel>(zLambda);
 
                 const std::shared_ptr<Reliability::DesignPoint> designPoint = shared->object->getDesignPoint();
 
@@ -76,21 +76,21 @@ namespace Deltares
                 return this->DesignPoint;
             }
 
-            ZLambda ReliabilityProject::getZLambda()
+            Models::ZLambda ReliabilityProject::getZLambda()
             {
                 ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &ReliabilityProject::invokeSample);
                 System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
                 handles->Add(handle);
 
                 System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-                ZLambda functionPointer = static_cast<ZDelegate>(callbackPtr.ToPointer());
+                Models::ZLambda functionPointer = static_cast<ZDelegate>(callbackPtr.ToPointer());
 
                 return functionPointer;
             }
 
             void ReliabilityProject::invokeSample(std::shared_ptr<Models::ModelSample> sample)
             {
-                Wrappers::ModelSample^ sampleWrapper = gcnew Wrappers::ModelSample(sample);
+                Models::Wrappers::ModelSample^ sampleWrapper = gcnew Models::Wrappers::ModelSample(sample);
                 this->ZFunction->Invoke(sampleWrapper);
             }
         }

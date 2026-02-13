@@ -30,12 +30,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class VariableStochastValue : System::IComparable<VariableStochastValue^>
             {
             private:
-                SharedPointerProvider<Statistics::VariableStochastValue>* shared = new SharedPointerProvider(new Statistics::VariableStochastValue());
+                Utils::Wrappers::SharedPointerProvider<Statistics::VariableStochastValue>* shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::VariableStochastValue());
 
             public:
                 VariableStochastValue()    {}

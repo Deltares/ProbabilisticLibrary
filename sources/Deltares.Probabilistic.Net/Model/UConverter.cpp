@@ -37,7 +37,7 @@ namespace Deltares
                 }
 
                 std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(nativeStochasts, correlationMatrix->GetCorrelationMatrix());
-                this->shared = new SharedPointerProvider(uConverter);
+                this->shared = new Utils::Wrappers::SharedPointerProvider(uConverter);
 
                 this->shared->object->initializeForRun();
             }
@@ -49,7 +49,7 @@ namespace Deltares
 
             StochastPoint^ UConverter::GetBaseStochastPoint(double beta, array<double>^ alphas, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts)
             {
-                std::shared_ptr<Models::StochastPoint> stochastPoint = shared->object->GetStochastPoint(beta, NativeSupport::toNative(alphas));
+                std::shared_ptr<Models::StochastPoint> stochastPoint = shared->object->GetStochastPoint(beta, Utils::Wrappers::NativeSupport::toNative(alphas));
 
                 return gcnew StochastPoint(stochastPoint, stochasts);
             }

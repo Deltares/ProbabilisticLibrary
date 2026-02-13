@@ -31,13 +31,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public ref class LatinHypercube : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::LatinHyperCube>* shared = new SharedPointerProvider(new Reliability::LatinHyperCube());
+                Utils::Wrappers::SharedPointerProvider<Reliability::LatinHyperCube>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::LatinHyperCube());
             public:
                 LatinHypercube() {}
                 ~LatinHypercube() { this->!LatinHypercube(); }

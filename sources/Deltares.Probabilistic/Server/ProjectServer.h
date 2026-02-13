@@ -1,4 +1,4 @@
-// Copyright (C) Stichting Deltares. All rights reserved.
+﻿// Copyright (C) Stichting Deltares. All rights reserved.
 //
 // This file is part of the Probabilistic Library.
 //
@@ -51,6 +51,12 @@ namespace Deltares
                     this->AddHandler(defaultHandler);
                 }
                 this->AddHandler(handler);
+            }
+
+            static ProjectServer& Instance()
+            {
+                static ProjectServer instance;
+                return instance;
             }
 
             int GetNewObjectId(int handlerIndex) override;

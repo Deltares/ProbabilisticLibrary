@@ -35,18 +35,15 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class NumericalBisectionSettings : IHasRunSettings, IHasStochastSetting
+            public ref class NumericalBisectionSettings : Models::Wrappers::IHasRunSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::NumericalBisectionSettings>* shared = new SharedPointerProvider(new Reliability::NumericalBisectionSettings());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Utils::Wrappers::SharedPointerProvider<Reliability::NumericalBisectionSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::NumericalBisectionSettings());
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 NumericalBisectionSettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::NumericalBisectionSettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::NumericalBisectionSettings());
                 }
 
                 ~NumericalBisectionSettings() { this->!NumericalBisectionSettings(); }
@@ -94,10 +91,10 @@ namespace Deltares
                     }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();

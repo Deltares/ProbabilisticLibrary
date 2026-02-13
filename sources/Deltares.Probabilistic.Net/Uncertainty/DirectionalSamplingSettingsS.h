@@ -34,14 +34,11 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class DirectionalSamplingSettingsS : IHasRunSettings
+            public ref class DirectionalSamplingSettingsS : Models::Wrappers::IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::DirectionalSamplingSettingsS>* shared = new SharedPointerProvider(new Uncertainty::DirectionalSamplingSettingsS());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::DirectionalSamplingSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::DirectionalSamplingSettingsS());
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 DirectionalSamplingSettingsS() {}
                 ~DirectionalSamplingSettingsS() { this->!DirectionalSamplingSettingsS(); }
@@ -95,12 +92,12 @@ namespace Deltares
 
                 System::Collections::Generic::List<Statistics::Wrappers::ProbabilityValue^>^ RequestedQuantiles = gcnew System::Collections::Generic::List<Statistics::Wrappers::ProbabilityValue^>();
 
-                Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
+                Models::Wrappers::RandomSettings^ RandomSettings = gcnew Models::Wrappers::RandomSettings();
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 std::shared_ptr<Uncertainty::DirectionalSamplingSettingsS> GetSettings()

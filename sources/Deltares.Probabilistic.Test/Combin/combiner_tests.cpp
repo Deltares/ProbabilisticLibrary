@@ -19,7 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <fstream>
 #include <gtest/gtest.h>
 #include "combiner_tests.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
@@ -30,9 +29,6 @@
 #include "../../Deltares.Probabilistic/Combine/ExcludingCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerExcludingCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/WeightedSumCombiner.h"
-
-using namespace Deltares::Reliability;
-using namespace Deltares::Statistics;
 
 namespace Deltares
 {
@@ -56,86 +52,86 @@ namespace Deltares
 
             void CombinerTest::HohenbichlerCombinerTest() const
             {
-                auto hh = std::make_unique<HohenbichlerFormCombiner>();
-                auto ref = alphaBeta(2.78586434, { 0.6145053, 0.378711, 0.5892747, 0.3629275 }); // pre-computed
-                tester(hh.get(), 3.0, ref, combineAndOr::combOr);
+                auto hh = std::make_unique<Reliability::HohenbichlerFormCombiner>();
+                auto ref = Reliability::alphaBeta(2.78586434, { 0.6145053, 0.378711, 0.5892747, 0.3629275 }); // pre-computed
+                tester(hh.get(), 3.0, ref, Reliability::combineAndOr::combOr);
             }
 
             void CombinerTest::Hohenbichler2CombinerTest() const
             {
-                auto hh = std::make_unique<HohenbichlerNumIntCombiner>();
-                auto ref = alphaBeta(2.786202, { 0.634747,  0.391671, 0.566766,  0.3499527 }); // pre-computed
-                tester(hh.get(), 3.0, ref, combineAndOr::combOr);
+                auto hh = std::make_unique<Reliability::HohenbichlerNumIntCombiner>();
+                auto ref = Reliability::alphaBeta(2.786202, { 0.634747,  0.391671, 0.566766,  0.3499527 }); // pre-computed
+                tester(hh.get(), 3.0, ref, Reliability::combineAndOr::combOr);
             }
 
             void CombinerTest::HohenbichlerCombiner1StochTest() const
             {
-                auto hh = std::make_unique<HohenbichlerFormCombiner>();
-                auto ref = alphaBeta(3.0, { 1.0 }); // pre-computed
-                tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combOr);
+                auto hh = std::make_unique<Reliability::HohenbichlerFormCombiner>();
+                auto ref = Reliability::alphaBeta(3.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), 1.0, 3.0, ref, Reliability::combineAndOr::combOr);
 
-                ref = alphaBeta(3.0, { 1.0 }); // pre-computed
-                tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combAnd);
+                ref = Reliability::alphaBeta(3.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), 1.0, 3.0, ref, Reliability::combineAndOr::combAnd);
 
-                ref = alphaBeta(2.782175, { 1.0 }); // pre-computed
-                tester1stoch(hh.get(), -1.0, 3.0, ref, combineAndOr::combOr);
+                ref = Reliability::alphaBeta(2.782175, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), -1.0, 3.0, ref, Reliability::combineAndOr::combOr);
                 ASSERT_EQ(2, hh->nonConvergedForm);
             }
 
             void CombinerTest::Hohenbichler2Combiner1StochTest() const
             {
-                auto hh = std::make_unique<HohenbichlerNumIntCombiner>();
-                auto ref = alphaBeta(3.0, { 1.0 }); // pre-computed
-                tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combOr);
+                auto hh = std::make_unique<Reliability::HohenbichlerNumIntCombiner>();
+                auto ref = Reliability::alphaBeta(3.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), 1.0, 3.0, ref, Reliability::combineAndOr::combOr);
 
-                ref = alphaBeta(3.0, { 1.0 }); // pre-computed
-                tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combAnd);
+                ref = Reliability::alphaBeta(3.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), 1.0, 3.0, ref, Reliability::combineAndOr::combAnd);
 
-                ref = alphaBeta(-40.0, { 1.0 }); // pre-computed
-                tester1stoch(hh.get(), -1.0, 3.0, ref, combineAndOr::combOr);
+                ref = Reliability::alphaBeta(-40.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), -1.0, 3.0, ref, Reliability::combineAndOr::combOr);
             }
 
             void CombinerTest::DirectionalSamplingCombinerTest() const
             {
-                auto dsCombiner = std::make_unique<DirectionalSamplingCombiner>();
-                auto ref = alphaBeta(2.82397, { 0.656456, 0.399822, 0.549539, 0.3274373 }); // pre-computed
-                tester(dsCombiner.get(), 3.0, ref, combineAndOr::combOr);
+                auto dsCombiner = std::make_unique<Reliability::DirectionalSamplingCombiner>();
+                auto ref = Reliability::alphaBeta(2.82397, { 0.656456, 0.399822, 0.549539, 0.3274373 }); // pre-computed
+                tester(dsCombiner.get(), 3.0, ref, Reliability::combineAndOr::combOr);
             }
 
             void CombinerTest::ImportanceSamplingCombinerTest() const
             {
-                auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
-                auto ref = alphaBeta(2.78826, { 0.60186, 0.371152, 0.60186, 0.371152 }); // pre-computed
-                tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combOr);
+                auto importance_sampling_combiner = std::make_unique<Reliability::ImportanceSamplingCombiner>();
+                auto ref = Reliability::alphaBeta(2.78826, { 0.60186, 0.371152, 0.60186, 0.371152 }); // pre-computed
+                tester(importance_sampling_combiner.get(), 3.0, ref, Reliability::combineAndOr::combOr);
             }
 
             void CombinerTest::ImportanceSamplingCombinerAndTest() const
             {
-                auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
-                auto ref = alphaBeta(4.13320, { 0.66929, 0.51149, 0.42482, 0.33159 }); // pre-computed
-                tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combAnd);
+                auto importance_sampling_combiner = std::make_unique<Reliability::ImportanceSamplingCombiner>();
+                auto ref = Reliability::alphaBeta(4.13320, { 0.66929, 0.51149, 0.42482, 0.33159 }); // pre-computed
+                tester(importance_sampling_combiner.get(), 3.0, ref, Reliability::combineAndOr::combAnd);
             }
 
             void CombinerTest::ImportanceSamplingCombinerInvertedTest() const
             {
-                auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
-                auto ref = alphaBeta(0.60732, { 0.632059, 0.39174, 0.571165, 0.34758 }); // pre-computed
-                tester(importance_sampling_combiner.get(), 1.0, ref, combineAndOr::combOr);
+                auto importance_sampling_combiner = std::make_unique<Reliability::ImportanceSamplingCombiner>();
+                auto ref = Reliability::alphaBeta(0.60732, { 0.632059, 0.39174, 0.571165, 0.34758 }); // pre-computed
+                tester(importance_sampling_combiner.get(), 1.0, ref, Reliability::combineAndOr::combOr);
             }
 
             void CombinerTest::WeightedSumCombinerTest() const
             {
-                auto excluding_combiner = std::make_unique<WeightedSumCombiner>();
+                auto excluding_combiner = std::make_unique<Reliability::WeightedSumCombiner>();
                 excluding_tester(excluding_combiner.get(), 1.0, 1.0);
             }
 
             void CombinerTest::HohenbichlerExcludingCombinerTest() const
             {
-                auto excluding_combiner = std::make_unique<HohenbichlerExcludingCombiner>();
+                auto excluding_combiner = std::make_unique<Reliability::HohenbichlerExcludingCombiner>();
                 excluding_tester(excluding_combiner.get(), 1.0, 1.025286);
             }
 
-            void CombinerTest::tester(Combiner* comb, const double beta, const alphaBeta& ref, const combineAndOr AndOr ) const
+            void CombinerTest::tester(Reliability::Combiner* comb, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr ) const
             {
                 constexpr int nElements = 2; // Number of elements
                 constexpr size_t nStochasts = 4;
@@ -145,20 +141,20 @@ namespace Deltares
                 const auto length = Numeric::NumericSupport::GetLength(alphaInput);
                 for (auto &x : alphaInput) { x /= length; }
 
-                std::vector< std::shared_ptr<Stochast>> stochasts;
+                std::vector< std::shared_ptr<Statistics::Stochast>> stochasts;
                 for (size_t i = 0; i <= nStochasts; i++)
                 {
-                    auto s = std::make_shared<Stochast>();
+                    auto s = std::make_shared<Statistics::Stochast>();
                     stochasts.push_back(s);
                 }
 
-                auto Elements = std::vector<std::shared_ptr<DesignPoint>>();
+                auto Elements = std::vector<std::shared_ptr<Reliability::DesignPoint>>();
                 for (size_t i = 0; i < nElements; i++)
                 {
                     addDesignPoint(beta, nStochasts, i, alphaInput, stochasts, Elements);
                 }
 
-                auto rho = std::make_shared<SelfCorrelationMatrix>();
+                auto rho = std::make_shared<Statistics::SelfCorrelationMatrix>();
                 for (size_t i = 0; i < nStochasts; i++)
                 {
                     rho->setSelfCorrelation(Elements[0]->Alphas[i]->Stochast, rhoXK[i]);
@@ -184,26 +180,26 @@ namespace Deltares
                 const auto length = Numeric::NumericSupport::GetLength(alphaInput);
                 for (auto& x : alphaInput) { x /= length; }
 
-                std::vector< std::shared_ptr<Stochast>> stochasts;
+                std::vector< std::shared_ptr<Statistics::Stochast>> stochasts;
                 for (size_t i = 0; i <= nStochasts; i++)
                 {
-                    auto s = std::make_shared<Stochast>();
+                    auto s = std::make_shared<Statistics::Stochast>();
                     stochasts.push_back(s);
                 }
 
-                auto designPoints = std::vector<std::shared_ptr<DesignPoint>>();
-                auto scenarios = std::vector<std::shared_ptr<Scenario>>();
+                auto designPoints = std::vector<std::shared_ptr<Reliability::DesignPoint>>();
+                auto scenarios = std::vector<std::shared_ptr<Statistics::Scenario>>();
 
                 for (size_t i = 0; i < nDesignPoints; i++)
                 {
                     addDesignPoint(beta, nStochasts, i, alphaInput, stochasts, designPoints);
 
-                    std::shared_ptr<Scenario> scenario = std::make_shared<Scenario>();
+                    std::shared_ptr<Statistics::Scenario> scenario = std::make_shared<Statistics::Scenario>();
                     scenario->probability = scenarioInput[i];
                     scenarios.push_back(scenario);
                 }
 
-                auto rho = std::make_shared<SelfCorrelationMatrix>();
+                auto rho = std::make_shared<Statistics::SelfCorrelationMatrix>();
                 for (size_t i = 0; i < nStochasts; i++)
                 {
                     rho->setSelfCorrelation(designPoints[0]->Alphas[i]->Stochast, rhoXK[i]);
@@ -217,13 +213,13 @@ namespace Deltares
 
             void CombinerTest::addDesignPoint(const double beta, const size_t nStochasts, size_t i, std::vector<double>& alphaInput, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts, std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>>& designPoints) const
             {
-                auto dp = std::make_shared<DesignPoint>();
+                auto dp = std::make_shared<Reliability::DesignPoint>();
                 dp->Beta = beta;
                 for (size_t j = 0; j < nStochasts; j++)
                 {
                     // swap order stochasts for 2nd element:
                     auto jj = (i == 0 ? j : nStochasts - 1 - j);
-                    auto alpha = std::make_shared<StochastPointAlpha>();
+                    auto alpha = std::make_shared<Models::StochastPointAlpha>();
                     alpha->Alpha = alphaInput[jj];
                     alpha->Stochast = stochasts[jj];
                     alpha->U = -dp->Beta * alpha->Alpha;
@@ -233,7 +229,7 @@ namespace Deltares
                 if (i == 1)
                 {
                     // add stochasts with alpha = 0 to have different sized sets of design points
-                    auto alpha = std::make_shared<StochastPointAlpha>();
+                    auto alpha = std::make_shared<Models::StochastPointAlpha>();
                     alpha->Alpha = 0.0;
                     alpha->Stochast = stochasts[nStochasts];
                     alpha->U = 0.0;
@@ -242,26 +238,26 @@ namespace Deltares
                 designPoints.push_back(dp);
             }
 
-            void CombinerTest::tester1stoch(Combiner* comb, const double rho, const double beta, const alphaBeta& ref, const combineAndOr AndOr) const
+            void CombinerTest::tester1stoch(Reliability::Combiner* comb, const double rho, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const
             {
                 constexpr int nElements = 2; // Number of elements
                 constexpr size_t nStochasts = 1;
 
-                std::vector< std::shared_ptr<Stochast>> stochasts;
+                std::vector< std::shared_ptr<Statistics::Stochast>> stochasts;
                 for (size_t i = 0; i <= nStochasts; i++)
                 {
-                    auto s = std::make_shared<Stochast>();
+                    auto s = std::make_shared<Statistics::Stochast>();
                     stochasts.push_back(s);
                 }
 
-                auto Elements = std::vector<std::shared_ptr<DesignPoint>>();
+                auto Elements = std::vector<std::shared_ptr<Reliability::DesignPoint>>();
                 for (size_t i = 0; i < nElements; i++)
                 {
-                    auto dp = std::make_shared<DesignPoint>();
+                    auto dp = std::make_shared<Reliability::DesignPoint>();
                     dp->Beta = beta;
                     for (size_t j = 0; j < nStochasts; j++)
                     {
-                        auto alpha = std::make_shared<StochastPointAlpha>();
+                        auto alpha = std::make_shared<Models::StochastPointAlpha>();
                         alpha->Alpha = 1.0;
                         alpha->Stochast = stochasts[j];
                         alpha->U = -dp->Beta * alpha->Alpha;
@@ -270,7 +266,7 @@ namespace Deltares
                     Elements.push_back(dp);
                 }
 
-                auto selfCorrelation = std::make_shared<SelfCorrelationMatrix>();
+                auto selfCorrelation = std::make_shared<Statistics::SelfCorrelationMatrix>();
                 for (size_t i = 0; i < nStochasts; i++)
                 {
                     selfCorrelation->setSelfCorrelation(Elements[0]->Alphas[i]->Stochast, rho);

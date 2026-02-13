@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #pragma once
-#include "ProxySettings.h"
 #include "../../Deltares.Probabilistic/Model/RunSettings.h"
 #include "../../Deltares.Probabilistic/Logging/Message.h"
 #include "../Utils/SharedPointerProvider.h"
@@ -32,13 +31,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models;
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class RunSettings
             {
             private:
-                SharedPointerProvider<Models::RunSettings>* shared = new SharedPointerProvider(new Models::RunSettings());
+                Utils::Wrappers::SharedPointerProvider<Models::RunSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Models::RunSettings());
 
             public:
                 RunSettings() { }

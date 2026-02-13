@@ -41,9 +41,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Reliability;
-            using namespace Deltares::Statistics::Wrappers;
-
             public delegate void ZSampleDelegate(ModelSample^);
             public delegate bool ShouldExitDelegate(bool finalCall);
             public delegate bool ShouldInvertDelegate(int stochastIndex);
@@ -52,7 +49,7 @@ namespace Deltares
             public ref class ModelRunner
             {
             private:
-                SharedPointerProvider<Models::ModelRunner>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Models::ModelRunner>* shared = nullptr;
 
                 std::shared_ptr<Models::ZModel> getZModel();
                 ZLambda getZLambda();
@@ -66,7 +63,7 @@ namespace Deltares
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 void invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples);
 
-                Deltares::Utils::Wrappers::TagRepository^ tagRepository = gcnew TagRepository();
+                Deltares::Utils::Wrappers::TagRepository^ tagRepository = gcnew Utils::Wrappers::TagRepository();
 
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
             public:
@@ -74,7 +71,7 @@ namespace Deltares
                  * \brief Constructor
                  * \remark Call Release() when done to prevent a memory leak
                  */
-                ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator);
+                ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts, Statistics::Wrappers::CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator);
                 ~ModelRunner() { this->!ModelRunner(); }
                 !ModelRunner()
                 {
@@ -96,7 +93,7 @@ namespace Deltares
                     shared->object->releaseCallBacks();
                 }
 
-                System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();
+                System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
 
                 virtual void CalcSamples(System::Collections::Generic::IList<ModelSample^>^ samples);
                 virtual void CalcSample(ModelSample^ sample);
@@ -158,7 +155,7 @@ namespace Deltares
 
                     std::vector<double> zValues = shared->object->getZValues(nativeSamples);
 
-                    return NativeSupport::toManaged(zValues);
+                    return Utils::Wrappers::NativeSupport::toManaged(zValues);
                 }
 
                 RunSettings^ Settings = gcnew RunSettings();

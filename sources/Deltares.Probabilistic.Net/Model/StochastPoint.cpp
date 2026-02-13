@@ -32,7 +32,7 @@ namespace Deltares
         {
             void StochastPoint::setStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts)
             {
-                shared = new SharedPointerProvider(stochastPoint);
+                shared = new Utils::Wrappers::SharedPointerProvider(stochastPoint);
 
                 std::map<std::shared_ptr<Statistics::Stochast>, int> stochastMapping;
 
