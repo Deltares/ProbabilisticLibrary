@@ -24,53 +24,93 @@
 
 using namespace Deltares::Statistics;
 
+/// <summary>
+/// wrapper for getUFromQ
+/// </summary>
+/// <param name="q"> the q input value </param>
+/// <param name="error_indication"> extra output for indication of an error situation </param>
+/// <returns> the beta value </returns>
 extern "C"
-void betafromqc(double * q, double * beta, tError * ierr)
+double betaFromQ(const double q, tError* error_indication)
 {
+    double beta = 0.0;
     try
     {
-        *beta = StandardNormal::getUFromQ(*q);
-        ierr->errorCode = 0;
+        beta = StandardNormal::getUFromQ(q);
+        error_indication->errorCode = 0;
     }
     catch (const std::exception& e)
     {
-        std::string s = e.what();
-        fillErrorMessage(*ierr, s);
+        const std::string s = e.what();
+        fillErrorMessage(*error_indication, s);
     }
+    return beta;
 }
 
+/// <summary>
+/// wrapper for getQFromU
+/// </summary>
+/// <param name="beta"> the beta input value </param>
+/// <returns> the q value </returns>
 extern "C"
-double qfrombeta(double * beta)
+double qFromBeta(const double beta)
 {
-    return StandardNormal::getQFromU(*beta);
+    return StandardNormal::getQFromU(beta);
 }
 
+/// <summary>
+/// wrapper for getPFromU
+/// </summary>
+/// <param name="beta"> the beta input value </param>
+/// <returns> the p value </returns>
 extern "C"
-double pfrombeta(double* beta)
+double pFromBeta(const double beta)
 {
-    return StandardNormal::getPFromU(*beta);
+    return StandardNormal::getPFromU(beta);
 }
 
+/// <summary>
+/// wrapper for getPQFromU
+/// </summary>
+/// <param name="beta"> the beta input value </param>
+/// <param name="p"> the p output value </param>
+/// <param name="q"> the q output value </param>
+/// <returns> the p value </returns>
 extern "C"
-void pqfrombeta(double* beta, double* p, double* q)
+void pqFromBeta(const double beta, double* p, double* q)
 {
-    StandardNormal::getPQfromU(*beta, *p, *q);
+    StandardNormal::getPQfromU(beta, *p, *q);
 }
 
+/// <summary>
+/// wrapper for getTFromU
+/// </summary>
+/// <param name="beta"> the beta input value </param>
+/// <returns> the return time </returns>
 extern "C"
-void returntimefrombeta(double *beta, double *returnTime)
+double returnTimeFromBeta(const double beta)
 {
-    *returnTime =StandardNormal::getTFromU(*beta);
+    return StandardNormal::getTFromU(beta);
 }
 
+/// <summary>
+/// wrapper for getFreqFromU
+/// </summary>
+/// <param name="beta"> the beta input value </param>
+/// <returns> the frequency </returns>
 extern "C"
-void freqfrombeta(double *beta, double *freq)
+double freqFromBeta(const double beta)
 {
-    *freq = StandardNormal::getFreqFromU(*beta);
+    return StandardNormal::getFreqFromU(beta);
 }
 
+/// <summary>
+/// wrapper for getLogQFromU
+/// </summary>
+/// <param name="beta"> the beta input value </param>
+/// <returns> the log(q) </returns>
 extern "C"
-void logqfrombeta(double *beta, double*logQ)
+double logQFromBeta(const double beta)
 {
-    *logQ = StandardNormal::getLogQFromU(*beta);
+    return StandardNormal::getLogQFromU(beta);
 }
