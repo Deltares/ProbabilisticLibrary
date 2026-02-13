@@ -19,6 +19,10 @@ endif()
 cmake_policy(SET CMP0079 NEW)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+# Generate and copy configuration for language servers
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if(WIN32)
     add_definitions(-D_USE_MATH_DEFINES)
 
