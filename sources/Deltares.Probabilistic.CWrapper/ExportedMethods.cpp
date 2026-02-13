@@ -34,105 +34,107 @@
 #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
 #endif
 
+using namespace Deltares::Server;
+
 extern "C" DLL_PUBLIC void AddLibrary(const char* library)
 {
     std::string libraryStr(library);
 
     if (libraryStr.ends_with(".exe"))
     {
-        std::shared_ptr<Deltares::Server::ExternalServerHandler> externalHandler = std::make_shared<Deltares::Server::ExternalServerHandler>(libraryStr);
-        Deltares::Server::ProjectServer::Instance().AddHandler(externalHandler);
+        std::shared_ptr<ExternalServerHandler> externalHandler = std::make_shared<ExternalServerHandler>(libraryStr);
+        ProjectServer::Instance().AddHandler(externalHandler);
     }
     else if (libraryStr.ends_with(".dll"))
     {
-        std::shared_ptr<Deltares::Server::ExternalLibraryHandler> externalHandler = std::make_shared<Deltares::Server::ExternalLibraryHandler>(libraryStr);
+        std::shared_ptr<ExternalLibraryHandler> externalHandler = std::make_shared<ExternalLibraryHandler>(libraryStr);
         externalHandler->Initialize();
-        Deltares::Server::ProjectServer::Instance().AddHandler(externalHandler);
+        ProjectServer::Instance().AddHandler(externalHandler);
     }
 }
 
 extern "C" DLL_PUBLIC int Create(const char* type)
 {
     std::string typeStr = type;
-    int id = Deltares::Server::ProjectServer::Instance().Create(typeStr);
+    int id = ProjectServer::Instance().Create(typeStr);
     return id;
 }
 
 extern "C" DLL_PUBLIC void Destroy(int id)
 {
-    Deltares::Server::ProjectServer::Instance().Destroy(id);
+    ProjectServer::Instance().Destroy(id);
 }
 
 extern "C" DLL_PUBLIC void Exit()
 {
-    Deltares::Server::ProjectServer::Instance().Exit();
+    ProjectServer::Instance().Exit();
 }
 
 extern "C" DLL_PUBLIC double GetValue(int id, const char* property)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetValue(id, propertyStr);
+    return ProjectServer::Instance().GetValue(id, propertyStr);
 }
 
 extern "C" DLL_PUBLIC void SetValue(int id, const char* property, double value)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetValue(id, propertyStr, value);
+    ProjectServer::Instance().SetValue(id, propertyStr, value);
 }
 
 extern "C" DLL_PUBLIC int GetIntValue(int id, const char* property)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetIntValue(id, propertyStr);
+    return ProjectServer::Instance().GetIntValue(id, propertyStr);
 }
 
 extern "C" DLL_PUBLIC void SetIntValue(int id, const char* property, int value)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetIntValue(id, propertyStr, value);
+    ProjectServer::Instance().SetIntValue(id, propertyStr, value);
 }
 
 extern "C" DLL_PUBLIC int GetIdValue(int id, const char* property)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetIdValue(id, propertyStr);
+    return ProjectServer::Instance().GetIdValue(id, propertyStr);
 }
 
 extern "C" DLL_PUBLIC double GetIntArgValue(int id1, int id2, const char* property)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetIntArgValue(id1, id2, propertyStr);
+    return ProjectServer::Instance().GetIntArgValue(id1, id2, propertyStr);
 }
 
 extern "C" DLL_PUBLIC void SetIntArgValue(int id1, int id2, const char* property, double value)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetIntArgValue(id1, id2, propertyStr, value);
+    ProjectServer::Instance().SetIntArgValue(id1, id2, propertyStr, value);
 }
 
 extern "C" DLL_PUBLIC bool GetBoolValue(int id, const char* property)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetBoolValue(id, propertyStr);
+    return ProjectServer::Instance().GetBoolValue(id, propertyStr);
 }
 
 extern "C" DLL_PUBLIC void SetBoolValue(int id, const char* property, bool value)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetBoolValue(id, propertyStr, value);
+    ProjectServer::Instance().SetBoolValue(id, propertyStr, value);
 }
 
 extern "C" DLL_PUBLIC size_t GetStringLength(int id, const char* property)
 {
     std::string propertyStr(property);
-    std::string result = Deltares::Server::ProjectServer::Instance().GetStringValue(id, propertyStr);
+    std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
     return result.length();
 }
 
 extern "C" DLL_PUBLIC void GetStringValue(int id, const char* property, char* result_c, size_t size)
 {
     std::string propertyStr(property);
-    std::string result = Deltares::Server::ProjectServer::Instance().GetStringValue(id, propertyStr);
+    std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
 
     copyStringToCharPointer(result, result_c, size);
 }
@@ -141,98 +143,98 @@ extern "C" DLL_PUBLIC void SetStringValue(int id, const char* property, const ch
 {
     std::string propertyStr(property);
     std::string valueStr(value);
-    Deltares::Server::ProjectServer::Instance().SetStringValue(id, propertyStr, valueStr);
+    ProjectServer::Instance().SetStringValue(id, propertyStr, valueStr);
 }
 
 extern "C" DLL_PUBLIC void FillArrayValue(int id, const char* property, double* values, int size)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().GetArrayValue(id, propertyStr, values, size);
+    ProjectServer::Instance().GetArrayValue(id, propertyStr, values, size);
 }
 
 extern "C" DLL_PUBLIC void SetArrayValue(int id, const char* property, double* values, int size)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetArrayValue(id, propertyStr, values, size);
+    ProjectServer::Instance().SetArrayValue(id, propertyStr, values, size);
 }
 
 extern "C" DLL_PUBLIC void SetArrayIntValue(int id, const char* property, int* values, int size)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetArrayIntValue(id, propertyStr, values, size);
+    ProjectServer::Instance().SetArrayIntValue(id, propertyStr, values, size);
 }
 
 extern "C"  DLL_PUBLIC double GetArgValue(int id, const char* property, double argument)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetArgValue(id, propertyStr, argument);
+    return ProjectServer::Instance().GetArgValue(id, propertyStr, argument);
 }
 
 extern "C" DLL_PUBLIC void SetArgValue(int id, const char* property, double argument, double value)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetArgValue(id, propertyStr, argument, value);
+    ProjectServer::Instance().SetArgValue(id, propertyStr, argument, value);
 }
 
 extern "C"  DLL_PUBLIC void GetArgValues(int id, const char* property, double* values, int size, double* outputValues)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().GetArgValues(id, propertyStr, values, size, outputValues);
+    ProjectServer::Instance().GetArgValues(id, propertyStr, values, size, outputValues);
 }
 
 extern "C"  DLL_PUBLIC double GetIndexedValue(int id, const char* property, int index)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetIndexedValue(id, propertyStr, index);
+    return ProjectServer::Instance().GetIndexedValue(id, propertyStr, index);
 }
 
 extern "C" DLL_PUBLIC void SetIndexedValue(int id, const char* property, int index, double value)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetIndexedValue(id, propertyStr, index, value);
+    ProjectServer::Instance().SetIndexedValue(id, propertyStr, index, value);
 }
 
 extern "C" DLL_PUBLIC double GetIndexedIndexedValue(int id, const char* property, int index1, int index2)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetIndexedIndexedValue(id, propertyStr, index1, index2);
+    return ProjectServer::Instance().GetIndexedIndexedValue(id, propertyStr, index1, index2);
 }
 
 extern "C" DLL_PUBLIC void SetIndexedIndexedValue(int id, const char* property, int index1, int index2, double value)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetIndexedIndexedValue(id, propertyStr, index1, index2, value);
+    ProjectServer::Instance().SetIndexedIndexedValue(id, propertyStr, index1, index2, value);
 }
 
 extern "C" DLL_PUBLIC void SetIndexedIndexedIntValue(int id, const char* property, int index1, int index2, int value)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetIndexedIndexedIntValue(id, propertyStr, index1, index2, value);
+    ProjectServer::Instance().SetIndexedIndexedIntValue(id, propertyStr, index1, index2, value);
 }
 
 extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, const char* property, int index)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetIndexedIntValue(id, propertyStr, index);
+    return ProjectServer::Instance().GetIndexedIntValue(id, propertyStr, index);
 }
 
 extern "C" DLL_PUBLIC int GetIndexedIdValue(int id, const char* property, int index)
 {
     std::string propertyStr(property);
-    return Deltares::Server::ProjectServer::Instance().GetIndexedIdValue(id, propertyStr, index);
+    return ProjectServer::Instance().GetIndexedIdValue(id, propertyStr, index);
 }
 
 extern "C" DLL_PUBLIC size_t GetIndexedStringLength(int id, const char* property, int index)
 {
     std::string propertyStr(property);
-    std::string result = Deltares::Server::ProjectServer::Instance().GetIndexedStringValue(id, propertyStr, index);
+    std::string result = ProjectServer::Instance().GetIndexedStringValue(id, propertyStr, index);
     return result.length();
 }
 
 extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, const char* property, int index, char* result_c, size_t size)
 {
     std::string propertyStr(property);
-    std::string result = Deltares::Server::ProjectServer::Instance().GetIndexedStringValue(id, propertyStr, index);
+    std::string result = ProjectServer::Instance().GetIndexedStringValue(id, propertyStr, index);
 
     copyStringToCharPointer(result, result_c, size);
 }
@@ -240,43 +242,43 @@ extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, const char* property, i
 extern "C" DLL_PUBLIC void SetCallBack(int id, const char* property, Deltares::Models::ZValuesCallBack callBack)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetCallBack(id, propertyStr, callBack);
+    ProjectServer::Instance().SetCallBack(id, propertyStr, callBack);
 }
 
 extern "C" DLL_PUBLIC void SetMultipleCallBack(int id, const char* property, Deltares::Models::ZValuesMultipleCallBack callBack)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetMultipleCallBack(id, propertyStr, callBack);
+    ProjectServer::Instance().SetMultipleCallBack(id, propertyStr, callBack);
 }
 
 extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, const char* property, Deltares::Models::EmptyCallBack callBack)
 {
     std::string propertyStr(property);
-    Deltares::Server::ProjectServer::Instance().SetEmptyCallBack(id, propertyStr, callBack);
+    ProjectServer::Instance().SetEmptyCallBack(id, propertyStr, callBack);
 }
 
 extern "C" DLL_PUBLIC void Execute(int id, const char* method)
 {
     try
     {
-        Deltares::Server::ProjectServer::Instance().last_exception = "";
+        ProjectServer::Instance().last_exception = "";
         std::string methodStr(method);
-        Deltares::Server::ProjectServer::Instance().Execute(id, methodStr);
+        ProjectServer::Instance().Execute(id, methodStr);
     }
     catch (const std::exception& e)
     {
-        Deltares::Server::ProjectServer::Instance().last_exception = std::string(e.what());
+        ProjectServer::Instance().last_exception = std::string(e.what());
     }
 }
 
 extern "C" DLL_PUBLIC size_t GetExceptionLength()
 {
-    return Deltares::Server::ProjectServer::Instance().last_exception.length();
+    return ProjectServer::Instance().last_exception.length();
 }
 
 extern "C" DLL_PUBLIC void GetException(char* result_c, size_t size)
 {
-    copyStringToCharPointer(Deltares::Server::ProjectServer::Instance().last_exception, result_c, size);
+    copyStringToCharPointer(ProjectServer::Instance().last_exception, result_c, size);
 }
 
 
