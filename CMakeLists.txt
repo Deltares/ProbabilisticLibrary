@@ -1,6 +1,6 @@
 # set minimum cmake version
 
-option(WITHOPENMP "use OpenMP on/off" ON)
+option(SONARANALYSIS "settings for sonar analyseis on/off" OFF)
 
 option(CODECOVCLANG "CodeCoverage from clang on/off" OFF)
 
@@ -36,7 +36,7 @@ endif(WIN32)
 
 set_property(GLOBAL PROPERTY WITH_CODECOV ${CODECOV})
 set_property(GLOBAL PROPERTY WITH_CODECOV2 ${CODECOVCLANG})
-set_property(GLOBAL PROPERTY WITH_OPENMP ${WITHOPENMP})
+set_property(GLOBAL PROPERTY FOR_SONAR ${SONARANALYSIS})
 if (UNIX)
     if (CODECOV)
         include(Dart)
