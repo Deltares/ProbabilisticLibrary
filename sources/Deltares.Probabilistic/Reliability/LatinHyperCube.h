@@ -41,7 +41,7 @@ namespace Deltares
         private:
             std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner>& modelRunner, double qRange);
             double ReportConvergence(std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nMaal) const;
-            std::vector<std::shared_ptr<Sample>> CreateAllSamples(int nStochasts);
+            std::vector<std::shared_ptr<Models::Sample>> CreateAllSamples(int nStochasts);
         };
     }
 }

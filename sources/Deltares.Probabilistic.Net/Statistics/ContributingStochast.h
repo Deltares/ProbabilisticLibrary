@@ -31,23 +31,21 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class ContributingStochast
             {
             private:
-                SharedPointerProvider<Statistics::ContributingStochast>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Statistics::ContributingStochast>* shared = nullptr;
                 BaseStochast^ stochast = nullptr;
 
             public:
                 ContributingStochast()
                 {
-                    shared = new SharedPointerProvider(new Statistics::ContributingStochast());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::ContributingStochast());
                 }
 
                 ContributingStochast(std::shared_ptr<Statistics::ContributingStochast> contributingStochast)
                 {
-                    shared = new SharedPointerProvider(contributingStochast);
+                    shared = new Utils::Wrappers::SharedPointerProvider(contributingStochast);
                 }
 
                 ~ContributingStochast() { this->!ContributingStochast(); }

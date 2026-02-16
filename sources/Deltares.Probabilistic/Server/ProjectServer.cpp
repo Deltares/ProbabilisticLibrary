@@ -218,17 +218,17 @@ namespace Deltares
             return objectId;
         }
 
-        void ProjectServer::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
+        void ProjectServer::SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack)
         {
             handlersTable[id]->SetCallBack(id, property_, callBack);
         }
 
-        void ProjectServer::SetMultipleCallBack(int id, std::string property_, ZValuesMultipleCallBack callBack)
+        void ProjectServer::SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack)
         {
             handlersTable[id]->SetMultipleCallBack(id, property_, callBack);
         }
 
-        void ProjectServer::SetEmptyCallBack(int id, std::string property_, EmptyCallBack callBack)
+        void ProjectServer::SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack)
         {
             handlersTable[id]->SetEmptyCallBack(id, property_, callBack);
         }

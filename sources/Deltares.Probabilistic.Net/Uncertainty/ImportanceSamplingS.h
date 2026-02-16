@@ -34,7 +34,7 @@ namespace Deltares
             public ref class ImportanceSamplingS : public UncertaintyMethod
             {
             private:
-                SharedPointerProvider<Uncertainty::ImportanceSamplingS>* shared = new SharedPointerProvider(new Uncertainty::ImportanceSamplingS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::ImportanceSamplingS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::ImportanceSamplingS());
             public:
                 ImportanceSamplingS() { }
                 ~ImportanceSamplingS() { this->!ImportanceSamplingS(); }

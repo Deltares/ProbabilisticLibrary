@@ -105,13 +105,13 @@ namespace Deltares::Probabilistic::Test
 
         Numeric::Matrix A = testutils::convert1dmatrix(a_values, 3, 3, false);
 
-        vector1D b = vector1D({ 3.0, 0.0, 3.0 });
+        Numeric::vector1D b = Numeric::vector1D({ 3.0, 0.0, 3.0 });
 
         Numeric::QRMatrix QR = A.qr_decompose();
 
-        vector1D x = QR.solve(b);
+        Numeric::vector1D x = QR.solve(b);
 
-        vector1D x_expected = vector1D({ 1.0, 1.0, 1.0 });
+        Numeric::vector1D x_expected = Numeric::vector1D({ 1.0, 1.0, 1.0 });
 
         for (size_t i = 0; i < x_expected.size(); i++)
         {
@@ -134,13 +134,13 @@ namespace Deltares::Probabilistic::Test
 
         Numeric::Matrix A = testutils::convert1dmatrix(a_values, 3, 2, false);
 
-        vector1D b = vector1D({ -2.0, 4.0, 1.0 });
+        Numeric::vector1D b = Numeric::vector1D({ -2.0, 4.0, 1.0 });
 
         Numeric::QRMatrix QR = A.qr_decompose();
 
-        vector1D x = QR.solve(b);
+        Numeric::vector1D x = QR.solve(b);
 
-        vector1D x_expected = vector1D({ 1.111, -0.888 });
+        Numeric::vector1D x_expected = Numeric::vector1D({ 1.111, -0.888 });
 
         for (size_t i = 0; i < x_expected.size(); i++)
         {

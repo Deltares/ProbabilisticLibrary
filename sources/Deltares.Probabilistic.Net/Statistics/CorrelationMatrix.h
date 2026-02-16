@@ -30,23 +30,21 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class CorrelationMatrix
             {
             private:
-                SharedPointerProvider<Statistics::CorrelationMatrix>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Statistics::CorrelationMatrix>* shared = nullptr;
                 System::Collections::Generic::List<Stochast^>^ stochasts = gcnew System::Collections::Generic::List<Stochast^>();
 
             public:
                 CorrelationMatrix()
                 {
-                    shared = new SharedPointerProvider(new Statistics::CorrelationMatrix(false));
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::CorrelationMatrix(false));
                 }
 
                 CorrelationMatrix(std::shared_ptr<Statistics::CorrelationMatrix> nativeCorrelationMatrix)
                 {
-                    shared = new SharedPointerProvider(nativeCorrelationMatrix);
+                    shared = new Utils::Wrappers::SharedPointerProvider(nativeCorrelationMatrix);
                 }
 
                 ~CorrelationMatrix() { this->!CorrelationMatrix(); }

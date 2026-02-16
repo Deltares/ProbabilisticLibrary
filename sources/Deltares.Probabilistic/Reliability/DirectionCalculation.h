@@ -41,11 +41,11 @@ namespace Deltares::Reliability
     class DirectionCalculation
     {
     public:
-        Sample& uDirection;
+        Models::Sample& uDirection;
         const ZGetter& model;
         const DirectionCalculationSettings& settings;
 
-        DirectionCalculation(const ZGetter& model, Sample& uDirection, const DirectionCalculationSettings& settings)
+        DirectionCalculation(const ZGetter& model, Models::Sample& uDirection, const DirectionCalculationSettings& settings)
             : uDirection(uDirection), model(model), settings(settings)
         {
         }

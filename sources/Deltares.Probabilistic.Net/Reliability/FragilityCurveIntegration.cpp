@@ -29,7 +29,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            DesignPoint^ FragilityCurveIntegration::GetDesignPoint(Stochast^ stochast, Stochast^ fragilityCurve, Stochast^ normalizingFragilityCurve)
+            DesignPoint^ FragilityCurveIntegration::GetDesignPoint(Statistics::Wrappers::Stochast^ stochast, Statistics::Wrappers::Stochast^ fragilityCurve, Statistics::Wrappers::Stochast^ normalizingFragilityCurve)
             {
                 std::shared_ptr<Statistics::Stochast> nativeStochast = stochast->GetStochast();
                 std::shared_ptr<Statistics::Stochast> nativeFragilityCurve = fragilityCurve->GetStochast();
@@ -62,7 +62,7 @@ namespace Deltares
             {
                 System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ referencedStochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
 
-                if (stochast->DistributionType == DistributionType::CDFCurve)
+                if (stochast->DistributionType == Statistics::Wrappers::DistributionType::CDFCurve)
                 {
                     for (int i = 0; i < stochast->FragilityValues->Count; i++)
                     {

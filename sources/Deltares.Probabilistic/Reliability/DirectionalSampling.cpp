@@ -34,7 +34,7 @@ namespace Deltares
         using namespace Statistics;
         using namespace Numeric;
 
-        std::shared_ptr<DesignPoint> DirectionalSampling::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
+        std::shared_ptr<DesignPoint> DirectionalSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
             double pf = 0;
@@ -44,18 +44,18 @@ namespace Deltares
             int parSamples = 0;
 
             std::vector<double> betaValues;
-            std::vector<std::shared_ptr<Sample>> samples;
+            std::vector<std::shared_ptr<Models::Sample>> samples;
 
             modelRunner->updateStochastSettings(Settings->StochastSet);
 
             std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-            auto randomSampleGenerator = RandomSampleGenerator();
+            auto randomSampleGenerator = Models::RandomSampleGenerator();
             randomSampleGenerator.Settings = Settings->randomSettings;
             randomSampleGenerator.Settings->StochastSet = Settings->StochastSet;
             randomSampleGenerator.initialize();
 
-            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
+            std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(nStochasts);
             double z0 = modelRunner->getZValue(zeroSample);
             double z0Fac = getZFactor(z0);
 
@@ -119,12 +119,12 @@ namespace Deltares
                     continue;
                 }
 
-                std::shared_ptr<Sample> u = samples[directionIndex % chunkSize];
+                std::shared_ptr<Models::Sample> u = samples[directionIndex % chunkSize];
 
                 double betaDirection = std::abs(betaValues[directionIndex % chunkSize]);
 
                 // get the sample at the limit state
-                std::shared_ptr<Sample> uSurface = u->getSampleAtBeta(betaDirection);
+                std::shared_ptr<Models::Sample> uSurface = u->getSampleAtBeta(betaDirection);
 
                 // calculate failure probability
                 if (betaDirection >= 0 && betaDirection < StandardNormal::BetaMax * nStochasts)
@@ -213,7 +213,7 @@ namespace Deltares
         }
 
         std::vector<double> DirectionalSampling::getDirectionBetas(Models::ModelRunner& modelRunner,
-            const std::vector<std::shared_ptr<Sample>>& samples, double z0, double threshold)
+            const std::vector<std::shared_ptr<Models::Sample>>& samples, double z0, double threshold)
         {
             const size_t nSamples = samples.size();
             auto betaValues = std::vector<double>(nSamples);

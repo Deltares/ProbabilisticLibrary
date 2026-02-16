@@ -30,15 +30,13 @@ namespace Deltares
 {
     namespace Reliability
     {
-        using namespace Deltares::Models;
-
         class StochastSettingsSet
         {
         private:
-            void loadStochastPoint(std::shared_ptr<StochastPoint> stochastPoint);
+            void loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
         public:
             StochastSettingsSet() {}
-            StochastSettingsSet(std::shared_ptr<StochastPoint> stochastPoint)
+            explicit StochastSettingsSet(std::shared_ptr<Models::StochastPoint> stochastPoint)
             {
                 loadStochastPoint(stochastPoint);
             }
@@ -55,8 +53,8 @@ namespace Deltares
                 return static_cast<int>(this->VaryingStochastSettings.size());
             }
 
-            std::shared_ptr<Sample> getStartPoint();
-            void setStartPoint(std::shared_ptr<Sample> startPoint);
+            std::shared_ptr<Models::Sample> getStartPoint();
+            void setStartPoint(std::shared_ptr<Models::Sample> startPoint);
 
             bool AreStartValuesCorrelated = true;
         };

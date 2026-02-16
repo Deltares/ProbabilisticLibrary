@@ -36,7 +36,7 @@ namespace Deltares::Reliability
         explicit DirectionReliability(std::shared_ptr<DirectionSectionsCalculation> sectionsCalc) : sectionsCalc(std::move(sectionsCalc)) {}
         std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        virtual double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0);
+        virtual double getBeta(Models::ModelRunner& modelRunner, Models::Sample& directionSample, double z0);
         virtual double getBeta(Models::ModelRunner& modelRunner, double z0) { return 0.0; }
         bool isValid() override { return Settings->isValid(); }
     protected:

@@ -43,13 +43,13 @@ namespace Deltares
             }
 
         private:
-            std::vector<std::shared_ptr<Sample>> getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, bool initial);
-            std::vector<std::shared_ptr<Sample>> getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples, double z0Fac);
-            std::shared_ptr<Sample> getMarkovChainSample(std::shared_ptr<Sample> oldSample, std::shared_ptr<ModelRunner> modelRunner, double maxZ, double z0Fac);
-            std::vector<std::shared_ptr<Sample>> getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples);
+            std::vector<std::shared_ptr<Models::Sample>> getInitialSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial);
+            std::vector<std::shared_ptr<Models::Sample>> getMarkovChainSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Models::Sample>>& selectedSamples, double z0Fac);
+            std::shared_ptr<Models::Sample> getMarkovChainSample(std::shared_ptr<Models::Sample> oldSample, std::shared_ptr<Models::ModelRunner> modelRunner, double maxZ, double z0Fac);
+            std::vector<std::shared_ptr<Models::Sample>> getAdaptiveConditionalSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Models::Sample>>& selectedSamples);
 
-            std::vector<std::shared_ptr<Sample>> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<std::shared_ptr<Sample>> selectedSamples);
-            std::vector<std::shared_ptr<Sample>> selectSamples(double z0Fac, std::vector<std::shared_ptr<Sample>> performedSamples);
+            std::vector<std::shared_ptr<Models::Sample>> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<std::shared_ptr<Models::Sample>> selectedSamples);
+            std::vector<std::shared_ptr<Models::Sample>> selectSamples(double z0Fac, std::vector<std::shared_ptr<Models::Sample>> performedSamples);
             static double getConvergence(double pf, int samples);
             bool isConverged(int sampleIndex, double convergence) const;
 
@@ -58,7 +58,7 @@ namespace Deltares
             int rejectedSamples = 0;
             int acceptedSamples = 0;
             double acceptanceRate = 0.0;
-            RandomSampleGenerator randomSampleGenerator = RandomSampleGenerator();
+            Models::RandomSampleGenerator randomSampleGenerator = Models::RandomSampleGenerator();
         };
     }
 }
