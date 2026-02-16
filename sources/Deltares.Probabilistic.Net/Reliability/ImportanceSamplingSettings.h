@@ -35,25 +35,22 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class ImportanceSamplingSettings : IHasRunSettings, IHasRandomSettings, IHasStochastSetting
+            public ref class ImportanceSamplingSettings : Models::Wrappers::IHasRunSettings, Models::Wrappers::IHasRandomSettings, IHasStochastSetting
             {
             private:
-                SharedPointerProvider<Reliability::ImportanceSamplingSettings>* shared = nullptr;
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
-                Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
+                Utils::Wrappers::SharedPointerProvider<Reliability::ImportanceSamplingSettings>* shared = nullptr;
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
+                Models::Wrappers::RandomSettings^ randomSettings = gcnew Models::Wrappers::RandomSettings();
                 Wrappers::StartPointCalculatorSettings^ startPointSettings = gcnew Wrappers::StartPointCalculatorSettings();
             public:
                 ImportanceSamplingSettings()
                 {
-                    shared = new SharedPointerProvider(new Reliability::ImportanceSamplingSettings());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::ImportanceSamplingSettings());
                     shared->object->randomSettings = RandomSettings->GetSettings();
                 }
                 ImportanceSamplingSettings(std::shared_ptr<Reliability::ImportanceSamplingSettings> settings)
                 {
-                    shared = new SharedPointerProvider(settings);
+                    shared = new Utils::Wrappers::SharedPointerProvider(settings);
                 }
                 ~ImportanceSamplingSettings() { this->!ImportanceSamplingSettings(); }
                 !ImportanceSamplingSettings() { delete shared; }
@@ -123,16 +120,16 @@ namespace Deltares
                     void set(double value) { shared->object->VarianceFactor = value; }
                 }
 
-                virtual property Wrappers::RandomSettings^ RandomSettings
+                virtual property Models::Wrappers::RandomSettings^ RandomSettings
                 {
-                    Wrappers::RandomSettings^ get() { return randomSettings; }
-                    void set(Wrappers::RandomSettings^ value) { randomSettings = value; }
+                    Models::Wrappers::RandomSettings^ get() { return randomSettings; }
+                    void set(Models::Wrappers::RandomSettings^ value) { randomSettings = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();

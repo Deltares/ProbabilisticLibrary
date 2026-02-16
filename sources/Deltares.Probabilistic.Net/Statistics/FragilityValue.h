@@ -31,22 +31,20 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class FragilityValue : System::IComparable<FragilityValue^>
             {
             private:
-                SharedPointerProvider<Statistics::FragilityValue>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Statistics::FragilityValue>* shared = nullptr;
                 Models::Wrappers::BaseStochastPoint^ designPoint = nullptr;
             public:
                 FragilityValue()
                 {
-                    shared = new SharedPointerProvider(new Statistics::FragilityValue());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::FragilityValue());
                 }
 
                 FragilityValue(std::shared_ptr<Statistics::FragilityValue> fragilityValue)
                 {
-                    shared = new SharedPointerProvider(fragilityValue);
+                    shared = new Utils::Wrappers::SharedPointerProvider(fragilityValue);
                 }
 
                 ~FragilityValue() { this->!FragilityValue(); }

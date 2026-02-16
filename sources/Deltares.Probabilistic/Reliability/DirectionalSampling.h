@@ -32,7 +32,7 @@ namespace Deltares::Reliability
     private:
         static double getConvergence(const double pf, const double sumWeights, const double sumWeights2, const int nDirections);
         std::vector<double> getDirectionBetas(Models::ModelRunner& modelRunner,
-            const std::vector<std::shared_ptr<Sample>>& samples, double z0, double threshold);
+            const std::vector<std::shared_ptr<Models::Sample>>& samples, double z0, double threshold);
         std::unordered_map<int, double> previousResults;
 
     public:

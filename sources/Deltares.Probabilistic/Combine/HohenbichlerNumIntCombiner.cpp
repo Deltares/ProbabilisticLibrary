@@ -29,8 +29,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-
-        std::shared_ptr<DesignPoint> HohenbichlerNumIntCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
+        std::shared_ptr<DesignPoint> HohenbichlerNumIntCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress)
         {
             if (designPoints.empty()) throw probLibException("no design point in combiner");
             if (designPoints.size() == 1) return designPoints[0];

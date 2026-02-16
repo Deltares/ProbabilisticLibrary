@@ -25,6 +25,7 @@
 #include "../Deltares.Probabilistic/Combine/upscaling.h"
 
 using namespace Deltares::Reliability;
+using namespace Deltares::Numeric;
 
 struct betaAlphaCF
 {
@@ -91,7 +92,7 @@ void combineMultipleElementsGeneral(const multipleElements* elements, betaAlphaC
         dp->Beta = elements->designPoints[i].beta;
         for (int j = 0; j < number_of_stochasts; j++)
         {
-            auto alphaj = std::make_shared<StochastPointAlpha>();
+            auto alphaj = std::make_shared<Deltares::Models::StochastPointAlpha>();
             alphaj->Alpha = elements->designPoints[i].alpha[j*elements->designPoints[i].stride_alpha];
             alphaj->Stochast = stochasts[j];
             alphaj->U = -dp->Beta * alphaj->Alpha;

@@ -193,7 +193,7 @@ namespace Deltares
                 designPointIds[designPoints[id]] = id;
                 break;
             case ObjectType::Alpha:
-                alphas[id] = std::make_shared<Deltares::Reliability::StochastPointAlpha>();
+                alphas[id] = std::make_shared<Deltares::Models::StochastPointAlpha>();
                 alphaIds[alphas[id]] = id;
                 break;
             case ObjectType::FragilityCurve:
@@ -204,7 +204,7 @@ namespace Deltares
                 fragilityCurveProjects[id] = std::make_shared<Deltares::Reliability::FragilityCurveProject>();
                 break;
             case ObjectType::Evaluation:
-                evaluations[id] = std::make_shared<Deltares::Reliability::Evaluation>();
+                evaluations[id] = std::make_shared<Deltares::Models::Evaluation>();
                 evaluationIds[evaluations[id]] = id;
                 break;
             case ObjectType::ReliabilityResult:
@@ -474,7 +474,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Alpha)
             {
-                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+                std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "alpha") return alpha->Alpha;
                 else if (property_ == "alpha_correlated") return alpha->AlphaCorrelated;
@@ -493,7 +493,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Evaluation)
             {
-                std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
+                std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
 
                 if (property_ == "z") return evaluation->Z;
                 else if (property_ == "quantile") return evaluation->Quantile;
@@ -675,7 +675,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Alpha)
             {
-                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+                std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "alpha") alpha->Alpha = value;
                 else if (property_ == "u") alpha->U = value;
@@ -726,7 +726,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Alpha)
             {
-                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+                std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "index") return alpha->Index;
             }
@@ -856,7 +856,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Evaluation)
             {
-                std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
+                std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
 
                 if (property_ == "iteration") return evaluation->Iteration;
                 else if (property_ == "input_values_count") return static_cast<int>(evaluation->InputValues.size());
@@ -967,7 +967,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Alpha)
             {
-                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+                std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "variable")
                 {
@@ -1147,7 +1147,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Alpha)
             {
-                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+                std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "variable") alpha->Stochast = stochasts[value];
             }
@@ -1421,7 +1421,7 @@ namespace Deltares
                 else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
                 else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
                 else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
-                else if (property_ == "gradient_type") return GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
+                else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
             }
             else if (objectType == ObjectType::RunProjectSettings)
             {
@@ -1434,7 +1434,7 @@ namespace Deltares
                 std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "uncertainty_method") return Uncertainty::SettingsS::getUncertaintyMethodTypeString(settings->UncertaintyMethod);
-                else if (property_ == "gradient_type") return GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
+                else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
             }
             else if (objectType == ObjectType::UncertaintyProject)
             {
@@ -1475,7 +1475,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Alpha)
             {
-                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+                std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "identifier") return alpha->getIdentifier();
             }
@@ -1562,7 +1562,7 @@ namespace Deltares
                 else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
                 else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
                 else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
-                else if (property_ == "gradient_type") settings->GradientSettings->gradientType = GradientSettings::getGradientType(value);
+                else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
             }
             else if (objectType == ObjectType::RunProjectSettings)
             {
@@ -1575,7 +1575,7 @@ namespace Deltares
                 std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "uncertainty_method") settings->UncertaintyMethod = Uncertainty::SettingsS::getUncertaintyMethodType(value);
-                else if (property_ == "gradient_type") settings->GradientSettings->gradientType = GradientSettings::getGradientType(value);
+                else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -1932,7 +1932,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Evaluation)
             {
-                std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
+                std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
 
                 if (property_ == "input_values") return evaluation->InputValues[index];
                 else if (property_ == "output_values") return evaluation->OutputValues[index];
@@ -2097,7 +2097,7 @@ namespace Deltares
             return 0;
         }
 
-        void ProjectHandler::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
+        void ProjectHandler::SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack)
         {
             ObjectType objectType = types[id];
 
@@ -2105,11 +2105,11 @@ namespace Deltares
             {
                 std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
-                if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
+                if (property_ == "model") project->model = std::make_shared<Models::ZModel>(callBack);
             }
         }
 
-        void ProjectHandler::SetMultipleCallBack(int id, std::string property_, ZValuesMultipleCallBack callBack)
+        void ProjectHandler::SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack)
         {
             ObjectType objectType = types[id];
 
@@ -2121,7 +2121,7 @@ namespace Deltares
             }
         }
 
-        void ProjectHandler::SetEmptyCallBack(int id, std::string property_, EmptyCallBack callBack)
+        void ProjectHandler::SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack)
         {
             ObjectType objectType = types[id];
 
@@ -2324,7 +2324,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha, int newId)
+        int ProjectHandler::GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId)
         {
             if (!alphaIds.contains(alpha))
             {
@@ -2453,7 +2453,7 @@ namespace Deltares
             return conditionalValueIds[conditionalValue];
         }
 
-        int ProjectHandler::GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId)
+        int ProjectHandler::GetEvaluationId(std::shared_ptr<Models::Evaluation> evaluation, int newId)
         {
             if (evaluation == nullptr)
             {

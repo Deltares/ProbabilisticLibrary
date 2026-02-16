@@ -34,7 +34,7 @@ namespace Deltares
             public ref class AdaptiveImportanceSampling : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::AdaptiveImportanceSampling>* shared = new SharedPointerProvider(new Reliability::AdaptiveImportanceSampling());
+                Utils::Wrappers::SharedPointerProvider<Reliability::AdaptiveImportanceSampling>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::AdaptiveImportanceSampling());
             public:
                 AdaptiveImportanceSampling() { }
                 ~AdaptiveImportanceSampling() { this->!AdaptiveImportanceSampling(); }

@@ -25,19 +25,19 @@ jobs:
       # 3️⃣ Install Poetry
       - name: Install Poetry
         run: curl -sSL https://install.python-poetry.org | python3 -
-        working-directory: sources/Deltares.Probabilistic.PWrapper
+        working-directory: sources/Deltares.Probabilistic.Python
 
       - name: Add Poetry to PATH
         run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
 
       - name: Show current pyproject.toml
-        run: cat sources/Deltares.Probabilistic.PWrapper/pyproject.toml
+        run: cat sources/Deltares.Probabilistic.Python/pyproject.toml
 
 
       # 4️⃣ Install Python dependencies
       - name: Install Python dependencies
         run: poetry install
-        working-directory: sources/Deltares.Probabilistic.PWrapper
+        working-directory: sources/Deltares.Probabilistic.Python
 
       - name: Install Pandoc
         run: sudo apt-get install -y pandoc   # for ubuntu
@@ -56,7 +56,7 @@ jobs:
       # 7️⃣ Build Sphinx documentation
       - name: Build Sphinx docs
         run: |
-         poetry --directory sources/Deltares.Probabilistic.PWrapper \
+         poetry --directory sources/Deltares.Probabilistic.Python \
          run sphinx-build -b html -a -E ../../web ../../web/build/html
 
 

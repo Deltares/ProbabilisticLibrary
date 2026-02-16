@@ -29,8 +29,6 @@ namespace Deltares
 {
     namespace Numeric
     {
-        using Deltares::Reliability::probLibException;
-
         class vector1D
         {
         public:
@@ -53,12 +51,12 @@ namespace Deltares
 
             double& operator()(size_t row)
             {
-                if (row >= m_rows) throw probLibException("array bound error.");
+                if (row >= m_rows) throw Reliability::probLibException("array bound error.");
                 return m_data[row];
             }
             const double& operator()(size_t row) const
             {
-                if (row >= m_rows) throw probLibException("array bound error.");
+                if (row >= m_rows) throw Reliability::probLibException("array bound error.");
                 return m_data[row];
             }
 

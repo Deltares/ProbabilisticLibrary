@@ -28,7 +28,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        void StochastSettingsSet::loadStochastPoint(std::shared_ptr<StochastPoint> stochastPoint)
+        void StochastSettingsSet::loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
         {
             this->stochastSettings.clear();
 
@@ -44,9 +44,9 @@ namespace Deltares
             this->AreStartValuesCorrelated = false;
         }
 
-        std::shared_ptr<Sample> StochastSettingsSet::getStartPoint()
+        std::shared_ptr<Models::Sample> StochastSettingsSet::getStartPoint()
         {
-            std::shared_ptr<Sample> sample = std::make_shared<Sample>(this->getVaryingStochastCount());
+            std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(this->getVaryingStochastCount());
 
             for (int i = 0; i < this->getVaryingStochastCount(); i++)
             {
@@ -56,7 +56,7 @@ namespace Deltares
             return sample;
         }
 
-        void StochastSettingsSet::setStartPoint(const std::shared_ptr<Sample> startPoint)
+        void StochastSettingsSet::setStartPoint(const std::shared_ptr<Models::Sample> startPoint)
         {
             for (int i = 0; i < this->getVaryingStochastCount(); i++)
             {

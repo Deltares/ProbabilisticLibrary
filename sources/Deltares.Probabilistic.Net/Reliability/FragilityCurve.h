@@ -35,7 +35,7 @@ namespace Deltares
             public ref class FragilityCurve : public Statistics::Wrappers::Stochast
             {
             private:
-                SharedPointerProvider<Reliability::FragilityCurve>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Reliability::FragilityCurve>* shared = nullptr;
 
                 bool HasMatchingFragilityValues();
                 void  updateNativeObject();

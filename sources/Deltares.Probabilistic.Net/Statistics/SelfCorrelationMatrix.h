@@ -32,15 +32,13 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             /**
              * \brief Registers the correlation for a stochast in different design points
              */
             public ref class SelfCorrelationMatrix
             {
             private:
-                SharedPointerProvider<Statistics::SelfCorrelationMatrix>* shared = new SharedPointerProvider(new Statistics::SelfCorrelationMatrix());
+                Utils::Wrappers::SharedPointerProvider<Statistics::SelfCorrelationMatrix>* shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::SelfCorrelationMatrix());
             public:
                 SelfCorrelationMatrix() { }
                 ~SelfCorrelationMatrix() { this->!SelfCorrelationMatrix(); }

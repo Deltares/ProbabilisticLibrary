@@ -24,8 +24,10 @@
 #include "alphaBeta.h"
 #include "HohenbichlerFORM.h"
 
-namespace Deltares {
-    namespace Reliability {
+namespace Deltares
+{
+    namespace Reliability
+    {
 
         //
         // Class to combine failure probabilities for identical time elements (identical = same reliability index and alpha values)
@@ -33,12 +35,12 @@ namespace Deltares {
         class upscaling
         {
         public:
-            int upscaleInTime(const double nrTimes, alphaBeta& element, const vector1D& inRhoT);
-            std::pair<alphaBeta, int> upscaleLength(alphaBeta& crossSectionElement, const vector1D& rhoXK,
-                const vector1D& dXK, const double sectionLength, std::string& message);
+            int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::vector1D& inRhoT);
+            std::pair<alphaBeta, int> upscaleLength(alphaBeta& crossSectionElement, const Numeric::vector1D& rhoXK,
+                const Numeric::vector1D& dXK, const double sectionLength, std::string& message);
             void upscaleToLargestBlock(const alphaBeta& smallBlock,
-                const vector1D& rhoTSmallBlock, const vector1D& blockDurations, const double largestBlockDuration,
-                alphaBeta& largestBlock, vector1D& durationsLargestBlock);
+                const Numeric::vector1D& rhoTSmallBlock, const Numeric::vector1D& blockDurations, const double largestBlockDuration,
+                alphaBeta& largestBlock, Numeric::vector1D& durationsLargestBlock);
             // TODO: ComputeBetaSection is public for testing
             std::pair<double, int> ComputeBetaSection(const double betaCrossSection, const double sectionLength,
                 const double rhoZ, const double dz, const double deltaL);

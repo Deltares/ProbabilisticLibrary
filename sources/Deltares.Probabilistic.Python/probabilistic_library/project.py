@@ -318,7 +318,7 @@ class ZModelContainer:
 		return False
 
 	def update_model(self):
-		pass
+		pass # used as interface and no actions expected here
 
 class ModelParameter(FrozenObject):
 	"""Input or output parameter of a model
@@ -429,11 +429,13 @@ class ModelProject(FrozenObject):
 		self._settings = settings
 
 	@interface.CALLBACK
+	@staticmethod
 	def _performCallBack(values, size, output_values):
 		sample = _Sample(values[:size], output_values)
 		ModelProject._zmodel.run(sample)
 
 	@interface.MULTIPLE_CALLBACK
+	@staticmethod
 	def _perform_multiple_callback(sample_count, values, input_size, output_values):
 		samples = []
 		for i in range(sample_count):
@@ -656,7 +658,7 @@ class RunProjectSettings(FrozenObject):
 			validation_report.print()
 
 	def _set_variables(self, variables):
-		pass
+		pass # used as interface and no actions expected here
 
 class RunProject(ModelProject):
 	"""Project for a running a model. This is the main entry point for running a model.

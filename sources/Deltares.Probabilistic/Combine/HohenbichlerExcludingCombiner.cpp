@@ -42,7 +42,7 @@ namespace Deltares
             for (const auto& designPoint : designPoints)
             {
                 const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
-                auto alpha = vector1D(nStochasts);
+                auto alpha = Numeric::vector1D(nStochasts);
                 for (size_t i = 0; i < nStochasts; i++)
                 {
                     alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
@@ -64,7 +64,7 @@ namespace Deltares
             combinedDesignPoint->Beta = result.ab.getBeta();
             for (size_t i = 0; i < nStochasts; i++)
             {
-                auto alpha = std::make_shared<StochastPointAlpha>();
+                auto alpha = std::make_shared<Models::StochastPointAlpha>();
                 alpha->Stochast = stochasts[i];
                 alpha->Alpha = result.ab.getAlphaI(i);
                 combinedDesignPoint->Alphas.push_back(alpha);

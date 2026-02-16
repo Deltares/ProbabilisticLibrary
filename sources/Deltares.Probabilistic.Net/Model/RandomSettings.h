@@ -29,15 +29,12 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Models;
-            using namespace Deltares::Utils::Wrappers;
-
             public enum class RandomGeneratorType { MersenneTwister };
 
             public ref class RandomSettings
             {
             private:
-                SharedPointerProvider<Models::RandomSettings>* shared = new SharedPointerProvider(new Models::RandomSettings());
+                Utils::Wrappers::SharedPointerProvider<Models::RandomSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Models::RandomSettings());
             public:
                 RandomSettings()
                 {

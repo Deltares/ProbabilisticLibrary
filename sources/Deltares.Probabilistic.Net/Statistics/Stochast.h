@@ -54,21 +54,21 @@ namespace Deltares
                 {
                     shared->object->ValueSet = this->ValueSet->GetValue();
 
-                    histogramValues->SetCallBack(gcnew ListCallBack<HistogramValue^>(this, &Stochast::SynchronizeHistogramValues));
-                    discreteValues->SetCallBack(gcnew ListCallBack<DiscreteValue^>(this, &Stochast::SynchronizeDiscreteValues));
-                    fragilityValues->SetCallBack(gcnew ListCallBack<FragilityValue^>(this, &Stochast::SynchronizeFragilityValues));
-                    contributingStochasts->SetCallBack(gcnew ListCallBack<ContributingStochast^>(this, &Stochast::SynchronizeContributingStochasts));
+                    histogramValues->SetCallBack(gcnew Utils::Wrappers::ListCallBack<HistogramValue^>(this, &Stochast::SynchronizeHistogramValues));
+                    discreteValues->SetCallBack(gcnew Utils::Wrappers::ListCallBack<DiscreteValue^>(this, &Stochast::SynchronizeDiscreteValues));
+                    fragilityValues->SetCallBack(gcnew Utils::Wrappers::ListCallBack<FragilityValue^>(this, &Stochast::SynchronizeFragilityValues));
+                    contributingStochasts->SetCallBack(gcnew Utils::Wrappers::ListCallBack<ContributingStochast^>(this, &Stochast::SynchronizeContributingStochasts));
                 }
 
-                void SynchronizeHistogramValues(ListOperationType listOperationType, HistogramValue^ histogramValue);
-                void SynchronizeDiscreteValues(ListOperationType listOperationType, DiscreteValue^ discreteValue);
-                void SynchronizeFragilityValues(ListOperationType listOperationType, FragilityValue^ discreteValue);
-                void SynchronizeContributingStochasts(ListOperationType listOperationType, ContributingStochast^ contributingStochast);
+                void SynchronizeHistogramValues(Utils::Wrappers::ListOperationType listOperationType, HistogramValue^ histogramValue);
+                void SynchronizeDiscreteValues(Utils::Wrappers::ListOperationType listOperationType, DiscreteValue^ discreteValue);
+                void SynchronizeFragilityValues(Utils::Wrappers::ListOperationType listOperationType, FragilityValue^ discreteValue);
+                void SynchronizeContributingStochasts(Utils::Wrappers::ListOperationType listOperationType, ContributingStochast^ contributingStochast);
 
-                CallBackList<HistogramValue^>^ histogramValues = gcnew CallBackList<HistogramValue^>();
-                CallBackList<DiscreteValue^>^ discreteValues = gcnew CallBackList<DiscreteValue^>();
-                CallBackList<FragilityValue^>^ fragilityValues = gcnew CallBackList<FragilityValue^>();
-                CallBackList<ContributingStochast^>^ contributingStochasts = gcnew CallBackList<ContributingStochast^>();
+                Utils::Wrappers::CallBackList<HistogramValue^>^ histogramValues = gcnew Utils::Wrappers::CallBackList<HistogramValue^>();
+                Utils::Wrappers::CallBackList<DiscreteValue^>^ discreteValues = gcnew Utils::Wrappers::CallBackList<DiscreteValue^>();
+                Utils::Wrappers::CallBackList<FragilityValue^>^ fragilityValues = gcnew Utils::Wrappers::CallBackList<FragilityValue^>();
+                Utils::Wrappers::CallBackList<ContributingStochast^>^ contributingStochasts = gcnew Utils::Wrappers::CallBackList<ContributingStochast^>();
 
                 Stochast^ source = nullptr;
                 VariableStochastValueSet^ valueSet = gcnew VariableStochastValueSet();
@@ -107,7 +107,7 @@ namespace Deltares
                 Stochast(DistributionType distributionType, array<double>^ values)
                 {
                     const Statistics::DistributionType nativeDistributionType = DistributionTypeConverter::getNativeDistributionType(distributionType);
-                    std::vector<double> nValues = NativeSupport::toNative(values);
+                    std::vector<double> nValues = Utils::Wrappers::NativeSupport::toNative(values);
 
                     this->setNativeObject(std::make_shared<Statistics::Stochast>(nativeDistributionType, nValues));
                     this->Initialize();
@@ -118,8 +118,8 @@ namespace Deltares
 
                 property System::String^ Name
                 {
-                    System::String^ get() { return NativeSupport::toManaged(shared->object->name); }
-                    void set(System::String^ value) { shared->object->name = NativeSupport::toNative(value); }
+                    System::String^ get() { return Utils::Wrappers::NativeSupport::toManaged(shared->object->name); }
+                    void set(System::String^ value) { shared->object->name = Utils::Wrappers::NativeSupport::toNative(value); }
                 }
 
                 virtual property Wrappers::DistributionType DistributionType
@@ -404,7 +404,7 @@ namespace Deltares
 
                 virtual void Fit(array<double>^ values, double shift)
                 {
-                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+                    std::vector<double> nativeValues = Utils::Wrappers::NativeSupport::toNative(values);
 
                     shared->object->fit(nativeValues, shift);
 
@@ -418,7 +418,7 @@ namespace Deltares
 
                 virtual void FitPrior(Stochast^ source, array<double>^ values, double shift)
                 {
-                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+                    std::vector<double> nativeValues = Utils::Wrappers::NativeSupport::toNative(values);
 
                     shared->object->fitPrior(nativeValues, source->GetStochast(), shift);
 
@@ -427,8 +427,8 @@ namespace Deltares
 
                 virtual void FitWeighted(array<double>^ values, array<double>^ weights)
                 {
-                    std::vector<double> nativeValues = NativeSupport::toNative(values);
-                    std::vector<double> nativeWeights = NativeSupport::toNative(weights);
+                    std::vector<double> nativeValues = Utils::Wrappers::NativeSupport::toNative(values);
+                    std::vector<double> nativeWeights = Utils::Wrappers::NativeSupport::toNative(weights);
 
                     shared->object->fitWeighted(nativeValues, nativeWeights);
 
@@ -437,7 +437,7 @@ namespace Deltares
 
                 virtual double GetGoodnessOfFit(array<double>^ values)
                 {
-                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+                    std::vector<double> nativeValues = Utils::Wrappers::NativeSupport::toNative(values);
 
                     return shared->object->getKSTest(nativeValues);
                 }
@@ -450,7 +450,7 @@ namespace Deltares
 
                 virtual array<double>^ GetSpecialXValues()
                 {
-                    return NativeSupport::toManaged(shared->object->getSpecialXValues());
+                    return Utils::Wrappers::NativeSupport::toManaged(shared->object->getSpecialXValues());
                 }
 
                 property VariableStochastValueSet^ ValueSet

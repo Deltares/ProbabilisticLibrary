@@ -50,7 +50,7 @@ namespace Deltares::Reliability
 
         // store intermediate values
         std::vector<double> uValues(nSamples);
-        std::vector<std::shared_ptr<Sample>> uDirections(nSamples);
+        std::vector<std::shared_ptr<Models::Sample>> uDirections(nSamples);
         for (size_t i = 0; i < nSamples; i++)
         {
             if (shouldCompute[i])
@@ -64,7 +64,7 @@ namespace Deltares::Reliability
             //
             // collect samples
             //
-            std::vector<std::shared_ptr<Sample>> uSamples;
+            std::vector<std::shared_ptr<Models::Sample>> uSamples;
             for (size_t i = 0; i < nSamples; i++)
             {
                 if (shouldCompute[i])

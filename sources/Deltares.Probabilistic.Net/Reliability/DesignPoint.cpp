@@ -45,18 +45,18 @@ namespace Deltares
 
                 for (int i = 0; i < shared->object->Evaluations.size(); i++)
                 {
-                    Wrappers::Evaluation^ evaluationWrapper = gcnew Wrappers::Evaluation(shared->object->Evaluations[i]);
+                    Models::Wrappers::Evaluation^ evaluationWrapper = gcnew Models::Wrappers::Evaluation(shared->object->Evaluations[i]);
                     this->Evaluations->Add(evaluationWrapper);
                 }
 
                 for (int i = 0; i < shared->object->Messages.size(); i++)
                 {
-                    Wrappers::Message^ messageWrapper = gcnew Wrappers::Message(shared->object->Messages[i]);
+                    Models::Wrappers::Message^ messageWrapper = gcnew Models::Wrappers::Message(shared->object->Messages[i]);
                     this->Messages->Add(messageWrapper);
                 }
             }
 
-            void DesignPoint::setDesignPoint(IList<Stochast^>^ stochasts)
+            void DesignPoint::setDesignPoint(IList<Statistics::Wrappers::Stochast^>^ stochasts)
             {
                 setStochastPoint(shared->object, stochasts);
 
@@ -71,7 +71,7 @@ namespace Deltares
 
             void DesignPoint::setDesignPoints(IList<DesignPoint^>^ contributingDesignPoints)
             {
-                List<Stochast^>^ stochasts = gcnew List<Stochast^>();
+                List<Statistics::Wrappers::Stochast^>^ stochasts = gcnew List<Statistics::Wrappers::Stochast^>();
 
                 for (int i = 0; i < contributingDesignPoints->Count; i++)
                 {
@@ -97,7 +97,7 @@ namespace Deltares
                 }
             }
 
-            void DesignPoint::AssignTags(TagRepository^ tagRepository)
+            void DesignPoint::AssignTags(Utils::Wrappers::TagRepository^ tagRepository)
             {
                 for (int i = 0; i < this->Evaluations->Count; i++)
                 {
