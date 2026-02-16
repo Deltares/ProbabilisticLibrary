@@ -22,11 +22,12 @@
 #pragma once
 
 #include "ReliabilityMethod.h"
+#include "ReliabilitySettings.h"
 #include "DesignPoint.h"
 #include "../Utils/SharedPointerProvider.h"
 #include "../Statistics/Stochast.h"
 #include "../../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
-#include "../Statistics/CorrelationMatrix.h"
+#include "../Model/ModelProject.h"
 
 namespace Deltares
 {
@@ -34,45 +35,27 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class ReliabilityProject
+            public ref class ReliabilityProject : Models::Wrappers::ModelProject
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Reliability::ReliabilityProject>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::ReliabilityProject());
-                Models::ZLambda getZLambda();
-                void invokeSample(std::shared_ptr<Models::ModelSample> sample);
-                System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
+
             public:
-                ReliabilityProject() { }
+                ReliabilityProject()
+                {
+                    setNativeObject(shared->object);
+                }
+
                 ~ReliabilityProject() { this->!ReliabilityProject(); }
-                !ReliabilityProject()
-                {
-                    delete shared;
-                }
-
-                void ReleaseHandles()
-                {
-                    for (int i = 0; i < handles->Count; i++)
-                    {
-                        handles[i].Free();
-                    }
-
-                    handles->Clear();
-                    shared->object->model->releaseCallBacks();
-                }
-
-                System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
-                Statistics::Wrappers::CorrelationMatrix^ CorrelationMatrix = gcnew Statistics::Wrappers::CorrelationMatrix();
-
-                Models::Wrappers::ZSampleDelegate^ ZFunction = nullptr;
-
-                Utils::Wrappers::TagRepository^ TagRepository = nullptr;
+                !ReliabilityProject() { delete shared; }
 
                 Reliability::Wrappers::ReliabilityMethod^ ReliabilityMethod = nullptr;
 
+                Reliability::Wrappers::ReliabilitySettings^ ReliabilitySettings = gcnew Reliability::Wrappers::ReliabilitySettings();
                 Models::Wrappers::RunSettings^ Settings = gcnew Models::Wrappers::RunSettings();
                 Models::Wrappers::ProgressIndicator^ ProgressIndicator = nullptr;
 
-                bool IsValid();
+                bool IsValid() override;
                 Reliability::Wrappers::DesignPoint^ GetDesignPoint();
 
                 Reliability::Wrappers::DesignPoint^ DesignPoint = nullptr;
