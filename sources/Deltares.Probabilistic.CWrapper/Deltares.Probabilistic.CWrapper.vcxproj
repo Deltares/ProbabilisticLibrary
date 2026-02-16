@@ -137,7 +137,7 @@
       </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin"
+      <Command>mkdir -p "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin"
 copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin\$(TargetName).dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -161,7 +161,7 @@ copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin"
+      <Command>mkdir -p "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin"
 copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin\$(TargetName).dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

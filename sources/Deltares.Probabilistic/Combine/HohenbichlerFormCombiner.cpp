@@ -27,7 +27,7 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> HohenbichlerFormCombiner::combineDesignPoints(combineAndOr combineMethodType,
         std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-        std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
+        std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress)
     {
         elements elm;
         const auto stochasts = DesignPoint::getUniqueStochasts(designPoints);
@@ -36,7 +36,7 @@ namespace Deltares::Reliability
         for (const auto& designPoint : designPoints)
         {
             const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
-            auto alpha = vector1D(nStochasts);
+            auto alpha = Numeric::vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
                 alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
@@ -46,7 +46,7 @@ namespace Deltares::Reliability
         }
 
         auto cmb = combineElements();
-        auto rho = vector1D(nStochasts);
+        auto rho = Numeric::vector1D(nStochasts);
         for (size_t i = 0; i < nStochasts; i++)
         {
             rho(i) = selfCorrelationMatrix->getSelfCorrelation(stochasts[i]);
@@ -59,7 +59,7 @@ namespace Deltares::Reliability
         dp->Beta = ab.getBeta();
         for (size_t i = 0; i < nStochasts; i++)
         {
-            auto alpha = std::make_shared<StochastPointAlpha>();
+            auto alpha = std::make_shared<Models::StochastPointAlpha>();
             alpha->Stochast = stochasts[i];
             alpha->Alpha = ab.getAlphaI(i);
             alpha->U = -dp->Beta * alpha->Alpha;

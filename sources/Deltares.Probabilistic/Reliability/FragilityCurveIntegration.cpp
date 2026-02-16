@@ -77,7 +77,7 @@ namespace Deltares
                 // Multiply this probability with the probability of the fragility curve stochast value
                 double addition = step->Weight * prob;
 
-                std::shared_ptr<Sample> sample = std::make_shared<Sample>(std::vector<double> { step->U, uFrag });
+                std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> { step->U, uFrag });
 
                 double beta = std::sqrt(step->U * step->U + uFrag * uFrag);
                 sample->Weight = Statistics::StandardNormal::getQFromU(beta);
@@ -97,11 +97,11 @@ namespace Deltares
             std::shared_ptr<DesignPoint> designPoint = std::make_shared<DesignPoint>();
             designPoint->Beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-            std::shared_ptr<Sample> designPointSample = designPointBuilder.getSample();
+            std::shared_ptr<Models::Sample> designPointSample = designPointBuilder.getSample();
 
             // Set the contribution of the conditional stochast
             double alphaParameter = -designPointSample->Values[0] / designPoint->Beta; // u = - beta * alpha
-            std::shared_ptr<StochastPointAlpha> alpha = std::make_shared<StochastPointAlpha>();
+            std::shared_ptr<Models::StochastPointAlpha> alpha = std::make_shared<Models::StochastPointAlpha>();
             alpha->Stochast = parameter;
             alpha->Alpha = alphaParameter;
             alpha->AlphaCorrelated = alphaParameter;
@@ -114,7 +114,7 @@ namespace Deltares
             {
                 if (fCurve != nullptr)
                 {
-                    std::shared_ptr<StochastPointAlpha> alphaCurve = std::make_shared<StochastPointAlpha>();
+                    std::shared_ptr<Models::StochastPointAlpha> alphaCurve = std::make_shared<Models::StochastPointAlpha>();
                     alphaCurve->Stochast = fCurve;
                     alphaCurve->U = designPointSample->Values[1];
                     alphaCurve->X = fCurve->getXFromU(alphaCurve->U);
@@ -164,7 +164,7 @@ namespace Deltares
                 double pdf = cdfHigh - cdfLow;
                 double parU = u + stepSize / 2;
 
-                std::shared_ptr<Sample> sample = std::make_shared<Sample>(std::vector<double>{ parU, 0 });
+                std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double>{ parU, 0 });
 
                 double prob = modelRunner->getZValue(sample);
                 double uFrag = Statistics::StandardNormal::getUFromQ(prob);
@@ -172,7 +172,7 @@ namespace Deltares
                 // Multiply this probability with the probability of the fragility curve stochast value
                 double addition = pdf * prob;
 
-                std::shared_ptr<Sample> fragilitySample = std::make_shared<Sample>(std::vector<double>{ parU, uFrag });
+                std::shared_ptr<Models::Sample> fragilitySample = std::make_shared<Models::Sample>(std::vector<double>{ parU, uFrag });
 
                 double betaSample = std::sqrt(parU * parU + uFrag * uFrag);
                 fragilitySample->Weight = Statistics::StandardNormal::getQFromU(betaSample);
@@ -187,7 +187,7 @@ namespace Deltares
                 count++;
             }
 
-            std::shared_ptr<Sample> designPointSample = designPointBuilder.getSample();
+            std::shared_ptr<Models::Sample> designPointSample = designPointBuilder.getSample();
 
             double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
@@ -195,7 +195,7 @@ namespace Deltares
             {
                 double alphaFragilityCurve = - designPointSample->Values[1] / beta; // u = - beta * alpha
                 std::vector<double> alphas = std::vector{ alphaFragilityCurve };
-                designPointSample = std::make_shared<Sample>(alphas);
+                designPointSample = std::make_shared<Models::Sample>(alphas);
             }
 
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(designPointSample, beta, std::make_shared<ConvergenceReport>());

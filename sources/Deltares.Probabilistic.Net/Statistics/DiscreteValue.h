@@ -30,27 +30,25 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class DiscreteValue
             {
             private:
-                SharedPointerProvider<Statistics::DiscreteValue>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Statistics::DiscreteValue>* shared = nullptr;
 
             public:
                 DiscreteValue()
                 {
-                    shared = new SharedPointerProvider(new Statistics::DiscreteValue());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::DiscreteValue());
                 }
 
                 DiscreteValue(std::shared_ptr<Statistics::DiscreteValue> discreteValue)
                 {
-                    shared = new SharedPointerProvider(discreteValue);
+                    shared = new Utils::Wrappers::SharedPointerProvider(discreteValue);
                 }
 
                 DiscreteValue(double x, double amount)
                 {
-                    shared = new SharedPointerProvider(new Statistics::DiscreteValue());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::DiscreteValue());
                     shared->object->X = x;
                     shared->object->Amount = amount;
                 }

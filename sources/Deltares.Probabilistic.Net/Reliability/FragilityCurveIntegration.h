@@ -34,7 +34,7 @@ namespace Deltares
             public ref class FragilityCurveIntegration : public ReliabilityMethod
             {
             private:
-                SharedPointerProvider<Reliability::FragilityCurveIntegration>* shared = new SharedPointerProvider(new Reliability::FragilityCurveIntegration());
+                Utils::Wrappers::SharedPointerProvider<Reliability::FragilityCurveIntegration>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::FragilityCurveIntegration());
                 System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ GetReferencedStochasts(Statistics::Wrappers::Stochast^ stochast);
             public:
                 FragilityCurveIntegration() {}
@@ -49,7 +49,7 @@ namespace Deltares
 
                 FragilityCurveIntegrationSettings^ Settings = gcnew FragilityCurveIntegrationSettings();
 
-                DesignPoint^ GetDesignPoint(Stochast^ stochast, Stochast^ fragilityCurve, Stochast^ normalizingFragilityCurve);
+                DesignPoint^ GetDesignPoint(Statistics::Wrappers::Stochast^ stochast, Statistics::Wrappers::Stochast^ fragilityCurve, Statistics::Wrappers::Stochast^ normalizingFragilityCurve);
 
                 System::Object^ GetSettings() override { return Settings; }
 

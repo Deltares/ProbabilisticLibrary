@@ -31,12 +31,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class ProbabilityValue
             {
             private:
-                SharedPointerProvider<Statistics::ProbabilityValue>* shared = new SharedPointerProvider(new Statistics::ProbabilityValue());
+                Utils::Wrappers::SharedPointerProvider<Statistics::ProbabilityValue>* shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::ProbabilityValue());
             public:
                 ProbabilityValue() {}
 

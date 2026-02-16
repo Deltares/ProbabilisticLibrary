@@ -39,7 +39,7 @@ namespace Deltares ::Reliability
     // \param rhoP      : Auto correlation of the stochastic variables between element 1 and element 2
     // \param combAndOr : Combination type, And / Or
     cmbResult combineElements::combineTwoElementsPartialCorrelation(const alphaBeta& element1,
-        const alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr)
+        const alphaBeta& element2, const Numeric::vector1D& rhoP, const combineAndOr combAndOr)
     {
         const double epsilon = 0.01;
         int failureHohenbichler = 0;
@@ -52,9 +52,9 @@ namespace Deltares ::Reliability
         // Allocate temp vectors
         //
         alphaBeta element3; // returned value
-        element3.setAlpha(vector1D(nStochasts));
-        auto alphaX1 = vector1D(nStochasts);
-        auto alphaX2 = vector1D(nStochasts);
+        element3.setAlpha(Numeric::vector1D(nStochasts));
+        auto alphaX1 = Numeric::vector1D(nStochasts);
+        auto alphaX2 = Numeric::vector1D(nStochasts);
         //
         //   Determine the correlation of the system
         //
@@ -239,7 +239,7 @@ namespace Deltares ::Reliability
     // \param rho(:)            : Correlation data
     // \param combAndOrIn       : Combination type, And / Or
     cmbResult combineElements::combineMultipleElements(const elements& Elements,
-        const vector1D& rho, const combineAndOr combAndOr)
+        const Numeric::vector1D& rho, const combineAndOr combAndOr)
     {
         //
         // Get the vector dimensions
@@ -259,7 +259,7 @@ namespace Deltares ::Reliability
             size_t nrElementsComp = nrElements;
             auto local = Elements;
             cmbResult ab;
-            ab.ab.setAlpha(vector1D(nrStochasts));
+            ab.ab.setAlpha(Numeric::vector1D(nrStochasts));
 
             //
             // Continuously combine the two elements with the largest correlation
@@ -314,7 +314,7 @@ namespace Deltares ::Reliability
     // \param alpha(:,:)        : Alpha vector per element
     // \param i1max             : Index of first element with the largest correlation
     // \param i2max             : Index of second element with the largest correlation
-    void combineElements::calculateCombinationWithLargestCorrelation(const vector1D& rhoP,
+    void combineElements::calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
         const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max)
     {
         //
@@ -369,7 +369,7 @@ namespace Deltares ::Reliability
         // Allocate vectors and matrices
         // Get the correlation coefficients of all the strength variables
         //
-        auto rhoP = vector1D(nrStochasts);
+        auto rhoP = Numeric::vector1D(nrStochasts);
         rhoP.assign(1.0);
 
         return combineMultipleElements(Elements, rhoP, combAndOr);
@@ -390,7 +390,7 @@ namespace Deltares ::Reliability
         //
         // Allocate vectors and matrices
         //
-        auto rhoP = vector1D(nrStochasts);
+        auto rhoP = Numeric::vector1D(nrStochasts);
 
         //
         // Adjust the beta values of the input with the probability

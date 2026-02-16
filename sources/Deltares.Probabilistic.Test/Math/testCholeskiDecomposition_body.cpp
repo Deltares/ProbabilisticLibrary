@@ -23,8 +23,6 @@
 #include "testCholeskiDecomposition.h"
 #include "../Utils/testutils.h"
 
-using namespace Deltares::Numeric;
-
 namespace Deltares
 {
     namespace Probabilistic
@@ -44,7 +42,7 @@ namespace Deltares
             {
                 const size_t nStochasts = 6;
 
-                auto correlation_matrix = Matrix(nStochasts, nStochasts);
+                auto correlation_matrix = Numeric::Matrix(nStochasts, nStochasts);
                 for (size_t i = 0; i < nStochasts; i++)
                 {
                     correlation_matrix(i, i) = 1.0;

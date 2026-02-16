@@ -38,7 +38,7 @@ namespace Deltares
             }
 
         private:
-            double getStochastProbability(int stochastIndex, Sample& parentSample, double density, double& totalDensity, int nSamples);
+            double getStochastProbability(int stochastIndex, Models::Sample& parentSample, double density, double& totalDensity, int nSamples);
             DesignPointBuilder designPointBuilder = DesignPointBuilder();
             std::shared_ptr<Models::ModelRunner> modelRunner;
             double z0Fac;

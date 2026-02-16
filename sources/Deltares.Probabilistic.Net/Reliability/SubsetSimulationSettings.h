@@ -34,18 +34,15 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public enum class SampleMethod { MarkovChain, AdaptiveConditional };
 
-            public ref class SubsetSimulationSettings : IHasRunSettings, IHasStochastSetting, IHasRandomSettings
+            public ref class SubsetSimulationSettings : Models::Wrappers::IHasRunSettings, IHasStochastSetting, Models::Wrappers::IHasRandomSettings
             {
             private:
-                SharedPointerProvider<Reliability::SubsetSimulationSettings>* shared = new SharedPointerProvider(new Reliability::SubsetSimulationSettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::SubsetSimulationSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::SubsetSimulationSettings());
 
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
-                Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
+                Models::Wrappers::RandomSettings^ randomSettings = gcnew Models::Wrappers::RandomSettings();
 
             public:
                 SubsetSimulationSettings() {}
@@ -128,16 +125,16 @@ namespace Deltares
                     }
                 }
 
-                virtual property Wrappers::RandomSettings^ RandomSettings
+                virtual property Models::Wrappers::RandomSettings^ RandomSettings
                 {
-                    Wrappers::RandomSettings^ get() { return randomSettings; }
-                    void set(Wrappers::RandomSettings^ value) { randomSettings = value; }
+                    Models::Wrappers::RandomSettings^ get() { return randomSettings; }
+                    void set(Models::Wrappers::RandomSettings^ value) { randomSettings = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();

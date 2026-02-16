@@ -31,6 +31,7 @@ namespace Deltares
         {
         public:
             virtual int GetNewObjectId(int handlerIndex) { return 0; }
+            std::string last_exception = "";
         };
     }
 }

@@ -30,6 +30,7 @@
 #include "../Statistics/Scenario.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
+#include "../Utils/SharedPointerProvider.h"
 #include "DesignPoint.h"
 
 namespace Deltares
@@ -38,8 +39,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public enum class CombinerType
             {
                 Hohenbichler,
@@ -57,7 +56,7 @@ namespace Deltares
             public ref class DesignPointCombiner
             {
             private:
-                SharedPointerProvider<Reliability::DesignPointCombiner>* shared = new SharedPointerProvider(new Reliability::DesignPointCombiner());
+                Utils::Wrappers::SharedPointerProvider<Reliability::DesignPointCombiner>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::DesignPointCombiner());
 
                 combineAndOr GetCombinationType(CombinationType combination)
                 {
@@ -106,7 +105,7 @@ namespace Deltares
                     System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints,
                     Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix,
                     Deltares::Statistics::Wrappers::CorrelationMatrix^ correlationMatrix,
-                    Wrappers::ProgressIndicator^ progressIndicator);
+                    Models::Wrappers::ProgressIndicator^ progressIndicator);
 
                 DesignPoint^ CombineExcluding(
                     System::Collections::Generic::IList<Statistics::Wrappers::Scenario^>^ scenarios,

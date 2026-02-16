@@ -25,7 +25,6 @@
 #include "../../Deltares.Probabilistic/Combine/alphaBeta.h"
 #include "../../Deltares.Probabilistic/Math/matrix.h"
 
-using namespace Deltares::Reliability;
 
 namespace Deltares::Probabilistic::Test
 {
@@ -34,8 +33,8 @@ namespace Deltares::Probabilistic::Test
     public:
         bool compareFiles(const std::string& refFile, const std::string& newFile) const;
         std::string refFileWithPath(const std::string& sourceFile, const std::string& relativePath);
-        void checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double margin);
-        void checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double margin1, const double margin2);
+        void checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin);
+        void checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin1, const double margin2);
         static Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m);
         static Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m, size_t rows, size_t columns, bool mirrored);
     private:

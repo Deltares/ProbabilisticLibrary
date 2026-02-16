@@ -57,7 +57,7 @@ namespace Deltares
          * \brief General settings applicable to all mechanisms
          * \remarks Should be split up according to SonarCube, but logically belongs together
          */
-        class Settings : public ModelProjectSettings
+        class Settings : public Models::ModelProjectSettings
         {
         public:
             /**

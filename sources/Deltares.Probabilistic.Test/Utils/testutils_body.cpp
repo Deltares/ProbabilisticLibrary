@@ -61,7 +61,7 @@ namespace Deltares
                 auto values = std::vector<std::string>();
 
                 std::string line;
-                auto pls = probLibString();
+                auto pls = Reliability::probLibString();
                 while (std::getline(in, line))
                 {
                     line = pls.trim(line, "\r");
@@ -132,12 +132,12 @@ namespace Deltares
                 return s;
             }
 
-            void testutils::checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double margin)
+            void testutils::checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin)
             {
                 checkAlphaBeta(computed, ref, margin, margin);
             }
 
-            void testutils::checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double m1, const double m2)
+            void testutils::checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double m1, const double m2)
             {
                 EXPECT_NEAR(computed.getBeta(), ref.getBeta(), m1);
                 EXPECT_EQ(computed.size(), ref.size());

@@ -33,14 +33,11 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class CrudeMonteCarloSettingsS : IHasRunSettings
+            public ref class CrudeMonteCarloSettingsS : Models::Wrappers::IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::CrudeMonteCarloSettingsS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloSettingsS());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::CrudeMonteCarloSettingsS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::CrudeMonteCarloSettingsS());
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 CrudeMonteCarloSettingsS()
                 {
@@ -101,12 +98,12 @@ namespace Deltares
                     void set(bool value) { shared->object->DeriveSamplesFromVariationCoefficient = value; }
                 }
 
-                Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
+                Models::Wrappers::RandomSettings^ RandomSettings = gcnew Models::Wrappers::RandomSettings();
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();

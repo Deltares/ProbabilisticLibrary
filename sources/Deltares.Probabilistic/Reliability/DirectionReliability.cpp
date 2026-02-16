@@ -34,11 +34,11 @@ namespace Deltares::Reliability
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-        std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
+        std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(modelRunner->getVaryingStochastCount());
         double z = modelRunner->getZValue(zeroSample);
         double z0 = getZFactor(z);
 
-        std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getStartPoint();
+        std::shared_ptr<Models::Sample> directionSample = this->Settings->StochastSet->getStartPoint();
 
         double beta = getBeta(*modelRunner, *directionSample, z0);
 
@@ -47,7 +47,7 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0)
+    double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Models::Sample& directionSample, double z0)
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
