@@ -20,13 +20,12 @@
 // All rights reserved.
 //
 #pragma once
-#include <stddef.h>
 #include <string>
 
-const size_t ERRORMSGLENGTH = 256;
+constexpr size_t error_message_length = 256;
 struct tError
 {
-    char errorMessage[ERRORMSGLENGTH];
+    char errorMessage[error_message_length];
     int errorCode;
 };
 

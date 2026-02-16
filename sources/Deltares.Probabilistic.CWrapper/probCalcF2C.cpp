@@ -89,13 +89,13 @@ void copyConvergence(tResult& r, const DesignPoint& designPoint, const ProbMetho
 {
     if (methodId == ProbMethod::NI) return;
 
-    const auto convergenceReport = *designPoint.convergenceReport;
+    const ConvergenceReport& convergenceReport = *designPoint.convergenceReport;
 
     r.convergence = convergenceReport.IsConverged;
     r.stepsNeeded = convergenceReport.TotalIterations;
     r.samplesNeeded = convergenceReport.TotalDirections;
-    double failFraction = convergenceReport.FailFraction;
-    int failedSamples = convergenceReport.FailedSamples;
+    const double fail_fraction = convergenceReport.FailFraction;
+    const int failed_samples = convergenceReport.FailedSamples;
     if (methodId == ProbMethod::DSFI || methodId == ProbMethod::DSFIHR)
     {
         // number of samples for DS from first step:
@@ -103,9 +103,9 @@ void copyConvergence(tResult& r, const DesignPoint& designPoint, const ProbMetho
         // number of FORM iterations from second step:
         r.stepsNeeded   = designPoint.ContributingDesignPoints[1]->convergenceReport->TotalIterations;
     }
-    else if (r.samplesNeeded < 0 && failFraction > 0.0)
+    else if (r.samplesNeeded < 0 && fail_fraction > 0.0)
     {
-        r.samplesNeeded = (int)round(failedSamples / failFraction);
+        r.samplesNeeded = static_cast<int>(round(failed_samples / fail_fraction));
     }
 }
 
@@ -121,37 +121,47 @@ bool shouldRunAtDesignPoint(const DPoptions dpOption)
     }
 }
 
+/// <summary>
+/// c-wrapper for getDesignPoint
+/// </summary>
+/// <param name="method"> the settings of the calculation </param>
+/// <param name="distributions"> the stochasts </param>
+/// <param name="correlations"> the correlation pairs </param>
+/// <param name="fx"> the z-function </param>
+/// <param name="pc"> the progress indicator function </param>
+/// <param name="compIds"> dimensions of input arrays </param>
+/// <param name="x"> the resulting x-vector  </param>
+/// <param name="result"> the output struct </param>
 extern "C"
-void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlations[],
+void probcalcf2c(const basicSettings* method, fdistribs distributions[], corrStruct correlations[],
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
     const tCompIds* compIds, double x[], tResult* result)
 {
     try
     {
-        auto nStoch = static_cast<size_t>(compIds->nrStochasts);
+        auto number_of_stochasts = static_cast<size_t>(compIds->nrStochasts);
         auto fw = funcWrapper(compIds->id, fx);
-        auto nrCorrelations = compIds->nrCorrelations;
+        auto number_of_correlations = compIds->nrCorrelations;
 
         auto stochasts = std::vector<std::shared_ptr<Stochast>>();
-        for (size_t i = 0; i < nStoch; i++)
+        for (size_t i = 0; i < number_of_stochasts; i++)
         {
-            auto distHR = static_cast<EnumDistributions>(c[i].distId);
-            auto s = std::make_shared<Stochast>(createDistribution::createValid(distHR, c[i].params));
+            auto distHR = static_cast<EnumDistributions>(distributions[i].distId);
+            auto s = std::make_shared<Stochast>(createDistribution::createValid(distHR, distributions[i].params));
             stochasts.push_back(s);
         }
 
-        auto createRelM = createReliabilityMethod();
-        auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
+        auto relMethod = createReliabilityMethod::selectMethod(*method, number_of_stochasts, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
                                                [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }
         );
 
         auto corr = std::make_shared<CorrelationMatrix>(false);
-        if (nrCorrelations > 0)
+        if (number_of_correlations > 0)
         {
-            corr->Init(static_cast<int>(nStoch));
-            for (int i = 0; i < nrCorrelations; i++)
+            corr->Init(static_cast<int>(number_of_stochasts));
+            for (int i = 0; i < number_of_correlations; i++)
             {
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation, CorrelationType::Gaussian);
             }
@@ -199,7 +209,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         }
 
         result->beta = newResult->Beta;
-        for (size_t i = 0; i < nStoch; i++)
+        for (size_t i = 0; i < number_of_stochasts; i++)
         {
             result->alpha[i] = newResult->Alphas[i]->Alpha;
         }

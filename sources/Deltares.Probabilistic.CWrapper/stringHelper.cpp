@@ -23,12 +23,12 @@
 
 void fillErrorMessage(tError & error, const std::string s)
 {
-    size_t length = std::min(s.length(), ERRORMSGLENGTH);
+    size_t length = std::min(s.length(), error_message_length);
     for (size_t i = 0; i < length; i++)
     {
         error.errorMessage[i] = s[i];
     }
-    size_t last = std::min(s.length(), ERRORMSGLENGTH-1);
+    size_t last = std::min(s.length(), error_message_length-1);
     error.errorMessage[last] = char(0);
 }
 
