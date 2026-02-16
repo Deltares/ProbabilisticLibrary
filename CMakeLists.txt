@@ -1,5 +1,7 @@
 # set minimum cmake version
 
+option(WITHOPENMP "use OpenMP on/off" ON)
+
 option(CODECOVCLANG "CodeCoverage from clang on/off" OFF)
 
 option(CODECOV "CodeCoverage on/off" OFF)
@@ -34,6 +36,7 @@ endif(WIN32)
 
 set_property(GLOBAL PROPERTY WITH_CODECOV ${CODECOV})
 set_property(GLOBAL PROPERTY WITH_CODECOV2 ${CODECOVCLANG})
+set_property(GLOBAL PROPERTY WITH_OPENMP ${WITHOPENMP})
 if (UNIX)
     if (CODECOV)
         include(Dart)
