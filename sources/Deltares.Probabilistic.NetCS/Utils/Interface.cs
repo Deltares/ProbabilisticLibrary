@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static Deltares.Probabilistic.NetCS.Utils.NativeInterface;
+using static Deltares.Probabilistic.Utils.NativeInterface;
 
-namespace Deltares.Probabilistic.NetCS.Utils
+namespace Deltares.Probabilistic.Utils
 {
     public static class Interface
     {
@@ -50,7 +51,6 @@ namespace Deltares.Probabilistic.NetCS.Utils
             NativeInterface.SetIntValue(id, Utf8(property), value);
         }
 
-
         public static int GetIdValue(int id, string property)
             => NativeInterface.GetIdValue(id, Utf8(property));
 
@@ -92,8 +92,6 @@ namespace Deltares.Probabilistic.NetCS.Utils
             => NativeInterface.SetStringValue(id, Utf8(property), Utf8(value));
 
 
-        // ------------------ Array operations ------------------
-
         public static void FillArrayValue(int id, string property, double[] values)
             => NativeInterface.FillArrayValue(id, Utf8(property), values, (uint)values.Length);
 
@@ -125,8 +123,6 @@ namespace Deltares.Probabilistic.NetCS.Utils
             }
         }
 
-
-        // ------------------ Array getters ------------------
 
         public static double[] GetArrayValue(int id, string property)
         {
@@ -259,7 +255,7 @@ namespace Deltares.Probabilistic.NetCS.Utils
             }
         }
 
-        public static void ExecuteMethod(int id, string method)
+        public static void Execute(int id, string method)
         {
             NativeInterface.Execute(id, method);
             CheckException();
@@ -294,6 +290,25 @@ namespace Deltares.Probabilistic.NetCS.Utils
 
     public static class NativeInterface
     {
+        static NativeInterface()
+        {
+            NativeLibrary.SetDllImportResolver(typeof(NativeInterface).Assembly, ResolveLibrary);
+        }
+
+        private static IntPtr ResolveLibrary(string libraryName, Assembly assembly, DllImportSearchPath? path)
+        {
+            if (libraryName == "CWrapper")
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    return NativeLibrary.Load("CWrapper.dll", assembly, path);
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    return NativeLibrary.Load("CWrapper.so", assembly, path);
+            }
+
+            return IntPtr.Zero;
+        }
+
         // void* callback(double* in1, int n, double* out1)
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr Callback(
@@ -316,115 +331,115 @@ namespace Deltares.Probabilistic.NetCS.Utils
         public delegate IntPtr EmptyCallback();
 
         // Import the native function from your library
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int Create(byte[] className);
 
         // Import the native function from your library
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void Destroy(int id);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetValue(int id, byte[] property);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetValue(int id, byte[] property, double value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetIntValue(int id, byte[] property);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetIntValue(int id, byte[] property, int value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetIdValue(int id, byte[] property);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetIntArgValue(int id, int arg, byte[] property);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetIntArgValue(int id, int arg, byte[] property, double value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool GetBoolValue(int id, byte[] property);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetBoolValue(int id, byte[] property, bool value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetStringLength(int id, byte[] property);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void GetStringValue(int id, byte[] property, byte[] buffer, UIntPtr bufferSize);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetIndexedStringLength(int id, byte[] property, int index);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void GetIndexedStringValue(int id, byte[] property, int index, byte[] buffer,
             UIntPtr bufferSize);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetStringValue(int id, byte[] property, byte[] value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void FillArrayValue(int id, byte[] property, double[] values, uint size);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetArrayValue(int id, byte[] property, IntPtr values, uint size);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void GetArgValues(int id, byte[] property, IntPtr inputValues, uint size,
             double[] outputValues);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetIndexedValue(int id, byte[] property, int index);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetIndexedValue(int id, byte[] property, int index, double value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetIndexedIndexedValue(int id, byte[] property, int index1, int index2);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetIndexedIndexedValue(int id, byte[] property, int index1, int index2, double value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetIndexedIndexedIntValue(int id, byte[] property, int index1, int index2, int value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern double GetArgValue(int id, byte[] property, double arg);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetArgValue(int id, byte[] property, double arg, double value);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetIndexedIntValue(int id, byte[] property, int index);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetIndexedIdValue(int id, byte[] property, int index);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetArrayIntValue(int id, byte[] property, IntPtr values, uint size);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetCallBack(int id, string property, Callback cb);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetMultipleCallBack(int id, string property, MultipleCallback cb);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetEmptyCallBack(int id, string property, EmptyCallback cb);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr GetCallBack(int id, string property);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void Execute(int id, string method);
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetExceptionLength();
 
-        [DllImport("CWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void GetException(IntPtr buffer, UIntPtr size);
     }
 }
