@@ -20,13 +20,9 @@
 // All rights reserved.
 //
 #pragma once
-namespace Deltares
+namespace Deltares::Numeric
 {
-    namespace Numeric
-    {
-        const double pi = 3.141592653589793238795028841971;
-        const double eulerMascheroni = 0.57721566490153286060651209008240243;
-    }
+    const double pi = 3.141592653589793238795028841971;
+    const double eulerMascheroni = 0.57721566490153286060651209008240243;
 }
-
 

@@ -23,255 +23,252 @@
 #include "vector1D.h"
 #include <fstream>
 
-namespace Deltares
+namespace Deltares::Numeric
 {
-    namespace Numeric
+    vector1D::vector1D() : m_data(0), m_rows(0) {}
+
+    vector1D::vector1D(size_t rows) : m_data(rows), m_rows(rows)
     {
-        vector1D::vector1D() : m_data(0), m_rows(0) {}
-
-        vector1D::vector1D(size_t rows) : m_data(rows), m_rows(rows)
+        for (size_t pos = 0; pos < m_rows; pos++)
         {
-            for (size_t pos = 0; pos < m_rows; pos++)
-            {
-                m_data[pos] = 0.0;
-            }
+            m_data[pos] = 0.0;
         }
+    }
 
-        vector1D::vector1D(const vector1D& m) : m_data(m.m_rows), m_rows(m.m_rows)
+    vector1D::vector1D(const vector1D& m) : m_data(m.m_rows), m_rows(m.m_rows)
+    {
+        for (size_t pos = 0; pos < m_rows; pos++)
         {
+            m_data[pos] = m.m_data[pos];
+        }
+    }
+
+    vector1D::vector1D(const std::initializer_list<double>& m) : m_data(m.size()), m_rows(m.size())
+    {
+        size_t pos = 0;
+        for (auto x : m)
+        {
+            m_data[pos] = x;
+            pos++;
+        }
+    }
+
+    vector1D::vector1D(vector1D&& m) noexcept : m_data(m.m_data), m_rows(m.m_rows)
+    {
+        m.m_data = std::vector<double>(0);
+        m.m_rows = 0;
+    }
+
+    vector1D& vector1D::operator=(const vector1D& m)
+    {
+        if (this != &m)
+        {
+            m_rows = m.m_rows;
+
+            m_data = std::vector<double>(m_rows);
+
             for (size_t pos = 0; pos < m_rows; pos++)
             {
                 m_data[pos] = m.m_data[pos];
             }
         }
 
-        vector1D::vector1D(const std::initializer_list<double>& m) : m_data(m.size()), m_rows(m.size())
+        return *this;
+    }
+
+    vector1D& vector1D::operator=(vector1D&& m) noexcept
+    {
+        std::swap(m_data, m.m_data);
+        std::swap(m_rows, m.m_rows);
+        return *this;
+    }
+
+    vector1D vector1D::operator+(const vector1D& m) const
+    {
+        if (m_rows != m.m_rows)
         {
-            size_t pos = 0;
-            for (auto x : m)
-            {
-                m_data[pos] = x;
-                pos++;
-            }
+            throw Reliability::probLibException("number of rows differ");
         }
 
-        vector1D::vector1D(vector1D&& m) noexcept : m_data(m.m_data), m_rows(m.m_rows)
+        vector1D result(m_rows);
+
+        for (size_t pos = 0; pos < m_rows; pos++)
         {
-            m.m_data = std::vector<double>(0);
-            m.m_rows = 0;
+            result.m_data[pos] = m_data[pos] + m.m_data[pos];
         }
 
-        vector1D& vector1D::operator=(const vector1D& m)
+        return result;
+    }
+
+    vector1D vector1D::operator*(double d) const
+    {
+        vector1D result(m_rows);
+
+        for (size_t pos = 0; pos < m_rows; pos++)
         {
-            if (this != &m)
-            {
-                m_rows = m.m_rows;
-
-                m_data = std::vector<double>(m_rows);
-
-                for (size_t pos = 0; pos < m_rows; pos++)
-                {
-                    m_data[pos] = m.m_data[pos];
-                }
-            }
-
-            return *this;
+            result.m_data[pos] = m_data[pos] * d;
         }
 
-        vector1D& vector1D::operator=(vector1D&& m) noexcept
+        return result;
+    }
+
+    vector1D operator*(double d, const vector1D& m)
+    {
+        return m * d;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const vector1D& m)
+    {
+        for (size_t row = 0; row < m.m_rows; row++)
         {
-            std::swap(m_data, m.m_data);
-            std::swap(m_rows, m.m_rows);
-            return *this;
+            os << m(row) << ", ";
+
         }
+        os << std::endl;
 
-        vector1D vector1D::operator+(const vector1D& m) const
+        return os;
+    }
+
+    void vector1D::operator*=(double d)
+    {
+        for (size_t row = 0; row < m_rows; row++)
         {
-            if (m_rows != m.m_rows)
-            {
-                throw Reliability::probLibException("number of rows differ");
-            }
-
-            vector1D result(m_rows);
-
-            for (size_t pos = 0; pos < m_rows; pos++)
-            {
-                result.m_data[pos] = m_data[pos] + m.m_data[pos];
-            }
-
-            return result;
+            m_data[row] *= d;
         }
+    }
 
-        vector1D vector1D::operator*(double d) const
+    void vector1D::operator+=(const vector1D& m)
+    {
+        if (m_rows != m.m_rows)
         {
-            vector1D result(m_rows);
-
-            for (size_t pos = 0; pos < m_rows; pos++)
-            {
-                result.m_data[pos] = m_data[pos] * d;
-            }
-
-            return result;
+            throw Reliability::probLibException("number of rows differ");
         }
-
-        vector1D operator*(double d, const vector1D& m)
+        for (size_t row = 0; row < m_rows; row++)
         {
-            return m * d;
+            m_data[row] += m.m_data[row];
         }
+    }
 
-        std::ostream& operator<<(std::ostream& os, const vector1D& m)
+    size_t vector1D::size() const
+    {
+        return m_rows;
+    }
+
+    double vector1D::sumOfSquares() const
+    {
+        auto sum = 0.0;
+        for (size_t k = 0; k < m_rows; k++)
         {
-            for (size_t row = 0; row < m.m_rows; row++)
-            {
-                os << m(row) << ", ";
-
-            }
-            os << std::endl;
-
-            return os;
+            sum += (m_data[k] * m_data[k]);
         }
+        return sum;
+    }
 
-        void vector1D::operator*=(double d)
+    double vector1D::sumOfInner(const vector1D& m) const
+    {
+        if (m_rows != m.m_rows)
         {
-            for (size_t row = 0; row < m_rows; row++)
-            {
-                m_data[row] *= d;
-            }
+            throw Reliability::probLibException("number of rows differ");
         }
-
-        void vector1D::operator+=(const vector1D& m)
+        auto sum = 0.0;
+        for (size_t k = 0; k < m_rows; k++)
         {
-            if (m_rows != m.m_rows)
-            {
-                throw Reliability::probLibException("number of rows differ");
-            }
-            for (size_t row = 0; row < m_rows; row++)
-            {
-                m_data[row] += m.m_data[row];
-            }
+            sum += (m_data[k] * m.m_data[k]);
         }
+        return sum;
+    }
 
-        size_t vector1D::size() const
+    double vector1D::sumOfInners(const vector1D& m, const vector1D& n) const
+    {
+        if (m_rows != m.m_rows || m_rows != n.m_rows)
         {
-            return m_rows;
+            throw Reliability::probLibException("number of rows differ");
         }
-
-        double vector1D::sumOfSquares() const
+        auto sum = 0.0;
+        for (size_t k = 0; k < m_rows; k++)
         {
-            auto sum = 0.0;
+            sum += (m_data[k] * m.m_data[k] * n.m_data[k]);
+        }
+        return sum;
+    }
+
+    void vector1D::assign(const double x)
+    {
+        for (size_t k = 0; k < m_rows; k++)
+        {
+            m_data[k] = x;
+        }
+    }
+
+    double vector1D::norm() const
+    {
+        return sqrt(sumOfSquares());
+    }
+
+    void vector1D::normalize()
+    {
+        double s = norm();
+        if (s > 0.0)
+        {
+            double r = 1.0 / s;
             for (size_t k = 0; k < m_rows; k++)
             {
-                sum += (m_data[k] * m_data[k]);
+                m_data[k] *= r;
             }
-            return sum;
         }
-
-        double vector1D::sumOfInner(const vector1D& m) const
+        else
         {
-            if (m_rows != m.m_rows)
-            {
-                throw Reliability::probLibException("number of rows differ");
-            }
-            auto sum = 0.0;
+            double r = 1.0 / sqrt((double)m_rows);
             for (size_t k = 0; k < m_rows; k++)
             {
-                sum += (m_data[k] * m.m_data[k]);
+                m_data[k] = r;
             }
-            return sum;
         }
+    }
 
-        double vector1D::sumOfInners(const vector1D& m, const vector1D& n) const
+    double vector1D::minval() const
+    {
+        if (m_rows == 0) return nan("");
+
+        double m = m_data[0];
+        for (size_t k = 1; k < m_rows; k++)
         {
-            if (m_rows != m.m_rows || m_rows != n.m_rows)
-            {
-                throw Reliability::probLibException("number of rows differ");
-            }
-            auto sum = 0.0;
-            for (size_t k = 0; k < m_rows; k++)
-            {
-                sum += (m_data[k] * m.m_data[k] * n.m_data[k]);
-            }
-            return sum;
+            m = std::min(m, m_data[k]);
         }
+        return m;
+    }
 
-        void vector1D::assign(const double x)
+    double vector1D::maxval() const
+    {
+        if (m_rows == 0) return nan("");
+
+        double m = m_data[0];
+
+        for (size_t k = 1; k < m_rows; k++)
         {
-            for (size_t k = 0; k < m_rows; k++)
-            {
-                m_data[k] = x;
-            }
+            m = std::max(m, m_data[k]);
         }
+        return m;
+    }
 
-        double vector1D::norm() const
+    void vector1D::dumpResult(std::ofstream& o) const
+    {
+        o << m_rows << std::endl;
+        for (size_t i = 0; i < m_rows; i++)
         {
-            return sqrt(sumOfSquares());
+            o << m_data[i] << std::endl;
         }
+    }
 
-        void vector1D::normalize()
+    vector1D vector1D::readDumpFile(std::fstream& o)
+    {
+        size_t n;
+        o >> n;
+        vector1D x(n);
+        for (size_t i = 0; i < n; i++)
         {
-            double s = norm();
-            if (s > 0.0)
-            {
-                double r = 1.0 / s;
-                for (size_t k = 0; k < m_rows; k++)
-                {
-                    m_data[k] *= r;
-                }
-            }
-            else
-            {
-                double r = 1.0 / sqrt((double)m_rows);
-                for (size_t k = 0; k < m_rows; k++)
-                {
-                    m_data[k] = r;
-                }
-            }
+            o >> x(i);
         }
-
-        double vector1D::minval() const
-        {
-            if (m_rows == 0) return nan("");
-
-            double m = m_data[0];
-            for (size_t k = 1; k < m_rows; k++)
-            {
-                m = std::min(m, m_data[k]);
-            }
-            return m;
-        }
-
-        double vector1D::maxval() const
-        {
-            if (m_rows == 0) return nan("");
-
-            double m = m_data[0];
-
-            for (size_t k = 1; k < m_rows; k++)
-            {
-                m = std::max(m, m_data[k]);
-            }
-            return m;
-        }
-
-        void vector1D::dumpResult(std::ofstream& o) const
-        {
-            o << m_rows << std::endl;
-            for (size_t i = 0; i < m_rows; i++)
-            {
-                o << m_data[i] << std::endl;
-            }
-        }
-
-        vector1D vector1D::readDumpFile(std::fstream& o)
-        {
-            size_t n;
-            o >> n;
-            vector1D x(n);
-            for (size_t i = 0; i < n; i++)
-            {
-                o >> x(i);
-            }
-            return x;
-        }
+        return x;
     }
 }

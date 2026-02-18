@@ -25,37 +25,34 @@
 
 #include "RootFinder.h"
 
-namespace Deltares
+namespace Deltares::Numeric
 {
-    namespace Numeric
+    class LinearRootFinder : public RootFinder
     {
-        class LinearRootFinder : public RootFinder
-        {
-        public:
-            /// <summary>
-            /// constructor
-            /// </summary>
-            /// <param name="tol"> z tolerance</param>
-            /// <param name="maxIter"> maximum number of iterations </param>
-            LinearRootFinder(double tol, int maxIter) : tolerance(tol), maxIterations(maxIter) {}
+    public:
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="tol"> z tolerance</param>
+        /// <param name="maxIter"> maximum number of iterations </param>
+        LinearRootFinder(double tol, int maxIter) : tolerance(tol), maxIterations(maxIter) {}
 
-            /// <summary>
-            /// Calculates the input value, which would lead to a result value when invoked for a given function. Extrapolation is allowed.
-            /// </summary>
-            /// <param name="xLow">Minimum start value</param>
-            /// <param name="xHigh">Maximum start value</param>
-            /// <param name="target">The result value</param>
-            /// <param name="function">The function</param>
-            /// <returns>The value which would lead to the result value when invoked for the function</returns>
-            double CalculateValue(double xLow, double xHigh, double target, const RootFinderMethod& function) override;
-            XValue CalculateValue(XValue low, XValue high, double target, const RootFinderMethod& function) override;
+        /// <summary>
+        /// Calculates the input value, which would lead to a result value when invoked for a given function. Extrapolation is allowed.
+        /// </summary>
+        /// <param name="xLow">Minimum start value</param>
+        /// <param name="xHigh">Maximum start value</param>
+        /// <param name="target">The result value</param>
+        /// <param name="function">The function</param>
+        /// <returns>The value which would lead to the result value when invoked for the function</returns>
+        double CalculateValue(double xLow, double xHigh, double target, const RootFinderMethod& function) override;
+        XValue CalculateValue(XValue low, XValue high, double target, const RootFinderMethod& function) override;
 
-        private:
-            static XValue interpolate(const XValue& low, const XValue& high, double target, const RootFinderMethod& function);
-            static XValue bisection(const XValue& low, const XValue& high, const RootFinderMethod& function);
-            const double tolerance = 0.001;
-            int maxIterations;
-        };
-    }
+    private:
+        static XValue interpolate(const XValue& low, const XValue& high, double target, const RootFinderMethod& function);
+        static XValue bisection(const XValue& low, const XValue& high, const RootFinderMethod& function);
+        const double tolerance = 0.001;
+        int maxIterations;
+    };
 }
 
