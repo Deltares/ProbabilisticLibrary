@@ -1,38 +1,41 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Sensitivity;
+using Deltares.Probabilistic.Statistics;
 
-namespace Deltares.Probabilistic.Sensitivity
+namespace Deltares.Probabilistic.Uncertainty
 {
-    public class SensitvityProject : ModelProject
+    public class UncertaintyProject : ModelProject
     {
         private int id = 0;
-        private SensitivitySettings settings = null;
-        private SensitivityResult result = null;
-        private List<SensitivityResult> results = null;
+        private UncertaintySettings settings = null;
+        private UncertaintyResult result = null;
+        private List<UncertaintyResult> results = null;
+        private Stochast stochast = null;
+        private List<Stochast> stochasts = null;
 
-        public SensitvityProject() : base(-1)
+        public UncertaintyProject() : base(-1)
         {
-            this.id = Interface.Create("sensitivity_project");
+            this.id = Interface.Create("uncertainty_project");
             base.SetId(id);
         }
 
-        internal SensitvityProject(int id) : base(id)
+        internal UncertaintyProject(int id) : base(id)
         {
             this.id = id;
         }
 
-        public SensitivitySettings Settings
+        public UncertaintySettings Settings
         {
             get
             {
                 if (settings == null)
                 {
                     int settingsId = Interface.GetIdValue(id, "settings");
-                    settings = new SensitivitySettings(settingsId);
+                    settings = new UncertaintySettings(settingsId);
                 }
                 return settings;
             }
@@ -47,17 +50,19 @@ namespace Deltares.Probabilistic.Sensitivity
         {
             result = null;
             results = null;
+            stochast = null;
+            stochasts = null;
             Interface.Execute(id, "run");
         }
 
-        public SensitivityResult Result
+        public UncertaintyResult Result
         {
             get
             {
                 if (result == null)
                 {
                     int resultId = Interface.GetIdValue(id, "result");
-                    result = new SensitivityResult(resultId);
+                    result = new UncertaintyResult(resultId);
                 }
 
                 return result;
@@ -69,22 +74,48 @@ namespace Deltares.Probabilistic.Sensitivity
             }
         }
 
-        public IList<SensitivityResult> Results
+        public IList<UncertaintyResult> Results
         {
             get
             {
                 if (results == null)
                 {
-                    results = new List<SensitivityResult>();
+                    results = new List<UncertaintyResult>();
 
                     int[] resultIds = Interface.GetArrayIdValue(id, "results");
                     foreach (int resultId in resultIds)
                     {
-                        results.Add(new SensitivityResult(resultId));
+                        results.Add(new UncertaintyResult(resultId));
                     }
                 }
 
                 return results;
+            }
+        }
+
+        public Stochast Stochast
+        {
+            get
+            {
+                if (stochast == null)
+                {
+                    stochast = Result.Stochast;
+                }
+
+                return stochast;
+            }
+        }
+
+        public IList<Stochast> Stochasts
+        {
+            get
+            {
+                if (stochasts == null)
+                {
+                    stochasts = new List<Stochast>(this.Results.Select(p => p.Stochast));
+                }
+
+                return stochasts;
             }
         }
 

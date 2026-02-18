@@ -66,5 +66,11 @@ namespace Deltares.Probabilistic.Reliability
                 designPoint = value;
             }
         }
+
+        public int TotalModelRuns
+        {
+            get { return Interface.GetIntValue(id, "total_model_runs"); }
+            set { Interface.SetIntValue(id, "total_model_runs", value); }
+        }
     }
 }
