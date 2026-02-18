@@ -31,6 +31,12 @@ public class ReliabilitySettings : IDisposable
         return id;
     }
 
+    public ReliabilityMethod ReliabilityMethod
+    {
+        get { return ReliabilityMethodConverter.ConvertFromString(Interface.GetStringValue(id, "reliability_method")); }
+        set { Interface.SetStringValue(id, "reliability_method", ReliabilityMethodConverter.ConvertToString(value)); }
+    }
+
     public int MaxParallelProcesses
     {
         get { return Interface.GetIntValue(id, "max_parallel_processes"); }
@@ -59,12 +65,6 @@ public class ReliabilitySettings : IDisposable
     {
         get { return Interface.GetBoolValue(id, "reuse_calculations"); }
         set { Interface.SetBoolValue(id, "reuse_calculations", value); }
-    }
-
-    public ReliabilityMethod ReliabilityMethod
-    {
-        get { return ReliabilityMethodConverter.ConvertFromString(Interface.GetStringValue(id, "reliability_method")); }
-        set { Interface.SetStringValue(id, "reliability_method", ReliabilityMethodConverter.ConvertToString(value)); }
     }
 
     public DesignPointMethod DesignPointMethod

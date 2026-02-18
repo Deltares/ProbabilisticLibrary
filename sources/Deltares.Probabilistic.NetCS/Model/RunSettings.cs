@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Deltares.Probabilistic.Model;
-using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Utils;
 
-public class RunSettings
+namespace Deltares.Probabilistic.Model;
+
+public class RunSettings : IDisposable
 {
     private int id = 0;
-    private List<StochastSettings> stochastSettings = null;
 
     public RunSettings()
     {
