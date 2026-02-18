@@ -24,16 +24,6 @@ public class DesignPoint : StochastPoint
         this.id = id;
     }
 
-    public void Dispose()
-    {
-        Interface.Destroy(id);
-    }
-
-    internal int GetId()
-    {
-        return id;
-    }
-
     public string Identifier
     {
         get { return Interface.GetStringValue(id, "identifier"); }

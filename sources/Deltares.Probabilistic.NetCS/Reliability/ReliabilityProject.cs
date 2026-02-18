@@ -3,13 +3,15 @@ using System.Linq;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
+using Deltares.Probabilistic.Logging;
 
 namespace Deltares.Probabilistic.Reliability
 {
     public class ReliabilityProject : ModelProject
     {
         private int id = 0;
-        private ReliabilitySettings reliabilitySettings = null;
+        private ReliabilitySettings settings = null;
+        private DesignPoint designPoint = null;
 
         public ReliabilityProject() : base(-1)
         {
@@ -22,31 +24,46 @@ namespace Deltares.Probabilistic.Reliability
             this.id = id;
         }
 
-        public void Dispose()
-        {
-            Interface.Destroy(id);
-        }
-
-        internal int GetId()
-        {
-            return id;
-        }
-
-        public ReliabilitySettings ReliabilitySettings
+        public ReliabilitySettings Settings
         {
             get
             {
-                if (reliabilitySettings == null)
+                if (settings == null)
                 {
                     int settingsId = Interface.GetIdValue(id, "settings");
-                    reliabilitySettings = new ReliabilitySettings(settingsId);
+                    settings = new ReliabilitySettings(settingsId);
                 }
-                return reliabilitySettings;
+                return settings;
             }
             set
             {
                 Interface.SetIntValue(id, "settings",  value.GetId()); 
-                reliabilitySettings = value;
+                settings = value;
+            }
+        }
+
+        public void Run()
+        {
+            designPoint = null;
+            Interface.Execute(id, "run");
+        }
+
+        public DesignPoint DesignPoint
+        {
+            get
+            {
+                if (designPoint == null)
+                {
+                    int designPointId = Interface.GetIdValue(id, "design_point");
+                    designPoint = new DesignPoint(designPointId);
+                }
+
+                return designPoint;
+            }
+            set
+            {
+                Interface.SetIntValue(id, "design_point", value.GetId());
+                designPoint = value;
             }
         }
     }
