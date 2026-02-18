@@ -25,52 +25,49 @@
 
 #include "../Model/ZModel.h"
 
-namespace Deltares
+namespace Deltares::Server
 {
-    namespace Server
+    class BaseHandler
     {
-        class BaseHandler
+    public:
+        virtual bool CanHandle(std::string object_type) { return false; }
+        virtual void Create(std::string object_type, int id) { }
+        virtual void Destroy(int id) {}
+        virtual void Exit() {}
+        virtual bool ShouldClose() { return false; }
+        virtual double GetValue(int id, const std::string property_) { return 0; }
+        virtual void SetValue(int id, const std::string property_, double value) {}
+        virtual int GetIntValue(int id, std::string property_) { return 0; }
+        virtual void SetIntValue(int id, std::string property_, int value) {}
+        virtual double GetIntArgValue(int id1, int id2, std::string property_) { return 0; }
+        virtual void SetIntArgValue(int id1, int id2, std::string property_, double value) {}
+        virtual bool GetBoolValue(int id, std::string property_) { return false; }
+        virtual void SetBoolValue(int id, std::string property_, bool value) {}
+        virtual std::string GetStringValue(int id, std::string property_) { return ""; }
+        virtual std::string GetIndexedStringValue(int id, std::string property_, int index) { return ""; }
+        virtual void SetStringValue(int id, std::string property_, std::string value) {}
+        virtual void SetArrayValue(int id, std::string property_, double* values, int size) {}
+        virtual void GetArrayValue(int id, std::string property_, double* values, int size) {}
+        virtual void GetArgValues(int id, std::string property_, double* values, int size, double* outputValues) {}
+        virtual std::vector<int> GetArrayIntValue(int id, std::string property_) { return std::vector<int>(); }
+        virtual void SetArrayIntValue(int id, std::string property_, int* values, int size) {}
+        virtual double GetArgValue(int id, std::string property_, double argument) { return 0; }
+        virtual void SetArgValue(int id, std::string property_, double argument, double value) {}
+        virtual double GetIndexedValue(int id, std::string property_, int index) { return 0; }
+        virtual void SetIndexedValue(int id, std::string property_, int index, double value) {}
+        virtual double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) { return 0; }
+        virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) {}
+        virtual void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
         {
-        public:
-            virtual bool CanHandle(std::string object_type) { return false; }
-            virtual void Create(std::string object_type, int id) { }
-            virtual void Destroy(int id) {}
-            virtual void Exit() {}
-            virtual bool ShouldClose() { return false; }
-            virtual double GetValue(int id, const std::string property_) { return 0; }
-            virtual void SetValue(int id, const std::string property_, double value) {}
-            virtual int GetIntValue(int id, std::string property_) { return 0; }
-            virtual void SetIntValue(int id, std::string property_, int value) {}
-            virtual double GetIntArgValue(int id1, int id2, std::string property_) { return 0; }
-            virtual void SetIntArgValue(int id1, int id2, std::string property_, double value) {}
-            virtual bool GetBoolValue(int id, std::string property_) { return false; }
-            virtual void SetBoolValue(int id, std::string property_, bool value) {}
-            virtual std::string GetStringValue(int id, std::string property_) { return ""; }
-            virtual std::string GetIndexedStringValue(int id, std::string property_, int index) { return ""; }
-            virtual void SetStringValue(int id, std::string property_, std::string value) {}
-            virtual void SetArrayValue(int id, std::string property_, double* values, int size) {}
-            virtual void GetArrayValue(int id, std::string property_, double* values, int size) {}
-            virtual void GetArgValues(int id, std::string property_, double* values, int size, double* outputValues) {}
-            virtual std::vector<int> GetArrayIntValue(int id, std::string property_) { return std::vector<int>(); }
-            virtual void SetArrayIntValue(int id, std::string property_, int* values, int size) {}
-            virtual double GetArgValue(int id, std::string property_, double argument) { return 0; }
-            virtual void SetArgValue(int id, std::string property_, double argument, double value) {}
-            virtual double GetIndexedValue(int id, std::string property_, int index) { return 0; }
-            virtual void SetIndexedValue(int id, std::string property_, int index, double value) {}
-            virtual double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) { return 0; }
-            virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) {}
-            virtual void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
-            {
-                // empty; must be implemented within implementing class
-            }
-            virtual int GetIndexedIntValue(int id, std::string property_, int index) { return 0; }
-            virtual int GetIdValue(int id, std::string property_, int newId) { return GetIntValue(id, property_); }
-            virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }
-            virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
-            virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
-            virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
-            virtual void Execute(int id, std::string method_) {}
-        };
-    }
+            // empty; must be implemented within implementing class
+        }
+        virtual int GetIndexedIntValue(int id, std::string property_, int index) { return 0; }
+        virtual int GetIdValue(int id, std::string property_, int newId) { return GetIntValue(id, property_); }
+        virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }
+        virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
+        virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
+        virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
+        virtual void Execute(int id, std::string method_) {}
+    };
 }
 
