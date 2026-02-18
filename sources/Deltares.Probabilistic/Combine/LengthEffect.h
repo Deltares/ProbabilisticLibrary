@@ -24,39 +24,36 @@
 #include "combiner.h"
 #include "../Reliability/DesignPoint.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Class for length effect calculation
+     * (wrapper for upscaleLength in upscaling)
+     */
+    class LengthEffect
     {
-        /**
-         * \brief Class for length effect calculation
-         * (wrapper for upscaleLength in upscaling)
-         */
-        class LengthEffect
-        {
-        public:
-            // \brief This method upscales from a cross section to a given section length
-            // \param crossSection : Reliability index and alpha cross section
-            // \param selfCorrelationMatrix : Correlation variables
-            // \param correlationLengths : Correlation length variables
-            // \param length : Section length
-            // \return Design point for section
-            static DesignPoint UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
-                const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-                const std::vector<double>& correlationLengths,
-                const double length);
+    public:
+        // \brief This method upscales from a cross section to a given section length
+        // \param crossSection : Reliability index and alpha cross section
+        // \param selfCorrelationMatrix : Correlation variables
+        // \param correlationLengths : Correlation length variables
+        // \param length : Section length
+        // \return Design point for section
+        static DesignPoint UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::vector<double>& correlationLengths,
+            const double length);
 
-            // \brief This method upscales from a cross section to a given section length
-            // \param crossSection : Reliability index and alpha cross section
-            // \param selfCorrelations : Correlation variables
-            // \param correlationLengths : Correlation length variables
-            // \param length : Section length
-            // \return Design point for section
-            static DesignPoint UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
-                const std::vector<double>& selfCorrelations,
-                const std::vector<double>& correlationLengths,
-                const double length);
-        };
-    }
+        // \brief This method upscales from a cross section to a given section length
+        // \param crossSection : Reliability index and alpha cross section
+        // \param selfCorrelations : Correlation variables
+        // \param correlationLengths : Correlation length variables
+        // \param length : Section length
+        // \return Design point for section
+        static DesignPoint UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
+            const std::vector<double>& selfCorrelations,
+            const std::vector<double>& correlationLengths,
+            const double length);
+    };
 }
 

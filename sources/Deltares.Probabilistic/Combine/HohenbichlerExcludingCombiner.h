@@ -25,16 +25,13 @@
 
 #include "ExcludingCombiner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class HohenbichlerExcludingCombiner : public ExcludingCombiner
     {
-        class HohenbichlerExcludingCombiner : public ExcludingCombiner
-        {
-            std::shared_ptr<DesignPoint> combineExcludingDesignPoints(
-                std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
-                std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) override;
-        };
-    }
+        std::shared_ptr<DesignPoint> combineExcludingDesignPoints(
+            std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+            std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) override;
+    };
 }
 

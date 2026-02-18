@@ -22,7 +22,7 @@
 #pragma once
 #include <utility>
 
-namespace Deltares ::Reliability
+namespace Deltares::Reliability
 {
     class HohenbichlerFORM
     {

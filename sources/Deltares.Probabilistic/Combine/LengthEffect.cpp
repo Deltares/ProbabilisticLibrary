@@ -22,79 +22,76 @@
 #include "LengthEffect.h"
 #include "upscaling.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    DesignPoint LengthEffect::UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
+        const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+        const std::vector<double>& correlationLengths,
+        const double length)
     {
-        DesignPoint LengthEffect::UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::vector<double>& correlationLengths,
-            const double length)
+        const size_t nStochasts = crossSection->Alphas.size();
+        auto selfCorrelation = std::vector<double>();
+
+        for (size_t i = 0; i < nStochasts; i++)
         {
-            const size_t nStochasts = crossSection->Alphas.size();
-            auto selfCorrelation = std::vector<double>();
+            auto stochast = crossSection->Alphas[i]->Stochast;
+            selfCorrelation.push_back(selfCorrelationMatrix->getSelfCorrelation(stochast));
+        }
 
-            for (size_t i = 0; i < nStochasts; i++)
-            {
-                auto stochast = crossSection->Alphas[i]->Stochast;
-                selfCorrelation.push_back(selfCorrelationMatrix->getSelfCorrelation(stochast));
-            }
+        return UpscaleLength(crossSection, selfCorrelation, correlationLengths, length);
+    };
 
-            return UpscaleLength(crossSection, selfCorrelation, correlationLengths, length);
-        };
+    DesignPoint LengthEffect::UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
+        const std::vector<double>& selfCorrelations,
+        const std::vector<double>& correlationLengths,
+        const double length)
+    {
+        const size_t nStochasts = crossSection->Alphas.size();
 
-        DesignPoint LengthEffect::UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
-            const std::vector<double>& selfCorrelations,
-            const std::vector<double>& correlationLengths,
-            const double length)
+        auto up = upscaling();
+        auto alpha = Numeric::vector1D(nStochasts);
+        for (size_t i = 0; i < nStochasts; i++)
         {
-            const size_t nStochasts = crossSection->Alphas.size();
+            alpha(i) = crossSection->Alphas[i]->Alpha;
+        }
+        auto dp = alphaBeta(crossSection->Beta, alpha);
+        Numeric::vector1D rho1(nStochasts);
+        Numeric::vector1D rho2(nStochasts);
+        for (size_t i = 0; i < nStochasts; i++)
+        {
+            rho1(i) = selfCorrelations[i];
+            rho2(i) = correlationLengths[i];
+        }
 
-            auto up = upscaling();
-            auto alpha = Numeric::vector1D(nStochasts);
-            for (size_t i = 0; i < nStochasts; i++)
-            {
-                alpha(i) = crossSection->Alphas[i]->Alpha;
-            }
-            auto dp = alphaBeta(crossSection->Beta, alpha);
-            Numeric::vector1D rho1(nStochasts);
-            Numeric::vector1D rho2(nStochasts);
-            for (size_t i = 0; i < nStochasts; i++)
-            {
-                rho1(i) = selfCorrelations[i];
-                rho2(i) = correlationLengths[i];
-            }
+        auto message = std::make_shared<Logging::Message>();
+        message->Type = Logging::MessageType::Debug;
+        auto [dpLength, nFail] = up.upscaleLength(dp, rho1, rho2, length, message->Text);
+        auto dpL = DesignPoint();
+        dpL.Identifier = "Length Effect";
+        dpL.Beta = dpLength.getBeta();
+        dpL.Messages.push_back(message);
+        if (nFail > 0)
+        {
+            auto warning = std::make_shared<Logging::Message>();
+            message->Type = Logging::MessageType::Warning;
+            message->Text = "non-convergence in Hohenbichler";
+            dpL.Messages.push_back(warning);
+        }
 
-            auto message = std::make_shared<Logging::Message>();
-            message->Type = Logging::MessageType::Debug;
-            auto [dpLength, nFail] = up.upscaleLength(dp, rho1, rho2, length, message->Text);
-            auto dpL = DesignPoint();
-            dpL.Identifier = "Length Effect";
-            dpL.Beta = dpLength.getBeta();
-            dpL.Messages.push_back(message);
-            if (nFail > 0)
-            {
-                auto warning = std::make_shared<Logging::Message>();
-                message->Type = Logging::MessageType::Warning;
-                message->Text = "non-convergence in Hohenbichler";
-                dpL.Messages.push_back(warning);
-            }
+        for (size_t i = 0; i < nStochasts; i++)
+        {
+            auto alphaValue = dpLength.getAlphaI(i);
+            auto alpha = std::make_shared<Models::StochastPointAlpha>();
+            alpha->Alpha = alphaValue;
+            alpha->Stochast = crossSection->Alphas[i]->Stochast;
+            alpha->U = -dpL.Beta * alphaValue;
+            alpha->X = alpha->Stochast->getXFromU(alpha->U);
+            dpL.Alphas.push_back(alpha);
+        }
+        dpL.ContributingDesignPoints.push_back(crossSection);
 
-            for (size_t i = 0; i < nStochasts; i++)
-            {
-                auto alphaValue = dpLength.getAlphaI(i);
-                auto alpha = std::make_shared<Models::StochastPointAlpha>();
-                alpha->Alpha = alphaValue;
-                alpha->Stochast = crossSection->Alphas[i]->Stochast;
-                alpha->U = -dpL.Beta * alphaValue;
-                alpha->X = alpha->Stochast->getXFromU(alpha->U);
-                dpL.Alphas.push_back(alpha);
-            }
-            dpL.ContributingDesignPoints.push_back(crossSection);
+        return dpL;
+    };
 
-            return dpL;
-        };
-
-    }
 }
 
