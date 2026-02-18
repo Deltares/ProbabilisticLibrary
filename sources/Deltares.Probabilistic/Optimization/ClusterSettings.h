@@ -24,78 +24,74 @@
 #include "../Logging/ValidationReport.h"
 #include "../Logging/ValidationSupport.h"
 
-namespace Deltares
+namespace Deltares::Optimization
 {
-    namespace Optimization
+    /**
+     * \brief Types of initialization of a cluster
+     * \remark Forgy, Random are other initialization methods, but not implemented yet
+     */
+    enum class ClusterInitializationMethod { PlusPlus};
+
+    /**
+     * \brief Settings for clustering algorithm
+     */
+    class ClusterSettings
     {
+    public:
         /**
-         * \brief Types of initialization of a cluster
-         * \remark Forgy, Random are other initialization methods, but not implemented yet
+         * \brief Sample Weighting should be accounted for in clustering
          */
-        enum class ClusterInitializationMethod { PlusPlus};
+        bool SampleHasWeighting = false;
 
         /**
-         * \brief Settings for clustering algorithm
+         * \brief Requested number of clusters
          */
-        class ClusterSettings
+        int NumberClusters = 1;
+
+        /**
+         * \brief Maximum iterations within the clustering algorithm
+         */
+        int MaxIterations = 100;
+
+        /**
+         * \brief Number of trials. Each trial leads to another initial clustering set
+         */
+        int Trials = 10;
+
+        /**
+         * \brief Indicates whether number of clusters is fixed (false) or determined by the <see cref="IClusterMethod"/> algorithm
+         */
+        bool OptimizeNumberOfClusters = false;
+
+        /**
+         * \brief Initialization method
+         */
+        ClusterInitializationMethod clusterInitializationMethod = ClusterInitializationMethod::PlusPlus;
+
+        /**
+         * \brief Maximum number of clusters when OptimizeNumberOfClusters is true or number of clusters to be generated when OptimizeNumberOfClusters is false
+         */
+        int MaxClusters = 100;
+
+        /**
+         * \brief Minimum required relative improvement to continue increasing the number of clusters when <see cref="optimizeNumberOfClusters"/> is true
+         */
+        double MinImprovement = 0.1;
+
+        /**
+         * \brief The maximum number of samples used to generate clusters
+         */
+        int MaxSamples = 500;
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         * \return Indication
+         */
+        void validate(Logging::ValidationReport& report) const
         {
-        public:
-            /**
-             * \brief Sample Weighting should be accounted for in clustering
-             */
-            bool SampleHasWeighting = false;
-
-            /**
-             * \brief Requested number of clusters
-             */
-            int NumberClusters = 1;
-
-            /**
-             * \brief Maximum iterations within the clustering algorithm
-             */
-            int MaxIterations = 100;
-
-            /**
-             * \brief Number of trials. Each trial leads to another initial clustering set
-             */
-            int Trials = 10;
-
-            /**
-             * \brief Indicates whether number of clusters is fixed (false) or determined by the <see cref="IClusterMethod"/> algorithm
-             */
-            bool OptimizeNumberOfClusters = false;
-
-            /**
-             * \brief Initialization method
-             */
-            ClusterInitializationMethod clusterInitializationMethod = ClusterInitializationMethod::PlusPlus;
-
-            /**
-             * \brief Maximum number of clusters when OptimizeNumberOfClusters is true or number of clusters to be generated when OptimizeNumberOfClusters is false
-             */
-            int MaxClusters = 100;
-
-            /**
-             * \brief Minimum required relative improvement to continue increasing the number of clusters when <see cref="optimizeNumberOfClusters"/> is true
-             */
-            double MinImprovement = 0.1;
-
-            /**
-             * \brief The maximum number of samples used to generate clusters
-             */
-            int MaxSamples = 500;
-
-            /**
-             * \brief Reports whether the settings have valid values
-             * \param report Report in which the validity is reported
-             * \return Indication
-             */
-            void validate(Logging::ValidationReport& report) const
-            {
-                Logging::ValidationSupport::checkMinimumInt(report, 1, MaxClusters, "max clusters");
-            }
-        };
-    }
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MaxClusters, "max clusters");
+        }
+    };
 }
-
 

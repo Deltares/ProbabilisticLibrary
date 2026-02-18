@@ -25,108 +25,105 @@
 
 #include "../Utils/probLibException.h"
 
-namespace Deltares
+namespace Deltares::Optimization
 {
-    namespace Optimization
+    /**
+     * \brief Indicates which values have to be used from the search parameter settings
+     */
+    enum UseValuesType {AllValues, MinValue, MaxValue};
+
+    /**
+     * \brief Settings for a parameter in the grid search algorithm
+     */
+    class SearchParameterSettings
     {
+    public:
         /**
-         * \brief Indicates which values have to be used from the search parameter settings
+         * \brief Minimum value which can be assigned to the parameter
          */
-        enum UseValuesType {AllValues, MinValue, MaxValue};
+        double MinValue = 0;
 
         /**
-         * \brief Settings for a parameter in the grid search algorithm
+         * \brief Maximum value which can be assigned to the parameter
          */
-        class SearchParameterSettings
+        double MaxValue = 0;
+
+        /**
+         * \brief Number of different values which can be assigned to the parameter
+         */
+        int NumberOfValues = 1;
+
+        /**
+         * \brief Start value for the parameter
+         * \remark Not used in the grid search algorithm, but in future algorithms
+         */
+        double StartValue = nan("");
+
+        /**
+         * \brief Indicates whether the grid can be repositioned for this parameter
+         * \remark Only useful when UseValues is AllValues
+         */
+        bool Move = false;
+
+        /**
+         * \brief The number of refinements to be performed
+         */
+        int NumberOfRefinements = 0;
+
+        /**
+         * \brief Indicates which values have to be used in the grid search algorithm
+         */
+        UseValuesType UseValues = UseValuesType::AllValues;
+
+        /**
+         * \brief Gets the values to be queried in the grid search algorithm 
+         * \return Values
+         * \remark Based on MinValue, MaxValue, UseValueType and NumberOfValues
+         */
+        std::vector<double> getValues() const
         {
-        public:
-            /**
-             * \brief Minimum value which can be assigned to the parameter
-             */
-            double MinValue = 0;
+            std::vector<double> values(this->UseValues == UseValuesType::AllValues ? this->NumberOfValues : 1);
 
-            /**
-             * \brief Maximum value which can be assigned to the parameter
-             */
-            double MaxValue = 0;
-
-            /**
-             * \brief Number of different values which can be assigned to the parameter
-             */
-            int NumberOfValues = 1;
-
-            /**
-             * \brief Start value for the parameter
-             * \remark Not used in the grid search algorithm, but in future algorithms
-             */
-            double StartValue = nan("");
-
-            /**
-             * \brief Indicates whether the grid can be repositioned for this parameter
-             * \remark Only useful when UseValues is AllValues
-             */
-            bool Move = false;
-
-            /**
-             * \brief The number of refinements to be performed
-             */
-            int NumberOfRefinements = 0;
-
-            /**
-             * \brief Indicates which values have to be used in the grid search algorithm
-             */
-            UseValuesType UseValues = UseValuesType::AllValues;
-
-            /**
-             * \brief Gets the values to be queried in the grid search algorithm 
-             * \return Values
-             * \remark Based on MinValue, MaxValue, UseValueType and NumberOfValues
-             */
-            std::vector<double> getValues() const
+            if (this->UseValues == UseValuesType::AllValues) 
             {
-                std::vector<double> values(this->UseValues == UseValuesType::AllValues ? this->NumberOfValues : 1);
+                double interval = getInterval();
 
-                if (this->UseValues == UseValuesType::AllValues) 
+                for (int i = 0; i < values.size(); i++)
                 {
-                    double interval = getInterval();
-
-                    for (int i = 0; i < values.size(); i++)
-                    {
-                        values[i] = MinValue + i * interval;
-                    }
-                }
-                else if (this->UseValues == UseValuesType::MinValue)
-                {
-                    values[0] = MinValue;
-                }
-                else if (this->UseValues == UseValuesType::MaxValue)
-                {
-                    values[0] = MaxValue;
-                }
-                else
-                {
-                    throw Reliability::probLibException("Use values type not supported");
-                }
-
-                return values;
-            }
-
-            /**
-             * \brief Gets the interval between values
-             * \return Interval
-             */
-            double getInterval() const
-            {
-                if (NumberOfValues > 1)
-                {
-                    return (MaxValue - MinValue) / (NumberOfValues - 1);
-                }
-                else
-                {
-                    return 0;
+                    values[i] = MinValue + i * interval;
                 }
             }
-        };
-    }
+            else if (this->UseValues == UseValuesType::MinValue)
+            {
+                values[0] = MinValue;
+            }
+            else if (this->UseValues == UseValuesType::MaxValue)
+            {
+                values[0] = MaxValue;
+            }
+            else
+            {
+                throw Reliability::probLibException("Use values type not supported");
+            }
+
+            return values;
+        }
+
+        /**
+         * \brief Gets the interval between values
+         * \return Interval
+         */
+        double getInterval() const
+        {
+            if (NumberOfValues > 1)
+            {
+                return (MaxValue - MinValue) / (NumberOfValues - 1);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    };
 }
 
