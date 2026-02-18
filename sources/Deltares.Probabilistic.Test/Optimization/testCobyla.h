@@ -22,42 +22,36 @@
 #pragma once
 #include "../../Deltares.Probabilistic/Optimization/CobylaOptimization.h"
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class testModel : public Optimization::optimizationModel
     {
-        namespace Test
-        {
-            class testModel : public Optimization::optimizationModel
-            {
-            public:
-                testModel() = default;
-                testModel(double offset_1, double offset_2) : offset1(offset_1), offset2(offset_2) {}
-                double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
-            private:
-                const double offset1 = -1.0;
-                const double offset2 = 0.0;
-            };
+    public:
+        testModel() = default;
+        testModel(double offset_1, double offset_2) : offset1(offset_1), offset2(offset_2) {}
+        double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
+    private:
+        const double offset1 = -1.0;
+        const double offset2 = 0.0;
+    };
 
-            class testModelWithConstraint : public Optimization::optimizationModel
-            {
-            public:
-                double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
-                double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) override;
-                unsigned GetNumberOfConstraints() const override { return 1; }
-            };
+    class testModelWithConstraint : public Optimization::optimizationModel
+    {
+    public:
+        double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
+        double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) override;
+        unsigned GetNumberOfConstraints() const override { return 1; }
+    };
 
-            class testCobyla
-            {
-            public:
-                void allCobylaTests();
-            private:
-                static void test_no_constraints1();
-                static void test_no_constraints2();
-                static void test_with_constraint1();
-                const double margin = 1e-2;
-            };
-        }
-    }
+    class testCobyla
+    {
+    public:
+        void allCobylaTests();
+    private:
+        static void test_no_constraints1();
+        static void test_no_constraints2();
+        static void test_with_constraint1();
+        const double margin = 1e-2;
+    };
 }
 
