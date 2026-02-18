@@ -12,6 +12,12 @@ public class DiscreteValue : IDisposable
         this.id = Interface.Create("discrete_value");
     }
 
+    public DiscreteValue(double x, double amount) : this()
+    {
+        this.X = x;
+        this.Amount = amount;
+    }
+
     internal DiscreteValue(int id)
     {
         this.id = id;

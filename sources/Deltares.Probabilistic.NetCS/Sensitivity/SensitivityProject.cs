@@ -7,20 +7,20 @@ using Deltares.Probabilistic.Logging;
 
 namespace Deltares.Probabilistic.Sensitivity
 {
-    public class SensitvityProject : ModelProject
+    public class SensitivityProject : ModelProject
     {
         private int id = 0;
         private SensitivitySettings settings = null;
         private SensitivityResult result = null;
         private List<SensitivityResult> results = null;
 
-        public SensitvityProject() : base(-1)
+        public SensitivityProject() : base(-1)
         {
             this.id = Interface.Create("sensitivity_project");
             base.SetId(id);
         }
 
-        internal SensitvityProject(int id) : base(id)
+        internal SensitivityProject(int id) : base(id)
         {
             this.id = id;
         }

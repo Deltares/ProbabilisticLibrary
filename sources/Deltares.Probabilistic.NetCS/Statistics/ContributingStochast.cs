@@ -33,7 +33,7 @@ public class ContributingStochast : IDisposable
         set { Interface.SetValue(id, "probability", value); }
     }
 
-    public Stochast Variable
+    public Stochast Stochast
     {
         get
         {

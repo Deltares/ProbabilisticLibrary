@@ -14,6 +14,7 @@ namespace Deltares.Probabilistic.Uncertainty
         private UncertaintySettings settings = null;
         private UncertaintyResult result = null;
         private List<UncertaintyResult> results = null;
+        private CorrelationMatrix outputCorrelationMatrix = null;
         private Stochast stochast = null;
         private List<Stochast> stochasts = null;
 
@@ -52,6 +53,7 @@ namespace Deltares.Probabilistic.Uncertainty
             results = null;
             stochast = null;
             stochasts = null;
+            outputCorrelationMatrix = null;
             Interface.Execute(id, "run");
         }
 
@@ -118,6 +120,27 @@ namespace Deltares.Probabilistic.Uncertainty
                 return stochasts;
             }
         }
+
+        public CorrelationMatrix OutputCorrelationMatrix
+        {
+            get
+            {
+                if (outputCorrelationMatrix == null)
+                {
+                    int matrixId = Interface.GetIdValue(id, "output_correlation_matrix");
+                    outputCorrelationMatrix = new CorrelationMatrix(matrixId);
+                }
+
+                return outputCorrelationMatrix;
+            }
+            set
+            {
+                Interface.SetIntValue(id, "output_correlation_matrix", value.GetId());
+                outputCorrelationMatrix = value;
+            }
+        }
+
+
 
         public int TotalModelRuns
         {

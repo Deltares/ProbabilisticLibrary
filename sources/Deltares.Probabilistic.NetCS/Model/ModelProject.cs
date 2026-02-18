@@ -8,12 +8,15 @@ namespace Deltares.Probabilistic.Model
 {
     public delegate void ZSampleDelegate(ModelSample sample);
 
+
     public class ModelProject : IDisposable
     {
         private int id = 0;
 
         private CallBackList<Stochast> stochasts = null;
         private ZSampleDelegate zFunction = null;
+        private CorrelationMatrix correlationMatrix = null;
+        private TagRepository tagRepository = new TagRepository();
 
         private bool synchronizing = false;
 
@@ -80,6 +83,31 @@ namespace Deltares.Probabilistic.Model
             {
                 Interface.SetArrayIntValue(id, "stochasts", this.stochasts.Select(p => p.GetId()).ToArray());
             }
+        }
+
+        public CorrelationMatrix CorrelationMatrix
+        {
+            get
+            {
+                if (correlationMatrix == null)
+                {
+                    int matrixId = Interface.GetIdValue(id, "correlation_matrix");
+                    correlationMatrix = new CorrelationMatrix(matrixId);
+                }
+
+                return correlationMatrix;
+            }
+            set
+            {
+                Interface.SetIntValue(id, "correlation_matrix", value.GetId());
+                correlationMatrix = value;
+            }
+        }
+
+        public TagRepository TagRepository
+        {
+            get { return tagRepository; }
+            set { tagRepository = value; }
         }
     }
 }

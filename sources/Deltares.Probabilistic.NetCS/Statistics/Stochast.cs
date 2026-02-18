@@ -295,6 +295,12 @@ namespace Deltares.Probabilistic.Statistics
             return Interface.GetArgValue(id, "x_from_u", u);
         }
 
+        public double GetXFromP(double p)
+        {
+            double u = StandardNormal.GetUFromP(p);
+            return GetXFromU(u);
+        }
+
         public double GetUFromX(double x)
         {
             return Interface.GetArgValue(id, "u_from_x", x);
@@ -315,6 +321,18 @@ namespace Deltares.Probabilistic.Statistics
             Interface.SetArrayValue(id, "u_and_x", [u, x]);
             Interface.Execute(id, "initialize_conditional_values");
             return Interface.GetValue(id, "x_from_u_and_source");
+        }
+
+        public void SetXAtU(double x, double u, ConstantParameterType constantParameterType)
+        {
+            Interface.SetArrayValue(id, "u_and_x", [u, x]);
+            Interface.SetStringValue(id, "constant_parameter_type", ConstantParameterTypeConverter.ConvertToString(constantParameterType));
+            Interface.Execute(id, "set_x_at_u");
+        }
+
+        public bool IsVarying()
+        {
+            return Interface.GetBoolValue(id, "is_varying");
         }
 
         public bool IsConditional
@@ -409,6 +427,20 @@ namespace Deltares.Probabilistic.Statistics
             Interface.SetArrayValue(id, "data", values);
 
             Interface.Execute(id, "fit");
+
+            this.histogramValues = null;
+            this.discreteValues = null;
+            this.fragilityValues = null;
+        }
+
+        public void FitWeighted(double[] values, double[] weights)
+        {
+            Interface.SetIntValue(id, "prior", 0);
+            Interface.SetValue(id, "shift_for_fit", 0);
+            Interface.SetArrayValue(id, "data", values);
+            Interface.SetArrayValue(id, "weights", values);
+
+            Interface.Execute(id, "fit_weighted");
 
             this.histogramValues = null;
             this.discreteValues = null;

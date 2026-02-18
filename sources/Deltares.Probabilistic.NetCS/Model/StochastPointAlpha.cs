@@ -28,7 +28,7 @@ public class StochastPointAlpha
         return id;
     }
 
-    public Stochast Variable
+    public Stochast Parameter
     {
         get
         {

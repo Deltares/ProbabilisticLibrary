@@ -1,5 +1,4 @@
 ﻿using System;
-using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Model;
@@ -7,6 +6,8 @@ namespace Deltares.Probabilistic.Model;
 public class ModelSample : IDisposable
 {
     private int id = 0;
+    private double[] values = null;
+    private double[] outputValues = null;
 
     public ModelSample()
     {
@@ -26,6 +27,16 @@ public class ModelSample : IDisposable
     internal int GetId()
     {
         return id;
+    }
+
+    public double[] Values
+    {
+        get { return values; }
+    }
+
+    public double[] OutputValues
+    {
+        get { return outputValues; }
     }
 
     public int Iteration
@@ -68,5 +79,11 @@ public class ModelSample : IDisposable
     {
         get { return Interface.GetBoolValue(id, "is_restart_required"); }
         set { Interface.SetBoolValue(id, "is_restart_required", value); }
+    }
+
+    public int Tag
+    {
+        get { return Interface.GetIntValue(id, "tag"); }
+        set { Interface.SetIntValue(id, "tag", value); }
     }
 }

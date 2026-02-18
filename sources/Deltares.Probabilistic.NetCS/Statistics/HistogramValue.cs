@@ -17,6 +17,13 @@ public class HistogramValue : IDisposable
         this.id = id;
     }
 
+    public HistogramValue(double lowerBound, double upperBound, double amount) : this()
+    {
+        LowerBound = lowerBound;
+        UpperBound = upperBound;
+        Amount = amount;
+    }
+
     public void Dispose()
     {
         Interface.Destroy(id);
