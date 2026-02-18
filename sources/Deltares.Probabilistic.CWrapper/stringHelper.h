@@ -23,7 +23,8 @@
 #include <string>
 
 constexpr size_t error_message_length = 256;
-struct tError
+
+extern "C" struct tError
 {
     char errorMessage[error_message_length];
     int errorCode;

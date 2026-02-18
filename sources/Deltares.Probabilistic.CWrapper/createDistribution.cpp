@@ -25,15 +25,9 @@
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 
-Stochast createDistribution::createValid(const EnumDistributions distHR, double p[4])
+Stochast createDistribution::createValid(const EnumDistributions distHR, std::vector<double>& parameters)
 {
-    std::vector<double> pValues(4);
-    for (int i = 0; i < 4; i++)
-    {
-        pValues[i] = p[i];
-    }
-
-    auto s = create(distHR, pValues);
+    auto s = create(distHR, parameters);
     if (!s.isValid())
     {
         throw probLibException("parameters are not valid for distribution.");
@@ -41,7 +35,7 @@ Stochast createDistribution::createValid(const EnumDistributions distHR, double 
     return s;
 }
 
-Stochast createDistribution::create(const EnumDistributions distHR, std::vector<double> p)
+Stochast createDistribution::create(const EnumDistributions distHR, std::vector<double>& p)
 {
     DistributionType dist;
     bool truncated = false;

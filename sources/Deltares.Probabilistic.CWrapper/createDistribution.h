@@ -21,14 +21,16 @@
 //
 #pragma once
 
+#include <vector>
 #include "enumDistributions.h"
 #include "../Deltares.Probabilistic/Statistics/Stochast.h"
 
 class createDistribution
 {
 public:
-    static Deltares::Statistics::Stochast createValid(const Deltares::Reliability::EnumDistributions distHR, double p[4]);
+    static Deltares::Statistics::Stochast createValid(const Deltares::Reliability::EnumDistributions distHR,
+        std::vector<double>& parameters);
 private:
-    static Deltares::Statistics::Stochast create(const Deltares::Reliability::EnumDistributions d, std::vector<double> p);
+    static Deltares::Statistics::Stochast create(const Deltares::Reliability::EnumDistributions d, std::vector<double>& p);
 };
 

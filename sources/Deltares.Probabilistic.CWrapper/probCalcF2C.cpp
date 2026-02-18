@@ -148,7 +148,12 @@ void probcalcf2c(const basicSettings* method, fdistribs distributions[], corrStr
         for (size_t i = 0; i < number_of_stochasts; i++)
         {
             auto distHR = static_cast<EnumDistributions>(distributions[i].distId);
-            auto s = std::make_shared<Stochast>(createDistribution::createValid(distHR, distributions[i].params));
+            std::vector<double> pValues(4);
+            for (int j = 0; j < 4; j++)
+            {
+                pValues[j] = distributions[i].params[j];
+            }
+            auto s = std::make_shared<Stochast>(createDistribution::createValid(distHR, pValues));
             stochasts.push_back(s);
         }
 

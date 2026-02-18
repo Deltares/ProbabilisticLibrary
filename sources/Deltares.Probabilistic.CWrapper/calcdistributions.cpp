@@ -38,7 +38,12 @@ double calculateDistributionInverse(const double u, const EnumDistributions type
     double x = 0.0;
     try
     {
-        auto s = createDistribution::createValid(type, p);
+        std::vector<double> pValues(4);
+        for (int i = 0; i < 4; i++)
+        {
+            pValues[i] = p[i];
+        }
+        auto s = createDistribution::createValid(type, pValues);
         x = s.getXFromU(u);
         error_indication->errorCode = 0;
     }
@@ -65,7 +70,12 @@ double calculateDistribution(const double x, const EnumDistributions type, doubl
     double u = 0.0;
     try
     {
-        auto s = createDistribution::createValid(type, p);
+        std::vector<double> pValues(4);
+        for (int i = 0; i < 4; i++)
+        {
+            pValues[i] = p[i];
+        }
+        auto s = createDistribution::createValid(type, pValues);
         u = s.getUFromX(x);
         error_indication->errorCode = 0;
     }
