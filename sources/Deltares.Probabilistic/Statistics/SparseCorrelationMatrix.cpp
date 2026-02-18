@@ -21,77 +21,74 @@
 //
 #include "SparseCorrelationMatrix.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    double SparseCorrelationMatrix::getCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
     {
-        double SparseCorrelationMatrix::getCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2)
+        for (std::shared_ptr<CorrelationValue> correlationValue: this->correlations)
         {
-            for (std::shared_ptr<CorrelationValue> correlationValue: this->correlations)
+            if (correlationValue->matches(stochast1, stochast2))
             {
-                if (correlationValue->matches(stochast1, stochast2))
-                {
-                    return correlationValue->value;
-                }
-            }
-
-            if (stochast1 == stochast2)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
+                return correlationValue->value;
             }
         }
 
-        void SparseCorrelationMatrix::setCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value)
+        if (stochast1 == stochast2)
         {
-            std::shared_ptr<CorrelationValue> correlationValue = nullptr;
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
-            for (std::shared_ptr<CorrelationValue> existingCorrelationValue : this->correlations)
-            {
-                if (existingCorrelationValue->matches(stochast1, stochast2))
-                {
-                    correlationValue = existingCorrelationValue;
-                    break;
-                }
-            }
+    void SparseCorrelationMatrix::setCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value)
+    {
+        std::shared_ptr<CorrelationValue> correlationValue = nullptr;
 
-            bool isDefaultCorrelationValue = stochast1 == stochast2 && value == 1.0 || stochast1 != stochast2 && value == 0.0;
-
-            if (correlationValue == nullptr && !isDefaultCorrelationValue)
+        for (std::shared_ptr<CorrelationValue> existingCorrelationValue : this->correlations)
+        {
+            if (existingCorrelationValue->matches(stochast1, stochast2))
             {
-                correlationValue = std::make_shared<CorrelationValue>(stochast1, stochast2);
-                correlationValue->value = value;
-                this->correlations.push_back(correlationValue);
-            }
-            else if (correlationValue != nullptr && !isDefaultCorrelationValue)
-            {
-                correlationValue->value = value;
-            }
-            else if (correlationValue == nullptr && isDefaultCorrelationValue)
-            {
-                // nothing to do
-            }
-            else if (correlationValue != nullptr && isDefaultCorrelationValue)
-            {
-                std::erase(this->correlations, correlationValue);
+                correlationValue = existingCorrelationValue;
+                break;
             }
         }
 
-        std::shared_ptr<CorrelationMatrix> SparseCorrelationMatrix::getCorrelationMatrix(std::vector<std::shared_ptr<Stochast>> stochasts)
+        bool isDefaultCorrelationValue = stochast1 == stochast2 && value == 1.0 || stochast1 != stochast2 && value == 0.0;
+
+        if (correlationValue == nullptr && !isDefaultCorrelationValue)
         {
-            std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>(false);
-
-            correlationMatrix->Init(stochasts);
-
-            for (std::shared_ptr<CorrelationValue> correlationValue : this->correlations)
-            {
-                correlationMatrix->SetCorrelation(correlationValue->stochast1, correlationValue->stochast2, correlationValue->value, CorrelationType::Gaussian);
-            }
-
-            return correlationMatrix;
+            correlationValue = std::make_shared<CorrelationValue>(stochast1, stochast2);
+            correlationValue->value = value;
+            this->correlations.push_back(correlationValue);
         }
+        else if (correlationValue != nullptr && !isDefaultCorrelationValue)
+        {
+            correlationValue->value = value;
+        }
+        else if (correlationValue == nullptr && isDefaultCorrelationValue)
+        {
+            // nothing to do
+        }
+        else if (correlationValue != nullptr && isDefaultCorrelationValue)
+        {
+            std::erase(this->correlations, correlationValue);
+        }
+    }
+
+    std::shared_ptr<CorrelationMatrix> SparseCorrelationMatrix::getCorrelationMatrix(std::vector<std::shared_ptr<Stochast>> stochasts)
+    {
+        std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>(false);
+
+        correlationMatrix->Init(stochasts);
+
+        for (std::shared_ptr<CorrelationValue> correlationValue : this->correlations)
+        {
+            correlationMatrix->SetCorrelation(correlationValue->stochast1, correlationValue->stochast2, correlationValue->value, CorrelationType::Gaussian);
+        }
+
+        return correlationMatrix;
     }
 }

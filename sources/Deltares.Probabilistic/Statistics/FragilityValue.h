@@ -31,63 +31,60 @@
 
 namespace Deltares::Models
 {
-    class StochastPoint;
+class StochastPoint;
 }
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /**
+     * \brief Point in a fragility curve or empirical distribution
+     */
+    class FragilityValue : public ProbabilityValue
     {
+    public:
         /**
-         * \brief Point in a fragility curve or empirical distribution
+         * \brief Physical value for which the reliability is defined
          */
-        class FragilityValue : public ProbabilityValue
+        double X = 0;
+
+        /**
+         * \brief Design point corresponding with the reliability
+         * \remark This property is always of the type designPoint. The only reason it is declared as BaseStochastPoint is that C++ does not allow circular references
+         */
+        std::shared_ptr<Models::StochastPoint> designPoint = nullptr;
+
+        void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
         {
-        public:
-            /**
-             * \brief Physical value for which the reliability is defined
-             */
-            double X = 0;
+            this->setDirtyLambda = setDirtyLambda;
+        }
 
-            /**
-             * \brief Design point corresponding with the reliability
-             * \remark This property is always of the type designPoint. The only reason it is declared as BaseStochastPoint is that C++ does not allow circular references
-             */
-            std::shared_ptr<Models::StochastPoint> designPoint = nullptr;
-
-            void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
+        void setDirty()
+        {
+            if (setDirtyLambda != nullptr)
             {
-                this->setDirtyLambda = setDirtyLambda;
+                setDirtyLambda();
             }
+        }
 
-            void setDirty()
-            {
-                if (setDirtyLambda != nullptr)
-                {
-                    setDirtyLambda();
-                }
-            }
+        void validate(Logging::ValidationReport& report, const std::string& subject) const
+        {
+            Logging::ValidationSupport::checkMinimum(report, -StandardNormal::UMax, Reliability, "reliability", subject);
+            Logging::ValidationSupport::checkMaximum(report, StandardNormal::UMax, Reliability, "reliability", subject);
+        }
 
-            void validate(Logging::ValidationReport& report, const std::string& subject) const
-            {
-                Logging::ValidationSupport::checkMinimum(report, -StandardNormal::UMax, Reliability, "reliability", subject);
-                Logging::ValidationSupport::checkMaximum(report, StandardNormal::UMax, Reliability, "reliability", subject);
-            }
+        std::shared_ptr<FragilityValue> clone()
+        {
+            std::shared_ptr<FragilityValue> clone = std::make_shared<FragilityValue>();
 
-            std::shared_ptr<FragilityValue> clone()
-            {
-                std::shared_ptr<FragilityValue> clone = std::make_shared<FragilityValue>();
+            clone->X = this->X;
+            clone->Reliability = this->Reliability;
+            clone->designPoint = this->designPoint;
 
-                clone->X = this->X;
-                clone->Reliability = this->Reliability;
-                clone->designPoint = this->designPoint;
+            return clone;
+        }
 
-                return clone;
-            }
-
-        private:
-            Utils::SetDirtyLambda setDirtyLambda = nullptr;
-        };
-    }
+    private:
+        Utils::SetDirtyLambda setDirtyLambda = nullptr;
+    };
 }
 

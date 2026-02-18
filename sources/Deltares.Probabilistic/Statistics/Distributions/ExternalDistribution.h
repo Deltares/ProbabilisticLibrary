@@ -24,23 +24,20 @@
 #include "Distribution.h"
 #include <functional>
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class ExternalDistribution : public Distribution
     {
-        class ExternalDistribution : public Distribution
-        {
-        public:
-            double getXFromU(StochastProperties& stochast, double u) override;
-            bool isVarying(StochastProperties& stochast) override { return true; }
+    public:
+        double getXFromU(StochastProperties& stochast, double u) override;
+        bool isVarying(StochastProperties& stochast) override { return true; }
 
-            void setExternalFunction(UXLambda uxFunction)
-            {
-                this->uxFunction = uxFunction;
-            }
-        private:
-            UXLambda uxFunction = nullptr;
-        };
-    }
+        void setExternalFunction(UXLambda uxFunction)
+        {
+            this->uxFunction = uxFunction;
+        }
+    private:
+        UXLambda uxFunction = nullptr;
+    };
 }
 

@@ -22,24 +22,18 @@
 #include <cmath>
 #include "ExternalDistribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    double ExternalDistribution::getXFromU(StochastProperties& stochast, double u)
     {
-        double ExternalDistribution::getXFromU(StochastProperties& stochast, double u)
+        if (uxFunction != nullptr)
         {
-            if (uxFunction != nullptr)
-            {
-                return uxFunction(u);
-            }
-            else
-            {
-                return std::nan("");
-            }
+            return uxFunction(u);
+        }
+        else
+        {
+            return std::nan("");
         }
     }
 }
-
-
-
 

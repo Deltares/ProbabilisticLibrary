@@ -22,46 +22,43 @@
 #pragma once
 #include <cmath>
 #include "Distribution.h"
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class LogNormalDistribution : public Distribution
     {
-        class LogNormalDistribution : public Distribution
+    public:
+        void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override;
+        bool canTruncate() override { return true; }
+        bool canInvert() override { return true; }
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+        void setShift(StochastProperties& stochast, const double shift, bool inverted) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
+        bool canFit(const bool useShift, const bool usePrior) override { return true; }
+        void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+        void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
+        void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
+        double getMaxShiftValue(std::vector<double>& values) override;
+        std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
+        std::vector<DistributionPropertyType> getParameters() override
         {
-        public:
-            void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override;
-            bool canTruncate() override { return true; }
-            bool canInvert() override { return true; }
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
-            void setShift(StochastProperties& stochast, const double shift, bool inverted) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
-            bool canFit(const bool useShift, const bool usePrior) override { return true; }
-            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
-            void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
-            double getMaxShiftValue(std::vector<double>& values) override;
-            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override
-            {
-                using enum DistributionPropertyType;
-                return {Location, Scale, Shift };
-            }
-        protected:
-            double getFittedMinimum(const std::vector<double>& values) override;
-        private:
-            static double getPartialAverage(const std::vector<double>& sample, double gamma, int low, int high);
+            using enum DistributionPropertyType;
+            return {Location, Scale, Shift };
+        }
+    protected:
+        double getFittedMinimum(const std::vector<double>& values) override;
+    private:
+        static double getPartialAverage(const std::vector<double>& sample, double gamma, int low, int high);
 
-            double requestedMean = std::nan("");
-            double requestedDeviation = std::nan("");
+        double requestedMean = std::nan("");
+        double requestedDeviation = std::nan("");
 
-        };
-    }
+    };
 }
 

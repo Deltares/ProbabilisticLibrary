@@ -23,35 +23,32 @@
 
 #include "Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class NormalDistribution : public Distribution
     {
-        class NormalDistribution : public Distribution
+    public:
+        void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override;
+        bool canTruncate() override { return true; }
+        bool canFit(const bool useShift, const bool usePrior) override { return !useShift; }
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
+        double getLogLikelihood(StochastProperties& stochast, double x) override;
+        void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+        void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
+        void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
+        std::vector<DistributionPropertyType> getParameters() override
         {
-        public:
-            void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override;
-            bool canTruncate() override { return true; }
-            bool canFit(const bool useShift, const bool usePrior) override { return !useShift; }
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
-            double getLogLikelihood(StochastProperties& stochast, double x) override;
-            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
-            void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
-            std::vector<DistributionPropertyType> getParameters() override
-            {
-                using enum DistributionPropertyType;
-                return {Location, Scale };
-            }
-        };
-    }
+            using enum DistributionPropertyType;
+            return {Location, Scale };
+        }
+    };
 }
 

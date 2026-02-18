@@ -30,160 +30,155 @@
 
 #include "DistributionSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    void GumbelDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
     {
-        void GumbelDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+        stochast.Scale = sqrt(6) * deviation / std::numbers::pi;
+        stochast.Shift = mean - stochast.Scale * std::numbers::egamma;
+    }
+
+    void GumbelDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
+    {
+        setMeanAndDeviation(stochast, values[0], values[1]);
+    }
+
+    bool GumbelDistribution::isVarying(StochastProperties& stochast)
+    {
+        return stochast.Scale > 0.0;
+    }
+
+    double GumbelDistribution::getMean(StochastProperties& stochast)
+    {
+        return stochast.Shift + stochast.Scale * std::numbers::egamma;
+    }
+
+    double GumbelDistribution::getDeviation(StochastProperties& stochast)
+    {
+        return std::numbers::pi * stochast.Scale / sqrt(6.0);
+    }
+
+    double GumbelDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        const double p = StandardNormal::getPFromU(u);
+
+        if (p == 0.0)
         {
-            stochast.Scale = sqrt(6) * deviation / std::numbers::pi;
-            stochast.Shift = mean - stochast.Scale * std::numbers::egamma;
+            return stochast.Shift;
         }
-
-        void GumbelDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
+        else
         {
-            setMeanAndDeviation(stochast, values[0], values[1]);
-        }
+            const double logp = -log(p);
+            const double xScale = -log(logp);
+            const double x = xScale * stochast.Scale;
 
-        bool GumbelDistribution::isVarying(StochastProperties& stochast)
+            return x + stochast.Shift;
+        }
+    }
+
+    double GumbelDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        if (stochast.Scale == 0.0)
         {
-            return stochast.Scale > 0.0;
+            return x < stochast.Shift ? -StandardNormal::UMax : StandardNormal::UMax;
         }
-
-        double GumbelDistribution::getMean(StochastProperties& stochast)
+        else
         {
-            return stochast.Shift + stochast.Scale * std::numbers::egamma;
-        }
+            x -= stochast.Shift;
+            const double cdf = exp(-exp(-x / stochast.Scale));
 
-        double GumbelDistribution::getDeviation(StochastProperties& stochast)
+            return StandardNormal::getUFromP(cdf);
+        }
+    }
+
+    double GumbelDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        if (stochast.Scale == 0.0)
         {
-            return std::numbers::pi * stochast.Scale / sqrt(6.0);
+            return x == stochast.Shift ? 1.0 : 0.0;
         }
-
-        double GumbelDistribution::getXFromU(StochastProperties& stochast, double u)
-        {
-            const double p = StandardNormal::getPFromU(u);
-
-            if (p == 0.0)
-            {
-                return stochast.Shift;
-            }
-            else
-            {
-                const double logp = -log(p);
-                const double xScale = -log(logp);
-                const double x = xScale * stochast.Scale;
-
-                return x + stochast.Shift;
-            }
-        }
-
-        double GumbelDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            if (stochast.Scale == 0.0)
-            {
-                return x < stochast.Shift ? -StandardNormal::UMax : StandardNormal::UMax;
-            }
-            else
-            {
-                x -= stochast.Shift;
-                const double cdf = exp(-exp(-x / stochast.Scale));
-
-                return StandardNormal::getUFromP(cdf);
-            }
-        }
-
-        double GumbelDistribution::getPDF(StochastProperties& stochast, double x)
-        {
-            if (stochast.Scale == 0.0)
-            {
-                return x == stochast.Shift ? 1.0 : 0.0;
-            }
-            else
-            {
-                x = (x - stochast.Shift) / stochast.Scale;
-
-                return (1.0 / stochast.Scale) * exp(-(x + exp(-x)));
-            }
-        }
-
-        double GumbelDistribution::getCDF(StochastProperties& stochast, double x)
-        {
-            if (stochast.Scale == 0.0)
-            {
-                return x < stochast.Shift ? 0.0 : 1.0;
-            }
-            else
-            {
-                x -= stochast.Shift;
-                return exp(-exp(-x / stochast.Scale));
-            }
-        }
-
-        void GumbelDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
-        {
-            if (constantType == ConstantParameterType::Deviation)
-            {
-                const double current = this->getXFromU(stochast, u);
-                const double diff = x - current;
-
-                stochast.Shift += diff;
-            }
-            else if (constantType == ConstantParameterType::VariationCoefficient)
-            {
-                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
-            }
-        }
-
-        void GumbelDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
-        {
-            // https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
-
-            double mean = Numeric::NumericSupport::getMean(values);
-
-            auto bisection = Numeric::BisectionRootFinder(0.001);
-
-            Numeric::RootFinderMethod method = [mean, &values](double x)
-            {
-                double counter = Numeric::NumericSupport::sum(values, [x](double p) {return p * exp(-p / x); });
-                double denominator = Numeric::NumericSupport::sum(values, [x](double p) {return exp(-p / x); });
-                return mean - x - counter / denominator;
-            };
-
-            double minStart = Numeric::NumericSupport::getMinValidValue(method);
-            double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
-
-            stochast.Scale = bisection.CalculateValue(minStart, maxStart, 0, method);
-            stochast.Scale = std::max(minStart, stochast.Scale);
-            stochast.Scale = std::min(maxStart, stochast.Scale);
-
-            double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast.Scale); });
-
-            if (std::isnan(shift))
-            {
-                stochast.Shift = -stochast.Scale * log(sum / static_cast<double>(values.size()));
-            }
-            else
-            {
-                stochast.Shift = shift;
-            }
-            stochast.Observations = static_cast<int>(values.size());
-        }
-
-        double GumbelDistribution::getLogLikelihood(StochastProperties& stochast, double x)
+        else
         {
             x = (x - stochast.Shift) / stochast.Scale;
 
-            return -(log(stochast.Scale) + (x + exp(-x)));
-        }
-
-        std::vector<double> GumbelDistribution::getSpecialPoints(StochastProperties& stochast)
-        {
-            std::vector<double> specialPoints{ stochast.Shift };
-            return specialPoints;
+            return (1.0 / stochast.Scale) * exp(-(x + exp(-x)));
         }
     }
+
+    double GumbelDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        if (stochast.Scale == 0.0)
+        {
+            return x < stochast.Shift ? 0.0 : 1.0;
+        }
+        else
+        {
+            x -= stochast.Shift;
+            return exp(-exp(-x / stochast.Scale));
+        }
+    }
+
+    void GumbelDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
+    {
+        if (constantType == ConstantParameterType::Deviation)
+        {
+            const double current = this->getXFromU(stochast, u);
+            const double diff = x - current;
+
+            stochast.Shift += diff;
+        }
+        else if (constantType == ConstantParameterType::VariationCoefficient)
+        {
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
+        }
+    }
+
+    void GumbelDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        // https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
+
+        double mean = Numeric::NumericSupport::getMean(values);
+
+        auto bisection = Numeric::BisectionRootFinder(0.001);
+
+        Numeric::RootFinderMethod method = [mean, &values](double x)
+        {
+            double counter = Numeric::NumericSupport::sum(values, [x](double p) {return p * exp(-p / x); });
+            double denominator = Numeric::NumericSupport::sum(values, [x](double p) {return exp(-p / x); });
+            return mean - x - counter / denominator;
+        };
+
+        double minStart = Numeric::NumericSupport::getMinValidValue(method);
+        double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
+
+        stochast.Scale = bisection.CalculateValue(minStart, maxStart, 0, method);
+        stochast.Scale = std::max(minStart, stochast.Scale);
+        stochast.Scale = std::min(maxStart, stochast.Scale);
+
+        double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast.Scale); });
+
+        if (std::isnan(shift))
+        {
+            stochast.Shift = -stochast.Scale * log(sum / static_cast<double>(values.size()));
+        }
+        else
+        {
+            stochast.Shift = shift;
+        }
+        stochast.Observations = static_cast<int>(values.size());
+    }
+
+    double GumbelDistribution::getLogLikelihood(StochastProperties& stochast, double x)
+    {
+        x = (x - stochast.Shift) / stochast.Scale;
+
+        return -(log(stochast.Scale) + (x + exp(-x)));
+    }
+
+    std::vector<double> GumbelDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        std::vector<double> specialPoints{ stochast.Shift };
+        return specialPoints;
+    }
 }
-
-
 

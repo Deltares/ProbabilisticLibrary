@@ -21,30 +21,27 @@
 //
 #pragma once
 #include "Distribution.h"
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class DiscreteDistribution : public Distribution
     {
-        class DiscreteDistribution : public Distribution
-        {
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override;
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            bool maintainMeanAndDeviation(const StochastProperties& stochast) override { return false; }
-            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
-            void initializeForRun(StochastProperties& stochast) override;
-            double getRepresentativeU(StochastProperties& stochast, double u) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
-            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
-            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;
-            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-        };
-    }
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override;
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        bool maintainMeanAndDeviation(const StochastProperties& stochast) override { return false; }
+        void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+        void initializeForRun(StochastProperties& stochast) override;
+        double getRepresentativeU(StochastProperties& stochast, double u) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
+        void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+        void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
+        void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+        std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;
+        std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
+    };
 }
 

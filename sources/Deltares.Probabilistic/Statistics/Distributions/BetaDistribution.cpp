@@ -30,141 +30,134 @@
 
 #include "DistributionSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    void BetaDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
     {
-        void BetaDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
+        this->setMeanAndDeviation(stochast, values[0], values[1]);
+    }
+
+    bool BetaDistribution::isVarying(StochastProperties& stochast)
+    {
+        return stochast.Shape > 0.0 && stochast.ShapeB > 0.0;
+    }
+
+    double BetaDistribution::getMean(StochastProperties& stochast)
+    {
+        return stochast.Shape / (stochast.Shape + stochast.ShapeB);
+    }
+
+    double BetaDistribution::getDeviation(StochastProperties& stochast)
+    {
+        const double sum = stochast.Shape + stochast.ShapeB;
+        const double variance = stochast.Shape * stochast.ShapeB / (sum * sum * (sum + 1.0));
+        return sqrt(variance);
+    }
+
+    void BetaDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+    {
+        // see https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
+
+        double sigma = deviation;
+        double variance = sigma * sigma;
+
+        stochast.Shape = ((1 - mean) / variance - 1 / mean) * mean * mean;
+        stochast.ShapeB = stochast.Shape * (1 / mean - 1);
+    }
+
+    double BetaDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        if (!isValid(stochast))
         {
-            this->setMeanAndDeviation(stochast, values[0], values[1]);
+            return x == 0.0 ? 1.0 : 0.0;
         }
-
-        bool BetaDistribution::isVarying(StochastProperties& stochast)
+        else if (x < 0.0 || x > 1.0)
         {
-            return stochast.Shape > 0.0 && stochast.ShapeB > 0.0;
+            return 0.0;
         }
-
-        double BetaDistribution::getMean(StochastProperties& stochast)
+        else
         {
-            return stochast.Shape / (stochast.Shape + stochast.ShapeB);
+            return std::pow(x, stochast.Shape - 1.0) * std::pow(1.0 - x, stochast.ShapeB - 1.0)
+            / Numeric::SpecialFunctions::getBeta (stochast.Shape, stochast.ShapeB);
         }
+    }
 
-        double BetaDistribution::getDeviation(StochastProperties& stochast)
+    double BetaDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        if (!isValid(stochast))
         {
-            const double sum = stochast.Shape + stochast.ShapeB;
-            const double variance = stochast.Shape * stochast.ShapeB / (sum * sum * (sum + 1.0));
-            return sqrt(variance);
+            return x <= 0.0 ? 0.0 : 1.0;
         }
-
-        void BetaDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+        else if (x <= 0.0)
         {
-            // see https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
-
-            double sigma = deviation;
-            double variance = sigma * sigma;
-
-            stochast.Shape = ((1 - mean) / variance - 1 / mean) * mean * mean;
-            stochast.ShapeB = stochast.Shape * (1 / mean - 1);
+            return 0.0;
         }
-
-        double BetaDistribution::getPDF(StochastProperties& stochast, double x)
+        else if (x >= 1.0)
         {
-            if (!isValid(stochast))
+            return 1.0;
+        }
+        else
+        {
+            try
             {
-                return x == 0.0 ? 1.0 : 0.0;
+                double cdf = Numeric::SpecialFunctions::getBetaIncomplete(stochast.Shape, stochast.ShapeB, x);
+                return cdf;
             }
-            else if (x < 0.0 || x > 1.0)
-            {
-                return 0.0;
-            }
-            else
-            {
-                return std::pow(x, stochast.Shape - 1.0) * std::pow(1.0 - x, stochast.ShapeB - 1.0)
-                / Numeric::SpecialFunctions::getBeta (stochast.Shape, stochast.ShapeB);
-            }
-        }
-
-        double BetaDistribution::getCDF(StochastProperties& stochast, double x)
-        {
-            if (!isValid(stochast))
+            catch (const std::exception&)
             {
                 return x <= 0.0 ? 0.0 : 1.0;
             }
-            else if (x <= 0.0)
-            {
-                return 0.0;
-            }
-            else if (x >= 1.0)
-            {
-                return 1.0;
-            }
-            else
-            {
-                try
-                {
-                    double cdf = Numeric::SpecialFunctions::getBetaIncomplete(stochast.Shape, stochast.ShapeB, x);
-                    return cdf;
-                }
-                catch (const std::exception&)
-                {
-                    return x <= 0.0 ? 0.0 : 1.0;
-                }
-            }
-        }
-
-        double BetaDistribution::getXFromU(StochastProperties& stochast, double u)
-        {
-            if (!isValid(stochast))
-            {
-                return 0.0;
-            }
-            else
-            {
-                return DistributionSupport::getXFromUByIteration(*this, stochast, u);
-            }
-        }
-
-        double BetaDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            if (x <= stochast.Scale)
-            {
-                return -StandardNormal::UMax;
-            }
-            else
-            {
-                const double cdf = getCDF(stochast, x);
-                return StandardNormal::getUFromP(cdf);
-            }
-        }
-
-        void BetaDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
-        {
-            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
-        }
-
-        void BetaDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
-        {
-            double mean = Numeric::NumericSupport::getMean(values);
-            double sigma = Numeric::NumericSupport::getStandardDeviation(mean, values);
-
-            setMeanAndDeviation(stochast, mean, sigma);
-
-            stochast.Observations = static_cast<int>(values.size());
-        }
-
-        std::vector<double> BetaDistribution::getSpecialPoints(StochastProperties& stochast)
-        {
-            std::vector<double> specialPoints;
-
-            specialPoints.push_back(0.0);
-            specialPoints.push_back(1.0);
-
-            return specialPoints;
         }
     }
+
+    double BetaDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        if (!isValid(stochast))
+        {
+            return 0.0;
+        }
+        else
+        {
+            return DistributionSupport::getXFromUByIteration(*this, stochast, u);
+        }
+    }
+
+    double BetaDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        if (x <= stochast.Scale)
+        {
+            return -StandardNormal::UMax;
+        }
+        else
+        {
+            const double cdf = getCDF(stochast, x);
+            return StandardNormal::getUFromP(cdf);
+        }
+    }
+
+    void BetaDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
+    {
+        DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
+    }
+
+    void BetaDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        double mean = Numeric::NumericSupport::getMean(values);
+        double sigma = Numeric::NumericSupport::getStandardDeviation(mean, values);
+
+        setMeanAndDeviation(stochast, mean, sigma);
+
+        stochast.Observations = static_cast<int>(values.size());
+    }
+
+    std::vector<double> BetaDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        std::vector<double> specialPoints;
+
+        specialPoints.push_back(0.0);
+        specialPoints.push_back(1.0);
+
+        return specialPoints;
+    }
 }
-
-
-
-
 

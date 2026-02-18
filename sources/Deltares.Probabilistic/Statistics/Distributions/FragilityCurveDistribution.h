@@ -23,33 +23,30 @@
 
 #include "Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class FragilityCurveDistribution : public Distribution
     {
-        class FragilityCurveDistribution : public Distribution
-        {
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override { return true; }
-            bool maintainMeanAndDeviation(const StochastProperties& stochast) override { return false; }
-            void initializeForRun(StochastProperties& stochast) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
-            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-        private:
-            const double precision = 0.00001;
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override { return true; }
+        bool maintainMeanAndDeviation(const StochastProperties& stochast) override { return false; }
+        void initializeForRun(StochastProperties& stochast) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
+        void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+        std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
+    private:
+        const double precision = 0.00001;
 
-            bool isHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
-            bool startsHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
-            bool isAscending(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
-            bool isDescending(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
-            bool endsHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
-        };
-    }
+        bool isHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
+        bool startsHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
+        bool isAscending(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
+        bool isDescending(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
+        bool endsHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues);
+    };
 }
 

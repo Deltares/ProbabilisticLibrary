@@ -20,13 +20,11 @@
 // All rights reserved.
 //
 #pragma once
-namespace Deltares
+
+namespace Deltares::Statistics
 {
-    namespace Statistics
-    {
-        /**
-         * \brief Defines what to do when the distribution type of a stochast changes
-         */
-        enum DistributionChangeType { Nothing, MaintainMeanAndDeviation, FitFromHistogramValues };
-    }
+    /**
+     * \brief Defines what to do when the distribution type of a stochast changes
+     */
+    enum DistributionChangeType { Nothing, MaintainMeanAndDeviation, FitFromHistogramValues };
 }

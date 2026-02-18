@@ -26,115 +26,112 @@
 #include "../Logging/ValidationReport.h"
 #include "../Logging/ValidationSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class HistogramValue
     {
-        class HistogramValue
+    public:
+        HistogramValue() = default;
+
+        HistogramValue(double lowerBound, double upperBound)
         {
-        public:
-            HistogramValue() = default;
+            this->LowerBound = lowerBound;
+            this->UpperBound = upperBound;
+        }
 
-            HistogramValue(double lowerBound, double upperBound)
+        double LowerBound = 0;
+        double UpperBound = 0;
+        double Amount = 0;
+
+        double NormalizedAmount = 0;
+        double CumulativeNormalizedAmount = 0;
+
+        /// <summary>
+        /// Average of lower and upper bound
+        /// </summary>
+        double getCenter()
+        {
+            return (LowerBound + UpperBound) / 2;
+        }
+
+        /// <summary>
+        /// Difference between lower and upper bound
+        /// </summary>
+        double getSize()
+        {
+            return UpperBound - LowerBound;
+        }
+
+        /// <summary>
+        /// Tells whether a value is part of this range
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        bool contains(double x) const 
+        {
+            if (LowerBound == UpperBound)
             {
-                this->LowerBound = lowerBound;
-                this->UpperBound = upperBound;
+                return x == LowerBound;
             }
-
-            double LowerBound = 0;
-            double UpperBound = 0;
-            double Amount = 0;
-
-            double NormalizedAmount = 0;
-            double CumulativeNormalizedAmount = 0;
-
-            /// <summary>
-            /// Average of lower and upper bound
-            /// </summary>
-            double getCenter()
+            else
             {
-                return (LowerBound + UpperBound) / 2;
+                return x >= LowerBound && x < UpperBound;
             }
+        }
 
-            /// <summary>
-            /// Difference between lower and upper bound
-            /// </summary>
-            double getSize()
+        bool compareTo(std::shared_ptr<HistogramValue> other)
+        {
+            if (this->LowerBound == other->LowerBound)
             {
-                return UpperBound - LowerBound;
+                return this->getSize() > other->getSize();
             }
-
-            /// <summary>
-            /// Tells whether a value is part of this range
-            /// </summary>
-            /// <param name="x"></param>
-            /// <returns></returns>
-            bool contains(double x) const 
+            else
             {
-                if (LowerBound == UpperBound)
-                {
-                    return x == LowerBound;
-                }
-                else
-                {
-                    return x >= LowerBound && x < UpperBound;
-                }
+                return this->LowerBound > other->LowerBound;
             }
+        }
 
-            bool compareTo(std::shared_ptr<HistogramValue> other)
+        /**
+         * \brief Reports whether the properties of the histogram value are valid
+         * \param report Report in which the validity is reported
+         * \param previous Previous histogram value in the stochast
+         */
+        void validate(Logging::ValidationReport& report, const std::shared_ptr<HistogramValue>& previous, const std::string& subject) const
+        {
+            Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
+            Logging::ValidationSupport::checkMinimum(report, LowerBound, UpperBound, "upper bound", subject);
+            if (previous != nullptr)
             {
-                if (this->LowerBound == other->LowerBound)
-                {
-                    return this->getSize() > other->getSize();
-                }
-                else
-                {
-                    return this->LowerBound > other->LowerBound;
-                }
+                Logging::ValidationSupport::checkMinimum(report, previous->UpperBound, LowerBound, "lower bound", subject);
             }
+        }
 
-            /**
-             * \brief Reports whether the properties of the histogram value are valid
-             * \param report Report in which the validity is reported
-             * \param previous Previous histogram value in the stochast
-             */
-            void validate(Logging::ValidationReport& report, const std::shared_ptr<HistogramValue>& previous, const std::string& subject) const
+        void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
+        {
+            this->setDirtyLambda = setDirtyLambda;
+        }
+
+        void setDirty()
+        {
+            if (setDirtyLambda != nullptr)
             {
-                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
-                Logging::ValidationSupport::checkMinimum(report, LowerBound, UpperBound, "upper bound", subject);
-                if (previous != nullptr)
-                {
-                    Logging::ValidationSupport::checkMinimum(report, previous->UpperBound, LowerBound, "lower bound", subject);
-                }
+                setDirtyLambda();
             }
+        }
 
-            void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
-            {
-                this->setDirtyLambda = setDirtyLambda;
-            }
+        std::shared_ptr<HistogramValue> clone()
+        {
+            std::shared_ptr<HistogramValue> clone = std::make_shared<HistogramValue>();
 
-            void setDirty()
-            {
-                if (setDirtyLambda != nullptr)
-                {
-                    setDirtyLambda();
-                }
-            }
+            clone->LowerBound = this->LowerBound;
+            clone->UpperBound = this->UpperBound;
+            clone->Amount = this->Amount;
 
-            std::shared_ptr<HistogramValue> clone()
-            {
-                std::shared_ptr<HistogramValue> clone = std::make_shared<HistogramValue>();
+            return clone;
+        }
 
-                clone->LowerBound = this->LowerBound;
-                clone->UpperBound = this->UpperBound;
-                clone->Amount = this->Amount;
-
-                return clone;
-            }
-
-        private:
-            Utils::SetDirtyLambda setDirtyLambda = nullptr;
-        };
-    }
+    private:
+        Utils::SetDirtyLambda setDirtyLambda = nullptr;
+    };
 }
 

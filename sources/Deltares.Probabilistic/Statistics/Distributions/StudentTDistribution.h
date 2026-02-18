@@ -28,71 +28,68 @@ namespace Deltares::Utils
     class Locker;
 }
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class StudentTDistribution : public Distribution
     {
-        class StudentTDistribution : public Distribution
+    public:
+        StudentTDistribution() { loadValues(); }
+        void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override;
+        bool canTruncate() override { return true; }
+        bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
+        void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+        std::vector<DistributionPropertyType> getParameters() override
+        {
+            using enum DistributionPropertyType;
+            return {Location, Scale, Observations };
+        }
+    private:
+        class StudentTValue
         {
         public:
-            StudentTDistribution() { loadValues(); }
-            void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override;
-            bool canTruncate() override { return true; }
-            bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
-            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            std::vector<DistributionPropertyType> getParameters() override
+            StudentTValue() = default;
+            StudentTValue(int N, double P0_100, double P0_050, double P0_025, double P0_010, double P0_005)
             {
-                using enum DistributionPropertyType;
-                return {Location, Scale, Observations };
+                this->N = N;
+                this->P0_100 = P0_100;
+                this->P0_050 = P0_050;
+                this->P0_025 = P0_025;
+                this->P0_010 = P0_010;
+                this->P0_005 = P0_005;
             }
+
+            int N = 0;
+            double P0_100 = 0.0;
+            double P0_050 = 0.0;
+            double P0_025 = 0.0;
+            double P0_010 = 0.0;
+            double P0_005 = 0.0;
+
+            double getCoefficient(double p);
+
         private:
-            class StudentTValue
-            {
-            public:
-                StudentTValue() = default;
-                StudentTValue(int N, double P0_100, double P0_050, double P0_025, double P0_010, double P0_005)
-                {
-                    this->N = N;
-                    this->P0_100 = P0_100;
-                    this->P0_050 = P0_050;
-                    this->P0_025 = P0_025;
-                    this->P0_010 = P0_010;
-                    this->P0_005 = P0_005;
-                }
+            static constexpr double pDelta = 0.0001;
 
-                int N = 0;
-                double P0_100 = 0.0;
-                double P0_050 = 0.0;
-                double P0_025 = 0.0;
-                double P0_010 = 0.0;
-                double P0_005 = 0.0;
-
-                double getCoefficient(double p);
-
-            private:
-                static constexpr double pDelta = 0.0001;
-
-                std::vector<double> pValues;
-                std::vector<double> cValues;
-                std::vector<double> getPValues(double maxP);
-            };
-
-            StudentTValue GetStudentValue(int degreesOfFreedom) const;
-            StudentTValue GetInterpolatedStudentValue(int degreesOfFreedom, int N) const;
-            std::vector<StudentTValue> studentValues;
-            void loadValues();
-
-            const double minXDelta = 0.00001;
+            std::vector<double> pValues;
+            std::vector<double> cValues;
+            std::vector<double> getPValues(double maxP);
         };
-    }
+
+        StudentTValue GetStudentValue(int degreesOfFreedom) const;
+        StudentTValue GetInterpolatedStudentValue(int degreesOfFreedom, int N) const;
+        std::vector<StudentTValue> studentValues;
+        void loadValues();
+
+        const double minXDelta = 0.00001;
+    };
 }
 

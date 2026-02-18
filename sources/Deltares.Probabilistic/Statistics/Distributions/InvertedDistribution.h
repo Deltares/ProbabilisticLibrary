@@ -24,45 +24,42 @@
 
 #include "Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class InvertedDistribution : public Distribution
     {
-        class InvertedDistribution : public Distribution
+    public:
+
+        InvertedDistribution(std::shared_ptr<Distribution> innerDistribution)
         {
-        public:
+            this->innerDistribution = innerDistribution;
+        }
 
-            InvertedDistribution(std::shared_ptr<Distribution> innerDistribution)
-            {
-                this->innerDistribution = innerDistribution;
-            }
-
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override;
-            bool canTruncate() override { return this->innerDistribution->canTruncate(); }
-            bool canInvert() override { return true; }
-            bool canFit(const bool useShift, const bool usePrior) override { return this->innerDistribution->canFit(useShift, usePrior); }
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
-            void setShift(StochastProperties& stochast, const double shift, bool inverted) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
-            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
-            double getMaxShiftValue(std::vector<double>& values) override;
-            double getLogLikelihood(StochastProperties& stochast, double x) override;
-            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override;
-        private:
-            std::shared_ptr<Distribution> innerDistribution = nullptr;
-            double getInvertedValue(const StochastProperties& stochast, double value) const;
-            StochastProperties getInvertedStochast(const StochastProperties& stochast) const;
-            void copyFromInverted(StochastProperties& target, const StochastProperties& source) const;
-            bool usesShift() const;
-        };
-    }
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override;
+        bool canTruncate() override { return this->innerDistribution->canTruncate(); }
+        bool canInvert() override { return true; }
+        bool canFit(const bool useShift, const bool usePrior) override { return this->innerDistribution->canFit(useShift, usePrior); }
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+        void setShift(StochastProperties& stochast, const double shift, bool inverted) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
+        void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+        void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+        void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift) override;
+        double getMaxShiftValue(std::vector<double>& values) override;
+        double getLogLikelihood(StochastProperties& stochast, double x) override;
+        std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
+        std::vector<DistributionPropertyType> getParameters() override;
+    private:
+        std::shared_ptr<Distribution> innerDistribution = nullptr;
+        double getInvertedValue(const StochastProperties& stochast, double value) const;
+        StochastProperties getInvertedStochast(const StochastProperties& stochast) const;
+        void copyFromInverted(StochastProperties& target, const StochastProperties& source) const;
+        bool usesShift() const;
+    };
 }
