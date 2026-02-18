@@ -23,41 +23,39 @@
 #include <string>
 #include <vector>
 
-namespace Deltares {
-    namespace Reliability {
+namespace Deltares::Reliability
+{
+    class probLibString
+    {
+    public:
+        bool iStrcmp(const std::string& s1, const std::string& s2);
+        bool iFind(const std::string& s1, const std::string& s2);
+        static std::string double2str(const double x);
+        static std::string double2strTrimmed(const double x);
 
-        class probLibString
-        {
-        public:
-            bool iStrcmp(const std::string& s1, const std::string& s2);
-            bool iFind(const std::string& s1, const std::string& s2);
-            static std::string double2str(const double x);
-            static std::string double2strTrimmed(const double x);
+        /**
+         * \brief Converts a numeric value to a string, which is suitable to use in a text
+         * \param x Numeric value
+         * \return Numeric value converted to a string
+         * \remarks Removes spaces around text, trailing zeroes and possibly decimal separator
+         */
+        static std::string double2strForText(const double x);
 
-            /**
-             * \brief Converts a numeric value to a string, which is suitable to use in a text
-             * \param x Numeric value
-             * \return Numeric value converted to a string
-             * \remarks Removes spaces around text, trailing zeroes and possibly decimal separator
-             */
-            static std::string double2strForText(const double x);
+        static std::string doubles2str(const std::vector<double>& x);
+        static std::string doubles2strTrimmed(const std::vector<double>& x);
 
-            static std::string doubles2str(const std::vector<double>& x);
-            static std::string doubles2strTrimmed(const std::vector<double>& x);
+        // trim from both ends of string (right then left)
+        std::string trim(const std::string& s, const char* t);
 
-            // trim from both ends of string (right then left)
-            std::string trim(const std::string& s, const char* t);
+    private:
+        std::string strToLower(const std::string& data);
 
-        private:
-            std::string strToLower(const std::string& data);
+        // trim from end of string (right)
+        std::string rtrim(const std::string& s, const char* t);
 
-            // trim from end of string (right)
-            std::string rtrim(const std::string& s, const char* t);
+        // trim from beginning of string (left)
+        std::string ltrim(const std::string& s, const char* t);
 
-            // trim from beginning of string (left)
-            std::string ltrim(const std::string& s, const char* t);
-
-            static std::string removeTrailingZeros(const std::string& s);
-        };
-    }
+        static std::string removeTrailingZeros(const std::string& s);
+    };
 }
