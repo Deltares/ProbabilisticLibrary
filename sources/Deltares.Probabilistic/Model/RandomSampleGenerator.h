@@ -25,50 +25,47 @@
 #include "SampleProvider.h"
 #include "../Math/RandomValueGenerator.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    class RandomSampleGenerator
     {
-        class RandomSampleGenerator
+    public:
+        RandomSampleGenerator() {}
+
+        RandomSampleGenerator(std::shared_ptr<RandomSettings> settings, std::shared_ptr<Reliability::StochastSettingsSet> stochastSet)
         {
-        public:
-            RandomSampleGenerator() {}
+            this->Settings = settings;
+            this->Settings->StochastSet = stochastSet;
+            this->initialize();
+        }
 
-            RandomSampleGenerator(std::shared_ptr<RandomSettings> settings, std::shared_ptr<Reliability::StochastSettingsSet> stochastSet)
-            {
-                this->Settings = settings;
-                this->Settings->StochastSet = stochastSet;
-                this->initialize();
-            }
+        std::shared_ptr<RandomSettings> Settings = std::make_shared<RandomSettings>();
+        std::shared_ptr<SampleProvider> sampleProvider = nullptr;
+        Numeric::RandomValueGenerator random;
 
-            std::shared_ptr<RandomSettings> Settings = std::make_shared<RandomSettings>();
-            std::shared_ptr<SampleProvider> sampleProvider = nullptr;
-            Numeric::RandomValueGenerator random;
+        void initialize();
 
-            void initialize();
+        /**
+         * \brief Enforces the sample generator to restart
+         */
+        void restart();
 
-            /**
-             * \brief Enforces the sample generator to restart
-             */
-            void restart();
+        /**
+         * \brief Gets a random sample
+         * \returns random sample
+         */
+        std::shared_ptr<Sample> getRandomSample();
 
-            /**
-             * \brief Gets a random sample
-             * \returns random sample
-             */
-            std::shared_ptr<Sample> getRandomSample();
-
-            /**
-             * \brief Proceeds the random sample generator for an equivalent of a number of samples
-             * \param nSamples Equivalent number of samples
-             */
-            void proceed(int nSamples);
-        private:
-            /**
-             * \brief Gets the size of a sample to be generated
-             * \returns Sample size
-             */
-            int getSampleSize() const;
-        };
-    }
+        /**
+         * \brief Proceeds the random sample generator for an equivalent of a number of samples
+         * \param nSamples Equivalent number of samples
+         */
+        void proceed(int nSamples);
+    private:
+        /**
+         * \brief Gets the size of a sample to be generated
+         * \returns Sample size
+         */
+        int getSampleSize() const;
+    };
 }

@@ -25,133 +25,130 @@
 
 #include "ModelSample.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    std::shared_ptr<Sample> StochastPoint::getSample()
     {
-        std::shared_ptr<Sample> StochastPoint::getSample()
+        std::shared_ptr<Sample> sample = std::make_shared<Sample>(Alphas.size());
+
+        for (size_t i = 0; i < Alphas.size(); i++)
         {
-            std::shared_ptr<Sample> sample = std::make_shared<Sample>(Alphas.size());
-
-            for (size_t i = 0; i < Alphas.size(); i++)
-            {
-                sample->Values[i] = this->Alphas[i]->U;
-            }
-
-            return sample;
+            sample->Values[i] = this->Alphas[i]->U;
         }
 
-        std::shared_ptr<Sample> StochastPoint::getSampleForStochasts(std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
+        return sample;
+    }
+
+    std::shared_ptr<Sample> StochastPoint::getSampleForStochasts(std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
+    {
+        std::unordered_set<size_t> usedIndices;
+
+        std::shared_ptr<Sample> sample = std::make_shared<Sample>(stochasts.size());
+
+        for (size_t i = 0; i < stochasts.size(); i++)
         {
-            std::unordered_set<size_t> usedIndices;
+            sample->Values[i] = 0;
 
-            std::shared_ptr<Sample> sample = std::make_shared<Sample>(stochasts.size());
-
-            for (size_t i = 0; i < stochasts.size(); i++)
+            for (size_t j = 0; j < this->Alphas.size(); j++)
             {
-                sample->Values[i] = 0;
-
-                for (size_t j = 0; j < this->Alphas.size(); j++)
+                if (this->Alphas[j]->Stochast == stochasts[i] && !usedIndices.contains(j))
                 {
-                    if (this->Alphas[j]->Stochast == stochasts[i] && !usedIndices.contains(j))
-                    {
-                        sample->Values[i] = this->Alphas[j]->U;
-                        usedIndices.insert(j);
-                        break;
-                    }
+                    sample->Values[i] = this->Alphas[j]->U;
+                    usedIndices.insert(j);
+                    break;
+                }
+            }
+        }
+
+        return sample;
+    }
+
+    std::shared_ptr<ModelSample> StochastPoint::getModelSample()
+    {
+        std::vector<double> values(Alphas.size());
+        for (size_t i = 0; i < Alphas.size(); i++)
+        {
+            values[i] = this->Alphas[i]->X;
+        }
+
+        return std::make_shared<ModelSample>(values);
+    }
+
+    std::vector<std::shared_ptr<StochastPointAlpha>> StochastPoint::getAlphas(const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts) const
+    {
+        std::vector<std::shared_ptr<StochastPointAlpha>> alphas;
+        std::unordered_set<std::shared_ptr<StochastPointAlpha>> usedAlphas;
+
+        for (std::shared_ptr<Statistics::Stochast> stochast : stochasts)
+        {
+            bool found = false;
+
+            for (const auto& alpha : this->Alphas)
+            {
+                if (alpha->Stochast == stochast && !usedAlphas.contains(alpha))
+                {
+                    alphas.push_back(alpha);
+                    usedAlphas.insert(alpha);
+                    found = true;
+                    break;
                 }
             }
 
-            return sample;
+            if (!found)
+            {
+                auto empty = std::make_shared<StochastPointAlpha>();
+                empty->Stochast = stochast;
+                alphas.push_back(empty);
+            }
         }
 
-        std::shared_ptr<ModelSample> StochastPoint::getModelSample()
-        {
-            std::vector<double> values(Alphas.size());
-            for (size_t i = 0; i < Alphas.size(); i++)
-            {
-                values[i] = this->Alphas[i]->X;
-            }
+        return alphas;
+    }
 
-            return std::make_shared<ModelSample>(values);
+
+    std::shared_ptr<StochastPointAlpha> StochastPoint::getAlpha(std::shared_ptr<Statistics::Stochast> stochast)
+    {
+        for (std::shared_ptr<StochastPointAlpha> alpha : this->Alphas)
+        {
+            if (alpha->Stochast == stochast)
+            {
+                return alpha;
+            }
         }
 
-        std::vector<std::shared_ptr<StochastPointAlpha>> StochastPoint::getAlphas(const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts) const
+        return nullptr;
+    }
+
+    std::shared_ptr<StochastPoint> StochastPoint::getCopy(double beta, double alphaMargin)
+    {
+        std::shared_ptr<StochastPoint> copy = std::make_shared<StochastPoint>();
+
+        copy->Beta = beta;
+
+        for (std::shared_ptr<StochastPointAlpha> alpha : this->Alphas)
         {
-            std::vector<std::shared_ptr<StochastPointAlpha>> alphas;
-            std::unordered_set<std::shared_ptr<StochastPointAlpha>> usedAlphas;
-
-            for (std::shared_ptr<Statistics::Stochast> stochast : stochasts)
+            if (std::fabs(alpha->Alpha) > alphaMargin)
             {
-                bool found = false;
-
-                for (const auto& alpha : this->Alphas)
-                {
-                    if (alpha->Stochast == stochast && !usedAlphas.contains(alpha))
-                    {
-                        alphas.push_back(alpha);
-                        usedAlphas.insert(alpha);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    auto empty = std::make_shared<StochastPointAlpha>();
-                    empty->Stochast = stochast;
-                    alphas.push_back(empty);
-                }
+                copy->Alphas.push_back(alpha->clone());
             }
-
-            return alphas;
         }
 
+        return copy;
+    }
 
-        std::shared_ptr<StochastPointAlpha> StochastPoint::getAlpha(std::shared_ptr<Statistics::Stochast> stochast)
+    void StochastPoint::updateInfluenceFactors()
+    {
+        double sum = 0;
+        for (size_t i = 0; i < Alphas.size(); i++)
         {
-            for (std::shared_ptr<StochastPointAlpha> alpha : this->Alphas)
-            {
-                if (alpha->Stochast == stochast)
-                {
-                    return alpha;
-                }
-            }
-
-            return nullptr;
+            sum += this->Alphas[i]->Alpha * this->Alphas[i]->Alpha;
         }
 
-        std::shared_ptr<StochastPoint> StochastPoint::getCopy(double beta, double alphaMargin)
+        if (sum > 0)
         {
-            std::shared_ptr<StochastPoint> copy = std::make_shared<StochastPoint>();
-
-            copy->Beta = beta;
-
-            for (std::shared_ptr<StochastPointAlpha> alpha : this->Alphas)
+            for (size_t j = 0; j < this->Alphas.size(); j++)
             {
-                if (std::fabs(alpha->Alpha) > alphaMargin)
-                {
-                    copy->Alphas.push_back(alpha->clone());
-                }
-            }
-
-            return copy;
-        }
-
-        void StochastPoint::updateInfluenceFactors()
-        {
-            double sum = 0;
-            for (size_t i = 0; i < Alphas.size(); i++)
-            {
-                sum += this->Alphas[i]->Alpha * this->Alphas[i]->Alpha;
-            }
-
-            if (sum > 0)
-            {
-                for (size_t j = 0; j < this->Alphas.size(); j++)
-                {
-                    Alphas[j]->InfluenceFactor = Alphas[j]->Alpha * Alphas[j]->Alpha / sum;
-                }
+                Alphas[j]->InfluenceFactor = Alphas[j]->Alpha * Alphas[j]->Alpha / sum;
             }
         }
     }

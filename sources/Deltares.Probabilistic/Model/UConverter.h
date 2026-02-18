@@ -32,60 +32,57 @@
 #include "../Uncertainty/CorrelationMatrixBuilder.h"
 #include "../Sensitivity/SensitivityResult.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    class UConverter
     {
-        class UConverter
-        {
-        private:
-            bool hasQualitiveStochasts = false;
-            bool hasVariableStochasts = false;
+    private:
+        bool hasQualitiveStochasts = false;
+        bool hasVariableStochasts = false;
 
-            std::vector<std::shared_ptr<ComputationalStochast>> stochasts;
-            std::vector<std::shared_ptr<ComputationalStochast>> varyingStochasts;
-            std::vector<int> varyingStochastIndex;
-            std::vector<int> pureVaryingStochastIndex;
+        std::vector<std::shared_ptr<ComputationalStochast>> stochasts;
+        std::vector<std::shared_ptr<ComputationalStochast>> varyingStochasts;
+        std::vector<int> varyingStochastIndex;
+        std::vector<int> pureVaryingStochastIndex;
 
-            std::vector<int> variableStochastIndex; // reference of the stochast index to the variable source index
-            std::vector<int> variableStochastList; // list of all stochast indices in order how they should be assigned
+        std::vector<int> variableStochastIndex; // reference of the stochast index to the variable source index
+        std::vector<int> variableStochastList; // list of all stochast indices in order how they should be assigned
 
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix;
-            std::shared_ptr<Statistics::BaseCorrelation> varyingCorrelationMatrix;
+        std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix;
+        std::shared_ptr<Statistics::BaseCorrelation> varyingCorrelationMatrix;
 
-            std::vector<double> getExpandedValues(const std::vector<double>& values);
-            std::vector<double> getExpandedValues(const std::vector<double>& values, double defaultValue);
+        std::vector<double> getExpandedValues(const std::vector<double>& values);
+        std::vector<double> getExpandedValues(const std::vector<double>& values, double defaultValue);
 
-            void initializeStochastForRun(size_t index);
-            void initializeVariableStochastForRun(std::shared_ptr<ComputationalStochast> stochast, size_t index);
-            bool isFullyCorrelated(const int index, std::vector<int> varyingIndices);
-            void updateDependentParameter(std::vector<double>& uValues, const int i);
-            std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
-            std::vector<int> getVariableStochastIndex();
+        void initializeStochastForRun(size_t index);
+        void initializeVariableStochastForRun(std::shared_ptr<ComputationalStochast> stochast, size_t index);
+        bool isFullyCorrelated(const int index, std::vector<int> varyingIndices);
+        void updateDependentParameter(std::vector<double>& uValues, const int i);
+        std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
+        std::vector<int> getVariableStochastIndex();
 
-            bool sampleValuesChanged = false;
+        bool sampleValuesChanged = false;
 
-        public:
+    public:
 
-            UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::BaseCorrelation> stochastCorrelationMatrix);
-            void initializeForRun();
-            std::vector<double> getUValues(std::shared_ptr<Sample> sample);
-            std::vector<double> getExpandedUValues(std::shared_ptr<Sample> sample);
-            std::vector<double> getXValues(std::shared_ptr<Sample> sample);
-            std::vector<double> getValuesFromType(Statistics::RunValuesType type) const;
-            int getStochastCount();
-            int getVaryingStochastCount();
-            bool isVaryingStochast(int index);
-            std::vector<double> getVaryingValues(std::vector<double> values);
-            std::shared_ptr<StochastPoint> GetStochastPoint(std::shared_ptr<Sample> sample, double beta);
-            std::shared_ptr<StochastPoint> GetStochastPoint(double beta, std::vector<double> alphas);
-            std::shared_ptr<Sample> getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
-            void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
-            void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
-            Sensitivity::SensitivityResult getSensitivityResult();
-            void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
-            bool haveSampleValuesChanged() const { return sampleValuesChanged; }
-        };
-    }
+        UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::BaseCorrelation> stochastCorrelationMatrix);
+        void initializeForRun();
+        std::vector<double> getUValues(std::shared_ptr<Sample> sample);
+        std::vector<double> getExpandedUValues(std::shared_ptr<Sample> sample);
+        std::vector<double> getXValues(std::shared_ptr<Sample> sample);
+        std::vector<double> getValuesFromType(Statistics::RunValuesType type) const;
+        int getStochastCount();
+        int getVaryingStochastCount();
+        bool isVaryingStochast(int index);
+        std::vector<double> getVaryingValues(std::vector<double> values);
+        std::shared_ptr<StochastPoint> GetStochastPoint(std::shared_ptr<Sample> sample, double beta);
+        std::shared_ptr<StochastPoint> GetStochastPoint(double beta, std::vector<double> alphas);
+        std::shared_ptr<Sample> getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
+        void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
+        void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
+        Sensitivity::SensitivityResult getSensitivityResult();
+        void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
+        bool haveSampleValuesChanged() const { return sampleValuesChanged; }
+    };
 }
 

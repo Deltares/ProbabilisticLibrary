@@ -22,20 +22,17 @@
 #pragma once
 #include <string>
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    class ModelInputParameter
     {
-        class ModelInputParameter
-        {
-        public:
-            std::string name = "";
-            int index = 0;
-            int computationalIndex = 0;
-            double defaultValue = 0.0;
-            bool isArray = false;
-            int arraySize = 1;
-        };
-    }
+    public:
+        std::string name = "";
+        int index = 0;
+        int computationalIndex = 0;
+        double defaultValue = 0.0;
+        bool isArray = false;
+        int arraySize = 1;
+    };
 }
 

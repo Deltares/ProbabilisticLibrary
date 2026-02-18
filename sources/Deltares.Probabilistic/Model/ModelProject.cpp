@@ -21,85 +21,82 @@
 //
 #include "ModelProject.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    void ModelProject::updateStochasts()
     {
-        void ModelProject::updateStochasts()
-        {
-            this->stochasts.clear();
+        this->stochasts.clear();
 
-            if (model != nullptr)
+        if (model != nullptr)
+        {
+            for (std::shared_ptr<ModelInputParameter> parameter : model->inputParameters)
             {
-                for (std::shared_ptr<ModelInputParameter> parameter : model->inputParameters)
+                std::shared_ptr<Statistics::Stochast> stochast = nullptr;
+                if (this->existingStochasts.contains(parameter->name))
                 {
-                    std::shared_ptr<Statistics::Stochast> stochast = nullptr;
-                    if (this->existingStochasts.contains(parameter->name))
+                    stochast = this->existingStochasts[parameter->name];
+                    if (stochast->modelParameter != nullptr)
                     {
-                        stochast = this->existingStochasts[parameter->name];
-                        if (stochast->modelParameter != nullptr)
-                        {
-                            parameter->isArray = stochast->modelParameter->isArray;
-                            parameter->arraySize = stochast->modelParameter->arraySize;
-                        }
+                        parameter->isArray = stochast->modelParameter->isArray;
+                        parameter->arraySize = stochast->modelParameter->arraySize;
                     }
-                    else
-                    {
-                        stochast = std::make_shared<Statistics::Stochast>();
-                        stochast->name = parameter->name;
-                        stochast->setMean(parameter->defaultValue);
-                        existingStochasts[stochast->name] = stochast;
-                    }
-
-                    stochast->modelParameter = parameter;
-
-                    this->stochasts.push_back(stochast);
                 }
+                else
+                {
+                    stochast = std::make_shared<Statistics::Stochast>();
+                    stochast->name = parameter->name;
+                    stochast->setMean(parameter->defaultValue);
+                    existingStochasts[stochast->name] = stochast;
+                }
+
+                stochast->modelParameter = parameter;
+
+                this->stochasts.push_back(stochast);
             }
         }
+    }
 
-        void ModelProject::shareStochasts(std::shared_ptr<ModelProject> source)
+    void ModelProject::shareStochasts(std::shared_ptr<ModelProject> source)
+    {
+        for (const auto& stochast : source->stochasts)
         {
-            for (const auto& stochast : source->stochasts)
-            {
-                existingStochasts[stochast->name] = stochast;
-            }
-
-            this->correlation = source->correlation;
+            existingStochasts[stochast->name] = stochast;
         }
 
-        void ModelProject::validate(Logging::ValidationReport& report)
+        this->correlation = source->correlation;
+    }
+
+    void ModelProject::validate(Logging::ValidationReport& report)
+    {
+        Logging::ValidationSupport::checkNotNull(report, model == nullptr, "model", "project");
+
+        if (model != nullptr)
         {
-            Logging::ValidationSupport::checkNotNull(report, model == nullptr, "model", "project");
-
-            if (model != nullptr)
-            {
-                model->validate(report, "project");
-            }
-
-            for (std::shared_ptr<Statistics::Stochast> stochast : stochasts)
-            {
-                stochast->validate(report);
-            }
-
-            if (correlation != nullptr)
-            {
-                correlation->Validate(report);
-            }
+            model->validate(report, "project");
         }
 
-        Logging::ValidationReport ModelProject::getValidationReport()
+        for (std::shared_ptr<Statistics::Stochast> stochast : stochasts)
         {
-            Logging::ValidationReport report;
-            validate(report);
-
-            return report;
+            stochast->validate(report);
         }
 
-        bool ModelProject::isValid()
+        if (correlation != nullptr)
         {
-            return getValidationReport().isValid();
+            correlation->Validate(report);
         }
+    }
+
+    Logging::ValidationReport ModelProject::getValidationReport()
+    {
+        Logging::ValidationReport report;
+        validate(report);
+
+        return report;
+    }
+
+    bool ModelProject::isValid()
+    {
+        return getValidationReport().isValid();
     }
 }
 

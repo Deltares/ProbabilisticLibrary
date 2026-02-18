@@ -24,38 +24,35 @@
 #include <cmath>
 #include <vector>
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    class Evaluation
     {
-        class Evaluation
-        {
-        public:
-            /**
-             * \brief Only for reliability calculations: The limit state value which corresponds with this evaluation
-             * \remarks Only for reliability calculation
-             */
-            double Z = std::nan("");
+    public:
+        /**
+         * \brief Only for reliability calculations: The limit state value which corresponds with this evaluation
+         * \remarks Only for reliability calculation
+         */
+        double Z = std::nan("");
 
-            /**
-             * \brief The quantile which corresponds with this evaluation
-             * \remarks Only for sensitivity calculations
-             */
-            double Quantile = std::nan("");
+        /**
+         * \brief The quantile which corresponds with this evaluation
+         * \remarks Only for sensitivity calculations
+         */
+        double Quantile = std::nan("");
 
-            double Beta = 1;
-            double Weight = 1;
-            int Iteration = -1;
+        double Beta = 1;
+        double Weight = 1;
+        int Iteration = -1;
 
-            /**
-             * \brief Indicates whether the sample results were calculated by a proxy or not
-             */
-            bool usedProxy = false;
+        /**
+         * \brief Indicates whether the sample results were calculated by a proxy or not
+         */
+        bool usedProxy = false;
 
-            std::vector<double> InputValues;
-            std::vector<double> OutputValues;
-            int Tag = 0;
-        };
-    }
+        std::vector<double> InputValues;
+        std::vector<double> OutputValues;
+        int Tag = 0;
+    };
 }
 

@@ -26,106 +26,103 @@
 #include <vector>
 #include <memory>
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    class ModelSample
     {
-        class ModelSample
+    public:
+        ModelSample(std::vector<double> values)
         {
-        public:
-            ModelSample(std::vector<double> values)
+            this->Values = values;
+        }
+
+        /**
+         * \brief Resets all contents of the sample to its default values
+         * \remark Values are not cleared, since they are provided in the constructor
+         */
+        void clear()
+        {
+            IterationIndex = -1;
+            threadId = 0;
+            Weight = std::nan("");
+            AllowProxy = true;
+            UsedProxy = false;
+            IsRestartRequired = false;
+            Z = std::nan("");
+            Beta = 0;
+            Tag = 0;
+        }
+
+        /**
+         * \brief Copies the results from another sample
+         */
+        void copyFrom(const std::shared_ptr<ModelSample>& source)
+        {
+            this->Z = source->Z;
+            this->OutputValues = std::vector<double>(source->OutputValues.size());
+            for (size_t i = 0; i < this->OutputValues.size(); i++)
             {
-                this->Values = values;
+                this->OutputValues[i] = source->OutputValues[i];
+            }
+        }
+
+        std::vector<double> Values;
+        std::vector<double> OutputValues;
+
+        int IterationIndex = -1;
+        int threadId = 0;
+        double Weight = 1;
+        bool AllowProxy = true;
+        bool UsedProxy = false;
+        bool IsRestartRequired = false;
+        double Beta = 0;
+        double Z = nan("");
+
+        bool ExtendedLogging = false;
+
+        /**
+         * Indication of a logging message
+         */
+        int LoggingCounter = 0;
+
+        int Tag = 0;
+
+        bool hasSameValues(std::shared_ptr<ModelSample> other)
+        {
+            if (this->Values.size() != other->Values.size())
+            {
+                return false;
             }
 
-            /**
-             * \brief Resets all contents of the sample to its default values
-             * \remark Values are not cleared, since they are provided in the constructor
-             */
-            void clear()
+            for (int i = 0; i < this->Values.size(); i++)
             {
-                IterationIndex = -1;
-                threadId = 0;
-                Weight = std::nan("");
-                AllowProxy = true;
-                UsedProxy = false;
-                IsRestartRequired = false;
-                Z = std::nan("");
-                Beta = 0;
-                Tag = 0;
-            }
-
-            /**
-             * \brief Copies the results from another sample
-             */
-            void copyFrom(const std::shared_ptr<ModelSample>& source)
-            {
-                this->Z = source->Z;
-                this->OutputValues = std::vector<double>(source->OutputValues.size());
-                for (size_t i = 0; i < this->OutputValues.size(); i++)
-                {
-                    this->OutputValues[i] = source->OutputValues[i];
-                }
-            }
-
-            std::vector<double> Values;
-            std::vector<double> OutputValues;
-
-            int IterationIndex = -1;
-            int threadId = 0;
-            double Weight = 1;
-            bool AllowProxy = true;
-            bool UsedProxy = false;
-            bool IsRestartRequired = false;
-            double Beta = 0;
-            double Z = nan("");
-
-            bool ExtendedLogging = false;
-
-            /**
-             * Indication of a logging message
-             */
-            int LoggingCounter = 0;
-
-            int Tag = 0;
-
-            bool hasSameValues(std::shared_ptr<ModelSample> other)
-            {
-                if (this->Values.size() != other->Values.size())
+                if (this->Values[i] != other->Values[i])
                 {
                     return false;
                 }
-
-                for (int i = 0; i < this->Values.size(); i++)
-                {
-                    if (this->Values[i] != other->Values[i])
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
             }
 
-            /**
-             * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
-             * \param samples Collection of samples
-             * \param function Operation on a sample
-             * \return Resulting numeric values
-             */
-            template <std::predicate<std::shared_ptr<ModelSample> const&> SampleFunction>
-            static std::vector<double> select(const std::vector<std::shared_ptr<ModelSample>>& samples, const SampleFunction& function)
+            return true;
+        }
+
+        /**
+         * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
+         * \param samples Collection of samples
+         * \param function Operation on a sample
+         * \return Resulting numeric values
+         */
+        template <std::predicate<std::shared_ptr<ModelSample> const&> SampleFunction>
+        static std::vector<double> select(const std::vector<std::shared_ptr<ModelSample>>& samples, const SampleFunction& function)
+        {
+            std::vector<double> result(samples.size());
+
+            for (size_t i = 0; i < samples.size(); i++)
             {
-                std::vector<double> result(samples.size());
-
-                for (size_t i = 0; i < samples.size(); i++)
-                {
-                    result[i] = function(samples[i]);
-                }
-
-                return result;
+                result[i] = function(samples[i]);
             }
-        };
-    }
+
+            return result;
+        }
+    };
 }
 
