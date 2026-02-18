@@ -7,7 +7,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics
 {
-    public class Stochast
+    public class Stochast : IDisposable
     {
         private int id = 0;
 
@@ -15,6 +15,8 @@ namespace Deltares.Probabilistic.Statistics
         private CallBackList<DiscreteValue> discreteValues = null;
         private CallBackList<FragilityValue> fragilityValues = null;
         private CallBackList<ContributingStochast> contributingStochasts = null;
+        private CallBackList<ConditionalValue> conditionalValues = null;
+        private Stochast conditionalSource = null;
         private bool synchronizing = false;
 
         public Stochast()
@@ -27,9 +29,20 @@ namespace Deltares.Probabilistic.Statistics
             this.id = id;
         }
 
+        public void Dispose()
+        {
+            Interface.Destroy(id);
+        }
+
         internal int GetId()
         {
             return id;
+        }
+
+        public string Name
+        {
+            get { return Interface.GetStringValue(id, "name"); }
+            set { Interface.SetStringValue(id, "name", value); }
         }
 
         public DistributionType DistributionType
@@ -302,6 +315,124 @@ namespace Deltares.Probabilistic.Statistics
             Interface.SetArrayValue(id, "u_and_x", [u, x]);
             Interface.Execute(id, "initialize_conditional_values");
             return Interface.GetValue(id, "x_from_u_and_source");
+        }
+
+        public bool IsConditional
+        {
+            get { return Interface.GetBoolValue(id, "conditional"); }
+            set { Interface.SetBoolValue(id, "conditional", value); }
+        }
+
+        public Stochast ConditionalSource
+        {
+            get
+            {
+                if (conditionalSource == null)
+                {
+                    int sourceId = Interface.GetIdValue(id, "conditional_source");
+                    if (sourceId > 0)
+                    {
+                        conditionalSource = new Stochast(sourceId);
+                    }
+                }
+
+                return conditionalSource;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    Interface.SetIntValue(id, "conditional_source", value.GetId());
+                }
+
+                conditionalSource = value;
+            }
+        }
+
+        public IList<ConditionalValue> ConditionalValues
+        {
+            get
+            {
+                if (conditionalValues == null)
+                {
+                    synchronizing = true;
+                    conditionalValues = new CallBackList<ConditionalValue>(ConditionalValuesChanged);
+
+                    int[] conditionalValueIds = Interface.GetArrayIdValue(id, "conditional_values");
+                    foreach (int conditionalValueId in conditionalValueIds)
+                    {
+                        conditionalValues.Add(new ConditionalValue(conditionalValueId));
+                    }
+
+                    synchronizing = true;
+                }
+
+                return conditionalValues;
+            }
+        }
+
+        private void ConditionalValuesChanged(ListOperationType listOperation, ConditionalValue item)
+        {
+            if (!synchronizing)
+            {
+                Interface.SetArrayIntValue(id, "conditional_values", this.conditionalValues.Select(s => s.GetId()).ToArray());
+            }
+        }
+
+        public bool CanFit()
+        {
+            return Interface.GetBoolValue(id, "can_fit");
+        }
+
+        public void Fit(double[] values, double shift = double.NaN)
+        {
+            Interface.SetIntValue(id, "prior", 0);
+            Interface.SetValue(id, "shift_for_fit", shift);
+            Interface.SetArrayValue(id, "data", values);
+
+            Interface.Execute(id, "fit");
+
+            this.histogramValues = null;
+            this.discreteValues = null;
+            this.fragilityValues = null;
+        }
+
+        public bool CanFitPrior()
+        {
+            return Interface.GetBoolValue(id, "can_fit_prior");
+        }
+
+        public void FitPrior(double[] values, Stochast prior, double shift = double.NaN)
+        {
+            Interface.SetIntValue(id, "prior", prior?.GetId() ?? 0);
+            Interface.SetValue(id, "shift_for_fit", shift);
+            Interface.SetArrayValue(id, "data", values);
+
+            Interface.Execute(id, "fit");
+
+            this.histogramValues = null;
+            this.discreteValues = null;
+            this.fragilityValues = null;
+        }
+
+        public double GetKSTest(double[] values)
+        {
+            Interface.SetArrayValue(id, "data", values);
+            return Interface.GetValue(id, "ks_test");
+        }
+
+        public void CopyFrom(Stochast source)
+        {
+            if (source != null)
+            {
+                Interface.SetIntValue(id, "copy_from", source.GetId());
+
+                this.histogramValues = null;
+                this.discreteValues = null;
+                this.fragilityValues = null;
+                this.conditionalValues = null;
+                this.contributingStochasts = null;
+            }
         }
     }
 }

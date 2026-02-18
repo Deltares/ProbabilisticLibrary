@@ -1,8 +1,9 @@
-﻿using Deltares.Probabilistic.Utils;
+﻿using System;
+using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
 
-public class ContributingStochast
+public class ContributingStochast : IDisposable
 {
     private int id = 0;
     private Stochast variable = null;
@@ -15,6 +16,10 @@ public class ContributingStochast
     internal ContributingStochast(int id)
     {
         this.id = id;
+    }
+    public void Dispose()
+    {
+        Interface.Destroy(id);
     }
 
     internal int GetId()

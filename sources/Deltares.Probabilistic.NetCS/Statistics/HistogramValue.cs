@@ -1,8 +1,9 @@
-﻿using Deltares.Probabilistic.Utils;
+﻿using System;
+using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
 
-public class HistogramValue
+public class HistogramValue : IDisposable
 {
     private int id = 0;
 
@@ -14,6 +15,11 @@ public class HistogramValue
     internal HistogramValue(int id)
     {
         this.id = id;
+    }
+
+    public void Dispose()
+    {
+        Interface.Destroy(id);
     }
 
     internal int GetId()

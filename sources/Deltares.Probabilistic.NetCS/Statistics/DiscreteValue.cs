@@ -1,8 +1,9 @@
-﻿using Deltares.Probabilistic.Utils;
+﻿using System;
+using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
 
-public class DiscreteValue
+public class DiscreteValue : IDisposable
 {
     private int id = 0;
 
@@ -14,6 +15,11 @@ public class DiscreteValue
     internal DiscreteValue(int id)
     {
         this.id = id;
+    }
+
+    public void Dispose()
+    {
+        Interface.Destroy(id);
     }
 
     internal int GetId()

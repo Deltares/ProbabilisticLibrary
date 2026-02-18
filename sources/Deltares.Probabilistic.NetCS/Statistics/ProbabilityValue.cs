@@ -3,16 +3,16 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
 
-public class FragilityValue : IDisposable
+public class ProbabilityValue : IDisposable
 {
     private int id = 0;
 
-    public FragilityValue()
+    public ProbabilityValue()
     {
-        this.id = Interface.Create("fragility_value");
+        this.id = Interface.Create("probability_value");
     }
 
-    internal FragilityValue(int id)
+    internal ProbabilityValue(int id)
     {
         this.id = id;
     }
@@ -25,12 +25,6 @@ public class FragilityValue : IDisposable
     internal int GetId()
     {
         return id;
-    }
-
-    public double X
-    {
-        get { return Interface.GetValue(id, "x"); }
-        set { Interface.SetValue(id, "x", value); }
     }
 
     public double ReliabilityIndex
@@ -56,11 +50,4 @@ public class FragilityValue : IDisposable
         get { return Interface.GetValue(id, "return_period"); }
         set { Interface.SetValue(id, "return_period", value); }
     }
-
-    public double DesignPoint
-    {
-        get { return Interface.GetValue(id, "design_point"); }
-        set { Interface.SetValue(id, "design_point", value); }
-    }
-
 }
