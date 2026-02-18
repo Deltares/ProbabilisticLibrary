@@ -25,52 +25,49 @@
 #include "../Model/Validatable.h"
 #include "DesignPointBuilder.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class LatinHyperCubeSettings : public Models::Validatable
     {
-        class LatinHyperCubeSettings : public Models::Validatable
+    public:
+        /**
+         * \brief The minimum number of samples to be examined
+         */
+        int MinimumSamples = 1000;
+
+        /**
+         * \brief Method type how the design point (alpha values) is calculated
+         */
+        DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+        /**
+         * \brief settings for the random number generator
+         */
+        std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
+
+        /**
+         * \brief Settings for individual stochastic variables, such as the start value
+         */
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const override
         {
-        public:
-            /**
-             * \brief The minimum number of samples to be examined
-             */
-            int MinimumSamples = 1000;
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
+            runSettings->validate(report);
+        }
 
-            /**
-             * \brief Method type how the design point (alpha values) is calculated
-             */
-            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-
-            /**
-             * \brief settings for the random number generator
-             */
-            std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
-
-            /**
-             * \brief Settings for individual stochastic variables, such as the start value
-             */
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Reports whether the settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            void validate(Logging::ValidationReport& report) const override
-            {
-                Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
-                runSettings->validate(report);
-            }
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
-        };
-    }
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+    };
 }

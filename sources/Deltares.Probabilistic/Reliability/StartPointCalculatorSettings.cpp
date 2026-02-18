@@ -21,30 +21,27 @@
 //
 #include "StartPointCalculatorSettings.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    std::string StartPointCalculatorSettings::getStartPointMethodString(StartMethodType method)
     {
-        std::string StartPointCalculatorSettings::getStartPointMethodString(StartMethodType method)
+        switch (method)
         {
-            switch (method)
-            {
-            case StartMethodType::FixedValue: return "fixed_value";
-            case StartMethodType::RaySearch: return "ray_search";
-            case StartMethodType::SphereSearch: return "sphere_search";
-            case StartMethodType::SensitivitySearch: return "sensitivity_search";
-            default: throw probLibException("Start point method");
-            }
+        case StartMethodType::FixedValue: return "fixed_value";
+        case StartMethodType::RaySearch: return "ray_search";
+        case StartMethodType::SphereSearch: return "sphere_search";
+        case StartMethodType::SensitivitySearch: return "sensitivity_search";
+        default: throw probLibException("Start point method");
         }
+    }
 
-        StartMethodType StartPointCalculatorSettings::getStartPointMethod(std::string method)
-        {
-            if (method == "fixed_value") return StartMethodType::FixedValue;
-            else if (method == "ray_search") return StartMethodType::RaySearch;
-            else if (method == "sphere_search") return StartMethodType::SphereSearch;
-            else if (method == "sensitivity_search") return StartMethodType::SensitivitySearch;
-            else throw probLibException("Start point method");
-        }
+    StartMethodType StartPointCalculatorSettings::getStartPointMethod(std::string method)
+    {
+        if (method == "fixed_value") return StartMethodType::FixedValue;
+        else if (method == "ray_search") return StartMethodType::RaySearch;
+        else if (method == "sphere_search") return StartMethodType::SphereSearch;
+        else if (method == "sensitivity_search") return StartMethodType::SensitivitySearch;
+        else throw probLibException("Start point method");
     }
 }
 

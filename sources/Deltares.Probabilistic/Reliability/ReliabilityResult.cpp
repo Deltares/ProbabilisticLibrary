@@ -22,19 +22,16 @@
 #include "ReliabilityResult.h"
 #include "../Math/NumericSupport.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    bool ReliabilityResult::IsMeaningful(std::shared_ptr<ReliabilityResult> resultBefore, std::shared_ptr<ReliabilityResult> resultAfter)
     {
-        bool ReliabilityResult::IsMeaningful(std::shared_ptr<ReliabilityResult> resultBefore, std::shared_ptr<ReliabilityResult> resultAfter)
+        if (resultBefore == nullptr || resultAfter == nullptr)
         {
-            if (resultBefore == nullptr || resultAfter == nullptr)
-            {
-                return true;
-            }
-
-            return !Numeric::NumericSupport::areEqual(Reliability, resultBefore->Reliability, 0.001) ||
-                !Numeric::NumericSupport::areEqual(Reliability, resultAfter->Reliability, 0.001);
+            return true;
         }
+
+        return !Numeric::NumericSupport::areEqual(Reliability, resultBefore->Reliability, 0.001) ||
+            !Numeric::NumericSupport::areEqual(Reliability, resultAfter->Reliability, 0.001);
     }
 }

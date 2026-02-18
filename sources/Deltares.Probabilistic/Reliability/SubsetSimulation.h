@@ -25,45 +25,38 @@
 #include "ReliabilityMethod.h"
 #include "../Model/RandomSampleGenerator.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Subset simulation algorithm
+     */
+    class SubsetSimulation : public ReliabilityMethod
     {
-        /**
-         * \brief Subset simulation algorithm
-         */
-        class SubsetSimulation : public ReliabilityMethod
+    public:
+        std::shared_ptr<SubsetSimulationSettings> Settings = std::make_shared<SubsetSimulationSettings>();
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        bool isValid() override
         {
-        public:
-            std::shared_ptr<SubsetSimulationSettings> Settings = std::make_shared<SubsetSimulationSettings>();
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-            bool isValid() override
-            {
-                return Settings->isValid();
-            }
+            return Settings->isValid();
+        }
 
-        private:
-            std::vector<std::shared_ptr<Models::Sample>> getInitialSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial);
-            std::vector<std::shared_ptr<Models::Sample>> getMarkovChainSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Models::Sample>>& selectedSamples, double z0Fac);
-            std::shared_ptr<Models::Sample> getMarkovChainSample(std::shared_ptr<Models::Sample> oldSample, std::shared_ptr<Models::ModelRunner> modelRunner, double maxZ, double z0Fac);
-            std::vector<std::shared_ptr<Models::Sample>> getAdaptiveConditionalSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Models::Sample>>& selectedSamples);
+    private:
+        std::vector<std::shared_ptr<Models::Sample>> getInitialSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial);
+        std::vector<std::shared_ptr<Models::Sample>> getMarkovChainSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Models::Sample>>& selectedSamples, double z0Fac);
+        std::shared_ptr<Models::Sample> getMarkovChainSample(std::shared_ptr<Models::Sample> oldSample, std::shared_ptr<Models::ModelRunner> modelRunner, double maxZ, double z0Fac);
+        std::vector<std::shared_ptr<Models::Sample>> getAdaptiveConditionalSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Models::Sample>>& selectedSamples);
 
-            std::vector<std::shared_ptr<Models::Sample>> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<std::shared_ptr<Models::Sample>> selectedSamples);
-            std::vector<std::shared_ptr<Models::Sample>> selectSamples(double z0Fac, std::vector<std::shared_ptr<Models::Sample>> performedSamples);
-            static double getConvergence(double pf, int samples);
-            bool isConverged(int sampleIndex, double convergence) const;
+        std::vector<std::shared_ptr<Models::Sample>> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<std::shared_ptr<Models::Sample>> selectedSamples);
+        std::vector<std::shared_ptr<Models::Sample>> selectSamples(double z0Fac, std::vector<std::shared_ptr<Models::Sample>> performedSamples);
+        static double getConvergence(double pf, int samples);
+        bool isConverged(int sampleIndex, double convergence) const;
 
-            double getStandardNormalPDF(double u);
+        double getStandardNormalPDF(double u);
 
-            int rejectedSamples = 0;
-            int acceptedSamples = 0;
-            double acceptanceRate = 0.0;
-            Models::RandomSampleGenerator randomSampleGenerator = Models::RandomSampleGenerator();
-        };
-    }
+        int rejectedSamples = 0;
+        int acceptedSamples = 0;
+        double acceptanceRate = 0.0;
+        Models::RandomSampleGenerator randomSampleGenerator = Models::RandomSampleGenerator();
+    };
 }
-
-
-
-
 

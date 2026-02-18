@@ -26,38 +26,35 @@
 #include "FragilityCurveIntegrationSettings.h"
 #include "../Statistics/Stochast.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class FragilityCurveProject
     {
-        class FragilityCurveProject
-        {
-        public:
-            /**
-             * \brief Collection of all design points to be combined
-             */
-            std::shared_ptr<Deltares::Statistics::Stochast> integrand = nullptr;
+    public:
+        /**
+         * \brief Collection of all design points to be combined
+         */
+        std::shared_ptr<Deltares::Statistics::Stochast> integrand = nullptr;
 
-            /**
-             * \brief Collection of all design points to be combined
-             */
-            std::shared_ptr<Deltares::Statistics::Stochast> fragilityCurve = nullptr;
+        /**
+         * \brief Collection of all design points to be combined
+         */
+        std::shared_ptr<Deltares::Statistics::Stochast> fragilityCurve = nullptr;
 
-            /**
-             * \brief Calculation settings
-             */
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = std::make_shared<FragilityCurveIntegrationSettings>();
+        /**
+         * \brief Calculation settings
+         */
+        std::shared_ptr<FragilityCurveIntegrationSettings> settings = std::make_shared<FragilityCurveIntegrationSettings>();
 
-            /**
-             * \brief Results of the combination
-             */
-            std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
+        /**
+         * \brief Results of the combination
+         */
+        std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
 
-            /**
-             * \brief Executes the combination
-             */
-            void run();
-        };
-    }
+        /**
+         * \brief Executes the combination
+         */
+        void run();
+    };
 }
 

@@ -27,79 +27,76 @@
 #include "../Model/RunSettings.h"
 #include "../Model/Validatable.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Settings for FORM algorithm
+     */
+    class FORMSettings : public Models::Validatable
     {
+    public:
         /**
-         * \brief Settings for FORM algorithm
+         * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration
          */
-        class FORMSettings : public Models::Validatable
+        double RelaxationFactor = 0.75;
+
+        /**
+         * \brief Maximum number of guessed design points in one FORM loop
+         */
+        int MaximumIterations = 50;
+
+        /**
+         * \brief Maximum number of FORM loops when no convergence is reached
+         */
+        int RelaxationLoops = 1;
+
+        /**
+         * \brief Increase factor of Maximum iterations when a new FORM loop is applied
+         */
+        int MaxIterationsGrowthFactor = 1;
+
+        /**
+         * \brief The FORM loop stops when the next guessed design point is less than this value away from the current guessed design point
+         */
+        double EpsilonBeta = 0.01;
+
+        /**
+         * \brief If true, makes a guess for the design point if the final FORM loop does not converge
+         */
+        bool FilterAtNonConvergence = false;
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Settings for calculating the gradient at a stochast point
+         */
+        std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();
+
+        /**
+         * \brief Settings for calculating the initial guessed design point
+         */
+        std::shared_ptr<StartPointCalculatorSettings> StartPointSettings = std::make_shared<StartPointCalculatorSettings>();
+
+        /**
+         * \brief Settings for individual stochastic variable, such as the start value
+         */
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+        void validate(Logging::ValidationReport& report) const override
         {
-        public:
-            /**
-             * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration
-             */
-            double RelaxationFactor = 0.75;
+            Logging::ValidationSupport::checkMinimumInt(report, 1, RelaxationLoops, "relaxation loops");
+            Logging::ValidationSupport::checkMinimum(report, 0.01, RelaxationFactor, "relaxation factor");
+            Logging::ValidationSupport::checkMaximum(report, 1, RelaxationFactor, "relaxation factor");
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
+            Logging::ValidationSupport::checkMinimum(report, 0.01, EpsilonBeta, "epsilon beta");
 
-            /**
-             * \brief Maximum number of guessed design points in one FORM loop
-             */
-            int MaximumIterations = 50;
-
-            /**
-             * \brief Maximum number of FORM loops when no convergence is reached
-             */
-            int RelaxationLoops = 1;
-
-            /**
-             * \brief Increase factor of Maximum iterations when a new FORM loop is applied
-             */
-            int MaxIterationsGrowthFactor = 1;
-
-            /**
-             * \brief The FORM loop stops when the next guessed design point is less than this value away from the current guessed design point
-             */
-            double EpsilonBeta = 0.01;
-
-            /**
-             * \brief If true, makes a guess for the design point if the final FORM loop does not converge
-             */
-            bool FilterAtNonConvergence = false;
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Settings for calculating the gradient at a stochast point
-             */
-            std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();
-
-            /**
-             * \brief Settings for calculating the initial guessed design point
-             */
-            std::shared_ptr<StartPointCalculatorSettings> StartPointSettings = std::make_shared<StartPointCalculatorSettings>();
-
-            /**
-             * \brief Settings for individual stochastic variable, such as the start value
-             */
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-
-            void validate(Logging::ValidationReport& report) const override
-            {
-                Logging::ValidationSupport::checkMinimumInt(report, 1, RelaxationLoops, "relaxation loops");
-                Logging::ValidationSupport::checkMinimum(report, 0.01, RelaxationFactor, "relaxation factor");
-                Logging::ValidationSupport::checkMaximum(report, 1, RelaxationFactor, "relaxation factor");
-                Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
-                Logging::ValidationSupport::checkMinimum(report, 0.01, EpsilonBeta, "epsilon beta");
-
-                GradientSettings->validate(report);
-                StartPointSettings->validate(report);
-                RunSettings->validate(report);
-            }
-        };
-    }
+            GradientSettings->validate(report);
+            StartPointSettings->validate(report);
+            RunSettings->validate(report);
+        }
+    };
 }
 

@@ -26,34 +26,31 @@
 
 #include "../Model/ZValueConverter.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    enum CompareType { LessThan, GreaterThan };
+
+    class LimitStateFunction : public Models::ZValueConverter
     {
-        enum CompareType { LessThan, GreaterThan };
+    public:
+        std::string criticalParameter = "";
+        std::string compareParameter = "";
+        CompareType compareType = CompareType::LessThan;
+        double criticalValue = 0;
+        bool useCompareParameter = false;
 
-        class LimitStateFunction : public Models::ZValueConverter
-        {
-        public:
-            std::string criticalParameter = "";
-            std::string compareParameter = "";
-            CompareType compareType = CompareType::LessThan;
-            double criticalValue = 0;
-            bool useCompareParameter = false;
+        void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
+        void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
 
-            void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
-            void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
+        static CompareType GetCompareType(std::string compare);
+        static std::string GetCompareTypeString(CompareType compareType);
 
-            static CompareType GetCompareType(std::string compare);
-            static std::string GetCompareTypeString(CompareType compareType);
-
-        private:
-            int criticalParameterIndex = 0;
-            int compareParameterIndex = 0;
-            bool criticalParameterIndexFromInput = false;
-            bool compareParameterIndexFromInput = false;
-            bool useSampleZValue = false;
-        };
-    }
+    private:
+        int criticalParameterIndex = 0;
+        int compareParameterIndex = 0;
+        bool criticalParameterIndexFromInput = false;
+        bool compareParameterIndexFromInput = false;
+        bool useSampleZValue = false;
+    };
 }
 

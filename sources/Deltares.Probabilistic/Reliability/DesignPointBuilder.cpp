@@ -29,328 +29,323 @@
 #include <map>
 #include <stdexcept>
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class ModeFinder
     {
-        class ModeFinder
+    private:
+        std::map<double, double> values;
+        std::shared_ptr<Statistics::Stochast> stochast = nullptr;
+
+    public:
+        ModeFinder(std::shared_ptr<Statistics::Stochast> stochast)
         {
-        private:
-            std::map<double, double> values;
-            std::shared_ptr<Statistics::Stochast> stochast = nullptr;
-
-        public:
-            ModeFinder(std::shared_ptr<Statistics::Stochast> stochast)
-            {
-                this->stochast = stochast;
-            }
-
-            void add(double u, double weight)
-            {
-                u = stochast->getRepresentativeU(u);
-
-                if (!values.contains(u))
-                {
-                    values[u] = 0;
-                }
-
-                values[u] += weight;
-            }
-
-            void clear()
-            {
-                values.clear();
-            }
-
-            double getMode()
-            {
-                double mode = 0;
-                double max = -1;
-
-                for (auto it = values.begin(); it != values.end(); ++it)
-                {
-                    if (it->second > max)
-                    {
-                        mode = it->first;
-                        max = it->second;
-                    }
-                }
-
-                return mode;
-            }
-        };
-
-        DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet)
-        {
-            initializeSamples(count, method);
-
-            if (stochastSet != nullptr)
-            {
-                for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
-                {
-                    if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
-                    {
-                        this->qualitativeIndices.push_back(i);
-                        this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]->stochast));
-                    }
-                }
-            }
-
-            this->qualitativeCount = this->qualitativeIndices.size();
+            this->stochast = stochast;
         }
 
-        DesignPointBuilder::DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
+        void add(double u, double weight)
         {
-            initializeSamples(stochasts.size(), method);
+            u = stochast->getRepresentativeU(u);
 
-            for (int i = 0; i < stochasts.size(); i++)
+            if (!values.contains(u))
             {
-                if (stochasts[i]->isQualitative())
+                values[u] = 0;
+            }
+
+            values[u] += weight;
+        }
+
+        void clear()
+        {
+            values.clear();
+        }
+
+        double getMode()
+        {
+            double mode = 0;
+            double max = -1;
+
+            for (auto it = values.begin(); it != values.end(); ++it)
+            {
+                if (it->second > max)
+                {
+                    mode = it->first;
+                    max = it->second;
+                }
+            }
+
+            return mode;
+        }
+    };
+
+    DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet)
+    {
+        initializeSamples(count, method);
+
+        if (stochastSet != nullptr)
+        {
+            for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
+            {
+                if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
                 {
                     this->qualitativeIndices.push_back(i);
-                    this->modeFinders.push_back(std::make_shared<ModeFinder>(stochasts[i]));
+                    this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]->stochast));
                 }
             }
-
-            this->qualitativeCount = this->qualitativeIndices.size();
         }
 
-        void DesignPointBuilder::initializeSamples(int count, DesignPointMethod method)
+        this->qualitativeCount = this->qualitativeIndices.size();
+    }
+
+    DesignPointBuilder::DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
+    {
+        initializeSamples(stochasts.size(), method);
+
+        for (int i = 0; i < stochasts.size(); i++)
         {
-            this->count = count;
-            this->method = method;
-
-            this->qualitativeIndices.clear();
-            this->modeFinders.clear();
-
-            this->initializeTotals();
-        }
-
-        void DesignPointBuilder::initializeTotals()
-        {
-            defaultSample = std::make_shared<Models::Sample>(count);
-            meanSample = std::make_shared<Models::Sample>(count);
-            sinSample = std::make_shared<Models::Sample>(count);
-            cosSample = std::make_shared<Models::Sample>(count);
-
-            for (const auto& modeFinder : this->modeFinders)
+            if (stochasts[i]->isQualitative())
             {
-                modeFinder->clear();
-            }
-
-            sumWeights = 0;
-        }
-
-        void DesignPointBuilder::initialize(double beta) const
-        {
-            double value = Numeric::NumericSupport::GetSign(beta) * sqrt(std::abs(beta) / count);
-
-            for (int i = 0; i < count; i++)
-            {
-                defaultSample->Values[i] = value;
+                this->qualitativeIndices.push_back(i);
+                this->modeFinders.push_back(std::make_shared<ModeFinder>(stochasts[i]));
             }
         }
 
-        void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& sample)
+        this->qualitativeCount = this->qualitativeIndices.size();
+    }
+
+    void DesignPointBuilder::initializeSamples(int count, DesignPointMethod method)
+    {
+        this->count = count;
+        this->method = method;
+
+        this->qualitativeIndices.clear();
+        this->modeFinders.clear();
+
+        this->initializeTotals();
+    }
+
+    void DesignPointBuilder::initializeTotals()
+    {
+        defaultSample = std::make_shared<Models::Sample>(count);
+        meanSample = std::make_shared<Models::Sample>(count);
+        sinSample = std::make_shared<Models::Sample>(count);
+        cosSample = std::make_shared<Models::Sample>(count);
+
+        for (const auto& modeFinder : this->modeFinders)
         {
-            sampleAdded = true;
+            modeFinder->clear();
+        }
 
-            double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
+        sumWeights = 0;
+    }
 
-            if (!weightedSampleAdded && method != DesignPointMethod::NearestToMean)
+    void DesignPointBuilder::initialize(double beta) const
+    {
+        double value = Numeric::NumericSupport::GetSign(beta) * sqrt(std::abs(beta) / count);
+
+        for (int i = 0; i < count; i++)
+        {
+            defaultSample->Values[i] = value;
+        }
+    }
+
+    void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& sample)
+    {
+        sampleAdded = true;
+
+        double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
+
+        if (!weightedSampleAdded && method != DesignPointMethod::NearestToMean)
+        {
+            // assign a preliminary weight when weight is zero, restart counting when a real weight arrives
+            if (weight > 0)
             {
-                // assign a preliminary weight when weight is zero, restart counting when a real weight arrives
-                if (weight > 0)
+                this->initializeTotals();
+                weightedSampleAdded = true;
+            }
+            else
+            {
+                weight = 1;
+            }
+        }
+
+        handleSample(sample, weight);
+    }
+
+    void DesignPointBuilder::removeSample(const std::shared_ptr<Models::Sample>& sample)
+    {
+        double weight = std::isnan(sample->Weight) ? -1 : -sample->Weight;
+
+        handleSample(sample, weight);
+    }
+
+    void DesignPointBuilder::handleSample(const std::shared_ptr<Models::Sample>& sample, double weight)
+    {
+        constexpr double delta = 1E-10;
+
+        switch (method)
+        {
+        case DesignPointMethod::NearestToMean:
+        {
+            if (weight < 0)
+            {
+                if (sampleAdded)
                 {
-                    this->initializeTotals();
-                    weightedSampleAdded = true;
-                }
-                else
-                {
-                    weight = 1;
+                    bool updateMinimumSample = nearestSamples.back() == sample;
+
+                    std::erase(nearestSamples, sample);
+                    sampleAdded = !nearestSamples.empty();
+
+                    if (updateMinimumSample)
+                    {
+                        if (sampleAdded)
+                        {
+                            minimumBeta = nearestSamples.back()->getBeta();
+                            meanSample = nearestSamples.back()->clone();
+                        }
+                        else
+                        {
+                            minimumBeta = std::numeric_limits<double>::infinity();
+                            meanSample = nullptr;
+                        }
+                    }
                 }
             }
+            else 
+            {
+                double beta = sample->getBeta();
 
-            handleSample(sample, weight);
+                if (beta < minimumBeta)
+                {
+                    if (Numeric::NumericSupport::areEqual(beta, Statistics::StandardNormal::BetaMax, delta))
+                    {
+                        minimumBeta = beta - 2.0 * delta;
+                    }
+                    else
+                    {
+                        minimumBeta = beta;
+                    }
+
+                    nearestSamples.push_back(sample);
+
+                    meanSample = sample->clone();
+                }
+            }
+            break;
         }
-
-        void DesignPointBuilder::removeSample(const std::shared_ptr<Models::Sample>& sample)
+        case DesignPointMethod::CenterOfGravity:
         {
-            double weight = std::isnan(sample->Weight) ? -1 : -sample->Weight;
+            for (int j = 0; j < this->qualitativeCount; j++)
+            {
+                int qIndex = qualitativeIndices[j];
+                modeFinders[j]->add(sample->Values[qIndex], weight);
+            }
 
-            handleSample(sample, weight);
+            for (int i = 0; i < sample->getSize(); i++)
+            {
+                meanSample->Values[i] += weight * sample->Values[i];
+            }
+
+            sumWeights += weight;
+            break;
         }
-
-        void DesignPointBuilder::handleSample(const std::shared_ptr<Models::Sample>& sample, double weight)
+        case DesignPointMethod::CenterOfAngles:
         {
-            constexpr double delta = 1E-10;
+            for (int j = 0; j < this->qualitativeCount; j++)
+            {
+                int qIndex = qualitativeIndices[j];
+                modeFinders[j]->add(sample->Values[qIndex], weight);
+            }
 
+            auto sphericalValues = Numeric::NumericSupport::GetSphericalCoordinates(sample->Values);
+            meanSample->Values[0] += weight * sphericalValues[0];
+            for (int i = 1; i < count; i++)
+            {
+                sinSample->Values[i] += weight * std::sin(sphericalValues[i]);
+                cosSample->Values[i] += weight * std::cos(sphericalValues[i]);
+            }
+            sumWeights += weight;
+            break;
+        }
+        default:
+            throw std::runtime_error("Not supported");
+        }
+    }
+
+    std::shared_ptr<Models::Sample> DesignPointBuilder::getSample()
+    {
+        if (!sampleAdded)
+        {
+            return defaultSample->clone();
+        }
+        else
+        {
             switch (method)
             {
             case DesignPointMethod::NearestToMean:
             {
-                if (weight < 0)
-                {
-                    if (sampleAdded)
-                    {
-                        bool updateMinimumSample = nearestSamples.back() == sample;
-
-                        std::erase(nearestSamples, sample);
-                        sampleAdded = !nearestSamples.empty();
-
-                        if (updateMinimumSample)
-                        {
-                            if (sampleAdded)
-                            {
-                                minimumBeta = nearestSamples.back()->getBeta();
-                                meanSample = nearestSamples.back()->clone();
-                            }
-                            else
-                            {
-                                minimumBeta = std::numeric_limits<double>::infinity();
-                                meanSample = nullptr;
-                            }
-                        }
-                    }
-                }
-                else 
-                {
-                    double beta = sample->getBeta();
-
-                    if (beta < minimumBeta)
-                    {
-                        if (Numeric::NumericSupport::areEqual(beta, Statistics::StandardNormal::BetaMax, delta))
-                        {
-                            minimumBeta = beta - 2.0 * delta;
-                        }
-                        else
-                        {
-                            minimumBeta = beta;
-                        }
-
-                        nearestSamples.push_back(sample);
-
-                        meanSample = sample->clone();
-                    }
-                }
-                break;
+                return meanSample->clone();
             }
             case DesignPointMethod::CenterOfGravity:
             {
+                std::shared_ptr<Models::Sample> gravityPoint = std::make_shared<Models::Sample>(count);
+
+                for (int i = 0; i < count; i++)
+                {
+                    gravityPoint->Values[i] = meanSample->Values[i] / sumWeights;
+                }
+
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
                     int qIndex = qualitativeIndices[j];
-                    modeFinders[j]->add(sample->Values[qIndex], weight);
+                    gravityPoint->Values[qIndex] = modeFinders[j]->getMode();
                 }
 
-                for (int i = 0; i < sample->getSize(); i++)
-                {
-                    meanSample->Values[i] += weight * sample->Values[i];
-                }
-
-                sumWeights += weight;
-                break;
+                return gravityPoint;
             }
             case DesignPointMethod::CenterOfAngles:
             {
+                auto angleValues = std::vector<double>(count);
+                angleValues[0] = meanSample->Values[0] / sumWeights;
+                for (int i = 1; i < count; i++)
+                {
+                    angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
+                }
+
+                auto coordinates = Numeric::NumericSupport::GetCartesianCoordinates(angleValues);
+                std::shared_ptr<Models::Sample> anglePoint = std::make_shared<Models::Sample>(coordinates);
+
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
                     int qIndex = qualitativeIndices[j];
-                    modeFinders[j]->add(sample->Values[qIndex], weight);
+                    anglePoint->Values[qIndex] = modeFinders[j]->getMode();
                 }
 
-                auto sphericalValues = Numeric::NumericSupport::GetSphericalCoordinates(sample->Values);
-                meanSample->Values[0] += weight * sphericalValues[0];
-                for (int i = 1; i < count; i++)
-                {
-                    sinSample->Values[i] += weight * std::sin(sphericalValues[i]);
-                    cosSample->Values[i] += weight * std::cos(sphericalValues[i]);
-                }
-                sumWeights += weight;
-                break;
+                return anglePoint;
             }
             default:
                 throw std::runtime_error("Not supported");
             }
         }
+    }
 
-        std::shared_ptr<Models::Sample> DesignPointBuilder::getSample()
+    std::string DesignPointBuilder::getDesignPointMethodString(DesignPointMethod method)
+    {
+        switch (method)
         {
-            if (!sampleAdded)
-            {
-                return defaultSample->clone();
-            }
-            else
-            {
-                switch (method)
-                {
-                case DesignPointMethod::NearestToMean:
-                {
-                    return meanSample->clone();
-                }
-                case DesignPointMethod::CenterOfGravity:
-                {
-                    std::shared_ptr<Models::Sample> gravityPoint = std::make_shared<Models::Sample>(count);
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        gravityPoint->Values[i] = meanSample->Values[i] / sumWeights;
-                    }
-
-                    for (int j = 0; j < this->qualitativeCount; j++)
-                    {
-                        int qIndex = qualitativeIndices[j];
-                        gravityPoint->Values[qIndex] = modeFinders[j]->getMode();
-                    }
-
-                    return gravityPoint;
-                }
-                case DesignPointMethod::CenterOfAngles:
-                {
-                    auto angleValues = std::vector<double>(count);
-                    angleValues[0] = meanSample->Values[0] / sumWeights;
-                    for (int i = 1; i < count; i++)
-                    {
-                        angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
-                    }
-
-                    auto coordinates = Numeric::NumericSupport::GetCartesianCoordinates(angleValues);
-                    std::shared_ptr<Models::Sample> anglePoint = std::make_shared<Models::Sample>(coordinates);
-
-                    for (int j = 0; j < this->qualitativeCount; j++)
-                    {
-                        int qIndex = qualitativeIndices[j];
-                        anglePoint->Values[qIndex] = modeFinders[j]->getMode();
-                    }
-
-                    return anglePoint;
-                }
-                default:
-                    throw std::runtime_error("Not supported");
-                }
-            }
-        }
-
-        std::string DesignPointBuilder::getDesignPointMethodString(DesignPointMethod method)
-        {
-            switch (method)
-            {
-            case DesignPointMethod::NearestToMean: return "nearest_to_mean";
-            case DesignPointMethod::CenterOfGravity: return "center_of_gravity";
-            case DesignPointMethod::CenterOfAngles: return "center_of_angles";
-            default: throw probLibException("Design point method");
-            }
-        }
-
-        DesignPointMethod DesignPointBuilder::getDesignPointMethod(std::string method)
-        {
-            if (method == "nearest_to_mean") return DesignPointMethod::NearestToMean;
-            else if (method == "center_of_gravity") return DesignPointMethod::CenterOfGravity;
-            else if (method == "center_of_angles") return DesignPointMethod::CenterOfAngles;
-            else throw probLibException("Design point method");
+        case DesignPointMethod::NearestToMean: return "nearest_to_mean";
+        case DesignPointMethod::CenterOfGravity: return "center_of_gravity";
+        case DesignPointMethod::CenterOfAngles: return "center_of_angles";
+        default: throw probLibException("Design point method");
         }
     }
+
+    DesignPointMethod DesignPointBuilder::getDesignPointMethod(std::string method)
+    {
+        if (method == "nearest_to_mean") return DesignPointMethod::NearestToMean;
+        else if (method == "center_of_gravity") return DesignPointMethod::CenterOfGravity;
+        else if (method == "center_of_angles") return DesignPointMethod::CenterOfAngles;
+        else throw probLibException("Design point method");
+    }
 }
-
-
 
