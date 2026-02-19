@@ -29,6 +29,7 @@
 #include "DesignPointBuilder.h"
 #include "DirectionalSampling.h"
 #include "DirectionalSamplingThenFORM.h"
+#include "DirectionReliability.h"
 #include "FORM.h"
 #include "FORMThenDirectionalSampling.h"
 #include "LatinHyperCube.h"
@@ -49,7 +50,7 @@ namespace Deltares
         enum ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
 
         enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
-            ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
+            ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilityDirectionReliability,
             ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
             ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM};
 
@@ -181,6 +182,21 @@ namespace Deltares
             double SubsetFraction = 0.1;
 
             /**
+             * \brief Indicates whether adaptive sampling is based on (true) clustering or (false) moving the center point based on the last importance sampling design point
+             */
+            bool Clustering = false;
+
+            /**
+             * \brief Maximum number of clusters when OptimizeNumberOfClusters is true or number of clusters to be generated when OptimizeNumberOfClusters is false
+             */
+            int MaxClusters = 100;
+
+            /**
+             * \brief Indicates whether number of clusters is fixed (false) or determined by the <see cref="IClusterMethod"/> algorithm
+             */
+            bool OptimizeNumberOfClusters = false;
+
+            /**
              * \brief Settings for generating random values
              */
             std::shared_ptr<Deltares::Models::RandomSettings> RandomSettings = std::make_shared<Deltares::Models::RandomSettings>();
@@ -229,6 +245,7 @@ namespace Deltares
             std::shared_ptr<DirectionalSampling> GetDirectionalSamplingMethod() const;
             std::shared_ptr<NumericalBisection> GetNumericalBisectionMethod() const;
             std::shared_ptr<LatinHyperCube> GetLatinHypercubeMethod() const;
+            std::shared_ptr<DirectionReliability> GetDirectionReliabilityMethod() const;
             std::shared_ptr<SubsetSimulation> GetSubsetSimulationMethod() const;
             std::shared_ptr<CobylaReliability> GetCobylaReliabilityMethod() const;
             std::shared_ptr<FORMThenDirectionalSampling> GetFormThenDsReliabilityMethod() const;

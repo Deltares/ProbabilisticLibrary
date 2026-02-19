@@ -8,6 +8,7 @@ namespace Deltares.Probabilistic.Logging
         private int id = 0;
         private double[] inputValues = null;
         private double[] outputValues = null;
+        private object tag = null;
 
         public Evaluation()
         {
@@ -90,6 +91,20 @@ namespace Deltares.Probabilistic.Logging
             set
             {
                 outputValues = value;
+            }
+        }
+
+        public object Tag
+        {
+            get
+            {
+                if (tag == null)
+                {
+                    int tagId = Interface.GetIntValue(id, "tag");
+
+                }
+
+                return tag;
             }
         }
     }

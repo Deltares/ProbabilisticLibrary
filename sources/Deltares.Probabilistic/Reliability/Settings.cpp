@@ -23,6 +23,9 @@
 
 #include <memory>
 
+#include "DirectionCalculation.h"
+#include "DirectionReliability.h"
+
 namespace Deltares
 {
     namespace Reliability
@@ -37,6 +40,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityImportanceSampling: return this->GetImportanceSamplingMethod();
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return this->GetAdaptiveImportanceSamplingMethod();
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return this->GetDirectionalSamplingMethod();
+            case ReliabilityMethodType::ReliabilityDirectionReliability: return this->GetDirectionReliabilityMethod();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return this->GetSubsetSimulationMethod();
             case ReliabilityMethodType::ReliabilityNumericalBisection: return this->GetNumericalBisectionMethod();
             case ReliabilityMethodType::ReliabilityLatinHyperCube: return this->GetLatinHypercubeMethod();
@@ -215,6 +219,10 @@ namespace Deltares
             adaptiveImportanceSampling->Settings->MaxVarianceLoops = this->MaximumVarianceLoops;
             adaptiveImportanceSampling->Settings->FractionFailed = this->FractionFailed;
 
+            adaptiveImportanceSampling->Settings->Clustering = this->Clustering;
+            adaptiveImportanceSampling->Settings->clusterSettings->MaxClusters = this->MaxClusters;
+            adaptiveImportanceSampling->Settings->clusterSettings->OptimizeNumberOfClusters = this->OptimizeNumberOfClusters;
+
             return adaptiveImportanceSampling;
         }
 
@@ -231,6 +239,15 @@ namespace Deltares
             directionalSampling->Settings->StochastSet = this->StochastSet;
 
             return directionalSampling;
+        }
+
+        std::shared_ptr<DirectionReliability> Settings::GetDirectionReliabilityMethod() const
+        {
+            std::shared_ptr<DirectionReliability> directionReliability = std::make_shared<DirectionReliability>();
+
+            directionReliability->Settings = this->DirectionSettings;
+
+            return directionReliability;
         }
 
         std::shared_ptr<SubsetSimulation> Settings::GetSubsetSimulationMethod() const
@@ -259,6 +276,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: GetAdaptiveImportanceSamplingMethod()->Settings->validate(report); break;
             case ReliabilityMethodType::ReliabilityDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilityDirectionReliability: GetDirectionReliabilityMethod()->Settings->validate(report); break;
             case ReliabilityMethodType::ReliabilityNumericalBisection: GetNumericalBisectionMethod()->Settings->validate(report); break;
             case ReliabilityMethodType::ReliabilityLatinHyperCube: GetLatinHypercubeMethod()->Settings->validate(report); break;
             case ReliabilityMethodType::ReliabilitySubsetSimulation: GetSubsetSimulationMethod()->Settings->validate(report); break;
@@ -291,6 +309,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityImportanceSampling: return "importance_sampling";
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return "adaptive_importance_sampling";
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return "directional_sampling";
+            case ReliabilityMethodType::ReliabilityDirectionReliability: return "direction_reliability";
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return "subset_simulation";
             case ReliabilityMethodType::ReliabilityNumericalBisection: return "numerical_bisection";
             case ReliabilityMethodType::ReliabilityLatinHyperCube: return "latin_hypercube";
@@ -309,6 +328,7 @@ namespace Deltares
             else if (method == "importance_sampling") return ReliabilityMethodType::ReliabilityImportanceSampling;
             else if (method == "adaptive_importance_sampling") return ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling;
             else if (method == "directional_sampling") return ReliabilityMethodType::ReliabilityDirectionalSampling;
+            else if (method == "direction_reliability") return ReliabilityMethodType::ReliabilityDirectionReliability;
             else if (method == "subset_simulation") return ReliabilityMethodType::ReliabilitySubsetSimulation;
             else if (method == "numerical_bisection") return ReliabilityMethodType::ReliabilityNumericalBisection;
             else if (method == "latin_hypercube") return ReliabilityMethodType::ReliabilityLatinHyperCube;

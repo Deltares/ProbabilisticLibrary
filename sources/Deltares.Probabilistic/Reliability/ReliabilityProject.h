@@ -60,11 +60,6 @@ namespace Deltares
             std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
 
             /**
-             * \brief Callback for progress during the calculation
-             */
-            std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
-
-            /**
              * \brief Results of the reliability calculation
              */
             std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;

@@ -4,7 +4,7 @@ namespace Deltares.Probabilistic.Statistics;
 
 public enum DistributionType { Deterministic, Normal, LogNormal, Uniform, Triangular, Trapezoidal, Exponential, Gamma, Beta, Frechet, Weibull, ConditionalWeibull, Gumbel, GeneralizedExtremeValue, StudentT, Rayleigh, RayleighN, Pareto, GeneralizedPareto, Histogram, CDFCurve, Discrete, Bernoulli, Poisson, Composite, StandardNormal, Qualitative };
 
-public static class DistributionTypeConverter
+internal static class DistributionTypeConverter
 {
     public static string ConvertToString(DistributionType distributionType)
     {

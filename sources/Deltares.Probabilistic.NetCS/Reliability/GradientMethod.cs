@@ -8,7 +8,7 @@ public enum GradientMethod
     TwoDirections
 }
 
-public static class GradientMethodConverter
+internal static class GradientMethodConverter
 {
     public static string ConvertToString(GradientMethod method)
     {

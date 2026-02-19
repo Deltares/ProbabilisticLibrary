@@ -21,11 +21,11 @@
 //
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Models.Wrappers;
-using Deltares.Statistics.Wrappers;
-using Deltares.Uncertainty.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Statistics;
+using Deltares.Probabilistic.Uncertainty;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestCrudeMonteCarloUncertainty
@@ -37,9 +37,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetAddOneProject());
 
-            project.UncertaintyMethod = new CrudeMonteCarloS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1, stochast.Mean, margin);
 
@@ -54,9 +55,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
-            project.UncertaintyMethod = new CrudeMonteCarloS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(DistributionType.Histogram, stochast.DistributionType);
             ClassicAssert.AreEqual(84, stochast.HistogramValues.Count);
@@ -70,14 +72,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
-            project.UncertaintyMethod = new CrudeMonteCarloS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.8, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
 
-            Stochast stochast2 = project.GetStochast();
+            project.Run();
+            Stochast stochast2 = project.Stochast;
 
             ClassicAssert.AreNotSame(stochast, stochast2);
             ClassicAssert.AreEqual(stochast.Mean, stochast2.Mean);
@@ -87,11 +91,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearParallel()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
+
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
             project.Settings.MaxParallelProcesses = 4;
+            project.Run();
 
-            project.UncertaintyMethod = new CrudeMonteCarloS();
-
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.8, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
@@ -101,14 +106,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearManySamples()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
+
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
             project.Settings.SaveConvergence = false;
-            project.Settings.SaveEvaluations = false;
+            project.Settings.SaveRealizations = false;
             project.Settings.SaveMessages = false;
+            project.Settings.MaximumSamples = 100000;
+            project.Run();
 
-            project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.MaximumSamples = 100000;
-
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.8, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
@@ -123,16 +129,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearAutoSamples()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
+
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
             project.Settings.SaveConvergence = false;
-            project.Settings.SaveEvaluations = false;
+            project.Settings.SaveRealizations = false;
             project.Settings.SaveMessages = false;
+            project.Settings.DeriveSamplesFromVariationCoefficient = true;
 
-            project.UncertaintyMethod = new CrudeMonteCarloS();
-            ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.DeriveSamplesFromVariationCoefficient = true;
+            ClassicAssert.AreEqual(7600, project.Settings.GetRequiredSamples());
 
-            ClassicAssert.AreEqual(7600, ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.GetRequiredSamples());
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.8, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
@@ -142,9 +150,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearFullyCorrelated()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearFullyCorrelatedProject());
-            project.UncertaintyMethod = new CrudeMonteCarloS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.79, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
@@ -159,9 +168,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearNegativeFullyCorrelated()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearNegativeFullyCorrelatedProject());
-            project.UncertaintyMethod = new CrudeMonteCarloS();
 
-            Stochast stochast = project.GetStochast();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
+            project.Run();
+
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.04, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.59, stochast.Deviation, margin);
@@ -171,9 +182,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearPartialCorrelated()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearPartialCorrelatedProject());
-            project.UncertaintyMethod = new CrudeMonteCarloS();
 
-            Stochast stochast = project.GetStochast();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
+            project.Run();
+
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.79, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.76, stochast.Deviation, margin);
@@ -182,19 +195,21 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestCorrelationMatrix()
         {
-            CrudeMonteCarloS sensitivityMethod = new CrudeMonteCarloS();
-
-            sensitivityMethod.Settings.CalculateCorrelations = true;
-
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
-            project.UncertaintyMethod = sensitivityMethod;
-            Stochast stochast1 = project.GetStochast();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
+            project.Settings.CalculateCorrelations = true;
+            project.Run();
+
+            Stochast stochast1 = project.Stochast;
 
             var project2 = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetUnbalancedLinearProject());
-            project2.UncertaintyMethod = sensitivityMethod;
-            Stochast stochast2 = project2.GetStochast();
+            project2.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
+            project2.Settings.CalculateCorrelations = true;
+            project2.Run();
 
-            CorrelationMatrix correlationMatrix = sensitivityMethod.GetCorrelationMatrix();
+            Stochast stochast2 = project2.Stochast;
+
+            CorrelationMatrix correlationMatrix = project.OutputCorrelationMatrix;
 
             double correlationValue = correlationMatrix.GetCorrelation(stochast1, stochast2);
 

@@ -22,11 +22,11 @@
 //
 using System;
 using System.Collections.Generic;
-using Deltares.Statistics.Wrappers;
+using Deltares.Probabilistic.Statistics;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestDistributions
@@ -106,7 +106,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(1.581, stochast.Deviation, margin);
 
             Stochast prior = new Stochast { DistributionType = DistributionType.Normal, Mean = 3, Deviation = 1 };
-            stochast.FitPrior(prior, new[] { 2.5, 3.5, 4.5, 5.5, 6.5 });
+            stochast.FitPrior(new[] { 2.5, 3.5, 4.5, 5.5, 6.5 }, prior);
             ClassicAssert.AreEqual(4.0, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.578, stochast.Deviation, margin);
         }
@@ -240,7 +240,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             stochast.Inverted = false;
             Stochast prior = new Stochast { DistributionType = DistributionType.LogNormal, Mean = 3, Deviation = 1 };
-            stochast.FitPrior(prior, new[] { 2.5, 3.5, 4.5, 5.5, 6.5 });
+            stochast.FitPrior(new[] { 2.5, 3.5, 4.5, 5.5, 6.5 }, prior);
             ClassicAssert.AreEqual(4.051, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.625, stochast.Deviation, margin);
         }
@@ -752,11 +752,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Stochast prior = new Stochast { DistributionType = DistributionType.Bernoulli, Mean = 0.8 };
             prior.Observations = 5;
 
-            stochast.FitPrior(prior, new double[] { 0, 0, 1, 0, 1 });
+            stochast.FitPrior(new double[] { 0, 0, 1, 0, 1 }, prior);
             ClassicAssert.AreEqual(0.6, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.49, stochast.Deviation, margin);
 
-            stochast.FitPrior(prior, new double[] { 1, 1 });
+            stochast.FitPrior(new double[] { 1, 1 }, prior);
             ClassicAssert.AreEqual(0.857, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.35, stochast.Deviation, margin);
         }
@@ -832,9 +832,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestFragilityCurve()
         {
             var stochast = new Stochast { DistributionType = DistributionType.CDFCurve };
-            stochast.FragilityValues.Add(new FragilityValue { X = 1, Reliability = -1 });
-            stochast.FragilityValues.Add(new FragilityValue { X = 2, Reliability = 0 });
-            stochast.FragilityValues.Add(new FragilityValue { X = 3, Reliability = 1 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 1, ReliabilityIndex = -1 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 2, ReliabilityIndex = 0 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 3, ReliabilityIndex = 1 });
 
             ClassicAssert.AreEqual(1, stochast.GetXFromU(-1), margin);
             ClassicAssert.AreEqual(2, stochast.GetXFromU(0), margin);
@@ -859,9 +859,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             // not ordered
             stochast.FragilityValues.Clear();
-            stochast.FragilityValues.Add(new FragilityValue { X = 2, Reliability = 0 });
-            stochast.FragilityValues.Add(new FragilityValue { X = 3, Reliability = 1 });
-            stochast.FragilityValues.Add(new FragilityValue { X = 1, Reliability = -1 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 2, ReliabilityIndex = 0 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 3, ReliabilityIndex = 1 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 1, ReliabilityIndex = -1 });
 
             ClassicAssert.AreEqual(1, stochast.GetXFromU(-1), margin);
             ClassicAssert.AreEqual(2, stochast.GetXFromU(0), margin);
@@ -965,13 +965,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestConditionalStochast()
         {
             Stochast realizedStochast = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 0, Maximum = 1 };
-            realizedStochast.IsVariableStochast = true;
+            realizedStochast.IsConditional = true;
 
-            realizedStochast.ValueSet.StochastValues.Add(new VariableStochastValue { X = 0, Minimum = 0, Maximum = 1 });
-            realizedStochast.ValueSet.StochastValues.Add(new VariableStochastValue { X = 2, Minimum = 11, Maximum = 12 });
-            realizedStochast.ValueSet.StochastValues.Add(new VariableStochastValue { X = 1, Minimum = 1, Maximum = 2 });
+            realizedStochast.ConditionalValues.Add(new ConditionalValue { X = 0, Minimum = 0, Maximum = 1 });
+            realizedStochast.ConditionalValues.Add(new ConditionalValue { X = 2, Minimum = 11, Maximum = 12 });
+            realizedStochast.ConditionalValues.Add(new ConditionalValue { X = 1, Minimum = 1, Maximum = 2 });
 
-            realizedStochast.InitializeForRun();
+            //realizedStochast.InitializeForRun();
 
             // exact value
             ClassicAssert.AreEqual(0.5, realizedStochast.GetXFromUAndSource(0, 0), margin);
@@ -1019,7 +1019,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(stochast.Deviation, newStochast.Deviation, margin);
 
             newStochast = new Stochast { Mean = stochast.Mean, Deviation = stochast.Deviation };
-            newStochast.SetDistributionType(stochast.DistributionType);
+            newStochast.DistributionType = stochast.DistributionType;
             ClassicAssert.AreEqual(stochast.Mean, newStochast.Mean, margin);
             ClassicAssert.AreEqual(stochast.Deviation, newStochast.Deviation, margin);
         }
@@ -1032,13 +1032,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(stochast.Mean, 3, margin);
 
             stochast.Mean = -3;
-            stochast.SetShift(-5);
+            stochast.Shift = -5;
 
             ClassicAssert.AreEqual(stochast.Mean, -3, margin);
 
             stochast.Inverted = true;
             stochast.Mean = -1;
-            stochast.SetShift(2);
+            stochast.Shift = 2;
 
             ClassicAssert.AreEqual(stochast.Mean, -1, margin);
         }

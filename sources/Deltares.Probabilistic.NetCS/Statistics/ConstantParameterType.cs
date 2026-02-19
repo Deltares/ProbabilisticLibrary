@@ -1,11 +1,10 @@
-﻿using Deltares.Probabilistic.Reliability;
-using System;
+﻿using System;
 
 namespace Deltares.Probabilistic.Statistics;
 
 public enum ConstantParameterType { Deviation, VariationCoefficient };
 
-public static class ConstantParameterTypeConverter
+internal static class ConstantParameterTypeConverter
 {
     public static string ConvertToString(ConstantParameterType method)
     {

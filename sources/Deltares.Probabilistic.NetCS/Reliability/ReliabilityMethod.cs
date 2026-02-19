@@ -10,6 +10,7 @@ public enum ReliabilityMethod
     ImportanceSampling,
     AdaptiveImportanceSampling,
     DirectionalSampling,
+    DirectionReliability,
     SubsetSimulation,
     LatinHypercube,
     Cobyla,
@@ -18,7 +19,7 @@ public enum ReliabilityMethod
     DirectionalSamplingThenFORM
 }
 
-public static class ReliabilityMethodConverter
+internal static class ReliabilityMethodConverter
 {
     public static string ConvertToString(ReliabilityMethod method)
     {
@@ -30,6 +31,7 @@ public static class ReliabilityMethodConverter
             ReliabilityMethod.ImportanceSampling => "importance_sampling",
             ReliabilityMethod.AdaptiveImportanceSampling => "adaptive_importance_sampling",
             ReliabilityMethod.DirectionalSampling => "directional_sampling",
+            ReliabilityMethod.DirectionReliability => "direction_reliability",
             ReliabilityMethod.SubsetSimulation => "subset_simulation",
             ReliabilityMethod.LatinHypercube => "latin_hypercube",
             ReliabilityMethod.Cobyla => "cobyla",
@@ -50,6 +52,7 @@ public static class ReliabilityMethodConverter
             "importance_sampling" => ReliabilityMethod.ImportanceSampling,
             "adaptive_importance_sampling" => ReliabilityMethod.AdaptiveImportanceSampling,
             "directional_sampling" => ReliabilityMethod.DirectionalSampling,
+            "direction_reliability" => ReliabilityMethod.DirectionReliability,
             "subset_simulation" => ReliabilityMethod.SubsetSimulation,
             "latin_hypercube" => ReliabilityMethod.LatinHypercube,
             "cobyla" => ReliabilityMethod.Cobyla,

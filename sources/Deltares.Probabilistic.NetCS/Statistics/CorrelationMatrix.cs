@@ -49,4 +49,24 @@ public class CorrelationMatrix : IDisposable
         get { return GetCorrelation(stochast1, stochast2); }
         set { SetCorrelation(stochast1, stochast2, value); }
     }
+
+    public void ResolveConflictingCorrelations()
+    {
+        Interface.Execute(id, "resolve_conflicting_correlations"); 
+    }
+
+    public bool IsIdentity()
+    {
+        return Interface.GetBoolValue(id, "is_identity");
+    }
+
+    public int CountCorrelations()
+    {
+        return Interface.GetIntValue(id, "count_correlations");
+    }
+
+    public bool HasConflictingCorrelations()
+    {
+        return Interface.GetBoolValue(id, "has_conflicting_correlations");
+    }
 }

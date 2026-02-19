@@ -32,10 +32,10 @@ public class UncertaintySettings : IDisposable
         return id;
     }
 
-    public ReliabilityMethod ReliabilityMethod
+    public UncertaintyMethod UncertaintyMethod
     {
-        get { return ReliabilityMethodConverter.ConvertFromString(Interface.GetStringValue(id, "reliability_method")); }
-        set { Interface.SetStringValue(id, "reliability_method", ReliabilityMethodConverter.ConvertToString(value)); }
+        get { return UncertaintyMethodConverter.ConvertFromString(Interface.GetStringValue(id, "uncertainty_method")); }
+        set { Interface.SetStringValue(id, "reliability_method", UncertaintyMethodConverter.ConvertToString(value)); }
     }
 
     public int MaxParallelProcesses
@@ -198,6 +198,29 @@ public class UncertaintySettings : IDisposable
     {
         get { return Interface.GetValue(id, "fraction_failed"); }
         set { Interface.SetValue(id, "fraction_failed", value); }
+    }
+
+    public bool DeriveSamplesFromVariationCoefficient
+    {
+        get { return Interface.GetBoolValue(id, "derive_samples_from_variation_coefficient"); }
+        set { Interface.SetBoolValue(id, "derive_samples_from_variation_coefficient", value); }
+    }
+
+    public bool CalculateCorrelations
+    {
+        get { return Interface.GetBoolValue(id, "calculate_correlations"); }
+        set { Interface.SetBoolValue(id, "calculate_correlations", value); }
+    }
+
+    public bool CalculateInputCorrelations
+    {
+        get { return Interface.GetBoolValue(id, "calculate_input_correlations"); }
+        set { Interface.SetBoolValue(id, "calculate_input_correlations", value); }
+    }
+
+    public int GetRequiredSamples()
+    {
+        return Interface.GetIntValue(id, "required_samples");
     }
 
     internal void SetVariables(IList<Stochast> stochasts)

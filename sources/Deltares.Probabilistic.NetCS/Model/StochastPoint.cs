@@ -60,4 +60,10 @@ public class StochastPoint
             return alphas;
         }
     }
+
+    public ModelSample GetModelSample()
+    {
+        int sampleId = Interface.GetIdValue(id, "sample");
+        return new ModelSample(sampleId);
+    }
 }

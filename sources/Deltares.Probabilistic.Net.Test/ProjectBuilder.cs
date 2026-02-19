@@ -22,14 +22,15 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Deltares.Statistics.Wrappers;
-using Deltares.Models.Wrappers;
-using Deltares.Reliability.Wrappers;
-using Deltares.Sensitivity.Wrappers;
-using Deltares.Uncertainty.Wrappers;
-using Deltares.Utils.Wrappers;
+using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
+using Deltares.Probabilistic.Sensitivity;
+using Deltares.Probabilistic.Statistics;
+using Deltares.Probabilistic.Uncertainty;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+
+namespace Deltares.Probabilistic.Test
 {
     public class ProgressHolder
     {
@@ -182,7 +183,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var uncertaintyProject = new UncertaintyProject();
 
-            uncertaintyProject.Stochasts.AddRange(project.Stochasts);
+            foreach (Stochast stochast in project.Stochasts)
+            {
+                uncertaintyProject.Stochasts.Add(stochast);
+            }
+
             uncertaintyProject.CorrelationMatrix = project.CorrelationMatrix;
             uncertaintyProject.ZFunction = project.ZFunction;
             uncertaintyProject.TagRepository = project.TagRepository;
@@ -194,7 +199,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var sensitivityProject = new SensitivityProject();
 
-            sensitivityProject.Stochasts.AddRange(project.Stochasts);
+            foreach (Stochast stochast in project.Stochasts)
+            {
+                sensitivityProject.Stochasts.Add(stochast);
+            }
+
             sensitivityProject.CorrelationMatrix = project.CorrelationMatrix;
             sensitivityProject.ZFunction = project.ZFunction;
             sensitivityProject.TagRepository = project.TagRepository;
@@ -682,16 +691,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Stochast a = GetNormalStochast(1.5, 0.5);
             Stochast b = GetNormalStochast(0.5, 1.5);
 
-            c.IsVariableStochast = true;
-            c.VariableSource = a;
-            c.ValueSet.StochastValues.Add(new VariableStochastValue { X = -100, Location = -100, Scale = 0.1 });
-            c.ValueSet.StochastValues.Add(new VariableStochastValue { X = 100, Location = 100, Scale = 0.1 });
+            c.IsConditional = true;
+            c.ConditionalSource = a;
+            c.ConditionalValues.Add(new ConditionalValue { X = -100, Location = -100, Scale = 0.1 });
+            c.ConditionalValues.Add(new ConditionalValue { X = 100, Location = 100, Scale = 0.1 });
 
-            a.IsVariableStochast = true;
-            a.VariableSource = b;
-            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 0, Location = 0, Scale = 0 });
-            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 1, Location = 3, Scale = 1 });
-            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 2, Location = 5, Scale = 3 });
+            a.IsConditional = true;
+            a.ConditionalSource = b;
+            a.ConditionalValues.Add(new ConditionalValue { X = 0, Location = 0, Scale = 0 });
+            a.ConditionalValues.Add(new ConditionalValue { X = 1, Location = 3, Scale = 1 });
+            a.ConditionalValues.Add(new ConditionalValue { X = 2, Location = 5, Scale = 3 });
 
             project.Stochasts.Add(c);
             project.Stochasts.Add(a);

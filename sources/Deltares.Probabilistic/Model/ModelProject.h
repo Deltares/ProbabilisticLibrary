@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "ModelProjectSettings.h"
+#include "ProgressIndicator.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/BaseCorrelation.h"
 #include "ZModel.h"
@@ -54,6 +55,11 @@ namespace Deltares
              * \brief Deterministic model which calculates a z-value based on input values
              */
             std::shared_ptr<ZModel> model = nullptr;
+
+            /**
+             * \brief Callback for progress during the calculation
+             */
+            std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
 
             /**
              * \brief Updates the stochasts with the parameters of the model

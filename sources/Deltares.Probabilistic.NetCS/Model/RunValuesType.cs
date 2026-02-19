@@ -9,7 +9,7 @@ public enum RunValuesType
     DesignValues
 }
 
-public static class RunValuesTypeConverter
+internal static class RunValuesTypeConverter
 {
     public static string ConvertToString(RunValuesType type)
     {

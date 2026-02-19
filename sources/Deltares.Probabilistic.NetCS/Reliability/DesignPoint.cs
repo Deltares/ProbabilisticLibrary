@@ -42,6 +42,18 @@ public class DesignPoint : StochastPoint
         set { Interface.SetValue(id, "probability_failure", value); }
     }
 
+    public double ProbabilityNonFailure
+    {
+        get { return Interface.GetValue(id, "probability_non_failure"); }
+        set { Interface.SetValue(id, "probability_non_failure", value); }
+    }
+
+    public double ReturnPeriod
+    {
+        get { return Interface.GetValue(id, "return_period"); }
+        set { Interface.SetValue(id, "return_period", value); }
+    }
+
     public double Convergence
     {
         get { return Interface.GetValue(id, "convergence"); }

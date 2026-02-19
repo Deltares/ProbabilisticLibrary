@@ -74,6 +74,8 @@ namespace Deltares
                     object_type == "uncertainty_project" ||
                     object_type == "uncertainty_settings" ||
                     object_type == "uncertainty_result" ||
+                    object_type == "progress_indicator" ||
+                    object_type == "model_sample" ||
                     object_type == "length_effect_project");
         }
 
@@ -118,6 +120,7 @@ namespace Deltares
             else if (object_type == "uncertainty_settings") return ObjectType::UncertaintySettings;
             else if (object_type == "uncertainty_result") return ObjectType::UncertaintyResult;
             else if (object_type == "length_effect_project") return ObjectType::LengthEffectProject;
+            else if (object_type == "progress_indicator") return ObjectType::ProgressIndicator;
             else throw probLibException("type not supported: " + object_type);
         }
 
@@ -259,6 +262,9 @@ namespace Deltares
             case ObjectType::LengthEffectProject:
                 lengthEffectProjects[id] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
                 break;
+            case ObjectType::ProgressIndicator:
+                progressIndicators[id] = std::make_shared<Deltares::Models::ProgressIndicator>(nullptr, nullptr, nullptr);
+                break;
             default: throw probLibException("object type");
             }
         }
@@ -313,6 +319,8 @@ namespace Deltares
             case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
             case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
             case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
+            case ObjectType::ProgressIndicator: progressIndicators.erase(id); break;
+            case ObjectType::ModelSample: modelSampleIds.erase(modelSamples[id]); modelSamples.erase(id); break;
             default: throw probLibException("object type");
             }
             types.erase(id);
@@ -401,6 +409,13 @@ namespace Deltares
 
                 if (property_ == "default_value") return parameter->defaultValue;
             }
+            else if (objectType == ObjectType::ModelSample)
+            {
+                std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
+
+                if (property_ == "beta") return sample->Beta;
+                else if (property_ == "weight") return sample->Weight;
+            }
             else if (objectType == ObjectType::ConditionalValue)
             {
                 std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
@@ -432,6 +447,7 @@ namespace Deltares
                 else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
                 else if (property_ == "fraction_failed") return settings->FractionFailed;
                 else if (property_ == "epsilon_beta") return settings->EpsilonBeta;
+                else if (property_ == "markov_chain_deviation") return settings->MarkovChainDeviation;
                 else if (property_ == "step_size") return settings->GradientSettings->StepSize;
             }
             else if (objectType == ObjectType::StochastSettings)
@@ -467,6 +483,8 @@ namespace Deltares
 
                 if (property_ == "reliability_index") return designPoint->Beta;
                 else if (property_ == "probability_failure") return designPoint->getFailureProbability();
+                else if (property_ == "probability_non_failure") return designPoint->getNonFailureProbability();
+                else if (property_ == "return_period") return designPoint->getReturnPeriod();
                 else if (property_ == "convergence" && designPoint->convergenceReport != nullptr)
                 {
                     return designPoint->convergenceReport->Convergence;
@@ -602,6 +620,13 @@ namespace Deltares
 
                 if (property_ == "critical_value") limitStateFunction->criticalValue = value;
             }
+            else if (objectType == ObjectType::ModelSample)
+            {
+                std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
+
+                if (property_ == "beta") sample->Beta = value;
+                else if (property_ == "weight") sample->Weight = value;
+            }
             else if (objectType == ObjectType::ModelParameter)
             {
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
@@ -638,6 +663,7 @@ namespace Deltares
                 else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
                 else if (property_ == "fraction_failed") settings->FractionFailed = value;
                 else if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
+                else if (property_ == "markov_chain_deviation") settings->MarkovChainDeviation = value;
                 else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
             }
             else if (objectType == ObjectType::UncertaintySettings)
@@ -724,6 +750,13 @@ namespace Deltares
                 if (property_ == "index") return parameter->index;
                 else if (property_ == "array_size") return parameter->arraySize;
             }
+            else if (objectType == ObjectType::ModelSample)
+            {
+                std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
+
+                if (property_ == "iteration") return sample->IterationIndex;
+                else if (property_ == "tag") return sample->Tag;
+            }
             else if (objectType == ObjectType::Alpha)
             {
                 std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
@@ -765,6 +798,12 @@ namespace Deltares
                 else if (property_ == "array_variables_count") return static_cast<int>(stochast->ArrayVariables.size());
                 else if (property_ == "special_values_count") tempValues["special_values"] = stochast->getSpecialXValues(); return static_cast<int>(tempValues["special_values"].size());
             }
+            else if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> matrix = std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(correlations[id]);
+
+                if (property_ == "count_correlations") return matrix->CountCorrelations();
+            }
             else if (objectType == ObjectType::ConditionalValue)
             {
                 std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
@@ -791,6 +830,7 @@ namespace Deltares
                 if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
                 else if (property_ == "minimum_samples") return settings->MinimumSamples;
                 else if (property_ == "maximum_samples") return settings->MaximumSamples;
+                else if (property_ == "maximum_samples_no_result") return settings->MaximumSamplesNoResult;
                 else if (property_ == "minimum_iterations") return settings->MinimumIterations;
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
@@ -798,8 +838,10 @@ namespace Deltares
                 else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
                 else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
                 else if (property_ == "random_seed") return settings->RandomSettings->Seed;
+                else if (property_ == "max_messages") return settings->RunSettings->MaxMessages;
                 else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
                 else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
+                else if (property_ == "max_clusters") return settings->MaxClusters;
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -819,6 +861,7 @@ namespace Deltares
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
                 else if (property_ == "maximum_directions") return settings->MaximumDirections;
                 else if (property_ == "random_seed") return settings->RandomSettings->Seed;
+                //else if (property_ == "required_samples") return settings->GetRequiredSamples();
                 else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
             }
             else if (objectType == ObjectType::UncertaintyResult)
@@ -978,6 +1021,11 @@ namespace Deltares
                     else return GetFragilityCurveId(fragilityCurve, newId);
                 }
             }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                if (property_ == "sample") return GetModelSampleId(designPoint->getModelSample(), newId);
+            }
             else if (objectType == ObjectType::UncertaintyResult)
             {
                 std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
@@ -1026,6 +1074,7 @@ namespace Deltares
                 else if (property_ == "correlation_matrix") project->correlation = correlations[value];
                 else if (property_ == "copula_correlation") project->correlation = correlations[value];
                 else if (property_ == "share_project") project->shareStochasts(GetProject(value));
+                else if (property_ == "progress_indicator") project->progressIndicator = progressIndicators[value];
             }
             else if (objectType == ObjectType::FragilityCurveProject)
             {
@@ -1033,6 +1082,13 @@ namespace Deltares
 
                 if (property_ == "integrand") project->integrand = stochasts[value];
                 else if (property_ == "fragility_curve") project->fragilityCurve = fragilityCurves[value];
+            }
+            else if (objectType == ObjectType::ModelSample)
+            {
+                std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
+
+                if (property_ == "iteration") sample->IterationIndex = value;
+                else if (property_ == "tag") sample->Tag = value;
             }
             else if (objectType == ObjectType::ModelParameter)
             {
@@ -1089,6 +1145,7 @@ namespace Deltares
                 if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
                 else if (property_ == "minimum_samples") settings->MinimumSamples = value;
                 else if (property_ == "maximum_samples") settings->MaximumSamples = value;
+                else if (property_ == "maximum_samples_no_result") settings->MaximumSamplesNoResult = value;
                 else if (property_ == "minimum_iterations") settings->MinimumIterations = value;
                 else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
                 else if (property_ == "minimum_directions") settings->MinimumDirections = value;
@@ -1096,8 +1153,15 @@ namespace Deltares
                 else if (property_ == "minimum_variance_loops") settings->MinimumVarianceLoops = value;
                 else if (property_ == "maximum_variance_loops") settings->MaximumVarianceLoops = value;
                 else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
+                else if (property_ == "max_clusters") settings->MaxClusters = value;
                 else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
+                else if (property_ == "max_messages") settings->RunSettings->MaxMessages = value;
                 else if (property_ == "max_steps_sphere_search") settings->StartPointSettings->maxStepsSphereSearch = value;
+                else if (property_ == "start_point")
+                {
+                    std::shared_ptr<Reliability::DesignPoint> designPoint = GetDesignPoint(value);
+                    settings->StochastSet->setStartPoint(designPoint->getSample());
+                }
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -1214,6 +1278,14 @@ namespace Deltares
 
                 if (property_ == "is_valid") return validationReport->isValid();
             }
+            else if (objectType == ObjectType::ModelSample)
+            {
+                std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
+
+                if (property_ == "allow_proxy") return sample->AllowProxy;
+                else if (property_ == "extended_logging") return sample->ExtendedLogging;
+                else if (property_ == "is_restart_required") return sample->IsRestartRequired;
+            }
             else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
@@ -1235,6 +1307,13 @@ namespace Deltares
                 else if (property_ == "is_used_shape") return stochast->hasParameter(DistributionPropertyType::Shape);
                 else if (property_ == "is_used_shape_b") return stochast->hasParameter(DistributionPropertyType::ShapeB);
                 else if (property_ == "is_used_observations") return stochast->hasParameter(DistributionPropertyType::Observations);
+            }
+            else if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> matrix = std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(correlations[id]);
+
+                if (property_ == "is_identity") return matrix->IsIdentity();
+                else if (property_ == "has_conflicting_correlations") return matrix->HasConflictingCorrelations();
             }
             else if (objectType == ObjectType::ModelParameter)
             {
@@ -1279,6 +1358,9 @@ namespace Deltares
 
                 if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
                 else if (property_ == "is_repeatable_random") return setting->RandomSettings->IsRepeatableRandom;
+                else if (property_ == "filter_at_non_convergence") return setting->FilterAtNonConvergence;
+                else if (property_ == "clustering") return setting->Clustering;
+                else if (property_ == "optimize_number_clusters") return setting->OptimizeNumberOfClusters;
             }
             else if (objectType == ObjectType::CombineProject)
             {
@@ -1326,6 +1408,14 @@ namespace Deltares
                 else if (property_ == "conditional") stochast->IsVariableStochast = value;
                 else if (property_ == "is_array") stochast->modelParameter->isArray = value;
             }
+            else if (objectType == ObjectType::ModelSample)
+            {
+                std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
+
+                if (property_ == "allow_proxy") sample->AllowProxy = value;
+                else if (property_ == "extended_logging") sample->ExtendedLogging = value;
+                else if (property_ == "is_restart_required") sample->IsRestartRequired = value;
+            }
             else if (objectType == ObjectType::ModelParameter)
             {
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
@@ -1360,6 +1450,9 @@ namespace Deltares
 
                 if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
                 else if (property_ == "is_repeatable_random") setting->RandomSettings->IsRepeatableRandom = value;
+                else if (property_ == "filter_at_non_convergence") setting->FilterAtNonConvergence = value;
+                else if (property_ == "clustering") setting->Clustering = value;
+                else if (property_ == "optimize_number_clusters") setting->OptimizeNumberOfClusters = value;
             }
         }
 
@@ -1422,6 +1515,8 @@ namespace Deltares
                 else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
                 else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
                 else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
+                else if (property_ == "model_varying_type") return Reliability::DirectionReliabilitySettings::getModelVaryingTypeString(settings->DirectionSettings->modelVaryingType);
+                else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
             }
             else if (objectType == ObjectType::RunProjectSettings)
             {
@@ -1563,6 +1658,8 @@ namespace Deltares
                 else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
                 else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
                 else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
+                else if (property_ == "model_varying_type") settings->DirectionSettings->modelVaryingType = Reliability::DirectionReliabilitySettings::getModelVaryingType(value);
+                else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
             }
             else if (objectType == ObjectType::RunProjectSettings)
             {
@@ -1626,6 +1723,7 @@ namespace Deltares
 
                 if (property_ == "fit") tempValues["data"] = dataValues;
                 else if (property_ == "data") tempValues["data"] = dataValues;
+                else if (property_ == "weights") tempValues["weights"] = dataValues;
                 else if (property_ == "u_and_x") tempValues["u_and_x"] = dataValues;
             }
             else if (objectType == ObjectType::LengthEffectProject)
@@ -2143,6 +2241,8 @@ namespace Deltares
 
                 if (method_ == "initialize_for_run") stochast->initializeForRun();
                 else if (method_ == "initialize_conditional_values") stochast->initializeConditionalValues();
+                else if (method_ == "set_x_at_u_dev") stochast->setXAtU(tempValues["u_and_x"][1], tempValues["u_and_x"][0], ConstantParameterType::Deviation);
+                else if (method_ == "set_x_at_u_var") stochast->setXAtU(tempValues["u_and_x"][1], tempValues["u_and_x"][0], ConstantParameterType::VariationCoefficient);
                 else if (method_ == "fit")
                 {
                     double shift = argValue;
@@ -2151,6 +2251,13 @@ namespace Deltares
 
                     argValue = nan("");
                     tempValues.erase("data");
+                }
+                else if (method_ == "fit_weighted")
+                {
+                    stochast->fitWeighted(tempValues["data"], tempValues["weights"]);
+
+                    tempValues.erase("data");
+                    tempValues.erase("weights");
                 }
                 else if (method_ == "fit_prior")
                 {
@@ -2162,6 +2269,12 @@ namespace Deltares
                     argValue = nan("");
                     tempValues.erase("data");
                 }
+            }
+            else if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> matrix = std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(correlations[id]);
+
+                if (method_ == "resolve_conflicting_correlations") matrix->resolveConflictingCorrelations();
             }
             else if (IsModelProjectType(objectType))
             {
@@ -2226,6 +2339,25 @@ namespace Deltares
                 validationReports[newId] = validationReport;
                 types[newId] = ObjectType::ValidationReport;
                 return newId;
+            }
+        }
+
+        int ProjectHandler::GetModelSampleId(std::shared_ptr<Models::ModelSample> sample, int newId)
+        {
+            if (sample == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                if (!modelSampleIds.contains(sample))
+                {
+                    modelSamples[newId] = sample;
+                    types[newId] = ObjectType::ModelSample;
+                    modelSampleIds[sample] = newId;
+                }
+
+                return modelSampleIds[sample];
             }
         }
 

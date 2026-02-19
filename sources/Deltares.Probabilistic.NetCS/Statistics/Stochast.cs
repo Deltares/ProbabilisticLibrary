@@ -326,8 +326,14 @@ namespace Deltares.Probabilistic.Statistics
         public void SetXAtU(double x, double u, ConstantParameterType constantParameterType)
         {
             Interface.SetArrayValue(id, "u_and_x", [u, x]);
-            Interface.SetStringValue(id, "constant_parameter_type", ConstantParameterTypeConverter.ConvertToString(constantParameterType));
-            Interface.Execute(id, "set_x_at_u");
+            if (constantParameterType == ConstantParameterType.Deviation)
+            {
+                Interface.Execute(id, "set_x_at_u_dev");
+            }
+            else if (constantParameterType == ConstantParameterType.VariationCoefficient)
+            {
+                Interface.Execute(id, "set_x_at_u_var");
+            }
         }
 
         public bool IsVarying()

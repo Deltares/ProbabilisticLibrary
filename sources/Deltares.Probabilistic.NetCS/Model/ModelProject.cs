@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
@@ -17,6 +18,7 @@ namespace Deltares.Probabilistic.Model
         private ZSampleDelegate zFunction = null;
         private CorrelationMatrix correlationMatrix = null;
         private TagRepository tagRepository = new TagRepository();
+        private ProgressIndicator progressIndicator = null;
 
         private bool synchronizing = false;
 
@@ -53,6 +55,16 @@ namespace Deltares.Probabilistic.Model
         {
             get { return zFunction; }
             set { zFunction = value; }
+        }
+
+        public ProgressIndicator ProgressIndicator
+        {
+            get { return progressIndicator; }
+            set
+            {
+                Interface.SetIntValue(id, "progress_indicator", value != null ? value.GetId() : 0);
+                progressIndicator = value;
+            }
         }
 
         public IList<Stochast> Stochasts

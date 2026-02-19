@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Platforms>x64</Platforms>
-        <TargetFramework>net8.0-windows7.0</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
 </Project>

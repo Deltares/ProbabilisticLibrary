@@ -4,7 +4,7 @@ namespace Deltares.Probabilistic.Statistics;
 
 public enum DistributionPropertyType { Location, Scale, Minimum, Maximum, Shift, ShiftB, Shape, ShapeB, Observations };
 
-public static class DistributionPropertyConverter
+internal static class DistributionPropertyConverter
 {
     public static string ConvertToString(DistributionPropertyType propertyType)
     {

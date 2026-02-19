@@ -19,14 +19,14 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-﻿using Deltares.Models.Wrappers;
-using Deltares.Reliability.Wrappers;
-using Deltares.Statistics.Wrappers;
+﻿using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
+using Deltares.Probabilistic.Statistics;
 using NUnit.Framework.Legacy;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestAdaptiveImportanceSampling
@@ -38,8 +38,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new AdaptiveImportanceSampling();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.AdaptiveImportanceSampling;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.60, designPoint.Beta, margin);
 
@@ -52,13 +54,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearSmallProject();
 
-            AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            importanceSampling.Settings.MaxVarianceLoops = 5;
-            importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 10000;
-            project.ReliabilityMethod = importanceSampling;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.AdaptiveImportanceSampling;
+            project.Settings.MaximumVarianceLoops = 5;
+            project.Settings.MinimumVarianceLoops = 2;
+            project.Settings.MaximumSamples = 10000;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(3.90, designPoint.Beta, margin);
         }
@@ -68,17 +70,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearSmallSlowProject();
 
-            AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            importanceSampling.Settings.MaxVarianceLoops = 5;
-            importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamplesNoResult = 100;
-            importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 100;
-            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 200;
-            project.ReliabilityMethod = importanceSampling;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.AdaptiveImportanceSampling;
+            project.Settings.MaximumVarianceLoops = 5;
+            project.Settings.MinimumVarianceLoops = 2;
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.MaximumSamplesNoResult = 100;
+            project.Settings.MinimumSamples = 100;
+            project.Settings.MaximumSamples = 200;
 
-            ClassicAssert.AreEqual(3.91, designPoint.Beta, margin);
+            project.Run();
+
+            ClassicAssert.AreEqual(3.91, project.DesignPoint.Beta, margin);
         }
 
         [Test]
@@ -86,20 +88,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearSmallSlowProject();
 
-            AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            importanceSampling.Settings.RunSettings.MaxParallelProcesses = 4;
-            importanceSampling.Settings.MaxVarianceLoops = 5;
-            importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 100;
-            importanceSampling.Settings.ImportanceSamplingSettings.RunSettings.MaxParallelProcesses = 4;
-            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamplesNoResult = 100;
-            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 200;
+            project.Settings.MaxParallelProcesses = 4;
 
-            project.ReliabilityMethod = importanceSampling;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.AdaptiveImportanceSampling;
+            project.Settings.MaximumVarianceLoops = 5;
+            project.Settings.MinimumVarianceLoops = 2;
+            project.Settings.MaximumSamplesNoResult = 100;
+            project.Settings.MinimumSamples = 100;
+            project.Settings.MaximumSamples = 200;
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Run();
 
-            ClassicAssert.AreEqual(3.91, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(3.91, project.DesignPoint.Beta, margin);
         }
 
         [Test]
@@ -107,23 +107,20 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearAbsoluteSmallProject();
 
-            AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.AdaptiveImportanceSampling;
+            project.Settings.MaximumVarianceLoops = 5;
+            project.Settings.MinimumVarianceLoops = 2;
 
-            importanceSampling.Settings.MaxVarianceLoops = 5;
-            importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.Settings.Clustering = true;
+            project.Settings.Clustering = true;
+            project.Settings.MaxClusters = 5;
+            project.Settings.OptimizeNumberClusters = false;
 
-            importanceSampling.Settings.ClusterSettings.MaxClusters = 5;
-            importanceSampling.Settings.ClusterSettings.OptimizeNumberClusters = false;
+            project.Settings.MinimumSamples = 1000;
+            project.Settings.MaximumSamples = 5000;
 
-            importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 1000;
-            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 5000;
+            project.Run();
 
-            project.ReliabilityMethod = importanceSampling;
-
-            DesignPoint designPoint = project.GetDesignPoint();
-
-            ClassicAssert.AreEqual(3.70, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(3.70, project.DesignPoint.Beta, margin);
         }
 
         [Test]
@@ -131,27 +128,24 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetEdgeProject();
 
-            AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.AdaptiveImportanceSampling;
+            project.Settings.MaximumVarianceLoops = 5;
+            project.Settings.MinimumVarianceLoops = 2;
 
-            importanceSampling.Settings.MaxVarianceLoops = 5;
-            importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.Settings.Clustering = true;
+            project.Settings.Clustering = true;
+            project.Settings.MaxClusters = 5;
+            project.Settings.OptimizeNumberClusters = true;
 
-            importanceSampling.Settings.ClusterSettings.MaxClusters = 5;
-            importanceSampling.Settings.ClusterSettings.OptimizeNumberClusters = true;
+            project.Settings.MinimumSamples = 1000;
+            project.Settings.MaximumSamples = 5000;
 
-            importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 1000;
-            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 5000;
-
-            project.ReliabilityMethod = importanceSampling;
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Run();
 
             double pSingle = 0.0001;
             double betaExpected = StandardNormal.GetUFromQ(3 * pSingle - 3 * pSingle * pSingle);
-            ClassicAssert.AreEqual(betaExpected, designPoint.Beta, 2 * margin);
+            ClassicAssert.AreEqual(betaExpected, project.DesignPoint.Beta, 2 * margin);
 
-            ClassicAssert.AreEqual(3, designPoint.ContributingDesignPoints.Count(p => p.Identifier.StartsWith("Cluster")));
+            ClassicAssert.AreEqual(3, project.DesignPoint.ContributingDesignPoints.Count(p => p.Identifier.StartsWith("Cluster")));
         }
     }
 }

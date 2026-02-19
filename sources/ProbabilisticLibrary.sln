@@ -24,6 +24,9 @@ EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.Python.Test", "Deltares.Probabilistic.Python.Test\Deltares.Probabilistic.Python.Test.pyproj", "{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deltares.Probabilistic.NetCS", "Deltares.Probabilistic.NetCS\Deltares.Probabilistic.NetCS.csproj", "{BB51129A-4669-4BE9-B9CC-1F8E4ABA7685}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E82A904A-FE1C-4695-BE1F-0AFCE5861FB4} = {E82A904A-FE1C-4695-BE1F-0AFCE5861FB4}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

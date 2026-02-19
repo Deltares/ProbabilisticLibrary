@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
@@ -61,6 +63,18 @@ public class ReliabilitySettings : IDisposable
         set { Interface.SetBoolValue(id, "save_messages", value); }
     }
 
+    public int MaxMessages
+    {
+        get { return Interface.GetIntValue(id, "max_messages"); }
+        set { Interface.SetIntValue(id, "max_messages", value); }
+    }
+
+    public MessageType LowestMessageType
+    {
+        get { return MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "lowest_message_type")); }
+        set { Interface.SetStringValue(id, "lowest_message_type", MessageTypeConverter.ConvertToString(value)); }
+    }
+
     public bool ReuseCalculations
     {
         get { return Interface.GetBoolValue(id, "reuse_calculations"); }
@@ -69,7 +83,10 @@ public class ReliabilitySettings : IDisposable
 
     public DesignPointMethod DesignPointMethod
     {
-        get { return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method")); }
+        get
+        {
+            return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method"));
+        }
         set { Interface.SetStringValue(id, "design_point_method", DesignPointMethodConverter.ConvertToString(value)); }
     }
 
@@ -83,6 +100,12 @@ public class ReliabilitySettings : IDisposable
     {
         get { return Interface.GetBoolValue(id, "all_quadrants"); }
         set { Interface.SetBoolValue(id, "all_quadrants", value); }
+    }
+
+    public bool FilterAtNonConvergence
+    {
+        get { return Interface.GetBoolValue(id, "filter_at_non_convergence"); }
+        set { Interface.SetBoolValue(id, "filter_at_non_convergence", value); }
     }
 
     public int MaxStepsSphereSearch
@@ -121,6 +144,12 @@ public class ReliabilitySettings : IDisposable
         set { Interface.SetIntValue(id, "maximum_samples", value); }
     }
 
+    public int MaximumSamplesNoResult
+    {
+        get { return Interface.GetIntValue(id, "maximum_samples_no_result"); }
+        set { Interface.SetIntValue(id, "maximum_samples_no_result", value); }
+    }
+
     public int MinimumIterations
     {
         get { return Interface.GetIntValue(id, "minimum_iterations"); }
@@ -145,6 +174,12 @@ public class ReliabilitySettings : IDisposable
         set { Interface.SetIntValue(id, "maximum_directions", value); }
     }
 
+    public ModelVaryingType ModelVaryingType
+    {
+        get { return ModelVaryingTypeConverter.ConvertFromString(Interface.GetStringValue(id, "model_varying_type")); }
+        set { Interface.SetStringValue(id, "model_varying_type", ModelVaryingTypeConverter.ConvertToString(value)); }
+    }
+
     public double EpsilonBeta
     {
         get { return Interface.GetValue(id, "epsilon_beta"); }
@@ -157,10 +192,10 @@ public class ReliabilitySettings : IDisposable
         set { Interface.SetValue(id, "step_size", value); }
     }
 
-    public double GradientType
+    public GradientMethod GradientType
     {
-        get { return Interface.GetValue(id, "gradient_type"); }
-        set { Interface.SetValue(id, "gradient_type", value); }
+        get { return GradientMethodConverter.ConvertFromString(Interface.GetStringValue(id, "gradient_type")); }
+        set { Interface.SetStringValue(id, "gradient_type", GradientMethodConverter.ConvertToString(value)); }
     }
 
     public double RelaxationFactor
@@ -193,10 +228,34 @@ public class ReliabilitySettings : IDisposable
         set { Interface.SetValue(id, "variation_coefficient", value); }
     }
 
+    public double MarkovChainDeviation
+    {
+        get { return Interface.GetValue(id, "markov_chain_deviation"); }
+        set { Interface.SetValue(id, "markov_chain_deviation", value); }
+    }
+
     public double FractionFailed
     {
         get { return Interface.GetValue(id, "fraction_failed"); }
         set { Interface.SetValue(id, "fraction_failed", value); }
+    }
+
+    public bool Clustering
+    {
+        get { return Interface.GetBoolValue(id, "clustering"); }
+        set { Interface.SetBoolValue(id, "clustering", value); }
+    }
+
+    public int MaxClusters
+    {
+        get { return Interface.GetIntValue(id, "max_clusters"); }
+        set { Interface.SetIntValue(id, "max_clusters", value); }
+    }
+
+    public bool OptimizeNumberClusters
+    {
+        get { return Interface.GetBoolValue(id, "optimize_number_clusters"); }
+        set { Interface.SetBoolValue(id, "optimize_number_clusters", value); }
     }
 
     internal void SetVariables(IList<Stochast> stochasts)
@@ -219,6 +278,11 @@ public class ReliabilitySettings : IDisposable
         stochastSettings.AddRange(newStochastSettings);
 
         Interface.SetArrayIntValue(id, "stochast_settings", StochastSettings.Select(p => p.GetId()).ToArray());
+    }
+
+    public void SetStartPoint(StochastPoint stochastPoint)
+    {
+        Interface.SetIntValue(id, "start_point", stochastPoint.GetId());
     }
 
     public IList<StochastSettings> StochastSettings

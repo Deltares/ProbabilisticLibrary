@@ -101,6 +101,7 @@ namespace Deltares
             int GetEvaluationId(std::shared_ptr<Models::Evaluation> evaluation, int newId);
             int GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId);
             int GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId);
+            int GetModelSampleId(std::shared_ptr<Models::ModelSample> sample, int newId);
 
             std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
             {
@@ -112,7 +113,8 @@ namespace Deltares
             enum ObjectType {StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult,
-                SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation};
+                SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation,
+                ProgressIndicator, ModelSample};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -153,6 +155,8 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
             std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
             std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyResult>> uncertaintyResults;
+            std::unordered_map<int, std::shared_ptr<Models::ModelSample>> modelSamples;
+            std::unordered_map<int, std::shared_ptr<Models::ProgressIndicator>> progressIndicators;
 
             std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
             std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
@@ -173,6 +177,8 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Models::Evaluation>, int> evaluationIds;
             std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
             std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
+            std::unordered_map<std::shared_ptr <Models ::ModelSample>,int> modelSampleIds;
+
 
             std::unordered_map <std::string, std::vector<double>> tempValues;
             double argValue = nan("");

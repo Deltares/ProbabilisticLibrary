@@ -1,4 +1,5 @@
 ﻿using System;
+using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Sensitivity;
@@ -6,6 +7,7 @@ namespace Deltares.Probabilistic.Sensitivity;
 public class SensitivityValue : IDisposable
 {
     private int id = 0;
+    private Stochast stochast = null;
 
     public SensitivityValue()
     {
@@ -27,10 +29,23 @@ public class SensitivityValue : IDisposable
         return id;
     }
 
-    public double Variable
+    public Stochast Parameter
     {
-        get { return Interface.GetValue(id, "variable"); }
-        set { Interface.SetValue(id, "variable", value); }
+        get
+        {
+            if (stochast == null)
+            {
+                int stochastId = Interface.GetIdValue(id, "variable");
+                stochast = new Stochast(stochastId);
+            }
+
+            return stochast;
+        }
+        set
+        {
+            Interface.SetIntValue(id, "variable", value.GetId());
+            stochast = value;
+        }
     }
 
     public double Low

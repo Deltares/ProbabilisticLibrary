@@ -20,12 +20,13 @@
 // All rights reserved.
 //
 ﻿using System.Collections.Generic;
-using Deltares.Reliability.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Statistics;
+using Deltares.Probabilistic.Reliability;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Statistics.Wrappers;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestImportanceSamplingCombiner
