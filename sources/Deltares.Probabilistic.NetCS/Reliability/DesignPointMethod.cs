@@ -9,7 +9,7 @@ public enum DesignPointMethod
     NearestToMean
 }
 
-public static class DesignPointMethodConverter
+internal static class DesignPointMethodConverter
 {
     public static string ConvertToString(DesignPointMethod method)
     {

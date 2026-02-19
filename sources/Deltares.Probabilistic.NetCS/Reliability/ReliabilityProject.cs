@@ -9,7 +9,7 @@ namespace Deltares.Probabilistic.Reliability
 {
     public class ReliabilityProject : ModelProject
     {
-        private int id = 0;
+        private readonly int id = 0;
         private ReliabilitySettings settings = null;
         private DesignPoint designPoint = null;
 

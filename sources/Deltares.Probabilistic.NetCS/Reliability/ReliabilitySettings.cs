@@ -10,7 +10,7 @@ namespace Deltares.Probabilistic.Reliability;
 
 public class ReliabilitySettings : IDisposable
 {
-    private int id = 0;
+    private readonly int id = 0;
     private List<StochastSettings> stochastSettings = null;
 
     public ReliabilitySettings()

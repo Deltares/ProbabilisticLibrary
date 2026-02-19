@@ -7,7 +7,7 @@ namespace Deltares.Probabilistic.Reliability;
 
 public class DesignPoint : StochastPoint
 {
-    private int id = 0;
+    private readonly int id = 0;
     private List<DesignPoint> contributingDesignPoints = null;
     private List<Evaluation> realizations = null;
     private List<ReliabilityResult> reliabilityResults = null;
