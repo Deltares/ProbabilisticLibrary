@@ -307,6 +307,7 @@
     <ClInclude Include="Combine\HohenbichlerZ.h" />
     <ClInclude Include="Combine\intEqualElements.h" />
     <ClInclude Include="Combine\upscaling.h" />
+    <ClInclude Include="Combine\ComputeBetaSection.h" />
     <ClInclude Include="Combine\LengthEffect.h" />
     <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Reliability\SphereTasks.h" />
@@ -546,6 +547,7 @@
     <ClCompile Include="Combine\HohenbichlerNumIntCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerZ.cpp" />
     <ClCompile Include="Combine\upscaling.cpp" />
+    <ClCompile Include="Combine\ComputeBetaSection.cpp" />
     <ClCompile Include="Combine\LengthEffect.cpp" />
     <ClCompile Include="Reliability\SphereTasks.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionLibrary.cpp" />

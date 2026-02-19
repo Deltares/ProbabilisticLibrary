@@ -48,14 +48,10 @@ namespace Deltares::Reliability
         void upscaleToLargestBlock(const alphaBeta& smallBlock,
             const Numeric::vector1D& rhoTSmallBlock, const Numeric::vector1D& blockDurations, const double largestBlockDuration,
             alphaBeta& largestBlock, Numeric::vector1D& durationsLargestBlock);
-        // TODO: ComputeBetaSection is public for testing
-        std::pair<double, int> ComputeBetaSection(const double betaCrossSection, const double sectionLength,
-            const double rhoZ, const double dz, const double deltaL);
     private:
         const double rhoLimit = 0.99999; // Limit value for the correlation coefficient
-        const double rhoLowLim = 0.001;          // Lower limit of correlation coefficient before Hohenbichler method must be called
+        const double rhoLowLim = 0.001;  // Lower limit of correlation coefficient before Hohenbichler method must be called
         HohenbichlerFORM hhb = HohenbichlerFORM();
         double upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures);
-        static std::string createMessage(const double deltaL, const double rhoZ, const double dZ);
     };
 }
