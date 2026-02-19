@@ -65,7 +65,8 @@ namespace Deltares::Reliability
 
         auto message = std::make_shared<Logging::Message>();
         message->Type = Logging::MessageType::Debug;
-        auto [dpLength, nFail] = up.upscaleLength(dp, rho1, rho2, length, message->Text);
+        auto [dpLength, nFail, text] = up.upscaleLength(dp, rho1, rho2, length);
+        message->Text = text;
         auto dpL = DesignPoint();
         dpL.Identifier = "Length Effect";
         dpL.Beta = dpLength.getBeta();

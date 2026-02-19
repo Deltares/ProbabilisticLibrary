@@ -144,8 +144,7 @@ int upscalelengthc(betaAlphaCF* dpCrossSection, double* sectionLength, betaAlpha
     auto crossSectionElement = alphaBeta(dpCrossSection->beta, alpha);
 
     auto up = upscaling();
-    std::string message;
-    const auto [alphaBeta, nFail] = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength, message);
+    const auto [alphaBeta, nFail, message] = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength);
 
     dpSection->beta = alphaBeta.getBeta();
     for (int i = 0; i < nStochasts; i++)

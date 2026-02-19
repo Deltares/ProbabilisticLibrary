@@ -26,6 +26,16 @@
 
 namespace Deltares::Reliability
 {
+    /// <summary>
+    /// class with result of an upscaling calculation
+    /// </summary>
+    struct upscalingResult
+    {
+        alphaBeta design_point;
+        int counter = 0;
+        std::string message;
+    };
+
     //
     // Class to combine failure probabilities for identical time elements (identical = same reliability index and alpha values)
     //
@@ -33,8 +43,8 @@ namespace Deltares::Reliability
     {
     public:
         int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::vector1D& inRhoT);
-        std::pair<alphaBeta, int> upscaleLength(alphaBeta& crossSectionElement, const Numeric::vector1D& rhoXK,
-            const Numeric::vector1D& dXK, const double sectionLength, std::string& message);
+        upscalingResult upscaleLength(const alphaBeta& crossSectionElement, const Numeric::vector1D& rhoXK,
+            const Numeric::vector1D& dXK, const double section_length);
         void upscaleToLargestBlock(const alphaBeta& smallBlock,
             const Numeric::vector1D& rhoTSmallBlock, const Numeric::vector1D& blockDurations, const double largestBlockDuration,
             alphaBeta& largestBlock, Numeric::vector1D& durationsLargestBlock);

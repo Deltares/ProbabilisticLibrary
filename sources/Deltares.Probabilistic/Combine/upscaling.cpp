@@ -19,17 +19,16 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#ifndef _USE_MATH_DEFINES
-#define _USE_MATH_DEFINES
-#endif
-#include <cmath>
-#include <cfloat>
 #include "upscaling.h"
 #include "HohenbichlerFORM.h"
 #include "intEqualElements.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
+#include <algorithm>
+#include <cmath>
+#include <numbers>
 #include <format>
+#include <limits>
 
 using namespace Deltares::Statistics;
 
@@ -37,16 +36,18 @@ namespace Deltares::Reliability
 {
     using namespace Deltares::Numeric;
 
-    // \brief Method for combining failure probabilities over equal elements, with exceptions for correlations close to zero
-    // \param nrTimes   : Number of time the original time
-    // \param beta      : Reliability index of a single time element
-    // \param alpha(:)  : Influence coefficients of a single time element
-    // \param inRhoT(:) : Correlation coefficients for each of the variables, in time
+    /// <summary>
+    /// Method for combining failure probabilities over equal elements, with exceptions for correlations close to zero
+    /// </summary>
+    /// <param name="nrTimes"> the input design points </param>
+    /// <param name="element"> the design point of a single time element </param>
+    /// <param name="inRhoT"> Correlation coefficients for each of the variables, in time </param>
+    /// <returns> the number of not converged intermediate calculations </returns>
     int upscaling::upscaleInTime(const double nrTimes, alphaBeta& element, const vector1D& inRhoT)
     {
-        const double rhoMax = 1.0 - 1.0e-10;  // Max allowed value of correlation coefficient (very close to one)
-        const double rhoMin = 1.0e-10;        // Min allowed value of correlation coefficient (very close to zero)
-        const double epsi = 0.01;           // Perturbation amount, part of computation of equivalent alpha values
+        constexpr double rhoMax = 1.0 - 1.0e-10;  // Max allowed value of correlation coefficient (very close to one)
+        constexpr double rhoMin = 1.0e-10;        // Min allowed value of correlation coefficient (very close to zero)
+        constexpr double epsi = 0.01;           // Perturbation amount, part of computation of equivalent alpha values
 
         size_t nStochasts = element.size(); // Number of stochastic variables
         int failures = 0;
@@ -57,7 +58,7 @@ namespace Deltares::Reliability
         // Determine the correlation between two time elements
         //
         double rhoT = element.sumOfInners(element, inRhoT); // rhoT : Correlation coefficient between element 1 and element 2
-        rhoT = std::max(std::min(rhoT, rhoMax), rhoMin);
+        rhoT = std::clamp(rhoT, rhoMin, rhoMax);
 
         //
         // Compute failure probability and beta of the combined n elements
@@ -83,7 +84,7 @@ namespace Deltares::Reliability
         auto betaTK = upscaleBeta(bk, rhoT, nrTimes, failures);
 
         //
-        // Step 3/6: Compute the correlated part of alpha (dependant on the sign of the pertubation)
+        // Step 3/6: Compute the correlated part of alpha (dependent on the sign of the perturbation)
         //
 
         // alphaC : Correlated part of the equivalent alpha value
@@ -128,14 +129,13 @@ namespace Deltares::Reliability
             // Compute via numerical integration
             //
             auto eqElm = intEqualElements();
-            double betaT;
-            betaT = eqElm.integrateEqualElements(elm, rhoT, nrTimes);
+            double betaT = eqElm.integrateEqualElements(elm, rhoT, nrTimes);
             return betaT;
         }
         else
         {
             //
-            // Compute via Hohenbichler with FORM and outcrossing
+            // Compute via Hohenbichler with FORM and out-crossing
             //
             double Pf = StandardNormal::getQFromU(elm);
             auto pf2cf1 = hhb.PerformHohenbichler(elm, Pf, rhoT);    // pf2cf1 : pair(Probability, success flag)
@@ -151,31 +151,29 @@ namespace Deltares::Reliability
         return std::format("Intermediate results: Delta L = {0:.6F}; rhoZ = {1:.6F}; dZ = {2:.6F}", deltaL, rhoZ, dZ);
     }
 
-    // \brief This method scales up from a cross-section to a given section length
-    // \param crossSectionElement : Reliability index and alpha cross section
-    // \param rhoXK(:) : Correlation variables
-    // \param dXK(:) : Correlation length variables
-    // \param sectionLength : Section length
-    // \return Reliability index, alpha for section and indication of non-converged Hohenbichler calculations
-    std::pair<alphaBeta, int> upscaling::upscaleLength(alphaBeta& crossSectionElement,
-        const vector1D& rhoXK, const vector1D& dXK, const double sectionLength, std::string& message)
+    /// <summary> This method scales up from a cross-section to a given section length </summary>
+    /// <param name="crossSectionElement">  Reliability index and alpha cross-section </param>
+    /// <param name="rhoXK"> Correlation variables </param>
+    /// <param name="dXK"> Correlation length variables </param>
+    /// <param name="section_length">  Section length </param>
+    /// <returns> design point </returns>
+    upscalingResult upscaling::upscaleLength(const alphaBeta& crossSectionElement,
+        const vector1D& rhoXK, const vector1D& dXK, const double section_length)
     {
-        const double deltaBeta = 0.01; // perturbation of beta in computation alpha in the upscaling from cross-section to segment
+        upscalingResult return_value;
         //
         // Get number of variables
         //
-        const size_t nrVar = crossSectionElement.size();
+        const size_t number_of_stochasts = crossSectionElement.size();
         //
         // Calculate correlation
         //
-        double rhoZ = DBL_MAX;
-        if (sectionLength != 0.0)
-        {
-            rhoZ = crossSectionElement.sumOfInners(crossSectionElement, rhoXK);
-        }
+        double rhoZ = section_length != 0.0 ? crossSectionElement.sumOfInners(crossSectionElement, rhoXK)
+                                            :  std::numeric_limits<double>::max();
         if (rhoZ >= rhoLimit)
         {   // No length effect (correlation = 1)
-            return { crossSectionElement, 0 };
+            return_value.design_point = crossSectionElement;
+            return return_value;
         }
 
         //
@@ -185,7 +183,7 @@ namespace Deltares::Reliability
         // Calculate correlation length dz
         //
         double sumAlphaDxk = 0.0;
-        for (size_t i = 0; i < nrVar; i++)
+        for (size_t i = 0; i < number_of_stochasts; i++)
         {
             if (dXK(i) != 0.0)
             {
@@ -196,31 +194,30 @@ namespace Deltares::Reliability
         //
         // Calculate delta L
         //
-        double deltaL = dz / crossSectionElement.getBeta() * sqrt(M_PI) / sqrt(1.0 - rhoZ);
+        double deltaL = dz / crossSectionElement.getBeta() * sqrt(std::numbers::pi) / sqrt(1.0 - rhoZ);
         deltaL = std::max(deltaL, 0.01);
 
-        message = createMessage(deltaL, rhoZ, dz);
+        return_value.message = createMessage(deltaL, rhoZ, dz);
 
-        if (deltaL < sectionLength)
+        if (deltaL < section_length)
         {
-            int failures = 0;
-            alphaBeta element;
-            element.setAlpha(vector1D(nrVar));
+            constexpr double delta_beta = 0.01;
+            return_value.design_point.setAlpha(vector1D(number_of_stochasts));
             //
             // Calculate beta for section from the beta of the cross-section
-            const auto [betaSection, nFail1] = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, rhoZ, dz, deltaL);
-            if (nFail1 != 0) failures++;
-            element.setBeta(betaSection);
+            const auto [betaSection, nFail1] = ComputeBetaSection(crossSectionElement.getBeta(), section_length, rhoZ, dz, deltaL);
+            if (nFail1 != 0) return_value.counter++;
+            return_value.design_point.setBeta(betaSection);
             //
             // Calculate alpha section
             //
             // Correlated part. Perturbation of the betaCrossSection
-            const double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * deltaBeta;
+            const double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * delta_beta;
             // Calculate beta for section from the beta of the cross-section
-            const auto [betaKX, nFail2] = ComputeBetaSection(betaK, sectionLength, rhoZ, dz, deltaL);
-            if (nFail2 != 0) failures++;
+            const auto [betaKX, nFail2] = ComputeBetaSection(betaK, section_length, rhoZ, dz, deltaL);
+            if (nFail2 != 0) return_value.counter++;
 
-            const double alphaC = NumericSupport::limit ((element.getBeta() - betaKX) / deltaBeta, -1.0, 1.0);
+            const double alphaC = std::clamp ((return_value.design_point.getBeta() - betaKX) / delta_beta, -1.0, 1.0);
             //
             // Uncorrelated part
             //
@@ -229,18 +226,18 @@ namespace Deltares::Reliability
             // Calculate resulting alpha
             //
             rhoZ = NumericSupport::limit(rhoZ, 0.00001, rhoLimit);
-            for (size_t i = 0; i < nrVar; i++)
+            for (size_t i = 0; i < number_of_stochasts; i++)
             {
                 if (crossSectionElement.getAlphaI(i) == 0.0)
                 {
-                    element.setAlpha(i, 0.0);
+                    return_value.design_point.setAlpha(i, 0.0);
                 }
                 else
                 {
                     const double rhoV = rhoXK(i);
                     const double lengthV = dXK(i);
                     const double rhoK = rhoV + (1.0 - rhoV) * exp(-pow(deltaL / lengthV, 2));
-                    element.setAlpha(i, alphaC / sqrt(rhoZ) * crossSectionElement.getAlphaI(i) *
+                    return_value.design_point.setAlpha(i, alphaC / sqrt(rhoZ) * crossSectionElement.getAlphaI(i) *
                         sqrt(rhoK) +
                         alphaU / sqrt(1.0 - rhoZ) * crossSectionElement.getAlphaI(i) *
                         sqrt(1.0 - rhoK));
@@ -248,23 +245,24 @@ namespace Deltares::Reliability
             }
             //
             // Normalize alpha vector for section
-            element.normalize();
-            return { element, failures };
+            return_value.design_point.normalize();
+            return return_value;
         }
         else
         {
             // No length effect (breachL < sectionLength)
-            return { crossSectionElement, 0 };
-        }
+            return_value.design_point = crossSectionElement;
+            return return_value;
+       }
     }
 
-    // \brief Method used in upscaling for computing the beta of a section from the beta of a cross-section.
-    // \param betaCrossSection : Reliability index of the cross-section
-    // \param sectionLength : Length of the section
-    // \param rhoZ : Correlation Z-function
-    // \param dz : Correlation length
-    // \param deltaL : Delta L
-    // \return Reliability index for the section and indication of non-converged Hohenbichler calculation
+    /// <summary> Method used in upscaling for computing the beta of a section from the beta of a cross-section. </summary>
+    /// <param name = "betaCrossSection"> Reliability index of the cross-section </param>
+    /// <param name = "sectionLength"> Length of the section </param>
+    /// <param name = "rhoZ"> Correlation Z-function </param>
+    /// <param name = "dz"> Correlation length </param>
+    /// <param name = "deltaL"> Delta L </param>
+    /// <returns> Reliability index for the section and indication of non-converged Hohenbichler calculation </returns>
     std::pair<double, int> upscaling::ComputeBetaSection(const double betaCrossSection, const double sectionLength,
         const double rhoZ, const double dz, const double deltaL)
     {
