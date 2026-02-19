@@ -32,64 +32,71 @@ using namespace Deltares::Statistics;
 
 namespace Deltares::Reliability
 {
-    /// <summary> Method used in upscaling for computing the beta of a section from the beta of a cross-section. </summary>
-    /// <param name = "betaCrossSection"> Reliability index of the cross-section </param>
-    /// <param name = "sectionLength"> Length of the section </param>
+    /// <summary> constructor </summary>
+    /// <param name = "section_length"> Length of the section </param>
     /// <param name = "rhoZ"> Correlation Z-function </param>
     /// <param name = "dz"> Correlation length </param>
     /// <param name = "deltaL"> Delta L </param>
-    /// <returns> Reliability index for the section and indication of non-converged Hohenbichler calculation </returns>
-    std::pair<double, int> ComputeBetaSection::Compute(const double betaCrossSection, const double sectionLength,
-        const double rhoZ, const double dz, const double deltaL)
+    ComputeBetaSection::ComputeBetaSection(const double section_length, const double rhoZ, const double dz, const double deltaL)
+        : section_length(section_length), rhoZ(rhoZ), dz(dz), deltaL(deltaL)
     {
-        constexpr int    nGridPoints = 30001; // Number of grid points for v in numerical integration
-        constexpr double vLower = -30.0;  // Lower bound of v-values in the numerical integration
-        constexpr double vUpper = 30.0;  // Upper bound of v-values in the numerical integration
+    }
 
+    /// <summary> Method used in upscaling for computing the beta of a section from the beta of a cross-section. </summary>
+    /// <param name = "betaCrossSection"> Reliability index of the cross-section </param>
+    /// <returns> Reliability index for the section </returns>
+    double ComputeBetaSection::Compute(const double betaCrossSection)
+    {
         // Compute failure probability cross-section from beta
         const double pf = StandardNormal::getQFromU(betaCrossSection); // Failure probability cross-section
         double pfX; // Failure probability section
-        int conv; // indicator of non-converged Hohenbichler calculation
         if (rhoZ > 0.001)
         {
-            double vDelta = (vUpper - vLower) / static_cast<double>(nGridPoints - 1); // Step size in the numerical integration over v in [vLower, vUpper]
+            constexpr int number_of_grid_points = 30001;
+            constexpr double lower_bound = -30.0;  // Lower bound of v-values in the numerical integration
+            constexpr double upper_bound = 30.0;
+            double vDelta = (upper_bound - lower_bound) / static_cast<double>(number_of_grid_points - 1); // Step size in the numerical integration over v in [vLower, vUpper]
             double p = StandardNormal::getPFromU(betaCrossSection); // Probability
-            auto termI = std::vector<double>(nGridPoints); // i-th term to add
-            for (size_t i = 0; i < nGridPoints; i++)
+            auto termI = std::vector<double>(number_of_grid_points); // i-th term to add
+            for (size_t i = 0; i < number_of_grid_points; i++)
             {
-                const double v = vLower + vDelta * static_cast<double>(i);
+                const double v = lower_bound + vDelta * static_cast<double>(i);
                 const double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x is: beta*
-                const double nf = (sectionLength - deltaL) / (std::numbers::sqrt2 * std::numbers::pi) / dz * exp(-x * x / 2.0); // Number of cross-sections
+                const double nf = (section_length - deltaL) / (std::numbers::sqrt2 * std::numbers::pi) / dz * exp(-x * x / 2.0); // Number of cross-sections
                 termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * std::numbers::pi) * vDelta;
             }
             //
             // add up all terms; start with the smallest numbers
             //
             pfX = 0.0;
-            for (size_t i = 0; i < nGridPoints / 2; i++)
+            for (size_t i = 0; i < number_of_grid_points / 2; i++)
             {
                 pfX += termI[i];
-                pfX += termI[nGridPoints - i - 1];
+                pfX += termI[number_of_grid_points - i - 1];
             }
-            pfX += termI[nGridPoints / 2];
+            pfX += termI[number_of_grid_points / 2];
             pfX = std::max(pfX, pf);
-            conv = 0;
         }
         else
         {
             auto [pfVV, nFail] = hhb.PerformHohenbichler(betaCrossSection, pf, rhoZ); // Failure probability vv, Hohenbichler
-            conv = nFail;
-            pfX = pf + (sectionLength - deltaL) / deltaL * (pf - pfVV * pf);
+            conv += nFail;
+            pfX = pf + (section_length - deltaL) / deltaL * (pf - pfVV * pf);
             pfX = std::min(pfX, 1.0);
         }
 
         const double betaSection = StandardNormal::getUFromQ(pfX);
-        return { betaSection, conv };
+        return betaSection;
     }
 
-    std::string ComputeBetaSection::createMessage(const double deltaL, const double rhoZ, const double dZ)
+    int ComputeBetaSection::getCounterNonConv() const
     {
-        return std::format("Intermediate results: Delta L = {0:.6F}; rhoZ = {1:.6F}; dZ = {2:.6F}", deltaL, rhoZ, dZ);
+        return conv;
+    }
+
+    std::string ComputeBetaSection::createMessage() const
+    {
+        return std::format("Intermediate results: Delta L = {0:.6F}; rhoZ = {1:.6F}; dZ = {2:.6F}", deltaL, rhoZ, dz);
     }
 
 }

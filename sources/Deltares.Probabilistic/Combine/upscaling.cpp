@@ -194,9 +194,8 @@ namespace Deltares::Reliability
         double deltaL = dz / crossSectionElement.getBeta() * sqrt(std::numbers::pi) / sqrt(1.0 - rhoZ);
         deltaL = std::max(deltaL, 0.01);
 
-        auto betaSectionCalculator = ComputeBetaSection();
-        return_value.message = ComputeBetaSection::createMessage(deltaL, rhoZ, dz);
-
+        auto betaSectionCalculator = ComputeBetaSection(section_length, rhoZ, dz, deltaL);
+        return_value.message = betaSectionCalculator.createMessage();
 
         if (deltaL < section_length)
         {
@@ -204,8 +203,7 @@ namespace Deltares::Reliability
             return_value.design_point.setAlpha(vector1D(number_of_stochasts));
             //
             // Calculate beta for section from the beta of the cross-section
-            const auto [betaSection, nFail1] = betaSectionCalculator.Compute(crossSectionElement.getBeta(), section_length, rhoZ, dz, deltaL);
-            if (nFail1 != 0) return_value.counter++;
+            const auto betaSection = betaSectionCalculator.Compute(crossSectionElement.getBeta());
             return_value.design_point.setBeta(betaSection);
             //
             // Calculate alpha section
@@ -213,10 +211,9 @@ namespace Deltares::Reliability
             // Correlated part. Perturbation of the betaCrossSection
             const double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * delta_beta;
             // Calculate beta for section from the beta of the cross-section
-            const auto [betaKX, nFail2] = betaSectionCalculator.Compute(betaK, section_length, rhoZ, dz, deltaL);
-            if (nFail2 != 0) return_value.counter++;
+            const auto betaKX = betaSectionCalculator.Compute(betaK);
 
-            const double alphaC = std::clamp ((return_value.design_point.getBeta() - betaKX) / delta_beta, -1.0, 1.0);
+            const double alphaC = std::clamp((return_value.design_point.getBeta() - betaKX) / delta_beta, -1.0, 1.0);
             //
             // Uncorrelated part
             //
@@ -224,7 +221,7 @@ namespace Deltares::Reliability
             //
             // Calculate resulting alpha
             //
-            rhoZ = NumericSupport::limit(rhoZ, 0.00001, rhoLimit);
+            rhoZ = std::clamp(rhoZ, 0.00001, rhoLimit);
             for (size_t i = 0; i < number_of_stochasts; i++)
             {
                 if (crossSectionElement.getAlphaI(i) == 0.0)
@@ -245,14 +242,14 @@ namespace Deltares::Reliability
             //
             // Normalize alpha vector for section
             return_value.design_point.normalize();
-            return return_value;
+            return_value.counter = betaSectionCalculator.getCounterNonConv();
         }
         else
         {
             // No length effect (breachL < sectionLength)
             return_value.design_point = crossSectionElement;
-            return return_value;
        }
+        return return_value;
     }
 
 

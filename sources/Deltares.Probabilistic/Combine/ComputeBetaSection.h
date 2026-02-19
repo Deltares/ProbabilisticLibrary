@@ -32,10 +32,16 @@ namespace Deltares::Reliability
     class ComputeBetaSection
     {
     public:
-        std::pair<double, int> Compute(const double betaCrossSection, const double sectionLength,
-            const double rhoZ, const double dz, const double deltaL);
-        static std::string createMessage(const double deltaL, const double rhoZ, const double dZ);
+        ComputeBetaSection(const double section_length, const double rhoZ, const double dz, const double deltaL);
+        double Compute(const double betaCrossSection);
+        std::string createMessage() const;
+        int getCounterNonConv() const;
     private:
+        const double section_length;
+        const double rhoZ;
+        const double dz;
+        const double deltaL;
+        int conv = 0;  // indicator of non-converged Hohenbichler calculation
         HohenbichlerFORM hhb = HohenbichlerFORM();
     };
 }
