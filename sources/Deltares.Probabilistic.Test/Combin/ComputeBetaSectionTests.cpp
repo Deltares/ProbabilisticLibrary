@@ -19,10 +19,31 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "combinElements_tests.cpp"
-#include "hohenbichler_tests.cpp"
-#include "combiner_tests.cpp"
-#include "intEqualElements_tests.cpp"
-#include "UpscaleTests.cpp"
-#include "ComputeBetaSectionTests.cpp"
+
+#include "ComputeBetaSectionTests.h"
+#include "../../Deltares.Probabilistic/Combine/ComputeBetaSection.h"
+#include <numbers>
+#include <gtest/gtest.h>
+
+namespace Deltares::Probabilistic::Test
+{
+    void ComputeBetaSectionTests::Test1()
+    {
+        using namespace std::numbers;
+
+        constexpr double beta_cross_section = 5.0;
+        constexpr double section_length = 250.0;
+        constexpr double rho_z = 0.8;
+        constexpr double dz = 125.0;
+        double delta_l = std::min(dz / beta_cross_section * sqrt(pi) / sqrt(1.0 - rho_z), section_length);
+        delta_l = std::max(delta_l, 0.01);
+        auto calculator = Reliability::ComputeBetaSection(section_length, rho_z, dz, delta_l);
+        const auto beta_section = calculator.Compute(beta_cross_section);
+
+        constexpr double beta_expected = 4.8170194948342857;
+
+        EXPECT_NEAR(beta_expected, beta_section, margin);
+
+    }
+}
+

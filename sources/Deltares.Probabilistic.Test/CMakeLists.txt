@@ -49,6 +49,7 @@ file(GLOB testfiles
     "Combin/hohenbichler_tests.*"
     "Combin/intEqualElements_tests.*"
     "Combin/UpscaleTests.*"
+    "Combin/ComputeBetaSectionTests.*"
     "Statistics/*.h"
     "Statistics/*_body.cpp"
     "Distributions/*.h"

@@ -36,6 +36,7 @@
 #include "Combin/UpscaleTests.h"
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
+#include "Combin/ComputeBetaSectionTests.h"
 #include "Statistics/TestStandardNormal.h"
 #include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
@@ -61,7 +62,6 @@
 #include "Reliability/Waarts/TestWaartsSeriesSystem.h"
 #include "Reliability/Waarts/TestWaartsParallelSystem.h"
 #include "Reliability/Waarts/TestWaartsResistance25QuadraticTermsSparse.h"
-#include "Statistics/TestXfromU.h"
 
 int main(int argc, char** argv)
 {
@@ -92,6 +92,11 @@ TEST(UnitTests, testLengthEffect)
 {
     auto h = Deltares::Probabilistic::Test::combinElementsTests();
     h.runAllLengthEffectTests();
+}
+
+TEST(UnitTests, testComputeBetaSectionTest1)
+{
+    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test1();
 }
 
 TEST(UnitTests, AllUpscaleInTimeTests)

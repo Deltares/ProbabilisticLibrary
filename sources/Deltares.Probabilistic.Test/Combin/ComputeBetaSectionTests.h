@@ -19,10 +19,17 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "combinElements_tests.cpp"
-#include "hohenbichler_tests.cpp"
-#include "combiner_tests.cpp"
-#include "intEqualElements_tests.cpp"
-#include "UpscaleTests.cpp"
-#include "ComputeBetaSectionTests.cpp"
+
+#pragma once
+
+namespace Deltares::Probabilistic::Test
+{
+    class ComputeBetaSectionTests
+    {
+    public:
+        static void Test1();
+    private:
+        static constexpr double margin = 1e-6;
+    };
+}
+

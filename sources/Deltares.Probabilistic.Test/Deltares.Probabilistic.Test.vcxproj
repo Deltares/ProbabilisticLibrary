@@ -114,11 +114,13 @@
     <ClInclude Include="Combin\hohenbichler_tests.h" />
     <ClInclude Include="Combin\intEqualElements_tests.h" />
     <ClInclude Include="Combin\UpscaleTests.h" />
+    <ClInclude Include="Combin\ComputeBetaSectionTests.h" />
     <ClInclude Include="Combin\combinElements_tests.cpp" />
     <ClInclude Include="Combin\hohenbichlerCombiner_tests.cpp" />
     <ClInclude Include="Combin\hohenbichler_tests.cpp" />
     <ClInclude Include="Combin\intEqualElements_tests.cpp" />
     <ClInclude Include="Combin\UpscaleTests.cpp" />
+    <ClInclude Include="Combin\ComputeBetaSectionTests.cpp" />
     <ClInclude Include="Distributions\testDistributions.h" />
     <ClInclude Include="Distributions\testDistributions_body.cpp" />
     <ClInclude Include="Proxies\TestProxies.h" />
