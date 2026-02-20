@@ -23,15 +23,12 @@
 #include "Distribution.h"
 #include "../DistributionType.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class DistributionLibrary
     {
-        class DistributionLibrary
-        {
-        public:
-            static std::shared_ptr<Statistics::Distribution> getDistribution(DistributionType distributionType, bool truncated, bool inverted);
-        };
-    }
+    public:
+        static std::shared_ptr<Statistics::Distribution> getDistribution(DistributionType distributionType, bool truncated, bool inverted);
+    };
 }
 

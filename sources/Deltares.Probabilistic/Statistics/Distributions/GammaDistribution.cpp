@@ -30,117 +30,110 @@
 
 #include "DistributionSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    void GammaDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
     {
-        void GammaDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
+        this->setMeanAndDeviation(stochast, values[0], values[1]);
+    }
+
+    bool GammaDistribution::isVarying(StochastProperties& stochast)
+    {
+        return stochast.Scale > 0.0;
+    }
+
+    double GammaDistribution::getMean(StochastProperties& stochast)
+    {
+        return stochast.Scale * stochast.Shape;
+    }
+
+    double GammaDistribution::getDeviation(StochastProperties& stochast)
+    {
+        return stochast.Scale * sqrt(stochast.Shape);
+    }
+
+    void GammaDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+    {
+        stochast.Scale = deviation * deviation / mean;
+        stochast.Shape = mean / stochast.Scale;
+    }
+
+    double GammaDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        if (stochast.Shape <= 0.0 || stochast.Scale <= 0.0)
         {
-            this->setMeanAndDeviation(stochast, values[0], values[1]);
+            return x == 0.0 ? 1.0 : 0.0;
         }
 
-        bool GammaDistribution::isVarying(StochastProperties& stochast)
+        if (x >= 0.0)
         {
-            return stochast.Scale > 0.0;
+            const double denominator = std::pow(stochast.Scale, stochast.Shape) *
+                Numeric::SpecialFunctions::getGamma(stochast.Shape);
+            const double pdf = std::pow(x, stochast.Shape - 1.0) * std::exp(-x / stochast.Scale) / denominator;
+            return std::max(0.0, pdf);
         }
 
-        double GammaDistribution::getMean(StochastProperties& stochast)
+        return 0.0;
+    }
+
+    double GammaDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        if (x <= 0.0)
         {
-            return stochast.Scale * stochast.Shape;
-        }
-
-        double GammaDistribution::getDeviation(StochastProperties& stochast)
-        {
-            return stochast.Scale * sqrt(stochast.Shape);
-        }
-
-        void GammaDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
-        {
-            stochast.Scale = deviation * deviation / mean;
-            stochast.Shape = mean / stochast.Scale;
-        }
-
-        double GammaDistribution::getPDF(StochastProperties& stochast, double x)
-        {
-            if (stochast.Shape <= 0.0 || stochast.Scale <= 0.0)
-            {
-                return x == 0.0 ? 1.0 : 0.0;
-            }
-
-            if (x >= 0.0)
-            {
-                const double denominator = std::pow(stochast.Scale, stochast.Shape) *
-                    Numeric::SpecialFunctions::getGamma(stochast.Shape);
-                const double pdf = std::pow(x, stochast.Shape - 1.0) * std::exp(-x / stochast.Scale) / denominator;
-                return std::max(0.0, pdf);
-            }
-
             return 0.0;
         }
-
-        double GammaDistribution::getCDF(StochastProperties& stochast, double x)
+        else if (stochast.Shape <= 0.0 || stochast.Scale <= 0.0)
         {
-            if (x <= 0.0)
-            {
-                return 0.0;
-            }
-            else if (stochast.Shape <= 0.0 || stochast.Scale <= 0.0)
-            {
-                return 1.0;
-            }
-            else
-            {
-                try
-                {
-                    return Numeric::SpecialFunctions::getGammaLowerRegularized(stochast.Shape, x / stochast.Scale);
-                }
-                catch (const std::exception&)
-                {
-                    return std::nan("");
-                }
-            }
+            return 1.0;
         }
-
-        double GammaDistribution::getXFromU(StochastProperties& stochast, double u)
+        else
         {
-            if (!isValid(stochast))
+            try
             {
-                return 0.0;
+                return Numeric::SpecialFunctions::getGammaLowerRegularized(stochast.Shape, x / stochast.Scale);
             }
-            else
+            catch (const std::exception&)
             {
-                return DistributionSupport::getXFromUByIteration(*this, stochast, u);
+                return std::nan("");
             }
-        }
-
-        double GammaDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            const double cdf = getCDF(stochast, x);
-            return StandardNormal::getUFromP(cdf);
-        }
-
-        void GammaDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
-        {
-            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
-        }
-
-        void GammaDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
-        {
-            double mean = Numeric::NumericSupport::getMean(values);
-
-            std::vector<double> logValues = Numeric::NumericSupport::select(values, [](double p) { return std::log(p); });
-            double meanLog = Numeric::NumericSupport::getMean(logValues);
-
-            double s = std::log(mean) - meanLog;
-
-            stochast.Shape = (3 - s + std::sqrt((s - 3) * (s - 3) + 24 * s)) / (12 * s);
-            stochast.Scale = mean / stochast.Shape;
-            stochast.Observations = static_cast<int>(values.size());
         }
     }
+
+    double GammaDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        if (!isValid(stochast))
+        {
+            return 0.0;
+        }
+        else
+        {
+            return DistributionSupport::getXFromUByIteration(*this, stochast, u);
+        }
+    }
+
+    double GammaDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        const double cdf = getCDF(stochast, x);
+        return StandardNormal::getUFromP(cdf);
+    }
+
+    void GammaDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
+    {
+        DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
+    }
+
+    void GammaDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        double mean = Numeric::NumericSupport::getMean(values);
+
+        std::vector<double> logValues = Numeric::NumericSupport::select(values, [](double p) { return std::log(p); });
+        double meanLog = Numeric::NumericSupport::getMean(logValues);
+
+        double s = std::log(mean) - meanLog;
+
+        stochast.Shape = (3 - s + std::sqrt((s - 3) * (s - 3) + 24 * s)) / (12 * s);
+        stochast.Scale = mean / stochast.Shape;
+        stochast.Observations = static_cast<int>(values.size());
+    }
 }
-
-
-
-
 

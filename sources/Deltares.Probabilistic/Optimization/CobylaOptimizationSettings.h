@@ -21,18 +21,14 @@
 //
 #pragma once
 
-namespace Deltares
+namespace Deltares::Optimization
 {
-    namespace Optimization
+    class CobylaOptimizationSettings
     {
-        class CobylaOptimizationSettings
-        {
-        public:
-            int MaxIterations = 10000;
+    public:
+        int MaxIterations = 10000;
 
-            double EpsilonBeta = 0.001;
-        };
-
-    }
+        double EpsilonBeta = 0.001;
+    };
 }
 

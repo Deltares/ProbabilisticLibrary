@@ -31,351 +31,344 @@
 #include "DistributionFitter.h"
 #include "DistributionSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    using enum DistributionPropertyType;
+
+    void TrapezoidalDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
     {
-        using enum DistributionPropertyType;
+        stochast.Minimum = values[0];
+        stochast.Shift = values[1];
+        stochast.ShiftB = values[2];
+        stochast.Maximum = values[3];
+    }
 
-        void TrapezoidalDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
+    void TrapezoidalDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+    {
+        Logging::ValidationSupport::checkFinite(report, stochast.Minimum, "minimum", subject);
+        Logging::ValidationSupport::checkFinite(report, stochast.Maximum, "maximum", subject);
+        Logging::ValidationSupport::checkMinimum(report, stochast.Minimum, stochast.Shift, "shift", subject);
+        Logging::ValidationSupport::checkMinimum(report, stochast.Shift, stochast.ShiftB, "shift B", subject);
+        Logging::ValidationSupport::checkMaximum(report, stochast.Maximum, stochast.ShiftB, "shift B", subject);
+    }
+
+    bool TrapezoidalDistribution::isVarying(StochastProperties& stochast)
+    {
+        return stochast.Maximum > stochast.Minimum;
+    }
+
+    double TrapezoidalDistribution::getExponentDifference(double x, double y, int exp)
+    {
+        if (x == y)
         {
-            stochast.Minimum = values[0];
-            stochast.Shift = values[1];
-            stochast.ShiftB = values[2];
-            stochast.Maximum = values[3];
+            constexpr double delta = 0.00001;
+            return getExponentDifference(x - delta, x + delta, exp);
         }
-
-        void TrapezoidalDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+        else
         {
-            Logging::ValidationSupport::checkFinite(report, stochast.Minimum, "minimum", subject);
-            Logging::ValidationSupport::checkFinite(report, stochast.Maximum, "maximum", subject);
-            Logging::ValidationSupport::checkMinimum(report, stochast.Minimum, stochast.Shift, "shift", subject);
-            Logging::ValidationSupport::checkMinimum(report, stochast.Shift, stochast.ShiftB, "shift B", subject);
-            Logging::ValidationSupport::checkMaximum(report, stochast.Maximum, stochast.ShiftB, "shift B", subject);
-        }
-
-        bool TrapezoidalDistribution::isVarying(StochastProperties& stochast)
-        {
-            return stochast.Maximum > stochast.Minimum;
-        }
-
-        double TrapezoidalDistribution::getExponentDifference(double x, double y, int exp)
-        {
-            if (x == y)
-            {
-                constexpr double delta = 0.00001;
-                return getExponentDifference(x - delta, x + delta, exp);
-            }
-            else
-            {
-                return (std::pow(y, exp) - std::pow(x, exp)) / (y - x);
-            }
-        }
-
-
-        double TrapezoidalDistribution::getMean(StochastProperties& stochast)
-        {
-            double a = stochast.Minimum;
-            double b = stochast.Maximum;
-
-            if (a == b)
-            {
-                return a;
-            }
-            else
-            {
-                double c = stochast.Shift;
-                double d = stochast.ShiftB;
-
-                double length = (b + d - a - c) / 2.0;
-
-                return (getExponentDifference(d, b, 3) - getExponentDifference(c, a, 3)) / (6.0 * length);
-            }
-        }
-
-        double TrapezoidalDistribution::getDeviation(StochastProperties& stochast)
-        {
-            const double a = stochast.Minimum;
-            const double b = stochast.Maximum;
-
-            if (a == b)
-            {
-                return 0.0;
-            }
-            else
-            {
-                const double c = stochast.Shift;
-                const double d = stochast.ShiftB;
-
-                const double length = (b + d - a - c) / 2.0;
-
-                const double m = this->getMean(stochast);
-                const double s2 = (getExponentDifference(d, b, 4) - getExponentDifference(c, a, 4)) / (12.0 * length);
-                return sqrt(s2 - m * m);
-            }
-        }
-
-        void TrapezoidalDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
-        {
-            // set mean value
-            if (isValid(stochast))
-            {
-                double currentValue = this->getMean(stochast);
-                double diff = mean - currentValue;
-
-                stochast.Minimum += diff;
-                stochast.Shift += diff;
-                stochast.ShiftB += diff;
-                stochast.Maximum += diff;
-            }
-            else
-            {
-                stochast.Minimum = mean;
-                stochast.Shift = mean;
-                stochast.ShiftB = mean;
-                stochast.Maximum = mean;
-            }
-
-            // set deviation
-            if (deviation <= 0)
-            {
-                stochast.Minimum = mean;
-                stochast.Shift = mean;
-                stochast.ShiftB = mean;
-                stochast.Maximum = mean;
-            }
-            else
-            {
-                if (stochast.Minimum == stochast.Maximum)
-                {
-                    stochast.Minimum = mean - deviation;
-                    stochast.Maximum = mean + deviation;
-                    stochast.Shift = mean - 0.5 * deviation;
-                    stochast.ShiftB = mean + 0.5 * deviation;
-                }
-
-                std::shared_ptr<StochastProperties> copiedStochast = stochast.clone();
-
-                Numeric::RootFinderMethod method = [this, copiedStochast, stochast](double x)
-                {
-                    copiedStochast->Minimum = x * stochast.Minimum;
-                    copiedStochast->Shift = x * stochast.Shift;
-                    copiedStochast->ShiftB = x * stochast.ShiftB;
-                    copiedStochast->Maximum = x * stochast.Maximum;
-
-                    return this->getDeviation(*copiedStochast);
-                };
-
-                constexpr double toleranceBisection = 0.00001;
-                auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
-
-                double minStart = 0.0;
-                double maxStart = 32.0;
-
-                double factor = bisection.CalculateValue(minStart, maxStart, deviation, method);
-
-                stochast.Minimum *= factor;
-                stochast.Shift *= factor;
-                stochast.ShiftB *= factor;
-                stochast.Maximum *= factor;
-
-                // set mean value again
-                double currentValue = this->getMean(stochast);
-                double diff = mean - currentValue;
-
-                stochast.Minimum += diff;
-                stochast.Shift += diff;
-                stochast.ShiftB += diff;
-                stochast.Maximum += diff;
-            }
-        }
-
-        double TrapezoidalDistribution::getPDF(StochastProperties& stochast, double x)
-        {
-            const double a = stochast.Minimum;
-            const double b = stochast.Maximum;
-            const double c = stochast.Shift;
-            const double d = stochast.ShiftB;
-
-            const double length = (b + d - a - c) / 2.0;
-
-            if (x < a)
-            {
-                return 0.0;
-            }
-            else if (x < c)
-            {
-                return (x - a) / (length * (c - a));
-            }
-            else if (x < d)
-            {
-                return 1.0 / length;
-            }
-            else if (x < b)
-            {
-                return (b - x) / (length * (b - d));
-            }
-            else
-            {
-                return 0.0;
-            }
-        }
-
-        double TrapezoidalDistribution::getCDF(StochastProperties& stochast, double x)
-        {
-            const double a = stochast.Minimum;
-            const double b = stochast.Maximum;
-            const double c = stochast.Shift;
-            const double d = stochast.ShiftB;
-
-            const double length = (b + d - a - c) / 2.0;
-
-            if (x < a)
-            {
-                return 0.0;
-            }
-            else if (x < c)
-            {
-                return (x - a) * (x - a) / (2.0 * length * (c - a));
-            }
-            else if (x == c)
-            {
-                return (c - a) / (2.0 * length);
-            }
-            else if (x < d)
-            {
-                return (2.0 * x - a - c) / (2.0 * length);
-            }
-            else if (x == d)
-            {
-                return (2.0 * d - a - c) / (2.0 * length);
-            }
-            else if (x < b)
-            {
-                return 1.0 - (b - x) * (b - x) / (2.0 * length * (b - d));
-            }
-            else
-            {
-                return 1.0;
-            }
-        }
-
-        double TrapezoidalDistribution::getXFromU(StochastProperties& stochast, double u)
-        {
-            const double a = stochast.Minimum;
-            const double b = stochast.Maximum;
-            const double c = stochast.Shift;
-            const double d = stochast.ShiftB;
-
-            const double length = (b + d - a - c) / 2.0;
-
-            const double p = StandardNormal::getPFromU(u);
-
-            if (p < (c - a) / (2.0 * length))
-            {
-                return a + sqrt(p * 2.0 * length * (c - a));
-            }
-            else if (p < (2.0 * d - a - c) / (2.0 * length))
-            {
-                return (p * 2.0 * length + a + c) / 2.0;
-            }
-            else
-            {
-                const double q = 1.0 - p;
-                return b - sqrt(q * 2.0 * length * (b - d));
-            }
-        }
-
-        double TrapezoidalDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            if (x <= stochast.Minimum)
-            {
-                return -StandardNormal::UMax;
-            }
-            else if (x >= stochast.Maximum)
-            {
-                return StandardNormal::UMax;
-            }
-            else
-            {
-                const double cdf = getCDF(stochast, x);
-                return StandardNormal::getUFromP(cdf);
-            }
-        }
-
-        void TrapezoidalDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
-        {
-            if (constantType == ConstantParameterType::Deviation)
-            {
-                if (stochast.Minimum == stochast.Maximum)
-                {
-                    stochast.Minimum = x;
-                    stochast.Shift = x;
-                    stochast.Maximum = x;
-                }
-                else
-                {
-                    const double currentValue = this->getXFromU(stochast, u);
-                    const double diff = x - currentValue;
-
-                    stochast.Minimum += diff;
-                    stochast.Shift += diff;
-                    stochast.ShiftB += diff;
-                    stochast.Maximum += diff;
-                }
-            }
-            else
-            {
-                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
-            }
-        }
-
-        void TrapezoidalDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
-        {
-            double min = *std::min_element(values.begin(), values.end());
-            double max = *std::max_element(values.begin(), values.end());
-
-            double diff = max - min;
-            double add = diff / values.size();
-
-            stochast.Minimum = min - add;
-            stochast.Maximum = max + add;
-
-            double mean = Numeric::NumericSupport::getMean(values);
-
-            stochast.Shift = 3 * mean - (min + max);
-
-            stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
-            stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
-
-            auto fitter = DistributionFitter();
-
-            std::vector minValues = { stochast.Minimum, stochast.Minimum };
-            std::vector maxValues = { stochast.Maximum, stochast.Maximum };
-            std::vector properties = { Shift, ShiftB };
-
-            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
-
-            stochast.Shift = std::max(stochast.Minimum, parameters[0]);
-            stochast.ShiftB = std::min(stochast.Maximum, parameters[1]);
-            stochast.Observations = static_cast<int>(values.size());
-        }
-
-        std::vector<double> TrapezoidalDistribution::getSpecialPoints(StochastProperties& stochast)
-        {
-            std::vector<double> specialPoints;
-
-            specialPoints.push_back(stochast.Minimum);
-            specialPoints.push_back(stochast.Shift);
-            specialPoints.push_back(stochast.ShiftB);
-            specialPoints.push_back(stochast.Maximum);
-
-            return specialPoints;
+            return (std::pow(y, exp) - std::pow(x, exp)) / (y - x);
         }
     }
+
+
+    double TrapezoidalDistribution::getMean(StochastProperties& stochast)
+    {
+        double a = stochast.Minimum;
+        double b = stochast.Maximum;
+
+        if (a == b)
+        {
+            return a;
+        }
+        else
+        {
+            double c = stochast.Shift;
+            double d = stochast.ShiftB;
+
+            double length = (b + d - a - c) / 2.0;
+
+            return (getExponentDifference(d, b, 3) - getExponentDifference(c, a, 3)) / (6.0 * length);
+        }
+    }
+
+    double TrapezoidalDistribution::getDeviation(StochastProperties& stochast)
+    {
+        const double a = stochast.Minimum;
+        const double b = stochast.Maximum;
+
+        if (a == b)
+        {
+            return 0.0;
+        }
+        else
+        {
+            const double c = stochast.Shift;
+            const double d = stochast.ShiftB;
+
+            const double length = (b + d - a - c) / 2.0;
+
+            const double m = this->getMean(stochast);
+            const double s2 = (getExponentDifference(d, b, 4) - getExponentDifference(c, a, 4)) / (12.0 * length);
+            return sqrt(s2 - m * m);
+        }
+    }
+
+    void TrapezoidalDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+    {
+        // set mean value
+        if (isValid(stochast))
+        {
+            double currentValue = this->getMean(stochast);
+            double diff = mean - currentValue;
+
+            stochast.Minimum += diff;
+            stochast.Shift += diff;
+            stochast.ShiftB += diff;
+            stochast.Maximum += diff;
+        }
+        else
+        {
+            stochast.Minimum = mean;
+            stochast.Shift = mean;
+            stochast.ShiftB = mean;
+            stochast.Maximum = mean;
+        }
+
+        // set deviation
+        if (deviation <= 0)
+        {
+            stochast.Minimum = mean;
+            stochast.Shift = mean;
+            stochast.ShiftB = mean;
+            stochast.Maximum = mean;
+        }
+        else
+        {
+            if (stochast.Minimum == stochast.Maximum)
+            {
+                stochast.Minimum = mean - deviation;
+                stochast.Maximum = mean + deviation;
+                stochast.Shift = mean - 0.5 * deviation;
+                stochast.ShiftB = mean + 0.5 * deviation;
+            }
+
+            std::shared_ptr<StochastProperties> copiedStochast = stochast.clone();
+
+            Numeric::RootFinderMethod method = [this, copiedStochast, stochast](double x)
+            {
+                copiedStochast->Minimum = x * stochast.Minimum;
+                copiedStochast->Shift = x * stochast.Shift;
+                copiedStochast->ShiftB = x * stochast.ShiftB;
+                copiedStochast->Maximum = x * stochast.Maximum;
+
+                return this->getDeviation(*copiedStochast);
+            };
+
+            constexpr double toleranceBisection = 0.00001;
+            auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
+
+            double minStart = 0.0;
+            double maxStart = 32.0;
+
+            double factor = bisection.CalculateValue(minStart, maxStart, deviation, method);
+
+            stochast.Minimum *= factor;
+            stochast.Shift *= factor;
+            stochast.ShiftB *= factor;
+            stochast.Maximum *= factor;
+
+            // set mean value again
+            double currentValue = this->getMean(stochast);
+            double diff = mean - currentValue;
+
+            stochast.Minimum += diff;
+            stochast.Shift += diff;
+            stochast.ShiftB += diff;
+            stochast.Maximum += diff;
+        }
+    }
+
+    double TrapezoidalDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        const double a = stochast.Minimum;
+        const double b = stochast.Maximum;
+        const double c = stochast.Shift;
+        const double d = stochast.ShiftB;
+
+        const double length = (b + d - a - c) / 2.0;
+
+        if (x < a)
+        {
+            return 0.0;
+        }
+        else if (x < c)
+        {
+            return (x - a) / (length * (c - a));
+        }
+        else if (x < d)
+        {
+            return 1.0 / length;
+        }
+        else if (x < b)
+        {
+            return (b - x) / (length * (b - d));
+        }
+        else
+        {
+            return 0.0;
+        }
+    }
+
+    double TrapezoidalDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        const double a = stochast.Minimum;
+        const double b = stochast.Maximum;
+        const double c = stochast.Shift;
+        const double d = stochast.ShiftB;
+
+        const double length = (b + d - a - c) / 2.0;
+
+        if (x < a)
+        {
+            return 0.0;
+        }
+        else if (x < c)
+        {
+            return (x - a) * (x - a) / (2.0 * length * (c - a));
+        }
+        else if (x == c)
+        {
+            return (c - a) / (2.0 * length);
+        }
+        else if (x < d)
+        {
+            return (2.0 * x - a - c) / (2.0 * length);
+        }
+        else if (x == d)
+        {
+            return (2.0 * d - a - c) / (2.0 * length);
+        }
+        else if (x < b)
+        {
+            return 1.0 - (b - x) * (b - x) / (2.0 * length * (b - d));
+        }
+        else
+        {
+            return 1.0;
+        }
+    }
+
+    double TrapezoidalDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        const double a = stochast.Minimum;
+        const double b = stochast.Maximum;
+        const double c = stochast.Shift;
+        const double d = stochast.ShiftB;
+
+        const double length = (b + d - a - c) / 2.0;
+
+        const double p = StandardNormal::getPFromU(u);
+
+        if (p < (c - a) / (2.0 * length))
+        {
+            return a + sqrt(p * 2.0 * length * (c - a));
+        }
+        else if (p < (2.0 * d - a - c) / (2.0 * length))
+        {
+            return (p * 2.0 * length + a + c) / 2.0;
+        }
+        else
+        {
+            const double q = 1.0 - p;
+            return b - sqrt(q * 2.0 * length * (b - d));
+        }
+    }
+
+    double TrapezoidalDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        if (x <= stochast.Minimum)
+        {
+            return -StandardNormal::UMax;
+        }
+        else if (x >= stochast.Maximum)
+        {
+            return StandardNormal::UMax;
+        }
+        else
+        {
+            const double cdf = getCDF(stochast, x);
+            return StandardNormal::getUFromP(cdf);
+        }
+    }
+
+    void TrapezoidalDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
+    {
+        if (constantType == ConstantParameterType::Deviation)
+        {
+            if (stochast.Minimum == stochast.Maximum)
+            {
+                stochast.Minimum = x;
+                stochast.Shift = x;
+                stochast.Maximum = x;
+            }
+            else
+            {
+                const double currentValue = this->getXFromU(stochast, u);
+                const double diff = x - currentValue;
+
+                stochast.Minimum += diff;
+                stochast.Shift += diff;
+                stochast.ShiftB += diff;
+                stochast.Maximum += diff;
+            }
+        }
+        else
+        {
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
+        }
+    }
+
+    void TrapezoidalDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        double min = *std::min_element(values.begin(), values.end());
+        double max = *std::max_element(values.begin(), values.end());
+
+        double diff = max - min;
+        double add = diff / values.size();
+
+        stochast.Minimum = min - add;
+        stochast.Maximum = max + add;
+
+        double mean = Numeric::NumericSupport::getMean(values);
+
+        stochast.Shift = 3 * mean - (min + max);
+
+        stochast.Shift = std::min(stochast.Shift, stochast.Maximum);
+        stochast.Shift = std::max(stochast.Shift, stochast.Minimum);
+
+        auto fitter = DistributionFitter();
+
+        std::vector minValues = { stochast.Minimum, stochast.Minimum };
+        std::vector maxValues = { stochast.Maximum, stochast.Maximum };
+        std::vector properties = { Shift, ShiftB };
+
+        std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+
+        stochast.Shift = std::max(stochast.Minimum, parameters[0]);
+        stochast.ShiftB = std::min(stochast.Maximum, parameters[1]);
+        stochast.Observations = static_cast<int>(values.size());
+    }
+
+    std::vector<double> TrapezoidalDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        std::vector<double> specialPoints;
+
+        specialPoints.push_back(stochast.Minimum);
+        specialPoints.push_back(stochast.Shift);
+        specialPoints.push_back(stochast.ShiftB);
+        specialPoints.push_back(stochast.Maximum);
+
+        return specialPoints;
+    }
 }
-
-
-
-
 

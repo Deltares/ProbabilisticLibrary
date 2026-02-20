@@ -22,21 +22,15 @@
 #pragma once
 #include <gtest/gtest.h>
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class testKMean
     {
-        namespace Test
-        {
-            class testKMean
-            {
-            public:
-                void allKMeanTests();
-            private:
-                void test1();
-                const double margin = 1e-2;
-            };
-        }
-    }
+    public:
+        void allKMeanTests();
+    private:
+        void test1();
+        const double margin = 1e-2;
+    };
 }
 

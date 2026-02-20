@@ -24,26 +24,23 @@
 #include "../Model/Sample.h"
 #include "../Model/ModelRunner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability {
-
-        class StartPointCalculator
-        {
-        public:
-            std::shared_ptr<StartPointCalculatorSettings> Settings = std::make_shared<StartPointCalculatorSettings>();
-            std::shared_ptr<Models::Sample> getStartPoint(Models::ModelRunner& modelRunner) const;
-        private:
-            std::shared_ptr<Models::Sample> getNoneStartPoint() const;
-            std::shared_ptr<Models::Sample> getRayStartPoint(Models::ModelRunner& modelRunner) const;
-            std::shared_ptr<Models::Sample> getSensitivityStartPoint(Models::ModelRunner& modelRunner) const;
-            std::shared_ptr<Models::Sample> getSphereStartPoint(Models::ModelRunner& modelRunner) const;
-            std::shared_ptr<Models::Sample> getDirectionStartPoint(Models::ModelRunner& modelRunner, Models::Sample& startPoint) const;
-            void correctDefaultValues(Models::Sample& startPoint) const;
-            static void setBestSample(std::shared_ptr<Models::Sample> & bestSample, const std::shared_ptr<Models::Sample> sample);
-            static std::shared_ptr<Models::Sample> refineSpherePoint(Models::Sample& u, Models::Sample& previous);
-            static std::vector<double> getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& sample);
-        };
-    }
+    class StartPointCalculator
+    {
+    public:
+        std::shared_ptr<StartPointCalculatorSettings> Settings = std::make_shared<StartPointCalculatorSettings>();
+        std::shared_ptr<Models::Sample> getStartPoint(Models::ModelRunner& modelRunner) const;
+    private:
+        std::shared_ptr<Models::Sample> getNoneStartPoint() const;
+        std::shared_ptr<Models::Sample> getRayStartPoint(Models::ModelRunner& modelRunner) const;
+        std::shared_ptr<Models::Sample> getSensitivityStartPoint(Models::ModelRunner& modelRunner) const;
+        std::shared_ptr<Models::Sample> getSphereStartPoint(Models::ModelRunner& modelRunner) const;
+        std::shared_ptr<Models::Sample> getDirectionStartPoint(Models::ModelRunner& modelRunner, Models::Sample& startPoint) const;
+        void correctDefaultValues(Models::Sample& startPoint) const;
+        static void setBestSample(std::shared_ptr<Models::Sample> & bestSample, const std::shared_ptr<Models::Sample> sample);
+        static std::shared_ptr<Models::Sample> refineSpherePoint(Models::Sample& u, Models::Sample& previous);
+        static std::vector<double> getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& sample);
+    };
 }
 

@@ -21,60 +21,57 @@
 //
 #pragma once
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /**
+     * \brief Contains corresponding exceeding and non-exceeding probability
+     */
+    struct PQ
     {
         /**
-         * \brief Contains corresponding exceeding and non-exceeding probability
+         * \brief Non-exceeding probability
          */
-        struct PQ
-        {
-            /**
-             * \brief Non-exceeding probability
-             */
-            double p;
-
-            /**
-             * \brief Exceeding probability
-             */
-            double q;
-        };
+        double p;
 
         /**
-         * \brief Provides conversions between probabilities (p,q), reliability (u) and return time (t)
+         * \brief Exceeding probability
          */
-        class StandardNormal
-        {
-        private:
-            static void normp(const double z, double& p, double& q, double& pdf);
-            static constexpr double qMin = 1.0e-300;
+        double q;
+    };
 
-        public:
-            static double getPFromU(const double u);
-            static double getQFromU(const double u);
-            static double getUFromP(const double p);
-            static double getUFromQ(const double q);
-            static double getUFromPQ(const PQ& pq);
-            static double getTFromP(const double p);
-            static double getPFromT(const double t);
-            static void getPQfromU(const double u, double& p, double& q);
-            static PQ getPQFromU(const double u);
-            static double getTFromU(const double u);
-            static double getUFromT(const double t);
-            static double getFreqFromU(const double u);
-            static double getLogQFromU(const double u);
+    /**
+     * \brief Provides conversions between probabilities (p,q), reliability (u) and return time (t)
+     */
+    class StandardNormal
+    {
+    private:
+        static void normp(const double z, double& p, double& q, double& pdf);
+        static constexpr double qMin = 1.0e-300;
 
-            /**
-             * \brief Maximum allowed beta value, due to numerical limitations
-             */
-            static constexpr double BetaMax = 40;
+    public:
+        static double getPFromU(const double u);
+        static double getQFromU(const double u);
+        static double getUFromP(const double p);
+        static double getUFromQ(const double q);
+        static double getUFromPQ(const PQ& pq);
+        static double getTFromP(const double p);
+        static double getPFromT(const double t);
+        static void getPQfromU(const double u, double& p, double& q);
+        static PQ getPQFromU(const double u);
+        static double getTFromU(const double u);
+        static double getUFromT(const double t);
+        static double getFreqFromU(const double u);
+        static double getLogQFromU(const double u);
 
-            /**
-             * \brief Maximum allowed reliability value, due to numerical limitations
-             */
-            static constexpr double UMax = 8;
-        };
-    }
+        /**
+         * \brief Maximum allowed beta value, due to numerical limitations
+         */
+        static constexpr double BetaMax = 40;
+
+        /**
+         * \brief Maximum allowed reliability value, due to numerical limitations
+         */
+        static constexpr double UMax = 8;
+    };
 }
 

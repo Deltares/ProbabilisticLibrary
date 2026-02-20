@@ -30,29 +30,26 @@
 #include "../Reliability/DirectionalSamplingSettings.h"
 #include "../Model/ProgressIndicator.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Combines design points with directional sampling algorithm
+     */
+    class DirectionalSamplingCombiner : public Combiner
     {
+    public:
         /**
-         * \brief Combines design points with directional sampling algorithm
+         * \brief Combines a number of design points
+         * \param combineMethodType Series (or-combination) or Parallel (and-combination) combination type
+         * \param designPoints Design points to be combined
+         * \param selfCorrelationMatrix Administration of correlations between different design points
+         * \param progress Progress indicator (optional)
+         * \return Design point resembling the combined reliability and alpha values
          */
-        class DirectionalSamplingCombiner : public Combiner
-        {
-        public:
-            /**
-             * \brief Combines a number of design points
-             * \param combineMethodType Series (or-combination) or Parallel (and-combination) combination type
-             * \param designPoints Design points to be combined
-             * \param selfCorrelationMatrix Administration of correlations between different design points
-             * \param progress Progress indicator (optional)
-             * \return Design point resembling the combined reliability and alpha values
-             */
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<Models::ProgressIndicator> progress = nullptr) override;
+        std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<Models::ProgressIndicator> progress = nullptr) override;
 
-        private:
-            void fillSettings(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<DirectionalSamplingSettings> settings);
-        };
-    }
+    private:
+        void fillSettings(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<DirectionalSamplingSettings> settings);
+    };
 }
 

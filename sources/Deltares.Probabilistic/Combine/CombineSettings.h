@@ -22,16 +22,13 @@
 #pragma once
 #include "DesignPointCombiner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class CombineSettings
     {
-        class CombineSettings
-        {
-        public:
-            CombinerType combinerMethod = CombinerType::Hohenbichler;
-            combineAndOr combineType = combineAndOr::combOr;
-        };
-    }
+    public:
+        CombinerType combinerMethod = CombinerType::Hohenbichler;
+        combineAndOr combineType = combineAndOr::combOr;
+    };
 }
 

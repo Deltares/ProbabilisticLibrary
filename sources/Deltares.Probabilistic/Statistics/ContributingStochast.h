@@ -26,41 +26,38 @@
 #include "../Logging/ValidationReport.h"
 #include "../Logging/ValidationSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class ContributingStochast
     {
-        class ContributingStochast
+    public:
+        double Probability = 0;
+        std::shared_ptr<BaseStochast> Stochast = nullptr;
+
+        void validate(Logging::ValidationReport& report) const
         {
-        public:
-            double Probability = 0;
-            std::shared_ptr<BaseStochast> Stochast = nullptr;
+            Logging::ValidationSupport::checkMinimum(report, 0, Probability, "probability");
+            Logging::ValidationSupport::checkMaximum(report, 1, Probability, "probability");
 
-            void validate(Logging::ValidationReport& report) const
-            {
-                Logging::ValidationSupport::checkMinimum(report, 0, Probability, "probability");
-                Logging::ValidationSupport::checkMaximum(report, 1, Probability, "probability");
+            Stochast->validate(report);
+        }
 
-                Stochast->validate(report);
-            }
+        bool isValid() const
+        {
+            Logging::ValidationReport report;
+            this->validate(report);
+            return report.isValid();
+        }
 
-            bool isValid() const
-            {
-                Logging::ValidationReport report;
-                this->validate(report);
-                return report.isValid();
-            }
+        std::shared_ptr<ContributingStochast> clone() const
+        {
+            std::shared_ptr<ContributingStochast> clone = std::make_shared<ContributingStochast>();
 
-            std::shared_ptr<ContributingStochast> clone() const
-            {
-                std::shared_ptr<ContributingStochast> clone = std::make_shared<ContributingStochast>();
+            clone->Probability = this->Probability;
+            clone->Stochast = this->Stochast;
 
-                clone->Probability = this->Probability;
-                clone->Stochast = this->Stochast;
-
-                return clone;
-            }
-        };
-    }
+            return clone;
+        }
+    };
 }
 

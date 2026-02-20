@@ -22,41 +22,38 @@
 #pragma once
 #include "Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /// <summary>
+    /// Conditional Weibull Distribution described in terms of exceedance
+    /// frequencies rather than probabilities.
+    /// Not all methods are implemented.
+    /// </summary>
+    class ConditionalWeibullDistribution : public Distribution
     {
-        /// <summary>
-        /// Conditional Weibull Distribution described in terms of exceedance
-        /// frequencies rather than probabilities.
-        /// Not all methods are implemented.
-        /// </summary>
-        class ConditionalWeibullDistribution : public Distribution
+        void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
+        void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override;
+        bool canTruncate() override { return true; }
+        bool canInvert() override { return true; }
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
+        bool canFit(const bool useShift, const bool usePrior) override { return !usePrior; }
+        void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+        std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
+        std::vector<DistributionPropertyType> getParameters() override
         {
-            void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
-            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override;
-            bool canTruncate() override { return true; }
-            bool canInvert() override { return true; }
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
-            bool canFit(const bool useShift, const bool usePrior) override { return !usePrior; }
-            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override
-            {
-                using enum DistributionPropertyType;
-                return {Shift, Scale, Shape, ShapeB };
-            }
-        private:
-            static double getExponent(const StochastProperties& stochast, double x);
-            const double tresholdF = 3.34e-8;
-        };
-    }
+            using enum DistributionPropertyType;
+            return {Shift, Scale, Shape, ShapeB };
+        }
+    private:
+        static double getExponent(const StochastProperties& stochast, double x);
+        const double tresholdF = 3.34e-8;
+    };
 }

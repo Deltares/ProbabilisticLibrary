@@ -25,61 +25,58 @@
 #include "../Reliability/DesignPoint.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class CombineProject
     {
-        class CombineProject
-        {
-        public:
-            /**
-             * \brief Collection of all design points to be combined
-             */
-            std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>> designPoints;
+    public:
+        /**
+         * \brief Collection of all design points to be combined
+         */
+        std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>> designPoints;
 
-            /**
-             * \brief Calculation settings
-             */
-            std::shared_ptr<CombineSettings> settings = std::make_shared<CombineSettings>();
+        /**
+         * \brief Calculation settings
+         */
+        std::shared_ptr<CombineSettings> settings = std::make_shared<CombineSettings>();
 
-            /**
-             * \brief Self correlations
-             */
-            std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = std::make_shared<Statistics::SelfCorrelationMatrix>();
+        /**
+         * \brief Self correlations
+         */
+        std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = std::make_shared<Statistics::SelfCorrelationMatrix>();
 
-            /**
-             * \brief Correlations on which the input design points were based
-             */
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>(true);
+        /**
+         * \brief Correlations on which the input design points were based
+         */
+        std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>(true);
 
-            /**
-             * \brief Results of the combination
-             */
-            std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
+        /**
+         * \brief Results of the combination
+         */
+        std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
 
-            /**
-             * \brief Reports whether these settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            void validate(Logging::ValidationReport& report) const;
+        /**
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const;
 
-            /**
-             * \brief Validates the project and puts the result in a validation report
-             * \returns Validation report
-             */
-            Logging::ValidationReport getValidationReport() const;
+        /**
+         * \brief Validates the project and puts the result in a validation report
+         * \returns Validation report
+         */
+        Logging::ValidationReport getValidationReport() const;
 
-            /**
-             * \brief Indicates whether the settings are valid
-             * \returns Indication
-             */
-            bool is_valid() const;
+        /**
+         * \brief Indicates whether the settings are valid
+         * \returns Indication
+         */
+        bool is_valid() const;
 
-            /**
-             * \brief Executes the combination
-             */
-            void run();
-        };
-    }
+        /**
+         * \brief Executes the combination
+         */
+        void run();
+    };
 }
 

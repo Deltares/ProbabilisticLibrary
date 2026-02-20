@@ -26,58 +26,55 @@
 #include "../Logging/ValidationSupport.h"
 #include <memory>
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class DiscreteValue
     {
-        class DiscreteValue
+    public:
+        DiscreteValue()    { }
+
+        DiscreteValue(double x, double amount)
         {
-        public:
-            DiscreteValue()    { }
+            this->X = x;
+            this->Amount = amount;
+        }
 
-            DiscreteValue(double x, double amount)
+        double X = 0;
+        double Amount = 0;
+
+        double NormalizedAmount = 0; // for internal use
+        double CumulativeNormalizedAmount = 0; // for internal use
+
+        void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
+        {
+            this->setDirtyLambda = setDirtyLambda;
+        }
+
+        void setDirty() const
+        {
+            if (setDirtyLambda != nullptr)
             {
-                this->X = x;
-                this->Amount = amount;
+                setDirtyLambda();
             }
+        }
 
-            double X = 0;
-            double Amount = 0;
+        void validate(Logging::ValidationReport& report, const std::string& subject) const
+        {
+            Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
+        }
 
-            double NormalizedAmount = 0; // for internal use
-            double CumulativeNormalizedAmount = 0; // for internal use
+        std::shared_ptr<DiscreteValue> clone() const
+        {
+            std::shared_ptr<DiscreteValue> clone = std::make_shared<DiscreteValue>();
 
-            void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
-            {
-                this->setDirtyLambda = setDirtyLambda;
-            }
+            clone->X = this->X;
+            clone->Amount = this->Amount;
 
-            void setDirty() const
-            {
-                if (setDirtyLambda != nullptr)
-                {
-                    setDirtyLambda();
-                }
-            }
+            return clone;
+        }
 
-            void validate(Logging::ValidationReport& report, const std::string& subject) const
-            {
-                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
-            }
-
-            std::shared_ptr<DiscreteValue> clone() const
-            {
-                std::shared_ptr<DiscreteValue> clone = std::make_shared<DiscreteValue>();
-
-                clone->X = this->X;
-                clone->Amount = this->Amount;
-
-                return clone;
-            }
-
-        private:
-            Utils::SetDirtyLambda setDirtyLambda = nullptr;
-        };
-    }
+    private:
+        Utils::SetDirtyLambda setDirtyLambda = nullptr;
+    };
 }
 

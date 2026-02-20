@@ -23,14 +23,11 @@
 
 #include "DiscreteDistribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class QualitativeDistribution : public DiscreteDistribution
     {
-        class QualitativeDistribution : public DiscreteDistribution
-        {
-            bool isQualitative() override { return true; }
-        };
-    }
+        bool isQualitative() override { return true; }
+    };
 }
 

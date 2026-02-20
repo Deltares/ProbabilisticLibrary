@@ -28,33 +28,30 @@
 #include "ModelSample.h"
 #include "../Reliability/StochastSettingsSet.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    class SampleProvider
     {
-        class SampleProvider
+    public:
+        SampleProvider(int varyingStochastCount, int stochastCount) :
+            sampleSize(varyingStochastCount), modelSampleSize(stochastCount) {}
+
+        explicit SampleProvider(const Reliability::StochastSettingsSet& stochastSettings) :
+            sampleSize(stochastSettings.getVaryingStochastCount()), modelSampleSize(stochastSettings.getStochastCount()) {}
+
+        std::shared_ptr<Sample> getSample()
         {
-        public:
-            SampleProvider(int varyingStochastCount, int stochastCount) :
-                sampleSize(varyingStochastCount), modelSampleSize(stochastCount) {}
+            return std::make_shared<Sample>(sampleSize);
+        }
 
-            explicit SampleProvider(const Reliability::StochastSettingsSet& stochastSettings) :
-                sampleSize(stochastSettings.getVaryingStochastCount()), modelSampleSize(stochastSettings.getStochastCount()) {}
+        static std::shared_ptr<ModelSample> getModelSample(std::vector<double>& values)
+        {
+            return std::make_shared<ModelSample>(values);
+        }
 
-            std::shared_ptr<Sample> getSample()
-            {
-                return std::make_shared<Sample>(sampleSize);
-            }
-
-            static std::shared_ptr<ModelSample> getModelSample(std::vector<double>& values)
-            {
-                return std::make_shared<ModelSample>(values);
-            }
-
-        private:
-            int sampleSize;
-            int modelSampleSize;
-        };
-    }
+    private:
+        int sampleSize;
+        int modelSampleSize;
+    };
 }
 

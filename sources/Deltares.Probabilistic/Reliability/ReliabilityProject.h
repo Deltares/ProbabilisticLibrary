@@ -28,83 +28,80 @@
 #include "../Model/ModelProject.h"
 #include "../Statistics/Stochast.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
+     */
+    class ReliabilityProject : public Models::ModelProject
     {
+    public:
         /**
-         * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
+         * \brief Method which performs a reliability calculation
          */
-        class ReliabilityProject : public Models::ModelProject
+        std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethod = nullptr;
+
+        /**
+         * \brief Limit state function
+         */
+        std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = std::make_shared<Reliability::LimitStateFunction>();
+
+        /**
+         * \brief Calculation settings
+         */
+        std::shared_ptr<Reliability::Settings> settings = std::make_shared<Reliability::Settings>();
+
+        /**
+         * \brief Settings for performing a calculation
+         * \remark Settings of the reliability calculation are held in the settings of the reliability method
+         */
+        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Callback for progress during the calculation
+         */
+        std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
+
+        /**
+         * \brief Results of the reliability calculation
+         */
+        std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
+
+        /**
+         * \brief Results of the reliability calculation
+         */
+        std::shared_ptr<Statistics::Stochast> fragilityCurve = nullptr;
+
+        /**
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) override;
+
+        /**
+         * \brief Performs the reliability calculation
+         * \return Design point
+         */
+        std::shared_ptr<Reliability::DesignPoint> getDesignPoint();
+
+        /**
+         * \brief Performs the reliability calculation
+         * \return Design point
+         */
+        std::shared_ptr<Statistics::Stochast> getFragilityCurve();
+
+        /**
+         * \brief Runs the reliability calculation
+         */
+        void run() override;
+
+        /**
+         * \brief Sets the settings
+         */
+        void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override
         {
-        public:
-            /**
-             * \brief Method which performs a reliability calculation
-             */
-            std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethod = nullptr;
-
-            /**
-             * \brief Limit state function
-             */
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = std::make_shared<Reliability::LimitStateFunction>();
-
-            /**
-             * \brief Calculation settings
-             */
-            std::shared_ptr<Reliability::Settings> settings = std::make_shared<Reliability::Settings>();
-
-            /**
-             * \brief Settings for performing a calculation
-             * \remark Settings of the reliability calculation are held in the settings of the reliability method
-             */
-            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Callback for progress during the calculation
-             */
-            std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
-
-            /**
-             * \brief Results of the reliability calculation
-             */
-            std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
-
-            /**
-             * \brief Results of the reliability calculation
-             */
-            std::shared_ptr<Statistics::Stochast> fragilityCurve = nullptr;
-
-            /**
-             * \brief Reports whether these settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            void validate(Logging::ValidationReport& report) override;
-
-            /**
-             * \brief Performs the reliability calculation
-             * \return Design point
-             */
-            std::shared_ptr<Reliability::DesignPoint> getDesignPoint();
-
-            /**
-             * \brief Performs the reliability calculation
-             * \return Design point
-             */
-            std::shared_ptr<Statistics::Stochast> getFragilityCurve();
-
-            /**
-             * \brief Runs the reliability calculation
-             */
-            void run() override;
-
-            /**
-             * \brief Sets the settings
-             */
-            void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override
-            {
-                settings = static_pointer_cast<Settings>(newSettings);
-            }
-        };
-    }
+            settings = static_pointer_cast<Settings>(newSettings);
+        }
+    };
 }
 

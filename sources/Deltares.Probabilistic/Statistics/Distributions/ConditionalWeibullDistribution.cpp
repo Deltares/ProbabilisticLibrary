@@ -31,183 +31,178 @@
 #include "DistributionSupport.h"
 
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    using enum DistributionPropertyType;
+
+    void ConditionalWeibullDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
     {
-        using enum DistributionPropertyType;
+        // not supported
+    }
 
-        void ConditionalWeibullDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
+    void ConditionalWeibullDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+    {
+        Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Scale, "scale", subject);
+        Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Shape, "shape", subject);
+        Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.ShapeB, "shape B", subject);
+    }
+
+    bool ConditionalWeibullDistribution::isVarying(StochastProperties& stochast)
+    {
+        return isValid(stochast);
+    }
+
+    double ConditionalWeibullDistribution::getMean(StochastProperties& stochast)
+    {
+        return DistributionSupport::getMeanByIteration(*this, stochast);
+    }
+
+    double ConditionalWeibullDistribution::getDeviation(StochastProperties& stochast)
+    {
+        return DistributionSupport::getDeviationByIteration(*this, stochast);
+    }
+
+    double ConditionalWeibullDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        const double qMin = 1.0e-300;
+
+        PQ pq = StandardNormal::getPQFromU(u);
+
+        if (pq.q == 1.0)
         {
-            // not supported
+            return stochast.Shift;
         }
 
-        void ConditionalWeibullDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+        double f; // Exceeding frequency
+
+        if (pq.q <= tresholdF)
         {
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Scale, "scale", subject);
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Shape, "shape", subject);
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.ShapeB, "shape B", subject);
+            f = std::max(pq.q, qMin);
+        }
+        else
+        {
+            double pd = std::max(pq.p, qMin);
+            f = -log(pd);
         }
 
-        bool ConditionalWeibullDistribution::isVarying(StochastProperties& stochast)
+        const double logF = std::log(f / stochast.ShapeB);
+        const double xlog = std::pow(stochast.Shift / stochast.Scale, stochast.Shape) - logF;
+        if (xlog <= 0.0) return 0.0;
+        const double xScale = pow(xlog, 1.0 / stochast.Shape);
+
+        return xScale * stochast.Scale;
+    }
+
+    double ConditionalWeibullDistribution::getExponent(const StochastProperties& stochast, double x)
+    {
+        x /= stochast.Scale;
+        if (x <= 0.0) return 1.0;
+        const double xLog = pow(x, stochast.Shape);
+        const double logF = std::pow(stochast.Shift / stochast.Scale, stochast.Shape) - xLog;
+        const double f = stochast.ShapeB * exp(logF);
+
+        return f;
+    }
+
+    double ConditionalWeibullDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        double f = getExponent(stochast, x);
+
+        double u;
+        if (f < tresholdF)
         {
-            return isValid(stochast);
+            u = StandardNormal::getUFromQ(f);
         }
-
-        double ConditionalWeibullDistribution::getMean(StochastProperties& stochast)
+        else
         {
-            return DistributionSupport::getMeanByIteration(*this, stochast);
+            double pd = exp(-f);
+            u = StandardNormal::getUFromP(pd);
         }
+        return u;
+    }
 
-        double ConditionalWeibullDistribution::getDeviation(StochastProperties& stochast)
+    double ConditionalWeibullDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        const double pdf = this->getCDF(stochast, x)
+            * getExponent(stochast, x) * stochast.Shape * pow(x / stochast.Scale, stochast.Shape - 1.0) / stochast.Scale;
+
+        return pdf;
+    }
+
+    double ConditionalWeibullDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        const double u = getUFromX(stochast, x);
+        return StandardNormal::getPFromU(u);
+    }
+
+    void ConditionalWeibullDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+    {
+        if (stochast.Shape != 1.0 || stochast.ShapeB != 1.0)
         {
-            return DistributionSupport::getDeviationByIteration(*this, stochast);
-        }
+            constexpr double toleranceBisection = 0.00001;
+            auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
-        double ConditionalWeibullDistribution::getXFromU(StochastProperties& stochast, double u)
-        {
-            const double qMin = 1.0e-300;
-
-            PQ pq = StandardNormal::getPQFromU(u);
-
-            if (pq.q == 1.0)
+            Numeric::RootFinderMethod method = [&stochast, this](double s)
             {
-                return stochast.Shift;
-            }
+                stochast.Scale = s;
+                return getMean(stochast);
+            };
 
-            double f; // Exceeding frequency
+            double minStart = 0.5 * stochast.Scale;
+            double maxStart = 1.5 * stochast.Scale;
 
-            if (pq.q <= tresholdF)
-            {
-                f = std::max(pq.q, qMin);
-            }
-            else
-            {
-                double pd = std::max(pq.p, qMin);
-                f = -log(pd);
-            }
-
-            const double logF = std::log(f / stochast.ShapeB);
-            const double xlog = std::pow(stochast.Shift / stochast.Scale, stochast.Shape) - logF;
-            if (xlog <= 0.0) return 0.0;
-            const double xScale = pow(xlog, 1.0 / stochast.Shape);
-
-            return xScale * stochast.Scale;
-        }
-
-        double ConditionalWeibullDistribution::getExponent(const StochastProperties& stochast, double x)
-        {
-            x /= stochast.Scale;
-            if (x <= 0.0) return 1.0;
-            const double xLog = pow(x, stochast.Shape);
-            const double logF = std::pow(stochast.Shift / stochast.Scale, stochast.Shape) - xLog;
-            const double f = stochast.ShapeB * exp(logF);
-
-            return f;
-        }
-
-        double ConditionalWeibullDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            double f = getExponent(stochast, x);
-
-            double u;
-            if (f < tresholdF)
-            {
-                u = StandardNormal::getUFromQ(f);
-            }
-            else
-            {
-                double pd = exp(-f);
-                u = StandardNormal::getUFromP(pd);
-            }
-            return u;
-        }
-
-        double ConditionalWeibullDistribution::getPDF(StochastProperties& stochast, double x)
-        {
-            const double pdf = this->getCDF(stochast, x)
-                * getExponent(stochast, x) * stochast.Shape * pow(x / stochast.Scale, stochast.Shape - 1.0) / stochast.Scale;
-
-            return pdf;
-        }
-
-        double ConditionalWeibullDistribution::getCDF(StochastProperties& stochast, double x)
-        {
-            const double u = getUFromX(stochast, x);
-            return StandardNormal::getPFromU(u);
-        }
-
-        void ConditionalWeibullDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
-        {
-            if (stochast.Shape != 1.0 || stochast.ShapeB != 1.0)
-            {
-                constexpr double toleranceBisection = 0.00001;
-                auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
-
-                Numeric::RootFinderMethod method = [&stochast, this](double s)
-                {
-                    stochast.Scale = s;
-                    return getMean(stochast);
-                };
-
-                double minStart = 0.5 * stochast.Scale;
-                double maxStart = 1.5 * stochast.Scale;
-
-                stochast.Scale = bisection.CalculateValue(minStart, maxStart, mean, method);
-            }
-        }
-
-        void ConditionalWeibullDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
-        {
-            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
-        }
-
-        void ConditionalWeibullDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
-        {
-            auto fitter = DistributionFitter();
-
-            if (std::isnan(shift))
-            {
-                double minValue = Numeric::NumericSupport::getMinimum(values);
-                double meanValue = Numeric::NumericSupport::getMean(values);
-                double estimatedMaxValue = minValue + 2 * (meanValue - minValue);
-
-                std::vector minValues = { 0.5, 0.5, 0.5, minValue };
-                std::vector maxValues = { 1.5, 1.5, 1.5, estimatedMaxValue };
-                std::vector initValues = { 1.0, 1.0, 1.0, meanValue };
-                std::vector properties = { Scale, Shape, ShapeB, Shift };
-                std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
-
-                stochast.Scale = std::max(0.0, parameters[0]);
-                stochast.Shape = std::max(0.0, parameters[1]);
-                stochast.ShapeB = std::max(0.0, parameters[2]);
-                stochast.Shift = std::max(minValue, parameters[3]);
-            }
-            else
-            {
-                stochast.Shift = shift;
-
-                std::vector minValues = { 0.5, 0.5, 0.5 };
-                std::vector maxValues = { 1.5, 1.5, 1.5 };
-                std::vector initValues = { 1.0, 1.0, 1.0 };
-                std::vector properties = { Scale, Shape, ShapeB };
-                std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
-
-                stochast.Scale = std::max(0.0, parameters[0]);
-                stochast.Shape = std::max(0.0, parameters[1]);
-                stochast.ShapeB = std::max(0.0, parameters[2]);
-            }
-
-            stochast.Observations = static_cast<int>(values.size());
-        }
-
-        std::vector<double> ConditionalWeibullDistribution::getSpecialPoints(StochastProperties& stochast)
-        {
-            std::vector<double> specialPoints{ stochast.Shift };
-            return specialPoints;
+            stochast.Scale = bisection.CalculateValue(minStart, maxStart, mean, method);
         }
     }
+
+    void ConditionalWeibullDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
+    {
+        DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
+    }
+
+    void ConditionalWeibullDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        auto fitter = DistributionFitter();
+
+        if (std::isnan(shift))
+        {
+            double minValue = Numeric::NumericSupport::getMinimum(values);
+            double meanValue = Numeric::NumericSupport::getMean(values);
+            double estimatedMaxValue = minValue + 2 * (meanValue - minValue);
+
+            std::vector minValues = { 0.5, 0.5, 0.5, minValue };
+            std::vector maxValues = { 1.5, 1.5, 1.5, estimatedMaxValue };
+            std::vector initValues = { 1.0, 1.0, 1.0, meanValue };
+            std::vector properties = { Scale, Shape, ShapeB, Shift };
+            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+
+            stochast.Scale = std::max(0.0, parameters[0]);
+            stochast.Shape = std::max(0.0, parameters[1]);
+            stochast.ShapeB = std::max(0.0, parameters[2]);
+            stochast.Shift = std::max(minValue, parameters[3]);
+        }
+        else
+        {
+            stochast.Shift = shift;
+
+            std::vector minValues = { 0.5, 0.5, 0.5 };
+            std::vector maxValues = { 1.5, 1.5, 1.5 };
+            std::vector initValues = { 1.0, 1.0, 1.0 };
+            std::vector properties = { Scale, Shape, ShapeB };
+            std::vector<double> parameters = fitter.fitByLogLikelihood(values, this, stochast, minValues, maxValues, properties);
+
+            stochast.Scale = std::max(0.0, parameters[0]);
+            stochast.Shape = std::max(0.0, parameters[1]);
+            stochast.ShapeB = std::max(0.0, parameters[2]);
+        }
+
+        stochast.Observations = static_cast<int>(values.size());
+    }
+
+    std::vector<double> ConditionalWeibullDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        std::vector<double> specialPoints{ stochast.Shift };
+        return specialPoints;
+    }
 }
-
-
 

@@ -26,67 +26,64 @@
 #include "../Logging/ValidationSupport.h"
 
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    enum StartMethodType { FixedValue, RaySearch, SensitivitySearch, SphereSearch };
+
+    /**
+     * \brief Settings for the start point calculator
+     */
+    class StartPointCalculatorSettings
     {
-        enum StartMethodType { FixedValue, RaySearch, SensitivitySearch, SphereSearch };
-
+    public:
         /**
-         * \brief Settings for the start point calculator
+         * \brief Type of start point calculation
          */
-        class StartPointCalculatorSettings
+        StartMethodType StartMethod = StartMethodType::FixedValue;
+        double MaximumLengthStartPoint = 6;
+        double GradientStepSize = 4;
+        double RadiusSphereSearch = 10;
+        double dsdu = 1;
+        bool allQuadrants = false;
+        int maxStepsSphereSearch = 5;
+
+        std::shared_ptr<StartPointCalculatorSettings> clone()
         {
-        public:
-            /**
-             * \brief Type of start point calculation
-             */
-            StartMethodType StartMethod = StartMethodType::FixedValue;
-            double MaximumLengthStartPoint = 6;
-            double GradientStepSize = 4;
-            double RadiusSphereSearch = 10;
-            double dsdu = 1;
-            bool allQuadrants = false;
-            int maxStepsSphereSearch = 5;
+            std::shared_ptr<StartPointCalculatorSettings> copy = std::make_shared<StartPointCalculatorSettings>();
 
-            std::shared_ptr<StartPointCalculatorSettings> clone()
+            copy->GradientStepSize = this->GradientStepSize;
+            copy->MaximumLengthStartPoint = this->MaximumLengthStartPoint;
+            copy->RadiusSphereSearch = this->RadiusSphereSearch;
+            copy->StartMethod = this->StartMethod;
+            copy->allQuadrants = this->allQuadrants;
+            copy->maxStepsSphereSearch = this->maxStepsSphereSearch;
+
+            copy->StochastSet = this->StochastSet;
+
+            return copy;
+        }
+
+        void validate(Logging::ValidationReport& report) const
+        {
+            if (StartMethod == StartMethodType::RaySearch)
             {
-                std::shared_ptr<StartPointCalculatorSettings> copy = std::make_shared<StartPointCalculatorSettings>();
-
-                copy->GradientStepSize = this->GradientStepSize;
-                copy->MaximumLengthStartPoint = this->MaximumLengthStartPoint;
-                copy->RadiusSphereSearch = this->RadiusSphereSearch;
-                copy->StartMethod = this->StartMethod;
-                copy->allQuadrants = this->allQuadrants;
-                copy->maxStepsSphereSearch = this->maxStepsSphereSearch;
-
-                copy->StochastSet = this->StochastSet;
-
-                return copy;
+                Logging::ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
             }
-
-            void validate(Logging::ValidationReport& report) const
+            else if (StartMethod == StartMethodType::SensitivitySearch)
             {
-                if (StartMethod == StartMethodType::RaySearch)
-                {
-                    Logging::ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
-                }
-                else if (StartMethod == StartMethodType::SensitivitySearch)
-                {
-                    Logging::ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
-                }
-                else if (StartMethod == StartMethodType::SphereSearch)
-                {
-                    Logging::ValidationSupport::checkMinimum(report, 0.01, RadiusSphereSearch, "radius sphere search");
-                    Logging::ValidationSupport::checkMinimumInt(report, 1, maxStepsSphereSearch, "max steps sphere search");
-                }
+                Logging::ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
             }
+            else if (StartMethod == StartMethodType::SphereSearch)
+            {
+                Logging::ValidationSupport::checkMinimum(report, 0.01, RadiusSphereSearch, "radius sphere search");
+                Logging::ValidationSupport::checkMinimumInt(report, 1, maxStepsSphereSearch, "max steps sphere search");
+            }
+        }
 
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-            std::vector<double> startVector;
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+        std::vector<double> startVector;
 
-            static std::string getStartPointMethodString(StartMethodType method);
-            static StartMethodType getStartPointMethod(std::string method);
-        };
-    }
+        static std::string getStartPointMethodString(StartMethodType method);
+        static StartMethodType getStartPointMethod(std::string method);
+    };
 }

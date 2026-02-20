@@ -27,83 +27,80 @@
 #include "../Model/RunSettings.h"
 #include "../Model/Validatable.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    enum SampleMethodType { MarkovChain, AdaptiveConditional };
+
+    /**
+     * \brief Settings for the subset simulation algorithm
+     */
+    class SubsetSimulationSettings : public Models::Validatable
     {
-        enum SampleMethodType { MarkovChain, AdaptiveConditional };
+    public:
+        /**
+         * \brief The minimum samples to be examined
+         */
+        int MinimumSamples = 1000;
 
         /**
-         * \brief Settings for the subset simulation algorithm
+         * \brief The maximum samples to be examined
          */
-        class SubsetSimulationSettings : public Models::Validatable
+        int MaximumSamples = 10000;
+
+        /**
+         * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
+         */
+        double VariationCoefficient = 0.05;
+
+        /**
+         * \brief Method type how the design point (alpha values) is calculated
+         */
+        DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+        /**
+         * \brief Defines the way new samples are generated
+         */
+        SampleMethodType SampleMethod = SampleMethodType::MarkovChain;
+
+        /**
+         * \brief Standard deviation in the Markov chain
+         */
+        double MarkovChainDeviation = 1;
+
+        /**
+         * \brief Fraction of the samples which will be used in the next iteration
+         */
+        double SubsetFraction = 0.1;
+
+        /**
+         * \brief Settings for generating random values
+         */
+        std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Settings for individual stochastic variables, such as the start value
+         */
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const override
         {
-        public:
-            /**
-             * \brief The minimum samples to be examined
-             */
-            int MinimumSamples = 1000;
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
+            Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");
 
-            /**
-             * \brief The maximum samples to be examined
-             */
-            int MaximumSamples = 10000;
+            RunSettings->validate(report);
+        }
 
-            /**
-             * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
-             */
-            double VariationCoefficient = 0.05;
-
-            /**
-             * \brief Method type how the design point (alpha values) is calculated
-             */
-            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-
-            /**
-             * \brief Defines the way new samples are generated
-             */
-            SampleMethodType SampleMethod = SampleMethodType::MarkovChain;
-
-            /**
-             * \brief Standard deviation in the Markov chain
-             */
-            double MarkovChainDeviation = 1;
-
-            /**
-             * \brief Fraction of the samples which will be used in the next iteration
-             */
-            double SubsetFraction = 0.1;
-
-            /**
-             * \brief Settings for generating random values
-             */
-            std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Settings for individual stochastic variables, such as the start value
-             */
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-
-            /**
-             * \brief Reports whether the settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            void validate(Logging::ValidationReport& report) const override
-            {
-                Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
-                Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");
-
-                RunSettings->validate(report);
-            }
-
-            static std::string getSampleMethodString(SampleMethodType method);
-            static SampleMethodType getSampleMethod(std::string method);
-        };
-    }
+        static std::string getSampleMethodString(SampleMethodType method);
+        static SampleMethodType getSampleMethod(std::string method);
+    };
 }
 

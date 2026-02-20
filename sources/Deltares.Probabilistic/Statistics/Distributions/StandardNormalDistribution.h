@@ -25,25 +25,22 @@
 
 #include "Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class StandardNormalDistribution : public Distribution
     {
-        class StandardNormalDistribution : public Distribution
-        {
-        public:
-            bool isVarying(StochastProperties& stochast) override;
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-        private:
-            const double standardNormalMean = 0.0;
-            const double standardNormalDeviation = 1.0;
-            const double normalFactor = 1.0 / sqrt(2.0 * std::numbers::pi);
-        };
-    }
+    public:
+        bool isVarying(StochastProperties& stochast) override;
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+    private:
+        const double standardNormalMean = 0.0;
+        const double standardNormalDeviation = 1.0;
+        const double normalFactor = 1.0 / sqrt(2.0 * std::numbers::pi);
+    };
 }
 

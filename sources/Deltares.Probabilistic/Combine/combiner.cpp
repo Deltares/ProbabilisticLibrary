@@ -23,73 +23,70 @@
 
 #include "combiner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    std::shared_ptr<Reliability::CombinedDesignPointModel> Combiner::getModel(combineAndOr combineMethodType, std::shared_ptr<Reliability::DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
     {
-        std::shared_ptr<Reliability::CombinedDesignPointModel> Combiner::getModel(combineAndOr combineMethodType, std::shared_ptr<Reliability::DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
+        // create the model from design points
+        std::shared_ptr<Reliability::CombinedDesignPointModel> model = std::make_shared<CombinedDesignPointModel>();
+        model->combineType = combineMethodType;
+
+        if (currentDesignPoint != nullptr)
         {
-            // create the model from design points
-            std::shared_ptr<Reliability::CombinedDesignPointModel> model = std::make_shared<CombinedDesignPointModel>();
-            model->combineType = combineMethodType;
-
-            if (currentDesignPoint != nullptr)
-            {
-                model->addDesignPointModel(currentDesignPoint, true, true);
-            }
-
-            for (std::shared_ptr<DesignPoint> designPoint : previousDesignPoints)
-            {
-                model->addDesignPointModel(designPoint);
-            }
-
-            model->addStochasts(stochasts, selfCorrelationMatrix);
-
-            return model;
+            model->addDesignPointModel(currentDesignPoint, true, true);
         }
 
-
-        std::shared_ptr<ReliabilityProject> Combiner::getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
+        for (std::shared_ptr<DesignPoint> designPoint : previousDesignPoints)
         {
-            // create project
-            std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
+            model->addDesignPointModel(designPoint);
+        }
 
-            // set run settings with minimal overhead
-            project->runSettings->SaveMessages = false;
-            project->runSettings->SaveEvaluations = false;
-            project->runSettings->SaveConvergence = true;
-            project->runSettings->MaxParallelProcesses = 1;
-            project->runSettings->MaxChunkSize = 1000;
+        model->addStochasts(stochasts, selfCorrelationMatrix);
 
-            // register all stochasts in the project
-            for (size_t i = 0; i < model->standardNormalStochasts.size(); i++)
+        return model;
+    }
+
+
+    std::shared_ptr<ReliabilityProject> Combiner::getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
+    {
+        // create project
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
+
+        // set run settings with minimal overhead
+        project->runSettings->SaveMessages = false;
+        project->runSettings->SaveEvaluations = false;
+        project->runSettings->SaveConvergence = true;
+        project->runSettings->MaxParallelProcesses = 1;
+        project->runSettings->MaxChunkSize = 1000;
+
+        // register all stochasts in the project
+        for (size_t i = 0; i < model->standardNormalStochasts.size(); i++)
+        {
+            project->stochasts.push_back(model->standardNormalStochasts[i]);
+        }
+
+        project->correlation = model->getCorrelationMatrix(selfCorrelationMatrix);
+
+        Models::ZLambda zFunction = [model](std::shared_ptr<Models::ModelSample> sample)
+        {
+            model->calculate(sample);
+        };
+
+        std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zFunction);
+
+        if (model->canCalculateBetaDirection())
+        {
+            Models::ZBetaLambda zBetaFunction = [model](std::shared_ptr<Models::ModelSample> sample, double beta)
             {
-                project->stochasts.push_back(model->standardNormalStochasts[i]);
-            }
-
-            project->correlation = model->getCorrelationMatrix(selfCorrelationMatrix);
-
-            Models::ZLambda zFunction = [model](std::shared_ptr<Models::ModelSample> sample)
-            {
-                model->calculate(sample);
+                return model->getBetaDirection(sample);
             };
 
-            std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zFunction);
-
-            if (model->canCalculateBetaDirection())
-            {
-                Models::ZBetaLambda zBetaFunction = [model](std::shared_ptr<Models::ModelSample> sample, double beta)
-                {
-                    return model->getBetaDirection(sample);
-                };
-
-                zModel->setBetaLambda(zBetaFunction);
-            }
-
-            project->model = zModel;
-
-            return project;
+            zModel->setBetaLambda(zBetaFunction);
         }
+
+        project->model = zModel;
+
+        return project;
     }
 }
 

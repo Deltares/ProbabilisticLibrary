@@ -25,37 +25,34 @@
 #include "../Logging/ValidationReport.h"
 #include "../Logging/ValidationSupport.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    enum class designPointOptions
     {
-        enum class designPointOptions
-        {
-            dpOutFALSE = 0,
-            dpOutTRUE = 1,
-            dpOutPrintAll = 3,
-        };
+        dpOutFALSE = 0,
+        dpOutTRUE = 1,
+        dpOutPrintAll = 3,
+    };
 
-        class RunSettings
-        {
-        public:
-            int MaxParallelProcesses = 1;
-            int MaxChunkSize = 16;
-            bool SaveEvaluations = false;
-            bool SaveConvergence = false;
-            bool SaveMessages = false;
-            bool ReuseCalculations = true;
-            bool RunAtDesignPoint = false;
-            bool ExtendedLoggingAtDesignPoint = false;
-            int MaxMessages = 1000;
-            Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
-            bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
+    class RunSettings
+    {
+    public:
+        int MaxParallelProcesses = 1;
+        int MaxChunkSize = 16;
+        bool SaveEvaluations = false;
+        bool SaveConvergence = false;
+        bool SaveMessages = false;
+        bool ReuseCalculations = true;
+        bool RunAtDesignPoint = false;
+        bool ExtendedLoggingAtDesignPoint = false;
+        int MaxMessages = 1000;
+        Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
+        bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
-            void validate(Logging::ValidationReport& report) const
-            {
-                Logging::ValidationSupport::checkMinimumInt(report, 1, MaxParallelProcesses, "max parallel processes");
-            }
-        };
-    }
+        void validate(Logging::ValidationReport& report) const
+        {
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MaxParallelProcesses, "max parallel processes");
+        }
+    };
 }
 

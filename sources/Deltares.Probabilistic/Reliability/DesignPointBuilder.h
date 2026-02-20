@@ -26,59 +26,52 @@
 #include "../Model/Sample.h"
 #include "../Model/ModelRunner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class ModeFinder;
+
+    enum DesignPointMethod
     {
-        class ModeFinder;
+        CenterOfGravity,
+        CenterOfAngles,
+        NearestToMean
+    };
 
-        enum DesignPointMethod
-        {
-            CenterOfGravity,
-            CenterOfAngles,
-            NearestToMean
-        };
+    class DesignPointBuilder
+    {
+    private:
+        int count = 0;
+        DesignPointMethod method = DesignPointMethod::NearestToMean;
+        double minimumBeta = std::numeric_limits<double>::infinity();
+        double sumWeights = 0;
+        std::shared_ptr<Models::Sample> defaultSample = nullptr;
+        std::shared_ptr<Models::Sample> meanSample = nullptr;
+        std::shared_ptr<Models::Sample> sinSample = nullptr;
+        std::shared_ptr<Models::Sample> cosSample = nullptr;
+        bool sampleAdded = false;
+        bool weightedSampleAdded = false;
+        std::vector<std::shared_ptr<Models::Sample>> nearestSamples;
 
-        class DesignPointBuilder
-        {
-        private:
-            int count = 0;
-            DesignPointMethod method = DesignPointMethod::NearestToMean;
-            double minimumBeta = std::numeric_limits<double>::infinity();
-            double sumWeights = 0;
-            std::shared_ptr<Models::Sample> defaultSample = nullptr;
-            std::shared_ptr<Models::Sample> meanSample = nullptr;
-            std::shared_ptr<Models::Sample> sinSample = nullptr;
-            std::shared_ptr<Models::Sample> cosSample = nullptr;
-            bool sampleAdded = false;
-            bool weightedSampleAdded = false;
-            std::vector<std::shared_ptr<Models::Sample>> nearestSamples;
+        std::vector<int> qualitativeIndices;
+        int qualitativeCount = 0;
+        std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
-            std::vector<int> qualitativeIndices;
-            int qualitativeCount = 0;
-            std::vector<std::shared_ptr<ModeFinder>> modeFinders;
+        void handleSample(const std::shared_ptr<Models::Sample>& sample, double weight);
+        void initializeSamples(int count, DesignPointMethod method);
+        void initializeTotals();
 
-            void handleSample(const std::shared_ptr<Models::Sample>& sample, double weight);
-            void initializeSamples(int count, DesignPointMethod method);
-            void initializeTotals();
+    public:
+        DesignPointBuilder() = default;
+        DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet = nullptr);
+        DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
 
-        public:
-            DesignPointBuilder() = default;
-            DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet = nullptr);
-            DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
+        void initialize(double beta) const;
+        void addSample(const std::shared_ptr<Models::Sample>& sample);
+        void removeSample(const std::shared_ptr<Models::Sample>& sample);
+        std::shared_ptr<Models::Sample> getSample();
 
-            void initialize(double beta) const;
-            void addSample(const std::shared_ptr<Models::Sample>& sample);
-            void removeSample(const std::shared_ptr<Models::Sample>& sample);
-            std::shared_ptr<Models::Sample> getSample();
-
-            static std::string getDesignPointMethodString(DesignPointMethod method);
-            static DesignPointMethod getDesignPointMethod(std::string method);
-        };
-    }
+        static std::string getDesignPointMethodString(DesignPointMethod method);
+        static DesignPointMethod getDesignPointMethod(std::string method);
+    };
 }
-
-
-
-
 

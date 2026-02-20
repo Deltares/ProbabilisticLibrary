@@ -23,40 +23,37 @@
 
 #include "StandardNormal.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /**
+     * \brief Defines a probability which is usable to iterate over various probabilities
+     */
+    class ProbabilityIterator
     {
-        /**
-         * \brief Defines a probability which is usable to iterate over various probabilities
-         */
-        class ProbabilityIterator
+    public:
+        ProbabilityIterator(double u)
         {
-        public:
-            ProbabilityIterator(double u)
-            {
-                pq = Statistics::StandardNormal::getPQFromU(u);
-                pqPrev = pq;
-            }
+            pq = Statistics::StandardNormal::getPQFromU(u);
+            pqPrev = pq;
+        }
 
-            /**
-             * \brief Assigns a new value to u and returns the difference in probability with the previously assigned u-value
-             * \param u Next value of u
-             * \return Difference
-             */
-            double getDifference(double u)
-            {
-                pqPrev = pq;
-                pq = Statistics::StandardNormal::getPQFromU(u);
+        /**
+         * \brief Assigns a new value to u and returns the difference in probability with the previously assigned u-value
+         * \param u Next value of u
+         * \return Difference
+         */
+        double getDifference(double u)
+        {
+            pqPrev = pq;
+            pq = Statistics::StandardNormal::getPQFromU(u);
 
-                // depending on the value of u use exceeding or non-exceeding probabilities
-                return pq.p < 0.5 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
-            }
+            // depending on the value of u use exceeding or non-exceeding probabilities
+            return pq.p < 0.5 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
+        }
 
-        private:
-            PQ pq;
-            PQ pqPrev;
-        };
-    }
+    private:
+        PQ pq;
+        PQ pqPrev;
+    };
 }
 

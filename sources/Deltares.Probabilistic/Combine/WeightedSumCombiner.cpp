@@ -25,84 +25,81 @@
 #include "../Statistics/Stochast.h"
 #include "../Reliability/DesignPointBuilder.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    std::shared_ptr<DesignPoint> WeightedSumCombiner::combineExcludingDesignPoints(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
     {
-        std::shared_ptr<DesignPoint> WeightedSumCombiner::combineExcludingDesignPoints(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
+        if (scenarios.size() != designPoints.size())
         {
-            if (scenarios.size() != designPoints.size())
-            {
-                throw probLibException("Scenarios and design points must be of same length");
-            }
-
-            std::vector<std::shared_ptr<Statistics::Stochast>> parameters = DesignPoint::getUniqueStochasts(designPoints);
-
-            DesignPointBuilder designPointBuilder = DesignPointBuilder(parameters.size(), DesignPointMethod::CenterOfGravity);
-
-            double failure = 0;
-            for (size_t i = 0; i < designPoints.size(); i++)
-            {
-                failure += scenarios[i]->probability * designPoints[i]->getFailureProbability();
-            }
-
-            double combinedBeta = Statistics::StandardNormal::getUFromQ(failure);
-            designPointBuilder.initialize(combinedBeta);
-
-            for (size_t i = 0; i < designPoints.size(); i++)
-            {
-                designPoints[i]->Identifier = scenarios[i]->name;
-
-                std::vector<double> u(parameters.size());
-                for (size_t j = 0; j < u.size(); j++)
-                {
-                    if (parameters[j] == scenarios[i]->parameter)
-                    {
-                        u[j] = scenarios[i]->parameter->getUFromX(scenarios[i]->parameterValue);
-                    }
-                    else
-                    {
-                        std::shared_ptr<Models::StochastPointAlpha> alpha = designPoints[i]->getAlpha(parameters[j]);
-                        u[j] = alpha != nullptr ? alpha->U : 0;
-                    }
-                }
-
-                std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(u);
-                sample->Weight = scenarios[i]->probability * designPoints[i]->getFailureProbability();
-
-                designPointBuilder.addSample(sample);
-            }
-
-            std::shared_ptr<Models::Sample> combinedSample = designPointBuilder.getSample();
-            combinedSample = combinedSample->getSampleAtBeta(combinedBeta);
-
-            // create final design point
-            std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
-            combinedDesignPoint->Beta = combinedBeta;
-
-            // create alpha values for final design point
-
-            for (size_t i = 0; i < parameters.size(); i++)
-            {
-                const double alphaValue = -combinedSample->Values[i] / combinedDesignPoint->Beta;
-                std::shared_ptr<Models::StochastPointAlpha> alpha = std::make_shared<Models::StochastPointAlpha>();
-                alpha->Stochast = parameters[i];
-                alpha->Alpha = alphaValue;
-                alpha->AlphaCorrelated = alphaValue;
-                alpha->U = -combinedDesignPoint->Beta * alphaValue;
-                alpha->X = parameters[i]->getXFromU(alpha->U);
-                combinedDesignPoint->Alphas.push_back(alpha);
-            }
-
-            for (std::shared_ptr<DesignPoint> designPoint : designPoints)
-            {
-                combinedDesignPoint->ContributingDesignPoints.push_back(designPoint);
-            }
-
-            combinedDesignPoint->Identifier = "System";
-
-            return combinedDesignPoint;
+            throw probLibException("Scenarios and design points must be of same length");
         }
+
+        std::vector<std::shared_ptr<Statistics::Stochast>> parameters = DesignPoint::getUniqueStochasts(designPoints);
+
+        DesignPointBuilder designPointBuilder = DesignPointBuilder(parameters.size(), DesignPointMethod::CenterOfGravity);
+
+        double failure = 0;
+        for (size_t i = 0; i < designPoints.size(); i++)
+        {
+            failure += scenarios[i]->probability * designPoints[i]->getFailureProbability();
+        }
+
+        double combinedBeta = Statistics::StandardNormal::getUFromQ(failure);
+        designPointBuilder.initialize(combinedBeta);
+
+        for (size_t i = 0; i < designPoints.size(); i++)
+        {
+            designPoints[i]->Identifier = scenarios[i]->name;
+
+            std::vector<double> u(parameters.size());
+            for (size_t j = 0; j < u.size(); j++)
+            {
+                if (parameters[j] == scenarios[i]->parameter)
+                {
+                    u[j] = scenarios[i]->parameter->getUFromX(scenarios[i]->parameterValue);
+                }
+                else
+                {
+                    std::shared_ptr<Models::StochastPointAlpha> alpha = designPoints[i]->getAlpha(parameters[j]);
+                    u[j] = alpha != nullptr ? alpha->U : 0;
+                }
+            }
+
+            std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(u);
+            sample->Weight = scenarios[i]->probability * designPoints[i]->getFailureProbability();
+
+            designPointBuilder.addSample(sample);
+        }
+
+        std::shared_ptr<Models::Sample> combinedSample = designPointBuilder.getSample();
+        combinedSample = combinedSample->getSampleAtBeta(combinedBeta);
+
+        // create final design point
+        std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
+        combinedDesignPoint->Beta = combinedBeta;
+
+        // create alpha values for final design point
+
+        for (size_t i = 0; i < parameters.size(); i++)
+        {
+            const double alphaValue = -combinedSample->Values[i] / combinedDesignPoint->Beta;
+            std::shared_ptr<Models::StochastPointAlpha> alpha = std::make_shared<Models::StochastPointAlpha>();
+            alpha->Stochast = parameters[i];
+            alpha->Alpha = alphaValue;
+            alpha->AlphaCorrelated = alphaValue;
+            alpha->U = -combinedDesignPoint->Beta * alphaValue;
+            alpha->X = parameters[i]->getXFromU(alpha->U);
+            combinedDesignPoint->Alphas.push_back(alpha);
+        }
+
+        for (std::shared_ptr<DesignPoint> designPoint : designPoints)
+        {
+            combinedDesignPoint->ContributingDesignPoints.push_back(designPoint);
+        }
+
+        combinedDesignPoint->Identifier = "System";
+
+        return combinedDesignPoint;
     }
 }
 

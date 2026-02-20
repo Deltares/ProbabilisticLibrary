@@ -24,147 +24,141 @@
 #include "../../Math/NumericSupport.h"
 #include "../../Logging/ValidationSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    void BernoulliDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
     {
-        void BernoulliDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
-        {
-            stochast.Location = values[0];
-        }
+        stochast.Location = values[0];
+    }
 
-        bool BernoulliDistribution::isVarying(StochastProperties& stochast)
-        {
-            return stochast.Location > 0.0 && stochast.Location < 1.0;
-        }
+    bool BernoulliDistribution::isVarying(StochastProperties& stochast)
+    {
+        return stochast.Location > 0.0 && stochast.Location < 1.0;
+    }
 
-        void BernoulliDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
-        {
-            Logging::ValidationSupport::checkMinimum(report, 0, stochast.Location, "location", subject);
-            Logging::ValidationSupport::checkMaximum(report, 1, stochast.Location, "location", subject);
-            Distribution::validate(report, stochast, subject);
-        }
+    void BernoulliDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+    {
+        Logging::ValidationSupport::checkMinimum(report, 0, stochast.Location, "location", subject);
+        Logging::ValidationSupport::checkMaximum(report, 1, stochast.Location, "location", subject);
+        Distribution::validate(report, stochast, subject);
+    }
 
-        double BernoulliDistribution::getMean(StochastProperties& stochast)
+    double BernoulliDistribution::getMean(StochastProperties& stochast)
+    {
+        return stochast.Location;
+    }
+
+    double BernoulliDistribution::getDeviation(StochastProperties& stochast)
+    {
+        return sqrt(stochast.Location * (1.0 - stochast.Location));
+    }
+
+    void BernoulliDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+    {
+        stochast.Location = mean;
+    }
+
+    double BernoulliDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        double q = StandardNormal::getQFromU(u);
+
+        if (q > stochast.Location)
+        {
+            return 0.0;
+        }
+        else
+        {
+            return 1.0;
+        }
+    }
+
+    double BernoulliDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        const double cdf = getCDF(stochast, x);
+        return StandardNormal::getUFromP(cdf);
+    }
+
+    double BernoulliDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        if (Numeric::NumericSupport::areEqual(x, 1.0, delta))
         {
             return stochast.Location;
         }
-
-        double BernoulliDistribution::getDeviation(StochastProperties& stochast)
+        else if (Numeric::NumericSupport::areEqual(x, 0.0, delta))
         {
-            return sqrt(stochast.Location * (1.0 - stochast.Location));
+            return 1.0 - stochast.Location;
         }
-
-        void BernoulliDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+        else
         {
-            stochast.Location = mean;
-        }
-
-        double BernoulliDistribution::getXFromU(StochastProperties& stochast, double u)
-        {
-            double q = StandardNormal::getQFromU(u);
-
-            if (q > stochast.Location)
-            {
-                return 0.0;
-            }
-            else
-            {
-                return 1.0;
-            }
-        }
-
-        double BernoulliDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            const double cdf = getCDF(stochast, x);
-            return StandardNormal::getUFromP(cdf);
-        }
-
-        double BernoulliDistribution::getPDF(StochastProperties& stochast, double x)
-        {
-            if (Numeric::NumericSupport::areEqual(x, 1.0, delta))
-            {
-                return stochast.Location;
-            }
-            else if (Numeric::NumericSupport::areEqual(x, 0.0, delta))
-            {
-                return 1.0 - stochast.Location;
-            }
-            else
-            {
-                return 0.0;
-            }
-        }
-
-        double BernoulliDistribution::getCDF(StochastProperties& stochast, double x)
-        {
-            if (x < 0.0)
-            {
-                return 0.0;
-            }
-            else if (x >= 1.0)
-            {
-                return 1.0;
-            }
-            else
-            {
-                return 1.0 - stochast.Location;
-            }
-        }
-
-        void BernoulliDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
-        {
-            stochast.Location = Numeric::NumericSupport::getMean(values);
-            stochast.Observations = static_cast<int>(values.size());
-        }
-
-        void BernoulliDistribution::fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
-        {
-            int n_data = static_cast<int>(values.size());
-            double n_data_success = Numeric::NumericSupport::sum(values);
-            double n_data_fail = n_data - n_data_success;
-
-            int n_prior = prior.Observations;
-            double n_prior_success = prior.Location * n_prior;
-            double n_prior_fail = n_prior - n_prior_success;
-
-            // assume a beta distribution, the shape properties can be set according to binomial experiments
-            // see https://statisticsbyjim.com/probability/beta-distribution/
-            // see https://rpubs.com/sitaramgautam/145048
-
-            double postAlpha = n_data_success + n_prior_success;
-            double postBeta = n_data_fail + n_prior_fail;
-
-            double postMean = postAlpha / (postAlpha + postBeta);
-
-            stochast.Location = postMean;
-            stochast.Observations = prior.Observations + n_data;
-        }
-
-        std::vector<double> BernoulliDistribution::getDiscontinuityPoints(StochastProperties& stochast)
-        {
-            return { 0.0, 1.0 };
-        }
-
-        std::vector<double> BernoulliDistribution::getSpecialPoints(StochastProperties& stochast)
-        {
-            double offset = 10 * delta;
-
-            std::vector<double> specialPoints;
-
-            specialPoints.push_back(-offset);
-            specialPoints.push_back(0.0);
-            specialPoints.push_back(offset);
-
-            specialPoints.push_back(1.0 - offset);
-            specialPoints.push_back(1.0);
-            specialPoints.push_back(1.0 + offset);
-
-            return specialPoints;
+            return 0.0;
         }
     }
+
+    double BernoulliDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        if (x < 0.0)
+        {
+            return 0.0;
+        }
+        else if (x >= 1.0)
+        {
+            return 1.0;
+        }
+        else
+        {
+            return 1.0 - stochast.Location;
+        }
+    }
+
+    void BernoulliDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        stochast.Location = Numeric::NumericSupport::getMean(values);
+        stochast.Observations = static_cast<int>(values.size());
+    }
+
+    void BernoulliDistribution::fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
+    {
+        int n_data = static_cast<int>(values.size());
+        double n_data_success = Numeric::NumericSupport::sum(values);
+        double n_data_fail = n_data - n_data_success;
+
+        int n_prior = prior.Observations;
+        double n_prior_success = prior.Location * n_prior;
+        double n_prior_fail = n_prior - n_prior_success;
+
+        // assume a beta distribution, the shape properties can be set according to binomial experiments
+        // see https://statisticsbyjim.com/probability/beta-distribution/
+        // see https://rpubs.com/sitaramgautam/145048
+
+        double postAlpha = n_data_success + n_prior_success;
+        double postBeta = n_data_fail + n_prior_fail;
+
+        double postMean = postAlpha / (postAlpha + postBeta);
+
+        stochast.Location = postMean;
+        stochast.Observations = prior.Observations + n_data;
+    }
+
+    std::vector<double> BernoulliDistribution::getDiscontinuityPoints(StochastProperties& stochast)
+    {
+        return { 0.0, 1.0 };
+    }
+
+    std::vector<double> BernoulliDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        double offset = 10 * delta;
+
+        std::vector<double> specialPoints;
+
+        specialPoints.push_back(-offset);
+        specialPoints.push_back(0.0);
+        specialPoints.push_back(offset);
+
+        specialPoints.push_back(1.0 - offset);
+        specialPoints.push_back(1.0);
+        specialPoints.push_back(1.0 + offset);
+
+        return specialPoints;
+    }
 }
-
-
-
 

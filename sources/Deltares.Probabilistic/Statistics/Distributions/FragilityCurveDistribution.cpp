@@ -28,153 +28,126 @@
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    void FragilityCurveDistribution::initializeForRun(StochastProperties& stochast)
     {
-        void FragilityCurveDistribution::initializeForRun(StochastProperties& stochast)
+        std::sort(stochast.FragilityValues.begin(), stochast.FragilityValues.end(),
+            [](const std::shared_ptr<FragilityValue>& val1, const std::shared_ptr<FragilityValue>& val2) {return val1->X < val2->X; });
+
+
+        Utils::SetDirtyLambda setDirtyFunction = [&stochast]()
         {
-            std::sort(stochast.FragilityValues.begin(), stochast.FragilityValues.end(),
-                [](const std::shared_ptr<FragilityValue>& val1, const std::shared_ptr<FragilityValue>& val2) {return val1->X < val2->X; });
+            stochast.dirty = true;
+        };
 
+        for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
+        {
+            fragilityValue->setDirtyFunction(setDirtyFunction);
+        }
 
-            Utils::SetDirtyLambda setDirtyFunction = [&stochast]()
+        stochast.dirty = false;
+    }
+
+    bool FragilityCurveDistribution::isHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
+    {
+        for (size_t i = 1; i < fragilityValues.size(); i++)
+        {
+            if (!Numeric::NumericSupport::areEqual(fragilityValues[i]->Reliability, fragilityValues[i - 1]->Reliability, precision))
             {
-                stochast.dirty = true;
-            };
-
-            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
-            {
-                fragilityValue->setDirtyFunction(setDirtyFunction);
-            }
-
-            stochast.dirty = false;
-        }
-
-        bool FragilityCurveDistribution::isHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
-        {
-            for (size_t i = 1; i < fragilityValues.size(); i++)
-            {
-                if (!Numeric::NumericSupport::areEqual(fragilityValues[i]->Reliability, fragilityValues[i - 1]->Reliability, precision))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        bool FragilityCurveDistribution::startsHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
-        {
-            return fragilityValues.size() >= 2 && Numeric::NumericSupport::areEqual(fragilityValues[0]->Reliability, fragilityValues[1]->Reliability, precision);
-        }
-
-        bool FragilityCurveDistribution::isAscending(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
-        {
-            return fragilityValues.size() >= 2 && Numeric::NumericSupport::isLess(fragilityValues[0]->Reliability, fragilityValues[fragilityValues.size() - 1]->Reliability, precision);
-        }
-
-        bool FragilityCurveDistribution::isDescending(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
-        {
-            return fragilityValues.size() >= 2 && Numeric::NumericSupport::isGreater(fragilityValues[0]->Reliability, fragilityValues[fragilityValues.size() - 1]->Reliability, precision);
-        }
-
-        bool FragilityCurveDistribution::endsHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
-        {
-            return fragilityValues.size() >= 2 && Numeric::NumericSupport::areEqual(fragilityValues[fragilityValues.size() - 1]->Reliability, fragilityValues[fragilityValues.size() - 2]->Reliability, precision);
-        }
-
-        void FragilityCurveDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
-        {
-            Logging::ValidationSupport::checkMinimum(report, 2, stochast.FragilityValues.size(), "fragility values", subject);
-
-            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
-            {
-                fragilityValue->validate(report, subject);
+                return false;
             }
         }
 
-        double FragilityCurveDistribution::getMean(StochastProperties& stochast)
+        return true;
+    }
+
+    bool FragilityCurveDistribution::startsHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
+    {
+        return fragilityValues.size() >= 2 && Numeric::NumericSupport::areEqual(fragilityValues[0]->Reliability, fragilityValues[1]->Reliability, precision);
+    }
+
+    bool FragilityCurveDistribution::isAscending(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
+    {
+        return fragilityValues.size() >= 2 && Numeric::NumericSupport::isLess(fragilityValues[0]->Reliability, fragilityValues[fragilityValues.size() - 1]->Reliability, precision);
+    }
+
+    bool FragilityCurveDistribution::isDescending(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
+    {
+        return fragilityValues.size() >= 2 && Numeric::NumericSupport::isGreater(fragilityValues[0]->Reliability, fragilityValues[fragilityValues.size() - 1]->Reliability, precision);
+    }
+
+    bool FragilityCurveDistribution::endsHorizontal(std::vector<std::shared_ptr<FragilityValue>>& fragilityValues)
+    {
+        return fragilityValues.size() >= 2 && Numeric::NumericSupport::areEqual(fragilityValues[fragilityValues.size() - 1]->Reliability, fragilityValues[fragilityValues.size() - 2]->Reliability, precision);
+    }
+
+    void FragilityCurveDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+    {
+        Logging::ValidationSupport::checkMinimum(report, 2, stochast.FragilityValues.size(), "fragility values", subject);
+
+        for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
         {
-            return DistributionSupport::getMeanByIteration(*this, stochast);
+            fragilityValue->validate(report, subject);
+        }
+    }
+
+    double FragilityCurveDistribution::getMean(StochastProperties& stochast)
+    {
+        return DistributionSupport::getMeanByIteration(*this, stochast);
+    }
+
+    double FragilityCurveDistribution::getDeviation(StochastProperties& stochast)
+    {
+        return DistributionSupport::getDeviationByIteration(*this, stochast);
+    }
+
+    double FragilityCurveDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
         }
 
-        double FragilityCurveDistribution::getDeviation(StochastProperties& stochast)
+        if (stochast.FragilityValues.empty())
         {
-            return DistributionSupport::getDeviationByIteration(*this, stochast);
+            return std::nan("");
         }
 
-        double FragilityCurveDistribution::getXFromU(StochastProperties& stochast, double u)
+        if (stochast.FragilityValues.size() == 1)
         {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
+            return stochast.FragilityValues[0]->X;
+        }
 
-            if (stochast.FragilityValues.empty())
-            {
-                return std::nan("");
-            }
-
-            if (stochast.FragilityValues.size() == 1)
-            {
-                return stochast.FragilityValues[0]->X;
-            }
-
-            if (this->isHorizontal(stochast.FragilityValues))
-            {
-                if (u > stochast.FragilityValues[0]->Reliability)
-                {
-                    return -std::numeric_limits<double>::infinity();
-                }
-                else
-                {
-                    return std::numeric_limits<double>::infinity();
-                }
-            }
-            else if (startsHorizontal(stochast.FragilityValues) && u > stochast.FragilityValues[0]->Reliability && isDescending(stochast.FragilityValues))
+        if (this->isHorizontal(stochast.FragilityValues))
+        {
+            if (u > stochast.FragilityValues[0]->Reliability)
             {
                 return -std::numeric_limits<double>::infinity();
-            }
-            else if (startsHorizontal(stochast.FragilityValues) && u < stochast.FragilityValues[0]->Reliability && isAscending(stochast.FragilityValues))
-            {
-                return -std::numeric_limits<double>::infinity();
-            }
-            else if (endsHorizontal(stochast.FragilityValues) && u < stochast.FragilityValues.back()->Reliability && isDescending(stochast.FragilityValues))
-            {
-                return std::numeric_limits<double>::infinity();
-            }
-            else if (endsHorizontal(stochast.FragilityValues) && u > stochast.FragilityValues.back()->Reliability && isAscending(stochast.FragilityValues))
-            {
-                return std::numeric_limits<double>::infinity();
             }
             else
             {
-                std::vector<double> xValues;
-                std::vector<double> bValues;
-
-                for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
-                {
-                    xValues.push_back(fragilityValue->X);
-                    bValues.push_back(fragilityValue->Reliability);
-                }
-
-                return Numeric::NumericSupport::interpolate(u, bValues, xValues, true);
+                return std::numeric_limits<double>::infinity();
             }
         }
-
-        double FragilityCurveDistribution::getUFromX(StochastProperties& stochast, double x)
+        else if (startsHorizontal(stochast.FragilityValues) && u > stochast.FragilityValues[0]->Reliability && isDescending(stochast.FragilityValues))
         {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            if (stochast.FragilityValues.empty())
-            {
-                return std::nan("");
-            }
-
+            return -std::numeric_limits<double>::infinity();
+        }
+        else if (startsHorizontal(stochast.FragilityValues) && u < stochast.FragilityValues[0]->Reliability && isAscending(stochast.FragilityValues))
+        {
+            return -std::numeric_limits<double>::infinity();
+        }
+        else if (endsHorizontal(stochast.FragilityValues) && u < stochast.FragilityValues.back()->Reliability && isDescending(stochast.FragilityValues))
+        {
+            return std::numeric_limits<double>::infinity();
+        }
+        else if (endsHorizontal(stochast.FragilityValues) && u > stochast.FragilityValues.back()->Reliability && isAscending(stochast.FragilityValues))
+        {
+            return std::numeric_limits<double>::infinity();
+        }
+        else
+        {
             std::vector<double> xValues;
             std::vector<double> bValues;
 
@@ -184,78 +157,102 @@ namespace Deltares
                 bValues.push_back(fragilityValue->Reliability);
             }
 
-            return Numeric::NumericSupport::interpolate(x, xValues, bValues, true);
+            return Numeric::NumericSupport::interpolate(u, bValues, xValues, true);
         }
+    }
 
-        double FragilityCurveDistribution::getCDF(StochastProperties& stochast, double x)
+    double FragilityCurveDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        if (stochast.dirty)
         {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            if (stochast.FragilityValues.empty())
-            {
-                return std::nan("");
-            }
-
-            std::vector<double> xValues;
-            std::vector<double> bValues;
-
-            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
-            {
-                xValues.push_back(fragilityValue->X);
-                bValues.push_back(fragilityValue->Reliability);
-            }
-
-            double interpolatedReliability = Numeric::NumericSupport::interpolate(x, xValues, bValues, true);
-
-            return StandardNormal::getPFromU(interpolatedReliability);
+            initializeForRun(stochast);
         }
 
-        double FragilityCurveDistribution::getPDF(StochastProperties& stochast, double x)
+        if (stochast.FragilityValues.empty())
         {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            if (stochast.FragilityValues.empty())
-            {
-                return std::nan("");
-            }
-
-            double delta = std::numeric_limits<double>::max();
-            if (stochast.FragilityValues.size() == 1)
-            {
-                delta = std::max(1.0, std::fabs(stochast.FragilityValues[0]->X) / 10.0);
-            }
-            else
-            {
-                for (size_t i = 0; i < stochast.FragilityValues.size() - 1; i++)
-                {
-                    delta = std::min(delta, stochast.FragilityValues[i + 1]->X - stochast.FragilityValues[i]->X);
-                }
-
-                delta /= 10.0;
-            }
-
-            const double cdfLow = getCDF(stochast, x - delta / 2.0);
-            const double cdfHigh = getCDF(stochast, x + delta / 2.0);
-
-            return (cdfHigh - cdfLow) / delta;
+            return std::nan("");
         }
 
-        std::vector<double> FragilityCurveDistribution::getSpecialPoints(StochastProperties& stochast)
+        std::vector<double> xValues;
+        std::vector<double> bValues;
+
+        for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
         {
-            std::vector<double> specialPoints;
+            xValues.push_back(fragilityValue->X);
+            bValues.push_back(fragilityValue->Reliability);
+        }
 
-            for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
+        return Numeric::NumericSupport::interpolate(x, xValues, bValues, true);
+    }
+
+    double FragilityCurveDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        if (stochast.FragilityValues.empty())
+        {
+            return std::nan("");
+        }
+
+        std::vector<double> xValues;
+        std::vector<double> bValues;
+
+        for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
+        {
+            xValues.push_back(fragilityValue->X);
+            bValues.push_back(fragilityValue->Reliability);
+        }
+
+        double interpolatedReliability = Numeric::NumericSupport::interpolate(x, xValues, bValues, true);
+
+        return StandardNormal::getPFromU(interpolatedReliability);
+    }
+
+    double FragilityCurveDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        if (stochast.FragilityValues.empty())
+        {
+            return std::nan("");
+        }
+
+        double delta = std::numeric_limits<double>::max();
+        if (stochast.FragilityValues.size() == 1)
+        {
+            delta = std::max(1.0, std::fabs(stochast.FragilityValues[0]->X) / 10.0);
+        }
+        else
+        {
+            for (size_t i = 0; i < stochast.FragilityValues.size() - 1; i++)
             {
-                specialPoints.push_back(fragilityValue->X);
+                delta = std::min(delta, stochast.FragilityValues[i + 1]->X - stochast.FragilityValues[i]->X);
             }
 
-            return specialPoints;
+            delta /= 10.0;
         }
+
+        const double cdfLow = getCDF(stochast, x - delta / 2.0);
+        const double cdfHigh = getCDF(stochast, x + delta / 2.0);
+
+        return (cdfHigh - cdfLow) / delta;
+    }
+
+    std::vector<double> FragilityCurveDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        std::vector<double> specialPoints;
+
+        for (const std::shared_ptr<FragilityValue>& fragilityValue : stochast.FragilityValues)
+        {
+            specialPoints.push_back(fragilityValue->X);
+        }
+
+        return specialPoints;
     }
 }

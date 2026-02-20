@@ -21,32 +21,29 @@
 //
 #include "RandomSettings.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    void RandomSettings::setFixed(bool fixed)
     {
-        void RandomSettings::setFixed(bool fixed)
+        if (!IsRepeatableRandom)
         {
-            if (!IsRepeatableRandom)
+            this->fixed = fixed;
+            if (fixed)
             {
-                this->fixed = fixed;
-                if (fixed)
-                {
-                    generateTimeStamp();
-                }
+                generateTimeStamp();
             }
         }
+    }
 
-        void RandomSettings::generateTimeStamp()
+    void RandomSettings::generateTimeStamp()
+    {
+        time_t newTimeStamp = time(nullptr);
+        if (newTimeStamp <= timeStamp)
         {
-            time_t newTimeStamp = time(nullptr);
-            if (newTimeStamp <= timeStamp)
-            {
-                newTimeStamp = timeStamp + 1;
-            }
-
-            timeStamp = newTimeStamp;
+            newTimeStamp = timeStamp + 1;
         }
+
+        timeStamp = newTimeStamp;
     }
 }
 

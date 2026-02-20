@@ -23,16 +23,13 @@
 #include <memory>
 #include <string>
 
-namespace Deltares
+namespace Deltares::Server
 {
-    namespace Server
+    class BaseServer
     {
-        class BaseServer
-        {
-        public:
-            virtual int GetNewObjectId(int handlerIndex) { return 0; }
-            std::string last_exception = "";
-        };
-    }
+    public:
+        virtual int GetNewObjectId(int handlerIndex) { return 0; }
+        std::string last_exception = "";
+    };
 }
 

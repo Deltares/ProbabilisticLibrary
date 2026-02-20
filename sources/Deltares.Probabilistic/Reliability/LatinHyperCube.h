@@ -24,24 +24,21 @@
 #include "ReliabilityMethod.h"
 #include "LatinHyperCubeSettings.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class LatinHyperCube: public ReliabilityMethod
     {
-        class LatinHyperCube: public ReliabilityMethod
+    public:
+        std::shared_ptr<LatinHyperCubeSettings> Settings = std::make_shared<LatinHyperCubeSettings>();
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        bool isValid() override
         {
-        public:
-            std::shared_ptr<LatinHyperCubeSettings> Settings = std::make_shared<LatinHyperCubeSettings>();
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-            bool isValid() override
-            {
-                return Settings->isValid();
-            }
+            return Settings->isValid();
+        }
 
-        private:
-            std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner>& modelRunner, double qRange);
-            double ReportConvergence(std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nMaal) const;
-            std::vector<std::shared_ptr<Models::Sample>> CreateAllSamples(int nStochasts);
-        };
-    }
+    private:
+        std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner>& modelRunner, double qRange);
+        double ReportConvergence(std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nMaal) const;
+        std::vector<std::shared_ptr<Models::Sample>> CreateAllSamples(int nStochasts);
+    };
 }

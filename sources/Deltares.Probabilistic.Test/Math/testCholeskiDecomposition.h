@@ -22,25 +22,19 @@
 #pragma once
 #include "../../Deltares.Probabilistic/Math/matrix.h"
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class choleski_decomp_tests
     {
-        namespace Test
-        {
-            class choleski_decomp_tests
-            {
-            public:
-                void allCholeskyDecompositionTests() const;
-            private:
-                void testCholeskyDecompositionUnityMatrix() const;
-                void testCholeskyDecompositionCase2() const;
-                void testCholeskyDecompositionCase3() const;
-                void testCholeskyDecompositionCase4() const;
-                void testCholeskyDecompositionCase5() const;
-                void performTest(const std::initializer_list<double>& m, const std::initializer_list<double>& ref) const;
-                const double margin = 1e-9;
-            };
-        }
-    }
+    public:
+        void allCholeskyDecompositionTests() const;
+    private:
+        void testCholeskyDecompositionUnityMatrix() const;
+        void testCholeskyDecompositionCase2() const;
+        void testCholeskyDecompositionCase3() const;
+        void testCholeskyDecompositionCase4() const;
+        void testCholeskyDecompositionCase5() const;
+        void performTest(const std::initializer_list<double>& m, const std::initializer_list<double>& ref) const;
+        const double margin = 1e-9;
+    };
 }

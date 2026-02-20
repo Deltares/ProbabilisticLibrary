@@ -27,56 +27,53 @@
 
 #include "combineElements.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    std::shared_ptr<DesignPoint> HohenbichlerExcludingCombiner::combineExcludingDesignPoints(
+        std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+        std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
     {
-        std::shared_ptr<DesignPoint> HohenbichlerExcludingCombiner::combineExcludingDesignPoints(
-            std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
-            std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
+        elements designPointElements;
+        const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
+        const auto nStochasts = stochasts.size();
+
+        for (const auto& designPoint : designPoints)
         {
-            elements designPointElements;
-            const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
-            const auto nStochasts = stochasts.size();
-
-            for (const auto& designPoint : designPoints)
-            {
-                const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
-                auto alpha = Numeric::vector1D(nStochasts);
-                for (size_t i = 0; i < nStochasts; i++)
-                {
-                    alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
-                }
-                auto designPointElement = alphaBeta(designPoint->Beta, alpha);
-                designPointElements.push_back(designPointElement);
-            }
-
-            combineElements combiner = combineElements();
-            std::vector<double> percentages = std::vector<double>(nStochasts);
-            for (size_t i = 0; i < scenarios.size(); i++)
-            {
-                percentages[i] = scenarios[i]->probability * 100.0;
-            }
-
-            auto result = combiner.combineMultipleElementsProb(designPointElements, percentages, combineAndOr::combOr);
-
-            std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
-            combinedDesignPoint->Beta = result.ab.getBeta();
+            const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
+            auto alpha = Numeric::vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
-                auto alpha = std::make_shared<Models::StochastPointAlpha>();
-                alpha->Stochast = stochasts[i];
-                alpha->Alpha = result.ab.getAlphaI(i);
-                combinedDesignPoint->Alphas.push_back(alpha);
+                alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
             }
-
-            for (std::shared_ptr<DesignPoint> designPoint : designPoints)
-            {
-                combinedDesignPoint->ContributingDesignPoints.push_back(designPoint);
-            }
-
-            return combinedDesignPoint;
+            auto designPointElement = alphaBeta(designPoint->Beta, alpha);
+            designPointElements.push_back(designPointElement);
         }
+
+        combineElements combiner = combineElements();
+        std::vector<double> percentages = std::vector<double>(nStochasts);
+        for (size_t i = 0; i < scenarios.size(); i++)
+        {
+            percentages[i] = scenarios[i]->probability * 100.0;
+        }
+
+        auto result = combiner.combineMultipleElementsProb(designPointElements, percentages, combineAndOr::combOr);
+
+        std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
+        combinedDesignPoint->Beta = result.ab.getBeta();
+        for (size_t i = 0; i < nStochasts; i++)
+        {
+            auto alpha = std::make_shared<Models::StochastPointAlpha>();
+            alpha->Stochast = stochasts[i];
+            alpha->Alpha = result.ab.getAlphaI(i);
+            combinedDesignPoint->Alphas.push_back(alpha);
+        }
+
+        for (std::shared_ptr<DesignPoint> designPoint : designPoints)
+        {
+            combinedDesignPoint->ContributingDesignPoints.push_back(designPoint);
+        }
+
+        return combinedDesignPoint;
     }
 }
 

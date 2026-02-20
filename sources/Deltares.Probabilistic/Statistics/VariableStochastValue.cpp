@@ -22,65 +22,62 @@
 #include "VariableStochastValue.h"
 #include "Distributions/Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    std::shared_ptr<StochastProperties> VariableStochastValue::getMergedStochast(std::shared_ptr<Distribution> distribution, std::shared_ptr<StochastProperties> defaultStochast)
     {
-        std::shared_ptr<StochastProperties> VariableStochastValue::getMergedStochast(std::shared_ptr<Distribution> distribution, std::shared_ptr<StochastProperties> defaultStochast)
+        std::shared_ptr<StochastProperties> source = this->Stochast->clone();
+
+        // assign default properties if stochast property is not set (has value nan)
+        if (defaultStochast != nullptr)
         {
-            std::shared_ptr<StochastProperties> source = this->Stochast->clone();
-
-            // assign default properties if stochast property is not set (has value nan)
-            if (defaultStochast != nullptr)
+            source->Location = getNonNanValue(source->Location, defaultStochast->Location);
+            source->Scale = getNonNanValue(source->Scale, defaultStochast->Scale);
+            source->Shift = getNonNanValue(source->Shift, defaultStochast->Shift);
+            source->ShiftB = getNonNanValue(source->ShiftB, defaultStochast->ShiftB);
+            source->Shape = getNonNanValue(source->Shape, defaultStochast->Shape);
+            source->ShapeB = getNonNanValue(source->ShapeB, defaultStochast->ShapeB);
+            source->Minimum = getNonNanValue(source->Minimum, defaultStochast->Minimum);
+            source->Maximum = getNonNanValue(source->Maximum, defaultStochast->Maximum);
+            if (source->Observations == -1)
             {
-                source->Location = getNonNanValue(source->Location, defaultStochast->Location);
-                source->Scale = getNonNanValue(source->Scale, defaultStochast->Scale);
-                source->Shift = getNonNanValue(source->Shift, defaultStochast->Shift);
-                source->ShiftB = getNonNanValue(source->ShiftB, defaultStochast->ShiftB);
-                source->Shape = getNonNanValue(source->Shape, defaultStochast->Shape);
-                source->ShapeB = getNonNanValue(source->ShapeB, defaultStochast->ShapeB);
-                source->Minimum = getNonNanValue(source->Minimum, defaultStochast->Minimum);
-                source->Maximum = getNonNanValue(source->Maximum, defaultStochast->Maximum);
-                if (source->Observations == -1)
-                {
-                    source->Observations = defaultStochast->Observations;
-                }
-            }
-
-            if (!std::isnan(this->mean) || !std::isnan(this->deviation))
-            {
-                double requiredMean = std::isnan(this->mean) ? distribution->getMean(*source) : this->mean;
-                double requiredDeviation = std::isnan(this->deviation) ? distribution->getDeviation(*source) : this->deviation;
-                distribution->setMeanAndDeviation(*source, requiredMean, requiredDeviation);
-            }
-
-            return source;
-        }
-
-        std::shared_ptr<VariableStochastValue> VariableStochastValue::clone()
-        {
-            std::shared_ptr<VariableStochastValue> value = std::make_shared<VariableStochastValue>();
-
-            value->X = this->X;
-            value->mean = this->mean;
-            value->deviation = this->deviation;
-
-            value->Stochast = this->Stochast->clone();
-
-            return value;
-        }
-
-        double VariableStochastValue::getNonNanValue(double value1, double value2)
-        {
-            if (std::isnan(value1))
-            {
-                return value2;
-            }
-            else
-            {
-                return value1;
+                source->Observations = defaultStochast->Observations;
             }
         }
 
+        if (!std::isnan(this->mean) || !std::isnan(this->deviation))
+        {
+            double requiredMean = std::isnan(this->mean) ? distribution->getMean(*source) : this->mean;
+            double requiredDeviation = std::isnan(this->deviation) ? distribution->getDeviation(*source) : this->deviation;
+            distribution->setMeanAndDeviation(*source, requiredMean, requiredDeviation);
+        }
+
+        return source;
     }
+
+    std::shared_ptr<VariableStochastValue> VariableStochastValue::clone()
+    {
+        std::shared_ptr<VariableStochastValue> value = std::make_shared<VariableStochastValue>();
+
+        value->X = this->X;
+        value->mean = this->mean;
+        value->deviation = this->deviation;
+
+        value->Stochast = this->Stochast->clone();
+
+        return value;
+    }
+
+    double VariableStochastValue::getNonNanValue(double value1, double value2)
+    {
+        if (std::isnan(value1))
+        {
+            return value2;
+        }
+        else
+        {
+            return value1;
+        }
+    }
+
 }

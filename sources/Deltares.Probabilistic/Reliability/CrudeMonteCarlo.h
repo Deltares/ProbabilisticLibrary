@@ -23,27 +23,24 @@
 #include "CrudeMonteCarloSettings.h"
 #include "ReliabilityMethod.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class CrudeMonteCarlo : public ReliabilityMethod
     {
-        class CrudeMonteCarlo : public ReliabilityMethod
+    public:
+        std::shared_ptr<CrudeMonteCarloSettings> Settings = std::make_shared<CrudeMonteCarloSettings>();
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+
+        bool isValid() override
         {
-        public:
-            std::shared_ptr<CrudeMonteCarloSettings> Settings = std::make_shared<CrudeMonteCarloSettings>();
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            return Settings->isValid();
+        }
 
-            bool isValid() override
-            {
-                return Settings->isValid();
-            }
-
-        private:
-            std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::SampleProvider> sampleProvider, double zRemainder, double qRange);
-            bool checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, int samples, int nmaal);
-            double getConvergence(double pf, int samples);
-            void applyLimits(std::shared_ptr<Models::Sample> sample);
-        };
-    }
+    private:
+        std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::SampleProvider> sampleProvider, double zRemainder, double qRange);
+        bool checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, int samples, int nmaal);
+        double getConvergence(double pf, int samples);
+        void applyLimits(std::shared_ptr<Models::Sample> sample);
+    };
 }
 

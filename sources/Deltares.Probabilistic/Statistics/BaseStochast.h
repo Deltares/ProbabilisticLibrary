@@ -25,82 +25,79 @@
 #include <vector>
 #include "../Logging/ValidationReport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /**
+      * \brief Base class of a stochast
+      * \remark Introduced to prevent a circular reference from stochast->ContributingStochasts->Stochast
+      */
+    class BaseStochast
     {
+    public:
         /**
-          * \brief Base class of a stochast
-          * \remark Introduced to prevent a circular reference from stochast->ContributingStochasts->Stochast
-          */
-        class BaseStochast
-        {
-        public:
-            /**
-             * \brief Prepares the stochast for fast response of u->x conversion
-             */
-            virtual void initializeForRun() { /* nothing to do */ }
+         * \brief Prepares the stochast for fast response of u->x conversion
+         */
+        virtual void initializeForRun() { /* nothing to do */ }
 
-            /**
-             * \brief Prepares a conditional stochast for running
-             */
-            virtual void initializeConditionalValues() { /* nothing to do */  }
+        /**
+         * \brief Prepares a conditional stochast for running
+         */
+        virtual void initializeConditionalValues() { /* nothing to do */  }
 
-            /**
-             * \brief Gets the Cumulative Density Function (CDF) for a given x-value
-             * \param x Given x-value
-             * \return CDF
-             */
-            virtual double getCDF(double x) { return std::nan(""); }
+        /**
+         * \brief Gets the Cumulative Density Function (CDF) for a given x-value
+         * \param x Given x-value
+         * \return CDF
+         */
+        virtual double getCDF(double x) { return std::nan(""); }
 
-            /**
-             * \brief Gets the Probability Density Function (PDF) for a given x-value
-             * \param x Given x-value
-             * \return PDF
-             */
-            virtual double getPDF(double x) { return std::nan(""); }
+        /**
+         * \brief Gets the Probability Density Function (PDF) for a given x-value
+         * \param x Given x-value
+         * \return PDF
+         */
+        virtual double getPDF(double x) { return std::nan(""); }
 
-            /**
-             * \brief Gets the x-value corresponding to a given u-value
-             * \param u Given u-value
-             * \return x-value
-             */
-            virtual double getXFromU(double u) { return std::nan(""); }
+        /**
+         * \brief Gets the x-value corresponding to a given u-value
+         * \param u Given u-value
+         * \return x-value
+         */
+        virtual double getXFromU(double u) { return std::nan(""); }
 
-            /**
-             * \brief Gets the u-value corresponding to a given x-value
-             * \param x Given x-value
-             * \return u-value
-             */
-            virtual double getUFromX(double x) { return std::nan(""); }
+        /**
+         * \brief Gets the u-value corresponding to a given x-value
+         * \param x Given x-value
+         * \return u-value
+         */
+        virtual double getUFromX(double x) { return std::nan(""); }
 
-            /**
-             * \brief Gets the mean value of a stochast
-             * \return Mean value
-             */
-            virtual double getMean() { return std::nan(""); }
+        /**
+         * \brief Gets the mean value of a stochast
+         * \return Mean value
+         */
+        virtual double getMean() { return std::nan(""); }
 
-            /**
-             * \brief Gets a number of interesting x-values
-             * \remark This method is used when plotting PDF and CDF
-             * \return Interesting x-values
-             */
-            virtual std::vector<double> getSpecialXValues() { return {}; }
+        /**
+         * \brief Gets a number of interesting x-values
+         * \remark This method is used when plotting PDF and CDF
+         * \return Interesting x-values
+         */
+        virtual std::vector<double> getSpecialXValues() { return {}; }
 
-            virtual bool isValid() { return false; }
+        virtual bool isValid() { return false; }
 
-            /**
-             * \brief Validates the stochastic parameters and puts the results in a report
-             * \param report The validation report containing the validation results
-             */
-            virtual void validate(Logging::ValidationReport& report) { /* nothing to do */ }
+        /**
+         * \brief Validates the stochastic parameters and puts the results in a report
+         * \param report The validation report containing the validation results
+         */
+        virtual void validate(Logging::ValidationReport& report) { /* nothing to do */ }
 
-            virtual bool isVarying() { return false; }
+        virtual bool isVarying() { return false; }
 
-            virtual bool isVariable() { return false; }
+        virtual bool isVariable() { return false; }
 
-            virtual std::vector<double> getDiscontinuityPoints() { return {}; }
-        };
-    }
+        virtual std::vector<double> getDiscontinuityPoints() { return {}; }
+    };
 }
 

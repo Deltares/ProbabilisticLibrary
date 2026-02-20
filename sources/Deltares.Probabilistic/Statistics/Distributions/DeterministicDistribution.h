@@ -22,28 +22,25 @@
 #pragma once
 #include "Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class DeterministicDistribution : public Distribution
     {
-        class DeterministicDistribution : public Distribution
-        {
-        public:
-            void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
-            double getXFromU(StochastProperties& stochast, double u) override;
-            bool isVarying(StochastProperties& stochast) override;
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
-            bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
-            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;
-            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return {DistributionPropertyType::Location }; }
-        };
-    }
+    public:
+        void initialize(StochastProperties& stochast, const std::vector<double>& values) override;
+        double getXFromU(StochastProperties& stochast, double u) override;
+        bool isVarying(StochastProperties& stochast) override;
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        void setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType) override;
+        bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
+        void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+        std::vector<double> getDiscontinuityPoints(StochastProperties& stochast) override;
+        std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
+        std::vector<DistributionPropertyType> getParameters() override { return {DistributionPropertyType::Location }; }
+    };
 }
 

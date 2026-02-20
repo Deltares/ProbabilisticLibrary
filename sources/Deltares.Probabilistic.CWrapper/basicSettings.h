@@ -111,7 +111,7 @@ namespace Deltares {
             int MaximumIterations;
         };
 
-    	struct subSetSimulationReliabilitySettings
+        struct subSetSimulationReliabilitySettings
         {
             double VariationCoefficient;
             double MarkovChainDeviation;

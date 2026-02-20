@@ -23,27 +23,21 @@
 
 #include "../../Deltares.Probabilistic/Math/matrix.h"
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class matinv_tests
     {
-        namespace Test
-        {
-            class matinv_tests
-            {
-            public:
-                void all_matinv_tests() const;
-            private:
-                void matinv_test1() const;
-                void matinv_singular_test() const;
-                void positive_definite_tests() const;
+    public:
+        void all_matinv_tests() const;
+    private:
+        void matinv_test1() const;
+        void matinv_singular_test() const;
+        void positive_definite_tests() const;
 
-                Deltares::Numeric::Matrix get3x3posDefiniteMatrix() const;
-                Deltares::Numeric::Matrix get2x2singularMatrix() const;
-                Deltares::Numeric::Matrix get2x2symmetrixMatrix() const;
-                Deltares::Numeric::Matrix get16x16Matrix() const;
-                const double margin = 1e-12;
-            };
-        }
-    }
+        Deltares::Numeric::Matrix get3x3posDefiniteMatrix() const;
+        Deltares::Numeric::Matrix get2x2singularMatrix() const;
+        Deltares::Numeric::Matrix get2x2symmetrixMatrix() const;
+        Deltares::Numeric::Matrix get16x16Matrix() const;
+        const double margin = 1e-12;
+    };
 }

@@ -20,19 +20,16 @@
 // All rights reserved.
 //
 #pragma once
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /**
+     * \brief Base class of a StochastPoint and DesignPoint.
+     * \remark This class was introduced to prevent circular references (via FragilityValue)
+     */
+    class BaseStochastPoint
     {
-        /**
-         * \brief Base class of a StochastPoint and DesignPoint.
-         * \remark This class was introduced to prevent circular references (via FragilityValue)
-         */
-        class BaseStochastPoint
-        {
-        public:
-            double Beta;
-        };
-    }
+    public:
+        double Beta;
+    };
 }
 

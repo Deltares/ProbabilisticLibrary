@@ -26,29 +26,26 @@
 #include "NumericalBisectionSettings.h"
 #include "IntegrationGrid.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class NumericalBisection : public ReliabilityMethod
     {
-        class NumericalBisection : public ReliabilityMethod
+    public:
+        std::shared_ptr<NumericalBisectionSettings> Settings = std::make_shared<NumericalBisectionSettings>();
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        bool isValid() override
         {
-        public:
-            std::shared_ptr<NumericalBisectionSettings> Settings = std::make_shared<NumericalBisectionSettings>();
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-            bool isValid() override
-            {
-                return Settings->isValid();
-            }
+            return Settings->isValid();
+        }
 
-        private:
-            std::vector<double> getStartPoint(const int nStochasts) const;
-            static size_t getChunkSize(const int nStochasts);
-            void splitUnknownCells(std::shared_ptr<Models::ModelRunner> model, int step, std::vector<std::shared_ptr<IntegrationCell>>& unknownCells) const;
-            void derivePoints(IntegrationDomain& domain);
-            static void updateProbabilities(IntegrationDomain& domain, double& probUnknown, double& probExcluded, double& probFail);
-            bool isReady(double diff, int step) const;
-            std::shared_ptr<Models::Sample> getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const;
-        };
-    }
+    private:
+        std::vector<double> getStartPoint(const int nStochasts) const;
+        static size_t getChunkSize(const int nStochasts);
+        void splitUnknownCells(std::shared_ptr<Models::ModelRunner> model, int step, std::vector<std::shared_ptr<IntegrationCell>>& unknownCells) const;
+        void derivePoints(IntegrationDomain& domain);
+        static void updateProbabilities(IntegrationDomain& domain, double& probUnknown, double& probExcluded, double& probFail);
+        bool isReady(double diff, int step) const;
+        std::shared_ptr<Models::Sample> getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const;
+    };
 }
 

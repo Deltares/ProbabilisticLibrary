@@ -30,7 +30,7 @@
 
 using namespace Deltares::Statistics;
 
-namespace Deltares ::Reliability
+namespace Deltares::Reliability
 {
 
     // \brief Method for combining two elements with partial correlation

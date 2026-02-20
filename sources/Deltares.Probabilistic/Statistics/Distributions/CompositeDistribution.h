@@ -23,27 +23,24 @@
 
 #include "Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class CompositeDistribution : public Distribution
     {
-        class CompositeDistribution : public Distribution
-        {
-        public:
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override;
-            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            std::vector<double> getDiscontinuityPoints(StochastProperties&) override;
-            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { }; }
-        private:
-            const double delta = 0.0000001;
-        };
-    }
+    public:
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override;
+        void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        std::vector<double> getDiscontinuityPoints(StochastProperties&) override;
+        std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
+        std::vector<DistributionPropertyType> getParameters() override { return { }; }
+    private:
+        const double delta = 0.0000001;
+    };
 }
 

@@ -33,626 +33,620 @@
 
 #include "DistributionSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    void HistogramDistribution::initializeForRun(StochastProperties& stochast)
     {
-        void HistogramDistribution::initializeForRun(StochastProperties& stochast)
+        // check whether it is already sorted
+        bool isSorted = true;
+        for (size_t i = 1; i < stochast.HistogramValues.size(); i++)
         {
-            // check whether it is already sorted
-            bool isSorted = true;
-            for (size_t i = 1; i < stochast.HistogramValues.size(); i++)
+            if (!stochast.HistogramValues[i]->compareTo(stochast.HistogramValues[i - 1]))
             {
-                if (!stochast.HistogramValues[i]->compareTo(stochast.HistogramValues[i - 1]))
-                {
-                    isSorted = false;
-                    break;
-                }
-            }
-
-            // if not sorted, sort
-            if (!isSorted)
-            {
-                std::sort(stochast.HistogramValues.begin(), stochast.HistogramValues.end(),
-                    [](const std::shared_ptr<HistogramValue>& val1, const std::shared_ptr<HistogramValue>& val2) {return val1->compareTo(val2); });
-            }
-
-            double sum = 0;
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                sum += histogramValue->Amount;
-            }
-
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                histogramValue->NormalizedAmount = histogramValue->Amount / sum;
-            }
-
-            Utils::SetDirtyLambda setDirtyFunction = [&stochast]()
-            {
-                stochast.dirty = true;
-            };
-
-            double cumulative = 0;
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                cumulative += histogramValue->NormalizedAmount;
-                histogramValue->CumulativeNormalizedAmount = cumulative;
-
-                histogramValue->setDirtyFunction(setDirtyFunction);
-            }
-
-            stochast.dirty = false;
-        }
-
-        void HistogramDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
-        {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            double currentMean = this->getMean(stochast);
-            double diff = mean - currentMean;
-
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                histogramValue->LowerBound += diff;
-                histogramValue->UpperBound += diff;
+                isSorted = false;
+                break;
             }
         }
 
-        void HistogramDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+        // if not sorted, sort
+        if (!isSorted)
         {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            Logging::ValidationSupport::checkNotEmpty(report, stochast.HistogramValues.size(), "histogram values", subject);
-
-            std::shared_ptr<HistogramValue> previousHistogramValue = nullptr;
-
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                histogramValue->validate(report, previousHistogramValue, subject);
-                previousHistogramValue = histogramValue;
-            }
+            std::sort(stochast.HistogramValues.begin(), stochast.HistogramValues.end(),
+                [](const std::shared_ptr<HistogramValue>& val1, const std::shared_ptr<HistogramValue>& val2) {return val1->compareTo(val2); });
         }
 
-
-        bool HistogramDistribution::isVarying(StochastProperties& stochast)
+        double sum = 0;
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
         {
-            return !stochast.HistogramValues.empty();
+            sum += histogramValue->Amount;
         }
 
-        double HistogramDistribution::getMean(StochastProperties& stochast)
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
         {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            double sum = 0;
-            double sumWeights = 0;
-
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                sum += histogramValue->getCenter() * histogramValue->NormalizedAmount;
-                sumWeights += histogramValue->NormalizedAmount;
-            }
-
-            return sum / sumWeights;
+            histogramValue->NormalizedAmount = histogramValue->Amount / sum;
         }
 
-        double HistogramDistribution::getDeviation(StochastProperties& stochast)
+        Utils::SetDirtyLambda setDirtyFunction = [&stochast]()
         {
-            const double mean = getMean(stochast);
+            stochast.dirty = true;
+        };
 
-            double sumVariances = 0.0;
-            double sumWeights = 0.0;
+        double cumulative = 0;
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
+        {
+            cumulative += histogramValue->NormalizedAmount;
+            histogramValue->CumulativeNormalizedAmount = cumulative;
 
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                const double diff = histogramValue->getCenter() - mean;
-
-                sumVariances += diff * diff * histogramValue->Amount;
-                sumWeights += histogramValue->Amount;
-            }
-
-            if (sumWeights == 0.0)
-            {
-                return 0.0;
-            }
-            else if (sumWeights <= 1.0)
-            {
-                return sqrt(sumVariances / sumWeights);
-            }
-            else
-            {
-                return sqrt(sumVariances / (sumWeights - 1.0));
-            }
+            histogramValue->setDirtyFunction(setDirtyFunction);
         }
 
-        double HistogramDistribution::getXFromU(StochastProperties& stochast, double u)
+        stochast.dirty = false;
+    }
+
+    void HistogramDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+    {
+        if (stochast.dirty)
         {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            const double p = StandardNormal::getPFromU(u);
-
-            if (stochast.HistogramValues.empty())
-            {
-                return std::nan("");
-            }
-
-            for (size_t i = 0; i < stochast.HistogramValues.size(); i++)
-            {
-                if (stochast.HistogramValues[i]->CumulativeNormalizedAmount >= p)
-                {
-                    double previousCumulativeAmount = i > 0 ? stochast.HistogramValues[i - 1]->CumulativeNormalizedAmount : 0;
-                    double offset = (p - previousCumulativeAmount) / (stochast.HistogramValues[i]->CumulativeNormalizedAmount - previousCumulativeAmount);
-
-                    // linear interpolation within range
-                    return offset * stochast.HistogramValues[i]->UpperBound + (1.0 - offset) * stochast.HistogramValues[i]->LowerBound;
-                }
-            }
-
-            return stochast.HistogramValues.back()->UpperBound;
-        }
-
-        double HistogramDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            const double cdf = getCDF(stochast, x);
-
-            return StandardNormal::getUFromP(cdf);
-        }
-
-        double HistogramDistribution::getSizeForEmptySizedRange(const StochastProperties& stochast)
-        {
-            double max = std::numeric_limits<double>::infinity();
-
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                const double size = histogramValue->getSize();
-                if (size < max && size > 0)
-                {
-                    max = size;
-                }
-            }
-
-            if (!std::isinf(max))
-            {
-                return max;
-            }
-            else
-            {
-                return 1.0;
-            }
-        }
-
-        double HistogramDistribution::getPDF(StochastProperties& stochast, double x)
-        {
-            constexpr double delta = 0.0000001;
-
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            getSizeForEmptySizedRange(stochast);
-
-            for (const auto& histogram_value : stochast.HistogramValues)
-            {
-                if (Numeric::NumericSupport::areEqual(histogram_value->LowerBound, histogram_value->UpperBound, delta) &&
-                    Numeric::NumericSupport::areEqual(histogram_value->LowerBound, x, delta))
-                {
-                    return histogram_value->NormalizedAmount / getSizeForEmptySizedRange(stochast);
-                }
-                else
-                {
-                    if (histogram_value->contains(x))
-                    {
-                        return histogram_value->NormalizedAmount / histogram_value->getSize();
-                    }
-                }
-            }
-
-            return 0.0;
-        }
-
-        double HistogramDistribution::getCDF(StochastProperties& stochast, double x)
-        {
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            if (stochast.HistogramValues.empty())
-            {
-                return std::nan("");
-            }
-
-            double p = 0.0;
-
-            for (const auto& histogram_value : stochast.HistogramValues)
-            {
-                if (histogram_value->LowerBound < x)
-                {
-                    if (histogram_value->UpperBound < x)
-                    {
-                        p += histogram_value->NormalizedAmount;
-                    }
-                    else
-                    {
-                        const double offset = (x - histogram_value->LowerBound) / (histogram_value->UpperBound - histogram_value->LowerBound);
-                        p += histogram_value->NormalizedAmount * offset;
-                    }
-                }
-            }
-
-            return p;
-        }
-
-        std::vector<double> HistogramDistribution::getDiscontinuityPoints(StochastProperties& stochast)
-        {
-            constexpr double minDiff = 1E-6;
-
-            std::vector<double> discontinuityPoints;
-            for (const std::shared_ptr<HistogramValue>&  value : stochast.HistogramValues)
-            {
-                if (value->Amount > 0 && std::abs(value->UpperBound - value->LowerBound) <= minDiff)
-                {
-                    discontinuityPoints.push_back(value->LowerBound);
-                }
-            }
-
-            return discontinuityPoints;
-        }
-
-        std::vector<double> HistogramDistribution::getSpecialPoints(StochastProperties& stochast)
-        {
-            constexpr double delta = 0.0000001;
-
-            if (stochast.dirty)
-            {
-                initializeForRun(stochast);
-            }
-
-            std::vector<double> x;
-
-            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
-            {
-                if (histogramValue->UpperBound - delta > histogramValue->LowerBound + delta)
-                {
-                    x.push_back(histogramValue->LowerBound - delta);
-                    x.push_back(histogramValue->LowerBound + delta);
-
-                    x.push_back(histogramValue->UpperBound - delta);
-                    x.push_back(histogramValue->UpperBound + delta);
-                }
-                else
-                {
-                    x.push_back(histogramValue->LowerBound - delta);
-                    x.push_back((histogramValue->LowerBound + histogramValue->UpperBound) / 2);
-                    x.push_back(histogramValue->UpperBound + delta);
-                }
-            }
-
-            return x;
-        }
-
-        void HistogramDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
-        {
-            auto weights = std::vector(values.size(), 1.0);
-            return fitWeighted(stochast, values, weights);
-        }
-
-        void HistogramDistribution::fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights)
-        {
-            constexpr int maxRanges = 100;
-            constexpr double addFactor = 0.1;
-            constexpr double accuracy = 1E-10;
-            constexpr double distinctFraction = 0.1;
-
-            if (values.size() != weights.size())
-            {
-                throw Reliability::probLibException("Histogram fit: sizes values and weighs should be same");
-            }
-
-            // Build up list of weighted values
-            auto x = DistributionSupport::GetWeightedValues(values, weights);
-
-            if (x.empty())
-            {
-                stochast.HistogramValues.clear();
-                return;
-            }
-
-            mergeLowWeights(x);
-
-            // assume a distribution of distinct values if there is only a fraction of different result values
-            size_t distinctValuesCount = getDistinctCount(x);
-            bool isDistinctDistribution = distinctValuesCount < x.size() * distinctFraction && distinctValuesCount > 1;
-
-            // Determine required number of ranges
-            multipleInExtremes multiples;
-            multiples.min = x[0].value;
-            multiples.max = x[x.size() - 1].value;
-
-            // Determine minimum distance between two points, if not zero
-            double minWidth = std::numeric_limits<double>::max();
-            for (size_t i = 0; i < x.size() - 1; i++)
-            {
-                double diff = x[i + 1].value - x[i].value;
-                if (diff < minWidth && diff > accuracy)
-                {
-                    minWidth = diff;
-                }
-            }
-
-            // Determine additional offset beyond range of physical values
-            double extra = isDistinctDistribution ? minWidth / 2 : (multiples.max - multiples.min) * addFactor;
-
-            if (extra < accuracy)
-            {
-                if (std::fabs(x[0].value) < accuracy)
-                {
-                    // probably x[0] is zero
-                    extra = 0.5;
-                }
-                else
-                {
-                    extra = std::min(0.5, std::fabs(x[0].value / 10));
-                }
-            }
-
-            if (minWidth < std::numeric_limits<double>::max())
-            {
-                extra = std::max(extra, minWidth / 2);
-            }
-
-            // when there are multiple equal values at the extremes, they are regarded as guard limits, which will not be exceeded in the fitted distribution
-            multiples.multipleAtMin = x.size() > 1 && x[0].value == x[1].value;
-            multiples.multipleAtMax = x.size() > 1 && x[x.size()-1].value == x[x.size() - 2].value;
-
-            int nMultiple = 0;
-
-            if (!multiples.multipleAtMin)
-            {
-                multiples.min -= extra;
-            }
-            else
-            {
-                nMultiple++;
-            }
-
-            if (!multiples.multipleAtMax)
-            {
-                multiples.max += extra;
-            }
-            else
-            {
-                nMultiple++;
-            }
-
-            double rangeReductionFactor = isDistinctDistribution ? 1.0 : 0.9;
-
-            int requiredRanges = isDistinctDistribution ? std::round((multiples.max - multiples.min) / minWidth) + 1 - nMultiple :
-                std::round(distinctValuesCount * rangeReductionFactor);
-            requiredRanges = std::min(requiredRanges, maxRanges);
-
-            int ranges = requiredRanges;
-
-            // Determine the width of a range
-            const double step = (multiples.max - multiples.min) / ranges;
-
-            stochast.HistogramValues.clear();
-
-            for (int i = 0; i < ranges; i++)
-            {
-                auto range = std::make_shared<HistogramValue>(multiples.min + i * step, multiples.min + (i + 1) * step);
-
-                range->Amount = getAmount(range, x);
-
-                if (range->Amount > 0)
-                {
-                    stochast.HistogramValues.push_back(range);
-                }
-            }
-
-            // Loop which determines ranges until enough are found
-            determineRangesLoop(stochast, x, requiredRanges, multiples);
-
-            stochast.Observations = static_cast<int>(values.size());
-
             initializeForRun(stochast);
         }
 
-        void HistogramDistribution::determineRangesLoop(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& x,
-            int requiredRanges, const multipleInExtremes& multiples)
+        double currentMean = this->getMean(stochast);
+        double diff = mean - currentMean;
+
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
         {
-            bool enoughRanges = stochast.HistogramValues.size() >= requiredRanges / 2;
-            int counter = 0;
+            histogramValue->LowerBound += diff;
+            histogramValue->UpperBound += diff;
+        }
+    }
 
-            while (!enoughRanges)
+    void HistogramDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+    {
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        Logging::ValidationSupport::checkNotEmpty(report, stochast.HistogramValues.size(), "histogram values", subject);
+
+        std::shared_ptr<HistogramValue> previousHistogramValue = nullptr;
+
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
+        {
+            histogramValue->validate(report, previousHistogramValue, subject);
+            previousHistogramValue = histogramValue;
+        }
+    }
+
+
+    bool HistogramDistribution::isVarying(StochastProperties& stochast)
+    {
+        return !stochast.HistogramValues.empty();
+    }
+
+    double HistogramDistribution::getMean(StochastProperties& stochast)
+    {
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        double sum = 0;
+        double sumWeights = 0;
+
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
+        {
+            sum += histogramValue->getCenter() * histogramValue->NormalizedAmount;
+            sumWeights += histogramValue->NormalizedAmount;
+        }
+
+        return sum / sumWeights;
+    }
+
+    double HistogramDistribution::getDeviation(StochastProperties& stochast)
+    {
+        const double mean = getMean(stochast);
+
+        double sumVariances = 0.0;
+        double sumWeights = 0.0;
+
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
+        {
+            const double diff = histogramValue->getCenter() - mean;
+
+            sumVariances += diff * diff * histogramValue->Amount;
+            sumWeights += histogramValue->Amount;
+        }
+
+        if (sumWeights == 0.0)
+        {
+            return 0.0;
+        }
+        else if (sumWeights <= 1.0)
+        {
+            return sqrt(sumVariances / sumWeights);
+        }
+        else
+        {
+            return sqrt(sumVariances / (sumWeights - 1.0));
+        }
+    }
+
+    double HistogramDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        const double p = StandardNormal::getPFromU(u);
+
+        if (stochast.HistogramValues.empty())
+        {
+            return std::nan("");
+        }
+
+        for (size_t i = 0; i < stochast.HistogramValues.size(); i++)
+        {
+            if (stochast.HistogramValues[i]->CumulativeNormalizedAmount >= p)
             {
-                constexpr int maxSplitRanges = 100;
+                double previousCumulativeAmount = i > 0 ? stochast.HistogramValues[i - 1]->CumulativeNormalizedAmount : 0;
+                double offset = (p - previousCumulativeAmount) / (stochast.HistogramValues[i]->CumulativeNormalizedAmount - previousCumulativeAmount);
 
-                splitRanges(stochast, x);
-
-                enoughRanges = counter > maxSplitRanges || stochast.HistogramValues.size() >= requiredRanges / 2;
-                counter++;
+                // linear interpolation within range
+                return offset * stochast.HistogramValues[i]->UpperBound + (1.0 - offset) * stochast.HistogramValues[i]->LowerBound;
             }
+        }
 
-            if (multiples.multipleAtMin)
+        return stochast.HistogramValues.back()->UpperBound;
+    }
+
+    double HistogramDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        const double cdf = getCDF(stochast, x);
+
+        return StandardNormal::getUFromP(cdf);
+    }
+
+    double HistogramDistribution::getSizeForEmptySizedRange(const StochastProperties& stochast)
+    {
+        double max = std::numeric_limits<double>::infinity();
+
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
+        {
+            const double size = histogramValue->getSize();
+            if (size < max && size > 0)
             {
-                auto minRange = std::make_shared<HistogramValue>(multiples.min, multiples.min);
+                max = size;
+            }
+        }
 
-                minRange->Amount = getAmount(minRange, x);
+        if (!std::isinf(max))
+        {
+            return max;
+        }
+        else
+        {
+            return 1.0;
+        }
+    }
 
-                if (!stochast.HistogramValues.empty())
+    double HistogramDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        constexpr double delta = 0.0000001;
+
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        getSizeForEmptySizedRange(stochast);
+
+        for (const auto& histogram_value : stochast.HistogramValues)
+        {
+            if (Numeric::NumericSupport::areEqual(histogram_value->LowerBound, histogram_value->UpperBound, delta) &&
+                Numeric::NumericSupport::areEqual(histogram_value->LowerBound, x, delta))
+            {
+                return histogram_value->NormalizedAmount / getSizeForEmptySizedRange(stochast);
+            }
+            else
+            {
+                if (histogram_value->contains(x))
                 {
-                    stochast.HistogramValues[0]->Amount -= minRange->Amount;
-                    if (stochast.HistogramValues[0]->Amount == 0)
-                    {
-                        std::erase(stochast.HistogramValues, stochast.HistogramValues[0]);
-                    }
+                    return histogram_value->NormalizedAmount / histogram_value->getSize();
+                }
+            }
+        }
 
-                    stochast.HistogramValues.insert(stochast.HistogramValues.begin(), minRange);
+        return 0.0;
+    }
+
+    double HistogramDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        if (stochast.HistogramValues.empty())
+        {
+            return std::nan("");
+        }
+
+        double p = 0.0;
+
+        for (const auto& histogram_value : stochast.HistogramValues)
+        {
+            if (histogram_value->LowerBound < x)
+            {
+                if (histogram_value->UpperBound < x)
+                {
+                    p += histogram_value->NormalizedAmount;
                 }
                 else
                 {
-                    stochast.HistogramValues.push_back(minRange);
+                    const double offset = (x - histogram_value->LowerBound) / (histogram_value->UpperBound - histogram_value->LowerBound);
+                    p += histogram_value->NormalizedAmount * offset;
                 }
             }
-
-            if (multiples.multipleAtMax && multiples.min != multiples.max)
-            {
-                auto maxRange = std::make_shared<HistogramValue>(multiples.max, multiples.max);
-
-                maxRange->Amount = getAmount(maxRange, x);
-
-                stochast.HistogramValues.push_back(maxRange);
-            }
-
         }
 
-        void HistogramDistribution::splitRanges(StochastProperties& stochast, const std::vector <Numeric::WeightedValue> & values)
-        {
-            std::vector<std::shared_ptr<HistogramValue>> existingRanges(stochast.HistogramValues);
+        return p;
+    }
 
+    std::vector<double> HistogramDistribution::getDiscontinuityPoints(StochastProperties& stochast)
+    {
+        constexpr double minDiff = 1E-6;
+
+        std::vector<double> discontinuityPoints;
+        for (const std::shared_ptr<HistogramValue>&  value : stochast.HistogramValues)
+        {
+            if (value->Amount > 0 && std::abs(value->UpperBound - value->LowerBound) <= minDiff)
+            {
+                discontinuityPoints.push_back(value->LowerBound);
+            }
+        }
+
+        return discontinuityPoints;
+    }
+
+    std::vector<double> HistogramDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        constexpr double delta = 0.0000001;
+
+        if (stochast.dirty)
+        {
+            initializeForRun(stochast);
+        }
+
+        std::vector<double> x;
+
+        for (const std::shared_ptr<HistogramValue>& histogramValue : stochast.HistogramValues)
+        {
+            if (histogramValue->UpperBound - delta > histogramValue->LowerBound + delta)
+            {
+                x.push_back(histogramValue->LowerBound - delta);
+                x.push_back(histogramValue->LowerBound + delta);
+
+                x.push_back(histogramValue->UpperBound - delta);
+                x.push_back(histogramValue->UpperBound + delta);
+            }
+            else
+            {
+                x.push_back(histogramValue->LowerBound - delta);
+                x.push_back((histogramValue->LowerBound + histogramValue->UpperBound) / 2);
+                x.push_back(histogramValue->UpperBound + delta);
+            }
+        }
+
+        return x;
+    }
+
+    void HistogramDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        auto weights = std::vector(values.size(), 1.0);
+        return fitWeighted(stochast, values, weights);
+    }
+
+    void HistogramDistribution::fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights)
+    {
+        constexpr int maxRanges = 100;
+        constexpr double addFactor = 0.1;
+        constexpr double accuracy = 1E-10;
+        constexpr double distinctFraction = 0.1;
+
+        if (values.size() != weights.size())
+        {
+            throw Reliability::probLibException("Histogram fit: sizes values and weighs should be same");
+        }
+
+        // Build up list of weighted values
+        auto x = DistributionSupport::GetWeightedValues(values, weights);
+
+        if (x.empty())
+        {
             stochast.HistogramValues.clear();
+            return;
+        }
 
-            for (const auto& range : existingRanges)
+        mergeLowWeights(x);
+
+        // assume a distribution of distinct values if there is only a fraction of different result values
+        size_t distinctValuesCount = getDistinctCount(x);
+        bool isDistinctDistribution = distinctValuesCount < x.size() * distinctFraction && distinctValuesCount > 1;
+
+        // Determine required number of ranges
+        multipleInExtremes multiples;
+        multiples.min = x[0].value;
+        multiples.max = x[x.size() - 1].value;
+
+        // Determine minimum distance between two points, if not zero
+        double minWidth = std::numeric_limits<double>::max();
+        for (size_t i = 0; i < x.size() - 1; i++)
+        {
+            double diff = x[i + 1].value - x[i].value;
+            if (diff < minWidth && diff > accuracy)
             {
-                std::shared_ptr<HistogramValue> lowerRange = std::make_shared<HistogramValue>(range->LowerBound, (range->LowerBound + range->UpperBound) / 2);
-                std::shared_ptr<HistogramValue> upperRange = std::make_shared<HistogramValue>((range->LowerBound + range->UpperBound) / 2, range->UpperBound);
-
-                lowerRange->Amount = getAmount(lowerRange, values);
-                upperRange->Amount = getAmount(upperRange, values);
-
-                if (lowerRange->Amount > 0)
-                {
-                    stochast.HistogramValues.push_back(lowerRange);
-                }
-
-                if (upperRange->Amount > 0)
-                {
-                    stochast.HistogramValues.push_back(upperRange);
-                }
+                minWidth = diff;
             }
         }
 
-        double HistogramDistribution::getAmount(const std::shared_ptr<HistogramValue>& range, const std::vector<Numeric::WeightedValue>& values)
-        {
-            double amount = 0;
-            for (size_t j = 0; j < values.size(); j++)
-            {
-                if (range->contains(values[j].value))
-                {
-                    amount += values[j].weight;
-                }
-            }
+        // Determine additional offset beyond range of physical values
+        double extra = isDistinctDistribution ? minWidth / 2 : (multiples.max - multiples.min) * addFactor;
 
-            return amount;
+        if (extra < accuracy)
+        {
+            if (std::fabs(x[0].value) < accuracy)
+            {
+                // probably x[0] is zero
+                extra = 0.5;
+            }
+            else
+            {
+                extra = std::min(0.5, std::fabs(x[0].value / 10));
+            }
         }
 
-        size_t HistogramDistribution::getDistinctCount(const std::vector<Numeric::WeightedValue>& values)
+        if (minWidth < std::numeric_limits<double>::max())
         {
-            size_t count = 1;
-
-            for (size_t i = 1; i < values.size(); i++)
-            {
-                if (values[i].value != values[i-1].value)
-                {
-                    count++;
-                }
-            }
-
-            return count;
+            extra = std::max(extra, minWidth / 2);
         }
 
+        // when there are multiple equal values at the extremes, they are regarded as guard limits, which will not be exceeded in the fitted distribution
+        multiples.multipleAtMin = x.size() > 1 && x[0].value == x[1].value;
+        multiples.multipleAtMax = x.size() > 1 && x[x.size()-1].value == x[x.size() - 2].value;
 
-        void HistogramDistribution::mergeLowWeights(std::vector<Numeric::WeightedValue>& values)
+        int nMultiple = 0;
+
+        if (!multiples.multipleAtMin)
         {
-            constexpr double minWeightNormalized = 0.00001;
+            multiples.min -= extra;
+        }
+        else
+        {
+            nMultiple++;
+        }
 
-            double wSum = 0;
-            for (size_t i = 0; i < values.size(); i++)
+        if (!multiples.multipleAtMax)
+        {
+            multiples.max += extra;
+        }
+        else
+        {
+            nMultiple++;
+        }
+
+        double rangeReductionFactor = isDistinctDistribution ? 1.0 : 0.9;
+
+        int requiredRanges = isDistinctDistribution ? std::round((multiples.max - multiples.min) / minWidth) + 1 - nMultiple :
+            std::round(distinctValuesCount * rangeReductionFactor);
+        requiredRanges = std::min(requiredRanges, maxRanges);
+
+        int ranges = requiredRanges;
+
+        // Determine the width of a range
+        const double step = (multiples.max - multiples.min) / ranges;
+
+        stochast.HistogramValues.clear();
+
+        for (int i = 0; i < ranges; i++)
+        {
+            auto range = std::make_shared<HistogramValue>(multiples.min + i * step, multiples.min + (i + 1) * step);
+
+            range->Amount = getAmount(range, x);
+
+            if (range->Amount > 0)
             {
-                wSum += values[i].weight;
+                stochast.HistogramValues.push_back(range);
             }
+        }
 
-            double weightedMean = 0;
-            for (size_t i = 0; i < values.size(); i++)
+        // Loop which determines ranges until enough are found
+        determineRangesLoop(stochast, x, requiredRanges, multiples);
+
+        stochast.Observations = static_cast<int>(values.size());
+
+        initializeForRun(stochast);
+    }
+
+    void HistogramDistribution::determineRangesLoop(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& x,
+        int requiredRanges, const multipleInExtremes& multiples)
+    {
+        bool enoughRanges = stochast.HistogramValues.size() >= requiredRanges / 2;
+        int counter = 0;
+
+        while (!enoughRanges)
+        {
+            constexpr int maxSplitRanges = 100;
+
+            splitRanges(stochast, x);
+
+            enoughRanges = counter > maxSplitRanges || stochast.HistogramValues.size() >= requiredRanges / 2;
+            counter++;
+        }
+
+        if (multiples.multipleAtMin)
+        {
+            auto minRange = std::make_shared<HistogramValue>(multiples.min, multiples.min);
+
+            minRange->Amount = getAmount(minRange, x);
+
+            if (!stochast.HistogramValues.empty())
             {
-                weightedMean += values[i].value * values[i].weight;
-            }
-
-            weightedMean /= wSum;
-            double minWeight = minWeightNormalized * wSum;
-
-            bool changed = values.size() > 1;
-            while (changed)
-            {
-                changed = false;
-
-                std::vector<Numeric::WeightedValue> newWeightedValues;
-
-                for (size_t i = 0; i < values.size() - 1; i++)
+                stochast.HistogramValues[0]->Amount -= minRange->Amount;
+                if (stochast.HistogramValues[0]->Amount == 0)
                 {
-                    double combinedWeight = values[i].weight + values[i + 1].weight;
-
-                    if (combinedWeight < minWeight)
-                    {
-                        changed = true;
-
-                        // add the weighted value nearest to the mean
-                        if (values[i].value < weightedMean)
-                        {
-                            values[i + 1].weight += values[i].weight;
-
-                            newWeightedValues.push_back(values[i + 1]);
-                        }
-                        else
-                        {
-                            values[i].weight += values[i + 1].weight;
-
-                            newWeightedValues.push_back(values[i]);
-                        }
-
-                        i++;
-                    }
-                    else
-                    {
-                        newWeightedValues.push_back(values[i]);
-                        if (i == values.size() - 2)
-                        {
-                            newWeightedValues.push_back(values[i + 1]);
-                        }
-                    }
+                    std::erase(stochast.HistogramValues, stochast.HistogramValues[0]);
                 }
 
-                values.clear();
-                for (size_t i = 0; i < newWeightedValues.size(); i++)
-                {
-                    values.push_back(newWeightedValues[i]);
-                }
+                stochast.HistogramValues.insert(stochast.HistogramValues.begin(), minRange);
+            }
+            else
+            {
+                stochast.HistogramValues.push_back(minRange);
+            }
+        }
 
-                changed = changed && values.size() > 1;
+        if (multiples.multipleAtMax && multiples.min != multiples.max)
+        {
+            auto maxRange = std::make_shared<HistogramValue>(multiples.max, multiples.max);
+
+            maxRange->Amount = getAmount(maxRange, x);
+
+            stochast.HistogramValues.push_back(maxRange);
+        }
+
+    }
+
+    void HistogramDistribution::splitRanges(StochastProperties& stochast, const std::vector <Numeric::WeightedValue> & values)
+    {
+        std::vector<std::shared_ptr<HistogramValue>> existingRanges(stochast.HistogramValues);
+
+        stochast.HistogramValues.clear();
+
+        for (const auto& range : existingRanges)
+        {
+            std::shared_ptr<HistogramValue> lowerRange = std::make_shared<HistogramValue>(range->LowerBound, (range->LowerBound + range->UpperBound) / 2);
+            std::shared_ptr<HistogramValue> upperRange = std::make_shared<HistogramValue>((range->LowerBound + range->UpperBound) / 2, range->UpperBound);
+
+            lowerRange->Amount = getAmount(lowerRange, values);
+            upperRange->Amount = getAmount(upperRange, values);
+
+            if (lowerRange->Amount > 0)
+            {
+                stochast.HistogramValues.push_back(lowerRange);
+            }
+
+            if (upperRange->Amount > 0)
+            {
+                stochast.HistogramValues.push_back(upperRange);
             }
         }
     }
+
+    double HistogramDistribution::getAmount(const std::shared_ptr<HistogramValue>& range, const std::vector<Numeric::WeightedValue>& values)
+    {
+        double amount = 0;
+        for (size_t j = 0; j < values.size(); j++)
+        {
+            if (range->contains(values[j].value))
+            {
+                amount += values[j].weight;
+            }
+        }
+
+        return amount;
+    }
+
+    size_t HistogramDistribution::getDistinctCount(const std::vector<Numeric::WeightedValue>& values)
+    {
+        size_t count = 1;
+
+        for (size_t i = 1; i < values.size(); i++)
+        {
+            if (values[i].value != values[i-1].value)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+
+    void HistogramDistribution::mergeLowWeights(std::vector<Numeric::WeightedValue>& values)
+    {
+        constexpr double minWeightNormalized = 0.00001;
+
+        double wSum = 0;
+        for (size_t i = 0; i < values.size(); i++)
+        {
+            wSum += values[i].weight;
+        }
+
+        double weightedMean = 0;
+        for (size_t i = 0; i < values.size(); i++)
+        {
+            weightedMean += values[i].value * values[i].weight;
+        }
+
+        weightedMean /= wSum;
+        double minWeight = minWeightNormalized * wSum;
+
+        bool changed = values.size() > 1;
+        while (changed)
+        {
+            changed = false;
+
+            std::vector<Numeric::WeightedValue> newWeightedValues;
+
+            for (size_t i = 0; i < values.size() - 1; i++)
+            {
+                double combinedWeight = values[i].weight + values[i + 1].weight;
+
+                if (combinedWeight < minWeight)
+                {
+                    changed = true;
+
+                    // add the weighted value nearest to the mean
+                    if (values[i].value < weightedMean)
+                    {
+                        values[i + 1].weight += values[i].weight;
+
+                        newWeightedValues.push_back(values[i + 1]);
+                    }
+                    else
+                    {
+                        values[i].weight += values[i + 1].weight;
+
+                        newWeightedValues.push_back(values[i]);
+                    }
+
+                    i++;
+                }
+                else
+                {
+                    newWeightedValues.push_back(values[i]);
+                    if (i == values.size() - 2)
+                    {
+                        newWeightedValues.push_back(values[i + 1]);
+                    }
+                }
+            }
+
+            values.clear();
+            for (size_t i = 0; i < newWeightedValues.size(); i++)
+            {
+                values.push_back(newWeightedValues[i]);
+            }
+
+            changed = changed && values.size() > 1;
+        }
+    }
 }
-
-
-
 

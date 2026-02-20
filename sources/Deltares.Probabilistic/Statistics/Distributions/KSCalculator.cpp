@@ -26,44 +26,41 @@
 
 #include "Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /// @param xValues input values xValues are intentionally copied because they are sorted in this method
+    /// @param distribution the distribution object
+    /// @param stochast the stochast properties
+    /// @return the goodness of fit
+    double KSCalculator::getGoodnessOfFit(std::vector<double> xValues, Distribution& distribution, StochastProperties& stochast)
     {
-        /// @param xValues input values xValues are intentionally copied because they are sorted in this method
-        /// @param distribution the distribution object
-        /// @param stochast the stochast properties
-        /// @return the goodness of fit
-        double KSCalculator::getGoodnessOfFit(std::vector<double> xValues, Distribution& distribution, StochastProperties& stochast)
+        if (xValues.empty())
         {
-            if (xValues.empty())
+            return std::nan("");
+        }
+        else
+        {
+            std::sort(xValues.begin(), xValues.end());
+
+            double size = xValues.size();
+
+            double ks = 0;
+
+            for (int i = 0; i < static_cast<int>(xValues.size()); i++)
             {
-                return std::nan("");
-            }
-            else
-            {
-                std::sort(xValues.begin(), xValues.end());
+                double cdf = distribution.getCDF(stochast, xValues[i]);
 
-                double size = xValues.size();
+                double diff1 = std::fabs(cdf - i / size);
+                double diff2 = std::fabs(cdf - (i + 1) / size);
 
-                double ks = 0;
-
-                for (int i = 0; i < static_cast<int>(xValues.size()); i++)
+                double diff = std::max(diff1, diff2);
+                if (diff > ks)
                 {
-                    double cdf = distribution.getCDF(stochast, xValues[i]);
-
-                    double diff1 = std::fabs(cdf - i / size);
-                    double diff2 = std::fabs(cdf - (i + 1) / size);
-
-                    double diff = std::max(diff1, diff2);
-                    if (diff > ks)
-                    {
-                        ks = diff;
-                    }
+                    ks = diff;
                 }
-
-                return ks;
             }
+
+            return ks;
         }
     }
 }
