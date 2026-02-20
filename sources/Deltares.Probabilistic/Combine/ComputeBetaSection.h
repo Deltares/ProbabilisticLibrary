@@ -28,18 +28,19 @@ namespace Deltares::Reliability
     struct BetaSectionInput
     {
         double section_length;
-        double rhoZ;
+        double rho_z;
         double dz;
         double beta;
     };
+
     //
     // Helper class for upscaling
     //
     class ComputeBetaSection
     {
     public:
-        ComputeBetaSection(const BetaSectionInput& input);
-        double Compute(const double betaCrossSection);
+        explicit ComputeBetaSection(const BetaSectionInput& input);
+        double Compute(const double beta_cross_section);
         std::string createMessage() const;
         int getCounterNonConv() const;
         double getDeltaL() const;

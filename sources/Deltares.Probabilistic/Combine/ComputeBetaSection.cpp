@@ -37,19 +37,19 @@ namespace Deltares::Reliability
     /// <param name = "input"> input struct </param>
     ComputeBetaSection::ComputeBetaSection(const BetaSectionInput& input) : input(input)
     {
-        deltaL = input.dz / input.beta * sqrt(std::numbers::pi) / sqrt(1.0 - input.rhoZ);
+        deltaL = input.dz / input.beta * sqrt(std::numbers::pi) / sqrt(1.0 - input.rho_z);
         deltaL = std::max(deltaL, 0.01);
     }
 
     /// <summary> Method used in upscaling for computing the beta of a section from the beta of a cross-section. </summary>
-    /// <param name = "betaCrossSection"> Reliability index of the cross-section </param>
+    /// <param name = "beta_cross_section"> Reliability index of the cross-section </param>
     /// <returns> Reliability index for the section </returns>
-    double ComputeBetaSection::Compute(const double betaCrossSection)
+    double ComputeBetaSection::Compute(const double beta_cross_section)
     {
         // Compute failure probability cross-section from beta
-        const double pf = StandardNormal::getQFromU(betaCrossSection); // Failure probability cross-section
+        const double pf = StandardNormal::getQFromU(beta_cross_section); // Failure probability cross-section
         double pfX; // Failure probability section
-        if (input.rhoZ > 0.001)
+        if (input.rho_z > 0.001)
         {
             constexpr int number_of_grid_points = 30001;
             constexpr double lower_bound = -30.0; // Lower bound of v-values in the numerical integration
@@ -58,12 +58,12 @@ namespace Deltares::Reliability
             // Step size in the numerical integration over v in [vLower, vUpper]
             constexpr double vDelta = (upper_bound - lower_bound) / static_cast<double>(number_of_grid_points - 1);
 
-            const double p = StandardNormal::getPFromU(betaCrossSection); // Probability
+            const double p = StandardNormal::getPFromU(beta_cross_section); // Probability
             auto termI = std::vector<double>(number_of_grid_points); // i-th term to add
             for (size_t i = 0; i < number_of_grid_points; i++)
             {
                 const double v = lower_bound + vDelta * static_cast<double>(i);
-                const double x = (betaCrossSection - sqrt(input.rhoZ) * v) / sqrt(1.0 - input.rhoZ); // x is: beta*
+                const double x = (beta_cross_section - sqrt(input.rho_z) * v) / sqrt(1.0 - input.rho_z); // x is: beta*
                 const double nf = (input.section_length - deltaL) / (std::numbers::sqrt2 * std::numbers::pi)
                     / input.dz * exp(-x * x / 2.0); // Number of cross-sections
                 termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * std::numbers::pi) * vDelta;
@@ -84,7 +84,7 @@ namespace Deltares::Reliability
         {
             // Calculate failure probability vv with Hohenbichler
             constexpr auto hohenbichler = HohenbichlerFORM();
-            auto [pfVV, nFail] = hohenbichler.PerformHohenbichler(betaCrossSection, pf, input.rhoZ);
+            auto [pfVV, nFail] = hohenbichler.PerformHohenbichler(beta_cross_section, pf, input.rho_z);
             conv += nFail;
             pfX = pf + (input.section_length - deltaL) / deltaL * (pf - pfVV * pf);
             pfX = std::min(pfX, 1.0);
@@ -123,8 +123,7 @@ namespace Deltares::Reliability
     /// </summary>
     std::string ComputeBetaSection::createMessage() const
     {
-        return std::format("Intermediate results: Delta L = {0:.6F}; rhoZ = {1:.6F}; dZ = {2:.6F}",
-            deltaL, input.rhoZ, input.dz);
+        return std::format("Intermediate results: Delta L = {:.6F}; rhoZ = {:.6F}; dZ = {:.6F}", deltaL, input.rho_z, input.dz);
     }
 
 }

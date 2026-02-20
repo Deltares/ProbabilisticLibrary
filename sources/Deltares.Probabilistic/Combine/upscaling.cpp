@@ -248,19 +248,17 @@ namespace Deltares::Reliability
         return return_value;
     }
 
-
-    // \brief Method for upscaling random variables to the largest block duration
-    // \param smallBlock : Reliability index and alpha input
-    // \param rhoTSmallBlock(:) : Correlations
-    // \param blockDurations(:) : Block durations vector input
-    // \param largestBlockDuration : Target block duration
-    // \param largestBlock : Reliability index and alpha result
-    // \param durationsLargestBlock(:) : Block durations vector result
+    /// <summary> Method for upscaling random variables to the largest block duration </summary>
+    /// <param name="smallBlock"> Reliability index and alpha input </param>
+    /// <param name="rhoTSmallBlock"> Correlations </param>
+    /// <param name="blockDurations"> Block durations vector input </param>
+    /// <param name="largestBlockDuration"> Target block duration </param>
+    /// <param name="largestBlock"> Reliability index and alpha result </param>
+    /// <param name="durationsLargestBlock"> Block durations vector result </param>
     void upscaling::upscaleToLargestBlock(const alphaBeta& smallBlock,
         const vector1D& rhoTSmallBlock, const vector1D& blockDurations, const double largestBlockDuration,
-        alphaBeta& largestBlock, vector1D& durationsLargestBlock)
+        alphaBeta& largestBlock, vector1D& durationsLargestBlock) const
     {
-
         //
         // Get number of strength and load variables
         //
