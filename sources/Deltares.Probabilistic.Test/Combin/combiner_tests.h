@@ -21,9 +21,9 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Combine/combiner.h"
+#include "../../Deltares.Probabilistic/Combine/Combiner.h"
 #include "../../Deltares.Probabilistic/Combine/ExcludingCombiner.h"
-#include "../../Deltares.Probabilistic/Combine/alphaBeta.h"
+#include "../../Deltares.Probabilistic/Combine/AlphaBeta.h"
 
 namespace Deltares::Probabilistic::Test
 {

@@ -22,7 +22,7 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "combiner.h"
+#include "Combiner.h"
 
 namespace Deltares::Reliability
 {

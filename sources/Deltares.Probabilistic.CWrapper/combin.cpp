@@ -20,9 +20,8 @@
 // All rights reserved.
 //
 #include "../Deltares.Probabilistic/Combine/DesignPointCombiner.h"
-#include "../Deltares.Probabilistic/Combine/HohenbichlerFORM.h"
-#include "../Deltares.Probabilistic/Combine/combineElements.h"
-#include "../Deltares.Probabilistic/Combine/upscaling.h"
+#include "../Deltares.Probabilistic/Combine/CombineElements.h"
+#include "../Deltares.Probabilistic/Combine/UpScaling.h"
 
 using namespace Deltares::Reliability;
 using namespace Deltares::Numeric;

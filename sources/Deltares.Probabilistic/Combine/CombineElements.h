@@ -22,8 +22,8 @@
 #pragma once
 #include <vector>
 #include "../Math/vector1D.h"
-#include "alphaBeta.h"
-#include "combiner.h"
+#include "AlphaBeta.h"
+#include "Combiner.h"
 
 namespace Deltares::Reliability
 {

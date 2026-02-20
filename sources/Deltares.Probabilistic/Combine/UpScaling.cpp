@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "upscaling.h"
+#include "UpScaling.h"
 #include "HohenbichlerFORM.h"
 #include "intEqualElements.h"
 #include "ComputeBetaSection.h"

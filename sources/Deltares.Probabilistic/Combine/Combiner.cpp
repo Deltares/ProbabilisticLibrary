@@ -19,9 +19,8 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <unordered_set>
 
-#include "combiner.h"
+#include "Combiner.h"
 
 namespace Deltares::Reliability
 {

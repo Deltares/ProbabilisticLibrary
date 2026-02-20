@@ -21,7 +21,7 @@
 //
 #pragma once
 #include "../Math/vector1D.h"
-#include "alphaBeta.h"
+#include "AlphaBeta.h"
 #include "HohenbichlerFORM.h"
 
 namespace Deltares::Reliability

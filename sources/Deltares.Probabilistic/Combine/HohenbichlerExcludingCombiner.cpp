@@ -25,7 +25,7 @@
 #include "ExcludingCombiner.h"
 #include "HohenbichlerExcludingCombiner.h"
 
-#include "combineElements.h"
+#include "CombineElements.h"
 
 namespace Deltares::Reliability
 {

@@ -24,7 +24,7 @@
 #include <memory>
 
 #include "CombinedDesignPointModel.h"
-#include "combiner.h"
+#include "Combiner.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Reliability/ImportanceSamplingSettings.h"

@@ -23,7 +23,7 @@
 
 #include "../Reliability/DesignPoint.h"
 #include "../Statistics/Scenario.h"
-#include "combiner.h"
+#include "Combiner.h"
 #include "ExcludingCombiner.h"
 
 namespace Deltares::Reliability

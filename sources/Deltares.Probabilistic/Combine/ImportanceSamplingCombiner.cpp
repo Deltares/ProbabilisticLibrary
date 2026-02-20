@@ -32,7 +32,7 @@
 #include "../Reliability/ReliabilityProject.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/StandardNormal.h"
-#include "combiner.h"
+#include "Combiner.h"
 #include "CombinedDesignPointModel.h"
 
 namespace Deltares::Reliability

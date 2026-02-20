@@ -21,7 +21,7 @@
 //
 #pragma once
 #include <memory>
-#include "combiner.h"
+#include "Combiner.h"
 #include "../Reliability/DesignPoint.h"
 
 namespace Deltares::Reliability

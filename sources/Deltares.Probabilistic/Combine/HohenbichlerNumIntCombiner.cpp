@@ -21,7 +21,7 @@
 //
 #include "HohenbichlerNumIntCombiner.h"
 
-#include "combineElements.h"
+#include "CombineElements.h"
 #include "HohenbichlerNumInt.h"
 #include "../Utils/probLibException.h"
 

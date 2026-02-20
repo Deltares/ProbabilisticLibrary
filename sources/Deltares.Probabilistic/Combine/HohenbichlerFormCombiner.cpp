@@ -20,8 +20,8 @@
 // All rights reserved.
 //
 #include "HohenbichlerFormCombiner.h"
-#include "combineElements.h"
-#include "alphaBeta.h"
+#include "CombineElements.h"
+#include "AlphaBeta.h"
 
 namespace Deltares::Reliability
 {

@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "LengthEffect.h"
-#include "upscaling.h"
+#include "UpScaling.h"
 
 namespace Deltares::Reliability
 {

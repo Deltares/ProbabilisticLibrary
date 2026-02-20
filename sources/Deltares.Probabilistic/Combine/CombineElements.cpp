@@ -22,7 +22,7 @@
 #include <string>
 #include <cmath>
 #include <vector>
-#include "combineElements.h"
+#include "CombineElements.h"
 #include "HohenbichlerFORM.h"
 #include "../Utils/probLibException.h"
 #include "../Statistics/StandardNormal.h"
