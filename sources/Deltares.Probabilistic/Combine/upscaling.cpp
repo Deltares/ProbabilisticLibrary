@@ -45,7 +45,7 @@ namespace Deltares::Reliability
     /// <param name="element"> the design point of a single time element </param>
     /// <param name="inRhoT"> Correlation coefficients for each of the variables, in time </param>
     /// <returns> the number of not converged intermediate calculations </returns>
-    int upscaling::upscaleInTime(const double nrTimes, alphaBeta& element, const vector1D& inRhoT)
+    int upscaling::upscaleInTime(const double nrTimes, alphaBeta& element, const vector1D& inRhoT) const
     {
         constexpr double rhoMax = 1.0 - 1.0e-10;  // Max allowed value of correlation coefficient (very close to one)
         constexpr double rhoMin = 1.0e-10;        // Min allowed value of correlation coefficient (very close to zero)
@@ -123,7 +123,7 @@ namespace Deltares::Reliability
     }
 
     // helper routine for upscaleInTime
-    double upscaling::upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures)
+    double upscaling::upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures) const
     {
         if (rhoT > rhoLowLim)
         {
@@ -153,9 +153,9 @@ namespace Deltares::Reliability
     /// <param name="rhoXK"> Correlation variables </param>
     /// <param name="dXK"> Correlation length variables </param>
     /// <param name="section_length">  Section length </param>
-    /// <returns> design point </returns>
+    /// <returns> design point after upscaling </returns>
     upscalingResult upscaling::upscaleLength(const alphaBeta& crossSectionElement,
-        const vector1D& rhoXK, const vector1D& dXK, const double section_length)
+        const vector1D& rhoXK, const vector1D& dXK, const double section_length) const
     {
         upscalingResult return_value;
         //
@@ -188,16 +188,11 @@ namespace Deltares::Reliability
             }
         }
         const double dz = sqrt((1.0 - rhoZ) / sumAlphaDxk);
-        //
-        // Calculate delta L
-        //
-        double deltaL = dz / crossSectionElement.getBeta() * sqrt(std::numbers::pi) / sqrt(1.0 - rhoZ);
-        deltaL = std::max(deltaL, 0.01);
 
-        auto betaSectionCalculator = ComputeBetaSection(section_length, rhoZ, dz, deltaL);
+        auto betaSectionCalculator = ComputeBetaSection({ section_length, rhoZ, dz, crossSectionElement.getBeta() });
         return_value.message = betaSectionCalculator.createMessage();
 
-        if (deltaL < section_length)
+        if (betaSectionCalculator.hasLengthEffect())
         {
             constexpr double delta_beta = 0.01;
             return_value.design_point.setAlpha(vector1D(number_of_stochasts));
@@ -222,6 +217,7 @@ namespace Deltares::Reliability
             // Calculate resulting alpha
             //
             rhoZ = std::clamp(rhoZ, 0.00001, rhoLimit);
+            const double deltaL = betaSectionCalculator.getDeltaL();
             for (size_t i = 0; i < number_of_stochasts; i++)
             {
                 if (crossSectionElement.getAlphaI(i) == 0.0)
@@ -232,7 +228,7 @@ namespace Deltares::Reliability
                 {
                     const double rhoV = rhoXK(i);
                     const double lengthV = dXK(i);
-                    const double rhoK = rhoV + (1.0 - rhoV) * exp(-pow(deltaL / lengthV, 2));
+                    const double rhoK = rhoV + (1.0 - rhoV) * exp(-pow( deltaL / lengthV, 2));
                     return_value.design_point.setAlpha(i, alphaC / sqrt(rhoZ) * crossSectionElement.getAlphaI(i) *
                         sqrt(rhoK) +
                         alphaU / sqrt(1.0 - rhoZ) * crossSectionElement.getAlphaI(i) *

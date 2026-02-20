@@ -21,27 +21,32 @@
 //
 #pragma once
 
-#include "HohenbichlerFORM.h"
 #include <string>
 
 namespace Deltares::Reliability
 {
+    struct BetaSectionInput
+    {
+        double section_length;
+        double rhoZ;
+        double dz;
+        double beta;
+    };
     //
     // Helper class for upscaling
     //
     class ComputeBetaSection
     {
     public:
-        ComputeBetaSection(const double section_length, const double rhoZ, const double dz, const double deltaL);
+        ComputeBetaSection(const BetaSectionInput& input);
         double Compute(const double betaCrossSection);
         std::string createMessage() const;
         int getCounterNonConv() const;
+        double getDeltaL() const;
+        bool hasLengthEffect() const;
     private:
-        const double section_length;
-        const double rhoZ;
-        const double dz;
-        const double deltaL;
+        const BetaSectionInput input;
+        double deltaL;
         int conv = 0;  // indicator of non-converged Hohenbichler calculation
-        HohenbichlerFORM hhb = HohenbichlerFORM();
     };
 }

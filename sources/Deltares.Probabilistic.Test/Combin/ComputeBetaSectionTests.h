@@ -28,8 +28,10 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         static void Test1();
+        static void Test2();
+        static void Test3();
     private:
-        static constexpr double margin = 1e-6;
+        static constexpr double margin = 1e-9;
     };
 }
 

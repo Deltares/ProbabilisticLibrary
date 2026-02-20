@@ -42,9 +42,9 @@ namespace Deltares::Reliability
     class upscaling
     {
     public:
-        int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::vector1D& inRhoT);
+        int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::vector1D& inRhoT) const;
         upscalingResult upscaleLength(const alphaBeta& crossSectionElement, const Numeric::vector1D& rhoXK,
-            const Numeric::vector1D& dXK, const double section_length);
+            const Numeric::vector1D& dXK, const double section_length) const;
         void upscaleToLargestBlock(const alphaBeta& smallBlock,
             const Numeric::vector1D& rhoTSmallBlock, const Numeric::vector1D& blockDurations, const double largestBlockDuration,
             alphaBeta& largestBlock, Numeric::vector1D& durationsLargestBlock);
@@ -52,6 +52,6 @@ namespace Deltares::Reliability
         const double rhoLimit = 0.99999; // Limit value for the correlation coefficient
         const double rhoLowLim = 0.001;  // Lower limit of correlation coefficient before Hohenbichler method must be called
         HohenbichlerFORM hhb = HohenbichlerFORM();
-        double upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures);
+        double upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures) const;
     };
 }

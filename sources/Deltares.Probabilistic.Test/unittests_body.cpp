@@ -99,6 +99,16 @@ TEST(UnitTests, testComputeBetaSectionTest1)
     Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test1();
 }
 
+TEST(UnitTests, testComputeBetaSectionTest2)
+{
+    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test2();
+}
+
+TEST(UnitTests, testComputeBetaSectionTest3)
+{
+    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test3();
+}
+
 TEST(UnitTests, AllUpscaleInTimeTests)
 {
     auto h = Deltares::Probabilistic::Test::UpscaleTests();
