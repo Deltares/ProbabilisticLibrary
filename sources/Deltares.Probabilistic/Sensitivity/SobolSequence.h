@@ -35,7 +35,7 @@ namespace Deltares::Sensitivity
          * \brief Constructor
          * \param direction Direction on which the random values will be based
          */
-        SobolSequence(SobolDirection direction)
+        explicit SobolSequence(SobolDirection direction)
         {
             this->direction = direction;
 

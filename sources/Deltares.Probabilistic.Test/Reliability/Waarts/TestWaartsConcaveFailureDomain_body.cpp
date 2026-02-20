@@ -51,7 +51,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORM>();
         auto form = dynamic_cast<Reliability::FORM*>(calculator.get());
-        form->Settings->StartPointSettings->StartMethod = Reliability::RaySearch;
+        form->Settings->StartPointSettings->StartMethod = Reliability::StartMethodType::RaySearch;
         form->Settings->StartPointSettings->startVector = { 1.0, 0.0 };
         auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
@@ -62,7 +62,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORMThenDirectionalSampling>();
         auto form = dynamic_cast<Reliability::FORMThenDirectionalSampling*>(calculator.get());
-        form->formSettings->StartPointSettings->StartMethod = Reliability::RaySearch;
+        form->formSettings->StartPointSettings->StartMethod = Reliability::StartMethodType::RaySearch;
         form->formSettings->StartPointSettings->startVector = { 1.0, 0.0 };
         auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);

@@ -101,14 +101,14 @@ namespace Deltares::Uncertainty
 
         std::vector<double> zWeights = Numeric::NumericSupport::select(zSamples, [](double x) {return 1.0; });
 
-        std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
+        std::shared_ptr<Statistics::Stochast> stochast = getStochastFromSamples(zSamples, zWeights);
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
         {
             double p = quantile->getProbabilityOfNonFailure();
-            int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
+            int quantileIndex = getQuantileIndex(zSamples, zWeights, p);
 
             if (quantileIndex >= 0)
             {

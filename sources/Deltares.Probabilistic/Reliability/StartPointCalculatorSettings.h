@@ -28,7 +28,7 @@
 
 namespace Deltares::Reliability
 {
-    enum StartMethodType { FixedValue, RaySearch, SensitivitySearch, SphereSearch };
+    enum class StartMethodType { FixedValue, RaySearch, SensitivitySearch, SphereSearch };
 
     /**
      * \brief Settings for the start point calculator
