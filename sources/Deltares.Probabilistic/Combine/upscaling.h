@@ -36,6 +36,20 @@ namespace Deltares::Reliability
         std::string message;
     };
 
+    struct upscalingToLargestBlockInput
+    {
+        alphaBeta small_block;
+        Numeric::vector1D rho_t_small_block;
+        Numeric::vector1D block_durations;
+        double largest_block_duration;
+    };
+
+    struct upscalingToLargestBlockResult
+    {
+        alphaBeta largest_block;
+        Numeric::vector1D durations_largest_block;
+    };
+
     //
     // Class to combine failure probabilities for identical time elements (identical = same reliability index and alpha values)
     //
@@ -45,9 +59,7 @@ namespace Deltares::Reliability
         int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::vector1D& inRhoT) const;
         upscalingResult upscaleLength(const alphaBeta& crossSectionElement, const Numeric::vector1D& rhoXK,
             const Numeric::vector1D& dXK, const double section_length) const;
-        void upscaleToLargestBlock(const alphaBeta& smallBlock,
-            const Numeric::vector1D& rhoTSmallBlock, const Numeric::vector1D& blockDurations, const double largestBlockDuration,
-            alphaBeta& largestBlock, Numeric::vector1D& durationsLargestBlock) const;
+        upscalingToLargestBlockResult upscaleToLargestBlock(const upscalingToLargestBlockInput& input) const;
     private:
         const double rhoLimit = 0.99999; // Limit value for the correlation coefficient
         const double rhoLowLim = 0.001;  // Lower limit of correlation coefficient before Hohenbichler method must be called

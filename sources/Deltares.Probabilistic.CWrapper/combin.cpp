@@ -168,17 +168,20 @@ void upscaletolargestblockc(betaAlphaCF* dpSmallBlock, double* largestBlockDurat
         durations(i) = dpSmallBlock->duration[i*dpSmallBlock->stride_duration];
     }
     auto smallBlock = alphaBeta(dpSmallBlock->beta, alfasmall);
-    alphaBeta largestBlock;
-    vector1D durationsLB;
 
     auto up = upscaling();
-    up.upscaleToLargestBlock(smallBlock, rho, durations, *largestBlockDuration, largestBlock, durationsLB);
+    auto input = upscalingToLargestBlockInput();
+    input.small_block = smallBlock;
+    input.rho_t_small_block = rho;
+    input.largest_block_duration = *largestBlockDuration;
+    input.block_durations = durations;
+    auto result = up.upscaleToLargestBlock(input);
 
-    dpLargestBlock->beta = largestBlock.getBeta();
+    dpLargestBlock->beta = result.largest_block.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        dpLargestBlock->alpha[i*dpLargestBlock->stride_alpha] = largestBlock.getAlphaI(i);
-        dpLargestBlock->duration[i*dpLargestBlock->stride_duration] = durationsLB(i);
+        dpLargestBlock->alpha[i*dpLargestBlock->stride_alpha] = result.largest_block.getAlphaI(i);
+        dpLargestBlock->duration[i*dpLargestBlock->stride_duration] = result.durations_largest_block(i);
     }
 }
 

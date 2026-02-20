@@ -22,15 +22,12 @@
 #include "upscaling.h"
 #include "HohenbichlerFORM.h"
 #include "intEqualElements.h"
-#include "../Math/NumericSupport.h"
+#include "ComputeBetaSection.h"
 #include "../Statistics/StandardNormal.h"
 #include <algorithm>
 #include <cmath>
-#include <numbers>
 #include <format>
 #include <limits>
-
-#include "ComputeBetaSection.h"
 
 using namespace Deltares::Statistics;
 
@@ -65,7 +62,7 @@ namespace Deltares::Reliability
         //
         // Compute failure probability and beta of the combined n elements
         //
-        auto betaT = upscaleBeta(element.getBeta(), rhoT, nrTimes, failures); // Beta value for the combined element
+        const auto betaT = upscaleBeta(element.getBeta(), rhoT, nrTimes, failures); // Beta value for the combined element
 
         //
         // Get equivalent alpha and beta values for the combined element in 6 steps
@@ -76,7 +73,7 @@ namespace Deltares::Reliability
         //
         // Step 1/6: Perturbed initial beta value, use u = epsi
         //
-        auto bk = element.getBeta() - sqrt(rhoT) * epsi;
+        const auto bk = element.getBeta() - sqrt(rhoT) * epsi;
 
         //
         // Step 2/6: Compute the beta of the combined element, based on perturbed initial beta
@@ -249,20 +246,15 @@ namespace Deltares::Reliability
     }
 
     /// <summary> Method for upscaling random variables to the largest block duration </summary>
-    /// <param name="smallBlock"> Reliability index and alpha input </param>
-    /// <param name="rhoTSmallBlock"> Correlations </param>
-    /// <param name="blockDurations"> Block durations vector input </param>
-    /// <param name="largestBlockDuration"> Target block duration </param>
-    /// <param name="largestBlock"> Reliability index and alpha result </param>
-    /// <param name="durationsLargestBlock"> Block durations vector result </param>
-    void upscaling::upscaleToLargestBlock(const alphaBeta& smallBlock,
-        const vector1D& rhoTSmallBlock, const vector1D& blockDurations, const double largestBlockDuration,
-        alphaBeta& largestBlock, vector1D& durationsLargestBlock) const
+    /// <param name="input"> input struct </param>
+    /// <returns> design point after upscaling </returns>
+    upscalingToLargestBlockResult upscaling::upscaleToLargestBlock(const upscalingToLargestBlockInput& input) const
     {
+        auto return_value = upscalingToLargestBlockResult();
         //
         // Get number of strength and load variables
         //
-        const size_t nrVar = smallBlock.size();
+        const size_t nrVar = input.small_block.size();
         //
         // Allocate vectors
         //
@@ -271,15 +263,15 @@ namespace Deltares::Reliability
         //
         // Copy input for intermediate use
         //
-        largestBlock = smallBlock;
-        vector1D durations = blockDurations;
+        return_value.largest_block = input.small_block;
+        vector1D durations = input.block_durations;
 
         for (;;)
         {
             //
             // Determine stochast with second shortest duration for upscaling
             double shortestDuration = durations.minval();
-            double secondShortestDuration = largestBlockDuration;
+            double secondShortestDuration = input.largest_block_duration;
 
             for (size_t i = 0; i < nrVar; i++)
             {
@@ -293,7 +285,7 @@ namespace Deltares::Reliability
             //
             // Check exit criterion
             //
-            if (shortestDuration >= largestBlockDuration) break;
+            if (shortestDuration >= input.largest_block_duration) break;
 
             //
             // Set rho values
@@ -301,7 +293,7 @@ namespace Deltares::Reliability
             {
                 if (durations(i) == shortestDuration)
                 {
-                    rhoT(i) = rhoTSmallBlock(i);
+                    rhoT(i) = input.rho_t_small_block(i);
                     durations(i) = secondShortestDuration;
                 }
                 else
@@ -312,12 +304,13 @@ namespace Deltares::Reliability
 
             //
             // Upscale
-            upscaleInTime(secondShortestDuration / shortestDuration, largestBlock, rhoT);
+            upscaleInTime(secondShortestDuration / shortestDuration, return_value.largest_block, rhoT);
         }
 
         //
         // Copy results for output
         //
-        durationsLargestBlock = durations;
+        return_value.durations_largest_block = durations;
+        return return_value;
     }
 }
