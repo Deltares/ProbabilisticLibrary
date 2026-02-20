@@ -335,7 +335,14 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::ProbabilityValue)
+            if (objectType == ObjectType::StandardNormal)
+            {
+                std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = probabilityValues[id];
+
+                if (property_ == "u_max") return Statistics::StandardNormal::UMax;
+                else if (property_ == "beta_max") return Statistics::StandardNormal::BetaMax;
+            }
+            else if (objectType == ObjectType::ProbabilityValue)
             {
                 std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = probabilityValues[id];
 
@@ -1295,6 +1302,7 @@ namespace Deltares
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
                 else if (property_ == "can_fit_prior") return stochast->canFit(false, true);
                 else if (property_ == "is_array") return stochast->modelParameter->isArray;
+                else if (property_ == "is_varying") return stochast->isVarying();
                 else if (property_ == "is_valid") return stochast->isValid();
                 else if (property_ == "is_used_mean") return true;
                 else if (property_ == "is_used_deviation") return stochast->getDistributionType() != DistributionType::Deterministic;

@@ -971,20 +971,20 @@ namespace Deltares.Probabilistic.Test
             realizedStochast.ConditionalValues.Add(new ConditionalValue { X = 2, Minimum = 11, Maximum = 12 });
             realizedStochast.ConditionalValues.Add(new ConditionalValue { X = 1, Minimum = 1, Maximum = 2 });
 
-            //realizedStochast.InitializeForRun();
+            realizedStochast.InitializeForRun();
 
             // exact value
             ClassicAssert.AreEqual(0.5, realizedStochast.GetXFromUAndSource(0, 0), margin);
-            ClassicAssert.AreEqual(1.5, realizedStochast.GetXFromUAndSource(1, 0), margin);
-            ClassicAssert.AreEqual(11.5, realizedStochast.GetXFromUAndSource(2, 0), margin);
+            ClassicAssert.AreEqual(1.5, realizedStochast.GetXFromUAndSource(0, 1), margin);
+            ClassicAssert.AreEqual(11.5, realizedStochast.GetXFromUAndSource(0, 2), margin);
 
             // interpolated
-            ClassicAssert.AreEqual(1, realizedStochast.GetXFromUAndSource(0.5, 0), margin);
-            ClassicAssert.AreEqual(6.5, realizedStochast.GetXFromUAndSource(1.5, 0), margin);
+            ClassicAssert.AreEqual(1, realizedStochast.GetXFromUAndSource(0, 0.5), margin);
+            ClassicAssert.AreEqual(6.5, realizedStochast.GetXFromUAndSource(0, 1.5), margin);
 
             // extrapolated
-            ClassicAssert.AreEqual(0.5, realizedStochast.GetXFromUAndSource(-1, 0), margin);
-            ClassicAssert.AreEqual(11.5, realizedStochast.GetXFromUAndSource(3, 0), margin);
+            ClassicAssert.AreEqual(0.5, realizedStochast.GetXFromUAndSource(0, -1), margin);
+            ClassicAssert.AreEqual(11.5, realizedStochast.GetXFromUAndSource(0, 3), margin);
         }
 
         [Test]

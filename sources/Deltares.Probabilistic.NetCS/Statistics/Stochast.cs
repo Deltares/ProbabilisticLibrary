@@ -150,7 +150,7 @@ namespace Deltares.Probabilistic.Statistics
                         histogramValues.Add(new HistogramValue(histogramId));
                     }
 
-                    synchronizing = true;
+                    synchronizing = false;
                 }
 
                 return histogramValues;
@@ -180,7 +180,7 @@ namespace Deltares.Probabilistic.Statistics
                         discreteValues.Add(new DiscreteValue(discreteId));
                     }
 
-                    synchronizing = true;
+                    synchronizing = false;
                 }
 
                 return discreteValues;
@@ -210,7 +210,7 @@ namespace Deltares.Probabilistic.Statistics
                         fragilityValues.Add(new FragilityValue(fragilityId));
                     }
 
-                    synchronizing = true;
+                    synchronizing = false;
                 }
 
                 return fragilityValues;
@@ -388,7 +388,7 @@ namespace Deltares.Probabilistic.Statistics
                         conditionalValues.Add(new ConditionalValue(conditionalValueId));
                     }
 
-                    synchronizing = true;
+                    synchronizing = false;
                 }
 
                 return conditionalValues;
@@ -432,7 +432,7 @@ namespace Deltares.Probabilistic.Statistics
             Interface.SetValue(id, "shift_for_fit", shift);
             Interface.SetArrayValue(id, "data", values);
 
-            Interface.Execute(id, "fit");
+            Interface.Execute(id, "fit_prior");
 
             this.histogramValues = null;
             this.discreteValues = null;
@@ -471,6 +471,11 @@ namespace Deltares.Probabilistic.Statistics
                 this.conditionalValues = null;
                 this.contributingStochasts = null;
             }
+        }
+
+        public void InitializeForRun()
+        {
+            Interface.Execute(id, "initialize_for_run");
         }
     }
 }
