@@ -29,6 +29,8 @@
 #include <format>
 #include <limits>
 
+#include "../Math/NumericSupport.h"
+
 using namespace Deltares::Statistics;
 
 namespace Deltares::Reliability
@@ -87,8 +89,8 @@ namespace Deltares::Reliability
         //
 
         // alphaC : Correlated part of the equivalent alpha value
-        double alphaC = std::min(1.0, std::max(-1.0, (betaT - betaTK) / epsi));
-        if (alphaC != 1.0) // TODO: compare real with tol 1e-12 or so
+        const double alphaC = std::clamp((betaT - betaTK) / epsi, -1.0, 1.0);
+        if ( ! NumericSupport::areEqual(alphaC, 1.0, 1e-12))
         {
             //
             // Step 4/6: Compute the alpha value for the uncorrelated part of alpha
@@ -137,9 +139,9 @@ namespace Deltares::Reliability
             // Compute via Hohenbichler with FORM and out-crossing
             //
             double Pf = StandardNormal::getQFromU(elm);
-            auto pf2cf1 = hhb.PerformHohenbichler(elm, Pf, rhoT);    // pf2cf1 : pair(Probability, success flag)
-            if (pf2cf1.second != 0) failures++;
-            double PfT = Pf + (nrTimes - 1.0) * (Pf - pf2cf1.first * Pf);
+            const auto [pf2, cf1] = hhb.PerformHohenbichler(elm, Pf, rhoT);
+            if (cf1 != 0) failures++;
+            double PfT = Pf + (nrTimes - 1.0) * (Pf - pf2 * Pf);
             PfT = std::min(1.0, PfT);
             return StandardNormal::getUFromQ(PfT);
         }
