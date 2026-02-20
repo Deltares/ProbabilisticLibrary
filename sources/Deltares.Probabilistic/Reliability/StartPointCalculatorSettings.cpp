@@ -20,28 +20,62 @@
 // All rights reserved.
 //
 #include "StartPointCalculatorSettings.h"
+#include "../Logging/ValidationSupport.h"
 
 namespace Deltares::Reliability
 {
+    using enum StartMethodType;
+    using namespace Deltares::Logging;
+
     std::string StartPointCalculatorSettings::getStartPointMethodString(StartMethodType method)
     {
         switch (method)
         {
-        case StartMethodType::FixedValue: return "fixed_value";
-        case StartMethodType::RaySearch: return "ray_search";
-        case StartMethodType::SphereSearch: return "sphere_search";
-        case StartMethodType::SensitivitySearch: return "sensitivity_search";
+        case FixedValue: return "fixed_value";
+        case RaySearch: return "ray_search";
+        case SphereSearch: return "sphere_search";
+        case SensitivitySearch: return "sensitivity_search";
         default: throw probLibException("Start point method");
         }
     }
 
-    StartMethodType StartPointCalculatorSettings::getStartPointMethod(std::string method)
+    StartMethodType StartPointCalculatorSettings::getStartPointMethod(const std::string& method)
     {
-        if (method == "fixed_value") return StartMethodType::FixedValue;
-        else if (method == "ray_search") return StartMethodType::RaySearch;
-        else if (method == "sphere_search") return StartMethodType::SphereSearch;
-        else if (method == "sensitivity_search") return StartMethodType::SensitivitySearch;
+        if (method == "fixed_value") return FixedValue;
+        else if (method == "ray_search") return RaySearch;
+        else if (method == "sphere_search") return SphereSearch;
+        else if (method == "sensitivity_search") return SensitivitySearch;
         else throw probLibException("Start point method");
     }
+
+    std::shared_ptr<StartPointCalculatorSettings> StartPointCalculatorSettings::clone() const
+    {
+        auto copy = std::make_shared<StartPointCalculatorSettings>();
+
+        copy->GradientStepSize = this->GradientStepSize;
+        copy->MaximumLengthStartPoint = this->MaximumLengthStartPoint;
+        copy->RadiusSphereSearch = this->RadiusSphereSearch;
+        copy->StartMethod = this->StartMethod;
+        copy->allQuadrants = this->allQuadrants;
+        copy->maxStepsSphereSearch = this->maxStepsSphereSearch;
+
+        copy->StochastSet = this->StochastSet;
+
+        return copy;
+    }
+
+    void StartPointCalculatorSettings::validate(ValidationReport& report) const
+    {
+        if (StartMethod == RaySearch || StartMethod == SensitivitySearch)
+        {
+            ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
+        }
+        else if (StartMethod == SphereSearch)
+        {
+            ValidationSupport::checkMinimum(report, 0.01, RadiusSphereSearch, "radius sphere search");
+            ValidationSupport::checkMinimumInt(report, 1, maxStepsSphereSearch, "max steps sphere search");
+        }
+    }
+
 }
 

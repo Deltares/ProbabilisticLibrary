@@ -23,7 +23,6 @@
 #include <vector>
 #include "StochastSettingsSet.h"
 #include "../Logging/ValidationReport.h"
-#include "../Logging/ValidationSupport.h"
 
 
 namespace Deltares::Reliability
@@ -47,43 +46,14 @@ namespace Deltares::Reliability
         bool allQuadrants = false;
         int maxStepsSphereSearch = 5;
 
-        std::shared_ptr<StartPointCalculatorSettings> clone()
-        {
-            std::shared_ptr<StartPointCalculatorSettings> copy = std::make_shared<StartPointCalculatorSettings>();
+        std::shared_ptr<StartPointCalculatorSettings> clone() const;
 
-            copy->GradientStepSize = this->GradientStepSize;
-            copy->MaximumLengthStartPoint = this->MaximumLengthStartPoint;
-            copy->RadiusSphereSearch = this->RadiusSphereSearch;
-            copy->StartMethod = this->StartMethod;
-            copy->allQuadrants = this->allQuadrants;
-            copy->maxStepsSphereSearch = this->maxStepsSphereSearch;
-
-            copy->StochastSet = this->StochastSet;
-
-            return copy;
-        }
-
-        void validate(Logging::ValidationReport& report) const
-        {
-            if (StartMethod == StartMethodType::RaySearch)
-            {
-                Logging::ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
-            }
-            else if (StartMethod == StartMethodType::SensitivitySearch)
-            {
-                Logging::ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
-            }
-            else if (StartMethod == StartMethodType::SphereSearch)
-            {
-                Logging::ValidationSupport::checkMinimum(report, 0.01, RadiusSphereSearch, "radius sphere search");
-                Logging::ValidationSupport::checkMinimumInt(report, 1, maxStepsSphereSearch, "max steps sphere search");
-            }
-        }
+        void validate(Logging::ValidationReport& report) const;
 
         std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
         std::vector<double> startVector;
 
         static std::string getStartPointMethodString(StartMethodType method);
-        static StartMethodType getStartPointMethod(std::string method);
+        static StartMethodType getStartPointMethod(const std::string& method);
     };
 }
