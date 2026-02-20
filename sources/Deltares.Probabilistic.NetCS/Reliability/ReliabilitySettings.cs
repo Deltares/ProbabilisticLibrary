@@ -15,7 +15,7 @@ public class ReliabilitySettings : IDisposable
 
     public ReliabilitySettings()
     {
-        this.id = Interface.Create("reliability_settings");
+        this.id = Interface.Create("settings");
     }
 
     internal ReliabilitySettings(int id)

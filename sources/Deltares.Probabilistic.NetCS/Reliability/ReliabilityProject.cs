@@ -15,7 +15,7 @@ namespace Deltares.Probabilistic.Reliability
 
         public ReliabilityProject() : base(-1)
         {
-            this.id = Interface.Create("reliability_project");
+            this.id = Interface.Create("project");
             base.SetId(id);
         }
 
@@ -31,7 +31,15 @@ namespace Deltares.Probabilistic.Reliability
                 if (settings == null)
                 {
                     int settingsId = Interface.GetIdValue(id, "settings");
-                    settings = new ReliabilitySettings(settingsId);
+                    if (settingsId == 0)
+                    {
+                        settings = new ReliabilitySettings();
+                        Interface.SetIntValue(id, "settings", settings.GetId());
+                    }
+                    else
+                    {
+                        settings = new ReliabilitySettings(settingsId);
+                    }
                 }
                 return settings;
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
@@ -22,10 +23,10 @@ namespace Deltares.Probabilistic.Model
 
         private bool synchronizing = false;
 
-
         public ModelProject()
         {
             this.id = Interface.Create("model_project");
+            Interface.SetCallback(id, "model", ModelCallback);
         }
 
         internal ModelProject(int id)
@@ -33,6 +34,7 @@ namespace Deltares.Probabilistic.Model
             if (id > 0)
             {
                 this.id = id;
+                Interface.SetCallback(id, "model", ModelCallback);
             }
         }
 
@@ -49,7 +51,41 @@ namespace Deltares.Probabilistic.Model
         internal void SetId(int id)
         {
             this.id = id;
+            Interface.SetCallback(id, "model", ModelCallback);
         }
+
+        private IntPtr ModelCallback(IntPtr inputArray, int count, IntPtr outputArray)
+        {
+            // Safety check
+            if (inputArray == IntPtr.Zero || outputArray == IntPtr.Zero || count <= 0)
+            {
+                return IntPtr.Zero;
+            }
+
+            // Interpret the pointers as arrays of doubles
+            double[] input = new double[count];
+            double[] output = new double[count];
+
+            ModelSample sample = new ModelSample();
+
+            // Copy from unmanaged → managed
+            Marshal.Copy(inputArray, input, 0, count);
+
+            //zFunction.Invoke();
+
+            // Example processing: square each value
+            for (int i = 0; i < count; i++)
+            {
+                output[i] = input[i] * input[i];
+            }
+
+            // Copy back to unmanaged memory
+            Marshal.Copy(output, 0, outputArray, count);
+
+            // Return the output pointer (or anything else the native side expects)
+            return outputArray;
+        }
+
 
         public ZSampleDelegate ZFunction
         {
@@ -82,7 +118,7 @@ namespace Deltares.Probabilistic.Model
                         stochasts.Add(new Stochast(stochastId));
                     }
 
-                    synchronizing = true;
+                    synchronizing = false;
                 }
 
                 return stochasts;
@@ -104,7 +140,15 @@ namespace Deltares.Probabilistic.Model
                 if (correlationMatrix == null)
                 {
                     int matrixId = Interface.GetIdValue(id, "correlation_matrix");
-                    correlationMatrix = new CorrelationMatrix(matrixId);
+                    if (matrixId == 0)
+                    {
+                        correlationMatrix = new CorrelationMatrix();
+                        Interface.SetIntValue(id, "correlation_matrix", correlationMatrix.GetId());
+                    }
+                    else
+                    {
+                        correlationMatrix = new CorrelationMatrix(matrixId);
+                    }
                 }
 
                 return correlationMatrix;
