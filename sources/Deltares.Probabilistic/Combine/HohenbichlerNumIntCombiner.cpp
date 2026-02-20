@@ -27,7 +27,10 @@
 
 namespace Deltares::Reliability
 {
-    std::shared_ptr<DesignPoint> HohenbichlerNumIntCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress)
+    std::shared_ptr<DesignPoint> HohenbichlerNumIntCombiner::combineDesignPoints(combineAndOr combineMethodType,
+        std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+        const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+        const std::shared_ptr<Models::ProgressIndicator>& progress)
     {
         if (designPoints.empty()) throw probLibException("no design point in combiner");
         if (designPoints.size() == 1) return designPoints[0];
@@ -35,9 +38,9 @@ namespace Deltares::Reliability
         const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
 
         std::vector<std::shared_ptr<DesignPoint>> workDesignPoints;
-        for (size_t i = 0; i < designPoints.size(); i++)
+        for (const auto& designPoint : designPoints)
         {
-            workDesignPoints.push_back(designPoints[i]);
+            workDesignPoints.push_back(designPoint);
         }
 
         auto designPoint = std::make_shared<DesignPoint>();
@@ -56,15 +59,16 @@ namespace Deltares::Reliability
             workDesignPoints.push_back(designPoint);
         }
 
-        for (size_t i = 0; i < designPoints.size(); i++)
+        for (const auto& i : designPoints)
         {
-            designPoint->ContributingDesignPoints.push_back(designPoints[i]);
+            designPoint->ContributingDesignPoints.push_back(i);
         }
 
         return designPoint;
     }
 
-    void HohenbichlerNumIntCombiner::findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
+    void HohenbichlerNumIntCombiner::findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+        const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
         const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, long long& i1max, long long& i2max)
     {
         double rhoMax = -1.0;

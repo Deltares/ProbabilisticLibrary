@@ -27,7 +27,8 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> HohenbichlerFormCombiner::combineDesignPoints(combineAndOr combineMethodType,
         std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-        std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress)
+        const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+        const std::shared_ptr<Models::ProgressIndicator>& progress)
     {
         elements elm;
         const auto stochasts = DesignPoint::getUniqueStochasts(designPoints);

@@ -48,8 +48,8 @@ namespace Deltares::Reliability
          */
         virtual std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
-            std::shared_ptr<Models::ProgressIndicator> progress) = 0;
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::shared_ptr<Models::ProgressIndicator>& progress) = 0;
 
     protected:
         /**

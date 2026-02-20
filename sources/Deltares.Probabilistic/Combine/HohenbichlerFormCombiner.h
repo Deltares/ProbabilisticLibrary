@@ -31,9 +31,8 @@ namespace Deltares::Reliability
     public:
         std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
              std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-             std::shared_ptr<Statistics::SelfCorrelationMatrix>
-             selfCorrelationMatrix = nullptr,
-             std::shared_ptr<Models::ProgressIndicator> progress =nullptr) override;
+             const std::shared_ptr<Statistics::SelfCorrelationMatrix>&  selfCorrelationMatrix = nullptr,
+             const std::shared_ptr<Models::ProgressIndicator>& progress =nullptr) override;
 
         int nonConvergedForm = 0;
     };
