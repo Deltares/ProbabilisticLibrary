@@ -32,25 +32,25 @@ namespace Deltares::Reliability
     struct cmbResult
     {
         alphaBeta ab; // beta and alpha vector
-        int       n;  // number of non converged Hohenblicher runs
+        int       n;  // number of non converged Hohenbichler runs
     };
 
     class combineElements
     {
     public:
-        cmbResult combineTwoElementsPartialCorrelation(const alphaBeta& element1,
-            const alphaBeta& element2, const Numeric::vector1D& rhoP, const combineAndOr combAndOr);
+        static cmbResult combineTwoElementsPartialCorrelation(const alphaBeta& element1,
+                    const alphaBeta& element2, const Numeric::vector1D& rhoP, const combineAndOr combAndOr);
 
-        cmbResult combineMultipleElements(const elements& Elements,
-            const Numeric::vector1D& rho, const combineAndOr combAndOrIn);
+        static cmbResult combineMultipleElements(const elements& Elements,
+                    const Numeric::vector1D& rho, const combineAndOr combAndOrIn);
 
-        cmbResult combineMultipleElementsFull(const elements& Elements, const combineAndOr combAndOr);
+        static cmbResult combineMultipleElementsFull(const elements& Elements, const combineAndOr combAndOr);
 
-        cmbResult combineMultipleElementsProb(elements& Elements,
-            const std::vector<double>& percentages, const combineAndOr combAndOr);
+        static cmbResult combineMultipleElementsProb(elements& Elements,
+                    const std::vector<double>& percentages, const combineAndOr combAndOr);
 
         static void calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
-            const std::vector<alphaBeta>& alpha, size_t& i1max, size_t& i2max);
+                    const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max);
 
     private:
         static void checkArraySizes(const size_t nStochasts, const size_t sizeAlpha2, const size_t sizeRhoP);

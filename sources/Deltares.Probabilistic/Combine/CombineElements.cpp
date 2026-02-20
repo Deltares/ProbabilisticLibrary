@@ -41,7 +41,6 @@ namespace Deltares::Reliability
     cmbResult combineElements::combineTwoElementsPartialCorrelation(const alphaBeta& element1,
         const alphaBeta& element2, const Numeric::vector1D& rhoP, const combineAndOr combAndOr)
     {
-        const double epsilon = 0.01;
         int failureHohenbichler = 0;
         //
         // Determine vector size
@@ -72,8 +71,7 @@ namespace Deltares::Reliability
         //
         //   Computation of P( Z_2 < 0 | Z_1 < 0)
         //
-        //auto p = progress();
-        auto hh = HohenbichlerFORM();
+        constexpr auto hh = HohenbichlerFORM();
         auto pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
         if (pf2pf1.second != 0) failureHohenbichler++;
         //
@@ -101,6 +99,7 @@ namespace Deltares::Reliability
             }
             else
             {
+                constexpr double epsilon = 0.01;
                 //
                 //          Correlated part
                 double beta1Delta = element1.getBeta() - element1.getAlphaI(k) * epsilon;
@@ -162,11 +161,11 @@ namespace Deltares::Reliability
                 double alphaFactor;
                 if (fabs(element1.getAlphaI(k)) >= fabs(element2.getAlphaI(k)))
                 {
-                    alphaFactor = 1.0 - rhoP(k) * fabs((element2.getAlphaI(k) / element1.getAlphaI(k)));
+                    alphaFactor = 1.0 - rhoP(k) * fabs(element2.getAlphaI(k) / element1.getAlphaI(k));
                 }
                 else
                 {
-                    alphaFactor = 1.0 - rhoP(k) * fabs((element1.getAlphaI(k) / element2.getAlphaI(k)));
+                    alphaFactor = 1.0 - rhoP(k) * fabs(element1.getAlphaI(k) / element2.getAlphaI(k));
                 }
 
                 double alphaMultiplier = 1.0 + std::max(0.0, 0.1710 + 0.03160 * std::min(element1.getBeta(), element2.getBeta()))
