@@ -3,21 +3,18 @@
     <PropertyGroup>
         <TargetFramework>net8.0-windows</TargetFramework>
         <PlatformTarget>x64</PlatformTarget>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <UseMicrosoftTestingPlatform>true</UseMicrosoftTestingPlatform>
+        <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+        <Platforms>x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
         <PackageReference Include="NUnit" Version="4.3.2" />
-        <PackageReference Include="NUnit3TestAdapter" Version="6.1.0" />
-        <!--<PackageReference Include="NUnit3TestAdapter" Version="6.0.0" />-->
+        <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Deltares.Probabilistic.NetCS\Deltares.Probabilistic.NetCS.csproj" />
+      <ProjectReference Include="..\Deltares.Probabilistic.NetCS\Deltares.Probabilistic.NetCS.csproj" />
     </ItemGroup>
 
 </Project>

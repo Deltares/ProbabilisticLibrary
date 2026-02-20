@@ -300,10 +300,10 @@ namespace Deltares.Probabilistic.Utils
             if (libraryName == "CWrapper")
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    return NativeLibrary.Load("CWrapper.dll", assembly, path);
+                    return NativeLibrary.Load("Deltares.Probabilistic.CWrapper.dll", assembly, path);
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    return NativeLibrary.Load("CWrapper.so", assembly, path);
+                    return NativeLibrary.Load("Deltares.Probabilistic.CWrapper.so", assembly, path);
             }
 
             return IntPtr.Zero;
