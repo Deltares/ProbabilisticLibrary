@@ -17,7 +17,6 @@ namespace Deltares.Probabilistic.Statistics
         private CallBackList<ContributingStochast> contributingStochasts = null;
         private CallBackList<ConditionalValue> conditionalValues = null;
         private Stochast conditionalSource = null;
-        private bool synchronizing = false;
 
         public Stochast()
         {
@@ -141,16 +140,13 @@ namespace Deltares.Probabilistic.Statistics
             {
                 if (histogramValues == null)
                 {
-                    synchronizing = true;
                     histogramValues = new CallBackList<HistogramValue>(HistogramValuesChanged);
 
                     int[] histogramIds = Interface.GetArrayIdValue(id, "histogram_values");
                     foreach (int histogramId in histogramIds)
                     {
-                        histogramValues.Add(new HistogramValue(histogramId));
+                        histogramValues.AddWithoutCallBack(new HistogramValue(histogramId));
                     }
-
-                    synchronizing = false;
                 }
 
                 return histogramValues;
@@ -159,10 +155,7 @@ namespace Deltares.Probabilistic.Statistics
 
         private void HistogramValuesChanged(ListOperationType listOperation, HistogramValue item)
         {
-            if (!synchronizing)
-            {
-                Interface.SetArrayIntValue(id, "histogram_values", this.histogramValues.Select(p => p.GetId()).ToArray());
-            }
+            Interface.SetArrayIntValue(id, "histogram_values", this.histogramValues.Select(p => p.GetId()).ToArray());
         }
 
         public IList<DiscreteValue> DiscreteValues
@@ -171,16 +164,13 @@ namespace Deltares.Probabilistic.Statistics
             {
                 if (discreteValues == null)
                 {
-                    synchronizing = true;
                     discreteValues = new CallBackList<DiscreteValue>(DiscreteValuesChanged);
 
                     int[] discreteIds = Interface.GetArrayIdValue(id, "discrete_values");
                     foreach (int discreteId in discreteIds)
                     {
-                        discreteValues.Add(new DiscreteValue(discreteId));
+                        discreteValues.AddWithoutCallBack(new DiscreteValue(discreteId));
                     }
-
-                    synchronizing = false;
                 }
 
                 return discreteValues;
@@ -189,10 +179,7 @@ namespace Deltares.Probabilistic.Statistics
 
         private void DiscreteValuesChanged(ListOperationType listOperation, DiscreteValue item)
         {
-            if (!synchronizing)
-            {
-                Interface.SetArrayIntValue(id, "discrete_values", this.discreteValues.Select(p => p.GetId()).ToArray());
-            }
+            Interface.SetArrayIntValue(id, "discrete_values", this.discreteValues.Select(p => p.GetId()).ToArray());
         }
 
         public IList<FragilityValue> FragilityValues
@@ -201,16 +188,13 @@ namespace Deltares.Probabilistic.Statistics
             {
                 if (fragilityValues == null)
                 {
-                    synchronizing = true;
                     fragilityValues = new CallBackList<FragilityValue>(FragilityValuesChanged);
 
                     int[] fragilityIds = Interface.GetArrayIdValue(id, "fragility_values");
                     foreach (int fragilityId in fragilityIds)
                     {
-                        fragilityValues.Add(new FragilityValue(fragilityId));
+                        fragilityValues.AddWithoutCallBack(new FragilityValue(fragilityId));
                     }
-
-                    synchronizing = false;
                 }
 
                 return fragilityValues;
@@ -219,10 +203,7 @@ namespace Deltares.Probabilistic.Statistics
 
         private void FragilityValuesChanged(ListOperationType listOperation, FragilityValue item)
         {
-            if (!synchronizing)
-            {
-                Interface.SetArrayIntValue(id, "fragility_values", this.fragilityValues.Select(p => p.GetId()).ToArray());
-            }
+            Interface.SetArrayIntValue(id, "fragility_values", this.fragilityValues.Select(p => p.GetId()).ToArray());
         }
 
         public IList<ContributingStochast> ContributingStochasts
@@ -231,16 +212,13 @@ namespace Deltares.Probabilistic.Statistics
             {
                 if (contributingStochasts == null)
                 {
-                    synchronizing = true;
                     contributingStochasts = new CallBackList<ContributingStochast>(ContributingStochastsChanged);
 
                     int[] stochastIds = Interface.GetArrayIdValue(id, "contributing_stochasts");
                     foreach (int stochastId in stochastIds)
                     {
-                        contributingStochasts.Add(new ContributingStochast(stochastId));
+                        contributingStochasts.AddWithoutCallBack(new ContributingStochast(stochastId));
                     }
-
-                    synchronizing = false;
                 }
 
                 return contributingStochasts;
@@ -249,10 +227,7 @@ namespace Deltares.Probabilistic.Statistics
 
         private void ContributingStochastsChanged(ListOperationType listOperation, ContributingStochast item)
         {
-            if (!synchronizing)
-            {
-                Interface.SetArrayIntValue(id, "contributing_stochasts", this.contributingStochasts.Select(s => s.GetId()).ToArray());
-            }
+            Interface.SetArrayIntValue(id, "contributing_stochasts", this.contributingStochasts.Select(s => s.GetId()).ToArray());
         }
 
         public double DesignQuantile
@@ -379,16 +354,13 @@ namespace Deltares.Probabilistic.Statistics
             {
                 if (conditionalValues == null)
                 {
-                    synchronizing = true;
                     conditionalValues = new CallBackList<ConditionalValue>(ConditionalValuesChanged);
 
                     int[] conditionalValueIds = Interface.GetArrayIdValue(id, "conditional_values");
                     foreach (int conditionalValueId in conditionalValueIds)
                     {
-                        conditionalValues.Add(new ConditionalValue(conditionalValueId));
+                        conditionalValues.AddWithoutCallBack(new ConditionalValue(conditionalValueId));
                     }
-
-                    synchronizing = false;
                 }
 
                 return conditionalValues;
@@ -397,10 +369,7 @@ namespace Deltares.Probabilistic.Statistics
 
         private void ConditionalValuesChanged(ListOperationType listOperation, ConditionalValue item)
         {
-            if (!synchronizing)
-            {
-                Interface.SetArrayIntValue(id, "conditional_values", this.conditionalValues.Select(s => s.GetId()).ToArray());
-            }
+            Interface.SetArrayIntValue(id, "conditional_values", this.conditionalValues.Select(s => s.GetId()).ToArray());
         }
 
         public bool CanFit()

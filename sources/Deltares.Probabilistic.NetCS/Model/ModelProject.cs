@@ -16,12 +16,12 @@ namespace Deltares.Probabilistic.Model
         private int id = 0;
 
         private CallBackList<Stochast> stochasts = null;
+        private CallBackList<ModelParameter> inputParameters = null;
+        private CallBackList<ModelParameter> outputParameters = null;
         private ZSampleDelegate zFunction = null;
         private CorrelationMatrix correlationMatrix = null;
         private TagRepository tagRepository = new TagRepository();
         private ProgressIndicator progressIndicator = null;
-
-        private bool synchronizing = false;
 
         public ModelProject()
         {
@@ -103,22 +103,68 @@ namespace Deltares.Probabilistic.Model
             }
         }
 
+        public IList<ModelParameter> InputParameters
+        {
+            get
+            {
+                if (inputParameters == null)
+                {
+                    inputParameters = new CallBackList<ModelParameter>(InputParametersChanged);
+
+                    int[] parameterIds = Interface.GetArrayIdValue(id, "input_parameters");
+                    foreach (int parameterId in parameterIds)
+                    {
+                        inputParameters.AddWithoutCallBack(new ModelParameter(parameterId));
+                    }
+                }
+
+                return inputParameters;
+            }
+        }
+
+        private void InputParametersChanged(ListOperationType listOperation, ModelParameter item)
+        {
+            Interface.SetArrayIntValue(id, "input_parameters", this.inputParameters.Select(p => p.GetId()).ToArray());
+        }
+
+        public IList<ModelParameter> OutputParameters
+        {
+            get
+            {
+                if (outputParameters == null)
+                {
+                    outputParameters = new CallBackList<ModelParameter>(OutputParametersChanged);
+
+                    int[] parameterIds = Interface.GetArrayIdValue(id, "output_parameters");
+                    foreach (int parameterId in parameterIds)
+                    {
+                        outputParameters.AddWithoutCallBack(new ModelParameter(parameterId));
+                    }
+                }
+
+                return outputParameters;
+            }
+        }
+
+        private void OutputParametersChanged(ListOperationType listOperation, ModelParameter item)
+        {
+            Interface.SetArrayIntValue(id, "output_parameters", this.outputParameters.Select(p => p.GetId()).ToArray());
+        }
+
+
         public IList<Stochast> Stochasts
         {
             get
             {
                 if (stochasts == null)
                 {
-                    synchronizing = true;
                     stochasts = new CallBackList<Stochast>(StochastValuesChanged);
 
-                    int[] stochastIds = Interface.GetArrayIdValue(id, "stochasts");
+                    int[] stochastIds = Interface.GetArrayIdValue(id, "variables");
                     foreach (int stochastId in stochastIds)
                     {
-                        stochasts.Add(new Stochast(stochastId));
+                        stochasts.AddWithoutCallBack(new Stochast(stochastId));
                     }
-
-                    synchronizing = false;
                 }
 
                 return stochasts;
@@ -127,10 +173,7 @@ namespace Deltares.Probabilistic.Model
 
         private void StochastValuesChanged(ListOperationType listOperation, Stochast item)
         {
-            if (!synchronizing)
-            {
-                Interface.SetArrayIntValue(id, "stochasts", this.stochasts.Select(p => p.GetId()).ToArray());
-            }
+            Interface.SetArrayIntValue(id, "variables", this.stochasts.Select(p => p.GetId()).ToArray());
         }
 
         public CorrelationMatrix CorrelationMatrix

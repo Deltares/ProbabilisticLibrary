@@ -51,6 +51,11 @@ namespace Deltares.Probabilistic.Utils
             callBack?.Invoke(ListOperationType.Add, item);
         }
 
+        public void AddWithoutCallBack(T item)
+        {
+            list.Add(item);
+        }
+
         public void Clear()
         {
             if (list.Count > 0)
