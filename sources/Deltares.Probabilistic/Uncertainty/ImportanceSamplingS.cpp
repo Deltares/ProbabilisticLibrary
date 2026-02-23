@@ -35,7 +35,7 @@ using namespace Deltares::Reliability;
 
 namespace Deltares::Uncertainty
 {
-    UncertaintyResult ImportanceSamplingS::getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+    UncertaintyResult ImportanceSamplingS::getUncertaintyStochast(std::shared_ptr<ModelRunner> modelRunner)
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -71,8 +71,8 @@ namespace Deltares::Uncertainty
 
         std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
 
-        std::vector<double> factors = this->getFactors(Settings->StochastSet);
-        double dimensionality = Reliability::ImportanceSamplingSupport::getDimensionality(factors);
+        std::vector<double> factors = getFactors(*Settings->StochastSet);
+        double dimensionality = ImportanceSamplingSupport::getDimensionality(factors);
 
         bool converged = false;
 
@@ -90,7 +90,7 @@ namespace Deltares::Uncertainty
                 for (int i = 0; i < runs; i++)
                 {
                     std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                    std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
+                    std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, *center, dimensionality);
                     samples.push_back(modifiedSample);
                 }
 
@@ -115,7 +115,7 @@ namespace Deltares::Uncertainty
 
             nSamples++;
 
-            updateCumulativeWeights(zValues, weights, cumulativeWeights, sample);
+            updateCumulativeWeights(zValues, weights, cumulativeWeights, *sample);
 
             if (registerSamplesForCorrelation)
             {
@@ -146,9 +146,9 @@ namespace Deltares::Uncertainty
             {
                 std::shared_ptr<Sample> designPoint = designPointBuilder.getSample();
 
-                double designPointWeight = Reliability::ImportanceSamplingSupport::getSampleWeight(designPoint, center, dimensionality, factors);
+                double designPointWeight = ImportanceSamplingSupport::getSampleWeight(designPoint, center, dimensionality, factors);
 
-                double convergence = Reliability::ImportanceSamplingSupport::getConvergence(normalizedProbabilityForConvergence, designPointWeight, nSamples);
+                double convergence = ImportanceSamplingSupport::getConvergence(normalizedProbabilityForConvergence, designPointWeight, nSamples);
                 converged = convergence < this->Settings->VariationCoefficient;
             }
         }
@@ -157,34 +157,34 @@ namespace Deltares::Uncertainty
         // only adjust samples with weight > 1, because they will not be in the tail of the distribution, which is the less interesting part
 
         double weightDifference = nSamples - sumWeights;
-        double overWeightedSum = 0;
+        double overWeightedSum = 0.0;
 
-        // calculate over weight frm samples with weight > 1
-        for (size_t i = 0; i < weights.size(); i++)
+        // calculate over weight for samples with weight > 1
+        for (double weight : weights)
         {
-            if (weights[i] > 1)
+            if (weight > 1.0)
             {
-                overWeightedSum += weights[i];
+                overWeightedSum += weight;
             }
         }
 
         // correct samples with weight > 1 so that sum of weights equals number of samples
-        for (size_t i = 0; i < weights.size(); i++)
+        for (double& weight : weights)
         {
-            if (weights[i] > 1)
+            if (weight > 1.0)
             {
-                weights[i] += weights[i] * weightDifference / overWeightedSum;
+                weight += weight * weightDifference / overWeightedSum;
             }
         }
 
-        std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zValues, weights);
+        std::shared_ptr<Statistics::Stochast> stochast = getStochastFromSamples(zValues, weights);
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        for (std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
         {
             double p = quantile->getProbabilityOfNonFailure();
-            int quantileIndex = this->getQuantileIndex(zValues, weights, p);
+            int quantileIndex = getQuantileIndex(zValues, weights, p);
 
             if (quantileIndex >= 0)
             {
@@ -193,8 +193,8 @@ namespace Deltares::Uncertainty
                 randomSampleGenerator.proceed(quantileIndex);
 
                 std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
-                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(modifiedSample));
+                std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, *center, dimensionality);
+                auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(modifiedSample));
                 evaluation->Quantile = p;
                 result.quantileEvaluations.push_back(evaluation);
             }
@@ -214,28 +214,29 @@ namespace Deltares::Uncertainty
 
     }
 
-    std::vector<double> ImportanceSamplingS::getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings)
+    std::vector<double> ImportanceSamplingS::getFactors(const StochastSettingsSet& stochastSettings)
     {
-        std::vector<double> factors(stochastSettings->getVaryingStochastCount());
+        std::vector<double> factors(stochastSettings.getVaryingStochastCount());
 
         for (size_t k = 0; k < factors.size(); k++)
         {
-            factors[k] = stochastSettings->VaryingStochastSettings[k]->VarianceFactor;
+            factors[k] = stochastSettings.VaryingStochastSettings[k]->VarianceFactor;
         }
 
         return factors;
     }
 
-    std::shared_ptr<Models::Sample> ImportanceSamplingS::getModifiedSample(const std::shared_ptr<Models::Sample> sample, std::vector<double>& factors, std::shared_ptr<Models::Sample> center, double dimensionality)
+    std::shared_ptr<Sample> ImportanceSamplingS::getModifiedSample(const std::shared_ptr<Sample>& sample,
+        const std::vector<double>& factors, const Sample& center, const double dimensionality)
     {
         std::shared_ptr<Sample> modifiedSample = sample->clone();
 
         for (int k = 0; k < sample->getSize(); k++)
         {
-            modifiedSample->Values[k] = factors[k] * sample->Values[k] + center->Values[k];
+            modifiedSample->Values[k] = factors[k] * sample->Values[k] + center.Values[k];
         }
 
-        modifiedSample->Weight = Reliability::ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
+        modifiedSample->Weight = ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
 
         return modifiedSample;
     }
@@ -243,15 +244,15 @@ namespace Deltares::Uncertainty
     void ImportanceSamplingS::updateCumulativeWeights(const std::vector<double>& zValues,
                                                       const std::vector<double>& weights,
                                                       std::vector<double>& cumulativeWeights,
-                                                      const std::shared_ptr<Sample>& sample) const
+                                                      const Sample& sample) const
     {
         for (size_t i = 0; i < cumulativeWeights.size() - 1; i++)
         {
             if (this->Settings->ProbabilityForConvergence < 0.5)
             {
-                if (zValues[i] > sample->Z)
+                if (zValues[i] > sample.Z)
                 {
-                    cumulativeWeights[i] += sample->Weight;
+                    cumulativeWeights[i] += sample.Weight;
                 }
                 else
                 {
@@ -260,9 +261,9 @@ namespace Deltares::Uncertainty
             }
             else
             {
-                if (zValues[i] < sample->Z)
+                if (zValues[i] < sample.Z)
                 {
-                    cumulativeWeights[i] += sample->Weight;
+                    cumulativeWeights[i] += sample.Weight;
                 }
                 else
                 {
