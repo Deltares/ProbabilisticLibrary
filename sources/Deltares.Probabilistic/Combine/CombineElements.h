@@ -28,7 +28,7 @@
 
 namespace Deltares::Reliability
 {
-    typedef std::vector<alphaBeta> elements;
+    using elements = std::vector<alphaBeta>;
 
     struct cmbResult
     {
