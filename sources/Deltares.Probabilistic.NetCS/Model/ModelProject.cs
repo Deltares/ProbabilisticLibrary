@@ -26,7 +26,7 @@ namespace Deltares.Probabilistic.Model
         public ModelProject()
         {
             this.id = Interface.Create("model_project");
-            Interface.SetCallback(id, "model", ModelCallback);
+            Interface.SetModelSampleCallback(id, "model", ModelCallback);
         }
 
         internal ModelProject(int id)
@@ -34,7 +34,7 @@ namespace Deltares.Probabilistic.Model
             if (id > 0)
             {
                 this.id = id;
-                Interface.SetCallback(id, "model", ModelCallback);
+                Interface.SetModelSampleCallback(id, "model", ModelCallback);
             }
         }
 
@@ -51,39 +51,16 @@ namespace Deltares.Probabilistic.Model
         internal void SetId(int id)
         {
             this.id = id;
-            Interface.SetCallback(id, "model", ModelCallback);
+            Interface.SetModelSampleCallback(id, "model", ModelCallback);
         }
 
-        private IntPtr ModelCallback(IntPtr inputArray, int count, IntPtr outputArray)
+        private void ModelCallback(ref ModelSampleStruct sample)
         {
-            // Safety check
-            if (inputArray == IntPtr.Zero || outputArray == IntPtr.Zero || count <= 0)
-            {
-                return IntPtr.Zero;
-            }
+            ModelSample modelSample = new ModelSample(sample);
 
-            // Interpret the pointers as arrays of doubles
-            double[] input = new double[count];
-            double[] output = new double[count];
+            zFunction.Invoke(modelSample);
 
-            ModelSample sample = new ModelSample();
-
-            // Copy from unmanaged → managed
-            Marshal.Copy(inputArray, input, 0, count);
-
-            //zFunction.Invoke();
-
-            // Example processing: square each value
-            for (int i = 0; i < count; i++)
-            {
-                output[i] = input[i] * input[i];
-            }
-
-            // Copy back to unmanaged memory
-            Marshal.Copy(output, 0, outputArray, count);
-
-            // Return the output pointer (or anything else the native side expects)
-            return outputArray;
+            modelSample.PrepareForReturn();
         }
 
 

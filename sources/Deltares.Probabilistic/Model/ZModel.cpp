@@ -25,6 +25,7 @@
 #include <omp.h>
 
 #include "ModelSample.h"
+#include "ModelSampleStruct.h"
 #include "../Logging/ValidationSupport.h"
 #include "../Utils/probLibException.h"
 
@@ -107,6 +108,21 @@ namespace Deltares
 
                 delete[] inputValues;
                 delete[] outputValues;
+            };
+
+            return calcValuesLambda;
+        }
+
+        ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda)
+        {
+            ZLambda calcValuesLambda = [modelSampleLambda, this](std::shared_ptr<ModelSample> sample)
+            {
+                ModelSampleStruct modelSampleStruct = sample->getModelSampleStruct();
+
+                (modelSampleLambda)(&modelSampleStruct);
+
+                delete[] modelSampleStruct.Values;
+                delete[] modelSampleStruct.OutputValues;
             };
 
             return calcValuesLambda;

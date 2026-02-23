@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Deltares.Probabilistic.Model;
 using static Deltares.Probabilistic.Utils.NativeInterface;
 
 namespace Deltares.Probabilistic.Utils
@@ -242,6 +243,19 @@ namespace Deltares.Probabilistic.Utils
             }
         }
 
+        public static void SetModelSampleCallback(int id, string property, ModelSampleCallback cb)
+        {
+            try
+            {
+                NativeInterface.SetModelSampleCallback(id, property, cb);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+        }
+
         public static IntPtr GetCallback(int id, string property)
         {
             try
@@ -426,6 +440,9 @@ namespace Deltares.Probabilistic.Utils
 
         [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetMultipleCallBack(int id, string property, MultipleCallback cb);
+
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetModelSampleCallback(int id, string property, ModelSampleCallback cb);
 
         [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetEmptyCallBack(int id, string property, EmptyCallback cb);

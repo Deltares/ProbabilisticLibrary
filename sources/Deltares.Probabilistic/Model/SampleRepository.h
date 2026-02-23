@@ -25,6 +25,7 @@
 #include <unordered_map>
 
 #include "ModelSample.h"
+#include "ModelSample.h"
 #include "../Utils/Locker.h"
 
 namespace Deltares::Models

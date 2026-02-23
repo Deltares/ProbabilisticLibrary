@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Model;
@@ -63,7 +64,6 @@ public class StochastPoint
 
     public ModelSample GetModelSample()
     {
-        int sampleId = Interface.GetIdValue(id, "sample");
-        return new ModelSample(sampleId);
+        return new ModelSample(this.Alphas.Select(p => p.X).ToArray());
     }
 }

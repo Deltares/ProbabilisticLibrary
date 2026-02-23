@@ -22,9 +22,10 @@
 #pragma once
 
 #include <cmath>
-#include <functional>
 #include <vector>
 #include <memory>
+
+#include "ModelSampleStruct.h"
 
 namespace Deltares
 {
@@ -66,6 +67,31 @@ namespace Deltares
                 {
                     this->OutputValues[i] = source->OutputValues[i];
                 }
+            }
+
+            ModelSampleStruct getModelSampleStruct() const
+            {
+                ModelSampleStruct c;
+
+                c.Values = Values.data();
+                c.ValuesCount = static_cast<int>(Values.size());
+
+                c.OutputValues = OutputValues.data();
+                c.OutputValuesCount = static_cast<int>(OutputValues.size());
+
+                c.IterationIndex = IterationIndex;
+                c.threadId = threadId;
+                c.Weight = Weight;
+                c.AllowProxy = AllowProxy;
+                c.UsedProxy = UsedProxy;
+                c.IsRestartRequired = IsRestartRequired;
+                c.Beta = Beta;
+                c.Z = Z;
+                c.ExtendedLogging = ExtendedLogging;
+                c.LoggingCounter = LoggingCounter;
+                c.Tag = Tag;
+
+                return c;
             }
 
             std::vector<double> Values;
@@ -128,4 +154,5 @@ namespace Deltares
         };
     }
 }
+
 

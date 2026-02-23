@@ -69,6 +69,7 @@ namespace Deltares
             virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
             virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
             virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
+            virtual void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack) {}
             virtual void Execute(int id, std::string method_) {}
         };
     }

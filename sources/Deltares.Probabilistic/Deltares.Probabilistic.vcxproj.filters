@@ -257,6 +257,15 @@
     <ClCompile Include="Proxies\ProxyCoefficients.cpp" />
     <ClCompile Include="Model\DefaultValueConverter.cpp" />
     <ClCompile Include="Proxies\ProxyCoefficient.cpp" />
+    <ClCompile Include="Utils\probLibException.cpp" />
+    <ClCompile Include="Statistics\BaseCorrelation.cpp" />
+    <ClCompile Include="Statistics\CopulaCorrelation.cpp" />
+    <ClCompile Include="Statistics\BaseCopula.cpp" />
+    <ClCompile Include="Statistics\ClaytonCopula.cpp" />
+    <ClCompile Include="Statistics\FrankCopula.cpp" />
+    <ClCompile Include="Statistics\GaussianCopula.cpp" />
+    <ClCompile Include="Statistics\DiagonalBandCopula.cpp" />
+    <ClCompile Include="Statistics\GumbelCopula.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -543,6 +552,16 @@
     <ClInclude Include="Proxies\ProxyCoefficients.h" />
     <ClInclude Include="Model\DefaultValueConverter.h" />
     <ClInclude Include="Proxies\ProxyCoefficient.h" />
+    <ClInclude Include="Statistics\BaseCorrelation.h" />
+    <ClInclude Include="Statistics\CopulaCorrelation.h" />
+    <ClInclude Include="Statistics\CorrelationValueAndType.h" />
+    <ClInclude Include="Statistics\BaseCopula.h" />
+    <ClInclude Include="Statistics\ClaytonCopula.h" />
+    <ClInclude Include="Statistics\FrankCopula.h" />
+    <ClInclude Include="Statistics\GaussianCopula.h" />
+    <ClInclude Include="Statistics\DiagonalBandCopula.h" />
+    <ClInclude Include="Statistics\GumbelCopula.h" />
+    <ClInclude Include="Model\ModelSampleStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -257,6 +257,13 @@ extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, const char* property, Deltar
     ProjectServer::Instance().SetEmptyCallBack(id, propertyStr, callBack);
 }
 
+extern "C" DLL_PUBLIC void SetModelSampleCallback(int id, const char* property, Deltares::Models::ModelSampleCallback callBack)
+{
+    std::string propertyStr(property);
+    ProjectServer::Instance().SetModelSampleCallBack(id, propertyStr, callBack);
+}
+
+
 extern "C" DLL_PUBLIC void Execute(int id, const char* method)
 {
     try

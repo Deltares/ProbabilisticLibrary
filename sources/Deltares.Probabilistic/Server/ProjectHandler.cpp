@@ -2239,6 +2239,18 @@ namespace Deltares
             }
         }
 
+        void ProjectHandler::SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack)
+        {
+            ObjectType objectType = types[id];
+
+            if (IsModelProjectType(objectType))
+            {
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+                if (property_ == "model") project->model->setModelSampleCallback(callBack);
+            }
+        }
+
         void ProjectHandler::Execute(int id, std::string method_)
         {
             ObjectType objectType = types[id];
