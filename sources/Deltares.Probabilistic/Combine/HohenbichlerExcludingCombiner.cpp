@@ -31,7 +31,7 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> HohenbichlerExcludingCombiner::combineExcludingDesignPoints(
         std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
-        std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
+        std::vector<std::shared_ptr<DesignPoint>>& designPoints)
     {
         elements designPointElements;
         const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
@@ -49,14 +49,13 @@ namespace Deltares::Reliability
             designPointElements.push_back(designPointElement);
         }
 
-        combineElements combiner = combineElements();
         std::vector<double> percentages = std::vector<double>(nStochasts);
         for (size_t i = 0; i < scenarios.size(); i++)
         {
             percentages[i] = scenarios[i]->probability * 100.0;
         }
 
-        auto result = combiner.combineMultipleElementsProb(designPointElements, percentages, combineAndOr::combOr);
+        auto result = combineElements::combineMultipleElementsProb(designPointElements, percentages, combineAndOr::combOr);
 
         std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
         combinedDesignPoint->Beta = result.ab.getBeta();
@@ -68,7 +67,7 @@ namespace Deltares::Reliability
             combinedDesignPoint->Alphas.push_back(alpha);
         }
 
-        for (std::shared_ptr<DesignPoint> designPoint : designPoints)
+        for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
         {
             combinedDesignPoint->ContributingDesignPoints.push_back(designPoint);
         }
