@@ -146,7 +146,7 @@ namespace Deltares::Uncertainty
             {
                 std::shared_ptr<Sample> designPoint = designPointBuilder.getSample();
 
-                double designPointWeight = ImportanceSamplingSupport::getSampleWeight(designPoint, center, dimensionality, factors);
+                double designPointWeight = ImportanceSamplingSupport::getSampleWeight(*designPoint, *center, dimensionality, factors);
 
                 double convergence = ImportanceSamplingSupport::getConvergence(normalizedProbabilityForConvergence, designPointWeight, nSamples);
                 converged = convergence < this->Settings->VariationCoefficient;
@@ -236,7 +236,7 @@ namespace Deltares::Uncertainty
             modifiedSample->Values[k] = factors[k] * sample->Values[k] + center.Values[k];
         }
 
-        modifiedSample->Weight = ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
+        modifiedSample->Weight = ImportanceSamplingSupport::getWeight(*modifiedSample, *sample, dimensionality);
 
         return modifiedSample;
     }
