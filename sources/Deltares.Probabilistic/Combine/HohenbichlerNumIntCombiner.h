@@ -32,8 +32,8 @@ namespace Deltares::Reliability
     public:
         std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix = nullptr,
-            const std::shared_ptr<Models::ProgressIndicator>& progress = nullptr) override;
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::shared_ptr<Models::ProgressIndicator>& progress) override;
 
     private:
         static indexPair findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,

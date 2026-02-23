@@ -48,8 +48,8 @@ namespace Deltares::Reliability
          */
         std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix = nullptr,
-            const std::shared_ptr<Models::ProgressIndicator>& progress = nullptr) override;
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::shared_ptr<Models::ProgressIndicator>& progress) override;
 
     private:
         void fillSettings(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<DirectionalSamplingSettings> settings);
