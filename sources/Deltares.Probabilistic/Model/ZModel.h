@@ -182,7 +182,7 @@ namespace Deltares
             ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
             ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
 
-            ZLambda getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda);
+            ZLambda getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const;
 
             /**
              * \brief Calculates a sample

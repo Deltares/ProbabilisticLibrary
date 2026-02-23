@@ -71,27 +71,54 @@ namespace Deltares
 
             ModelSampleStruct getModelSampleStruct() const
             {
-                ModelSampleStruct c;
+                ModelSampleStruct sampleStruct;
 
-                c.Values = Values.data();
-                c.ValuesCount = static_cast<int>(Values.size());
+                sampleStruct.Values = Values.data();
+                sampleStruct.ValuesCount = static_cast<int>(Values.size());
 
-                c.OutputValues = OutputValues.data();
-                c.OutputValuesCount = static_cast<int>(OutputValues.size());
+                sampleStruct.OutputValues = OutputValues.data();
+                sampleStruct.OutputValuesCount = static_cast<int>(OutputValues.size());
 
-                c.IterationIndex = IterationIndex;
-                c.threadId = threadId;
-                c.Weight = Weight;
-                c.AllowProxy = AllowProxy;
-                c.UsedProxy = UsedProxy;
-                c.IsRestartRequired = IsRestartRequired;
-                c.Beta = Beta;
-                c.Z = Z;
-                c.ExtendedLogging = ExtendedLogging;
-                c.LoggingCounter = LoggingCounter;
-                c.Tag = Tag;
+                sampleStruct.IterationIndex = IterationIndex;
+                sampleStruct.threadId = threadId;
+                sampleStruct.Weight = Weight;
+                sampleStruct.AllowProxy = AllowProxy;
+                sampleStruct.UsedProxy = UsedProxy;
+                sampleStruct.IsRestartRequired = IsRestartRequired;
+                sampleStruct.Beta = Beta;
+                sampleStruct.Z = Z;
+                sampleStruct.ExtendedLogging = ExtendedLogging;
+                sampleStruct.LoggingCounter = LoggingCounter;
+                sampleStruct.Tag = Tag;
 
-                return c;
+                return sampleStruct;
+            }
+
+            void setModelSampleStruct(ModelSampleStruct* sampleStruct)
+            {
+                Values.resize(sampleStruct->ValuesCount);
+                for (int i = 0; i < sampleStruct->ValuesCount; i++)
+                {
+                    Values[i] = sampleStruct->Values[i];
+                }
+
+                OutputValues.resize(sampleStruct->OutputValuesCount);
+                for (int i = 0; i < sampleStruct->OutputValuesCount; i++)
+                {
+                    OutputValues[i] = sampleStruct->OutputValues[i];
+                }
+
+                IterationIndex = sampleStruct->IterationIndex;
+                threadId = sampleStruct->threadId;
+                Weight = sampleStruct->Weight;
+                AllowProxy = sampleStruct->AllowProxy;
+                UsedProxy = sampleStruct->UsedProxy;
+                IsRestartRequired = sampleStruct->IsRestartRequired;
+                Beta = sampleStruct->Beta;
+                Z = sampleStruct->Z;
+                ExtendedLogging = sampleStruct->ExtendedLogging;
+                LoggingCounter = sampleStruct->LoggingCounter;
+                Tag = sampleStruct->Tag = Tag;
             }
 
             std::vector<double> Values;

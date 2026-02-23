@@ -60,7 +60,7 @@ namespace Deltares.Probabilistic.Model
 
             zFunction.Invoke(modelSample);
 
-            modelSample.PrepareForReturn();
+            modelSample.PrepareForReturn(ref sample);
         }
 
 

@@ -488,7 +488,8 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
-                if (property_ == "reliability_index") return designPoint->Beta;
+                if (property_ == "beta") return designPoint->Beta;
+                else if (property_ == "reliability_index") return designPoint->Beta;
                 else if (property_ == "probability_failure") return designPoint->getFailureProbability();
                 else if (property_ == "probability_non_failure") return designPoint->getNonFailureProbability();
                 else if (property_ == "return_period") return designPoint->getReturnPeriod();
@@ -2223,7 +2224,15 @@ namespace Deltares
             {
                 std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
-                if (property_ == "model") project->model->setMultipleCallback(callBack);
+                if (property_ == "model")
+                {
+                    if (project->model == nullptr)
+                    {
+                        project->model = std::make_shared<Models::ZModel>();
+                    }
+
+                    project->model->setMultipleCallback(callBack);
+                }
             }
         }
 
@@ -2235,7 +2244,15 @@ namespace Deltares
             {
                 std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
-                if (property_ == "run_samples") project->model->setRunMethod(callBack);
+                if (property_ == "run_samples")
+                {
+                    if (project->model == nullptr)
+                    {
+                        project->model = std::make_shared<Models::ZModel>();
+                    }
+
+                    project->model->setRunMethod(callBack);
+                }
             }
         }
 
@@ -2247,7 +2264,15 @@ namespace Deltares
             {
                 std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
-                if (property_ == "model") project->model->setModelSampleCallback(callBack);
+                if (property_ == "model")
+                {
+                    if (project->model == nullptr)
+                    {
+                        project->model = std::make_shared<Models::ZModel>();
+                    }
+
+                    project->model->setModelSampleCallback(callBack);
+                }
             }
         }
 

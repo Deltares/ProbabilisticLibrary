@@ -10,13 +10,11 @@ public delegate void ModelSampleCallback(ref ModelSampleStruct sample);
 
 public class ModelSample
 {
-    private ModelSampleStruct sample;
     private double[] values = null;
     private double[] outputValues = null;
 
     public ModelSample()
     {
-        this.sample = new ModelSampleStruct();
     }
 
     public ModelSample(double[] values)
@@ -27,20 +25,52 @@ public class ModelSample
 
     public ModelSample(ModelSampleStruct sample)
     {
-        this.sample = sample;
-
         // Copy from unmanaged → managed
         values = new double[sample.ValuesCount];
-        Marshal.Copy(sample.Values, values, 0, sample.ValuesCount);
+        if (sample.ValuesCount > 0)
+        {
+            Marshal.Copy(sample.Values, values, 0, sample.ValuesCount);
+        }
 
         outputValues = new double[sample.OutputValuesCount];
-        Marshal.Copy(sample.OutputValues, outputValues, 0, sample.OutputValuesCount);
+        if (sample.OutputValuesCount > 0)
+        {
+            Marshal.Copy(sample.OutputValues, outputValues, 0, sample.OutputValuesCount);
+        }
+
+        this.Iteration = sample.IterationIndex;
+        this.Beta = sample.Beta;
+        this.Z = sample.Z;
+        this.Weight = sample.Weight;
+        this.AllowProxy = sample.AllowProxy;
+        this.UsedProxy = sample.UsedProxy;
+        this.IsRestartRequired = sample.IsRestartRequired;
+        this.Tag = sample.Tag;
     }
 
-    public void PrepareForReturn()
+    public void PrepareForReturn(ref ModelSampleStruct sample)
     {
         // Copy back to unmanaged memory
-        Marshal.Copy(OutputValues, 0, sample.OutputValues, OutputValues.Length);
+        if (Values.Length > 0)
+        {
+            Marshal.Copy(Values, 0, sample.Values, Values.Length);
+        }
+        sample.ValuesCount = Values.Length;
+
+        if (OutputValues.Length > 0)
+        {
+            Marshal.Copy(OutputValues, 0, sample.OutputValues, OutputValues.Length);
+        }
+        sample.OutputValuesCount = OutputValues.Length;
+
+        sample.IterationIndex = Iteration;
+        sample.Beta = Beta;
+        sample.Z = Z;
+        sample.Weight = Weight;
+        sample.AllowProxy = AllowProxy;
+        sample.UsedProxy = UsedProxy;
+        sample.IsRestartRequired = IsRestartRequired;
+        sample.Tag = Tag;
     }
 
     public double[] Values
@@ -53,53 +83,21 @@ public class ModelSample
         get { return outputValues; }
     }
 
-    public int Iteration
-    {
-        get { return sample.IterationIndex; }
-        set { sample.IterationIndex = value; }
-    }
+    public int Iteration { get; set; }
 
-    public double Beta
-    {
-        get { return sample.Beta; }
-        set { sample.Beta = value; }
-    }
+    public double Beta { get; set; }
 
-    public double Z
-    {
-        get { return sample.Z; }
-        set { sample.Z = value; }
-    }
+    public double Z { get; set; }
 
-    public double Weight
-    {
-        get { return sample.Weight; }
-        set { sample.Weight = value; }
-    }
+    public double Weight { get; set; }
 
-    public bool AllowProxy
-    {
-        get { return sample.AllowProxy; }
-        set { sample.AllowProxy = value; }
-    }
+    public bool AllowProxy { get; set; }
 
-    public bool UsedProxy
-    {
-        get { return sample.UsedProxy; }
-        set { sample.UsedProxy = value; }
-    }
+    public bool UsedProxy { get; set; }
 
-    public bool IsRestartRequired
-    {
-        get { return sample.IsRestartRequired; }
-        set { sample.IsRestartRequired = value; }
-    }
+    public bool IsRestartRequired { get; set; }
 
-    public int Tag
-    {
-        get { return sample.Tag; }
-        set { sample.Tag = value; }
-    }
+    public int Tag { get; set; }
 }
 
 [StructLayout(LayoutKind.Sequential)]

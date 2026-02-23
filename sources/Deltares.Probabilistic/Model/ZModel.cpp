@@ -113,7 +113,7 @@ namespace Deltares
             return calcValuesLambda;
         }
 
-        ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda)
+        ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const
         {
             ZLambda calcValuesLambda = [modelSampleLambda, this](std::shared_ptr<ModelSample> sample)
             {
@@ -121,8 +121,7 @@ namespace Deltares
 
                 (modelSampleLambda)(&modelSampleStruct);
 
-                delete[] modelSampleStruct.Values;
-                delete[] modelSampleStruct.OutputValues;
+                sample->setModelSampleStruct(&modelSampleStruct);
             };
 
             return calcValuesLambda;
