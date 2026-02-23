@@ -298,6 +298,7 @@
     <ClInclude Include="Statistics\Distributions\RayleighNDistribution.h" />
     <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
     <ClInclude Include="Combine\AlphaBeta.h" />
+    <ClInclude Include="Combine\IndexPair.h" />
     <ClInclude Include="Combine\CombineElements.h" />
     <ClInclude Include="Combine\Combiner.h" />
     <ClInclude Include="Combine\HohenbichlerFORM.h" />

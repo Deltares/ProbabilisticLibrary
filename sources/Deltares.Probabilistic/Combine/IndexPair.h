@@ -20,24 +20,16 @@
 // All rights reserved.
 //
 #pragma once
-#include <vector>
-#include <memory>
-#include "Combiner.h"
-#include "IndexPair.h"
 
 namespace Deltares::Reliability
 {
-    class HohenbichlerNumIntCombiner : public Combiner
+    /// <summary>
+    /// result of methods findMaxCorrelatedDesignPoints and calculateCombinationWithLargestCorrelation
+    /// </summary>
+    struct indexPair
     {
-    public:
-        std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix = nullptr,
-            const std::shared_ptr<Models::ProgressIndicator>& progress = nullptr) override;
-
-    private:
-        static indexPair findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
+        long long i1max = 0;
+        long long i2max = 0;
     };
+
 }

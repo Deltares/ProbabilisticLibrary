@@ -47,9 +47,9 @@ namespace Deltares::Reliability
         auto hh = HohenbichlerNumInt();
         while (!workDesignPoints.empty())
         {
-            long long i1max; long long i2max;
-            findMaxCorrelatedDesignPoints(workDesignPoints, selfCorrelationMatrix, stochasts, i1max, i2max);
-            designPoint = hh.AlphaHohenbichler(workDesignPoints[i1max], workDesignPoints[i2max], stochasts, selfCorrelationMatrix, combineMethodType);
+            const auto [i1max, i2max] = findMaxCorrelatedDesignPoints(workDesignPoints, selfCorrelationMatrix, stochasts);
+            designPoint = hh.AlphaHohenbichler(workDesignPoints[i1max], workDesignPoints[i2max], stochasts,
+                selfCorrelationMatrix, combineMethodType);
             if (workDesignPoints.size() == 2)
             {
                 break;
@@ -67,10 +67,11 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    void HohenbichlerNumIntCombiner::findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+    indexPair HohenbichlerNumIntCombiner::findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
         const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-        const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, long long& i1max, long long& i2max)
+        const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts)
     {
+        indexPair return_value;
         double rhoMax = -1.0;
         for (size_t i = 0; i < designPoints.size(); i++)
         {
@@ -91,12 +92,13 @@ namespace Deltares::Reliability
                     //
                     // For the first combination the parameters i1max, i2max and rhoMax are set
                     //
-                    i1max = i;
-                    i2max = j;
+                    return_value.i1max = i;
+                    return_value.i2max = j;
                     rhoMax = rho;
                 }
             }
         }
+        return return_value;
     }
 
 }

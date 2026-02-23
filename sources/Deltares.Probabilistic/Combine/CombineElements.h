@@ -24,6 +24,7 @@
 #include "../Math/vector1D.h"
 #include "AlphaBeta.h"
 #include "Combiner.h"
+#include "IndexPair.h"
 
 namespace Deltares::Reliability
 {
@@ -49,8 +50,8 @@ namespace Deltares::Reliability
         static cmbResult combineMultipleElementsProb(elements& Elements,
                     const std::vector<double>& percentages, const combineAndOr combAndOr);
 
-        static void calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
-                    const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max);
+        static indexPair calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
+                    const std::vector<alphaBeta>& ab);
 
     private:
         static void checkArraySizes(const size_t nStochasts, const size_t sizeAlpha2, const size_t sizeRhoP);

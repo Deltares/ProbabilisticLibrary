@@ -252,9 +252,7 @@ void calculate_combination_with_largest_correlation_c(multipleElements* elements
         alphaBeta elm(elements->designPoints[i].beta, alphai);
         alpha.push_back(elm);
     }
-    size_t j1max;
-    size_t j2max;
-    combineElements::calculateCombinationWithLargestCorrelation( rho, alpha, j1max, j2max);
+    auto [j1max, j2max] = combineElements::calculateCombinationWithLargestCorrelation(rho, alpha);
     *i1max = static_cast<int>(j1max);
     *i2max = static_cast<int>(j2max);
 }

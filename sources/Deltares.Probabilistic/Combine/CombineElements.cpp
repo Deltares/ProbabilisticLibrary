@@ -263,15 +263,14 @@ namespace Deltares::Reliability
             //
             // Continuously combine the two elements with the largest correlation
             //
-            size_t i1 = SIZE_MAX;     // Keep static analyser happy
-            size_t i2 = SIZE_MAX;
+
             for (size_t iElement = nrElements - 1; iElement > 0; iElement--)
             {
                 //
                 // Calculate the combination of two elements which has
                 // together the largest correlation
                 //
-                calculateCombinationWithLargestCorrelation(rho, local, i1, i2);
+                const auto [i1, i2] = calculateCombinationWithLargestCorrelation(rho, local);
                 //
                 // Combine these two elements with partial correlation
                 //
@@ -283,7 +282,7 @@ namespace Deltares::Reliability
                 // The elements i1 and i2 are removed from the vector betaLocal and the combined result is added last
                 // betaLocal(1:i1-1) stays unchanged
                 //
-                for (size_t i = i1; i < i2 - 1; i++)
+                for (auto i = i1; i < i2 - 1; i++)
                 {
                     local[i] = local[i + 1];
                 }
@@ -311,10 +310,9 @@ namespace Deltares::Reliability
     // \param rhoP(nStochasts)  : Auto correlation the random variables between elements
     // \param nElements         : Number of elements to be combined (for instance tidal periods)
     // \param alpha(:,:)        : Alpha vector per element
-    // \param i1max             : Index of first element with the largest correlation
-    // \param i2max             : Index of second element with the largest correlation
-    void combineElements::calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
-        const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max)
+    // \returns i1max, i2max    : Indices of combination of elements with the largest correlation
+    indexPair combineElements::calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
+        const std::vector<alphaBeta>& ab)
     {
         //
         // Two elements can't be computed if there is only one element
@@ -328,8 +326,9 @@ namespace Deltares::Reliability
         // Initialize rhoMax and the indices for the maximum element
         //
         double rhoMax = -1.0;
-        i1max = SIZE_MAX;
-        i2max = SIZE_MAX;
+        indexPair return_value;
+        return_value.i1max = SIZE_MAX;
+        return_value.i2max = SIZE_MAX;
         //
         //   Determine which two elements have the highest correlation
         //
@@ -347,12 +346,13 @@ namespace Deltares::Reliability
                     //
                     // For the first combination the parameters i1max, i2max and rhoMax are set
                     //
-                    i1max = i1;
-                    i2max = i2;
+                    return_value.i1max = i1;
+                    return_value.i2max = i2;
                     rhoMax = rhoT;
                 }
             }
         }
+        return return_value;
     }
 
     // \brief This method calculates the reliability index (beta) and alpha values combining over elements
