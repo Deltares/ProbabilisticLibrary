@@ -64,7 +64,7 @@ namespace Deltares.Probabilistic.Uncertainty
                 if (result == null)
                 {
                     int resultId = Interface.GetIdValue(id, "result");
-                    result = new UncertaintyResult(resultId);
+                    result = new UncertaintyResult(resultId, TagRepository);
                 }
 
                 return result;
@@ -87,7 +87,7 @@ namespace Deltares.Probabilistic.Uncertainty
                     int[] resultIds = Interface.GetArrayIdValue(id, "results");
                     foreach (int resultId in resultIds)
                     {
-                        results.Add(new UncertaintyResult(resultId));
+                        results.Add(new UncertaintyResult(resultId, TagRepository));
                     }
                 }
 

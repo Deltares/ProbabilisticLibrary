@@ -41,6 +41,10 @@ namespace Deltares
         using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
         using EmptyCallBack = void(*)();
 
+        using ProgressCallBack = void(*)(double progress);
+        using DetailedProgressCallBack = void(*)(int step, int loop, double reliability, double convergence);
+        using TextualProgressCallBack = void(*)(int progressIndicator, const char* text);
+
         class ZModel
         {
         public:

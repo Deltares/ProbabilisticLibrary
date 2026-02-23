@@ -1,4 +1,5 @@
 ﻿using System;
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Logging
@@ -9,15 +10,17 @@ namespace Deltares.Probabilistic.Logging
         private double[] inputValues = null;
         private double[] outputValues = null;
         private object tag = null;
+        private TagRepository tagRepository = null;
 
         public Evaluation()
         {
             this.id = Interface.Create("evaluation");
         }
 
-        internal Evaluation(int id)
+        internal Evaluation(int id, TagRepository tagRepository)
         {
             this.id = id;
+            this.tagRepository = tagRepository;
         }
 
         public void Dispose()
@@ -98,10 +101,11 @@ namespace Deltares.Probabilistic.Logging
         {
             get
             {
-                if (tag == null)
+                if (tagRepository != null)
                 {
                     int tagId = Interface.GetIntValue(id, "tag");
-
+                    tag = tagRepository.RetrieveTag(tagId);
+                    tagRepository = null; // no need to keep longer
                 }
 
                 return tag;

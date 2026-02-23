@@ -14,8 +14,8 @@ internal static class GradientMethodConverter
     {
         return method switch
         {
-            GradientMethod.OneDirection => "one_direction",
-            GradientMethod.TwoDirections => "two_directions",
+            GradientMethod.OneDirection => "single",
+            GradientMethod.TwoDirections => "double",
             _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
         };
     }
@@ -24,8 +24,8 @@ internal static class GradientMethodConverter
     {
         return value switch
         {
-            "one_direction" => GradientMethod.OneDirection,
-            "two_directions" => GradientMethod.TwoDirections,
+            "single" => GradientMethod.OneDirection,
+            "double" => GradientMethod.TwoDirections,
             _ => throw new ArgumentException($"Unknown gradient method: '{value}'", nameof(value))
         };
     }

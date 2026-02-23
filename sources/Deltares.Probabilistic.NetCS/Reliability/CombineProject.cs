@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class CombineProject : IDisposable
+public class CombineProject : IStochastProvider, IDisposable
 {
     private readonly int id = 0;
     private CombineSettings settings = null;
@@ -64,7 +65,7 @@ public class CombineProject : IDisposable
                 int[] designPointIds = Interface.GetArrayIdValue(id, "design_points");
                 foreach (int designPointId in designPointIds)
                 {
-                    designPoints.Add(new DesignPoint(designPointId));
+                    designPoints.Add(new DesignPoint(designPointId, null, this));
                 }
 
                 synchronizing = true;
@@ -95,7 +96,7 @@ public class CombineProject : IDisposable
             if (designPoint == null)
             {
                 int designPointId = Interface.GetIdValue(id, "design_point");
-                designPoint = new DesignPoint(designPointId);
+                designPoint = new DesignPoint(designPointId, null, this);
             }
 
             return designPoint;
@@ -105,5 +106,19 @@ public class CombineProject : IDisposable
             Interface.SetIntValue(id, "design_point", value.GetId());
             designPoint = value;
         }
+    }
+
+    public Stochast GetStochast(int stochastId)
+    {
+        foreach (DesignPoint designPoint in designPoints)
+        {
+            Stochast stochast = designPoint.GetStochast(stochastId);
+            if (stochast != null)
+            {
+                return stochast;
+            }
+        }
+
+        return null;
     }
 }

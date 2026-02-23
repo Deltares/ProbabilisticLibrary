@@ -7,15 +7,17 @@ public class StochastPointAlpha
 {
     private int id = 0;
     private Stochast stochast = null;
+    private IStochastProvider stochastProvider = null;
 
     public StochastPointAlpha()
     {
         this.id = Interface.Create("alpha");
     }
 
-    internal StochastPointAlpha(int id)
+    internal StochastPointAlpha(int id, IStochastProvider stochastProvider)
     {
         this.id = id;
+        this.stochastProvider = stochastProvider;
     }
 
     public void Dispose()
@@ -35,7 +37,8 @@ public class StochastPointAlpha
             if (stochast == null)
             {
                 int stochastId = Interface.GetIdValue(id, "variable");
-                stochast = new Stochast(stochastId);
+                stochast = stochastProvider?.GetStochast(stochastId) ?? new Stochast(stochastId);
+                stochastProvider = null; // not needed any more
             }
 
             return stochast;

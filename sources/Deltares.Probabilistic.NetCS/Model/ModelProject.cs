@@ -10,8 +10,7 @@ namespace Deltares.Probabilistic.Model
 {
     public delegate void ZSampleDelegate(ModelSample sample);
 
-
-    public class ModelProject : IDisposable
+    public class ModelProject : IStochastProvider, IDisposable
     {
         private int id = 0;
 
@@ -60,7 +59,7 @@ namespace Deltares.Probabilistic.Model
 
             zFunction.Invoke(modelSample);
 
-            modelSample.PrepareForReturn(ref sample);
+            modelSample.PrepareForReturn(ref sample, tagRepository);
         }
 
 
@@ -75,7 +74,12 @@ namespace Deltares.Probabilistic.Model
             get { return progressIndicator; }
             set
             {
-                Interface.SetIntValue(id, "progress_indicator", value != null ? value.GetId() : 0);
+                if (value != null)
+                {
+                    Interface.SetIntValue(id, "progress_indicator", value.GetId());
+                    Interface.SetProgressCallbacks(id, value.DoProgress, value.DoDetailedProgress, value.DoTextualProgress);
+                }
+
                 progressIndicator = value;
             }
         }
@@ -180,10 +184,14 @@ namespace Deltares.Probabilistic.Model
             }
         }
 
-        public TagRepository TagRepository
+        protected internal TagRepository TagRepository
         {
             get { return tagRepository; }
-            set { tagRepository = value; }
+        }
+
+        public virtual Stochast GetStochast(int stochastId)
+        {
+            return this.stochasts.FirstOrDefault(p => p.GetId() == stochastId);
         }
     }
 }

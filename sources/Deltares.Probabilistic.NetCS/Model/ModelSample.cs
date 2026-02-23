@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Model;
 
@@ -45,10 +44,9 @@ public class ModelSample
         this.AllowProxy = sample.AllowProxy;
         this.UsedProxy = sample.UsedProxy;
         this.IsRestartRequired = sample.IsRestartRequired;
-        this.Tag = sample.Tag;
     }
 
-    public void PrepareForReturn(ref ModelSampleStruct sample)
+    public void PrepareForReturn(ref ModelSampleStruct sample, TagRepository tagRepository)
     {
         // Copy back to unmanaged memory
         if (Values.Length > 0)
@@ -70,7 +68,7 @@ public class ModelSample
         sample.AllowProxy = AllowProxy;
         sample.UsedProxy = UsedProxy;
         sample.IsRestartRequired = IsRestartRequired;
-        sample.Tag = Tag;
+        sample.Tag = tagRepository?.RegisterTag(Tag) ?? 0;
     }
 
     public double[] Values
@@ -97,7 +95,7 @@ public class ModelSample
 
     public bool IsRestartRequired { get; set; }
 
-    public int Tag { get; set; }
+    public object Tag { get; set; } = null;
 }
 
 [StructLayout(LayoutKind.Sequential)]

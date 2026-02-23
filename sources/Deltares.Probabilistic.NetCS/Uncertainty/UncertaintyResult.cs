@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
@@ -14,15 +15,17 @@ public class UncertaintyResult : IDisposable
     private List<Evaluation> realizations = null;
     private List<Evaluation> quantileRealizations = null;
     private List<Message> messages = null;
+    private TagRepository tagRepository = null;
 
     public UncertaintyResult()
     {
         this.id = Interface.Create("uncertainty_result");
     }
 
-    internal UncertaintyResult(int id)
+    internal UncertaintyResult(int id, TagRepository tagRepository)
     {
         this.id = id;
+        this.tagRepository = tagRepository;
     }
 
     public void Dispose()
@@ -71,7 +74,7 @@ public class UncertaintyResult : IDisposable
                 int[] realizationIds = Interface.GetArrayIdValue(id, "realizations");
                 foreach (int realizationId in realizationIds)
                 {
-                    realizations.Add(new Evaluation(realizationId));
+                    realizations.Add(new Evaluation(realizationId, tagRepository));
                 }
             }
 
@@ -90,7 +93,7 @@ public class UncertaintyResult : IDisposable
                 int[] realizationIds = Interface.GetArrayIdValue(id, "quantile_realizations");
                 foreach (int realizationId in realizationIds)
                 {
-                    realizations.Add(new Evaluation(realizationId));
+                    realizations.Add(new Evaluation(realizationId, tagRepository));
                 }
             }
 

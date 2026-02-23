@@ -36,7 +36,7 @@ namespace Deltares
 #endif
         typedef std::function<void(double)> ProgressLambda;
         typedef std::function<void(int, int, double, double)> DetailedProgressLambda;
-        typedef std::function<void(ProgressType, std::string)> TextualProgressLambda;
+        typedef std::function<void(ProgressType, const char* message)> TextualProgressLambda;
 
         class ProgressIndicator
         {
@@ -68,7 +68,7 @@ namespace Deltares
             }
             void doTextualProgress(ProgressType progressType, std::string text)
             {
-                if (textualProgressLambda != nullptr) textualProgressLambda(progressType, text);
+                if (textualProgressLambda != nullptr) textualProgressLambda(progressType, text.c_str());
             }
 
             void reset();

@@ -238,6 +238,11 @@ namespace Deltares
             handlersTable[id]->SetModelSampleCallBack(id, property_, callBack);
         }
 
+        void ProjectServer::SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
+        {
+            handlersTable[id]->SetProgressCallBacks(id, progress, detailed, textual);
+        }
+
         void ProjectServer::Execute(int id, std::string method_)
         {
             handlersTable[id]->Execute(id, method_);

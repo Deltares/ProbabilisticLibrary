@@ -13,13 +13,24 @@ public class TagRepository
 
     public int RegisterTag(object tag)
     {
-        tags[++counter] = tag;
-        return counter;
+        if (tag != null)
+        {
+            tags[++counter] = tag;
+            return counter;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     public object RetrieveTag(int index) 
     {
-        if (tags.ContainsKey(index))
+        if (index == 0)
+        {
+            return null;
+        }
+        else if (tags.ContainsKey(index))
         {
             return tags[index];
         }

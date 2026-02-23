@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Deltares.Probabilistic.Statistics;
-using Deltares.Probabilistic.Model;
+﻿using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
-using Deltares.Probabilistic.Logging;
 
 namespace Deltares.Probabilistic.Reliability
 {
@@ -63,7 +59,7 @@ namespace Deltares.Probabilistic.Reliability
                 if (designPoint == null)
                 {
                     int designPointId = Interface.GetIdValue(id, "design_point");
-                    designPoint = new DesignPoint(designPointId);
+                    designPoint = new DesignPoint(designPointId, TagRepository, this);
                 }
 
                 return designPoint;

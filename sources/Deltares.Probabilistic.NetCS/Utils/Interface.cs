@@ -256,6 +256,19 @@ namespace Deltares.Probabilistic.Utils
             }
         }
 
+        public static void SetProgressCallbacks(int id, ProgressCallBack progress, DetailedProgressCallBack detailed, TextualProgressCallBack textual)
+        {
+            try
+            {
+                NativeInterface.SetProgressCallBacks(id, progress, detailed, textual);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+        }
+
         public static IntPtr GetCallback(int id, string property)
         {
             try
@@ -331,7 +344,6 @@ namespace Deltares.Probabilistic.Utils
             IntPtr outputArray
         );
 
-        // void* callback(int n1, double** in2, int n2, double** out2)
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr MultipleCallback(
             int count1,
@@ -340,9 +352,17 @@ namespace Deltares.Probabilistic.Utils
             IntPtr outputMatrix
         );
 
-        // void* callback()
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr EmptyCallback();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void ProgressCallBack(double progress);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void DetailedProgressCallBack(int step, int loop, double reliability, double convergence);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void TextualProgressCallBack(int type, [MarshalAs(UnmanagedType.LPStr)] string text);
 
         // Import the native function from your library
         [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -443,6 +463,9 @@ namespace Deltares.Probabilistic.Utils
 
         [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetModelSampleCallback(int id, string property, ModelSampleCallback cb);
+
+        [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetProgressCallBacks(int id, ProgressCallBack progress, DetailedProgressCallBack detailed, TextualProgressCallBack textual);
 
         [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetEmptyCallBack(int id, string property, EmptyCallback cb);

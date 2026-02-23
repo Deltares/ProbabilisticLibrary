@@ -55,7 +55,7 @@ namespace Deltares.Probabilistic.Reliability
                 if (realization == null)
                 {
                     int realizationId = Interface.GetIdValue(id, "realization");
-                    realization = new Evaluation(realizationId);
+                    realization = new Evaluation(realizationId, this.TagRepository);
                 }
 
                 return realization;

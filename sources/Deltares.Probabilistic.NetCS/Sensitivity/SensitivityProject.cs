@@ -57,7 +57,7 @@ namespace Deltares.Probabilistic.Sensitivity
                 if (result == null)
                 {
                     int resultId = Interface.GetIdValue(id, "result");
-                    result = new SensitivityResult(resultId);
+                    result = new SensitivityResult(resultId, TagRepository);
                 }
 
                 return result;
@@ -80,7 +80,7 @@ namespace Deltares.Probabilistic.Sensitivity
                     int[] resultIds = Interface.GetArrayIdValue(id, "results");
                     foreach (int resultId in resultIds)
                     {
-                        results.Add(new SensitivityResult(resultId));
+                        results.Add(new SensitivityResult(resultId, TagRepository));
                     }
                 }
 

@@ -2,6 +2,7 @@
 using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Reliability;
 using System.Collections.Generic;
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Sensitivity;
@@ -13,15 +14,17 @@ public class SensitivityResult : IDisposable
     private List<SensitivityValue> values = null;
     private List<Evaluation> realizations = null;
     private List<Message> messages = null;
+    private TagRepository tagRepository = null;
 
     public SensitivityResult()
     {
         this.id = Interface.Create("sensitivity_result");
     }
 
-    internal SensitivityResult(int id)
+    internal SensitivityResult(int id, TagRepository tagRepository)
     {
         this.id = id;
+        this.tagRepository = tagRepository;
     }
 
     public void Dispose()
@@ -70,7 +73,7 @@ public class SensitivityResult : IDisposable
                 int[] realizationIds = Interface.GetArrayIdValue(id, "realizations");
                 foreach (int realizationId in realizationIds)
                 {
-                    realizations.Add(new Evaluation(realizationId));
+                    realizations.Add(new Evaluation(realizationId, tagRepository));
                 }
             }
 

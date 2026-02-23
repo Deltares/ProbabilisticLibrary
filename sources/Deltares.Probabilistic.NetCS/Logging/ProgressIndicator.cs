@@ -48,8 +48,10 @@ namespace Deltares.Probabilistic.Logging
             detailedProgressDelegate?.Invoke(step, loop, reliability, convergence);
         }
 
-        public void DoTextualProgress(ProgressType progressType, string text)
+        public void DoTextualProgress(int progressIndicator, string text)
         {
+            ProgressType progressType = progressIndicator == 0 ? ProgressType.Global : ProgressType.Detailed;
+
             textualProgressDelegate?.Invoke(progressType, text);
         }
     }

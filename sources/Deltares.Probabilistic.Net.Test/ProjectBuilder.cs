@@ -84,12 +84,7 @@ namespace Deltares.Probabilistic.Test
         {
             ZFunctionOutput output = function.Invoke(sample.Values);
             sample.Z = output.Z;
-            sample.Tag = tagRepository.RegisterTag(output);
-        }
-
-        public TagRepository GeTagRepository()
-        {
-            return tagRepository;
+            sample.Tag = output;
         }
     }
 
@@ -133,7 +128,6 @@ namespace Deltares.Probabilistic.Test
             ZSampleOutput zSampleOutput = GetSampleOutput(Linear);
 
             project.ZFunction = zSampleOutput.CalculateSample;
-            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -157,7 +151,6 @@ namespace Deltares.Probabilistic.Test
             ZSampleOutput zSampleOutput = GetSampleOutput(Sum);
 
             project.ZFunction = zSampleOutput.CalculateSample;
-            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -174,7 +167,6 @@ namespace Deltares.Probabilistic.Test
             ZSampleOutput zSampleOutput = GetSampleOutput(UnbalancedLinear);
 
             project.ZFunction = zSampleOutput.CalculateSample;
-            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -190,7 +182,6 @@ namespace Deltares.Probabilistic.Test
 
             uncertaintyProject.CorrelationMatrix = project.CorrelationMatrix;
             uncertaintyProject.ZFunction = project.ZFunction;
-            uncertaintyProject.TagRepository = project.TagRepository;
 
             return uncertaintyProject;
         }
@@ -206,7 +197,6 @@ namespace Deltares.Probabilistic.Test
 
             sensitivityProject.CorrelationMatrix = project.CorrelationMatrix;
             sensitivityProject.ZFunction = project.ZFunction;
-            sensitivityProject.TagRepository = project.TagRepository;
 
             return sensitivityProject;
         }
@@ -513,7 +503,6 @@ namespace Deltares.Probabilistic.Test
             ZSampleOutput zSampleOutput = GetSampleOutput(Noisy);
 
             project.ZFunction = zSampleOutput.CalculateSample;
-            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }

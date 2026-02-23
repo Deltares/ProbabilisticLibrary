@@ -735,7 +735,7 @@ namespace Deltares
                 else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
                 else if (property_ == "total_model_runs") return project->modelRuns;
             }
-            
+
             if (objectType == ObjectType::ValidationReport)
             {
                 std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
@@ -910,6 +910,7 @@ namespace Deltares
                 std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
 
                 if (property_ == "iteration") return evaluation->Iteration;
+                else if (property_ == "tag") return evaluation->Tag;
                 else if (property_ == "input_values_count") return static_cast<int>(evaluation->InputValues.size());
                 else if (property_ == "output_values_count") return static_cast<int>(evaluation->OutputValues.size());
             }
@@ -2253,6 +2254,18 @@ namespace Deltares
 
                     project->model->setRunMethod(callBack);
                 }
+            }
+        }
+
+        void ProjectHandler::SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
+        {
+            ObjectType objectType = types[id];
+
+            if (IsModelProjectType(objectType))
+            {
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+                project->progressIndicator = std::make_shared<Models::ProgressIndicator>(progress, detailed, textual);
             }
         }
 

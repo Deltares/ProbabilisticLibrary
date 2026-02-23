@@ -118,7 +118,7 @@ namespace Deltares
                 Z = sampleStruct->Z;
                 ExtendedLogging = sampleStruct->ExtendedLogging;
                 LoggingCounter = sampleStruct->LoggingCounter;
-                Tag = sampleStruct->Tag = Tag;
+                Tag = sampleStruct->Tag;
             }
 
             std::vector<double> Values;
