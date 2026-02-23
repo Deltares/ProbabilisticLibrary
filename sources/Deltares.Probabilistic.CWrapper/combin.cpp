@@ -110,14 +110,13 @@ extern "C"
 int combinemultipleelements_c(multipleElements* elements, betaAlphaCF* dpOut)
 {
     const int nrStoch = dpOut->size;
-    auto cmb = combineElements();
     auto elm = fillElements(elements);
     auto rhoC = vector1D(nrStoch);
     for (int i = 0; i < nrStoch; i++)
     {
         rhoC(i) = elements->designPoints[0].rho[i];
     }
-    auto result = cmb.combineMultipleElements(elm, rhoC, combineAndOr::combOr);
+    auto result = combineElements::combineMultipleElements(elm, rhoC, combineAndOr::combOr);
 
     dpOut->beta = result.ab.getBeta();
     for (int i = 0; i < nrStoch; i++)
@@ -188,7 +187,6 @@ extern "C"
 int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, betaAlphaCF* dpC, const int combAndOr)
 {
     auto nStochasts = dp1->size;
-    auto cmb = combineElements();
     auto rho = vector1D(nStochasts);
     auto alfa1 = vector1D(nStochasts);
     auto alfa2 = vector1D(nStochasts);
@@ -200,7 +198,7 @@ int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, b
     }
     auto elm1 = alphaBeta(dp1->beta, alfa1);
     auto elm2 = alphaBeta(dp2->beta, alfa2);
-    auto elm = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rho, static_cast<combineAndOr>(combAndOr));
+    auto elm = combineElements::combineTwoElementsPartialCorrelation(elm1, elm2, rho, static_cast<combineAndOr>(combAndOr));
 
     dpC->beta = elm.ab.getBeta();
     for (int i = 0; i < nStochasts; i++)
@@ -215,7 +213,6 @@ int combinemultipleelementsprob_c(multipleElements* elements, double* percentage
 {
     const int nrElms = elements->size;
     const int nrStoch = dpOut->size;
-    auto cmb = combineElements();
     auto elm = fillElements(elements);
 
     auto percentages = std::vector<double>(nrElms);
@@ -224,7 +221,7 @@ int combinemultipleelementsprob_c(multipleElements* elements, double* percentage
         percentages[i] = percentagesIn[i];
     }
 
-    auto result = cmb.combineMultipleElementsProb(elm, percentages, combineAndOr::combOr);
+    auto result = combineElements::combineMultipleElementsProb(elm, percentages, combineAndOr::combOr);
 
     dpOut->beta = result.ab.getBeta();
     for (int i = 0; i < nrStoch; i++)
