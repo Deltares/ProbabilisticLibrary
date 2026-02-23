@@ -285,9 +285,9 @@ namespace Deltares::Models
         }
     }
 
-    double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta) const
+    double ZModel::getBeta(std::shared_ptr<ModelSample> sample) const
     {
-        return this->zBetaLambda(sample, beta);
+        return this->zBetaLambda(sample);
     }
 
     void ZModel::validate(Logging::ValidationReport& report, const std::string& subject) const

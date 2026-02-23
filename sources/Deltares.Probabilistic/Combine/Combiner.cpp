@@ -80,7 +80,7 @@ namespace Deltares::Reliability
 
         if (model->canCalculateBetaDirection())
         {
-            Models::ZBetaLambda zBetaFunction = [model](const std::shared_ptr<Models::ModelSample>& sample, double beta)
+            Models::ZBetaLambda zBetaFunction = [model](const std::shared_ptr<Models::ModelSample>& sample)
             {
                 return model->getBetaDirection(sample);
             };

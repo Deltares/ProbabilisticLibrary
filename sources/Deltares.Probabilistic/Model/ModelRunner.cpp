@@ -295,7 +295,7 @@ namespace Deltares::Models
     {
         std::shared_ptr<ModelSample> xSample = getModelSample(sample);
 
-        return this->zModel->getBeta(xSample, sample->getBeta());
+        return this->zModel->getBeta(xSample);
     }
 
     Evaluation ModelRunner::getEvaluationFromSample(const std::shared_ptr<ModelSample>& sample)

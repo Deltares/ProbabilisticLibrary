@@ -33,7 +33,7 @@ namespace Deltares::Models
 {
     using ZLambda = std::function<void(std::shared_ptr<ModelSample>)>;
     using ZMultipleLambda = std::function<void(std::vector<std::shared_ptr<ModelSample>>)>;
-    using ZBetaLambda = std::function<double(std::shared_ptr<ModelSample>, double beta)>;
+    using ZBetaLambda = std::function<double(std::shared_ptr<ModelSample>)>;
 
     using ZValuesCallBack = void(*)(double* data, int size, double* outputValues);
     using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
@@ -124,7 +124,7 @@ namespace Deltares::Models
          */
         virtual void invoke(const std::vector<std::shared_ptr<ModelSample>>& samples);
 
-        double getBeta(std::shared_ptr<ModelSample> sample, double beta) const;
+        double getBeta(std::shared_ptr<ModelSample> sample) const;
 
         bool canCalculateBeta() const
         {
