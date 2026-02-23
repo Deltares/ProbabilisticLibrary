@@ -30,6 +30,8 @@
 
 namespace Deltares::Reliability
 {
+    using enum CombinerType;
+
     std::shared_ptr<Combiner> DesignPointCombiner::getCombiner() const
     {
         switch (combinerType)

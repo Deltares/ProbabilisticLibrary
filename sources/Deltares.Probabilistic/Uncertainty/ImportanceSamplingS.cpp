@@ -31,6 +31,7 @@
 #include "../Reliability/ImportanceSamplingSupport.h"
 
 using namespace Deltares::Models;
+using namespace Deltares::Reliability;
 
 namespace Deltares::Uncertainty
 {
@@ -50,7 +51,7 @@ namespace Deltares::Uncertainty
         int nParameters = modelRunner->getVaryingStochastCount();
 
         // for convergence, simulate that this is a reliability calculation with failure at given probability
-        Reliability::DesignPointBuilder designPointBuilder = Reliability::DesignPointBuilder(nParameters, Reliability::CenterOfGravity, this->Settings->StochastSet);
+        auto designPointBuilder = DesignPointBuilder(nParameters, DesignPointMethod::CenterOfGravity, this->Settings->StochastSet);
         double normalizedProbabilityForConvergence = std::min(Settings->ProbabilityForConvergence, 1 - Settings->ProbabilityForConvergence);
 
         std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);

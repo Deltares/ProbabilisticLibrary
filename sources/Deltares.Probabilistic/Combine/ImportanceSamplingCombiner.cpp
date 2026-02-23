@@ -116,7 +116,7 @@ namespace Deltares::Reliability
             alpha->AlphaCorrelated = -alpha->AlphaCorrelated;
         }
 
-        for (std::shared_ptr<ReliabilityResult>& report : designPoint->ReliabililityResults)
+        for (std::shared_ptr<ReliabilityResult>& report : designPoint->ReliabilityResults)
         {
             report->Reliability = -report->Reliability;
         }

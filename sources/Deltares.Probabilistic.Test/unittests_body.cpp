@@ -667,19 +667,19 @@ TEST(WaartsTests, testLinearResistanceNumericalIntegration)
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfGravity)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(Deltares::Reliability::CenterOfGravity);
+    tester.runNumInt(Deltares::Reliability::DesignPointMethod::CenterOfGravity);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfAngles)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(Deltares::Reliability::CenterOfAngles);
+    tester.runNumInt(Deltares::Reliability::DesignPointMethod::CenterOfAngles);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationNearestToMean)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(Deltares::Reliability::NearestToMean);
+    tester.runNumInt(Deltares::Reliability::DesignPointMethod::NearestToMean);
 }
 
 TEST(WaartsTests, testLinearResistanceImportanceSampling)

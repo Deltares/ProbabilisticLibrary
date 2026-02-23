@@ -30,7 +30,7 @@ namespace Deltares::Reliability
 {
     class ModeFinder;
 
-    enum DesignPointMethod
+    enum class DesignPointMethod
     {
         CenterOfGravity,
         CenterOfAngles,

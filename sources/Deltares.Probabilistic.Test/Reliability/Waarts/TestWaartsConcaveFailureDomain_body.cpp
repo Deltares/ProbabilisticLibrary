@@ -73,7 +73,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
         auto numint = dynamic_cast<Reliability::NumericalIntegration*>(calculator.get());
-        numint->Settings.designPointMethod = Reliability::NearestToMean;
+        numint->Settings.designPointMethod = Reliability::DesignPointMethod::NearestToMean;
         auto expected = expectedValuesNumericalIntegration();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }

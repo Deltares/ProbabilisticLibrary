@@ -514,7 +514,7 @@ namespace Deltares::Models
 
         for (const auto& reliabilityResult : this->reliabilityResults)
         {
-            designPoint->ReliabililityResults.push_back(reliabilityResult);
+            designPoint->ReliabilityResults.push_back(reliabilityResult);
         }
 
         for (const auto& evaluation : this->evaluations)

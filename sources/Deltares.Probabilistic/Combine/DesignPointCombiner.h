@@ -28,8 +28,8 @@
 
 namespace Deltares::Reliability
 {
-    enum CombinerType { Hohenbichler, ImportanceSampling, DirectionalSampling, HohenbichlerForm };
-    enum ExcludingCombinerType { WeightedSum, HohenbichlerExcluding };
+    enum class CombinerType { Hohenbichler, ImportanceSampling, DirectionalSampling, HohenbichlerForm };
+    enum class ExcludingCombinerType { WeightedSum, HohenbichlerExcluding };
 
     /**
      * \brief Combines design points
@@ -37,7 +37,7 @@ namespace Deltares::Reliability
     class DesignPointCombiner
     {
     public:
-        DesignPointCombiner() {}
+        DesignPointCombiner() = default;
         DesignPointCombiner(CombinerType combinerType)
         {
             this->combinerType = combinerType;

@@ -21,8 +21,6 @@
 //
 #include "ReliabilityProject.h"
 
-#include <iostream>
-
 namespace Deltares::Reliability
 {
     void ReliabilityProject::run()
@@ -31,17 +29,17 @@ namespace Deltares::Reliability
         this->reliabilityMethod = this->settings->GetReliabilityMethod();
         this->runSettings = this->settings->RunSettings;
 
-        if (this->settings->ReliabilityResult == Reliability::ResultDesignPoint)
+        if (this->settings->ReliabilityResult == ReliabilityResultType::ResultDesignPoint)
         {
             this->designPoint = this->getDesignPoint();
         }
-        else if (this->settings->ReliabilityResult == Reliability::ResultFragilityCurve)
+        else if (this->settings->ReliabilityResult == ReliabilityResultType::ResultFragilityCurve)
         {
             this->fragilityCurve = this->getFragilityCurve();
         }
     }
 
-    std::shared_ptr<Reliability::DesignPoint> ReliabilityProject::getDesignPoint()
+    std::shared_ptr<DesignPoint> ReliabilityProject::getDesignPoint()
     {
         this->model->zValueConverter = this->limitStateFunction;
 

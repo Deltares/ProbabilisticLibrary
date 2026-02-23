@@ -147,7 +147,7 @@ namespace Deltares::Probabilistic::Test
         constexpr double margin = 1e-9;
         auto calculator = NumericalBisection();
         calculator.Settings->MaximumIterations = 20;
-        calculator.Settings->designPointMethod = NearestToMean;
+        calculator.Settings->designPointMethod = DesignPointMethod::NearestToMean;
 
         auto modelRunner = projectBuilder().BuildProject();
 
@@ -165,9 +165,9 @@ namespace Deltares::Probabilistic::Test
 
         auto project = projectBuilder::getLinearProject();
         project->reliabilityMethod = calculator;
-        project->settings->ReliabilityMethod = ReliabilityNumericalBisection;
+        project->settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityNumericalBisection;
         project->settings->MaximumIterations = 20;
-        project->settings->designPointMethod = CenterOfGravity;
+        project->settings->designPointMethod = DesignPointMethod::CenterOfGravity;
 
         auto designPoint = project->getDesignPoint();
 
@@ -196,7 +196,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = SubsetSimulation();
         calculator.Settings->SampleMethod = AdaptiveConditional;
-        calculator.Settings->designPointMethod = NearestToMean;
+        calculator.Settings->designPointMethod = DesignPointMethod::NearestToMean;
 
         auto modelRunner = projectBuilder().BuildProject();
 
@@ -213,7 +213,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = SubsetSimulation();
         calculator.Settings->SampleMethod = AdaptiveConditional;
-        calculator.Settings->designPointMethod = CenterOfGravity;
+        calculator.Settings->designPointMethod = DesignPointMethod::CenterOfGravity;
 
         auto modelRunner = projectBuilder().BuildProject();
 

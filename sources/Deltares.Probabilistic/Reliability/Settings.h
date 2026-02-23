@@ -44,9 +44,9 @@
 
 namespace Deltares::Reliability
 {
-    enum ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
+    enum class ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
 
-    enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
+    enum class ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
         ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
         ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
         ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM};
