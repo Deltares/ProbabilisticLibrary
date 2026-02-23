@@ -152,17 +152,16 @@ namespace Deltares::Reliability
         //
         //   Correct alpha for neglected area of fail domain
         //
+        const double alpha_multiplier = std::max(0.0, 0.1710 + 0.03160 * std::min(element1.getBeta(), element2.getBeta()))
+            * exp(-pow((element1.getBeta() - element2.getBeta()) / 0.40, 2));
         for (size_t k = 0; k < nStochasts; k++)
         {
             if (element1.getAlphaI(k) != 0.0 || element2.getAlphaI(k) != 0.0)
             {
-                const double alpha_factor = alphaFactor(element1.getAlphaI(k), element2.getAlphaI(k), rhoP(k));
-
-                const double alpha_multiplier = 1.0 + std::max(0.0, 0.1710 + 0.03160 * std::min(element1.getBeta(), element2.getBeta()))
-                    * exp(-pow((element1.getBeta() - element2.getBeta()) / 0.40, 2)) * alpha_factor;
-
-                alphaX1(k) *= alpha_multiplier;
-                alphaX2(k) *= alpha_multiplier;
+                const double correction_factor = 1.0 + alpha_multiplier *
+                    alphaFactor(element1.getAlphaI(k), element2.getAlphaI(k), rhoP(k));
+                alphaX1(k) *= correction_factor;
+                alphaX2(k) *= correction_factor;
             }
         }
         //
@@ -187,18 +186,23 @@ namespace Deltares::Reliability
         return { element3, failureHohenbichler };
     }
 
+    /// <summary>
+    /// alpha factor in correction of alpha for neglected area of fail domain for one stochast
+    /// </summary>
+    /// <param name="alpha1"> one of the alpha values of the first element </param>
+    /// <param name="alpha2"> one of the alpha values of the second element </param>
+    /// <param name="rho"> correlation coefficient </param>
+    /// <returns> the alpha factor </returns>
     double combineElements::alphaFactor(const double alpha1, const double alpha2, const double rho)
     {
-        double alpha_factor;
         if (fabs(alpha1) >= fabs(alpha2))
         {
-            alpha_factor = 1.0 - rho * fabs(alpha2 / alpha1);
+            return 1.0 - rho * fabs(alpha2 / alpha1);
         }
         else
         {
-            alpha_factor = 1.0 - rho * fabs(alpha1 / alpha2);
+            return 1.0 - rho * fabs(alpha1 / alpha2);
         }
-        return alpha_factor;
     }
 
     // Auxiliary routine: the arrays should all have the same size

@@ -58,7 +58,7 @@ namespace Deltares::Reliability
         static std::pair<double, double> setLargestBeta(const double beta1, const double beta2, const double pf1, const double pf2);
         static double combinedFailure(const combineAndOr combAndOr, const double pf1, const double pf2,
             const double pfu, const double pf2pf1);
-        static double alphaFactor(const double alpha1, const double alpha2, const double rho);
+        static inline double alphaFactor(const double alpha1, const double alpha2, const double rho);
     };
 }
 
