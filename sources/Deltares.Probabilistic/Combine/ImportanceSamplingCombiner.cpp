@@ -23,7 +23,6 @@
 
 #include <algorithm>
 #include <format>
-#include <utility>
 
 #include "../Math/NumericSupport.h"
 #include "../Reliability/DesignPoint.h"
@@ -91,7 +90,7 @@ namespace Deltares::Reliability
             double prob = 1.0;
             for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
             {
-                prob *= Statistics::StandardNormal::getQFromU(designPoint->Beta);
+                prob *= StandardNormal::getQFromU(designPoint->Beta);
             }
 
             return prob;
@@ -101,7 +100,7 @@ namespace Deltares::Reliability
             double prob = 1.0;
             for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
             {
-                prob *= Statistics::StandardNormal::getPFromU(designPoint->Beta);
+                prob *= StandardNormal::getPFromU(designPoint->Beta);
             }
 
             return 1.0 - prob;
@@ -124,7 +123,7 @@ namespace Deltares::Reliability
     }
 
     std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::combineDesignPointsAdjusted(combineAndOr combineMethodType,
-        const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+        const std::shared_ptr<SelfCorrelationMatrix>& selfCorrelationMatrix,
         const std::shared_ptr<Models::ProgressIndicator>& progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints)
     {
         constexpr double deltaReliabilityIndex = 0.01;
@@ -168,7 +167,8 @@ namespace Deltares::Reliability
                 builder.addSample(designPointSample);
 
                 // calculate contributing probability for the stochast
-                const std::shared_ptr<DesignPoint> contributingRealization = getSeriesProbability(selfCorrelationMatrix, currentDesignPoint, previousRealizations, currentDesignPoint, stochasts, progress);
+                const auto contributingRealization = getSeriesProbability(selfCorrelationMatrix, currentDesignPoint,
+                    previousRealizations, currentDesignPoint, stochasts);
 
                 // add contributing probability of total probability
                 probability += currentDesignPoint->getFailureProbability() * contributingRealization->getNonFailureProbability();
@@ -181,7 +181,7 @@ namespace Deltares::Reliability
                 }
 
                 const double maxProbability = probability + maxRemainingProbability;
-                const double maxReliability = Statistics::StandardNormal::getUFromQ(maxProbability);
+                const double maxReliability = StandardNormal::getUFromQ(maxProbability);
                 double diffReliability = std::fabs(reliabilityIndex - maxReliability);
 
                 if (progress != nullptr)
@@ -232,17 +232,19 @@ namespace Deltares::Reliability
     }
 
 
-    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::getSeriesProbability(const std::shared_ptr<Statistics::SelfCorrelationMatrix>&
-        selfCorrelationMatrix, const std::shared_ptr<DesignPoint>& currentDesignPoint, const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, const std::vector<std::shared_ptr<Stochast>>& stochasts, const
-        std::shared_ptr<Models::ProgressIndicator>& progress)
+    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::getSeriesProbability(const std::shared_ptr<SelfCorrelationMatrix>&
+        selfCorrelationMatrix, const std::shared_ptr<DesignPoint>& currentDesignPoint,
+        const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints,
+        const std::shared_ptr<DesignPoint>& startPoint, const std::vector<std::shared_ptr<Stochast>>& stochasts)
     {
         // create the model from design points
-        const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineAndOr::combOr, currentDesignPoint, previousDesignPoints, stochasts, selfCorrelationMatrix);
+        const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineAndOr::combOr, currentDesignPoint,
+            previousDesignPoints, stochasts, selfCorrelationMatrix);
 
         const std::shared_ptr<ReliabilityProject> project = getProject(model, selfCorrelationMatrix);
 
         const std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
-        fillSettingsSeries(std::move(startPoint), model, importanceSampling->Settings);
+        fillSettingsSeries(startPoint, model, importanceSampling->Settings);
 
         project->reliabilityMethod = importanceSampling;
 

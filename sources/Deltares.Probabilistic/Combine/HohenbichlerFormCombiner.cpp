@@ -46,14 +46,13 @@ namespace Deltares::Reliability
             elm.push_back(dp);
         }
 
-        auto cmb = combineElements();
         auto rho = Numeric::vector1D(nStochasts);
         for (size_t i = 0; i < nStochasts; i++)
         {
             rho(i) = selfCorrelationMatrix->getSelfCorrelation(stochasts[i]);
         }
 
-        const auto [ab, nFail] = cmb.combineMultipleElements(elm, rho, combineMethodType);
+        const auto [ab, nFail] = combineElements::combineMultipleElements(elm, rho, combineMethodType);
         nonConvergedForm += nFail;
 
         auto dp = std::make_shared<DesignPoint>();

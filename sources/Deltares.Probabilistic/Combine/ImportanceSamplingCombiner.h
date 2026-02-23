@@ -74,9 +74,9 @@ namespace Deltares::Reliability
          * \param progress Progress indicator (optional)
          * \return Design point resembling the combined reliability and alpha values
          */
-        std::shared_ptr<DesignPoint> combineDesignPointsAdjusted(combineAndOr combineMethodType, const std::shared_ptr<Statistics::SelfCorrelationMatrix>&
-                                                                 selfCorrelationMatrix, const std::shared_ptr<Models::ProgressIndicator>&
-                                                                 progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints);
+        static std::shared_ptr<DesignPoint> combineDesignPointsAdjusted(combineAndOr combineMethodType, const std::shared_ptr<Statistics::SelfCorrelationMatrix>&
+                                                                        selfCorrelationMatrix, const std::shared_ptr<Models::ProgressIndicator>&
+                                                                        progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints);
 
         /**
          * \brief Calculates the probability that a sample does not fail for previous design points when it fails to the current design point
@@ -85,13 +85,12 @@ namespace Deltares::Reliability
          * \param previousDesignPoints Previous design point
          * \param startPoint Starting point of the calculation
          * \param stochasts All stochasts 
-         * \param progress Progress indicator (optional)
          * \return Probability
          */
-        std::shared_ptr<DesignPoint> getSeriesProbability(const std::shared_ptr<Statistics::SelfCorrelationMatrix>&
-                                                          selfCorrelationMatrix, const std::shared_ptr<DesignPoint>&
-                                                          currentDesignPoint, const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, const
-                                                          std::shared_ptr<Models::ProgressIndicator>& progress);
+        static std::shared_ptr<DesignPoint> getSeriesProbability(const std::shared_ptr<Statistics::SelfCorrelationMatrix>&
+            selfCorrelationMatrix, const std::shared_ptr<DesignPoint>&
+            currentDesignPoint, const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints,
+            const std::shared_ptr<DesignPoint>& startPoint, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
 
         /**
          * \brief Calculates the design point when combination type is parallel
@@ -101,9 +100,9 @@ namespace Deltares::Reliability
          * \param progress Progress indicator (optional)
          * \return Design point
          */
-        std::shared_ptr<DesignPoint> getParallelProbability(const std::shared_ptr<Statistics::SelfCorrelationMatrix>&
-                                                            selfCorrelationMatrix, const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, const
-                                                            std::shared_ptr<Models::ProgressIndicator>& progress);
+        static std::shared_ptr<DesignPoint> getParallelProbability(const std::shared_ptr<Statistics::SelfCorrelationMatrix>&
+                                                                   selfCorrelationMatrix, const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, const
+                                                                   std::shared_ptr<Models::ProgressIndicator>& progress);
 
         /**
          * \brief Fills the settings for series algorithm
@@ -111,16 +110,17 @@ namespace Deltares::Reliability
          * \param model Linearized model
          * \param settings Settings to be filled
          */
-        void fillSettingsSeries(const std::shared_ptr<DesignPoint>& startPoint, const std::shared_ptr<CombinedDesignPointModel>&
-                                model, const std::shared_ptr<ImportanceSamplingSettings>& settings);
+        static void fillSettingsSeries(const std::shared_ptr<DesignPoint>& startPoint, const std::shared_ptr<CombinedDesignPointModel>&
+                                       model, const std::shared_ptr<ImportanceSamplingSettings>& settings);
 
         /**
          * \brief Fills the settings for parallel algorithm
          * \param model Linearized model
          * \param settings Settings to be filled
+         * \param factor multiplication factor for settings
          */
-        void fillSettingsParallel(const std::shared_ptr<CombinedDesignPointModel>& model, const std::shared_ptr<ImportanceSamplingSettings>&
-                                  settings, double factor);
+        static void fillSettingsParallel(const std::shared_ptr<CombinedDesignPointModel>& model, const std::shared_ptr<ImportanceSamplingSettings>&
+                                         settings, double factor);
 
     };
 }
