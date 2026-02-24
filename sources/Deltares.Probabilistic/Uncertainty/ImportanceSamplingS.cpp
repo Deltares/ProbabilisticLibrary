@@ -27,7 +27,6 @@
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "ImportanceSamplingSettingsS.h"
-#include "../Reliability/DesignPointBuilder.h"
 #include "../Reliability/ImportanceSamplingSupport.h"
 
 using namespace Deltares::Models;
@@ -51,8 +50,8 @@ namespace Deltares::Uncertainty
         int nParameters = modelRunner->getVaryingStochastCount();
 
         // for convergence, simulate that this is a reliability calculation with failure at given probability
-        auto designPointBuilder = DesignPointBuilder(nParameters, DesignPointMethod::CenterOfGravity, this->Settings->StochastSet);
-        double normalizedProbabilityForConvergence = std::min(Settings->ProbabilityForConvergence, 1 - Settings->ProbabilityForConvergence);
+        designPointBuilder = DesignPointBuilder(nParameters, DesignPointMethod::CenterOfGravity, this->Settings->StochastSet);
+        normalizedProbabilityForConvergence = std::min(Settings->ProbabilityForConvergence, 1 - Settings->ProbabilityForConvergence);
 
         std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
         std::vector<std::shared_ptr<Sample>> samples;
@@ -67,8 +66,8 @@ namespace Deltares::Uncertainty
 
         std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
 
-        std::vector<double> factors = getFactors(*Settings->StochastSet);
-        double dimensionality = ImportanceSamplingSupport::getDimensionality(factors);
+        factors = getFactors(*Settings->StochastSet);
+        dimensionality = ImportanceSamplingSupport::getDimensionality(factors);
 
         bool converged = false;
 
@@ -134,16 +133,7 @@ namespace Deltares::Uncertainty
                 }
             }
 
-            // check if convergence is reached (or stop criterion)
-            if (sampleIndex >= Settings->MinimumSamples)
-            {
-                std::shared_ptr<Sample> designPoint = designPointBuilder.getSample();
-
-                double designPointWeight = ImportanceSamplingSupport::getSampleWeight(*designPoint, *center, dimensionality, factors);
-
-                double convergence = ImportanceSamplingSupport::getConvergence(normalizedProbabilityForConvergence, designPointWeight, nSamples);
-                converged = convergence < this->Settings->VariationCoefficient;
-            }
+            converged = GetConverged(sampleIndex, *center, nSamples);
         }
 
         adjustWeights(weights, nSamples - sumWeights);
@@ -175,14 +165,10 @@ namespace Deltares::Uncertainty
             }
         }
 
-        if (this->correlationMatrixBuilder != nullptr)
-        {
-            this->correlationMatrixBuilder->registerWeights(weights);
-            this->correlationMatrixBuilder->registerSamples(stochast, zValues);
-        }
+        registerWeights(weights);
+        registerSamples(stochast, zValues);
 
         return result;
-
     }
 
     /// <summary>
@@ -223,6 +209,42 @@ namespace Deltares::Uncertainty
         if (registerSamplesForCorrelation)
         {
             modelRunner.registerSample(correlationMatrixBuilder, sample);
+        }
+    }
+
+    // check if convergence is reached (or stop criterion)
+    bool ImportanceSamplingS::GetConverged(int sampleIndex, const Sample& center, int nSamples)
+    {
+        bool converged = false;
+
+        // check if convergence is reached (or stop criterion)
+        if (sampleIndex >= Settings->MinimumSamples)
+        {
+            const auto designPoint = designPointBuilder.getSample();
+
+            const double designPointWeight =
+                ImportanceSamplingSupport::getSampleWeight(*designPoint, center, dimensionality, factors);
+
+            const double convergence = ImportanceSamplingSupport::getConvergence(
+                normalizedProbabilityForConvergence, designPointWeight, nSamples);
+            converged = convergence < Settings->VariationCoefficient;
+        }
+        return converged;
+    }
+
+    void ImportanceSamplingS::registerWeights(const std::vector<double>& weights) const
+    {
+        if (this->correlationMatrixBuilder != nullptr)
+        {
+            this->correlationMatrixBuilder->registerWeights(weights);
+        }
+    }
+
+    void ImportanceSamplingS::registerSamples(const std::shared_ptr<Statistics::Stochast>& stochast, const std::vector<double>& zValues) const
+    {
+        if (this->correlationMatrixBuilder != nullptr)
+        {
+            this->correlationMatrixBuilder->registerSamples(stochast, zValues);
         }
     }
 
