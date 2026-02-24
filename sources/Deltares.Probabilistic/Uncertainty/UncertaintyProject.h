@@ -109,7 +109,7 @@ namespace Deltares::Uncertainty
         }
 
     private:
-        std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+        std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
     };
 }
 

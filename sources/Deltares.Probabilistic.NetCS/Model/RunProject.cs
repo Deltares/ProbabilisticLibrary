@@ -4,6 +4,7 @@ using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 using System;
 using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Uncertainty;
 
 namespace Deltares.Probabilistic.Reliability
 {
@@ -31,7 +32,15 @@ namespace Deltares.Probabilistic.Reliability
                 if (settings == null)
                 {
                     int settingsId = Interface.GetIdValue(id, "settings");
-                    settings = new RunSettings(settingsId);
+                    if (settingsId == 0)
+                    {
+                        settings = new RunSettings();
+                        Interface.SetIntValue(id, "settings", settings.GetId());
+                    }
+                    else
+                    {
+                        settings = new RunSettings(settingsId);
+                    }
                 }
                 return settings;
             }

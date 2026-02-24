@@ -1,4 +1,5 @@
 ﻿using System;
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
@@ -8,15 +9,17 @@ public class SensitivityValue : IDisposable
 {
     private int id = 0;
     private Stochast stochast = null;
+    private IStochastProvider stochastProvider = null;
 
     public SensitivityValue()
     {
         this.id = Interface.Create("sensitivity_value");
     }
 
-    internal SensitivityValue(int id)
+    internal SensitivityValue(int id, IStochastProvider stochastProvider)
     {
         this.id = id;
+        this.stochastProvider = stochastProvider;
     }
 
     public void Dispose()
@@ -36,7 +39,8 @@ public class SensitivityValue : IDisposable
             if (stochast == null)
             {
                 int stochastId = Interface.GetIdValue(id, "variable");
-                stochast = new Stochast(stochastId);
+                stochast = stochastProvider?.GetStochast(stochastId) ?? new Stochast(stochastId);
+                stochastProvider = null; // not needed any more
             }
 
             return stochast;

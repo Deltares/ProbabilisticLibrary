@@ -4,6 +4,7 @@ using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Reliability;
 
 namespace Deltares.Probabilistic.Sensitivity
 {
@@ -32,7 +33,15 @@ namespace Deltares.Probabilistic.Sensitivity
                 if (settings == null)
                 {
                     int settingsId = Interface.GetIdValue(id, "settings");
-                    settings = new SensitivitySettings(settingsId);
+                    if (settingsId == 0)
+                    {
+                        settings = new SensitivitySettings();
+                        Interface.SetIntValue(id, "settings", settings.GetId());
+                    }
+                    else
+                    {
+                        settings = new SensitivitySettings(settingsId);
+                    }
                 }
                 return settings;
             }
@@ -57,7 +66,7 @@ namespace Deltares.Probabilistic.Sensitivity
                 if (result == null)
                 {
                     int resultId = Interface.GetIdValue(id, "result");
-                    result = new SensitivityResult(resultId, TagRepository);
+                    result = new SensitivityResult(resultId, TagRepository, this);
                 }
 
                 return result;
@@ -80,7 +89,7 @@ namespace Deltares.Probabilistic.Sensitivity
                     int[] resultIds = Interface.GetArrayIdValue(id, "results");
                     foreach (int resultId in resultIds)
                     {
-                        results.Add(new SensitivityResult(resultId, TagRepository));
+                        results.Add(new SensitivityResult(resultId, TagRepository, this));
                     }
                 }
 

@@ -106,7 +106,7 @@ namespace Deltares::Sensitivity
         std::vector<std::shared_ptr<Logging::Message>> messages;
 
     private:
-        std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+        std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
     };
 }
 

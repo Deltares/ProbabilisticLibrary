@@ -36,7 +36,15 @@ namespace Deltares.Probabilistic.Uncertainty
                 if (settings == null)
                 {
                     int settingsId = Interface.GetIdValue(id, "settings");
-                    settings = new UncertaintySettings(settingsId);
+                    if (settingsId == 0)
+                    {
+                        settings = new UncertaintySettings();
+                        Interface.SetIntValue(id, "settings", settings.GetId());
+                    }
+                    else
+                    {
+                        settings = new UncertaintySettings(settingsId);
+                    }
                 }
                 return settings;
             }
@@ -63,7 +71,7 @@ namespace Deltares.Probabilistic.Uncertainty
             {
                 if (result == null)
                 {
-                    int resultId = Interface.GetIdValue(id, "result");
+                    int resultId = Interface.GetIdValue(id, "uncertainty_result");
                     result = new UncertaintyResult(resultId, TagRepository);
                 }
 
@@ -71,7 +79,7 @@ namespace Deltares.Probabilistic.Uncertainty
             }
             set
             {
-                Interface.SetIntValue(id, "result", value.GetId());
+                Interface.SetIntValue(id, "uncertainty_result", value.GetId());
                 result = value;
             }
         }
@@ -84,7 +92,7 @@ namespace Deltares.Probabilistic.Uncertainty
                 {
                     results = new List<UncertaintyResult>();
 
-                    int[] resultIds = Interface.GetArrayIdValue(id, "results");
+                    int[] resultIds = Interface.GetArrayIdValue(id, "uncertainty_results");
                     foreach (int resultId in resultIds)
                     {
                         results.Add(new UncertaintyResult(resultId, TagRepository));
@@ -108,13 +116,14 @@ namespace Deltares.Probabilistic.Uncertainty
             }
         }
 
-        public IList<Stochast> Stochasts
+        public IList<Stochast> StochastResults
         {
             get
             {
                 if (stochasts == null)
                 {
-                    stochasts = new List<Stochast>(this.Results.Select(p => p.Stochast));
+                    stochasts = new List<Stochast>();
+                    stochasts.AddRange(Results.Select(p => p.Stochast));
                 }
 
                 return stochasts;
