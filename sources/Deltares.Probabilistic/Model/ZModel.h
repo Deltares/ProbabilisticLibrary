@@ -29,205 +29,202 @@
 #include "ZValueConverter.h"
 #include "SampleRepository.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    using ZLambda = std::function<void(std::shared_ptr<ModelSample>)>;
+    using ZMultipleLambda = std::function<void(std::vector<std::shared_ptr<ModelSample>>)>;
+    using ZBetaLambda = std::function<double(std::shared_ptr<ModelSample>, double beta)>;
+
+    using ZValuesCallBack = void(*)(double* data, int size, double* outputValues);
+    using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
+    using EmptyCallBack = void(*)();
+
+    using ProgressCallBack = void(*)(double progress);
+    using DetailedProgressCallBack = void(*)(int step, int loop, double reliability, double convergence);
+    using TextualProgressCallBack = void(*)(int progressIndicator, const char* text);
+
+    class ZModel
     {
-        using ZLambda = std::function<void(std::shared_ptr<ModelSample>)>;
-        using ZMultipleLambda = std::function<void(std::vector<std::shared_ptr<ModelSample>>)>;
-        using ZBetaLambda = std::function<double(std::shared_ptr<ModelSample>, double beta)>;
+    public:
+        ZModel() = default;
 
-        using ZValuesCallBack = void(*)(double* data, int size, double* outputValues);
-        using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
-        using EmptyCallBack = void(*)();
-
-        using ProgressCallBack = void(*)(double progress);
-        using DetailedProgressCallBack = void(*)(int step, int loop, double reliability, double convergence);
-        using TextualProgressCallBack = void(*)(int progressIndicator, const char* text);
-
-        class ZModel
+        explicit ZModel(const ZLambda& zLambda, const ZMultipleLambda& zMultipleLambda = nullptr) :
+            zLambda(zLambda), zMultipleLambda(zMultipleLambda)
         {
-        public:
-            ZModel() = default;
+            callbackAssigned = zLambda != nullptr;
+        }
 
-            explicit ZModel(const ZLambda& zLambda, const ZMultipleLambda& zMultipleLambda = nullptr) :
-                zLambda(zLambda), zMultipleLambda(zMultipleLambda)
+        ZModel(ZValuesCallBack zValuesLambda, ZValuesMultipleCallBack zValuesMultipleLambda = nullptr)
+        {
+            this->zLambda = this->getLambdaFromZValuesCallBack(zValuesLambda);
+            if (zValuesMultipleLambda != nullptr)
             {
-                callbackAssigned = zLambda != nullptr;
+                this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(zValuesMultipleLambda);
             }
 
-            ZModel(ZValuesCallBack zValuesLambda, ZValuesMultipleCallBack zValuesMultipleLambda = nullptr)
-            {
-                this->zLambda = this->getLambdaFromZValuesCallBack(zValuesLambda);
-                if (zValuesMultipleLambda != nullptr)
-                {
-                    this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(zValuesMultipleLambda);
-                }
+            callbackAssigned = this->zLambda != nullptr;
+        }
 
-                callbackAssigned = this->zLambda != nullptr;
-            }
+        void setMultipleCallback(ZValuesMultipleCallBack multipleCallBack)
+        {
+            this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(multipleCallBack);
+        }
 
-            void setMultipleCallback(ZValuesMultipleCallBack multipleCallBack)
-            {
-                this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(multipleCallBack);
-            }
+        void setModelSampleCallback(Models::ModelSampleCallback modelSampleCallBack)
+        {
+            this->zLambda = this->getLambdaFromModelSampleCallBack(modelSampleCallBack);
+        }
 
-            void setModelSampleCallback(Models::ModelSampleCallback modelSampleCallBack)
-            {
-                this->zLambda = this->getLambdaFromModelSampleCallBack(modelSampleCallBack);
-            }
+        /**
+         * \brief Name of the model
+         */
+        std::string name = "";
 
-            /**
-             * \brief Name of the model
-             */
-            std::string name = "";
+        /**
+         * \brief Input parameters of the model
+         */
+        std::vector<std::shared_ptr<ModelInputParameter>> inputParameters;
 
-            /**
-             * \brief Input parameters of the model
-             */
-            std::vector<std::shared_ptr<ModelInputParameter>> inputParameters;
+        /**
+         * \brief Output parameters of the model
+         */
+        std::vector<std::shared_ptr<ModelInputParameter>> outputParameters;
 
-            /**
-             * \brief Output parameters of the model
-             */
-            std::vector<std::shared_ptr<ModelInputParameter>> outputParameters;
+        /**
+         * \brief Makes the model ready for invocations
+         */
+        virtual void initializeForRun();
 
-            /**
-             * \brief Makes the model ready for invocations
-             */
-            virtual void initializeForRun();
+        void setRunMethod(EmptyCallBack runMethod)
+        {
+            this->runMethod = runMethod;
+        }
 
-            void setRunMethod(EmptyCallBack runMethod)
-            {
-                this->runMethod = runMethod;
-            }
+        /**
+         * \brief The index of the underlying model values if the model returns an array or tuple
+         */
+        int Index = 0;
 
-            /**
-             * \brief The index of the underlying model values if the model returns an array or tuple
-             */
-            int Index = 0;
+        /**
+         * \brief Calculates the z-value of a sample based on a calculated sample
+         */
+        std::shared_ptr<ZValueConverter> zValueConverter = std::make_shared<ZValueConverter>();
 
-            /**
-             * \brief Calculates the z-value of a sample based on a calculated sample
-             */
-            std::shared_ptr<ZValueConverter> zValueConverter = std::make_shared<ZValueConverter>();
+        void setBetaLambda(ZBetaLambda zBetaLambda)
+        {
+            this->zBetaLambda = zBetaLambda;
+        }
 
-            void setBetaLambda(ZBetaLambda zBetaLambda)
-            {
-                this->zBetaLambda = zBetaLambda;
-            }
+        void releaseCallBacks();
 
-            void releaseCallBacks();
+        /**
+         * \brief defines the maximum number of parallel processes or threads
+         * \param maxProcesses Maximum number of parallel processes or threads
+         */
+        void setMaxProcesses(int maxProcesses);
 
-            /**
-             * \brief defines the maximum number of parallel processes or threads
-             * \param maxProcesses Maximum number of parallel processes or threads
-             */
-            void setMaxProcesses(int maxProcesses);
+        /**
+         * \brief Calculates a sample
+         */
+        virtual void invoke(const std::shared_ptr<ModelSample>& sample);
 
-            /**
-             * \brief Calculates a sample
-             */
-            virtual void invoke(const std::shared_ptr<ModelSample>& sample);
+        /**
+         * \brief Calculates a number of samples
+         */
+        virtual void invoke(const std::vector<std::shared_ptr<ModelSample>>& samples);
 
-            /**
-             * \brief Calculates a number of samples
-             */
-            virtual void invoke(const std::vector<std::shared_ptr<ModelSample>>& samples);
+        double getBeta(std::shared_ptr<ModelSample> sample, double beta);
 
-            double getBeta(std::shared_ptr<ModelSample> sample, double beta);
+        bool canCalculateBeta() const
+        {
+            return this->zBetaLambda != nullptr;
+        }
 
-            bool canCalculateBeta() const
-            {
-                return this->zBetaLambda != nullptr;
-            }
+        int getModelRuns() const
+        {
+            return modelRuns;
+        }
 
-            int getModelRuns() const
-            {
-                return modelRuns;
-            }
+        void resetModelRuns()
+        {
+            modelRuns = 0;
+        }
 
-            void resetModelRuns()
-            {
-                modelRuns = 0;
-            }
+        void setAllowRepository(bool allowRepository)
+        {
+            this->isRepositoryAllowed = allowRepository;
+        }
 
-            void setAllowRepository(bool allowRepository)
-            {
-                this->isRepositoryAllowed = allowRepository;
-            }
+        void clearRepository()
+        {
+            this->repository.clear();
+        }
 
-            void clearRepository()
-            {
-                this->repository.clear();
-            }
+        /**
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
+         * \param subject String describing the validated object
+         */
+        virtual void validate(Logging::ValidationReport& report, const std::string& subject) const;
 
-            /**
-             * \brief Reports whether these settings have valid values
-             * \param report Report in which the validity is reported
-             * \param subject String describing the validated object
-             */
-            virtual void validate(Logging::ValidationReport& report, const std::string& subject) const;
+        /**
+         * \brief Indicates whether the model has been assigned with a valid callback
+         */
+        bool callbackAssigned = true;
 
-            /**
-             * \brief Indicates whether the model has been assigned with a valid callback
-             */
-            bool callbackAssigned = true;
+    private:
+        ZLambda zLambda = nullptr;
+        ZMultipleLambda zMultipleLambda = nullptr;
+        ZBetaLambda zBetaLambda = nullptr;
+        EmptyCallBack runMethod = nullptr;
+        int maxProcesses = 1;
+        int modelRuns = 0;
+        int inputParametersCount = 0;
+        int outputParametersCount = 0;
+        ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
+        ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
 
-        private:
-            ZLambda zLambda = nullptr;
-            ZMultipleLambda zMultipleLambda = nullptr;
-            ZBetaLambda zBetaLambda = nullptr;
-            EmptyCallBack runMethod = nullptr;
-            int maxProcesses = 1;
-            int modelRuns = 0;
-            int inputParametersCount = 0;
-            int outputParametersCount = 0;
-            ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
-            ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
+        ZLambda getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const;
 
-            ZLambda getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const;
+        /**
+         * \brief Calculates a sample
+         */
+        void invokeLambda(std::shared_ptr<ModelSample> sample);
 
-            /**
-             * \brief Calculates a sample
-             */
-            void invokeLambda(std::shared_ptr<ModelSample> sample);
+        /**
+         * \brief Calculates a number of samples
+         */
+        void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples);
 
-            /**
-             * \brief Calculates a number of samples
-             */
-            void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples);
+        /**
+         * \brief Indicates whether calculation time should be measured
+         */
+        bool measureCalculationTime = true;
 
-            /**
-             * \brief Indicates whether calculation time should be measured
-             */
-            bool measureCalculationTime = true;
+        /**
+         * \brief Indicates the number of samples from which the calculation time is measured
+         */
+        int measuredCalculationTimes = 0;
 
-            /**
-             * \brief Indicates the number of samples from which the calculation time is measured
-             */
-            int measuredCalculationTimes = 0;
+        /**
+         * \brief Indicates the maximum number of samples from which the calculation time will be measured
+         */
+        int maxMeasuredCalculationTimes = 100;
 
-            /**
-             * \brief Indicates the maximum number of samples from which the calculation time will be measured
-             */
-            int maxMeasuredCalculationTimes = 100;
+        /**
+         * \brief Indicates whether the repository is allowed
+         */
+        bool isRepositoryAllowed = true;
 
-            /**
-             * \brief Indicates whether the repository is allowed
-             */
-            bool isRepositoryAllowed = true;
+        /**
+         * \brief Indicates whether samples should be saved in repository
+         */
+        bool useSampleRepository = false;
 
-            /**
-             * \brief Indicates whether samples should be saved in repository
-             */
-            bool useSampleRepository = false;
-
-            /**
-             * \brief Holds calculated samples
-             */
-            SampleRepository repository = SampleRepository();
-        };
-    }
+        /**
+         * \brief Holds calculated samples
+         */
+        SampleRepository repository = SampleRepository();
+    };
 }
 

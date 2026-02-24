@@ -25,82 +25,79 @@
 #include "BaseServer.h"
 #include "ProjectHandler.h"
 
-namespace Deltares
+namespace Deltares::Server
 {
-    namespace Server
+    class ProjectServer : public BaseServer
     {
-        class ProjectServer : public BaseServer
+    public:
+        ProjectServer()
         {
-        public:
-            ProjectServer()
+            std::shared_ptr<BaseHandler> defaultHandler = std::make_shared<ProjectHandler>();
+            this->AddHandler(defaultHandler);
+        }
+
+        ProjectServer(std::shared_ptr<BaseHandler> handler) : ProjectServer()
+        {
+            this->AddHandler(handler);
+        }
+
+        ProjectServer(std::shared_ptr<BaseHandler> handler, bool useDefaultServer)
+        {
+            if (useDefaultServer)
             {
                 std::shared_ptr<BaseHandler> defaultHandler = std::make_shared<ProjectHandler>();
                 this->AddHandler(defaultHandler);
             }
+            this->AddHandler(handler);
+        }
 
-            ProjectServer(std::shared_ptr<BaseHandler> handler) : ProjectServer()
-            {
-                this->AddHandler(handler);
-            }
+        static ProjectServer& Instance()
+        {
+            static ProjectServer instance;
+            return instance;
+        }
 
-            ProjectServer(std::shared_ptr<BaseHandler> handler, bool useDefaultServer)
-            {
-                if (useDefaultServer)
-                {
-                    std::shared_ptr<BaseHandler> defaultHandler = std::make_shared<ProjectHandler>();
-                    this->AddHandler(defaultHandler);
-                }
-                this->AddHandler(handler);
-            }
+        int GetNewObjectId(int handlerIndex) override;
+        int Create(std::string object_type);
+        void Destroy(int id);
+        double GetValue(int id, const std::string property_);
+        void SetValue(int id, const std::string property_, double value);
+        int GetIntValue(int id, std::string property_);
+        void SetIntValue(int id, std::string property_, int value);
+        double GetIntArgValue(int id1, int id2, std::string property_);
+        void SetIntArgValue(int id1, int id2, std::string property_, double value);
+        bool GetBoolValue(int id, std::string property_);
+        void SetBoolValue(int id, std::string property_, bool value);
+        std::string GetStringValue(int id, std::string property_);
+        std::string GetIndexedStringValue(int id, const std::string property_, int index);
+        void SetStringValue(int id, std::string property_, std::string value);
+        void GetArrayValue(int id, std::string property_, double* values, int size);
+        void SetArrayValue(int id, std::string property_, double* values, int size);
+        std::vector<int> GetArrayIntValue(int id, std::string property_);
+        void SetArrayIntValue(int id, std::string property_, int* values, int size);
+        double GetArgValue(int id, std::string property_, double argument);
+        void GetArgValues(int id, std::string property_, double* values, int size, double* outputValues);
+        void SetArgValue(int id, std::string property_, double argument, double value);
+        double GetIndexedValue(int id, std::string property_, int index);
+        void SetIndexedValue(int id, std::string property_, int index, double value);
+        double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2);
+        void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
+        void SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value);
+        int GetIndexedIntValue(int id, std::string property_, int index);
+        int GetIdValue(int id, std::string property_);
+        int GetIndexedIdValue(int id, std::string property_, int index);
+        void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack);
+        void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack);
+        void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack);
+        void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack);
+        void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual);
+        void Execute(int id, std::string method_);
+        void AddHandler(std::shared_ptr<BaseHandler> handler);
+        void Exit();
 
-            static ProjectServer& Instance()
-            {
-                static ProjectServer instance;
-                return instance;
-            }
-
-            int GetNewObjectId(int handlerIndex) override;
-            int Create(std::string object_type);
-            void Destroy(int id);
-            double GetValue(int id, const std::string property_);
-            void SetValue(int id, const std::string property_, double value);
-            int GetIntValue(int id, std::string property_);
-            void SetIntValue(int id, std::string property_, int value);
-            double GetIntArgValue(int id1, int id2, std::string property_);
-            void SetIntArgValue(int id1, int id2, std::string property_, double value);
-            bool GetBoolValue(int id, std::string property_);
-            void SetBoolValue(int id, std::string property_, bool value);
-            std::string GetStringValue(int id, std::string property_);
-            std::string GetIndexedStringValue(int id, const std::string property_, int index);
-            void SetStringValue(int id, std::string property_, std::string value);
-            void GetArrayValue(int id, std::string property_, double* values, int size);
-            void SetArrayValue(int id, std::string property_, double* values, int size);
-            std::vector<int> GetArrayIntValue(int id, std::string property_);
-            void SetArrayIntValue(int id, std::string property_, int* values, int size);
-            double GetArgValue(int id, std::string property_, double argument);
-            void GetArgValues(int id, std::string property_, double* values, int size, double* outputValues);
-            void SetArgValue(int id, std::string property_, double argument, double value);
-            double GetIndexedValue(int id, std::string property_, int index);
-            void SetIndexedValue(int id, std::string property_, int index, double value);
-            double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2);
-            void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
-            void SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value);
-            int GetIndexedIntValue(int id, std::string property_, int index);
-            int GetIdValue(int id, std::string property_);
-            int GetIndexedIdValue(int id, std::string property_, int index);
-            void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack);
-            void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack);
-            void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack);
-            void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack);
-            void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual);
-            void Execute(int id, std::string method_);
-            void AddHandler(std::shared_ptr<BaseHandler> handler);
-            void Exit();
-
-        private:
-            int id_ = 0;
-            std::vector<std::shared_ptr<BaseHandler>> handlers;
-            std::unordered_map<int, std::shared_ptr<BaseHandler>> handlersTable;
-        };
-    }
+    private:
+        int id_ = 0;
+        std::vector<std::shared_ptr<BaseHandler>> handlers;
+        std::unordered_map<int, std::shared_ptr<BaseHandler>> handlersTable;
+    };
 }

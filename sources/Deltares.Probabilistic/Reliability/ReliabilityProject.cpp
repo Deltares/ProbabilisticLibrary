@@ -21,70 +21,67 @@
 //
 #include "ReliabilityProject.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    void ReliabilityProject::run()
     {
-        void ReliabilityProject::run()
-        {
-            this->modelRuns = 0;
-            this->reliabilityMethod = this->settings->GetReliabilityMethod();
-            this->runSettings = this->settings->RunSettings;
+        this->modelRuns = 0;
+        this->reliabilityMethod = this->settings->GetReliabilityMethod();
+        this->runSettings = this->settings->RunSettings;
 
-            if (this->settings->ReliabilityResult == Reliability::ResultDesignPoint)
-            {
-                this->designPoint = this->getDesignPoint();
-            }
-            else if (this->settings->ReliabilityResult == Reliability::ResultFragilityCurve)
-            {
-                this->fragilityCurve = this->getFragilityCurve();
-            }
+        if (this->settings->ReliabilityResult == Reliability::ResultDesignPoint)
+        {
+            this->designPoint = this->getDesignPoint();
+        }
+        else if (this->settings->ReliabilityResult == Reliability::ResultFragilityCurve)
+        {
+            this->fragilityCurve = this->getFragilityCurve();
+        }
+    }
+
+    std::shared_ptr<Reliability::DesignPoint> ReliabilityProject::getDesignPoint()
+    {
+        this->model->zValueConverter = this->limitStateFunction;
+
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(this->stochasts, this->correlation);
+        const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(this->model, uConverter, this->progressIndicator);
+        modelRunner->Settings = this->runSettings;
+        modelRunner->initializeForRun();
+
+        this->designPoint = this->reliabilityMethod->getDesignPoint(modelRunner);
+
+        if (this->designPoint != nullptr)
+        {
+            this->modelRuns += this->designPoint->getTotalModelRuns();
         }
 
-        std::shared_ptr<Reliability::DesignPoint> ReliabilityProject::getDesignPoint()
+        return this->designPoint;
+    }
+
+    std::shared_ptr<Statistics::Stochast> ReliabilityProject::getFragilityCurve()
+    {
+        this->fragilityCurve = std::make_shared<Statistics::Stochast>();
+        fragilityCurve->setDistributionType(Statistics::DistributionType::CDFCurve);
+
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(this->stochasts, this->correlation);
+        const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(this->model, uConverter, this->progressIndicator);
+        modelRunner->Settings = this->runSettings;
+        modelRunner->initializeForRun();
+
+        this->designPoint = this->reliabilityMethod->getDesignPoint(modelRunner);
+
+        if (this->designPoint != nullptr)
         {
-            this->model->zValueConverter = this->limitStateFunction;
-
-            std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(this->stochasts, this->correlation);
-            const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(this->model, uConverter, this->progressIndicator);
-            modelRunner->Settings = this->runSettings;
-            modelRunner->initializeForRun();
-
-            this->designPoint = this->reliabilityMethod->getDesignPoint(modelRunner);
-
-            if (this->designPoint != nullptr)
-            {
-                this->modelRuns += this->designPoint->getTotalModelRuns();
-            }
-
-            return this->designPoint;
+            this->modelRuns += this->designPoint->getTotalModelRuns();
         }
 
-        std::shared_ptr<Statistics::Stochast> ReliabilityProject::getFragilityCurve()
-        {
-            this->fragilityCurve = std::make_shared<Statistics::Stochast>();
-            fragilityCurve->setDistributionType(Statistics::DistributionType::CDFCurve);
+        return this->fragilityCurve;
+    }
 
-            std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(this->stochasts, this->correlation);
-            const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(this->model, uConverter, this->progressIndicator);
-            modelRunner->Settings = this->runSettings;
-            modelRunner->initializeForRun();
-
-            this->designPoint = this->reliabilityMethod->getDesignPoint(modelRunner);
-
-            if (this->designPoint != nullptr)
-            {
-                this->modelRuns += this->designPoint->getTotalModelRuns();
-            }
-
-            return this->fragilityCurve;
-        }
-
-        void ReliabilityProject::validate(Logging::ValidationReport& report)
-        {
-            ModelProject::validate(report);
-            settings->validate(report);
-        }
+    void ReliabilityProject::validate(Logging::ValidationReport& report)
+    {
+        ModelProject::validate(report);
+        settings->validate(report);
     }
 }
 

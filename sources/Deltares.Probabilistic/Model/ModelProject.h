@@ -30,82 +30,79 @@
 #include "../Statistics/BaseCorrelation.h"
 #include "ZModel.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    /**
+     * \brief Base class for projects containing a model
+     */
+    class ModelProject
     {
+    public:
+
         /**
-         * \brief Base class for projects containing a model
+         * \brief Collection of all stochastic variables
          */
-        class ModelProject
-        {
-        public:
+        std::vector<std::shared_ptr<Statistics::Stochast>> stochasts;
 
-            /**
-             * \brief Collection of all stochastic variables
-             */
-            std::vector<std::shared_ptr<Statistics::Stochast>> stochasts;
+        /**
+         * \brief Defines correlations between stochastic variables
+         */
+        std::shared_ptr<Statistics::BaseCorrelation> correlation = nullptr;
 
-            /**
-             * \brief Defines correlations between stochastic variables
-             */
-            std::shared_ptr<Statistics::BaseCorrelation> correlation = nullptr;
+        /**
+         * \brief Deterministic model which calculates a z-value based on input values
+         */
+        std::shared_ptr<ZModel> model = nullptr;
 
-            /**
-             * \brief Deterministic model which calculates a z-value based on input values
-             */
-            std::shared_ptr<ZModel> model = nullptr;
+        /**
+         * \brief Callback for progress during the calculation
+         */
+        std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
 
-            /**
-             * \brief Callback for progress during the calculation
-             */
-            std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
+        /**
+         * \brief Updates the stochasts with the parameters of the model
+         */
+        void updateStochasts();
 
-            /**
-             * \brief Updates the stochasts with the parameters of the model
-             */
-            void updateStochasts();
+        /**
+         * \brief Shares the stochasts and correlation matrix with another project
+         */
+        void shareStochasts(std::shared_ptr<ModelProject> source);
 
-            /**
-             * \brief Shares the stochasts and correlation matrix with another project
-             */
-            void shareStochasts(std::shared_ptr<ModelProject> source);
+        /**
+         * \brief Sets the settings
+         */
+        virtual void setSettings(std::shared_ptr<ModelProjectSettings> newSettings) {}
 
-            /**
-             * \brief Sets the settings
-             */
-            virtual void setSettings(std::shared_ptr<ModelProjectSettings> newSettings) {}
+        /**
+         * \brief Gets the total number of model runs
+         */
+        int modelRuns = 0;
 
-            /**
-             * \brief Gets the total number of model runs
-             */
-            int modelRuns = 0;
+        /**
+         * \brief Runs the project
+         */
+        virtual void run() = 0;
 
-            /**
-             * \brief Runs the project
-             */
-            virtual void run() = 0;
+        /**
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        virtual void validate(Logging::ValidationReport& report);
 
-            /**
-             * \brief Reports whether these settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            virtual void validate(Logging::ValidationReport& report);
+        /**
+         * \brief Validates the project and puts the result in a validation report
+         * \returns Validation report
+         */
+        Logging::ValidationReport getValidationReport();
 
-            /**
-             * \brief Validates the project and puts the result in a validation report
-             * \returns Validation report
-             */
-            Logging::ValidationReport getValidationReport();
+        /**
+         * \brief Indicates whether a run can be performed
+         */
+        bool isValid();
 
-            /**
-             * \brief Indicates whether a run can be performed
-             */
-            bool isValid();
-
-        private:
-            std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;
-        };
-    }
+    private:
+        std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;
+    };
 }
 

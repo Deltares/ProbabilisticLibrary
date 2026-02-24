@@ -30,290 +30,287 @@
 #include "../Utils/probLibException.h"
 
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    void ZModel::setMaxProcesses(int maxProcesses)
     {
-        void ZModel::setMaxProcesses(int maxProcesses)
-        {
-            this->maxProcesses = maxProcesses;
+        this->maxProcesses = maxProcesses;
 
-            if (maxProcesses > 0)
+        if (maxProcesses > 0)
+        {
+            omp_set_num_threads(maxProcesses);
+        }
+    }
+
+    void ZModel::releaseCallBacks()
+    {
+        this->zLambda = nullptr;
+        this->zMultipleLambda = nullptr;
+    }
+
+    ZLambda ZModel::getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda)
+    {
+        ZLambda calcValuesLambda = [zValuesLambda, this](std::shared_ptr<ModelSample> sample)
+        {
+            double* inputValues = sample->Values.data();
+            double* outputValues = new double[this->outputParametersCount];
+
+            (*zValuesLambda)(inputValues, this->inputParametersCount, outputValues);
+
+            sample->OutputValues.clear();
+            for (size_t i = 0; i < this->outputParametersCount; i++)
             {
-                omp_set_num_threads(maxProcesses);
+                sample->OutputValues.push_back(outputValues[i]);
             }
-        }
 
-        void ZModel::releaseCallBacks()
-        {
-            this->zLambda = nullptr;
-            this->zMultipleLambda = nullptr;
-        }
+            delete[] outputValues;
+        };
 
-        ZLambda ZModel::getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda)
+        return calcValuesLambda;
+    }
+
+    ZMultipleLambda ZModel::getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda)
+    {
+        ZMultipleLambda calcValuesLambda = [zValuesMultipleLambda, this](std::vector<std::shared_ptr<ModelSample>> samples)
         {
-            ZLambda calcValuesLambda = [zValuesLambda, this](std::shared_ptr<ModelSample> sample)
+            double** inputValues = new double* [samples.size()];
+            double** outputValues = new double* [samples.size()];
+            for (size_t i = 0; i < samples.size(); i++)
             {
-                double* inputValues = sample->Values.data();
-                double* outputValues = new double[this->outputParametersCount];
-
-                (*zValuesLambda)(inputValues, this->inputParametersCount, outputValues);
-
-                sample->OutputValues.clear();
-                for (size_t i = 0; i < this->outputParametersCount; i++)
+                inputValues[i] = samples[i]->Values.data();
+                outputValues[i] = new double[this->outputParametersCount];
+                for (int j = 0; j < this->outputParametersCount; j++)
                 {
-                    sample->OutputValues.push_back(outputValues[i]);
-                }
-
-                delete[] outputValues;
-            };
-
-            return calcValuesLambda;
-        }
-
-        ZMultipleLambda ZModel::getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda)
-        {
-            ZMultipleLambda calcValuesLambda = [zValuesMultipleLambda, this](std::vector<std::shared_ptr<ModelSample>> samples)
-            {
-                double** inputValues = new double* [samples.size()];
-                double** outputValues = new double* [samples.size()];
-                for (size_t i = 0; i < samples.size(); i++)
-                {
-                    inputValues[i] = samples[i]->Values.data();
-                    outputValues[i] = new double[this->outputParametersCount];
-                    for (int j = 0; j < this->outputParametersCount; j++)
-                    {
-                        outputValues[i][j] = std::nan("");
-                    }
-                }
-
-                try
-                {
-                    (*zValuesMultipleLambda)(static_cast<int>(samples.size()), inputValues, this->inputParametersCount, outputValues);
-                }
-                catch (const std::exception&)
-                {
-                    // empty on purpose
-                }
-
-                for (size_t i = 0; i < samples.size(); i++)
-                {
-                    samples[i]->OutputValues.clear();
-                    for (int j = 0; j < this->outputParametersCount; j++)
-                    {
-                        samples[i]->OutputValues.push_back(outputValues[i][j]);
-                    }
-                    delete[] outputValues[i];
-                }
-
-                delete[] inputValues;
-                delete[] outputValues;
-            };
-
-            return calcValuesLambda;
-        }
-
-        ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const
-        {
-            ZLambda calcValuesLambda = [modelSampleLambda, this](std::shared_ptr<ModelSample> sample)
-            {
-                ModelSampleStruct modelSampleStruct = sample->getModelSampleStruct();
-
-                (*modelSampleLambda)(&modelSampleStruct);
-
-                sample->setModelSampleStruct(&modelSampleStruct);
-            };
-
-            return calcValuesLambda;
-        }
-
-        void ZModel::initializeForRun()
-        {
-            this->inputParametersCount = 0;
-            this->outputParametersCount = 0;
-
-            this->measureCalculationTime = true;
-            this->useSampleRepository = false;
-            this->measuredCalculationTimes = 0;
-
-            for (std::shared_ptr<ModelInputParameter> parameter : this->inputParameters)
-            {
-                parameter->computationalIndex = this->inputParametersCount;
-                if (parameter->isArray)
-                {
-                    this->inputParametersCount += parameter->arraySize;
-                }
-                else
-                {
-                    this->inputParametersCount++;
+                    outputValues[i][j] = std::nan("");
                 }
             }
 
-            for (std::shared_ptr<ModelInputParameter> parameter : this->outputParameters)
+            try
             {
-                parameter->computationalIndex = this->outputParametersCount;
-                if (parameter->isArray)
-                {
-                    this->outputParametersCount += parameter->arraySize;
-                }
-                else
-                {
-                    this->outputParametersCount++;
-                }
+                (*zValuesMultipleLambda)(static_cast<int>(samples.size()), inputValues, this->inputParametersCount, outputValues);
+            }
+            catch (const std::exception&)
+            {
+                // empty on purpose
             }
 
-            this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                samples[i]->OutputValues.clear();
+                for (int j = 0; j < this->outputParametersCount; j++)
+                {
+                    samples[i]->OutputValues.push_back(outputValues[i][j]);
+                }
+                delete[] outputValues[i];
+            }
+
+            delete[] inputValues;
+            delete[] outputValues;
+        };
+
+        return calcValuesLambda;
+    }
+
+    ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const
+    {
+        ZLambda calcValuesLambda = [modelSampleLambda, this](std::shared_ptr<ModelSample> sample)
+        {
+            ModelSampleStruct modelSampleStruct = sample->getModelSampleStruct();
+
+            (*modelSampleLambda)(&modelSampleStruct);
+
+            sample->setModelSampleStruct(&modelSampleStruct);
+        };
+
+        return calcValuesLambda;
+    }
+
+    void ZModel::initializeForRun()
+    {
+        this->inputParametersCount = 0;
+        this->outputParametersCount = 0;
+
+        this->measureCalculationTime = true;
+        this->useSampleRepository = false;
+        this->measuredCalculationTimes = 0;
+
+        for (std::shared_ptr<ModelInputParameter> parameter : this->inputParameters)
+        {
+            parameter->computationalIndex = this->inputParametersCount;
+            if (parameter->isArray)
+            {
+                this->inputParametersCount += parameter->arraySize;
+            }
+            else
+            {
+                this->inputParametersCount++;
+            }
         }
 
-        void ZModel::invoke(const std::shared_ptr<ModelSample>& sample)
+        for (std::shared_ptr<ModelInputParameter> parameter : this->outputParameters)
+        {
+            parameter->computationalIndex = this->outputParametersCount;
+            if (parameter->isArray)
+            {
+                this->outputParametersCount += parameter->arraySize;
+            }
+            else
+            {
+                this->outputParametersCount++;
+            }
+        }
+
+        this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
+    }
+
+    void ZModel::invoke(const std::shared_ptr<ModelSample>& sample)
+    {
+        std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
+
+        if (alreadyExecutedSample == nullptr)
+        {
+            if (measureCalculationTime && isRepositoryAllowed)
+            {
+                // minimum calculation time to be registered
+                constexpr long long minRepoCalculationTime = 1;
+
+                std::chrono::time_point started = std::chrono::high_resolution_clock::now();
+                invokeLambda(sample);
+                std::chrono::time_point done = std::chrono::high_resolution_clock::now();
+
+                long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
+                if (elapsedTime > minRepoCalculationTime)
+                {
+                    measureCalculationTime = false;
+                    useSampleRepository = true;
+                }
+
+                this->measuredCalculationTimes++;
+                if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
+                {
+                    measureCalculationTime = false;
+                }
+            }
+            else
+            {
+                invokeLambda(sample);
+            }
+
+            if (useSampleRepository && isRepositoryAllowed)
+            {
+                repository.registerSample(sample);
+            }
+        }
+        else
+        {
+            sample->copyFrom(alreadyExecutedSample);
+        }
+
+        this->zValueConverter->updateZValue(sample);
+
+        this->modelRuns++;
+    }
+
+    void ZModel::invokeLambda(std::shared_ptr<ModelSample> sample)
+    {
+        if (this->zLambda == nullptr)
+        {
+            throw Reliability::probLibException("callback function not set or released");
+        }
+
+        sample->threadId = omp_get_thread_num();
+        this->zLambda(sample);
+    }
+
+    void ZModel::invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples)
+    {
+        if (zMultipleLambda == nullptr)
+        {
+#pragma omp parallel for
+            for (int i = 0; i < static_cast<int>(samples.size()); i++)
+            {
+                invokeLambda(samples[i]);
+            }
+        }
+        else
+        {
+            this->zMultipleLambda(samples);
+        }
+    }
+
+    void ZModel::invoke(const std::vector<std::shared_ptr<ModelSample>>& samples)
+    {
+        std::vector<std::shared_ptr<ModelSample>> executeSamples;
+
+        for (const std::shared_ptr<ModelSample>& sample : samples)
         {
             std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
 
             if (alreadyExecutedSample == nullptr)
             {
-                if (measureCalculationTime && isRepositoryAllowed)
-                {
-                    // minimum calculation time to be registered
-                    constexpr long long minRepoCalculationTime = 1;
-
-                    std::chrono::time_point started = std::chrono::high_resolution_clock::now();
-                    invokeLambda(sample);
-                    std::chrono::time_point done = std::chrono::high_resolution_clock::now();
-
-                    long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
-                    if (elapsedTime > minRepoCalculationTime)
-                    {
-                        measureCalculationTime = false;
-                        useSampleRepository = true;
-                    }
-
-                    this->measuredCalculationTimes++;
-                    if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
-                    {
-                        measureCalculationTime = false;
-                    }
-                }
-                else
-                {
-                    invokeLambda(sample);
-                }
-
-                if (useSampleRepository && isRepositoryAllowed)
-                {
-                    repository.registerSample(sample);
-                }
+                executeSamples.push_back(sample);
             }
             else
             {
                 sample->copyFrom(alreadyExecutedSample);
             }
-
-            this->zValueConverter->updateZValue(sample);
-
-            this->modelRuns++;
         }
 
-        void ZModel::invokeLambda(std::shared_ptr<ModelSample> sample)
+        if (!executeSamples.empty())
         {
-            if (this->zLambda == nullptr)
-            {
-                throw Reliability::probLibException("callback function not set or released");
-            }
+            // minimum calculation time to be registered
+            constexpr long long minRepoCalculationTime = 1;
 
-            sample->threadId = omp_get_thread_num();
-            this->zLambda(sample);
-        }
-
-        void ZModel::invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples)
-        {
-            if (zMultipleLambda == nullptr)
+            if (this->measureCalculationTime && isRepositoryAllowed)
             {
-#pragma omp parallel for
-                for (int i = 0; i < static_cast<int>(samples.size()); i++)
+                std::chrono::time_point started = std::chrono::high_resolution_clock::now();
+                invokeMultipleLambda(executeSamples);
+                std::chrono::time_point  done = std::chrono::high_resolution_clock::now();
+
+                long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
+
+                if (elapsedTime >= static_cast<long long>(minRepoCalculationTime * executeSamples.size()))
                 {
-                    invokeLambda(samples[i]);
+                    useSampleRepository = true;
+                    measureCalculationTime = false;
+                }
+
+                this->measuredCalculationTimes += static_cast<int>(executeSamples.size());
+                if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
+                {
+                    measureCalculationTime = false;
                 }
             }
             else
             {
-                this->zMultipleLambda(samples);
+                invokeMultipleLambda(executeSamples);
             }
-        }
 
-        void ZModel::invoke(const std::vector<std::shared_ptr<ModelSample>>& samples)
-        {
-            std::vector<std::shared_ptr<ModelSample>> executeSamples;
+            this->modelRuns += static_cast<int>(executeSamples.size());
 
-            for (const std::shared_ptr<ModelSample>& sample : samples)
+            if (useSampleRepository && isRepositoryAllowed)
             {
-                std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
-
-                if (alreadyExecutedSample == nullptr)
+                for (std::shared_ptr<ModelSample> sample : executeSamples)
                 {
-                    executeSamples.push_back(sample);
+                    repository.registerSample(sample);
                 }
-                else
-                {
-                    sample->copyFrom(alreadyExecutedSample);
-                }
-            }
-
-            if (!executeSamples.empty())
-            {
-                // minimum calculation time to be registered
-                constexpr long long minRepoCalculationTime = 1;
-
-                if (this->measureCalculationTime && isRepositoryAllowed)
-                {
-                    std::chrono::time_point started = std::chrono::high_resolution_clock::now();
-                    invokeMultipleLambda(executeSamples);
-                    std::chrono::time_point  done = std::chrono::high_resolution_clock::now();
-
-                    long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
-
-                    if (elapsedTime >= static_cast<long long>(minRepoCalculationTime * executeSamples.size()))
-                    {
-                        useSampleRepository = true;
-                        measureCalculationTime = false;
-                    }
-
-                    this->measuredCalculationTimes += static_cast<int>(executeSamples.size());
-                    if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
-                    {
-                        measureCalculationTime = false;
-                    }
-                }
-                else
-                {
-                    invokeMultipleLambda(executeSamples);
-                }
-
-                this->modelRuns += static_cast<int>(executeSamples.size());
-
-                if (useSampleRepository && isRepositoryAllowed)
-                {
-                    for (std::shared_ptr<ModelSample> sample : executeSamples)
-                    {
-                        repository.registerSample(sample);
-                    }
-                }
-            }
-
-            for (size_t i = 0; i < samples.size(); i++)
-            {
-                this->zValueConverter->updateZValue(samples[i]);
             }
         }
 
-        double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta)
+        for (size_t i = 0; i < samples.size(); i++)
         {
-            return this->zBetaLambda(sample, beta);
+            this->zValueConverter->updateZValue(samples[i]);
         }
+    }
 
-        void ZModel::validate(Logging::ValidationReport& report, const std::string& subject) const
-        {
-            Logging::ValidationSupport::checkNotNull(report, !callbackAssigned, "model", subject);
-        }
+    double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta)
+    {
+        return this->zBetaLambda(sample, beta);
+    }
+
+    void ZModel::validate(Logging::ValidationReport& report, const std::string& subject) const
+    {
+        Logging::ValidationSupport::checkNotNull(report, !callbackAssigned, "model", subject);
     }
 }
 

@@ -27,159 +27,156 @@
 
 #include "ModelSampleStruct.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    class ModelSample
     {
-        class ModelSample
+    public:
+        ModelSample(std::vector<double> values)
         {
-        public:
-            ModelSample(std::vector<double> values)
+            this->Values = values;
+        }
+
+        /**
+         * \brief Resets all contents of the sample to its default values
+         * \remark Values are not cleared, since they are provided in the constructor
+         */
+        void clear()
+        {
+            IterationIndex = -1;
+            threadId = 0;
+            Weight = std::nan("");
+            AllowProxy = true;
+            UsedProxy = false;
+            IsRestartRequired = false;
+            Z = std::nan("");
+            Beta = 0;
+            Tag = 0;
+        }
+
+        /**
+         * \brief Copies the results from another sample
+         */
+        void copyFrom(const std::shared_ptr<ModelSample>& source)
+        {
+            this->Z = source->Z;
+            this->OutputValues = std::vector<double>(source->OutputValues.size());
+            for (size_t i = 0; i < this->OutputValues.size(); i++)
             {
-                this->Values = values;
+                this->OutputValues[i] = source->OutputValues[i];
+            }
+        }
+
+        ModelSampleStruct getModelSampleStruct() const
+        {
+            ModelSampleStruct sampleStruct;
+
+            sampleStruct.Values = Values.data();
+            sampleStruct.ValuesCount = static_cast<int>(Values.size());
+
+            sampleStruct.OutputValues = OutputValues.data();
+            sampleStruct.OutputValuesCount = static_cast<int>(OutputValues.size());
+
+            sampleStruct.IterationIndex = IterationIndex;
+            sampleStruct.threadId = threadId;
+            sampleStruct.Weight = Weight;
+            sampleStruct.AllowProxy = AllowProxy;
+            sampleStruct.UsedProxy = UsedProxy;
+            sampleStruct.IsRestartRequired = IsRestartRequired;
+            sampleStruct.Beta = Beta;
+            sampleStruct.Z = Z;
+            sampleStruct.ExtendedLogging = ExtendedLogging;
+            sampleStruct.LoggingCounter = LoggingCounter;
+            sampleStruct.Tag = Tag;
+
+            return sampleStruct;
+        }
+
+        void setModelSampleStruct(ModelSampleStruct* sampleStruct)
+        {
+            Values.resize(sampleStruct->ValuesCount);
+            for (int i = 0; i < sampleStruct->ValuesCount; i++)
+            {
+                Values[i] = sampleStruct->Values[i];
             }
 
-            /**
-             * \brief Resets all contents of the sample to its default values
-             * \remark Values are not cleared, since they are provided in the constructor
-             */
-            void clear()
+            OutputValues.resize(sampleStruct->OutputValuesCount);
+            for (int i = 0; i < sampleStruct->OutputValuesCount; i++)
             {
-                IterationIndex = -1;
-                threadId = 0;
-                Weight = std::nan("");
-                AllowProxy = true;
-                UsedProxy = false;
-                IsRestartRequired = false;
-                Z = std::nan("");
-                Beta = 0;
-                Tag = 0;
+                OutputValues[i] = sampleStruct->OutputValues[i];
             }
 
-            /**
-             * \brief Copies the results from another sample
-             */
-            void copyFrom(const std::shared_ptr<ModelSample>& source)
+            IterationIndex = sampleStruct->IterationIndex;
+            threadId = sampleStruct->threadId;
+            Weight = sampleStruct->Weight;
+            AllowProxy = sampleStruct->AllowProxy;
+            UsedProxy = sampleStruct->UsedProxy;
+            IsRestartRequired = sampleStruct->IsRestartRequired;
+            Beta = sampleStruct->Beta;
+            Z = sampleStruct->Z;
+            ExtendedLogging = sampleStruct->ExtendedLogging;
+            LoggingCounter = sampleStruct->LoggingCounter;
+            Tag = sampleStruct->Tag;
+        }
+
+        std::vector<double> Values;
+        std::vector<double> OutputValues;
+
+        int IterationIndex = -1;
+        int threadId = 0;
+        double Weight = 1;
+        bool AllowProxy = true;
+        bool UsedProxy = false;
+        bool IsRestartRequired = false;
+        double Beta = 0;
+        double Z = nan("");
+
+        bool ExtendedLogging = false;
+
+        /**
+         * Indication of a logging message
+         */
+        int LoggingCounter = 0;
+
+        int Tag = 0;
+
+        bool hasSameValues(std::shared_ptr<ModelSample> other)
+        {
+            if (this->Values.size() != other->Values.size())
             {
-                this->Z = source->Z;
-                this->OutputValues = std::vector<double>(source->OutputValues.size());
-                for (size_t i = 0; i < this->OutputValues.size(); i++)
-                {
-                    this->OutputValues[i] = source->OutputValues[i];
-                }
+                return false;
             }
 
-            ModelSampleStruct getModelSampleStruct() const
+            for (int i = 0; i < this->Values.size(); i++)
             {
-                ModelSampleStruct sampleStruct;
-
-                sampleStruct.Values = Values.data();
-                sampleStruct.ValuesCount = static_cast<int>(Values.size());
-
-                sampleStruct.OutputValues = OutputValues.data();
-                sampleStruct.OutputValuesCount = static_cast<int>(OutputValues.size());
-
-                sampleStruct.IterationIndex = IterationIndex;
-                sampleStruct.threadId = threadId;
-                sampleStruct.Weight = Weight;
-                sampleStruct.AllowProxy = AllowProxy;
-                sampleStruct.UsedProxy = UsedProxy;
-                sampleStruct.IsRestartRequired = IsRestartRequired;
-                sampleStruct.Beta = Beta;
-                sampleStruct.Z = Z;
-                sampleStruct.ExtendedLogging = ExtendedLogging;
-                sampleStruct.LoggingCounter = LoggingCounter;
-                sampleStruct.Tag = Tag;
-
-                return sampleStruct;
-            }
-
-            void setModelSampleStruct(ModelSampleStruct* sampleStruct)
-            {
-                Values.resize(sampleStruct->ValuesCount);
-                for (int i = 0; i < sampleStruct->ValuesCount; i++)
-                {
-                    Values[i] = sampleStruct->Values[i];
-                }
-
-                OutputValues.resize(sampleStruct->OutputValuesCount);
-                for (int i = 0; i < sampleStruct->OutputValuesCount; i++)
-                {
-                    OutputValues[i] = sampleStruct->OutputValues[i];
-                }
-
-                IterationIndex = sampleStruct->IterationIndex;
-                threadId = sampleStruct->threadId;
-                Weight = sampleStruct->Weight;
-                AllowProxy = sampleStruct->AllowProxy;
-                UsedProxy = sampleStruct->UsedProxy;
-                IsRestartRequired = sampleStruct->IsRestartRequired;
-                Beta = sampleStruct->Beta;
-                Z = sampleStruct->Z;
-                ExtendedLogging = sampleStruct->ExtendedLogging;
-                LoggingCounter = sampleStruct->LoggingCounter;
-                Tag = sampleStruct->Tag;
-            }
-
-            std::vector<double> Values;
-            std::vector<double> OutputValues;
-
-            int IterationIndex = -1;
-            int threadId = 0;
-            double Weight = 1;
-            bool AllowProxy = true;
-            bool UsedProxy = false;
-            bool IsRestartRequired = false;
-            double Beta = 0;
-            double Z = nan("");
-
-            bool ExtendedLogging = false;
-
-            /**
-             * Indication of a logging message
-             */
-            int LoggingCounter = 0;
-
-            int Tag = 0;
-
-            bool hasSameValues(std::shared_ptr<ModelSample> other)
-            {
-                if (this->Values.size() != other->Values.size())
+                if (this->Values[i] != other->Values[i])
                 {
                     return false;
                 }
-
-                for (int i = 0; i < this->Values.size(); i++)
-                {
-                    if (this->Values[i] != other->Values[i])
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
             }
 
-            /**
-             * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
-             * \param samples Collection of samples
-             * \param function Operation on a sample
-             * \return Resulting numeric values
-             */
-            template <std::predicate<std::shared_ptr<ModelSample> const&> SampleFunction>
-            static std::vector<double> select(const std::vector<std::shared_ptr<ModelSample>>& samples, const SampleFunction& function)
+            return true;
+        }
+
+        /**
+         * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
+         * \param samples Collection of samples
+         * \param function Operation on a sample
+         * \return Resulting numeric values
+         */
+        template <std::predicate<std::shared_ptr<ModelSample> const&> SampleFunction>
+        static std::vector<double> select(const std::vector<std::shared_ptr<ModelSample>>& samples, const SampleFunction& function)
+        {
+            std::vector<double> result(samples.size());
+
+            for (size_t i = 0; i < samples.size(); i++)
             {
-                std::vector<double> result(samples.size());
-
-                for (size_t i = 0; i < samples.size(); i++)
-                {
-                    result[i] = function(samples[i]);
-                }
-
-                return result;
+                result[i] = function(samples[i]);
             }
-        };
-    }
+
+            return result;
+        }
+    };
 }
 
 
