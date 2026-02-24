@@ -65,10 +65,6 @@ namespace Deltares::Uncertainty
         double sumWeights = 0;
         std::vector<std::shared_ptr<Sample>> allSamples;
 
-        bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() &&
-            this->Settings->CalculateCorrelations &&
-            this->Settings->CalculateInputCorrelations;
-
         std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
 
         std::vector<double> factors = getFactors(*Settings->StochastSet);
@@ -117,10 +113,7 @@ namespace Deltares::Uncertainty
 
             updateCumulativeWeights(zValues, weights, cumulativeWeights, *sample);
 
-            if (registerSamplesForCorrelation)
-            {
-                modelRunner->registerSample(this->correlationMatrixBuilder, sample);
-            }
+            registerSample(*modelRunner, sample);
 
             // check whether all added samples in design point builder are supposed to be there
             // the design point builder should contain samples corresponding with a given probability of failure
@@ -153,29 +146,7 @@ namespace Deltares::Uncertainty
             }
         }
 
-        // adjust for weights not equal to number of samples,
-        // only adjust samples with weight > 1, because they will not be in the tail of the distribution, which is the less interesting part
-
-        double weightDifference = nSamples - sumWeights;
-        double overWeightedSum = 0.0;
-
-        // calculate over weight for samples with weight > 1
-        for (double weight : weights)
-        {
-            if (weight > 1.0)
-            {
-                overWeightedSum += weight;
-            }
-        }
-
-        // correct samples with weight > 1 so that sum of weights equals number of samples
-        for (double& weight : weights)
-        {
-            if (weight > 1.0)
-            {
-                weight += weight * weightDifference / overWeightedSum;
-            }
-        }
+        adjustWeights(weights, nSamples - sumWeights);
 
         std::shared_ptr<Statistics::Stochast> stochast = getStochastFromSamples(zValues, weights);
 
@@ -212,6 +183,47 @@ namespace Deltares::Uncertainty
 
         return result;
 
+    }
+
+    /// <summary>
+    /// adjust for weights not equal to number of samples,
+    /// only adjust samples with weight > 1, because they will not be in the tail of the distribution, which is the less interesting part
+    /// </summary>
+    /// <param name="weights"> the weights to update </param>
+    /// <param name="weight_difference"> difference in weight </param>
+    void ImportanceSamplingS::adjustWeights(std::vector<double>& weights, const double weight_difference)
+    {
+        double over_weighted_sum = 0.0;
+
+        // calculate over weight for samples with weight > 1
+        for (double weight : weights)
+        {
+            if (weight > 1.0)
+            {
+                over_weighted_sum += weight;
+            }
+        }
+
+        // correct samples with weight > 1 so that sum of weights equals number of samples
+        for (double& weight : weights)
+        {
+            if (weight > 1.0)
+            {
+                weight += weight * weight_difference / over_weighted_sum;
+            }
+        }
+    }
+
+    void ImportanceSamplingS::registerSample(const ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const
+    {
+        const bool registerSamplesForCorrelation = correlationMatrixBuilder->isEmpty() &&
+            Settings->CalculateCorrelations &&
+            Settings->CalculateInputCorrelations;
+
+        if (registerSamplesForCorrelation)
+        {
+            modelRunner.registerSample(correlationMatrixBuilder, sample);
+        }
     }
 
     std::vector<double> ImportanceSamplingS::getFactors(const StochastSettingsSet& stochastSettings)

@@ -49,5 +49,7 @@ namespace Deltares::Uncertainty
             const std::vector<double>& factors, const Models::Sample& center, const double dimensionality);
         void updateCumulativeWeights(const std::vector<double>& zValues, const std::vector<double>& weights,
             std::vector<double>& cumulativeWeights, const Models::Sample& sample) const;
+        static void adjustWeights(std::vector<double>& weights, const double weight_difference);
+        void registerSample(const Models::ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& sample) const;
     };
 }
