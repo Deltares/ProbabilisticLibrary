@@ -81,7 +81,9 @@ namespace Deltares
                 }
                 else
                 {
-                    importanceSampling->Settings->MaximumSamples = Settings->importanceSamplingSettings->MaximumSamplesNoResult;
+                    importanceSampling->Settings->MaximumSamples = std::min(
+                        Settings->importanceSamplingSettings->MaximumSamplesNoResult,
+                        Settings->importanceSamplingSettings->MaximumSamples);
                     importanceSampling->Settings->MaximumSamplesNoResult = Settings->importanceSamplingSettings->MaximumSamplesNoResult;
                 }
 

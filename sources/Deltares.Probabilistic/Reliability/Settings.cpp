@@ -209,6 +209,7 @@ namespace Deltares
 
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->MinimumSamples = this->MinimumSamples;
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamples = this->MaximumSamples;
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamplesNoResult = this->MaximumSamplesNoResult;
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->designPointMethod = this->designPointMethod;
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->VariationCoefficient = this->VariationCoefficient;
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->runSettings = this->RunSettings;
@@ -262,7 +263,6 @@ namespace Deltares
             subsetSimulation->Settings->SampleMethod = this->sampleMethod;
             subsetSimulation->Settings->VariationCoefficient = this->VariationCoefficient;
             subsetSimulation->Settings->MarkovChainDeviation = this->MarkovChainDeviation;
-            subsetSimulation->Settings->SampleMethod = this->SampleMethod;
             subsetSimulation->Settings->RunSettings = this->RunSettings;
             subsetSimulation->Settings->randomSettings = this->RandomSettings;
             subsetSimulation->Settings->StochastSet = this->StochastSet;

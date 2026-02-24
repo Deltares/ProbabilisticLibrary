@@ -77,11 +77,6 @@ namespace Deltares
             DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 
             /**
-             * \brief Defines the way new samples are generated
-             */
-            SampleMethodType SampleMethod = SampleMethodType::MarkovChain;
-
-            /**
              * \brief The minimum samples to be examined
              */
             int MinimumSamples = 1000;

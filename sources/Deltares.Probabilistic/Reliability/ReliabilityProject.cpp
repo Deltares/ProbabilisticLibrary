@@ -21,8 +21,6 @@
 //
 #include "ReliabilityProject.h"
 
-#include <iostream>
-
 namespace Deltares
 {
     namespace Reliability

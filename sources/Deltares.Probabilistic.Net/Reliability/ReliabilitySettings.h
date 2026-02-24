@@ -156,7 +156,7 @@ namespace Deltares
                 {
                     Wrappers::SampleMethod get()
                     {
-                        switch (shared->object->SampleMethod)
+                        switch (shared->object->sampleMethod)
                         {
                         case Reliability::SampleMethodType::MarkovChain: return Wrappers::SampleMethod::MarkovChain;
                         case Reliability::SampleMethodType::AdaptiveConditional: return Wrappers::SampleMethod::AdaptiveConditional;
@@ -167,8 +167,8 @@ namespace Deltares
                     {
                         switch (value)
                         {
-                        case Wrappers::SampleMethod::MarkovChain: shared->object->SampleMethod = Reliability::SampleMethodType::MarkovChain; break;
-                        case Wrappers::SampleMethod::AdaptiveConditional:shared->object->SampleMethod = Reliability::SampleMethodType::AdaptiveConditional; break;
+                        case Wrappers::SampleMethod::MarkovChain: shared->object->sampleMethod = Reliability::SampleMethodType::MarkovChain; break;
+                        case Wrappers::SampleMethod::AdaptiveConditional:shared->object->sampleMethod = Reliability::SampleMethodType::AdaptiveConditional; break;
                         default: throw gcnew System::NotSupportedException("Sample method");
                         }
                     }
