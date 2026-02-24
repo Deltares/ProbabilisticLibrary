@@ -25,32 +25,32 @@
 
 namespace Deltares::Uncertainty
 {
+    /**
+     * \brief Calculates the sensitivity using the Importance Sampling algorithm
+     * \remark This algorithm focuses on the tail of the sensitivity, but only works well when the start point (in the settings) is specified well by the user
+     */
+    class ImportanceSamplingS : public UncertaintyMethod
+    {
+    public:
         /**
-         * \brief Calculates the sensitivity using the Importance Sampling algorithm
-         * \remark This algorithm focuses on the tail of the sensitivity, but only works well when the start point (in the settings) is specified well by the user
+         * \brief Settings for this algorithm
          */
-        class ImportanceSamplingS : public UncertaintyMethod
-        {
-        public:
-            /**
-             * \brief Settings for this algorithm
-             */
-            std::shared_ptr<ImportanceSamplingSettingsS> Settings = std::make_shared<ImportanceSamplingSettingsS>();
+        std::shared_ptr<ImportanceSamplingSettingsS> Settings = std::make_shared<ImportanceSamplingSettingsS>();
 
-            /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
-             */
-            UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        private:
-            std::vector<double> getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings);
-            std::shared_ptr<Models::Sample> getModifiedSample(const std::shared_ptr<Models::Sample> sample,
-                                                              std::vector<double>& factors,
-                                                              std::shared_ptr<Models::Sample> center,
-                                                              double dimensionality);
-            void updateCumulativeWeights(const std::vector<double>& zValues, const std::vector<double>& weights,
-                                         std::vector<double>& cumulativeWeights,
-                                         const std::shared_ptr<Models::Sample>& sample) const;
-        };
-    }
+        /**
+         * \brief Gets the sensitivity
+         * \param modelRunner The model for which the sensitivity is calculated
+         * \return The sensitivity in the form of a stochastic variable
+         */
+        UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+    private:
+        std::vector<double> getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings);
+        std::shared_ptr<Models::Sample> getModifiedSample(const std::shared_ptr<Models::Sample> sample,
+                                                          std::vector<double>& factors,
+                                                          std::shared_ptr<Models::Sample> center,
+                                                          double dimensionality);
+        void updateCumulativeWeights(const std::vector<double>& zValues, const std::vector<double>& weights,
+                                     std::vector<double>& cumulativeWeights,
+                                     const std::shared_ptr<Models::Sample>& sample) const;
+    };
+}

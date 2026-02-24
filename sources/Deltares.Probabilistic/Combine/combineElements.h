@@ -25,7 +25,7 @@
 #include "alphaBeta.h"
 #include "combiner.h"
 
-namespace Deltares ::Reliability
+namespace Deltares::Reliability
 {
     typedef std::vector<alphaBeta> elements;
 

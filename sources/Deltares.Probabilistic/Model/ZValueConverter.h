@@ -25,16 +25,13 @@
 #include "ModelInputParameter.h"
 #include "ModelSample.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    class ZValueConverter
     {
-        class ZValueConverter
-        {
-        public:
-            virtual void initialize(std::vector<std::shared_ptr<ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<ModelInputParameter>>& outputParameters) {}
-            virtual void updateZValue(std::shared_ptr<ModelSample> sample) {}
-        };
-    }
+    public:
+        virtual void initialize(std::vector<std::shared_ptr<ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<ModelInputParameter>>& outputParameters) {}
+        virtual void updateZValue(std::shared_ptr<ModelSample> sample) {}
+    };
 }
 

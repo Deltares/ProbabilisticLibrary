@@ -23,53 +23,50 @@
 #include "FORM.h"
 #include "DirectionalSampling.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    std::shared_ptr<DesignPoint> DirectionalSamplingThenFORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        std::shared_ptr<DesignPoint> DirectionalSamplingThenFORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
+        auto ds = DirectionalSampling();
+        ds.Settings = DsSettings;
+        auto dsDesignPoint = ds.getDesignPoint(modelRunner);
+
+        auto nStoch = dsDesignPoint->Alphas.size();
+        auto startVector = std::vector<double>(nStoch);
+        for (size_t i = 0; i < nStoch; i++)
         {
-            auto ds = DirectionalSampling();
-            ds.Settings = DsSettings;
-            auto dsDesignPoint = ds.getDesignPoint(modelRunner);
-
-            auto nStoch = dsDesignPoint->Alphas.size();
-            auto startVector = std::vector<double>(nStoch);
-            for (size_t i = 0; i < nStoch; i++)
-            {
-                double u = -dsDesignPoint->Beta * dsDesignPoint->Alphas[i]->Alpha;
-                startVector[i] = u;
-            }
-
-            if (modelRunner->Settings->RunAtDesignPoint)
-            {
-                modelRunner->runDesignPoint(dsDesignPoint);
-            }
-
-            auto form = FORM();
-            form.Settings = formSettings;
-            form.Settings->StartPointSettings->StartMethod = StartMethodType::FixedValue;
-            form.Settings->StartPointSettings->startVector = startVector;
-
-            auto formDesignPoint = form.getDesignPoint(modelRunner);
-
-            auto dsfiDesignPoint = std::make_shared<DesignPoint>();
-            dsfiDesignPoint->Beta = dsDesignPoint->Beta;
-            dsfiDesignPoint->Alphas = formDesignPoint->Alphas;
-            dsfiDesignPoint->ContributingDesignPoints.push_back(dsDesignPoint);
-            dsfiDesignPoint->ContributingDesignPoints.push_back(formDesignPoint);
-            dsfiDesignPoint->convergenceReport->IsConverged = dsDesignPoint->convergenceReport->IsConverged && formDesignPoint->convergenceReport->IsConverged;
-            dsfiDesignPoint->Identifier = "Dir. Sampling then FORM";
-
-            for (const auto& contributingDesignPoint : dsfiDesignPoint->ContributingDesignPoints)
-            {
-                for (const auto& evaluation : contributingDesignPoint->Evaluations)
-                {
-                    dsfiDesignPoint->Evaluations.push_back(evaluation);
-                }
-            }
-
-            return dsfiDesignPoint;
+            double u = -dsDesignPoint->Beta * dsDesignPoint->Alphas[i]->Alpha;
+            startVector[i] = u;
         }
+
+        if (modelRunner->Settings->RunAtDesignPoint)
+        {
+            modelRunner->runDesignPoint(dsDesignPoint);
+        }
+
+        auto form = FORM();
+        form.Settings = formSettings;
+        form.Settings->StartPointSettings->StartMethod = StartMethodType::FixedValue;
+        form.Settings->StartPointSettings->startVector = startVector;
+
+        auto formDesignPoint = form.getDesignPoint(modelRunner);
+
+        auto dsfiDesignPoint = std::make_shared<DesignPoint>();
+        dsfiDesignPoint->Beta = dsDesignPoint->Beta;
+        dsfiDesignPoint->Alphas = formDesignPoint->Alphas;
+        dsfiDesignPoint->ContributingDesignPoints.push_back(dsDesignPoint);
+        dsfiDesignPoint->ContributingDesignPoints.push_back(formDesignPoint);
+        dsfiDesignPoint->convergenceReport->IsConverged = dsDesignPoint->convergenceReport->IsConverged && formDesignPoint->convergenceReport->IsConverged;
+        dsfiDesignPoint->Identifier = "Dir. Sampling then FORM";
+
+        for (const auto& contributingDesignPoint : dsfiDesignPoint->ContributingDesignPoints)
+        {
+            for (const auto& evaluation : contributingDesignPoint->Evaluations)
+            {
+                dsfiDesignPoint->Evaluations.push_back(evaluation);
+            }
+        }
+
+        return dsfiDesignPoint;
     }
 }

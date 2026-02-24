@@ -34,84 +34,80 @@
 #include <filesystem>
 #endif
 
-
-namespace Deltares
+namespace Deltares::Server
 {
-    namespace Server
+    class ExternalServerHandler : public BaseHandler
     {
-        class ExternalServerHandler : public BaseHandler
+    public:
+        ExternalServerHandler(std::string serverName)
         {
-        public:
-            ExternalServerHandler(std::string serverName)
+            this->serverName = serverName;
+        }
+
+        ~ExternalServerHandler()
+        {
+#if __has_include(<windows.h>)
+            freeaddrinfo(address);
+
+            if (this->server_started)
             {
-                this->serverName = serverName;
+                this->Send("exit", false);
+                this->server_started = false;
             }
-
-            ~ExternalServerHandler()
-            {
-#if __has_include(<windows.h>)
-                freeaddrinfo(address);
-
-                if (this->server_started)
-                {
-                    this->Send("exit", false);
-                    this->server_started = false;
-                }
 #endif
-            }
+        }
 
 #if __has_include(<windows.h>)
-            bool CanHandle(std::string objectType) override;
-            void Create(std::string objectType, int id) override;
-            void Destroy(int id) override;
-            void Exit() override;
-            double GetValue(int id, std::string property) override;
-            void SetValue(int id, std::string property, double value) override;
-            double GetArgValue(int id, std::string property, double argument) override;
-            bool GetBoolValue(int id, std::string property) override;
-            void SetBoolValue(int id, std::string property, bool value) override;
-            int GetIntValue(int id, std::string property) override;
-            void SetIntValue(int id, std::string property, int value) override;
-            std::string GetStringValue(int id, std::string property) override;
-            void SetStringValue(int id, std::string property, std::string value) override;
-            double GetIndexedValue(int id, std::string property_, int index) override;
-            int GetIndexedIntValue(int id, std::string property_, int index) override;
-            std::string GetIndexedStringValue(int id, std::string property, int index) override;
-            void GetArrayValue(int id, std::string property, double* values, int size) override;
-            void SetArrayValue(int id, std::string property, double* values, int size) override;
-            void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
-            void GetArgValues(int id, std::string property, double* values, int size, double* outputValues) override;
-            int GetIdValue(int id, std::string property_, int newId) override;
-            int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
-            double GetIndexedIndexedValue(int id, std::string property, int index1, int index2) override;
-            void SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value) override;
-            void SetIndexedIndexedIntValue(int id, const std::string& property, int index1, int index2, int value) override;
-            void Execute(int id, std::string method_) override;
+        bool CanHandle(std::string objectType) override;
+        void Create(std::string objectType, int id) override;
+        void Destroy(int id) override;
+        void Exit() override;
+        double GetValue(int id, std::string property) override;
+        void SetValue(int id, std::string property, double value) override;
+        double GetArgValue(int id, std::string property, double argument) override;
+        bool GetBoolValue(int id, std::string property) override;
+        void SetBoolValue(int id, std::string property, bool value) override;
+        int GetIntValue(int id, std::string property) override;
+        void SetIntValue(int id, std::string property, int value) override;
+        std::string GetStringValue(int id, std::string property) override;
+        void SetStringValue(int id, std::string property, std::string value) override;
+        double GetIndexedValue(int id, std::string property_, int index) override;
+        int GetIndexedIntValue(int id, std::string property_, int index) override;
+        std::string GetIndexedStringValue(int id, std::string property, int index) override;
+        void GetArrayValue(int id, std::string property, double* values, int size) override;
+        void SetArrayValue(int id, std::string property, double* values, int size) override;
+        void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
+        void GetArgValues(int id, std::string property, double* values, int size, double* outputValues) override;
+        int GetIdValue(int id, std::string property_, int newId) override;
+        int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
+        double GetIndexedIndexedValue(int id, std::string property, int index1, int index2) override;
+        void SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value) override;
+        void SetIndexedIndexedIntValue(int id, const std::string& property, int index1, int index2, int value) override;
+        void Execute(int id, std::string method_) override;
 #endif
 
-        private:
-            std::string serverName = "";
-            bool server_started = false;
+    private:
+        std::string serverName = "";
+        bool server_started = false;
 
 #if __has_include(<windows.h>)
-            WSADATA wsaData;
+        WSADATA wsaData;
 
-            std::string Send(std::string message, bool waitForAnswer);
-            SOCKET ConnectSocket();
-            void StartServer();
-            bool CheckConnection();
-            void SetParentProcess();
+        std::string Send(std::string message, bool waitForAnswer);
+        SOCKET ConnectSocket();
+        void StartServer();
+        bool CheckConnection();
+        void SetParentProcess();
 
-            static std::string StringJoin(const std::vector<std::string>& strings, const std::string& delim);
-            static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
+        static std::string StringJoin(const std::vector<std::string>& strings, const std::string& delim);
+        static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
-            void StartProcess(std::string processName, bool waitForExit);
-            void UpdateAddressInfo();
+        void StartProcess(std::string processName, bool waitForExit);
+        void UpdateAddressInfo();
 
-            addrinfo* address = nullptr;
-            addrinfo hints;
+        addrinfo* address = nullptr;
+        addrinfo hints;
 #endif
-        };
-    }
+    };
 }
 

@@ -23,162 +23,156 @@
 #include "PoissonDistribution.h"
 #include "../../Math/NumericSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    void PoissonDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
     {
-        void PoissonDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
+        stochast.Location = values[0];
+    }
+
+    bool PoissonDistribution::isVarying(StochastProperties& stochast)
+    {
+        return stochast.Location > 0.0;
+    }
+
+    void PoissonDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+    {
+        Logging::ValidationSupport::checkMinimum(report, 0, stochast.Location, "location", subject);
+    }
+
+    double PoissonDistribution::getMean(StochastProperties& stochast)
+    {
+        return stochast.Location;
+    }
+
+    double PoissonDistribution::getDeviation(StochastProperties& stochast)
+    {
+        return sqrt(stochast.Location);
+    }
+
+    void PoissonDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+    {
+        stochast.Location = mean;
+    }
+
+    double PoissonDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        const double p = StandardNormal::getPFromU(u);
+
+        const double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
+        double pdf = 0;
+
+        for (int k = 0; k < kMax; k++)
         {
-            stochast.Location = values[0];
-        }
-
-        bool PoissonDistribution::isVarying(StochastProperties& stochast)
-        {
-            return stochast.Location > 0.0;
-        }
-
-        void PoissonDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
-        {
-            Logging::ValidationSupport::checkMinimum(report, 0, stochast.Location, "location", subject);
-        }
-
-        double PoissonDistribution::getMean(StochastProperties& stochast)
-        {
-            return stochast.Location;
-        }
-
-        double PoissonDistribution::getDeviation(StochastProperties& stochast)
-        {
-            return sqrt(stochast.Location);
-        }
-
-        void PoissonDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
-        {
-            stochast.Location = mean;
-        }
-
-        double PoissonDistribution::getXFromU(StochastProperties& stochast, double u)
-        {
-            const double p = StandardNormal::getPFromU(u);
-
-            const double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
-            double pdf = 0;
-
-            for (int k = 0; k < kMax; k++)
+            pdf += getPDF(stochast, k);
+            if (pdf > p - delta || pdf > maxP)
             {
-                pdf += getPDF(stochast, k);
-                if (pdf > p - delta || pdf > maxP)
-                {
-                    return k;
-                }
-            }
-
-            return kMax;
-        }
-
-        double PoissonDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            const double cdf = getCDF(stochast, x);
-            return StandardNormal::getUFromP(cdf);
-        }
-
-        double PoissonDistribution::getPowerFactorial(double rate, int power)
-        {
-            double value = 1.0;
-
-            for (int k = 1; k <= power; k++)
-            {
-                value *= rate / k;
-            }
-
-            return value;
-        }
-
-
-        double PoissonDistribution::getPDF(StochastProperties& stochast, double x)
-        {
-            const int k = static_cast<int>(std::floor(x));
-
-            if (k >= 0 && Numeric::NumericSupport::areEqual(k, x, delta))
-            {
-                return getPowerFactorial(stochast.Location, k) * std::exp(-stochast.Location);
-            }
-            else
-            {
-                return 0.0;
+                return k;
             }
         }
 
-        double PoissonDistribution::getCDF(StochastProperties& stochast, double x)
+        return kMax;
+    }
+
+    double PoissonDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        const double cdf = getCDF(stochast, x);
+        return StandardNormal::getUFromP(cdf);
+    }
+
+    double PoissonDistribution::getPowerFactorial(double rate, int power)
+    {
+        double value = 1.0;
+
+        for (int k = 1; k <= power; k++)
         {
-            const int k = static_cast<int>(std::floor(x));
-
-            double cdf = 0.0;
-            for (int i = 0; i <= k; i++)
-            {
-                cdf += getPDF(stochast, i);
-            }
-
-            return cdf;
+            value *= rate / k;
         }
 
-        void PoissonDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+        return value;
+    }
+
+
+    double PoissonDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        const int k = static_cast<int>(std::floor(x));
+
+        if (k >= 0 && Numeric::NumericSupport::areEqual(k, x, delta))
         {
-            stochast.Location = Numeric::NumericSupport::getMean(values);
-            stochast.Observations = static_cast<int>(values.size());
+            return getPowerFactorial(stochast.Location, k) * std::exp(-stochast.Location);
         }
-
-        std::vector<double> PoissonDistribution::getDiscontinuityPoints(StochastProperties& stochast)
+        else
         {
-            std::vector<double> discontinuityPoints;
-
-            double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
-
-            int k = 0;
-            double cdf = 0;
-
-            std::shared_ptr<StochastProperties> stochastPtr = std::make_shared<StochastProperties>(stochast);
-
-            while (cdf < maxP && k < kMax)
-            {
-                discontinuityPoints.push_back(k);
-
-                double pdf = getPDF(*stochastPtr, k);
-                cdf += pdf;
-
-                k++;
-            }
-
-            return discontinuityPoints;
-        }
-
-        std::vector<double> PoissonDistribution::getSpecialPoints(StochastProperties& stochast)
-        {
-            double offset = 10 * delta;
-            double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
-
-            std::vector<double> specialPoints;
-
-            int k = 0;
-            double cdf = 0;
-
-            while (cdf < maxP && k < kMax)
-            {
-                specialPoints.push_back(k - offset);
-                specialPoints.push_back(k);
-                specialPoints.push_back(k + offset);
-
-                double pdf = getPDF(stochast, k);
-                cdf += pdf;
-
-                k++;
-            }
-
-            return specialPoints;
+            return 0.0;
         }
     }
+
+    double PoissonDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        const int k = static_cast<int>(std::floor(x));
+
+        double cdf = 0.0;
+        for (int i = 0; i <= k; i++)
+        {
+            cdf += getPDF(stochast, i);
+        }
+
+        return cdf;
+    }
+
+    void PoissonDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        stochast.Location = Numeric::NumericSupport::getMean(values);
+        stochast.Observations = static_cast<int>(values.size());
+    }
+
+    std::vector<double> PoissonDistribution::getDiscontinuityPoints(StochastProperties& stochast)
+    {
+        std::vector<double> discontinuityPoints;
+
+        double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
+
+        int k = 0;
+        double cdf = 0;
+
+        std::shared_ptr<StochastProperties> stochastPtr = std::make_shared<StochastProperties>(stochast);
+
+        while (cdf < maxP && k < kMax)
+        {
+            discontinuityPoints.push_back(k);
+
+            double pdf = getPDF(*stochastPtr, k);
+            cdf += pdf;
+
+            k++;
+        }
+
+        return discontinuityPoints;
+    }
+
+    std::vector<double> PoissonDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        double offset = 10 * delta;
+        double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
+
+        std::vector<double> specialPoints;
+
+        int k = 0;
+        double cdf = 0;
+
+        while (cdf < maxP && k < kMax)
+        {
+            specialPoints.push_back(k - offset);
+            specialPoints.push_back(k);
+            specialPoints.push_back(k + offset);
+
+            double pdf = getPDF(stochast, k);
+            cdf += pdf;
+
+            k++;
+        }
+
+        return specialPoints;
+    }
 }
-
-
-
 

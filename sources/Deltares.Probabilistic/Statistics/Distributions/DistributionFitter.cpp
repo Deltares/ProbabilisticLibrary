@@ -32,100 +32,96 @@
 #include <memory>
 #include <vector>
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    std::vector<double> DistributionFitter::fitByLogLikelihood(const std::vector<double>& values, Distribution* distribution, StochastProperties& stochast,
+        const std::vector<double>& minimum, const std::vector<double>& maximum, const std::vector<DistributionPropertyType>& properties)
     {
-        std::vector<double> DistributionFitter::fitByLogLikelihood(const std::vector<double>& values, Distribution* distribution, StochastProperties& stochast,
-            const std::vector<double>& minimum, const std::vector<double>& maximum, const std::vector<DistributionPropertyType>& properties)
+        distributionObj = distribution;
+
+        constexpr int numberValues = 13;
+        constexpr int numberRefinements = 10;
+
+        auto gridSearch = Optimization::GridSearch();
+
+        auto searchArea = std::make_shared<Optimization::SearchParameterSettingsSet>();
+        for (size_t i = 0; i < properties.size(); i++)
         {
-            distributionObj = distribution;
+            auto settings = std::make_shared<Optimization::SearchParameterSettings>();
+            settings->MinValue = minimum[i];
+            settings->MaxValue = maximum[i];
+            settings->NumberOfValues = numberValues;
+            settings->NumberOfRefinements = numberRefinements;
+            settings->Move = true;
+            searchArea->Dimensions.push_back(settings);
+        }
 
-            constexpr int numberValues = 13;
-            constexpr int numberRefinements = 10;
+        const auto model = std::make_shared<Models::ZModel>([this, values, &stochast, properties]
+            (const std::shared_ptr<Models::ModelSample>& sample)
+            { return getLogLikelihood(*sample, values, stochast, properties); });
 
-            auto gridSearch = Optimization::GridSearch();
+        const std::shared_ptr<Models::ModelSample> sample = gridSearch.getOptimizedSample(searchArea, model);
 
-            auto searchArea = std::make_shared<Optimization::SearchParameterSettingsSet>();
-            for (size_t i = 0; i < properties.size(); i++)
+        if (sample != nullptr)
+        {
+            return sample->Values;
+        }
+        else
+        {
+            return Numeric::NumericSupport::select(minimum, [](double x) {return std::nan(""); });
+        }
+    }
+
+    void DistributionFitter::getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,
+        StochastProperties& stochast, const std::vector<DistributionPropertyType>& properties) const
+    {
+        for (size_t i = 0; i < properties.size(); i++)
+        {
+            stochast.applyValue(properties[i], sample.Values[i]);
+        }
+
+        if (distributionObj->isValid(stochast))
+        {
+            sample.Z = - getSumLogLikelihood(values, stochast);
+        }
+        else
+        {
+            sample.Z = nan("");
+        }
+    }
+
+    double DistributionFitter::getSumLogLikelihood(const std::vector<double>& values, StochastProperties& stochast) const
+    {
+        double prevLog = std::nan("");
+        double prevX = std::nan("");
+
+        double sum = 0;
+
+        for (double x : values)
+        {
+            if (x == prevX)
             {
-                auto settings = std::make_shared<Optimization::SearchParameterSettings>();
-                settings->MinValue = minimum[i];
-                settings->MaxValue = maximum[i];
-                settings->NumberOfValues = numberValues;
-                settings->NumberOfRefinements = numberRefinements;
-                settings->Move = true;
-                searchArea->Dimensions.push_back(settings);
-            }
-
-            const auto model = std::make_shared<Models::ZModel>([this, values, &stochast, properties]
-                (const std::shared_ptr<Models::ModelSample>& sample)
-                { return getLogLikelihood(*sample, values, stochast, properties); });
-
-            const std::shared_ptr<Models::ModelSample> sample = gridSearch.getOptimizedSample(searchArea, model);
-
-            if (sample != nullptr)
-            {
-                return sample->Values;
+                sum += prevLog;
             }
             else
             {
-                return Numeric::NumericSupport::select(minimum, [](double x) {return std::nan(""); });
-            }
-        }
-
-        void DistributionFitter::getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,
-            StochastProperties& stochast, const std::vector<DistributionPropertyType>& properties) const
-        {
-            for (size_t i = 0; i < properties.size(); i++)
-            {
-                stochast.applyValue(properties[i], sample.Values[i]);
-            }
-
-            if (distributionObj->isValid(stochast))
-            {
-                sample.Z = - getSumLogLikelihood(values, stochast);
-            }
-            else
-            {
-                sample.Z = nan("");
-            }
-        }
-
-        double DistributionFitter::getSumLogLikelihood(const std::vector<double>& values, StochastProperties& stochast) const
-        {
-            double prevLog = std::nan("");
-            double prevX = std::nan("");
-
-            double sum = 0;
-
-            for (double x : values)
-            {
-                if (x == prevX)
+                double log = distributionObj->getLogLikelihood(stochast, x);
+                if (std::isnan(log))
                 {
-                    sum += prevLog;
+                    return log;
                 }
                 else
                 {
-                    double log = distributionObj->getLogLikelihood(stochast, x);
-                    if (std::isnan(log))
-                    {
-                        return log;
-                    }
-                    else
-                    {
-                        prevX = x;
-                        prevLog = log;
+                    prevX = x;
+                    prevLog = log;
 
-                        sum += log;
-                    }
+                    sum += log;
                 }
             }
-
-            return sum;
         }
 
+        return sum;
     }
-}
 
+}
 

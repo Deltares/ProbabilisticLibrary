@@ -23,21 +23,18 @@
 #include "LengthEffect.h"
 #include <iostream>
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    void LengthEffectProject::run()
     {
-        void LengthEffectProject::run()
+        if (correlationLengths.size() != designPointCrossSection->Alphas.size())
         {
-            if (correlationLengths.size() != designPointCrossSection->Alphas.size())
-            {
-                std::cout << "mismatch in dimensions in running length effect." << std::endl;
-            }
-            else
-            {
-                designPoint = std::make_shared<DesignPoint>(LengthEffect::UpscaleLength(designPointCrossSection, selfCorrelationMatrix,
-                    correlationLengths, length));
-            }
+            std::cout << "mismatch in dimensions in running length effect." << std::endl;
+        }
+        else
+        {
+            designPoint = std::make_shared<DesignPoint>(LengthEffect::UpscaleLength(designPointCrossSection, selfCorrelationMatrix,
+                correlationLengths, length));
         }
     }
 }

@@ -29,9 +29,7 @@
 #include "Stochast.h"
 #include "BaseCorrelation.h"
 
-namespace Deltares
-{
-    namespace Statistics
+namespace Deltares::Statistics
     {
         class correlationPair : public BaseCorrelationPair
         {
@@ -85,6 +83,5 @@ namespace Deltares
             size_t dim = 0;
             bool allow_validation = false;
         };
-    }
 }
 

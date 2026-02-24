@@ -24,40 +24,37 @@
 #include "DesignPointBuilder.h"
 #include "../Model/Validatable.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Settings for FORM algorithm
+     */
+    class FragilityCurveIntegrationSettings : public Models::Validatable
     {
+    public:
         /**
-         * \brief Settings for FORM algorithm
+         * \brief Step size in the integration
          */
-        class FragilityCurveIntegrationSettings : public Models::Validatable
+        double StepSize = 0.001;
+
+        /**
+         * \brief Method type how the design point (alpha values) is calculated
+         */
+        DesignPointMethod designPointMethod = DesignPointMethod::NearestToMean;
+
+        /**
+         * \brief Settings for individual stochastic variable, such as the start value
+         */
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const override
         {
-        public:
-            /**
-             * \brief Step size in the integration
-             */
-            double StepSize = 0.001;
-
-            /**
-             * \brief Method type how the design point (alpha values) is calculated
-             */
-            DesignPointMethod designPointMethod = DesignPointMethod::NearestToMean;
-
-            /**
-             * \brief Settings for individual stochastic variable, such as the start value
-             */
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-
-            /**
-             * \brief Reports whether the settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            void validate(Logging::ValidationReport& report) const override
-            {
-                Logging::ValidationSupport::checkMinimum(report, 1E-6, StepSize, "step size");
-            }
-        };
-    }
+            Logging::ValidationSupport::checkMinimum(report, 1E-6, StepSize, "step size");
+        }
+    };
 }
 

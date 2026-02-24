@@ -23,59 +23,56 @@
 #include "DesignPointBuilder.h"
 #include "../Model/Validatable.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Settings for numerical integration
+     */
+    class NumericalIntegrationSettings : public Models::Validatable
     {
+    public:
         /**
-         * \brief Settings for numerical integration
+         * \brief Method type how the design point (alpha values) is calculated
          */
-        class NumericalIntegrationSettings : public Models::Validatable
+        DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+        /**
+         * \brief Settings per stochastic variable, contains (among others) the center value and multiplication factor used to shift samples in the importance sampling algorithm
+         */
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const override
         {
-        public:
-            /**
-             * \brief Method type how the design point (alpha values) is calculated
-             */
-            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+            validateStochastSet(report);
+            runSettings->validate(report);
+        }
 
-            /**
-             * \brief Settings per stochastic variable, contains (among others) the center value and multiplication factor used to shift samples in the importance sampling algorithm
-             */
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Reports whether the settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            void validate(Logging::ValidationReport& report) const override
+    private:
+        /**
+         * \brief Indicates whether all stochast settings have valid values
+         * \return True if all valid, false otherwise
+         */
+        void validateStochastSet(Logging::ValidationReport& report) const
+        {
+            for (size_t i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
             {
-                validateStochastSet(report);
-                runSettings->validate(report);
-            }
+                const std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
 
-        private:
-            /**
-             * \brief Indicates whether all stochast settings have valid values
-             * \return True if all valid, false otherwise
-             */
-            void validateStochastSet(Logging::ValidationReport& report) const
-            {
-                for (size_t i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
-                {
-                    const std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
-
-                    Logging::ValidationSupport::checkMinimumInt(report, 1, stochastSettings->Intervals, "intervals");
-                    Logging::ValidationSupport::checkMinimum(report, -Statistics::StandardNormal::UMax, stochastSettings->MinValue, "min value");
-                    Logging::ValidationSupport::checkMinimum(report, stochastSettings->MinValue, stochastSettings->MaxValue, "max value");
-                    Logging::ValidationSupport::checkMaximum(report, Statistics::StandardNormal::UMax, stochastSettings->MaxValue, "max value");
-                }
+                Logging::ValidationSupport::checkMinimumInt(report, 1, stochastSettings->Intervals, "intervals");
+                Logging::ValidationSupport::checkMinimum(report, -Statistics::StandardNormal::UMax, stochastSettings->MinValue, "min value");
+                Logging::ValidationSupport::checkMinimum(report, stochastSettings->MinValue, stochastSettings->MaxValue, "max value");
+                Logging::ValidationSupport::checkMaximum(report, Statistics::StandardNormal::UMax, stochastSettings->MaxValue, "max value");
             }
-        };
-    }
+        }
+    };
 }
 

@@ -23,66 +23,63 @@
 
 #include "StandardNormal.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /**
+     * \brief Defines a probability Point in a fragility curve or empirical distribution
+     */
+    class ProbabilityValue 
     {
+    public:
+
         /**
-         * \brief Defines a probability Point in a fragility curve or empirical distribution
+         * \brief Default constructor, has Reliability = 0 and quantile 0.5
          */
-        class ProbabilityValue 
+        ProbabilityValue() = default;
+
+        /**
+         * \brief Constructor accepting quantile
+         * \param p Quantile, same as non-exceeding probability
+         */
+        ProbabilityValue(double p)
         {
-        public:
+            this->setProbabilityOfNonFailure(p);
+        }
 
-            /**
-             * \brief Default constructor, has Reliability = 0 and quantile 0.5
-             */
-            ProbabilityValue() = default;
+        /**
+         * \brief Reliability of the fragility point
+         */
+        double Reliability;
 
-            /**
-             * \brief Constructor accepting quantile
-             * \param p Quantile, same as non-exceeding probability
-             */
-            ProbabilityValue(double p)
-            {
-                this->setProbabilityOfNonFailure(p);
-            }
+        double getProbabilityOfFailure()
+        {
+            return StandardNormal::getQFromU(this->Reliability);
+        }
 
-            /**
-             * \brief Reliability of the fragility point
-             */
-            double Reliability;
+        void setProbabilityOfFailure(double q)
+        {
+            this->Reliability = StandardNormal::getUFromQ(q);
+        }
 
-            double getProbabilityOfFailure()
-            {
-                return StandardNormal::getQFromU(this->Reliability);
-            }
+        double getProbabilityOfNonFailure()
+        {
+            return StandardNormal::getPFromU(this->Reliability);
+        }
 
-            void setProbabilityOfFailure(double q)
-            {
-                this->Reliability = StandardNormal::getUFromQ(q);
-            }
+        void setProbabilityOfNonFailure(double p)
+        {
+            this->Reliability = StandardNormal::getUFromP(p);
+        }
 
-            double getProbabilityOfNonFailure()
-            {
-                return StandardNormal::getPFromU(this->Reliability);
-            }
+        double getReturnPeriod()
+        {
+            return StandardNormal::getTFromU(this->Reliability);
+        }
 
-            void setProbabilityOfNonFailure(double p)
-            {
-                this->Reliability = StandardNormal::getUFromP(p);
-            }
-
-            double getReturnPeriod()
-            {
-                return StandardNormal::getTFromU(this->Reliability);
-            }
-
-            void setReturnPeriod(double r)
-            {
-                this->Reliability = StandardNormal::getUFromT(r);
-            }
-        };
-    }
+        void setReturnPeriod(double r)
+        {
+            this->Reliability = StandardNormal::getUFromT(r);
+        }
+    };
 }
 

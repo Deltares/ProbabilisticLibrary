@@ -28,95 +28,92 @@
 #include "NumericalBisectionSettings.h"
 #include "../Math/NumericSupport.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    // forward declarations (needed for circular dependencies):
+    class IntegrationPoint;
+    class IntegrationCell;
+    class IntegrationLine;
+
+    class IntegrationDomain
     {
-        // forward declarations (needed for circular dependencies):
-        class IntegrationPoint;
-        class IntegrationCell;
-        class IntegrationLine;
+    public:
+        IntegrationDomain(const std::vector<double>& origin);
+        std::vector<std::shared_ptr<IntegrationPoint>> Points;
+        std::unordered_map<std::string,std::shared_ptr<IntegrationPoint>> pointsSet;
+        std::vector<std::shared_ptr<IntegrationCell>> Cells;
+        std::vector <std::vector<std::shared_ptr<IntegrationLine>>> Lines;
+        std::vector<std::unordered_map<std::string,std::shared_ptr<IntegrationLine>>> LinesSet;
+        std::shared_ptr<IntegrationPoint> GetIntegrationPoint(std::vector<double>& coordinates);
+        void AddPoint(std::shared_ptr<IntegrationPoint> point, const std::string& coordHash);
+        inline size_t getDimension() const { return origin.size(); }
+        inline std::vector<std::vector<int>> getSplit() const { return split; }
+    private:
+        std::vector<std::vector<int>> split;
+        const std::vector<double> origin;
+    };
 
-        class IntegrationDomain
-        {
-        public:
-            IntegrationDomain(const std::vector<double>& origin);
-            std::vector<std::shared_ptr<IntegrationPoint>> Points;
-            std::unordered_map<std::string,std::shared_ptr<IntegrationPoint>> pointsSet;
-            std::vector<std::shared_ptr<IntegrationCell>> Cells;
-            std::vector <std::vector<std::shared_ptr<IntegrationLine>>> Lines;
-            std::vector<std::unordered_map<std::string,std::shared_ptr<IntegrationLine>>> LinesSet;
-            std::shared_ptr<IntegrationPoint> GetIntegrationPoint(std::vector<double>& coordinates);
-            void AddPoint(std::shared_ptr<IntegrationPoint> point, const std::string& coordHash);
-            inline size_t getDimension() const { return origin.size(); }
-            inline std::vector<std::vector<int>> getSplit() const { return split; }
-        private:
-            std::vector<std::vector<int>> split;
-            const std::vector<double> origin;
-        };
+    class IntegrationPoint
+    {
+    public:
+        IntegrationPoint(std::vector<double> coord) : Coordinates (coord) {}
+        double ZValue = std::nan("");
+        double ProbabilityDensity() const;
+        void deriveByExtrapolation();
+        void derive();
+        std::vector<double> Coordinates;
+        inline Numeric::DoubleType getResult() const { return Numeric::NumericSupport::getDoubleType(ZValue); };
+        std::vector<std::shared_ptr<IntegrationLine>> Lines;
+        inline void setKnown(const bool b) { Known = b; }
+        inline bool isKnown() const { return Known; }
+        inline void setZValue(const double z) { ZValue = z; }
+    private:
+        bool Known = false;
+    };
 
-        class IntegrationPoint
-        {
-        public:
-            IntegrationPoint(std::vector<double> coord) : Coordinates (coord) {}
-            double ZValue = std::nan("");
-            double ProbabilityDensity() const;
-            void deriveByExtrapolation();
-            void derive();
-            std::vector<double> Coordinates;
-            inline Numeric::DoubleType getResult() const { return Numeric::NumericSupport::getDoubleType(ZValue); };
-            std::vector<std::shared_ptr<IntegrationLine>> Lines;
-            inline void setKnown(const bool b) { Known = b; }
-            inline bool isKnown() const { return Known; }
-            inline void setZValue(const double z) { ZValue = z; }
-        private:
-            bool Known = false;
-        };
+    class IntegrationCell
+    {
+    public:
+        IntegrationCell(IntegrationDomain& domain, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds);
+        bool Determined = false;
+        bool Known = false;
+        double getProbability() const;
+        void split();
+        void split(const std::vector<double>& origin);
+        void update();
+        Numeric::DoubleType Result = Numeric::NaN;
+        std::vector<std::shared_ptr<IntegrationPoint>> CornerPoints;
+        std::shared_ptr<IntegrationPoint> getCenterPoint() const;
+    private:
+        size_t get_index() const;
+        std::vector<double> lowerBoundaries;
+        std::vector<double> upperBoundaries;
+        std::vector<double> lowerProbabilities;
+        std::vector<double> upperProbabilities;
+        IntegrationDomain& domain;
+        void UpdateCornerPoints();
+    };
 
-        class IntegrationCell
-        {
-        public:
-            IntegrationCell(IntegrationDomain& domain, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds);
-            bool Determined = false;
-            bool Known = false;
-            double getProbability() const;
-            void split();
-            void split(const std::vector<double>& origin);
-            void update();
-            Numeric::DoubleType Result = Numeric::NaN;
-            std::vector<std::shared_ptr<IntegrationPoint>> CornerPoints;
-            std::shared_ptr<IntegrationPoint> getCenterPoint() const;
-        private:
-            size_t get_index() const;
-            std::vector<double> lowerBoundaries;
-            std::vector<double> upperBoundaries;
-            std::vector<double> lowerProbabilities;
-            std::vector<double> upperProbabilities;
-            IntegrationDomain& domain;
-            void UpdateCornerPoints();
-        };
+    class IntegrationLine
+    {
+    public:
+        IntegrationLine(int dimension, double origin) : Dimension(dimension), Origin(origin) {};
+        std::unordered_map<IntegrationPoint*, int> pointSides = std::unordered_map<IntegrationPoint*, int>();
+        std::vector<std::shared_ptr<IntegrationPoint>> Points;
+        void Add(std::shared_ptr<IntegrationPoint> point);
+        int GetSide(std::shared_ptr<IntegrationPoint> point) const;
+        std::shared_ptr<IntegrationPoint> GetPreviousKnownPoint(IntegrationPoint* p);
+        std::shared_ptr<IntegrationPoint> GetNextKnownPoint(IntegrationPoint* p);
+        bool OnSameSide(IntegrationPoint& p1, IntegrationPoint& p2);
+        bool HasNextKnownPoint(std::shared_ptr<IntegrationPoint> point, const Numeric::DoubleType r);
+        bool HasPreviousKnownPoint(std::shared_ptr<IntegrationPoint> point, const Numeric::DoubleType r);
+        size_t get_index(std::shared_ptr<IntegrationPoint> point);
+        size_t get_index(IntegrationPoint* point);
+        inline int getDimension() const { return Dimension; }
+    private:
+        int Dimension;
+        double Origin;
+    };
 
-        class IntegrationLine
-        {
-        public:
-            IntegrationLine(int dimension, double origin) : Dimension(dimension), Origin(origin) {};
-            std::unordered_map<IntegrationPoint*, int> pointSides = std::unordered_map<IntegrationPoint*, int>();
-            std::vector<std::shared_ptr<IntegrationPoint>> Points;
-            void Add(std::shared_ptr<IntegrationPoint> point);
-            int GetSide(std::shared_ptr<IntegrationPoint> point) const;
-            std::shared_ptr<IntegrationPoint> GetPreviousKnownPoint(IntegrationPoint* p);
-            std::shared_ptr<IntegrationPoint> GetNextKnownPoint(IntegrationPoint* p);
-            bool OnSameSide(IntegrationPoint& p1, IntegrationPoint& p2);
-            bool HasNextKnownPoint(std::shared_ptr<IntegrationPoint> point, const Numeric::DoubleType r);
-            bool HasPreviousKnownPoint(std::shared_ptr<IntegrationPoint> point, const Numeric::DoubleType r);
-            size_t get_index(std::shared_ptr<IntegrationPoint> point);
-            size_t get_index(IntegrationPoint* point);
-            inline int getDimension() const { return Dimension; }
-        private:
-            int Dimension;
-            double Origin;
-        };
-
-    }
 }
 

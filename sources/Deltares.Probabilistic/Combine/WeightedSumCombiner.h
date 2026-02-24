@@ -24,27 +24,23 @@
 
 #include "ExcludingCombiner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Combines design points which have no overlap
+     */
+    class WeightedSumCombiner : public ExcludingCombiner
     {
+    public:
         /**
-         * \brief Combines design points which have no overlap
+         * \brief Combines a number of design points
+         * \param scenarios Scenarios
+         * \param designPoints Design points to be combined
+         * \return Design point resembling the combined reliability and alpha values
          */
-        class WeightedSumCombiner : public ExcludingCombiner
-        {
-        public:
-            /**
-             * \brief Combines a number of design points
-             * \param scenarios Scenarios
-             * \param designPoints Design points to be combined
-             * \return Design point resembling the combined reliability and alpha values
-             */
-            std::shared_ptr<DesignPoint> combineExcludingDesignPoints(
-                std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
-                std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) override;
-        };
-    }
+        std::shared_ptr<DesignPoint> combineExcludingDesignPoints(
+            std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+            std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) override;
+    };
 } 
-
 

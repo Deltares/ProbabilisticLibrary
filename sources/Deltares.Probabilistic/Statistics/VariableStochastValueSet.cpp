@@ -29,127 +29,123 @@
 #include "../Math/NumericSupport.h"
 #include "Distributions/DistributionLibrary.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    using namespace Deltares::Numeric;
+
+    void VariableStochastValuesSet::initializeForRun(std::shared_ptr<StochastProperties> defaultStochast, DistributionType distributionType, bool truncated, bool inverted)
     {
-        using namespace Deltares::Numeric;
+        xValues.clear();
+        locations.clear();
+        scales.clear();
+        minimums.clear();
+        maximums.clear();
+        shapes.clear();
+        shapesB.clear();
+        shifts.clear();
+        shiftsB.clear();
+        observations.clear();
 
-        void VariableStochastValuesSet::initializeForRun(std::shared_ptr<StochastProperties> defaultStochast, DistributionType distributionType, bool truncated, bool inverted)
+        std::sort(this->StochastValues.begin(), this->StochastValues.end(), [](std::shared_ptr<VariableStochastValue> val1, std::shared_ptr<VariableStochastValue> val2) {return val1->X < val2->X; });
+        std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
+
+        for (size_t i = 0; i < this->StochastValues.size(); i++)
         {
-            xValues.clear();
-            locations.clear();
-            scales.clear();
-            minimums.clear();
-            maximums.clear();
-            shapes.clear();
-            shapesB.clear();
-            shifts.clear();
-            shiftsB.clear();
-            observations.clear();
+            std::shared_ptr<VariableStochastValue> value = this->StochastValues[i];
 
-            std::sort(this->StochastValues.begin(), this->StochastValues.end(), [](std::shared_ptr<VariableStochastValue> val1, std::shared_ptr<VariableStochastValue> val2) {return val1->X < val2->X; });
-            std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
+            xValues.push_back(value->X);
 
-            for (size_t i = 0; i < this->StochastValues.size(); i++)
-            {
-                std::shared_ptr<VariableStochastValue> value = this->StochastValues[i];
+            std::shared_ptr<StochastProperties> source = value->getMergedStochast(distribution, defaultStochast);
 
-                xValues.push_back(value->X);
-
-                std::shared_ptr<StochastProperties> source = value->getMergedStochast(distribution, defaultStochast);
-
-                locations.push_back(source->Location);
-                scales.push_back(source->Scale);
-                minimums.push_back(source->Minimum);
-                maximums.push_back(source->Maximum);
-                shapes.push_back(source->Shape);
-                shapesB.push_back(source->ShapeB);
-                shifts.push_back(source->Shift);
-                shiftsB.push_back(source->ShiftB);
-                observations.push_back(source->Observations);
-            }
+            locations.push_back(source->Location);
+            scales.push_back(source->Scale);
+            minimums.push_back(source->Minimum);
+            maximums.push_back(source->Maximum);
+            shapes.push_back(source->Shape);
+            shapesB.push_back(source->ShapeB);
+            shifts.push_back(source->Shift);
+            shiftsB.push_back(source->ShiftB);
+            observations.push_back(source->Observations);
         }
+    }
 
-        std::shared_ptr<StochastProperties> VariableStochastValuesSet::getInterpolatedStochast(double x) const
+    std::shared_ptr<StochastProperties> VariableStochastValuesSet::getInterpolatedStochast(double x) const
+    {
+        std::shared_ptr<StochastProperties> properties = std::make_shared<StochastProperties>();
+        updateProperties(properties, x);
+        return properties;
+    }
+
+    void VariableStochastValuesSet::updateProperties(std::shared_ptr<StochastProperties> properties, double x) const
+    {
+        properties->Location = NumericSupport::interpolate(x, this->xValues, this->locations);
+        properties->Scale = NumericSupport::interpolate(x, this->xValues, this->scales);
+        properties->Minimum = NumericSupport::interpolate(x, this->xValues, this->minimums);
+        properties->Maximum = NumericSupport::interpolate(x, this->xValues, this->maximums);
+        properties->Shape = NumericSupport::interpolate(x, this->xValues, this->shapes);
+        properties->ShapeB = NumericSupport::interpolate(x, this->xValues, this->shapesB);
+        properties->Shift = NumericSupport::interpolate(x, this->xValues, this->shifts);
+        properties->ShiftB = NumericSupport::interpolate(x, this->xValues, this->shiftsB);
+        properties->Observations = static_cast<int>(round(NumericSupport::interpolate(x, this->xValues, this->observations)));
+    }
+
+    void VariableStochastValuesSet::validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject) const
+    {
+        Logging::ValidationSupport::checkNotEmpty(report, StochastValues.size(), "stochast values");
+
+        std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
+        for (auto stochastValue : StochastValues)
         {
-            std::shared_ptr<StochastProperties> properties = std::make_shared<StochastProperties>();
-            updateProperties(properties, x);
-            return properties;
+            std::shared_ptr<StochastProperties> properties = this->getInterpolatedStochast(stochastValue->X);
+            distribution->validate(report, *properties, subject);
         }
+    }
 
-        void VariableStochastValuesSet::updateProperties(std::shared_ptr<StochastProperties> properties, double x) const
+    bool VariableStochastValuesSet::isValid(DistributionType distributionType, bool truncated, bool inverted)
+    {
+        if (StochastValues.empty())
         {
-            properties->Location = NumericSupport::interpolate(x, this->xValues, this->locations);
-            properties->Scale = NumericSupport::interpolate(x, this->xValues, this->scales);
-            properties->Minimum = NumericSupport::interpolate(x, this->xValues, this->minimums);
-            properties->Maximum = NumericSupport::interpolate(x, this->xValues, this->maximums);
-            properties->Shape = NumericSupport::interpolate(x, this->xValues, this->shapes);
-            properties->ShapeB = NumericSupport::interpolate(x, this->xValues, this->shapesB);
-            properties->Shift = NumericSupport::interpolate(x, this->xValues, this->shifts);
-            properties->ShiftB = NumericSupport::interpolate(x, this->xValues, this->shiftsB);
-            properties->Observations = static_cast<int>(round(NumericSupport::interpolate(x, this->xValues, this->observations)));
-        }
-
-        void VariableStochastValuesSet::validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject) const
-        {
-            Logging::ValidationSupport::checkNotEmpty(report, StochastValues.size(), "stochast values");
-
-            std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
-            for (auto stochastValue : StochastValues)
-            {
-                std::shared_ptr<StochastProperties> properties = this->getInterpolatedStochast(stochastValue->X);
-                distribution->validate(report, *properties, subject);
-            }
-        }
-
-        bool VariableStochastValuesSet::isValid(DistributionType distributionType, bool truncated, bool inverted)
-        {
-            if (StochastValues.empty())
-            {
-                return false;
-            }
-
-            std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
-
-            for (auto stochastValue : StochastValues)
-            {
-                std::shared_ptr<StochastProperties> properties = this->getInterpolatedStochast(stochastValue->X);
-                if (!distribution->isValid(*properties))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        bool VariableStochastValuesSet::isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast) const
-        {
-            std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, false, false);
-
-            for (size_t i = 0; i < StochastValues.size(); i++)
-            {
-                std::shared_ptr<StochastProperties> mergedStochast = defaultStochast != nullptr ?  StochastValues[i]->getMergedStochast(distribution, defaultStochast) : StochastValues[i]->Stochast;
-                if (distribution->isVarying(*mergedStochast))
-                {
-                    return true;
-                }
-            }
-
             return false;
         }
 
-        void VariableStochastValuesSet::copyFrom(std::shared_ptr<VariableStochastValuesSet> source)
-        {
-            this->StochastValues.clear();
+        std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
 
-            for (std::shared_ptr<VariableStochastValue> value : source->StochastValues)
+        for (auto stochastValue : StochastValues)
+        {
+            std::shared_ptr<StochastProperties> properties = this->getInterpolatedStochast(stochastValue->X);
+            if (!distribution->isValid(*properties))
             {
-                this->StochastValues.push_back(value->clone());
+                return false;
             }
         }
-    };
-}
 
+        return true;
+    }
+
+    bool VariableStochastValuesSet::isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast) const
+    {
+        std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, false, false);
+
+        for (size_t i = 0; i < StochastValues.size(); i++)
+        {
+            std::shared_ptr<StochastProperties> mergedStochast = defaultStochast != nullptr ?  StochastValues[i]->getMergedStochast(distribution, defaultStochast) : StochastValues[i]->Stochast;
+            if (distribution->isVarying(*mergedStochast))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void VariableStochastValuesSet::copyFrom(std::shared_ptr<VariableStochastValuesSet> source)
+    {
+        this->StochastValues.clear();
+
+        for (std::shared_ptr<VariableStochastValue> value : source->StochastValues)
+        {
+            this->StochastValues.push_back(value->clone());
+        }
+    }
+}
 

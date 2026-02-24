@@ -20,23 +20,20 @@
 // All rights reserved.
 //
 #pragma once
-namespace Deltares
+namespace Deltares::Numeric
 {
-    namespace Numeric
+    class WeightedValue
     {
-        class WeightedValue
+    public:
+        WeightedValue(double value, double weight)
         {
-        public:
-            WeightedValue(double value, double weight)
-            {
-                this->value = value;
-                this->weight = weight;
-            }
+            this->value = value;
+            this->weight = weight;
+        }
 
-            double value;
-            double weight;
-        };
+        double value;
+        double weight;
+    };
 
-    }
 }
 

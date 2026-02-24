@@ -24,51 +24,45 @@
 
 #include <memory>
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    void StochastSettingsSet::loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
     {
-        void StochastSettingsSet::loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
+        this->stochastSettings.clear();
+
+        for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
         {
-            this->stochastSettings.clear();
+            std::shared_ptr<Deltares::Reliability::StochastSettings> settings = std::make_shared<Deltares::Reliability::StochastSettings>();
+            settings->StartValue = stochastPoint->Alphas[i]->U;
+            settings->stochast = stochastPoint->Alphas[i]->Stochast;
 
-            for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
-            {
-                std::shared_ptr<Deltares::Reliability::StochastSettings> settings = std::make_shared<Deltares::Reliability::StochastSettings>();
-                settings->StartValue = stochastPoint->Alphas[i]->U;
-                settings->stochast = stochastPoint->Alphas[i]->Stochast;
+            this->stochastSettings.push_back(settings);
+        }
 
-                this->stochastSettings.push_back(settings);
-            }
+        this->AreStartValuesCorrelated = false;
+    }
+
+    std::shared_ptr<Models::Sample> StochastSettingsSet::getStartPoint()
+    {
+        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(this->getVaryingStochastCount());
+
+        for (int i = 0; i < this->getVaryingStochastCount(); i++)
+        {
+            sample->Values[i] = this->VaryingStochastSettings[i]->UncorrelatedStartValue;
+        }
+
+        return sample;
+    }
+
+    void StochastSettingsSet::setStartPoint(const std::shared_ptr<Models::Sample> startPoint)
+    {
+        for (int i = 0; i < this->getVaryingStochastCount(); i++)
+        {
+            this->VaryingStochastSettings[i]->StartValue = startPoint->Values[i];
+            this->VaryingStochastSettings[i]->UncorrelatedStartValue = startPoint->Values[i];
 
             this->AreStartValuesCorrelated = false;
         }
-
-        std::shared_ptr<Models::Sample> StochastSettingsSet::getStartPoint()
-        {
-            std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(this->getVaryingStochastCount());
-
-            for (int i = 0; i < this->getVaryingStochastCount(); i++)
-            {
-                sample->Values[i] = this->VaryingStochastSettings[i]->UncorrelatedStartValue;
-            }
-
-            return sample;
-        }
-
-        void StochastSettingsSet::setStartPoint(const std::shared_ptr<Models::Sample> startPoint)
-        {
-            for (int i = 0; i < this->getVaryingStochastCount(); i++)
-            {
-                this->VaryingStochastSettings[i]->StartValue = startPoint->Values[i];
-                this->VaryingStochastSettings[i]->UncorrelatedStartValue = startPoint->Values[i];
-
-                this->AreStartValuesCorrelated = false;
-            }
-        }
     }
 }
-
-
-
 

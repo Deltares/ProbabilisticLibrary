@@ -23,37 +23,31 @@
 #include <functional>
 #include <cmath>
 
-namespace Deltares
+namespace Deltares::Numeric
 {
-    namespace Numeric
+    typedef std::function<double(double)> RootFinderMethod;
+
+    class XValue
     {
-        typedef std::function<double(double)> RootFinderMethod;
+    public:
+        XValue(double x, double value) : X(x), Value(value) {}
 
-        class XValue
+        double X = 0.0;
+        double Value = 0.0;
+    };
+
+    class RootFinder
+    {
+
+    public:
+        virtual double CalculateValue(double xLow, double xHigh, double target, const RootFinderMethod& function)
         {
-        public:
-            XValue(double x, double value) : X(x), Value(value) {}
-
-            double X = 0.0;
-            double Value = 0.0;
-        };
-
-        class RootFinder
+            return nan("");
+        }
+        virtual XValue CalculateValue(XValue low, XValue high, double target, const RootFinderMethod& function)
         {
-
-        public:
-            virtual double CalculateValue(double xLow, double xHigh, double target, const RootFinderMethod& function)
-            {
-                return nan("");
-            }
-            virtual XValue CalculateValue(XValue low, XValue high, double target, const RootFinderMethod& function)
-            {
-                return { nan(""), nan("") };
-            }
-        };
-    }
+            return { nan(""), nan("") };
+        }
+    };
 }
-
-
-
 

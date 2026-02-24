@@ -44,7 +44,11 @@ set_target_properties(Deltares.Probabilistic
     POSITION_INDEPENDENT_CODE 1
   )
 
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-  target_link_libraries(Deltares.Probabilistic PUBLIC OpenMP::OpenMP_CXX)
+get_property(FORSONAR GLOBAL PROPERTY FOR_SONAR)
+
+if ( NOT FORSONAR)
+  find_package(OpenMP)
+  if(OpenMP_CXX_FOUND)
+    target_link_libraries(Deltares.Probabilistic PUBLIC OpenMP::OpenMP_CXX)
+  endif()
 endif()

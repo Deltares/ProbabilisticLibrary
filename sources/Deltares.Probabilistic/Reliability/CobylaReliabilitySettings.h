@@ -26,54 +26,51 @@
 #include "../Model/Validatable.h"
 #include "DesignPointBuilder.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Settings for Cobyla Reliability algorithm
+     */
+    class CobylaReliabilitySettings : public Models::Validatable
     {
+    public:
+
         /**
-         * \brief Settings for Cobyla Reliability algorithm
+         * \brief Maximum number of iterations in Cobyla
          */
-        class CobylaReliabilitySettings : public Models::Validatable
+        int MaximumIterations = 150;
+
+        /**
+         * \brief Tolerance in the Cobyla iteration
+         */
+        double EpsilonBeta = 0.01;
+
+        /**
+         * \brief Method type how the design point (alpha values) is calculated
+         */
+        DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Settings for individual stochastic variable, such as the start value
+         */
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const override
         {
-        public:
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 1e-6, EpsilonBeta, "epsilon beta");
 
-            /**
-             * \brief Maximum number of iterations in Cobyla
-             */
-            int MaximumIterations = 150;
-
-            /**
-             * \brief Tolerance in the Cobyla iteration
-             */
-            double EpsilonBeta = 0.01;
-
-            /**
-             * \brief Method type how the design point (alpha values) is calculated
-             */
-            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Settings for individual stochastic variable, such as the start value
-             */
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-
-            /**
-             * \brief Reports whether the settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            void validate(Logging::ValidationReport& report) const override
-            {
-                Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
-                Logging::ValidationSupport::checkMinimumNonInclusive(report, 1e-6, EpsilonBeta, "epsilon beta");
-
-                RunSettings->validate(report);
-            }
-        };
-    }
+            RunSettings->validate(report);
+        }
+    };
 }
 

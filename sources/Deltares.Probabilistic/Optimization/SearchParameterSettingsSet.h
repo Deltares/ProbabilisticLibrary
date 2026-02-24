@@ -25,15 +25,12 @@
 
 #include "SearchParameterSettings.h"
 
-namespace Deltares
+namespace Deltares::Optimization
 {
-    namespace Optimization
+    class SearchParameterSettingsSet
     {
-        class SearchParameterSettingsSet
-        {
-        public:
-            std::vector<std::shared_ptr<SearchParameterSettings>> Dimensions;
-        };
-    }
+    public:
+        std::vector<std::shared_ptr<SearchParameterSettings>> Dimensions;
+    };
 }
 

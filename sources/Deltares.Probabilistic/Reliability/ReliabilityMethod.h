@@ -23,28 +23,25 @@
 #include "DesignPoint.h"
 #include "../Model/ModelRunner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class ReliabilityMethod
     {
-        class ReliabilityMethod
-        {
-        private:
-            bool stopped = false;
+    private:
+        bool stopped = false;
 
-        protected:
+    protected:
 
-            virtual void setStopped();
+        virtual void setStopped();
 
-        public:
-            static int getZFactor(double z);
-            virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
-            virtual ~ReliabilityMethod() = default;
+    public:
+        static int getZFactor(double z);
+        virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
+        virtual ~ReliabilityMethod() = default;
 
-            virtual bool isValid() { return false; }
-            bool isStopped();
-            void Stop();
-        };
-    }
+        virtual bool isValid() { return false; }
+        bool isStopped();
+        void Stop();
+    };
 }
 

@@ -26,88 +26,85 @@
 #include "VariableStochastValue.h"
 #include "Distributions/Distribution.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /**
+      * \brief Produces an interpolated stochast based on a number of conditional values
+      */
+    class VariableStochastValuesSet
     {
+    public:
         /**
-          * \brief Produces an interpolated stochast based on a number of conditional values
+          * \brief Collection of conditional values
           */
-        class VariableStochastValuesSet
-        {
-        public:
-            /**
-              * \brief Collection of conditional values
-              */
-            std::vector<std::shared_ptr<VariableStochastValue>> StochastValues;
+        std::vector<std::shared_ptr<VariableStochastValue>> StochastValues;
 
-            /**
-              * \brief Prepares this class for running
-              * \param defaultStochast default stochast
-              * \param distributionType distribution type
-              * \param truncated Indicates whether stochast is truncated
-              * \param inverted Indicates whether stochast is inverted
-              */
-            void initializeForRun(std::shared_ptr<StochastProperties> defaultStochast, DistributionType distributionType, bool truncated, bool inverted);
+        /**
+          * \brief Prepares this class for running
+          * \param defaultStochast default stochast
+          * \param distributionType distribution type
+          * \param truncated Indicates whether stochast is truncated
+          * \param inverted Indicates whether stochast is inverted
+          */
+        void initializeForRun(std::shared_ptr<StochastProperties> defaultStochast, DistributionType distributionType, bool truncated, bool inverted);
 
-            /**
-              * \brief Gets the interpolated stochast at a given x-value
-              * \param x The value at which the interpolated stochast is generated
-              * \return Interpolated stochast
-              */
-            std::shared_ptr<StochastProperties> getInterpolatedStochast(double x) const;
+        /**
+          * \brief Gets the interpolated stochast at a given x-value
+          * \param x The value at which the interpolated stochast is generated
+          * \return Interpolated stochast
+          */
+        std::shared_ptr<StochastProperties> getInterpolatedStochast(double x) const;
 
-            /**
-              * \brief Updates properties with the interpolated stochast at a given x-value
-              * \param x The value at which the interpolated stochast is generated
-              */
-            void updateProperties(std::shared_ptr<StochastProperties> properties, double x) const;
+        /**
+          * \brief Updates properties with the interpolated stochast at a given x-value
+          * \param x The value at which the interpolated stochast is generated
+          */
+        void updateProperties(std::shared_ptr<StochastProperties> properties, double x) const;
 
-            /**
-              * \brief Indicates whether an interpolated stochast can lead to different x values
-              * \param distributionType distribution type
-              * \param defaultStochast default stochast
-              * \return Indication
-              */
-            bool isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast = nullptr) const;
+        /**
+          * \brief Indicates whether an interpolated stochast can lead to different x values
+          * \param distributionType distribution type
+          * \param defaultStochast default stochast
+          * \return Indication
+          */
+        bool isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast = nullptr) const;
 
-            /**
-              * \brief Indicates whether the stochast value set is valid
-              * \param distributionType distribution type
-              * \param truncated Indicates whether stochast is truncated
-              * \param inverted Indicates whether stochast is inverted
-              * \return Indication
-              */
-            bool isValid(DistributionType distributionType, bool truncated, bool inverted);
+        /**
+          * \brief Indicates whether the stochast value set is valid
+          * \param distributionType distribution type
+          * \param truncated Indicates whether stochast is truncated
+          * \param inverted Indicates whether stochast is inverted
+          * \return Indication
+          */
+        bool isValid(DistributionType distributionType, bool truncated, bool inverted);
 
-            /**
-             * \brief Validates the stochastic parameters and puts the results in a report
-             * \param report The validation report containing the validation results
-             * \param distributionType distribution type
-             * \param truncated Indicates whether stochast is truncated
-             * \param inverted Indicates whether stochast is inverted
-             * \param subject String describing the stochast
-             */
-            void validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject) const; 
+        /**
+         * \brief Validates the stochastic parameters and puts the results in a report
+         * \param report The validation report containing the validation results
+         * \param distributionType distribution type
+         * \param truncated Indicates whether stochast is truncated
+         * \param inverted Indicates whether stochast is inverted
+         * \param subject String describing the stochast
+         */
+        void validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject) const; 
 
-            /**
-              * \brief Makes a deep copy of a source
-              * \param source Source
-              * \return Copy
-              */
-            void copyFrom(std::shared_ptr<VariableStochastValuesSet> source);
-        private:
-            std::vector<double> xValues;
-            std::vector<double> locations;
-            std::vector<double> scales;
-            std::vector<double> minimums;
-            std::vector<double> maximums;
-            std::vector<double> shapes;
-            std::vector<double> shapesB;
-            std::vector<double> shifts;
-            std::vector<double> shiftsB;
-            std::vector<double> observations;
-        };
-    }
+        /**
+          * \brief Makes a deep copy of a source
+          * \param source Source
+          * \return Copy
+          */
+        void copyFrom(std::shared_ptr<VariableStochastValuesSet> source);
+    private:
+        std::vector<double> xValues;
+        std::vector<double> locations;
+        std::vector<double> scales;
+        std::vector<double> minimums;
+        std::vector<double> maximums;
+        std::vector<double> shapes;
+        std::vector<double> shapesB;
+        std::vector<double> shifts;
+        std::vector<double> shiftsB;
+        std::vector<double> observations;
+    };
 }
 

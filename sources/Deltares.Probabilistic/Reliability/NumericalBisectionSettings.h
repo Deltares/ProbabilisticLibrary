@@ -27,43 +27,40 @@
 #include "StochastSettingsSet.h"
 #include "../Model/Validatable.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class NumericalBisectionSettings : public Models::Validatable
     {
-        class NumericalBisectionSettings : public Models::Validatable
+    public:
+        int MinimumIterations = 8;
+
+        int MaximumIterations = 50;
+
+        double EpsilonBeta = 0.01;
+
+        /**
+         * \brief Method type how the design point (alpha values) is calculated
+         */
+        DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+        /**
+         * \brief Settings for individual stochastic variables, such as the start value
+         */
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const override
         {
-        public:
-            int MinimumIterations = 8;
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
+            runSettings->validate(report);
+        }
 
-            int MaximumIterations = 50;
-
-            double EpsilonBeta = 0.01;
-
-            /**
-             * \brief Method type how the design point (alpha values) is calculated
-             */
-            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-
-            /**
-             * \brief Settings for individual stochastic variables, such as the start value
-             */
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-
-            /**
-             * \brief Reports whether the settings have valid values
-             * \param report Report in which the validity is reported
-             */
-            void validate(Logging::ValidationReport& report) const override
-            {
-                Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
-                runSettings->validate(report);
-            }
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
-        };
-    }
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+    };
 }

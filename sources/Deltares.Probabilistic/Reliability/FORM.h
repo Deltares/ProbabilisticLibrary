@@ -24,30 +24,27 @@
 #include "FORMSettings.h"
 #include "ReliabilityMethod.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class FORM : public ReliabilityMethod
     {
-        class FORM : public ReliabilityMethod
+    public:
+        std::shared_ptr<FORMSettings> Settings = std::make_shared<FORMSettings>();
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+
+        bool isValid() override
         {
-        public:
-            std::shared_ptr<FORMSettings> Settings = std::make_shared<FORMSettings>();
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            return Settings->isValid();
+        }
 
-            bool isValid() override
-            {
-                return Settings->isValid();
-            }
-
-        private:
-            std::shared_ptr<DesignPoint> getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, std::shared_ptr<Models::Sample> startSample,
-                const double relaxationFactor, const int relaxationIndex);
-            static bool areAllResultsValid(const std::vector<double>& values);
-            bool isConverged(Models::ModelRunner& modelRunner, const Models::Sample& sample, ConvergenceReport& convergenceReport, double beta, double zGradientLength) const;
-            std::shared_ptr<ReliabilityReport> getReport(int iteration, double reliability) const;
-            static std::pair<double, std::shared_ptr<Models::Sample>> estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector< std::shared_ptr<Models::Sample>>& last10u);
-            const int histU = 10; // keep last 10 u values for history / statistics
-        };
-    }
+    private:
+        std::shared_ptr<DesignPoint> getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, std::shared_ptr<Models::Sample> startSample,
+            const double relaxationFactor, const int relaxationIndex);
+        static bool areAllResultsValid(const std::vector<double>& values);
+        bool isConverged(Models::ModelRunner& modelRunner, const Models::Sample& sample, ConvergenceReport& convergenceReport, double beta, double zGradientLength) const;
+        std::shared_ptr<ReliabilityReport> getReport(int iteration, double reliability) const;
+        static std::pair<double, std::shared_ptr<Models::Sample>> estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector< std::shared_ptr<Models::Sample>>& last10u);
+        const int histU = 10; // keep last 10 u values for history / statistics
+    };
 }
 

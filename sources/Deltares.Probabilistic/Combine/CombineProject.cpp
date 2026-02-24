@@ -22,34 +22,31 @@
 #include "CombineProject.h"
 #include "DesignPointCombiner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    void CombineProject::run()
     {
-        void CombineProject::run()
-        {
-            std::shared_ptr<DesignPointCombiner> combiner = std::make_shared<DesignPointCombiner>(this->settings->combinerMethod);
+        std::shared_ptr<DesignPointCombiner> combiner = std::make_shared<DesignPointCombiner>(this->settings->combinerMethod);
 
-            this->designPoint = combiner->combineDesignPoints(this->settings->combineType, this->designPoints, this->selfCorrelationMatrix, this->correlationMatrix);
-        }
+        this->designPoint = combiner->combineDesignPoints(this->settings->combineType, this->designPoints, this->selfCorrelationMatrix, this->correlationMatrix);
+    }
 
-        void CombineProject::validate(Logging::ValidationReport& report) const
-        {
-            Logging::ValidationSupport::checkNotEmpty(report, designPoints.size(), "design points");
-        }
+    void CombineProject::validate(Logging::ValidationReport& report) const
+    {
+        Logging::ValidationSupport::checkNotEmpty(report, designPoints.size(), "design points");
+    }
 
-        Logging::ValidationReport CombineProject::getValidationReport() const
-        {
-            Logging::ValidationReport report;
-            validate(report);
+    Logging::ValidationReport CombineProject::getValidationReport() const
+    {
+        Logging::ValidationReport report;
+        validate(report);
 
-            return report;
-        }
+        return report;
+    }
 
-        bool CombineProject::is_valid() const
-        {
-            return getValidationReport().isValid();
-        }
+    bool CombineProject::is_valid() const
+    {
+        return getValidationReport().isValid();
     }
 }
 

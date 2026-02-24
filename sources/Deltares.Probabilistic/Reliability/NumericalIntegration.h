@@ -23,28 +23,23 @@
 #include "NumericalIntegrationSettings.h"
 #include "ReliabilityMethod.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class NumericalIntegration : public ReliabilityMethod
     {
-        class NumericalIntegration : public ReliabilityMethod
+    public:
+        NumericalIntegrationSettings Settings;
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> runner) override;
+        bool isValid() override
         {
-        public:
-            NumericalIntegrationSettings Settings;
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> runner) override;
-            bool isValid() override
-            {
-                return Settings.isValid();
-            }
+            return Settings.isValid();
+        }
 
-        private:
-            double getStochastProbability(int stochastIndex, Models::Sample& parentSample, double density, double& totalDensity, int nSamples);
-            DesignPointBuilder designPointBuilder = DesignPointBuilder();
-            std::shared_ptr<Models::ModelRunner> modelRunner;
-            double z0Fac;
-        };
-    }
+    private:
+        double getStochastProbability(int stochastIndex, Models::Sample& parentSample, double density, double& totalDensity, int nSamples);
+        DesignPointBuilder designPointBuilder = DesignPointBuilder();
+        std::shared_ptr<Models::ModelRunner> modelRunner;
+        double z0Fac;
+    };
 }
-
-
 

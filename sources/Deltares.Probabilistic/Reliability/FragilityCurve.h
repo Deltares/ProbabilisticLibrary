@@ -24,74 +24,71 @@
 #include "../Model/StochastPoint.h"
 #include "../Statistics/Stochast.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class FragilityCurve : public Statistics::Stochast
     {
-        class FragilityCurve : public Statistics::Stochast
+    public:
+
+        FragilityCurve() : Stochast()
         {
-        public:
+            Stochast::setDistributionType(Statistics::DistributionType::CDFCurve);
+        }
 
-            FragilityCurve() : Stochast()
+        void setDistributionType(Statistics::DistributionType distributionType) override
+        {
+            // do not change distribution type
+        }
+
+        /**
+         * \brief Gets a correction factor for alpha values
+         * \return Correction factor
+         */
+        double getAlphaFactor();
+
+        bool inverted = false;
+
+        bool fixed = false;
+
+        double fixedValue = 0;
+
+        double getUFromX(double x) override
+        {
+            if (fixed)
             {
-                Stochast::setDistributionType(Statistics::DistributionType::CDFCurve);
+                return fixedValue;
             }
-
-            void setDistributionType(Statistics::DistributionType distributionType) override
+            else
             {
-                // do not change distribution type
+                int factor = inverted ? -1 : 1;
+                return factor * Stochast::getUFromX(x);
             }
+        }
 
-            /**
-             * \brief Gets a correction factor for alpha values
-             * \return Correction factor
-             */
-            double getAlphaFactor();
+        /**
+         * \brief Indicates that this stochast is a fragility curve
+         * \return Indication
+         */
+        bool isFragilityCurve() override { return true; }
 
-            bool inverted = false;
+        /**
+         * \brief Indicates whether the first fragility value has a higher reliability than the last fragility value
+         * \return Indication
+         */
+        bool isGloballyDescending();
 
-            bool fixed = false;
+        /**
+         * \brief Gets the design point at a given x-value
+         * \param x X-value
+         * \return Design point
+         */
+        std::shared_ptr<Models::StochastPoint> getDesignPoint(double x);
 
-            double fixedValue = 0;
+    private:
+        const double margin = 1E-8;
 
-            double getUFromX(double x) override
-            {
-                if (fixed)
-                {
-                    return fixedValue;
-                }
-                else
-                {
-                    int factor = inverted ? -1 : 1;
-                    return factor * Stochast::getUFromX(x);
-                }
-            }
-
-            /**
-             * \brief Indicates that this stochast is a fragility curve
-             * \return Indication
-             */
-            bool isFragilityCurve() override { return true; }
-
-            /**
-             * \brief Indicates whether the first fragility value has a higher reliability than the last fragility value
-             * \return Indication
-             */
-            bool isGloballyDescending();
-
-            /**
-             * \brief Gets the design point at a given x-value
-             * \param x X-value
-             * \return Design point
-             */
-            std::shared_ptr<Models::StochastPoint> getDesignPoint(double x);
-
-        private:
-            const double margin = 1E-8;
-
-            std::shared_ptr<Models::StochastPoint> getRealizationBetweenPoints(double x, std::shared_ptr<Statistics::FragilityValue> lowerFragilityValue, std::shared_ptr<Statistics::FragilityValue> upperFragilityValue);
-            double interpolateAlphas(double lowerFraction, double lowerAlpha, double upperAlpha);
-        };
-    }
+        std::shared_ptr<Models::StochastPoint> getRealizationBetweenPoints(double x, std::shared_ptr<Statistics::FragilityValue> lowerFragilityValue, std::shared_ptr<Statistics::FragilityValue> upperFragilityValue);
+        double interpolateAlphas(double lowerFraction, double lowerAlpha, double upperAlpha);
+    };
 }
 

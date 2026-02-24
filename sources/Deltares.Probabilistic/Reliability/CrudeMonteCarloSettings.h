@@ -27,62 +27,59 @@
 #include "DesignPointBuilder.h"
 #include "StochastSettingsSet.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class CrudeMonteCarloSettings : public Models::Validatable
     {
-        class CrudeMonteCarloSettings : public Models::Validatable
+    public:
+        /**
+         * \brief The minimum samples to be examined
+         */
+        int MinimumSamples = 1000;
+
+        /**
+         * \brief The maximum samples to be examined
+         */
+        int MaximumSamples = 10000;
+
+        /**
+         * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
+         */
+        double VariationCoefficient = 0.05;
+
+        /**
+         * \brief Method type how the design point (alpha values) is calculated
+         */
+        DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+        /**
+         * \brief Settings for generating random values
+         */
+        std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Settings for individual stochastic variables, such as the start value
+         */
+        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         * \return Indication
+         */
+        void validate(Logging::ValidationReport& report) const override
         {
-        public:
-            /**
-             * \brief The minimum samples to be examined
-             */
-            int MinimumSamples = 1000;
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
+            Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");
+            Logging::ValidationSupport::checkMinimum(report, 0, VariationCoefficient, "variation coefficient");
 
-            /**
-             * \brief The maximum samples to be examined
-             */
-            int MaximumSamples = 10000;
-
-            /**
-             * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
-             */
-            double VariationCoefficient = 0.05;
-
-            /**
-             * \brief Method type how the design point (alpha values) is calculated
-             */
-            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-
-            /**
-             * \brief Settings for generating random values
-             */
-            std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Settings for individual stochastic variables, such as the start value
-             */
-            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
-
-            /**
-             * \brief Reports whether the settings have valid values
-             * \param report Report in which the validity is reported
-             * \return Indication
-             */
-            void validate(Logging::ValidationReport& report) const override
-            {
-                Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
-                Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");
-                Logging::ValidationSupport::checkMinimum(report, 0, VariationCoefficient, "variation coefficient");
-
-                RunSettings->validate(report);
-            }
-        };
-    }
+            RunSettings->validate(report);
+        }
+    };
 }
 

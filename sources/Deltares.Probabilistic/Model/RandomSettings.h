@@ -24,97 +24,94 @@
 #include "../Reliability/StochastSettingsSet.h"
 #include <ctime>
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    /**
+     * \brief Settings for generating random values
+     */
+    class RandomSettings
     {
+    public:
         /**
-         * \brief Settings for generating random values
+         * \brief Indicates whether each time the same random values are generated
          */
-        class RandomSettings
+        bool IsRepeatableRandom = true;
+
+        /**
+         * \brief Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
+         */
+        bool IsStochastRepeatableRandom = false;
+
+        /**
+         * \brief Seed for random generator
+         */
+        int Seed = 0;
+
+        /**
+         * \brief If true, fixates the random generator so that it produces same random values when restarted or initialized
+         * \param fixed Indication whether the unrepeatable random generator is fixed
+         * \remarks Is used by calculation, do not use elsewhere
+         */
+        void setFixed(bool fixed);
+
+        /**
+         * \brief Gets a time stamp for the random generator if needed
+         */
+        time_t getTimeStamp()
         {
-        public:
-            /**
-             * \brief Indicates whether each time the same random values are generated
-             */
-            bool IsRepeatableRandom = true;
-
-            /**
-             * \brief Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
-             */
-            bool IsStochastRepeatableRandom = false;
-
-            /**
-             * \brief Seed for random generator
-             */
-            int Seed = 0;
-
-            /**
-             * \brief If true, fixates the random generator so that it produces same random values when restarted or initialized
-             * \param fixed Indication whether the unrepeatable random generator is fixed
-             * \remarks Is used by calculation, do not use elsewhere
-             */
-            void setFixed(bool fixed);
-
-            /**
-             * \brief Gets a time stamp for the random generator if needed
-             */
-            time_t getTimeStamp()
+            if (!IsRepeatableRandom)
             {
-                if (!IsRepeatableRandom)
+                if (!fixed)
                 {
-                    if (!fixed)
-                    {
-                        generateTimeStamp();
-                    }
+                    generateTimeStamp();
+                }
 
-                    return timeStamp;
-                }
-                else
-                {
-                    return 0;
-                }
+                return timeStamp;
             }
-
-            /**
-             * \brief Indicates whether a dummy random value is generated for non varying variables (true) or not (false)
-             * \remark Skipping unvarying parameters is useful when changing a variable from varying to non varying. Then the same random values are generated for other (varying) variables.
-             */
-            bool SkipUnvaryingParameters = true;
-
-            std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
-
-            /**
-             * \brief Gets a copy of these settings
-             * \return Copy
-             */
-            std::shared_ptr<RandomSettings> clone()
+            else
             {
-                std::shared_ptr<RandomSettings> copy = std::make_shared<RandomSettings>();
-
-                copy->IsRepeatableRandom = this->IsRepeatableRandom;
-                copy->IsStochastRepeatableRandom = this->IsStochastRepeatableRandom;
-                copy->Seed = this->Seed;
-                copy->StochastSet = this->StochastSet;
-
-                return copy;
+                return 0;
             }
-        private:
-            /**
-             * \brief The last non-zero generated time stamp
-             */
-            time_t timeStamp = 0;
+        }
 
-            /**
-             * \brief Indicates whether the random generator, even if isRepeatableRandom is false, is fixed
-             */
-            bool fixed = false;
+        /**
+         * \brief Indicates whether a dummy random value is generated for non varying variables (true) or not (false)
+         * \remark Skipping unvarying parameters is useful when changing a variable from varying to non varying. Then the same random values are generated for other (varying) variables.
+         */
+        bool SkipUnvaryingParameters = true;
 
-            /**
-             * \brief Generates a new, yet unused time stamp
-             */
-            void generateTimeStamp();
-        };
-    }
+        std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
+
+        /**
+         * \brief Gets a copy of these settings
+         * \return Copy
+         */
+        std::shared_ptr<RandomSettings> clone()
+        {
+            std::shared_ptr<RandomSettings> copy = std::make_shared<RandomSettings>();
+
+            copy->IsRepeatableRandom = this->IsRepeatableRandom;
+            copy->IsStochastRepeatableRandom = this->IsStochastRepeatableRandom;
+            copy->Seed = this->Seed;
+            copy->StochastSet = this->StochastSet;
+
+            return copy;
+        }
+    private:
+        /**
+         * \brief The last non-zero generated time stamp
+         */
+        time_t timeStamp = 0;
+
+        /**
+         * \brief Indicates whether the random generator, even if isRepeatableRandom is false, is fixed
+         */
+        bool fixed = false;
+
+        /**
+         * \brief Generates a new, yet unused time stamp
+         */
+        void generateTimeStamp();
+    };
 }
 

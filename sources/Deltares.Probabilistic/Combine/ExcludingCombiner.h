@@ -25,25 +25,22 @@
 #include "../Reliability/DesignPoint.h"
 #include "../Statistics/Scenario.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Super class for all excluding design point combination algorithms
+     */
+    class ExcludingCombiner
     {
+    public:
         /**
-         * \brief Super class for all excluding design point combination algorithms
+         * \brief Combines a number of design points
+         * \param scenarios Scenarios
+         * \param designPoints Design points to be combined
+         * \return Design point resembling the combined reliability and alpha values
          */
-        class ExcludingCombiner
-        {
-        public:
-            /**
-             * \brief Combines a number of design points
-             * \param scenarios Scenarios
-             * \param designPoints Design points to be combined
-             * \return Design point resembling the combined reliability and alpha values
-             */
-            virtual std::shared_ptr<DesignPoint> combineExcludingDesignPoints(
-                std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
-                std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) = 0;
-        };
+        virtual std::shared_ptr<DesignPoint> combineExcludingDesignPoints(
+            std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+            std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) = 0;
     };
 }

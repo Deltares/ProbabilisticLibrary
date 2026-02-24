@@ -24,45 +24,42 @@
 #include "Distribution.h"
 #include "../../Math/NumericSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    struct multipleInExtremes
     {
-        struct multipleInExtremes
-        {
-            bool multipleAtMin;
-            bool multipleAtMax;
-            double min;
-            double max;
-        };
+        bool multipleAtMin;
+        bool multipleAtMax;
+        double min;
+        double max;
+    };
 
-        class HistogramDistribution : public Distribution
-        {
-        public:
-            void initializeForRun(StochastProperties& stochast) override;
-            double getXFromU(StochastProperties& stochast, double u) override;
-            double getUFromX(StochastProperties& stochast, double x) override;
-            bool isVarying(StochastProperties& stochast) override;
-            void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
-            bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
-            double getMean(StochastProperties& stochast) override;
-            double getDeviation(StochastProperties& stochast) override;
-            void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
-            double getPDF(StochastProperties& stochast, double x) override;
-            double getCDF(StochastProperties& stochast, double x) override;
-            void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
-            void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
-            std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
-            std::vector<double> getDiscontinuityPoints(StochastProperties&) override;
-        private:
-            static double getSizeForEmptySizedRange(const StochastProperties& stochast);
-            static void splitRanges(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& values);
-            static double getAmount(const std::shared_ptr<HistogramValue>& range, const std::vector<Numeric::WeightedValue>& values);
-            static void mergeLowWeights(std::vector<Numeric::WeightedValue>& values);
-            static size_t getDistinctCount(const std::vector<Numeric::WeightedValue>& values);
-            static void determineRangesLoop(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& x,
-                int requiredRanges, const multipleInExtremes& multiples);
-        };
-    }
+    class HistogramDistribution : public Distribution
+    {
+    public:
+        void initializeForRun(StochastProperties& stochast) override;
+        double getXFromU(StochastProperties& stochast, double u) override;
+        double getUFromX(StochastProperties& stochast, double x) override;
+        bool isVarying(StochastProperties& stochast) override;
+        void validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject) override;
+        bool canFit(const bool useShift, const bool usePrior) override { return !useShift && !usePrior; }
+        double getMean(StochastProperties& stochast) override;
+        double getDeviation(StochastProperties& stochast) override;
+        void setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation) override;
+        double getPDF(StochastProperties& stochast, double x) override;
+        double getCDF(StochastProperties& stochast, double x) override;
+        void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift) override;
+        void fitWeighted(StochastProperties& stochast, const std::vector<double>& values, std::vector<double>& weights) override;
+        std::vector<double> getSpecialPoints(StochastProperties& stochast) override;
+        std::vector<double> getDiscontinuityPoints(StochastProperties&) override;
+    private:
+        static double getSizeForEmptySizedRange(const StochastProperties& stochast);
+        static void splitRanges(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& values);
+        static double getAmount(const std::shared_ptr<HistogramValue>& range, const std::vector<Numeric::WeightedValue>& values);
+        static void mergeLowWeights(std::vector<Numeric::WeightedValue>& values);
+        static size_t getDistinctCount(const std::vector<Numeric::WeightedValue>& values);
+        static void determineRangesLoop(StochastProperties& stochast, const std::vector<Numeric::WeightedValue>& x,
+            int requiredRanges, const multipleInExtremes& multiples);
+    };
 }
 

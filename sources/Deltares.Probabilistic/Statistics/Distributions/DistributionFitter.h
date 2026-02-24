@@ -26,22 +26,19 @@
 #include "Distribution.h"
 #include "../../Model/ModelSample.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class DistributionFitter
     {
-        class DistributionFitter
-        {
-        public:
-            std::vector<double> fitByLogLikelihood(const std::vector<double>& values, Distribution* distribution,
-                StochastProperties& stochast, const std::vector<double>& minimum, const std::vector<double>& maximum,
-                const std::vector<DistributionPropertyType>& properties);
-        private:
-            Distribution* distributionObj = nullptr;
-            void getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,
-                StochastProperties& stochast, const std::vector<DistributionPropertyType>& properties) const;
-            double getSumLogLikelihood(const std::vector<double>& values, StochastProperties& stochast) const;
-        };
-    }
+    public:
+        std::vector<double> fitByLogLikelihood(const std::vector<double>& values, Distribution* distribution,
+            StochastProperties& stochast, const std::vector<double>& minimum, const std::vector<double>& maximum,
+            const std::vector<DistributionPropertyType>& properties);
+    private:
+        Distribution* distributionObj = nullptr;
+        void getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,
+            StochastProperties& stochast, const std::vector<DistributionPropertyType>& properties) const;
+        double getSumLogLikelihood(const std::vector<double>& values, StochastProperties& stochast) const;
+    };
 }
 

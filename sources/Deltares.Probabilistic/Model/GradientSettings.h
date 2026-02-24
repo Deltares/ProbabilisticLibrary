@@ -24,34 +24,30 @@
 #include "../Logging/ValidationReport.h"
 #include "../Logging/ValidationSupport.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    enum GradientType
     {
-        enum GradientType
+        OneDirection,
+        TwoDirections
+    };
+
+    class GradientSettings
+    {
+    public:
+        GradientSettings() = default;
+
+        GradientType gradientType = OneDirection;
+        double StepSize = 0.3;
+        bool OnlyInitializationAllowed = false;
+
+        void validate(Logging::ValidationReport& report) const
         {
-            OneDirection,
-            TwoDirections
-        };
+            Logging::ValidationSupport::checkMinimum(report, 0.01, StepSize, "step size");
+        }
 
-        class GradientSettings
-        {
-        public:
-            GradientSettings() = default;
-
-            GradientType gradientType = OneDirection;
-            double StepSize = 0.3;
-            bool OnlyInitializationAllowed = false;
-
-            void validate(Logging::ValidationReport& report) const
-            {
-                Logging::ValidationSupport::checkMinimum(report, 0.01, StepSize, "step size");
-            }
-
-            static std::string getGradientTypeString(GradientType method);
-            static GradientType getGradientType(std::string method);
-        };
-    }
+        static std::string getGradientTypeString(GradientType method);
+        static GradientType getGradientType(std::string method);
+    };
 }
-
 

@@ -23,26 +23,23 @@
 #include "GradientSettings.h"
 #include "../Utils/probLibException.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    std::string GradientSettings::getGradientTypeString(GradientType method)
     {
-        std::string GradientSettings::getGradientTypeString(GradientType method)
+        switch (method)
         {
-            switch (method)
-            {
-            case GradientType::OneDirection: return "single";
-            case GradientType::TwoDirections: return "double";
-            default: throw Reliability::probLibException("Gradient type");
-            }
+        case GradientType::OneDirection: return "single";
+        case GradientType::TwoDirections: return "double";
+        default: throw Reliability::probLibException("Gradient type");
         }
+    }
 
-        GradientType GradientSettings::getGradientType(std::string method)
-        {
-            if (method == "single") return GradientType::OneDirection;
-            else if (method == "double") return GradientType::TwoDirections;
-            else throw Reliability::probLibException("Gradient type");
-        }
+    GradientType GradientSettings::getGradientType(std::string method)
+    {
+        if (method == "single") return GradientType::OneDirection;
+        else if (method == "double") return GradientType::TwoDirections;
+        else throw Reliability::probLibException("Gradient type");
     }
 }
 

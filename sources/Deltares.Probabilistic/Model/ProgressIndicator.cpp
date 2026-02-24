@@ -21,40 +21,37 @@
 //
 #include "ProgressIndicator.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    void ProgressIndicator::reset()
     {
-        void ProgressIndicator::reset()
-        {
-            this->doProgress(0);
-            this->doTextualProgress(ProgressType::Detailed, "");
-            this->task = "";
-        }
+        this->doProgress(0);
+        this->doTextualProgress(ProgressType::Detailed, "");
+        this->task = "";
+    }
 
-        void ProgressIndicator::initialize(double factor, double offset)
-        {
-            progressFactor = factor;
-            progressOffset = offset;
-        }
+    void ProgressIndicator::initialize(double factor, double offset)
+    {
+        progressFactor = factor;
+        progressOffset = offset;
+    }
 
-        /// <summary>
-        /// Sets the progress to completed
-        /// </summary>
-        void ProgressIndicator::complete()
-        {
-            this->doProgress(1);
-            this->doTextualProgress(ProgressType::Detailed, "");
-        }
+    /// <summary>
+    /// Sets the progress to completed
+    /// </summary>
+    void ProgressIndicator::complete()
+    {
+        this->doProgress(1);
+        this->doTextualProgress(ProgressType::Detailed, "");
+    }
 
-        void ProgressIndicator::increaseOffset()
-        {
-            this->progressOffset += progressFactor;
-        }
+    void ProgressIndicator::increaseOffset()
+    {
+        this->progressOffset += progressFactor;
+    }
 
-        void ProgressIndicator::setTask(std::string task)
-        {
-            this->task = task;
-        }
+    void ProgressIndicator::setTask(std::string task)
+    {
+        this->task = task;
     }
 }

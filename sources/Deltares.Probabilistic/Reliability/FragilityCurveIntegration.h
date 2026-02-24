@@ -24,37 +24,34 @@
 #include "FragilityCurveIntegrationSettings.h"
 #include "ReliabilityMethod.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class FragilityCurveIntegration : public ReliabilityMethod
     {
-        class FragilityCurveIntegration : public ReliabilityMethod
+    public:
+        std::shared_ptr<FragilityCurveIntegrationSettings> Settings = std::make_shared<FragilityCurveIntegrationSettings>();
+
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Statistics::Stochast> parameter, std::shared_ptr<Statistics::Stochast> fragilityCurve, std::shared_ptr<Statistics::Stochast> fragilityCurveNormalized = nullptr);
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+
+        bool isValid() override
+        {
+            return Settings->isValid();
+        }
+
+    private:
+        class UStep
         {
         public:
-            std::shared_ptr<FragilityCurveIntegrationSettings> Settings = std::make_shared<FragilityCurveIntegrationSettings>();
-
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Statistics::Stochast> parameter, std::shared_ptr<Statistics::Stochast> fragilityCurve, std::shared_ptr<Statistics::Stochast> fragilityCurveNormalized = nullptr);
-            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-
-            bool isValid() override
+            UStep(double u, double weight)
             {
-                return Settings->isValid();
-            }
-
-        private:
-            class UStep
-            {
-            public:
-                UStep(double u, double weight)
-                {
-                    this->U = u;
-                    this->Weight = weight;
-                };
-                double U = 0.0;
-                double Weight = 0.0;
+                this->U = u;
+                this->Weight = weight;
             };
-            std::vector<std::shared_ptr<UStep>> getSteps(std::shared_ptr<Statistics::Stochast> stochast, double stepSize);
+            double U = 0.0;
+            double Weight = 0.0;
         };
-    }
+        std::vector<std::shared_ptr<UStep>> getSteps(std::shared_ptr<Statistics::Stochast> stochast, double stepSize);
+    };
 }
 

@@ -24,17 +24,14 @@
 
 #include <memory>
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    void FragilityCurveProject::run()
     {
-        void FragilityCurveProject::run()
-        {
-            std::unique_ptr<FragilityCurveIntegration> calculator = std::make_unique<FragilityCurveIntegration>();
-            calculator->Settings = this->settings;
+        std::unique_ptr<FragilityCurveIntegration> calculator = std::make_unique<FragilityCurveIntegration>();
+        calculator->Settings = this->settings;
 
-            this->designPoint = calculator->getDesignPoint(this->integrand, this->fragilityCurve);
-        }
+        this->designPoint = calculator->getDesignPoint(this->integrand, this->fragilityCurve);
     }
 }
 

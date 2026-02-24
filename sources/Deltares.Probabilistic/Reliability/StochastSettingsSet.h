@@ -26,38 +26,35 @@
 
 #include <memory>
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class StochastSettingsSet
     {
-        class StochastSettingsSet
+    private:
+        void loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
+    public:
+        StochastSettingsSet() {}
+        explicit StochastSettingsSet(std::shared_ptr<Models::StochastPoint> stochastPoint)
         {
-        private:
-            void loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
-        public:
-            StochastSettingsSet() {}
-            explicit StochastSettingsSet(std::shared_ptr<Models::StochastPoint> stochastPoint)
-            {
-                loadStochastPoint(stochastPoint);
-            }
+            loadStochastPoint(stochastPoint);
+        }
 
-            std::vector<std::shared_ptr<StochastSettings>> stochastSettings;
-            int getStochastCount() const
-            {
-                return static_cast<int>(this->stochastSettings.size());
-            }
+        std::vector<std::shared_ptr<StochastSettings>> stochastSettings;
+        int getStochastCount() const
+        {
+            return static_cast<int>(this->stochastSettings.size());
+        }
 
-            std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>> VaryingStochastSettings;
-            int getVaryingStochastCount() const
-            {
-                return static_cast<int>(this->VaryingStochastSettings.size());
-            }
+        std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>> VaryingStochastSettings;
+        int getVaryingStochastCount() const
+        {
+            return static_cast<int>(this->VaryingStochastSettings.size());
+        }
 
-            std::shared_ptr<Models::Sample> getStartPoint();
-            void setStartPoint(std::shared_ptr<Models::Sample> startPoint);
+        std::shared_ptr<Models::Sample> getStartPoint();
+        void setStartPoint(std::shared_ptr<Models::Sample> startPoint);
 
-            bool AreStartValuesCorrelated = true;
-        };
-    }
+        bool AreStartValuesCorrelated = true;
+    };
 }
 

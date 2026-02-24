@@ -29,158 +29,151 @@
 
 #include "DistributionSupport.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    void ParetoDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
     {
-        void ParetoDistribution::initialize(StochastProperties& stochast, const std::vector<double>& values)
-        {
-            this->setMeanAndDeviation(stochast, values[0], values[1]);
-        }
+        this->setMeanAndDeviation(stochast, values[0], values[1]);
+    }
 
-        void ParetoDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
-        {
-            Logging::ValidationSupport::checkMinimum(report, 0, stochast.Scale, "scale", subject);
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Shape, "shape", subject);
-        }
+    void ParetoDistribution::validate(Logging::ValidationReport& report, StochastProperties& stochast, std::string& subject)
+    {
+        Logging::ValidationSupport::checkMinimum(report, 0, stochast.Scale, "scale", subject);
+        Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast.Shape, "shape", subject);
+    }
 
-        bool ParetoDistribution::isVarying(StochastProperties& stochast)
-        {
-            return stochast.Scale > 0.0;
-        }
+    bool ParetoDistribution::isVarying(StochastProperties& stochast)
+    {
+        return stochast.Scale > 0.0;
+    }
 
-        double ParetoDistribution::getMean(StochastProperties& stochast)
-        {
-            return stochast.Shape > 1.0
-                ? stochast.Shape * stochast.Scale / (stochast.Shape - 1.0)
-                : std::numeric_limits<double>::infinity();
-        }
+    double ParetoDistribution::getMean(StochastProperties& stochast)
+    {
+        return stochast.Shape > 1.0
+            ? stochast.Shape * stochast.Scale / (stochast.Shape - 1.0)
+            : std::numeric_limits<double>::infinity();
+    }
 
-        double ParetoDistribution::getDeviation(StochastProperties& stochast)
+    double ParetoDistribution::getDeviation(StochastProperties& stochast)
+    {
+        if (stochast.Shape > 2.0)
         {
-            if (stochast.Shape > 2.0)
-            {
-                return std::sqrt(stochast.Shape * stochast.Scale * stochast.Scale / ((stochast.Shape - 1.0) * (stochast.Shape - 1.0) * (stochast.Shape - 2.0)));
-            }
-            else
-            {
-                return std::numeric_limits<double>::infinity();
-            }
+            return std::sqrt(stochast.Shape * stochast.Scale * stochast.Scale / ((stochast.Shape - 1.0) * (stochast.Shape - 1.0) * (stochast.Shape - 2.0)));
         }
-
-        void ParetoDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+        else
         {
-            if (deviation <= 0.0)
+            return std::numeric_limits<double>::infinity();
+        }
+    }
+
+    void ParetoDistribution::setMeanAndDeviation(StochastProperties& stochast, double mean, double deviation)
+    {
+        if (deviation <= 0.0)
+        {
+            stochast.Scale = 0.0;
+        }
+        else
+        {
+            // solve v = m^2/s^2 = k(k-2) => k^2 - 2k - v = 0
+            double vc = mean / deviation;
+            if (std::fabs(vc) > 1.0E150)
             {
                 stochast.Scale = 0.0;
             }
             else
             {
-                // solve v = m^2/s^2 = k(k-2) => k^2 - 2k - v = 0
-                double vc = mean / deviation;
-                if (std::fabs(vc) > 1.0E150)
-                {
-                    stochast.Scale = 0.0;
-                }
-                else
-                {
-                    double v = vc * vc;
+                double v = vc * vc;
 
-                    // abc-formula
-                    double d = 4.0 + 4.0 * v;
+                // abc-formula
+                double d = 4.0 + 4.0 * v;
 
-                    stochast.Shape = (2.0 + std::sqrt(d)) / 2.0;
-                    stochast.Scale = mean * (stochast.Shape - 1.0) / stochast.Shape;
-                }
+                stochast.Shape = (2.0 + std::sqrt(d)) / 2.0;
+                stochast.Scale = mean * (stochast.Shape - 1.0) / stochast.Shape;
             }
-        }
-
-        double ParetoDistribution::getPDF(StochastProperties& stochast, double x)
-        {
-            if (x <= stochast.Scale)
-            {
-                return 0;
-            }
-            else
-            {
-                return stochast.Shape * std::pow(stochast.Scale, stochast.Shape) / std::pow(x, stochast.Shape + 1.0);
-            }
-        }
-
-        double ParetoDistribution::getCDF(StochastProperties& stochast, double x)
-        {
-            if (x <= stochast.Scale)
-            {
-                return 0.0;
-            }
-            else if (stochast.Scale <= 0.0)
-            {
-                return 1.0;
-            }
-            else
-            {
-                return 1.0 - std::pow(stochast.Scale / x, stochast.Shape);
-            }
-        }
-
-        double ParetoDistribution::getXFromU(StochastProperties& stochast, double u)
-        {
-            const double p = StandardNormal::getPFromU(u);
-
-            if (p == 0.0)
-            {
-                return stochast.Scale;
-            }
-            else
-            {
-                double q = 1.0 - p;
-                double scaleX = std::pow(q, 1.0 / stochast.Shape);
-
-                double x = stochast.Scale / scaleX;
-                return x;
-            }
-        }
-
-        double ParetoDistribution::getUFromX(StochastProperties& stochast, double x)
-        {
-            if (x <= stochast.Scale)
-            {
-                return -StandardNormal::UMax;
-            }
-            else
-            {
-                const double cdf = getCDF(stochast, x);
-                return StandardNormal::getUFromP(cdf);
-            }
-        }
-
-        void ParetoDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
-        {
-            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
-        }
-
-        void ParetoDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
-        {
-            stochast.Scale = *std::min_element(values.begin(), values.end());
-
-            const double sum = Numeric::NumericSupport::sum(values, [stochast](double p) { return log(p) - log(stochast.Scale); });
-
-            stochast.Shape = values.size() / sum;
-            stochast.Observations = static_cast<int>(values.size());
-        }
-
-        std::vector<double> ParetoDistribution::getSpecialPoints(StochastProperties& stochast)
-        {
-            std::vector<double> specialPoints;
-
-            specialPoints.push_back(stochast.Scale);
-
-            return specialPoints;
         }
     }
+
+    double ParetoDistribution::getPDF(StochastProperties& stochast, double x)
+    {
+        if (x <= stochast.Scale)
+        {
+            return 0;
+        }
+        else
+        {
+            return stochast.Shape * std::pow(stochast.Scale, stochast.Shape) / std::pow(x, stochast.Shape + 1.0);
+        }
+    }
+
+    double ParetoDistribution::getCDF(StochastProperties& stochast, double x)
+    {
+        if (x <= stochast.Scale)
+        {
+            return 0.0;
+        }
+        else if (stochast.Scale <= 0.0)
+        {
+            return 1.0;
+        }
+        else
+        {
+            return 1.0 - std::pow(stochast.Scale / x, stochast.Shape);
+        }
+    }
+
+    double ParetoDistribution::getXFromU(StochastProperties& stochast, double u)
+    {
+        const double p = StandardNormal::getPFromU(u);
+
+        if (p == 0.0)
+        {
+            return stochast.Scale;
+        }
+        else
+        {
+            double q = 1.0 - p;
+            double scaleX = std::pow(q, 1.0 / stochast.Shape);
+
+            double x = stochast.Scale / scaleX;
+            return x;
+        }
+    }
+
+    double ParetoDistribution::getUFromX(StochastProperties& stochast, double x)
+    {
+        if (x <= stochast.Scale)
+        {
+            return -StandardNormal::UMax;
+        }
+        else
+        {
+            const double cdf = getCDF(stochast, x);
+            return StandardNormal::getUFromP(cdf);
+        }
+    }
+
+    void ParetoDistribution::setXAtU(StochastProperties& stochast, double x, double u, ConstantParameterType constantType)
+    {
+        DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
+    }
+
+    void ParetoDistribution::fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
+    {
+        stochast.Scale = *std::min_element(values.begin(), values.end());
+
+        const double sum = Numeric::NumericSupport::sum(values, [stochast](double p) { return log(p) - log(stochast.Scale); });
+
+        stochast.Shape = values.size() / sum;
+        stochast.Observations = static_cast<int>(values.size());
+    }
+
+    std::vector<double> ParetoDistribution::getSpecialPoints(StochastProperties& stochast)
+    {
+        std::vector<double> specialPoints;
+
+        specialPoints.push_back(stochast.Scale);
+
+        return specialPoints;
+    }
 }
-
-
-
-
 

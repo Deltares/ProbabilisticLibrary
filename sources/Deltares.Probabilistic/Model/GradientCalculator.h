@@ -25,34 +25,29 @@
 #include "GradientSettings.h"
 #include "ModelRunner.h"
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    /**
+     * \brief Calculates the gradient of a model at a given location
+     */
+    class GradientCalculator
     {
+    public:
+        GradientCalculator() = default;
+
         /**
-         * \brief Calculates the gradient of a model at a given location
+         * \brief Settings of the gradient calculation
          */
-        class GradientCalculator
-        {
-        public:
-            GradientCalculator() = default;
+        std::shared_ptr<GradientSettings> Settings = std::make_shared<GradientSettings>();
 
-            /**
-             * \brief Settings of the gradient calculation
-             */
-            std::shared_ptr<GradientSettings> Settings = std::make_shared<GradientSettings>();
-
-            /**
-             * \brief Calculates the gradient
-             * \param modelRunner The model for which the gradient is calculated
-             * \param sample The location at which the gradient is calculated
-             * \return Gradient, vector with size of sample size
-             * \remarks The z-value of the given sample is calculated too and stored in sample->Z
-             */
-            std::vector<double> getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const;
-        };
-    }
+        /**
+         * \brief Calculates the gradient
+         * \param modelRunner The model for which the gradient is calculated
+         * \param sample The location at which the gradient is calculated
+         * \return Gradient, vector with size of sample size
+         * \remarks The z-value of the given sample is calculated too and stored in sample->Z
+         */
+        std::vector<double> getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const;
+    };
 }
-
-
 
