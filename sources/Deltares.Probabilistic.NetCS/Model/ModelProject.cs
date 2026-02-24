@@ -76,7 +76,6 @@ namespace Deltares.Probabilistic.Model
             {
                 if (value != null)
                 {
-                    Interface.SetIntValue(id, "progress_indicator", value.GetId());
                     Interface.SetProgressCallbacks(id, value.DoProgress, value.DoDetailedProgress, value.DoTextualProgress);
                 }
 

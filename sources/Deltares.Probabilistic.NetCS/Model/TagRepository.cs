@@ -6,6 +6,7 @@ public class TagRepository
 {
     private Dictionary<int, object> tags = new Dictionary<int, object>();
     private int counter = 0;
+    private readonly object lockObject = new object();
 
     public TagRepository()
     {
@@ -15,8 +16,11 @@ public class TagRepository
     {
         if (tag != null)
         {
-            tags[++counter] = tag;
-            return counter;
+            lock (lockObject)
+            {
+                tags[++counter] = tag;
+                return counter;
+            }
         }
         else
         {
@@ -30,13 +34,19 @@ public class TagRepository
         {
             return null;
         }
-        else if (tags.ContainsKey(index))
-        {
-            return tags[index];
-        }
         else
         {
-            return null;
+            lock (lockObject)
+            {
+                if (tags.ContainsKey(index))
+                {
+                    return tags[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
     }
 }

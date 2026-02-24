@@ -119,7 +119,7 @@ namespace Deltares
             {
                 ModelSampleStruct modelSampleStruct = sample->getModelSampleStruct();
 
-                (modelSampleLambda)(&modelSampleStruct);
+                (*modelSampleLambda)(&modelSampleStruct);
 
                 sample->setModelSampleStruct(&modelSampleStruct);
             };

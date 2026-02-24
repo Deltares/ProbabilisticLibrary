@@ -11,7 +11,7 @@ namespace Deltares.Probabilistic.Reliability;
 public class ReliabilitySettings : IDisposable
 {
     private readonly int id = 0;
-    private List<StochastSettings> stochastSettings = null;
+    private CallBackList<StochastSettings> stochastSettings = null;
 
     public ReliabilitySettings()
     {
@@ -234,6 +234,12 @@ public class ReliabilitySettings : IDisposable
         set { Interface.SetValue(id, "markov_chain_deviation", value); }
     }
 
+    public double SubsetFraction
+    {
+        get { return Interface.GetValue(id, "subset_fraction"); }
+        set { Interface.SetValue(id, "subset_fraction", value); }
+    }
+
     public double FractionFailed
     {
         get { return Interface.GetValue(id, "fraction_failed"); }
@@ -258,28 +264,6 @@ public class ReliabilitySettings : IDisposable
         set { Interface.SetBoolValue(id, "optimize_number_clusters", value); }
     }
 
-    internal void SetVariables(IList<Stochast> stochasts)
-    {
-        List<StochastSettings> newStochastSettings = new List<StochastSettings>();
-
-        foreach (Stochast stochast in stochasts)
-        {
-            StochastSettings stochastSettings = StochastSettings.FirstOrDefault(p => p.Stochast == stochast);
-            if (stochastSettings == null)
-            {
-                stochastSettings = new StochastSettings();
-                stochastSettings.Stochast = stochast;
-            }
-
-            newStochastSettings.Add(stochastSettings);
-        }
-
-        StochastSettings.Clear();
-        stochastSettings.AddRange(newStochastSettings);
-
-        Interface.SetArrayIntValue(id, "stochast_settings", StochastSettings.Select(p => p.GetId()).ToArray());
-    }
-
     public void SetStartPoint(StochastPoint stochastPoint)
     {
         Interface.SetIntValue(id, "start_point", stochastPoint.GetId());
@@ -291,16 +275,21 @@ public class ReliabilitySettings : IDisposable
         {
             if (stochastSettings == null)
             {
-                stochastSettings = new List<StochastSettings>();
+                stochastSettings = new CallBackList<StochastSettings>(StochastSettingsChanged);
 
                 int[] stochastSettingsIds = Interface.GetArrayIdValue(id, "stochast_settings");
                 foreach (int stochastSettingsId in stochastSettingsIds)
                 {
-                    stochastSettings.Add(new StochastSettings(stochastSettingsId));
+                    stochastSettings.AddWithoutCallBack(new StochastSettings(stochastSettingsId));
                 }
             }
 
             return stochastSettings;
         }
+    }
+
+    private void StochastSettingsChanged(ListOperationType listOperation, StochastSettings item)
+    {
+        Interface.SetArrayIntValue(id, "stochast_settings", this.stochastSettings.Select(p => p.GetId()).ToArray());
     }
 }

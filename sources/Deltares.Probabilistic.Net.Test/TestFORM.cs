@@ -440,7 +440,7 @@ namespace Deltares.Probabilistic.Test
             ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
-            project.Settings.StartMethod = StartPointMethod.RaySearch;
+            project.Settings.StartMethod = StartPointMethod.SphereSearch;
             project.Settings.AllQuadrants = true;
             project.Run();
 

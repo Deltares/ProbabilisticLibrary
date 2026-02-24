@@ -455,6 +455,7 @@ namespace Deltares
                 else if (property_ == "fraction_failed") return settings->FractionFailed;
                 else if (property_ == "epsilon_beta") return settings->EpsilonBeta;
                 else if (property_ == "markov_chain_deviation") return settings->MarkovChainDeviation;
+                else if (property_ == "subset_fraction") return settings->SubsetFraction;
                 else if (property_ == "step_size") return settings->GradientSettings->StepSize;
             }
             else if (objectType == ObjectType::StochastSettings)
@@ -464,7 +465,7 @@ namespace Deltares
                 if (property_ == "min_value") return stochastSettings->MinValue;
                 else if (property_ == "max_value") return stochastSettings->MaxValue;
                 else if (property_ == "start_value") return stochastSettings->StartValue;
-                else if (property_ == "variation_factor") return stochastSettings->VarianceFactor;
+                else if (property_ == "variance_factor") return stochastSettings->VarianceFactor;
             }
             else if (objectType == ObjectType::UncertaintySettings)
             {
@@ -672,6 +673,7 @@ namespace Deltares
                 else if (property_ == "fraction_failed") settings->FractionFailed = value;
                 else if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
                 else if (property_ == "markov_chain_deviation") settings->MarkovChainDeviation = value;
+                else if (property_ == "subset_fraction") settings->SubsetFraction = value;
                 else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
             }
             else if (objectType == ObjectType::UncertaintySettings)

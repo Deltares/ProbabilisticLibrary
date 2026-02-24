@@ -64,7 +64,7 @@ namespace Deltares.Probabilistic.Test
             project.ZFunction.Invoke(sample);
             ClassicAssert.AreEqual(0, sample.Z, margin);
 
-            ClassicAssert.AreEqual(0.89, limitStatePoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.90, limitStatePoint.Alphas[0].X, margin);
             ClassicAssert.AreEqual(0.91, limitStatePoint.Alphas[1].X, margin);
         }
 
@@ -118,7 +118,7 @@ namespace Deltares.Probabilistic.Test
             project.ZFunction.Invoke(sample);
             ClassicAssert.AreEqual(0, sample.Z, margin);
 
-            ClassicAssert.AreEqual(0.89, limitStatePoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.90, limitStatePoint.Alphas[0].X, margin);
             ClassicAssert.AreEqual(0.91, limitStatePoint.Alphas[1].X, margin);
         }
 

@@ -12,6 +12,15 @@ namespace Deltares.Probabilistic.Utils
 {
     public static class Interface
     {
+        // Keep callbacks to prevent them garbage collected
+        private static Callback keepCallBack = null;
+        private static MultipleCallback keepMultipleCallBack = null;
+        private static EmptyCallback keepEmptyCallBack = null;
+        private static ModelSampleCallback keepModelSampleCallback = null;
+        private static ProgressCallBack keepProgressCallBack = null;
+        private static DetailedProgressCallBack keepDetailedCallBack = null;
+        private static TextualProgressCallBack keepTextualCallBack = null;
+
         private static byte[] Utf8(string s) => Encoding.UTF8.GetBytes(s);
 
         public static int Create(string className)
@@ -204,11 +213,12 @@ namespace Deltares.Probabilistic.Utils
         public static void SetIndexedIndexedIntValue(int id, string property, int index1, int index2, int value)
             => NativeInterface.SetIndexedIndexedIntValue(id, Utf8(property), index1, index2, value);
 
-        public static void SetCallback(int id, string property, Callback cb)
+        public static void SetCallback(int id, string property, Callback callBack)
         {
             try
             {
-                NativeInterface.SetCallBack(id, property, cb);
+                keepCallBack = callBack;
+                NativeInterface.SetCallBack(id, property, callBack);
             }
             catch (Exception ex)
             {
@@ -217,11 +227,12 @@ namespace Deltares.Probabilistic.Utils
             }
         }
 
-        public static void SetMultipleCallback(int id, string property, NativeInterface.MultipleCallback cb)
+        public static void SetMultipleCallback(int id, string property, NativeInterface.MultipleCallback multipleCallBack)
         {
             try
             {
-                NativeInterface.SetMultipleCallBack(id, property, cb);
+                keepMultipleCallBack = multipleCallBack;
+                NativeInterface.SetMultipleCallBack(id, property, multipleCallBack);
             }
             catch (Exception ex)
             {
@@ -230,11 +241,12 @@ namespace Deltares.Probabilistic.Utils
             }
         }
 
-        public static void SetEmptyCallback(int id, string property, EmptyCallback cb)
+        public static void SetEmptyCallback(int id, string property, EmptyCallback emptyCallBack)
         {
             try
             {
-                NativeInterface.SetEmptyCallBack(id, property, cb);
+                keepEmptyCallBack = emptyCallBack;
+                NativeInterface.SetEmptyCallBack(id, property, emptyCallBack);
             }
             catch (Exception ex)
             {
@@ -243,11 +255,12 @@ namespace Deltares.Probabilistic.Utils
             }
         }
 
-        public static void SetModelSampleCallback(int id, string property, ModelSampleCallback cb)
+        public static void SetModelSampleCallback(int id, string property, ModelSampleCallback modelSampleCallBack)
         {
             try
             {
-                NativeInterface.SetModelSampleCallback(id, property, cb);
+                keepModelSampleCallback = modelSampleCallBack; 
+                NativeInterface.SetModelSampleCallback(id, property, modelSampleCallBack);
             }
             catch (Exception ex)
             {
@@ -256,11 +269,14 @@ namespace Deltares.Probabilistic.Utils
             }
         }
 
-        public static void SetProgressCallbacks(int id, ProgressCallBack progress, DetailedProgressCallBack detailed, TextualProgressCallBack textual)
+        public static void SetProgressCallbacks(int id, ProgressCallBack progressCallBack, DetailedProgressCallBack detailedCallBack, TextualProgressCallBack textualCallBack)
         {
             try
             {
-                NativeInterface.SetProgressCallBacks(id, progress, detailed, textual);
+                keepProgressCallBack = progressCallBack;
+                keepDetailedCallBack = detailedCallBack;
+                keepTextualCallBack = textualCallBack;
+                NativeInterface.SetProgressCallBacks(id, progressCallBack, detailedCallBack, textualCallBack);
             }
             catch (Exception ex)
             {

@@ -236,6 +236,7 @@ namespace Deltares
             directionalSampling->Settings->VariationCoefficient = this->VariationCoefficient;
             directionalSampling->Settings->runSettings = this->RunSettings;
             directionalSampling->Settings->randomSettings = this->RandomSettings;
+            directionalSampling->Settings->DirectionSettings = this->DirectionSettings;
             directionalSampling->Settings->StochastSet = this->StochastSet;
 
             return directionalSampling;
@@ -246,6 +247,7 @@ namespace Deltares
             std::shared_ptr<DirectionReliability> directionReliability = std::make_shared<DirectionReliability>();
 
             directionReliability->Settings = this->DirectionSettings;
+            directionReliability->Settings->StochastSet = this->StochastSet;
 
             return directionReliability;
         }
@@ -259,6 +261,8 @@ namespace Deltares
             subsetSimulation->Settings->designPointMethod = this->designPointMethod;
             subsetSimulation->Settings->SampleMethod = this->sampleMethod;
             subsetSimulation->Settings->VariationCoefficient = this->VariationCoefficient;
+            subsetSimulation->Settings->MarkovChainDeviation = this->MarkovChainDeviation;
+            subsetSimulation->Settings->SampleMethod = this->SampleMethod;
             subsetSimulation->Settings->RunSettings = this->RunSettings;
             subsetSimulation->Settings->randomSettings = this->RandomSettings;
             subsetSimulation->Settings->StochastSet = this->StochastSet;

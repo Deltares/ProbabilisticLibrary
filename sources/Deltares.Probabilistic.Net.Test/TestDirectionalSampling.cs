@@ -99,8 +99,8 @@ namespace Deltares.Probabilistic.Test
             ReliabilityProject project = ProjectBuilder.GetDoubleLinearProject();
 
             project.Settings.ReliabilityMethod = ReliabilityMethod.DirectionalSampling;
-            project.Settings.MaximumSamples = 2000;
-            project.Settings.MinimumSamples = 2000;
+            project.Settings.MaximumDirections = 2000;
+            project.Settings.MinimumDirections = 2000;
             project.Settings.ModelVaryingType = ModelVaryingType.Varying;
             project.Run();
 
