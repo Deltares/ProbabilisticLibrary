@@ -35,7 +35,7 @@ public class CombineSettings : IDisposable
 
     public CombineMethod CombineMethod
     {
-        get { return CombineMethodConverter.ConvertFromString(Interface.GetStringValue(id, "combine_type")); }
-        set { Interface.SetStringValue(id, "combine_type", CombineMethodConverter.ConvertToString(value)); }
+        get { return CombineMethodConverter.ConvertFromString(Interface.GetStringValue(id, "combine_method")); }
+        set { Interface.SetStringValue(id, "combine_method", CombineMethodConverter.ConvertToString(value)); }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
@@ -8,7 +9,7 @@ namespace Deltares.Probabilistic.Model;
 public class StochastPoint : IStochastProvider
 {
     private int id = 0;
-    private List<StochastPointAlpha> alphas = null;
+    private CallBackList<StochastPointAlpha> alphas = null;
     private readonly IStochastProvider stochastProvider = null;
 
     public StochastPoint()
@@ -53,17 +54,22 @@ public class StochastPoint : IStochastProvider
         {
             if (alphas == null)
             {
-                alphas = new List<StochastPointAlpha>();
+                alphas = new CallBackList<StochastPointAlpha>(AlphasChanged);
 
                 int[] alphaIds = Interface.GetArrayIdValue(id, "alphas");
                 foreach (int alphaId in alphaIds)
                 {
-                    alphas.Add(new StochastPointAlpha(alphaId, stochastProvider));
+                    alphas.AddWithoutCallBack(new StochastPointAlpha(alphaId, stochastProvider));
                 }
             }
 
             return alphas;
         }
+    }
+
+    private void AlphasChanged(ListOperationType listOperation, StochastPointAlpha item)
+    {
+        Interface.SetArrayIntValue(id, "alphas", this.alphas.Select(p => p.GetId()).ToArray());
     }
 
     public ModelSample GetModelSample()

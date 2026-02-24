@@ -7,13 +7,12 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class CombineProject : IStochastProvider, IDisposable
+public class CombineProject : IStochastProvider, IDesignPointProvider, IDisposable
 {
     private readonly int id = 0;
     private CombineSettings settings = null;
     private CallBackList<DesignPoint> designPoints = null;
     private DesignPoint designPoint = null;
-    private bool synchronizing = false;
 
     public CombineProject()
     {
@@ -42,7 +41,15 @@ public class CombineProject : IStochastProvider, IDisposable
             if (settings == null)
             {
                 int settingsId = Interface.GetIdValue(id, "settings");
-                settings = new CombineSettings(settingsId);
+                if (settingsId == 0)
+                {
+                    settings = new CombineSettings();
+                    Interface.SetIntValue(id, "settings", settings.GetId());
+                }
+                else
+                {
+                    settings = new CombineSettings(settingsId);
+                }
             }
             return settings;
         }
@@ -59,16 +66,13 @@ public class CombineProject : IStochastProvider, IDisposable
         {
             if (designPoints == null)
             {
-                synchronizing = true;
                 designPoints = new CallBackList<DesignPoint>(DesignPointsChanged);
 
                 int[] designPointIds = Interface.GetArrayIdValue(id, "design_points");
                 foreach (int designPointId in designPointIds)
                 {
-                    designPoints.Add(new DesignPoint(designPointId, null, this));
+                    designPoints.AddWithoutCallBack(new DesignPoint(designPointId, null, this, null));
                 }
-
-                synchronizing = true;
             }
 
             return designPoints;
@@ -77,10 +81,7 @@ public class CombineProject : IStochastProvider, IDisposable
 
     private void DesignPointsChanged(ListOperationType listOperation, DesignPoint item)
     {
-        if (!synchronizing)
-        {
-            Interface.SetArrayIntValue(id, "design_points", this.designPoints.Select(p => p.GetId()).ToArray());
-        }
+        Interface.SetArrayIntValue(id, "design_points", this.designPoints.Select(p => p.GetId()).ToArray());
     }
 
     public void Run()
@@ -96,7 +97,7 @@ public class CombineProject : IStochastProvider, IDisposable
             if (designPoint == null)
             {
                 int designPointId = Interface.GetIdValue(id, "design_point");
-                designPoint = new DesignPoint(designPointId, null, this);
+                designPoint = new DesignPoint(designPointId, null, this, this);
             }
 
             return designPoint;
@@ -120,5 +121,10 @@ public class CombineProject : IStochastProvider, IDisposable
         }
 
         return null;
+    }
+
+    public DesignPoint GetDesignPoint(int designPointId)
+    {
+        return designPoints.FirstOrDefault(p => p.GetId() == designPointId);
     }
 }

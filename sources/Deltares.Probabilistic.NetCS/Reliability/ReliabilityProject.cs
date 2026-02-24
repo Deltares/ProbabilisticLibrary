@@ -59,7 +59,7 @@ namespace Deltares.Probabilistic.Reliability
                 if (designPoint == null)
                 {
                     int designPointId = Interface.GetIdValue(id, "design_point");
-                    designPoint = new DesignPoint(designPointId, TagRepository, this);
+                    designPoint = new DesignPoint(designPointId, TagRepository, this, null);
                 }
 
                 return designPoint;

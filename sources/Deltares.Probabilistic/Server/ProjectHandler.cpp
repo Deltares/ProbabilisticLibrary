@@ -707,7 +707,8 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
-                if (property_ == "reliability_index") designPoint->Beta = value;
+                if (property_ == "beta") designPoint->Beta = value;
+                else if (property_ == "reliability_index") designPoint->Beta = value;
             }
             else if (objectType == ObjectType::Alpha)
             {
@@ -1571,7 +1572,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::CombineSettings> settings = combineSettingsValues[id];
 
-                if (property_ == "combiner_method") return DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
+                if (property_ == "combine_method") return DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
                 else if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(settings->combineType);
             }
             else if (objectType == ObjectType::ExcludingCombineSettings)
@@ -1702,7 +1703,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::CombineSettings> settings = combineSettingsValues[id];
 
-                if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getCombinerMethod(value);
+                if (property_ == "combine_method") settings->combinerMethod = DesignPointCombiner::getCombinerMethod(value);
                 else if (property_ == "combine_type") settings->combineType = DesignPointCombiner::getCombineType(value);
             }
             else if (objectType == ObjectType::ExcludingCombineSettings)

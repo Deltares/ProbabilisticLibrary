@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability;
@@ -13,6 +14,7 @@ public class DesignPoint : StochastPoint
     private List<ReliabilityResult> reliabilityResults = null;
     private List<Message> messages = null;
     private readonly TagRepository tagRepository = null;
+    private IDesignPointProvider designPointProvider = null;
 
     public DesignPoint() : base(-1, null)
     {
@@ -20,10 +22,11 @@ public class DesignPoint : StochastPoint
         base.SetId(id);
     }
 
-    internal DesignPoint(int id, TagRepository tagRepository, IStochastProvider stochastProvider) : base(id, stochastProvider)
+    internal DesignPoint(int id, TagRepository tagRepository, IStochastProvider stochastProvider, IDesignPointProvider designPointProvider) : base(id, stochastProvider)
     {
         this.id = id;
         this.tagRepository = tagRepository;
+        this.designPointProvider = designPointProvider;
     }
 
     public string Identifier
@@ -97,7 +100,10 @@ public class DesignPoint : StochastPoint
                 int[] designPointIds = Interface.GetArrayIdValue(id, "contributing_design_points");
                 foreach (int designPointId in designPointIds)
                 {
-                    contributingDesignPoints.Add(new DesignPoint(designPointId, tagRepository, GetStochastProvider()));
+                    DesignPoint contributingDesignPoint = designPointProvider?.GetDesignPoint(designPointId) ??
+                                                          new DesignPoint(designPointId, tagRepository,
+                                                              GetStochastProvider(), designPointProvider);
+                    contributingDesignPoints.Add(contributingDesignPoint);
                 }
             }
 
