@@ -72,8 +72,6 @@ namespace Deltares::Server
                 object_type == "uncertainty_project" ||
                 object_type == "uncertainty_settings" ||
                 object_type == "uncertainty_result" ||
-                object_type == "progress_indicator" ||
-                object_type == "model_sample" ||
                 object_type == "length_effect_project");
     }
 
@@ -118,7 +116,6 @@ namespace Deltares::Server
         else if (object_type == "uncertainty_settings") return ObjectType::UncertaintySettings;
         else if (object_type == "uncertainty_result") return ObjectType::UncertaintyResult;
         else if (object_type == "length_effect_project") return ObjectType::LengthEffectProject;
-        else if (object_type == "progress_indicator") return ObjectType::ProgressIndicator;
         else throw probLibException("type not supported: " + object_type);
     }
 
@@ -260,9 +257,6 @@ namespace Deltares::Server
         case ObjectType::LengthEffectProject:
             lengthEffectProjects[id] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
             break;
-        case ObjectType::ProgressIndicator:
-            progressIndicators[id] = std::make_shared<Deltares::Models::ProgressIndicator>(nullptr, nullptr, nullptr);
-            break;
         default: throw probLibException("object type");
         }
     }
@@ -317,8 +311,6 @@ namespace Deltares::Server
         case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
         case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
         case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
-        case ObjectType::ProgressIndicator: progressIndicators.erase(id); break;
-        case ObjectType::ModelSample: modelSampleIds.erase(modelSamples[id]); modelSamples.erase(id); break;
         default: throw probLibException("object type");
         }
         types.erase(id);
@@ -413,13 +405,6 @@ namespace Deltares::Server
             std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
             if (property_ == "default_value") return parameter->defaultValue;
-        }
-        else if (objectType == ObjectType::ModelSample)
-        {
-            std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
-
-            if (property_ == "beta") return sample->Beta;
-            else if (property_ == "weight") return sample->Weight;
         }
         else if (objectType == ObjectType::ConditionalValue)
         {
@@ -627,13 +612,6 @@ namespace Deltares::Server
 
             if (property_ == "critical_value") limitStateFunction->criticalValue = value;
         }
-        else if (objectType == ObjectType::ModelSample)
-        {
-            std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
-
-            if (property_ == "beta") sample->Beta = value;
-            else if (property_ == "weight") sample->Weight = value;
-        }
         else if (objectType == ObjectType::ModelParameter)
         {
             std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
@@ -758,13 +736,6 @@ namespace Deltares::Server
 
             if (property_ == "index") return parameter->index;
             else if (property_ == "array_size") return parameter->arraySize;
-        }
-        else if (objectType == ObjectType::ModelSample)
-        {
-            std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
-
-            if (property_ == "iteration") return sample->IterationIndex;
-            else if (property_ == "tag") return sample->Tag;
         }
         else if (objectType == ObjectType::Alpha)
         {
@@ -1037,11 +1008,6 @@ namespace Deltares::Server
                 else return GetFragilityCurveId(fragilityCurve, newId);
             }
         }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
-            if (property_ == "sample") return GetModelSampleId(designPoint->getModelSample(), newId);
-        }
         else if (objectType == ObjectType::UncertaintyResult)
         {
             std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
@@ -1098,13 +1064,6 @@ namespace Deltares::Server
 
             if (property_ == "integrand") project->integrand = stochasts[value];
             else if (property_ == "fragility_curve") project->fragilityCurve = fragilityCurves[value];
-        }
-        else if (objectType == ObjectType::ModelSample)
-        {
-            std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
-
-            if (property_ == "iteration") sample->IterationIndex = value;
-            else if (property_ == "tag") sample->Tag = value;
         }
         else if (objectType == ObjectType::ModelParameter)
         {
@@ -1294,14 +1253,6 @@ namespace Deltares::Server
 
             if (property_ == "is_valid") return validationReport->isValid();
         }
-        else if (objectType == ObjectType::ModelSample)
-        {
-            std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
-
-            if (property_ == "allow_proxy") return sample->AllowProxy;
-            else if (property_ == "extended_logging") return sample->ExtendedLogging;
-            else if (property_ == "is_restart_required") return sample->IsRestartRequired;
-        }
         else if (objectType == ObjectType::Stochast)
         {
             std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
@@ -1424,14 +1375,6 @@ namespace Deltares::Server
             else if (property_ == "truncated") stochast->setTruncated(value);
             else if (property_ == "conditional") stochast->IsVariableStochast = value;
             else if (property_ == "is_array") stochast->modelParameter->isArray = value;
-        }
-        else if (objectType == ObjectType::ModelSample)
-        {
-            std::shared_ptr<Models::ModelSample> sample = modelSamples[id];
-
-            if (property_ == "allow_proxy") sample->AllowProxy = value;
-            else if (property_ == "extended_logging") sample->ExtendedLogging = value;
-            else if (property_ == "is_restart_required") sample->IsRestartRequired = value;
         }
         else if (objectType == ObjectType::ModelParameter)
         {
@@ -2404,25 +2347,6 @@ namespace Deltares::Server
             validationReports[newId] = validationReport;
             types[newId] = ObjectType::ValidationReport;
             return newId;
-        }
-    }
-
-    int ProjectHandler::GetModelSampleId(std::shared_ptr<Models::ModelSample> sample, int newId)
-    {
-        if (sample == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!modelSampleIds.contains(sample))
-            {
-                modelSamples[newId] = sample;
-                types[newId] = ObjectType::ModelSample;
-                modelSampleIds[sample] = newId;
-            }
-
-            return modelSampleIds[sample];
         }
     }
 

@@ -101,7 +101,6 @@ namespace Deltares::Server
         int GetEvaluationId(std::shared_ptr<Models::Evaluation> evaluation, int newId);
         int GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId);
         int GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId);
-        int GetModelSampleId(std::shared_ptr<Models::ModelSample> sample, int newId);
 
         std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
         {
@@ -114,8 +113,8 @@ namespace Deltares::Server
             StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
             ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
             CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult,
-            SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation,
-            ProgressIndicator, ModelSample
+            SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation
+            
         };
         ObjectType GetType(std::string object_type);
         std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
