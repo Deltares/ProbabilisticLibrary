@@ -79,6 +79,7 @@ public class ModelSample
     public double[] OutputValues
     {
         get { return outputValues; }
+        set { outputValues = value; }
     }
 
     public int Iteration { get; set; }

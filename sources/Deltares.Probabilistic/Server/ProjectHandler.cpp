@@ -871,7 +871,13 @@ namespace Deltares
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
                 else if (property_ == "maximum_directions") return settings->MaximumDirections;
                 else if (property_ == "random_seed") return settings->RandomSettings->Seed;
-                //else if (property_ == "required_samples") return settings->GetRequiredSamples();
+                else if (property_ == "required_samples")
+                {
+                    Uncertainty::CrudeMonteCarloSettingsS cmcSettings;
+                    cmcSettings.VariationCoefficient = settings->VariationCoefficient;
+                    cmcSettings.ProbabilityForConvergence = settings->ProbabilityForConvergence;
+                    return cmcSettings.getRequiredSamples();
+                }
                 else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
             }
             else if (objectType == ObjectType::UncertaintyResult)

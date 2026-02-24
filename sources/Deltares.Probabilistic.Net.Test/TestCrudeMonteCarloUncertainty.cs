@@ -195,19 +195,16 @@ namespace Deltares.Probabilistic.Test
         [Test]
         public void TestCorrelationMatrix()
         {
-            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearAndUnbalancedProject());
+            project.OutputParameters.Add(new ModelParameter { Name = "Linear" });
+            project.OutputParameters.Add(new ModelParameter { Name = "Unbalanced" });
+
             project.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
             project.Settings.CalculateCorrelations = true;
             project.Run();
 
-            Stochast stochast1 = project.Stochast;
-
-            var project2 = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetUnbalancedLinearProject());
-            project2.Settings.UncertaintyMethod = UncertaintyMethod.CrudeMonteCarlo;
-            project2.Settings.CalculateCorrelations = true;
-            project2.Run();
-
-            Stochast stochast2 = project2.Stochast;
+            Stochast stochast1 = project.StochastResults[0];
+            Stochast stochast2 = project.StochastResults[1];
 
             CorrelationMatrix correlationMatrix = project.OutputCorrelationMatrix;
 

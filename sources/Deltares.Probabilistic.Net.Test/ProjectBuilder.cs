@@ -73,9 +73,25 @@ namespace Deltares.Probabilistic.Test
     public class ZSampleOutput
     {
         private readonly ZDelegate function;
-        private readonly TagRepository tagRepository = new TagRepository();
 
         public ZSampleOutput(ZDelegate function)
+        {
+            this.function = function;
+        }
+
+        public void CalculateSample(ModelSample sample)
+        {
+            ZFunctionOutput output = function.Invoke(sample.Values);
+            sample.Z = output.Z;
+            sample.Tag = output;
+        }
+    }
+
+    public class SampleValuesOutput
+    {
+        private readonly ZDelegate function;
+
+        public SampleValuesOutput(ZDelegate function)
         {
             this.function = function;
         }
@@ -171,6 +187,21 @@ namespace Deltares.Probabilistic.Test
             return project;
         }
 
+        public static ReliabilityProject GetLinearAndUnbalancedProject()
+        {
+            var project = new ReliabilityProject();
+
+            project.Stochasts.Add(GetUniformStochast(-1));
+            project.Stochasts.Add(GetUniformStochast(-1));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
+
+            project.ZFunction = LinearAndUnbalanced;
+
+            return project;
+        }
+
         public static UncertaintyProject GetUncertaintyProject(ReliabilityProject project)
         {
             var uncertaintyProject = new UncertaintyProject();
@@ -178,6 +209,16 @@ namespace Deltares.Probabilistic.Test
             foreach (Stochast stochast in project.Stochasts)
             {
                 uncertaintyProject.Stochasts.Add(stochast);
+            }
+
+            foreach (ModelParameter inputParameter in project.InputParameters)
+            {
+                uncertaintyProject.InputParameters.Add(inputParameter);
+            }
+
+            foreach (ModelParameter outputParameter in project.OutputParameters)
+            {
+                uncertaintyProject.OutputParameters.Add(outputParameter);
             }
 
             uncertaintyProject.CorrelationMatrix = project.CorrelationMatrix;
@@ -747,6 +788,13 @@ namespace Deltares.Probabilistic.Test
                 sum += factor * x[i];
             }
             return new ZFunctionOutput(1.8 - sum);
+        }
+
+        private static void LinearAndUnbalanced(ModelSample sample)
+        {
+            double val1 = Linear(sample.Values).Z;
+            double val2 = UnbalancedLinear(sample.Values).Z;
+            sample.OutputValues = [val1, val2];
         }
 
         private static ZFunctionOutput Linear2(double a, double b)

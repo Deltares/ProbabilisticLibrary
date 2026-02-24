@@ -139,6 +139,7 @@ namespace Deltares
             xSample->Weight = sample->Weight;
             xSample->IsRestartRequired = sample->IsRestartRequired;
             xSample->Beta = sample->getBeta();
+            xSample->OutputValues.resize(this->zModel->outputParameters.size());
 
             return xSample;
         }
