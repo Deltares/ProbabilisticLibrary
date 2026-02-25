@@ -783,6 +783,7 @@ namespace Deltares::Server
             std::shared_ptr<Statistics::CorrelationMatrix> matrix = std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(correlations[id]);
 
             if (property_ == "count_correlations") return matrix->CountCorrelations();
+            else if (property_ == "variables_count") return matrix->GetDimension();
         }
         else if (objectType == ObjectType::ConditionalValue)
         {

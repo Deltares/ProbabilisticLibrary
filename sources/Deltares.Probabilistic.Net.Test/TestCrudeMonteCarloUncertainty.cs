@@ -207,6 +207,8 @@ namespace Deltares.Probabilistic.Test
             Stochast stochast2 = project.StochastResults[1];
 
             CorrelationMatrix correlationMatrix = project.OutputCorrelationMatrix;
+            ClassicAssert.AreEqual(project.OutputParameters.Count, correlationMatrix.Stochasts.Count);
+            ClassicAssert.AreSame(stochast1, correlationMatrix.Stochasts[0]);
 
             double correlationValue = correlationMatrix.GetCorrelation(stochast1, stochast2);
 

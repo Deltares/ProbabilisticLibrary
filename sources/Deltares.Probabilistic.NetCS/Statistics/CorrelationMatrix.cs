@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
@@ -29,15 +30,18 @@ namespace Deltares.Probabilistic.Statistics;
 public class CorrelationMatrix : IDisposable
 {
     private int id = 0;
+    private List<Stochast> stochasts = null;
+    private IStochastProvider stochastProvider = null;
 
     public CorrelationMatrix()
     {
         this.id = Interface.Create("correlation_matrix");
     }
 
-    internal CorrelationMatrix(int id)
+    internal CorrelationMatrix(int id, IStochastProvider stochastProvider)
     {
         this.id = id;
+        this.stochastProvider = stochastProvider;
     }
 
     public void Dispose()
@@ -53,7 +57,29 @@ public class CorrelationMatrix : IDisposable
     public void Initialize(IList<Stochast> stochasts)
     {
         Interface.SetArrayIntValue(id, "variables", stochasts.Select(p => p.GetId()).ToArray());
+        this.stochasts = new List<Stochast>(stochasts);
     }
+
+    public IList<Stochast> Stochasts
+    {
+        get
+        {
+            if (stochasts == null)
+            {
+                stochasts = new List<Stochast>();
+
+                int[] stochastIds = Interface.GetArrayIdValue(id, "variables");
+                foreach (int stochastId in stochastIds)
+                {
+                    Stochast stochast = stochastProvider?.GetStochast(stochastId) ?? new Stochast(stochastId);
+                    stochasts.Add(stochast);
+                }
+            }
+
+            return stochasts;
+        }
+    }
+
 
     public double GetCorrelation(Stochast stochast1, Stochast stochast2)
     {

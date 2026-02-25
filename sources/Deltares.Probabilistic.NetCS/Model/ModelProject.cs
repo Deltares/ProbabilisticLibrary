@@ -191,7 +191,7 @@ namespace Deltares.Probabilistic.Model
                     }
                     else
                     {
-                        correlationMatrix = new CorrelationMatrix(matrixId);
+                        correlationMatrix = new CorrelationMatrix(matrixId, this);
                     }
                 }
 
