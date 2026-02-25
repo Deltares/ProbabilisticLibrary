@@ -643,6 +643,7 @@ TEST(UnitTests, testUncFOSM)
 {
     Deltares::Probabilistic::Test::TestUncertainty::testFOSM();
 }
+
 TEST(UnitTests, testSensitivity)
 {
     auto tstSensitivity = Deltares::Probabilistic::Test::TestSensitivity();
