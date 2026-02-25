@@ -26,12 +26,12 @@ namespace Deltares::Models
 {
     using namespace Deltares::Numeric;
 
-    int Sample::getSize()
+    int Sample::getSize() const
     {
         return size;
     }
 
-    double Sample::getBeta()
+    double Sample::getBeta() const
     {
         return Numeric::NumericSupport::GetLength(Values);
     }
@@ -124,7 +124,7 @@ namespace Deltares::Models
         return true;
     }
 
-    std::shared_ptr<Sample> Sample::clone()
+    std::shared_ptr<Sample> Sample::clone() const
     {
         std::shared_ptr<Sample> clonedSample = std::make_shared<Sample>(this->Values);
 

@@ -110,15 +110,15 @@ namespace Deltares::Reliability
     void ImportanceSamplingCombiner::invert(const std::shared_ptr<DesignPoint>& designPoint)
     {
         designPoint->Beta = -designPoint->Beta;
-        for (std::shared_ptr<Models::StochastPointAlpha>& alpha : designPoint->Alphas)
+        for (const std::shared_ptr<Models::StochastPointAlpha>& alpha : designPoint->Alphas)
         {
             alpha->Alpha = -alpha->Alpha;
             alpha->AlphaCorrelated = -alpha->AlphaCorrelated;
         }
 
-        for (std::shared_ptr<ReliabilityResult>& report : designPoint->ReliabilityResults)
+        for (const std::shared_ptr<ReliabilityResult>& result : designPoint->ReliabilityResults)
         {
-            report->Reliability = -report->Reliability;
+            result->Reliability = -result->Reliability;
         }
     }
 

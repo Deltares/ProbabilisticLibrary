@@ -46,18 +46,16 @@ namespace Deltares::Uncertainty
         UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
     private:
         static std::vector<double> getFactors(const Reliability::StochastSettingsSet& stochastSettings);
-        static std::shared_ptr<Models::Sample> getModifiedSample(const std::shared_ptr<Models::Sample>& sample,
-            const std::vector<double>& factors, const Models::Sample& center, const double dimensionality);
+        std::shared_ptr<Models::Sample> getModifiedSample(const Models::Sample& sample, const Models::Sample& center) const;
         void updateCumulativeWeights(const std::vector<double>& zValues, const std::vector<double>& weights,
             std::vector<double>& cumulativeWeights, const Models::Sample& sample) const;
         static void adjustWeights(std::vector<double>& weights, const double weight_difference);
         void registerSample(const Models::ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& sample) const;
         void registerWeights(const std::vector<double>& weights) const;
         void registerSamples(const std::shared_ptr<Statistics::Stochast>& stochast, const std::vector<double>& zValues) const;
-        bool GetConverged(int sampleIndex, const Models::Sample& center, int nSamples);
+        bool getConverged(int sampleIndex, const Models::Sample& center, int nSamples);
         Reliability::DesignPointBuilder designPointBuilder;
         double dimensionality = 0.0;
         std::vector<double> factors;
-        double normalizedProbabilityForConvergence = 0.0;
     };
 }
