@@ -589,12 +589,60 @@ TEST(CopulasTest, testGaussianValidationMessages)
     Deltares::Probabilistic::Test::TestCopula::testGaussianValidationMessages();
 }
 
-TEST(UnitTests, testUncertainty)
+TEST(UnitTests, testUncCrudeMonteCarloAddOne)
 {
-    auto tstUncertainty = Deltares::Probabilistic::Test::TestUncertainty();
-    tstUncertainty.allUncertaintyTests();
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloAddOne();
 }
 
+TEST(UnitTests, testUncCrudeMonteCarloLinear)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinear();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinearNonRepeatable)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearNonRepeatable();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinearOutput)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearOutput();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinearManySamples)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearManySamples();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinearAutoSamples)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearAutoSamples();
+}
+
+TEST(UnitTests, testUncImportanceSamplingAddOne)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testImportanceSamplingAddOne();
+}
+
+TEST(UnitTests, testUncNumericalIntegration)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testNumericalIntegration();
+}
+
+TEST(UnitTests, testUncDirectionalSampling)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testDirectionalSampling();
+}
+
+TEST(UnitTests, testUncFORM)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testFORM();
+}
+
+TEST(UnitTests, testUncFOSM)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testFOSM();
+}
 TEST(UnitTests, testSensitivity)
 {
     auto tstSensitivity = Deltares::Probabilistic::Test::TestSensitivity();
