@@ -107,7 +107,7 @@ namespace Deltares::Uncertainty
         modelRunner->initializeForRun();
 
         auto result = uncertaintyMethod->getUncertaintyStochast(modelRunner);
-        result.stochast->name = parameter;
+        result.stochast->name = outputSelector->getIdentifier();
 
         modelRuns += model->getModelRuns();
 

@@ -35,6 +35,8 @@ namespace Deltares::Sensitivity
     class SensitivityProject : public Models::ModelProject
     {
     public:
+        // TODO: Make sensitivityMethod private when C++/CLI code has been phased out
+
         /**
          * \brief Method which performs a uncertainty calculation
          */

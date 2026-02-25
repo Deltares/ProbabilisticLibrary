@@ -96,7 +96,7 @@ namespace Deltares::Sensitivity
         modelRunner->initializeForRun();
 
         auto result = sensitivityMethod->getSensitivityResult(modelRunner);
-        result.identifier = parameter;
+        result.identifier = outputSelector->getIdentifier();
 
         modelRuns += model->getModelRuns();
 

@@ -37,88 +37,6 @@ namespace Deltares::Models
             this->Values = values;
         }
 
-        /**
-         * \brief Resets all contents of the sample to its default values
-         * \remark Values are not cleared, since they are provided in the constructor
-         */
-        void clear()
-        {
-            IterationIndex = -1;
-            threadId = 0;
-            Weight = std::nan("");
-            AllowProxy = true;
-            UsedProxy = false;
-            IsRestartRequired = false;
-            Z = std::nan("");
-            Beta = 0;
-            Tag = 0;
-        }
-
-        /**
-         * \brief Copies the results from another sample
-         */
-        void copyFrom(const std::shared_ptr<ModelSample>& source)
-        {
-            this->Z = source->Z;
-            this->OutputValues = std::vector<double>(source->OutputValues.size());
-            for (size_t i = 0; i < this->OutputValues.size(); i++)
-            {
-                this->OutputValues[i] = source->OutputValues[i];
-            }
-        }
-
-        ModelSampleStruct getModelSampleStruct() const
-        {
-            ModelSampleStruct sampleStruct;
-
-            sampleStruct.Values = Values.data();
-            sampleStruct.ValuesCount = static_cast<int>(Values.size());
-
-            sampleStruct.OutputValues = OutputValues.data();
-            sampleStruct.OutputValuesCount = static_cast<int>(OutputValues.size());
-
-            sampleStruct.IterationIndex = IterationIndex;
-            sampleStruct.threadId = threadId;
-            sampleStruct.Weight = Weight;
-            sampleStruct.AllowProxy = AllowProxy;
-            sampleStruct.UsedProxy = UsedProxy;
-            sampleStruct.IsRestartRequired = IsRestartRequired;
-            sampleStruct.Beta = Beta;
-            sampleStruct.Z = Z;
-            sampleStruct.ExtendedLogging = ExtendedLogging;
-            sampleStruct.LoggingCounter = LoggingCounter;
-            sampleStruct.Tag = Tag;
-
-            return sampleStruct;
-        }
-
-        void setModelSampleStruct(ModelSampleStruct* sampleStruct)
-        {
-            Values.resize(sampleStruct->ValuesCount);
-            for (int i = 0; i < sampleStruct->ValuesCount; i++)
-            {
-                Values[i] = sampleStruct->Values[i];
-            }
-
-            OutputValues.resize(sampleStruct->OutputValuesCount);
-            for (int i = 0; i < sampleStruct->OutputValuesCount; i++)
-            {
-                OutputValues[i] = sampleStruct->OutputValues[i];
-            }
-
-            IterationIndex = sampleStruct->IterationIndex;
-            threadId = sampleStruct->threadId;
-            Weight = sampleStruct->Weight;
-            AllowProxy = sampleStruct->AllowProxy;
-            UsedProxy = sampleStruct->UsedProxy;
-            IsRestartRequired = sampleStruct->IsRestartRequired;
-            Beta = sampleStruct->Beta;
-            Z = sampleStruct->Z;
-            ExtendedLogging = sampleStruct->ExtendedLogging;
-            LoggingCounter = sampleStruct->LoggingCounter;
-            Tag = sampleStruct->Tag;
-        }
-
         std::vector<double> Values;
         std::vector<double> OutputValues;
 
@@ -140,23 +58,22 @@ namespace Deltares::Models
 
         int Tag = 0;
 
-        bool hasSameValues(std::shared_ptr<ModelSample> other)
-        {
-            if (this->Values.size() != other->Values.size())
-            {
-                return false;
-            }
+        bool hasSameValues(std::shared_ptr<ModelSample> other);
 
-            for (int i = 0; i < this->Values.size(); i++)
-            {
-                if (this->Values[i] != other->Values[i])
-                {
-                    return false;
-                }
-            }
+        /**
+         * \brief Resets all contents of the sample to its default values
+         * \remark Values are not cleared, since they are provided in the constructor
+         */
+        void clear();
 
-            return true;
-        }
+        /**
+         * \brief Copies the results from another sample
+         */
+        void copyFrom(const std::shared_ptr<ModelSample>& source);
+
+        ModelSampleStruct getModelSampleStruct() const;
+
+        void setModelSampleStruct(ModelSampleStruct* sampleStruct);
 
         /**
          * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples

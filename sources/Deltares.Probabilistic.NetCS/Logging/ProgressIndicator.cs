@@ -19,8 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using System;
-using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Logging
 {
@@ -28,13 +26,11 @@ namespace Deltares.Probabilistic.Logging
     public delegate void DetailedProgressDelegate(int step, int loop, double reliability, double convergence);
     public delegate void TextualProgressDelegate(ProgressType progressType, string text);
 
-    public class ProgressIndicator // : IDisposable
+    public class ProgressIndicator
     {
         private ProgressDelegate progressDelegate = null;
         private DetailedProgressDelegate detailedProgressDelegate = null;
         private TextualProgressDelegate textualProgressDelegate = null;
-
-        //private int id = 0;
 
         public ProgressIndicator(ProgressDelegate progressDelegate, DetailedProgressDelegate detailedProgressDelegate, TextualProgressDelegate textualProgressDelegate)
         {
@@ -42,16 +38,6 @@ namespace Deltares.Probabilistic.Logging
             this.detailedProgressDelegate = detailedProgressDelegate;
             this.textualProgressDelegate = textualProgressDelegate;
         }
-
-        //public void Dispose()
-        //{
-        //    Interface.Destroy(id);
-        //}
-
-        //internal int GetId()
-        //{
-        //    return id;
-        //}
 
         public void DoProgress(double progress)
         {

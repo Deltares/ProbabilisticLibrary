@@ -102,6 +102,11 @@ namespace Deltares::Uncertainty
          */
         bool DeriveSamplesFromVariationCoefficient = false;
 
+        int getRequiredSamples()
+        {
+            return CrudeMonteCarloSettingsS::getRequiredSamples(ProbabilityForConvergence, VariationCoefficient);
+        }
+
         /**
          * \brief Maximum number of guessed design points in one FORM loop
          */

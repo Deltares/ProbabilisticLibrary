@@ -562,6 +562,7 @@
     <ClInclude Include="Statistics\DiagonalBandCopula.h" />
     <ClInclude Include="Statistics\GumbelCopula.h" />
     <ClInclude Include="Model\ModelSampleStruct.h" />
+    <ClInclude Include="Model\ModelSample.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
