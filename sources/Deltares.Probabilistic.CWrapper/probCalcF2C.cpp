@@ -148,11 +148,7 @@ void probcalcf2c(const basicSettings* method, fdistribs distributions[], corrStr
         for (size_t i = 0; i < number_of_stochasts; i++)
         {
             auto distHR = static_cast<EnumDistributions>(distributions[i].distId);
-            std::vector<double> pValues(4);
-            for (int j = 0; j < 4; j++)
-            {
-                pValues[j] = distributions[i].params[j];
-            }
+            auto pValues = createDistribution::convertArrayToVector(distributions[i].params);
             auto s = std::make_shared<Stochast>(createDistribution::createValid(distHR, pValues));
             stochasts.push_back(s);
         }
@@ -203,8 +199,7 @@ void probcalcf2c(const basicSettings* method, fdistribs distributions[], corrStr
         {
             if (message->Type == Deltares::Logging::MessageType::Error)
             {
-                result->error.errorCode = 1;
-                fillErrorMessage(result->error, message->Text);
+                result->error = fillErrorStruct(message->Text);
             }
             else
             {
@@ -225,8 +220,6 @@ void probcalcf2c(const basicSettings* method, fdistribs distributions[], corrStr
     }
     catch (const std::exception& e)
     {
-        std::string s = e.what();
-        result->error.errorCode = -1;
-        fillErrorMessage(result->error, s);
+        result->error = fillErrorStruct(e.what());
     }
 }

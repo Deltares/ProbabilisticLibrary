@@ -113,3 +113,19 @@ Stochast createDistribution::create(const EnumDistributions distHR, std::vector<
     return stochast;
 }
 
+/// <summary>
+/// Helper routine to convert a c array to a c++ vector
+/// </summary>
+/// <param name="p"> the input c array </param>
+/// <param name="size"> the size of the input array; defaults to 4 as it is used for initializing a distribution </param>
+/// <returns></returns>
+std::vector<double> createDistribution::convertArrayToVector(const double p[], const int size)
+{
+    std::vector<double> pValues(size);
+    for (int i = 0; i < size; i++)
+    {
+        pValues[i] = p[i];
+    }
+    return pValues;
+}
+

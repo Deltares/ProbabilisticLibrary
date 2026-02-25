@@ -42,7 +42,7 @@ double betaFromQ(const double q, tError* error_indication)
     catch (const std::exception& e)
     {
         const std::string s = e.what();
-        fillErrorMessage(*error_indication, s);
+        *error_indication = fillErrorStruct(s);
     }
     return beta;
 }

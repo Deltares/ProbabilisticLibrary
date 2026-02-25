@@ -30,7 +30,10 @@ extern "C" struct tError
     int errorCode;
 };
 
-void fillErrorMessage(tError & error, const std::string s);
+/// <summary> fills the error struct with an error message and an error code </summary>
+/// <param name="error_message"> the error message </param>
+/// <returns> the filled error struct </returns>
+tError fillErrorStruct(const std::string& error_message);
 
 void copyStringToCharPointer(const std::string& str, char* p, const size_t size);
 

@@ -30,6 +30,7 @@ class createDistribution
 public:
     static Deltares::Statistics::Stochast createValid(const Deltares::Reliability::EnumDistributions distHR,
         std::vector<double>& parameters);
+    static std::vector<double> convertArrayToVector(const double p[], const int size = 4);
 private:
     static Deltares::Statistics::Stochast create(const Deltares::Reliability::EnumDistributions d, std::vector<double>& p);
 };
