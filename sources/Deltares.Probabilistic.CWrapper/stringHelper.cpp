@@ -21,7 +21,7 @@
 //
 #include "stringHelper.h"
 
-tError fillErrorStruct(const std::string& error_message)
+tError fillErrorStruct(const std::string& error_message, const int error_code)
 {
     tError error;
     size_t length = std::min(error_message.length(), error_message_length);
@@ -31,7 +31,7 @@ tError fillErrorStruct(const std::string& error_message)
     }
     size_t last = std::min(error_message.length(), error_message_length-1);
     error.errorMessage[last] = '\0';
-    error.errorCode = -1;
+    error.errorCode = error_code;
     return error;
 }
 

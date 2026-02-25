@@ -199,7 +199,7 @@ void probcalcf2c(const basicSettings* method, fdistribs distributions[], corrStr
         {
             if (message->Type == Deltares::Logging::MessageType::Error)
             {
-                result->error = fillErrorStruct(message->Text);
+                result->error = fillErrorStruct(message->Text, 1);
             }
             else
             {
