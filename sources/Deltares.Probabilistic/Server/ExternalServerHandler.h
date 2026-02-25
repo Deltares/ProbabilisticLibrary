@@ -21,8 +21,6 @@
 //
 #pragma once
 
-#include <iostream>
-
 #include "BaseHandler.h"
 #include "ProjectServer.h"
 #include "../Utils/probLibException.h"
@@ -61,8 +59,8 @@ namespace Deltares::Server
                 }
                 catch (const std::exception& e)
                 {
-                    std::cout << "Error while closing: " << e.what() << '\n';
-                    std::cout << "exit message = " << message << '\n';
+                    printf("Error while closing: %s\n", e.what());
+                    printf("exit message = %s\n" , message.c_str());
                 }
             }
 #endif
