@@ -21,6 +21,8 @@
 //
 #pragma once
 
+#include <iostream>
+
 #include "BaseHandler.h"
 #include "ProjectServer.h"
 #include "../Utils/probLibException.h"
@@ -49,10 +51,19 @@ namespace Deltares::Server
 #if __has_include(<windows.h>)
             freeaddrinfo(address);
 
-            if (this->server_started)
+            if (server_started)
             {
-                this->Send("exit", false);
-                this->server_started = false;
+                std::string message;
+                try
+                {
+                    message = Send("exit", false);
+                    server_started = false;
+                }
+                catch (const std::exception& e)
+                {
+                    std::cout << "Error while closing: " << e.what() << '\n';
+                    std::cout << "exit message = " << message << '\n';
+                }
             }
 #endif
         }
@@ -93,16 +104,16 @@ namespace Deltares::Server
 #if __has_include(<windows.h>)
         WSADATA wsaData;
 
-        std::string Send(std::string message, bool waitForAnswer);
-        SOCKET ConnectSocket();
+        std::string Send(const std::string& message, bool waitForAnswer) const;
+        SOCKET ConnectSocket() const;
         void StartServer();
-        bool CheckConnection();
-        void SetParentProcess();
+        bool CheckConnection() const;
+        void SetParentProcess() const;
 
         static std::string StringJoin(const std::vector<std::string>& strings, const std::string& delim);
         static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
-        void StartProcess(std::string processName, bool waitForExit);
+        static void StartProcess(std::string processName, bool waitForExit);
         void UpdateAddressInfo();
 
         addrinfo* address = nullptr;
