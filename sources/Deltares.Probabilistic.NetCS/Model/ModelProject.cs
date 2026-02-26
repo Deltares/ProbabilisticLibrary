@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
@@ -31,7 +30,7 @@ namespace Deltares.Probabilistic.Model
 {
     public delegate void ZSampleDelegate(ModelSample sample);
 
-    public class ModelProject : IDisposable
+    public class ModelProject
     {
         private int id = 0;
 
@@ -58,7 +57,7 @@ namespace Deltares.Probabilistic.Model
             }
         }
 
-        public void Dispose()
+        ~ModelProject()
         {
             Interface.Destroy(id);
         }

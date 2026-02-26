@@ -27,7 +27,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Sensitivity;
 
-public class SensitivityResult : IDisposable
+public class SensitivityResult
 {
     private int id = 0;
 
@@ -47,7 +47,7 @@ public class SensitivityResult : IDisposable
         this.tagRepository = tagRepository;
     }
 
-    public void Dispose()
+    ~SensitivityResult()
     {
         Interface.Destroy(id);
     }

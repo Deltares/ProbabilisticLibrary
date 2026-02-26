@@ -20,12 +20,11 @@
 // All rights reserved.
 //
 using System;
-using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Model;
 
-public class RunSettings : IDisposable
+public class RunSettings
 {
     private int id = 0;
 
@@ -39,7 +38,7 @@ public class RunSettings : IDisposable
         this.id = id;
     }
 
-    public void Dispose()
+    ~RunSettings()
     {
         Interface.Destroy(id);
     }

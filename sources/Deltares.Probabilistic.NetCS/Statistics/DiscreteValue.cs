@@ -24,7 +24,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
 
-public class DiscreteValue : IDisposable
+public class DiscreteValue
 {
     private int id = 0;
 
@@ -44,7 +44,7 @@ public class DiscreteValue : IDisposable
         this.id = id;
     }
 
-    public void Dispose()
+    ~DiscreteValue()
     {
         Interface.Destroy(id);
     }

@@ -22,12 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
 
-public class CorrelationMatrix : IDisposable
+public class CorrelationMatrix
 {
     private int id = 0;
     private List<Stochast> stochasts = null;
@@ -42,7 +41,7 @@ public class CorrelationMatrix : IDisposable
         this.id = id;
     }
 
-    public void Dispose()
+    ~CorrelationMatrix()
     {
         Interface.Destroy(id);
     }

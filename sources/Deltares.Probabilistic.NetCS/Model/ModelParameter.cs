@@ -24,7 +24,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Model;
 
-public class ModelParameter : IDisposable
+public class ModelParameter
 {
     private int id = 0;
 
@@ -38,7 +38,7 @@ public class ModelParameter : IDisposable
         this.id = id;
     }
 
-    public void Dispose()
+    ~ModelParameter()
     {
         Interface.Destroy(id);
     }

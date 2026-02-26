@@ -26,7 +26,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class CombineProject : IDisposable
+public class CombineProject
 {
     private readonly int id = 0;
     private CombineSettings settings = null;
@@ -43,7 +43,7 @@ public class CombineProject : IDisposable
         this.id = id;
     }
 
-    public void Dispose()
+    ~CombineProject()
     {
         Interface.Destroy(id);
     }

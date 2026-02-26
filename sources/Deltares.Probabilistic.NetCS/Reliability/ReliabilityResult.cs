@@ -37,7 +37,7 @@ public class ReliabilityResult
         this.id = id;
     }
 
-    public void Dispose()
+    ~ReliabilityResult()
     {
         Interface.Destroy(id);
     }

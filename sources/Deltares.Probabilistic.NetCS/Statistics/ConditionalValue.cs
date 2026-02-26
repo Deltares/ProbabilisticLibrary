@@ -37,7 +37,7 @@ namespace Deltares.Probabilistic.Statistics
             this.id = id;
         }
 
-        public void Dispose()
+        ~ConditionalValue()
         {
             Interface.Destroy(id);
         }

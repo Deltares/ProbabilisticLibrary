@@ -25,7 +25,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class StochastSettings : IDisposable
+public class StochastSettings
 {
     private int id = 0;
     private Stochast stochast = null;
@@ -40,7 +40,7 @@ public class StochastSettings : IDisposable
         this.id = id;
     }
 
-    public void Dispose()
+    ~StochastSettings()
     {
         Interface.Destroy(id);
     }

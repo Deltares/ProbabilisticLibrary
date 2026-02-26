@@ -24,7 +24,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Logging
 {
-    public class Message : IDisposable
+    public class Message
     {
         private int id = 0;
 
@@ -38,7 +38,7 @@ namespace Deltares.Probabilistic.Logging
             this.id = id;
         }
 
-        public void Dispose()
+        ~Message()
         {
             Interface.Destroy(id);
         }

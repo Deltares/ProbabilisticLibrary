@@ -39,7 +39,7 @@ public class StochastPointAlpha
         this.id = id;
     }
 
-    public void Dispose()
+    ~StochastPointAlpha()
     {
         Interface.Destroy(id);
     }

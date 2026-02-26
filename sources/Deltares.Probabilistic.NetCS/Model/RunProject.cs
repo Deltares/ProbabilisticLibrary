@@ -19,13 +19,9 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using System.Linq;
-using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
-using System;
 using Deltares.Probabilistic.Logging;
-using Deltares.Probabilistic.Uncertainty;
 
 namespace Deltares.Probabilistic.Reliability
 {

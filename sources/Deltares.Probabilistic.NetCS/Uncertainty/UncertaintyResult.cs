@@ -28,7 +28,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Uncertainty;
 
-public class UncertaintyResult : IDisposable
+public class UncertaintyResult
 {
     private int id = 0;
 
@@ -49,7 +49,7 @@ public class UncertaintyResult : IDisposable
         this.tagRepository = tagRepository;
     }
 
-    public void Dispose()
+    ~UncertaintyResult()
     {
         Interface.Destroy(id);
     }

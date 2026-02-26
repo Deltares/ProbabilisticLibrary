@@ -28,7 +28,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Uncertainty;
 
-public class UncertaintySettings : IDisposable
+public class UncertaintySettings
 {
     private int id = 0;
     private List<StochastSettings> stochastSettings = null;
@@ -43,7 +43,7 @@ public class UncertaintySettings : IDisposable
         this.id = id;
     }
 
-    public void Dispose()
+    ~UncertaintySettings()
     {
         Interface.Destroy(id);
     }

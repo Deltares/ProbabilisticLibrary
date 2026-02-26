@@ -20,13 +20,12 @@
 // All rights reserved.
 //
 using System;
-using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Sensitivity;
 
-public class SensitivityValue : IDisposable
+public class SensitivityValue
 {
     private int id = 0;
     private Stochast stochast = null;
@@ -41,7 +40,7 @@ public class SensitivityValue : IDisposable
         this.id = id;
     }
 
-    public void Dispose()
+    ~SensitivityValue()
     {
         Interface.Destroy(id);
     }

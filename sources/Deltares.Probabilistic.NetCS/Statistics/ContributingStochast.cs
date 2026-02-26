@@ -24,7 +24,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
 
-public class ContributingStochast : IDisposable
+public class ContributingStochast
 {
     private int id = 0;
     private Stochast variable = null;
@@ -38,7 +38,7 @@ public class ContributingStochast : IDisposable
     {
         this.id = id;
     }
-    public void Dispose()
+    ~ContributingStochast()
     {
         Interface.Destroy(id);
     }

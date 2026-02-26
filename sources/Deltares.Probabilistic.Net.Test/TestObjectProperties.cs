@@ -42,6 +42,7 @@ public class TestObjectProperties
     [TestCase(typeof(HistogramValue))]
     [TestCase(typeof(DiscreteValue))]
     [TestCase(typeof(FragilityValue))]
+    [TestCase(typeof(ContributingStochast))]
     [TestCase(typeof(ProbabilityValue))]
     [TestCase(typeof(ConditionalValue))]
     [TestCase(typeof(RunProject))]

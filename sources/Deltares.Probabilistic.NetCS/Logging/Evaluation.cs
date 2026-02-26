@@ -25,7 +25,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Logging
 {
-    public class Evaluation : IDisposable
+    public class Evaluation
     {
         private int id = 0;
         private double[] inputValues = null;
@@ -44,7 +44,7 @@ namespace Deltares.Probabilistic.Logging
             this.tagRepository = tagRepository;
         }
 
-        public void Dispose()
+        ~Evaluation()
         {
             Interface.Destroy(id);
         }

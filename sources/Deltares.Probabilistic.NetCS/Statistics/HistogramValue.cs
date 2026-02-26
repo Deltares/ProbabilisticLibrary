@@ -24,7 +24,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
 
-public class HistogramValue : IDisposable
+public class HistogramValue
 {
     private int id = 0;
 
@@ -45,7 +45,7 @@ public class HistogramValue : IDisposable
         Amount = amount;
     }
 
-    public void Dispose()
+    ~HistogramValue()
     {
         Interface.Destroy(id);
     }
