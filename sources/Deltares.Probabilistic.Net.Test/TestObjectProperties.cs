@@ -31,7 +31,7 @@ public class TestObjectProperties
     [TestCase(typeof(ReliabilityProject))]
     [TestCase(typeof(ReliabilitySettings))]
     [TestCase(typeof(StochastSettings))]
-    [TestCase(typeof(DesignPoint), "ProbabilityFailure")]
+    [TestCase(typeof(DesignPoint))]
     [TestCase(typeof(ReliabilityResult))]
     [TestCase(typeof(CombineProject))]
     [TestCase(typeof(CombineSettings))]
