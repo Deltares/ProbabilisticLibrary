@@ -242,6 +242,31 @@ namespace Deltares.Probabilistic.Test
             return sensitivityProject;
         }
 
+        public static RunProject GetRunProject(ReliabilityProject project)
+        {
+            var runProject = new RunProject();
+
+            foreach (Stochast stochast in project.Stochasts)
+            {
+                runProject.Stochasts.Add(stochast);
+            }
+
+            foreach (ModelParameter inputParameter in project.InputParameters)
+            {
+                runProject.InputParameters.Add(inputParameter);
+            }
+
+            foreach (ModelParameter outputParameter in project.OutputParameters)
+            {
+                runProject.OutputParameters.Add(outputParameter);
+            }
+
+            runProject.CorrelationMatrix = project.CorrelationMatrix;
+            runProject.ZFunction = project.ZFunction;
+
+            return runProject;
+        }
+
         public static ReliabilityProject GetInverseLinearProject()
         {
             var project = new ReliabilityProject();

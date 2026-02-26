@@ -125,40 +125,16 @@ public class UncertaintySettings
         set { Interface.SetIntValue(id, "maximum_directions", value); }
     }
 
-    public double EpsilonBeta
-    {
-        get { return Interface.GetValue(id, "epsilon_beta"); }
-        set { Interface.SetValue(id, "epsilon_beta", value); }
-    }
-
     public double StepSize
     {
         get { return Interface.GetValue(id, "step_size"); }
         set { Interface.SetValue(id, "step_size", value); }
     }
 
-    public double GradientType
-    {
-        get { return Interface.GetValue(id, "gradient_type"); }
-        set { Interface.SetValue(id, "gradient_type", value); }
-    }
-
-    public double RelaxationFactor
-    {
-        get { return Interface.GetValue(id, "relaxation_factor"); }
-        set { Interface.SetValue(id, "relaxation_factor", value); }
-    }
-
     public double VariationCoefficient
     {
         get { return Interface.GetValue(id, "variation_coefficient"); }
         set { Interface.SetValue(id, "variation_coefficient", value); }
-    }
-
-    public double FractionFailed
-    {
-        get { return Interface.GetValue(id, "fraction_failed"); }
-        set { Interface.SetValue(id, "fraction_failed", value); }
     }
 
     public bool DeriveSamplesFromVariationCoefficient

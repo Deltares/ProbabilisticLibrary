@@ -150,6 +150,7 @@ namespace Deltares
 
             // create a sample with values in x-space
             std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
+            xSample->OutputValues.resize(this->zModel->outputParameters.size());
 
             return xSample;
         }

@@ -37,7 +37,7 @@ namespace Deltares.Probabilistic.Test;
 public class TestObjectProperties
 {
     [Test]
-    [TestCase(typeof(Stochast), "Deviation", "Variation")]
+    [TestCase(typeof(Stochast), "Mean", "Deviation", "Variation", "DesignValue")]
     [TestCase(typeof(CorrelationMatrix), "Item")]
     [TestCase(typeof(HistogramValue))]
     [TestCase(typeof(DiscreteValue))]
@@ -111,6 +111,7 @@ public class TestObjectProperties
         const double margin = 1E-10;
 
         double current = (double)property.GetValue(obj);
+        if (double.IsNaN(current)) current = 0;
         double modified = current + 0.5;
         property.SetValue(obj, modified);
         double modifiedRetrieved = (double)property.GetValue(obj);

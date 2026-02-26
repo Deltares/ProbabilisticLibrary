@@ -716,8 +716,24 @@ namespace Deltares::Server
             else if (property_ == "quantile") evaluation->Quantile = value;
             else if (property_ == "beta") evaluation->Beta = value;
             else if (property_ == "weight") evaluation->Weight = value;
-            }
+        }
+        else if (objectType == ObjectType::ReliabilityResult)
+        {
+            std::shared_ptr<Reliability::ReliabilityResult> result = reliabilityResults[id];
 
+            if (property_ == "reliability_index") result->Reliability = value;
+            else if (property_ == "convergence") result->ConvBeta = value;
+        }
+        else if (objectType == ObjectType::SensitivityValue)
+        {
+            std::shared_ptr<Sensitivity::SensitivityValue> sensitivity_value = sensitivityValues[id];
+
+            if (property_ == "low") sensitivity_value->low = value;
+            else if (property_ == "medium") sensitivity_value->medium = value;
+            else if (property_ == "high") sensitivity_value->high = value;
+            else if (property_ == "first_order_index") sensitivity_value->firstOrderIndex = value;
+            else if (property_ == "total_index") sensitivity_value->totalIndex = value;
+        }
     }
 
     int ProjectHandler::GetIntValue(int id, std::string property_)
@@ -1698,7 +1714,7 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "identifier") designPoint->Identifier = value;
-            }
+        }
         else if (IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);

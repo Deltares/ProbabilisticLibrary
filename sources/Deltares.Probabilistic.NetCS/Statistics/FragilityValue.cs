@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 using System;
+using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Statistics;
@@ -27,6 +28,7 @@ namespace Deltares.Probabilistic.Statistics;
 public class FragilityValue
 {
     private int id = 0;
+    private DesignPoint designPoint = null;
 
     public FragilityValue()
     {
@@ -78,10 +80,22 @@ public class FragilityValue
         set { Interface.SetValue(id, "return_period", value); }
     }
 
-    public double DesignPoint
+    public DesignPoint DesignPoint
     {
-        get { return Interface.GetValue(id, "design_point"); }
-        set { Interface.SetValue(id, "design_point", value); }
-    }
+        get
+        {
+            if (designPoint == null)
+            {
+                int designPointId = Interface.GetIdValue(id, "design_point");
+                designPoint = ObjectFactory.GetObject<DesignPoint>(designPointId);
+            }
 
+            return designPoint;
+        }
+        set
+        {
+            Interface.SetIntValue(id, "design_point", value.GetId());
+            designPoint = value;
+        }
+    }
 }
