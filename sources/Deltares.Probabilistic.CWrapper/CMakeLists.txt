@@ -1,4 +1,5 @@
 file(GLOB cwrapper_files
+    "*.h"
     "*.cpp"
 )
 
