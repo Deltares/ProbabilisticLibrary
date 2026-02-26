@@ -50,7 +50,7 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<ModelSample>> sa
     auto errorMessagePerThread = std::vector<std::string>(omp_get_num_threads());
 
 #pragma omp parallel for
-    for (int i = 0; i < (int)samples.size(); i++)
+    for (int i = 0; i < static_cast<int>(samples.size()); i++)
     {
         computationSettings compSetting{ designPointOptions::dpOutFALSE, compId, omp_get_thread_num(), 1 };
         tError e = tError();
@@ -68,7 +68,7 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<ModelSample>> sa
 
     for (const auto& s : errorMessagePerThread)
     {
-        if (s.length() > 0)
+        if (! s.empty())
         {
             error_messages.push_back(s);
         }
