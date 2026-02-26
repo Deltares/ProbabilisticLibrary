@@ -31,7 +31,7 @@ public class RunSettings : IDisposable
 
     public RunSettings()
     {
-        this.id = Interface.Create("run_settings");
+        this.id = Interface.Create("run_project_settings");
     }
 
     internal RunSettings(int id)

@@ -56,7 +56,7 @@ public class UncertaintySettings : IDisposable
     public UncertaintyMethod UncertaintyMethod
     {
         get { return UncertaintyMethodConverter.ConvertFromString(Interface.GetStringValue(id, "uncertainty_method")); }
-        set { Interface.SetStringValue(id, "reliability_method", UncertaintyMethodConverter.ConvertToString(value)); }
+        set { Interface.SetStringValue(id, "uncertainty_method", UncertaintyMethodConverter.ConvertToString(value)); }
     }
 
     public int MaxParallelProcesses
@@ -89,30 +89,6 @@ public class UncertaintySettings : IDisposable
         set { Interface.SetBoolValue(id, "reuse_calculations", value); }
     }
 
-    public DesignPointMethod DesignPointMethod
-    {
-        get { return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method")); }
-        set { Interface.SetStringValue(id, "design_point_method", DesignPointMethodConverter.ConvertToString(value)); }
-    }
-
-    public StartPointMethod StartMethod
-    {
-        get { return StartPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "start_method")); }
-        set { Interface.SetStringValue(id, "start_method", StartPointMethodConverter.ConvertToString(value)); }
-    }
-
-    public bool AllQuadrants
-    {
-        get { return Interface.GetBoolValue(id, "all_quadrants"); }
-        set { Interface.SetBoolValue(id, "all_quadrants", value); }
-    }
-
-    public int MaxStepsSphereSearch
-    {
-        get { return Interface.GetIntValue(id, "max_steps_sphere_search"); }
-        set { Interface.SetIntValue(id, "max_steps_sphere_search", value); }
-    }
-
     public bool IsRepeatableRandom
     {
         get { return Interface.GetBoolValue(id, "is_repeatable_random"); }
@@ -125,12 +101,6 @@ public class UncertaintySettings : IDisposable
         set { Interface.SetIntValue(id, "random_seed", value); }
     }
 
-    public SampleMethod SampleMethod
-    {
-        get { return SampleMethodConverter.ConvertFromString(Interface.GetStringValue(id, "sample_method")); }
-        set { Interface.SetStringValue(id, "sample_method", SampleMethodConverter.ConvertToString(value)); }
-    }
-
     public int MinimumSamples
     {
         get { return Interface.GetIntValue(id, "minimum_samples"); }
@@ -141,18 +111,6 @@ public class UncertaintySettings : IDisposable
     {
         get { return Interface.GetIntValue(id, "maximum_samples"); }
         set { Interface.SetIntValue(id, "maximum_samples", value); }
-    }
-
-    public int MinimumIterations
-    {
-        get { return Interface.GetIntValue(id, "minimum_iterations"); }
-        set { Interface.SetIntValue(id, "minimum_iterations", value); }
-    }
-
-    public int MaximumIterations
-    {
-        get { return Interface.GetIntValue(id, "maximum_iterations"); }
-        set { Interface.SetIntValue(id, "maximum_iterations", value); }
     }
 
     public int MinimumDirections
@@ -189,24 +147,6 @@ public class UncertaintySettings : IDisposable
     {
         get { return Interface.GetValue(id, "relaxation_factor"); }
         set { Interface.SetValue(id, "relaxation_factor", value); }
-    }
-
-    public int RelaxationLoops
-    {
-        get { return Interface.GetIntValue(id, "relaxation_loops"); }
-        set { Interface.SetIntValue(id, "relaxation_loops", value); }
-    }
-
-    public int MinimumVarianceLoops
-    {
-        get { return Interface.GetIntValue(id, "minimum_variance_loops"); }
-        set { Interface.SetIntValue(id, "minimum_variance_loops", value); }
-    }
-
-    public int MaximumVarianceLoops
-    {
-        get { return Interface.GetIntValue(id, "maximum_variance_loops"); }
-        set { Interface.SetIntValue(id, "maximum_variance_loops", value); }
     }
 
     public double VariationCoefficient

@@ -36,8 +36,8 @@ internal static class DesignPointMethodConverter
     {
         return method switch
         {
-            DesignPointMethod.CentreOfGravity => "centre_of_gravity",
-            DesignPointMethod.CentreOfAngles => "centre_of_angles",
+            DesignPointMethod.CentreOfGravity => "center_of_gravity",
+            DesignPointMethod.CentreOfAngles => "center_of_angles",
             DesignPointMethod.NearestToMean => "nearest_to_mean",
             _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
         };
@@ -47,8 +47,8 @@ internal static class DesignPointMethodConverter
     {
         return value switch
         {
-            "centre_of_gravity" => DesignPointMethod.CentreOfGravity,
-            "centre_of_angles" => DesignPointMethod.CentreOfAngles,
+            "center_of_gravity" => DesignPointMethod.CentreOfGravity,
+            "center_of_angles" => DesignPointMethod.CentreOfAngles,
             "nearest_to_mean" => DesignPointMethod.NearestToMean,
             _ => throw new ArgumentException($"Unknown design point method: '{value}'", nameof(value))
         };

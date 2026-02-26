@@ -34,7 +34,7 @@ internal static class CombineMethodConverter
             CombineMethod.ImportanceSampling => "importance_sampling",
             CombineMethod.DirectionaSampling => "directional_sampling",
             CombineMethod.Hohenbichler => "hohenbichler",
-            CombineMethod.HohenbichlerFORM => "Hohenbichler_form",
+            CombineMethod.HohenbichlerFORM => "hohenbichler_form",
             _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
         };
     }

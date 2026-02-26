@@ -77,6 +77,7 @@ namespace Deltares.Probabilistic.Test
 
             ClassicAssert.AreEqual(double.NaN, StandardNormal.GetQFromU(Double.NaN));
         }
-
     }
 }
+
+    

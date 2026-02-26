@@ -156,8 +156,6 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
         std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyResult>> uncertaintyResults;
-        std::unordered_map<int, std::shared_ptr<Models::ModelSample>> modelSamples;
-        std::unordered_map<int, std::shared_ptr<Models::ProgressIndicator>> progressIndicators;
 
         std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
         std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
@@ -178,8 +176,6 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Models::Evaluation>, int> evaluationIds;
         std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
         std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
-        std::unordered_map<std::shared_ptr <Models::ModelSample>, int> modelSampleIds;
-
 
         std::unordered_map <std::string, std::vector<double>> tempValues;
         double argValue = nan("");

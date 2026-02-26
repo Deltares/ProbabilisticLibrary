@@ -39,6 +39,7 @@ namespace Deltares::Server
                 object_type == "message" ||
                 object_type == "project" ||
                 object_type == "validation_report" ||
+                object_type == "reliability_result" ||
                 object_type == "model_parameter" ||
                 object_type == "limit_state_function" ||
                 object_type == "stochast" ||
@@ -685,6 +686,11 @@ namespace Deltares::Server
 
             if (property_ == "beta") designPoint->Beta = value;
             else if (property_ == "reliability_index") designPoint->Beta = value;
+            else if (property_ == "convergence")
+            {
+                if (designPoint->convergenceReport == nullptr) designPoint->convergenceReport = std::make_shared<ConvergenceReport>();
+                designPoint->convergenceReport->Convergence = value;
+            }
         }
         else if (objectType == ObjectType::Alpha)
         {
@@ -693,6 +699,8 @@ namespace Deltares::Server
             if (property_ == "alpha") alpha->Alpha = value;
             else if (property_ == "u") alpha->U = value;
             else if (property_ == "x") alpha->X = value;
+            else if (property_ == "alpha_correlated") alpha->AlphaCorrelated = value;
+            else if (property_ == "influence_factor") alpha->InfluenceFactor = value;
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
@@ -700,6 +708,16 @@ namespace Deltares::Server
 
             if (property_ == "length") length_effect->length = value;
         }
+        else if (objectType == ObjectType::Evaluation)
+        {
+            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
+
+            if (property_ == "z") evaluation->Z = value;
+            else if (property_ == "quantile") evaluation->Quantile = value;
+            else if (property_ == "beta") evaluation->Beta = value;
+            else if (property_ == "weight") evaluation->Weight = value;
+            }
+
     }
 
     int ProjectHandler::GetIntValue(int id, std::string property_)
@@ -842,7 +860,7 @@ namespace Deltares::Server
             else if (property_ == "minimum_directions") return settings->MinimumDirections;
             else if (property_ == "maximum_directions") return settings->MaximumDirections;
             else if (property_ == "random_seed") return settings->RandomSettings->Seed;
-            else if (property_ == "required_samples") 
+            else if (property_ == "required_samples")
                 return Uncertainty::CrudeMonteCarloSettingsS::getRequiredSamples(settings->ProbabilityForConvergence, settings->VariationCoefficient);
             else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
         }
@@ -1052,7 +1070,7 @@ namespace Deltares::Server
             else if (property_ == "correlation_matrix") project->correlation = correlations[value];
             else if (property_ == "copula_correlation") project->correlation = correlations[value];
             else if (property_ == "share_project") project->shareStochasts(GetProject(value));
-            else if (property_ == "progress_indicator") project->progressIndicator = progressIndicators[value];
+            else if (property_ == "total_model_runs") project->modelRuns = value;
         }
         else if (objectType == ObjectType::FragilityCurveProject)
         {
@@ -1060,6 +1078,19 @@ namespace Deltares::Server
 
             if (property_ == "integrand") project->integrand = stochasts[value];
             else if (property_ == "fragility_curve") project->fragilityCurve = fragilityCurves[value];
+        }
+        else if (objectType == ObjectType::Evaluation)
+        {
+            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
+
+            if (property_ == "iteration") evaluation->Iteration = value;
+            else if (property_ == "tag") evaluation->Tag = value;
+        }
+        else if (objectType == ObjectType::ReliabilityResult)
+        {
+            std::shared_ptr<Reliability::ReliabilityResult> result = reliabilityResults[id];
+
+            if (property_ == "index") result->Index = value;
         }
         else if (objectType == ObjectType::ModelParameter)
         {
@@ -1179,12 +1210,16 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "ids") designPoint->Ids = GetDesignPointIds(value);
+            else if (property_ == "total_iterations") designPoint->convergenceReport->TotalIterations = value;
+            else if (property_ == "total_directions") designPoint->convergenceReport->TotalDirections = value;
+            else if (property_ == "total_model_runs") designPoint->convergenceReport->TotalModelRuns = value;
         }
         else if (objectType == ObjectType::Alpha)
         {
             std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
 
             if (property_ == "variable") alpha->Stochast = stochasts[value];
+            else if (property_ == "index") alpha->Index = value;
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
@@ -1302,10 +1337,7 @@ namespace Deltares::Server
         {
             std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
-            if (property_ == "is_converged" && designPoint->convergenceReport != nullptr)
-            {
-                return designPoint->convergenceReport->IsConverged;
-            }
+            if (property_ == "is_converged") return designPoint->convergenceReport != nullptr && designPoint->convergenceReport->IsConverged;
         }
         else if (objectType == ObjectType::UncertaintySettings)
         {
@@ -1409,6 +1441,12 @@ namespace Deltares::Server
             else if (property_ == "filter_at_non_convergence") setting->FilterAtNonConvergence = value;
             else if (property_ == "clustering") setting->Clustering = value;
             else if (property_ == "optimize_number_clusters") setting->OptimizeNumberOfClusters = value;
+        }
+        else if (objectType == ObjectType::DesignPoint)
+        {
+            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+            if (property_ == "is_converged") designPoint->convergenceReport->IsConverged = value;
         }
     }
 
@@ -1649,12 +1687,18 @@ namespace Deltares::Server
 
             if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getExcludingCombinerMethod(value);
         }
+        else if (objectType == ObjectType::SensitivityResult)
+        {
+            std::shared_ptr<Sensitivity::SensitivityResult> sensitivityResult = sensitivityResults[id];
+
+            if (property_ == "identifier") sensitivityResult->identifier = value;
+        }
         else if (objectType == ObjectType::DesignPoint)
         {
             std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "identifier") designPoint->Identifier = value;
-        }
+            }
         else if (IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
