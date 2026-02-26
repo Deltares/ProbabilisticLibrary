@@ -72,7 +72,7 @@ public class UncertaintyResult : IDisposable
             if (stochast == null)
             {
                 int stochastId = Interface.GetIdValue(id, "variable");
-                stochast = new Stochast(stochastId);
+                stochast = ObjectFactory.GetObject<Stochast>(stochastId);
             }
 
             return stochast;

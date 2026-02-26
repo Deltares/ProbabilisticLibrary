@@ -63,7 +63,7 @@ public class ContributingStochast : IDisposable
                 int variableId = Interface.GetIdValue(id, "variable");
                 if (variableId > 0)
                 {
-                    variable = new Stochast(variableId);
+                    variable = ObjectFactory.GetObject<Stochast>(variableId);
                 }
             }
 

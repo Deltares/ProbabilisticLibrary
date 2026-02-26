@@ -59,7 +59,7 @@ public class StochastSettings : IDisposable
                 int stochastId = Interface.GetIdValue(id, "variable");
                 if (stochastId > 0)
                 {
-                    stochast = new Stochast(stochastId);
+                    stochast = ObjectFactory.GetObject<Stochast>(stochastId);
                 }
             }
 

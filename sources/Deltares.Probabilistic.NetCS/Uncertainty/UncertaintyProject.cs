@@ -156,7 +156,7 @@ namespace Deltares.Probabilistic.Uncertainty
                 if (outputCorrelationMatrix == null)
                 {
                     int matrixId = Interface.GetIdValue(id, "output_correlation_matrix");
-                    outputCorrelationMatrix = new CorrelationMatrix(matrixId, this);
+                    outputCorrelationMatrix = new CorrelationMatrix(matrixId);
                 }
 
                 return outputCorrelationMatrix;
@@ -165,24 +165,6 @@ namespace Deltares.Probabilistic.Uncertainty
             {
                 Interface.SetIntValue(id, "output_correlation_matrix", value.GetId());
                 outputCorrelationMatrix = value;
-            }
-        }
-
-        public override Stochast GetStochast(int stochastId)
-        {
-            Stochast stochast = base.GetStochast(stochastId);
-
-            if (stochast != null)
-            {
-                return stochast;
-            }
-            else if (results != null)
-            {
-                return this.StochastResults.FirstOrDefault(p => p.GetId() == stochastId);
-            }
-            else
-            {
-                return null;
             }
         }
 

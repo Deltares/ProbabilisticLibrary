@@ -33,20 +33,24 @@ public class DesignPoint : StochastPoint
     private List<Evaluation> realizations = null;
     private List<ReliabilityResult> reliabilityResults = null;
     private List<Message> messages = null;
-    private readonly TagRepository tagRepository = null;
-    private IDesignPointProvider designPointProvider = null;
+    private TagRepository tagRepository = null;
 
-    public DesignPoint() : base(-1, null)
+    public DesignPoint() : base(-1)
     {
         id = Interface.Create("design_point");
         base.SetId(id);
+        ObjectFactory.Register(this, id);
     }
 
-    internal DesignPoint(int id, TagRepository tagRepository, IStochastProvider stochastProvider, IDesignPointProvider designPointProvider) : base(id, stochastProvider)
+    public DesignPoint(int id) : base(id)
     {
         this.id = id;
+        ObjectFactory.Register(this, id);
+    }
+
+    internal void SetTagRepository(TagRepository tagRepository)
+    {
         this.tagRepository = tagRepository;
-        this.designPointProvider = designPointProvider;
     }
 
     public string Identifier
@@ -117,9 +121,8 @@ public class DesignPoint : StochastPoint
                 int[] designPointIds = Interface.GetArrayIdValue(id, "contributing_design_points");
                 foreach (int designPointId in designPointIds)
                 {
-                    DesignPoint contributingDesignPoint = designPointProvider?.GetDesignPoint(designPointId) ??
-                                                          new DesignPoint(designPointId, tagRepository,
-                                                              GetStochastProvider(), designPointProvider);
+                    DesignPoint contributingDesignPoint = ObjectFactory.GetObject<DesignPoint>(designPointId);
+                    contributingDesignPoint.SetTagRepository(this.tagRepository);
                     contributingDesignPoints.Add(contributingDesignPoint);
                 }
             }

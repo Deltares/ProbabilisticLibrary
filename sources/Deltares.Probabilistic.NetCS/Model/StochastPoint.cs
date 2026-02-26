@@ -21,35 +21,31 @@
 //
 using System.Collections.Generic;
 using System.Linq;
-using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Model;
 
-public class StochastPoint : IStochastProvider
+public class StochastPoint
 {
     private int id = 0;
     private CallBackList<StochastPointAlpha> alphas = null;
-    private readonly IStochastProvider stochastProvider = null;
 
     public StochastPoint()
     {
         this.id = Interface.Create("stochast_point");
     }
 
-    internal StochastPoint(int id, IStochastProvider stochastProvider)
+    internal StochastPoint(int id)
     {
         if (id > 0)
         {
             this.id = id;
         }
-
-        this.stochastProvider = stochastProvider;
     }
 
-    public void Dispose()
+    ~StochastPoint()
     {
-        Interface.Destroy(id);
+        ObjectFactory.Destroy(id);
     }
 
     internal int GetId()
@@ -79,7 +75,7 @@ public class StochastPoint : IStochastProvider
                 int[] alphaIds = Interface.GetArrayIdValue(id, "alphas");
                 foreach (int alphaId in alphaIds)
                 {
-                    alphas.AddWithoutCallBack(new StochastPointAlpha(alphaId, stochastProvider));
+                    alphas.AddWithoutCallBack(new StochastPointAlpha(alphaId));
                 }
             }
 
@@ -95,23 +91,5 @@ public class StochastPoint : IStochastProvider
     public ModelSample GetModelSample()
     {
         return new ModelSample(this.Alphas.Select(p => p.X).ToArray());
-    }
-
-    internal IStochastProvider GetStochastProvider()
-    {
-        return stochastProvider;
-    }
-
-    public Stochast GetStochast(int stochastId)
-    {
-        if (stochastProvider != null)
-        {
-            return stochastProvider.GetStochast(stochastId);
-        }
-        else
-        {
-            StochastPointAlpha alpha = this.Alphas.FirstOrDefault(p => p.Parameter.GetId() == stochastId);
-            return alpha?.Parameter ?? null;
-        }
     }
 }

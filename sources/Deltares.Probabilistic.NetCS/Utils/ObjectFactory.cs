@@ -19,11 +19,50 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Probabilistic.Statistics;
+using System;
+using System.Collections.Generic;
 
-namespace Deltares.Probabilistic.Model;
+namespace Deltares.Probabilistic.Utils;
 
-internal interface IStochastProvider
+public static class ObjectFactory
 {
-    Stochast GetStochast(int stochastId);
+    private static Dictionary<int, WeakReference> objects = new Dictionary<int, WeakReference>();
+    private static int lastId = 0;
+
+    public static T GetObject<T>(int id)
+    {
+        if (objects.ContainsKey(id))
+        {
+            return (T) objects[id].Target;
+        }
+        else
+        {
+            object newObject = Activator.CreateInstance(typeof(T), id);
+            return (T)newObject;
+        }
+    }
+
+    public static void Register (object obj, int id)
+    {
+        objects[id] = new WeakReference(obj);
+        lastId = id;
+    }
+
+    public static void Destroy(int id)
+    {
+        objects.Remove(id);
+        Interface.Destroy(id);
+    }
+
+    // for testing
+    public static int GetCount()
+    {
+        return objects.Count;
+    }
+
+    // for testing
+    public static int GetLastId()
+    {
+        return lastId;
+    }
 }

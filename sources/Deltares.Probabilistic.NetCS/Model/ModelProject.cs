@@ -31,7 +31,7 @@ namespace Deltares.Probabilistic.Model
 {
     public delegate void ZSampleDelegate(ModelSample sample);
 
-    public class ModelProject : IStochastProvider, IDisposable
+    public class ModelProject : IDisposable
     {
         private int id = 0;
 
@@ -164,7 +164,7 @@ namespace Deltares.Probabilistic.Model
                     int[] stochastIds = Interface.GetArrayIdValue(id, "variables");
                     foreach (int stochastId in stochastIds)
                     {
-                        stochasts.AddWithoutCallBack(new Stochast(stochastId));
+                        stochasts.AddWithoutCallBack(ObjectFactory.GetObject<Stochast>(stochastId));
                     }
                 }
 
@@ -191,7 +191,7 @@ namespace Deltares.Probabilistic.Model
                     }
                     else
                     {
-                        correlationMatrix = new CorrelationMatrix(matrixId, this);
+                        correlationMatrix = new CorrelationMatrix(matrixId);
                     }
                 }
 
@@ -207,11 +207,6 @@ namespace Deltares.Probabilistic.Model
         protected internal TagRepository TagRepository
         {
             get { return tagRepository; }
-        }
-
-        public virtual Stochast GetStochast(int stochastId)
-        {
-            return this.stochasts.FirstOrDefault(p => p.GetId() == stochastId);
         }
     }
 }

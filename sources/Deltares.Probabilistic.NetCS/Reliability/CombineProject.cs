@@ -22,13 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deltares.Probabilistic.Model;
-using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class CombineProject : IStochastProvider, IDesignPointProvider, IDisposable
+public class CombineProject : IDisposable
 {
     private readonly int id = 0;
     private CombineSettings settings = null;
@@ -92,7 +90,7 @@ public class CombineProject : IStochastProvider, IDesignPointProvider, IDisposab
                 int[] designPointIds = Interface.GetArrayIdValue(id, "design_points");
                 foreach (int designPointId in designPointIds)
                 {
-                    designPoints.AddWithoutCallBack(new DesignPoint(designPointId, null, this, null));
+                    designPoints.AddWithoutCallBack(ObjectFactory.GetObject<DesignPoint>(designPointId));
                 }
             }
 
@@ -118,7 +116,7 @@ public class CombineProject : IStochastProvider, IDesignPointProvider, IDisposab
             if (designPoint == null)
             {
                 int designPointId = Interface.GetIdValue(id, "design_point");
-                designPoint = new DesignPoint(designPointId, null, this, this);
+                designPoint = ObjectFactory.GetObject<DesignPoint>(designPointId);
             }
 
             return designPoint;
@@ -128,24 +126,5 @@ public class CombineProject : IStochastProvider, IDesignPointProvider, IDisposab
             Interface.SetIntValue(id, "design_point", value.GetId());
             designPoint = value;
         }
-    }
-
-    public Stochast GetStochast(int stochastId)
-    {
-        foreach (DesignPoint designPoint in designPoints)
-        {
-            Stochast stochast = designPoint.GetStochast(stochastId);
-            if (stochast != null)
-            {
-                return stochast;
-            }
-        }
-
-        return null;
-    }
-
-    public DesignPoint GetDesignPoint(int designPointId)
-    {
-        return designPoints.FirstOrDefault(p => p.GetId() == designPointId);
     }
 }

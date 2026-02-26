@@ -30,17 +30,15 @@ public class SensitivityValue : IDisposable
 {
     private int id = 0;
     private Stochast stochast = null;
-    private IStochastProvider stochastProvider = null;
 
     public SensitivityValue()
     {
         this.id = Interface.Create("sensitivity_value");
     }
 
-    internal SensitivityValue(int id, IStochastProvider stochastProvider)
+    internal SensitivityValue(int id)
     {
         this.id = id;
-        this.stochastProvider = stochastProvider;
     }
 
     public void Dispose()
@@ -60,8 +58,7 @@ public class SensitivityValue : IDisposable
             if (stochast == null)
             {
                 int stochastId = Interface.GetIdValue(id, "variable");
-                stochast = stochastProvider?.GetStochast(stochastId) ?? new Stochast(stochastId);
-                stochastProvider = null; // not needed any more
+                stochast = ObjectFactory.GetObject<Stochast>(stochastId);
             }
 
             return stochast;

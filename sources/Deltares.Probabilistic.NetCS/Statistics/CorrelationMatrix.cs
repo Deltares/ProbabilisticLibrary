@@ -31,17 +31,15 @@ public class CorrelationMatrix : IDisposable
 {
     private int id = 0;
     private List<Stochast> stochasts = null;
-    private IStochastProvider stochastProvider = null;
 
     public CorrelationMatrix()
     {
         this.id = Interface.Create("correlation_matrix");
     }
 
-    internal CorrelationMatrix(int id, IStochastProvider stochastProvider)
+    internal CorrelationMatrix(int id)
     {
         this.id = id;
-        this.stochastProvider = stochastProvider;
     }
 
     public void Dispose()
@@ -71,7 +69,7 @@ public class CorrelationMatrix : IDisposable
                 int[] stochastIds = Interface.GetArrayIdValue(id, "variables");
                 foreach (int stochastId in stochastIds)
                 {
-                    Stochast stochast = stochastProvider?.GetStochast(stochastId) ?? new Stochast(stochastId);
+                    Stochast stochast = ObjectFactory.GetObject<Stochast>(stochastId);
                     stochasts.Add(stochast);
                 }
             }

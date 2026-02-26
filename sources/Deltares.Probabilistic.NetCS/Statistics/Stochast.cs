@@ -40,16 +40,23 @@ namespace Deltares.Probabilistic.Statistics
         public Stochast()
         {
             this.id = Interface.Create("stochast");
+            ObjectFactory.Register(this, id);
         }
 
-        internal Stochast(int id)
+        public Stochast(int id)
         {
             this.id = id;
+            ObjectFactory.Register(this, id);
+        }
+
+        ~Stochast()
+        {
+            Dispose();
         }
 
         public void Dispose()
         {
-            Interface.Destroy(id);
+            ObjectFactory.Destroy(id);
         }
 
         internal int GetId()
@@ -350,7 +357,7 @@ namespace Deltares.Probabilistic.Statistics
                     int sourceId = Interface.GetIdValue(id, "conditional_source");
                     if (sourceId > 0)
                     {
-                        conditionalSource = new Stochast(sourceId);
+                        conditionalSource = ObjectFactory.GetObject<Stochast>(sourceId);
                     }
                 }
 

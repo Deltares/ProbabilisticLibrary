@@ -276,7 +276,7 @@ namespace Deltares.Probabilistic.Utils
         {
             try
             {
-                keepModelSampleCallback = modelSampleCallBack; 
+                keepModelSampleCallback = modelSampleCallBack;
                 NativeInterface.SetModelSampleCallback(id, property, modelSampleCallBack);
             }
             catch (Exception ex)

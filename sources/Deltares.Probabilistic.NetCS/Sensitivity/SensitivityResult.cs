@@ -35,18 +35,16 @@ public class SensitivityResult : IDisposable
     private List<Evaluation> realizations = null;
     private List<Message> messages = null;
     private TagRepository tagRepository = null;
-    private IStochastProvider stochastProvider = null;
 
     public SensitivityResult()
     {
         this.id = Interface.Create("sensitivity_result");
     }
 
-    internal SensitivityResult(int id, TagRepository tagRepository, IStochastProvider stochastProvider)
+    internal SensitivityResult(int id, TagRepository tagRepository)
     {
         this.id = id;
         this.tagRepository = tagRepository;
-        this.stochastProvider = stochastProvider;
     }
 
     public void Dispose()
@@ -76,7 +74,7 @@ public class SensitivityResult : IDisposable
                 int[] valueIds = Interface.GetArrayIdValue(id, "values");
                 foreach (int valueId in valueIds)
                 {
-                    values.Add(new SensitivityValue(valueId, stochastProvider));
+                    values.Add(new SensitivityValue(valueId));
                 }
             }
 
