@@ -38,7 +38,7 @@ namespace Deltares::Reliability
     {
     public:
         DesignPointCombiner() = default;
-        DesignPointCombiner(CombinerType combinerType)
+        explicit DesignPointCombiner(CombinerType combinerType)
         {
             this->combinerType = combinerType;
         }
