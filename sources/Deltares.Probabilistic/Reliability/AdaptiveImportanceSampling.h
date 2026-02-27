@@ -29,7 +29,7 @@ namespace Deltares::Reliability
     /**
      * \brief Different types of modifying the start point of importance sampling
      */
-    enum LoopMeasureType { IncreaseVariance, CopyDesignPoint };
+    enum class LoopMeasureType { IncreaseVariance, CopyDesignPoint };
 
     /**
      * \brief Performs adaptive importance sampling

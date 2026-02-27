@@ -280,21 +280,23 @@ namespace Deltares::Reliability
 
     bool AdaptiveImportanceSampling::updateStartPoint(std::shared_ptr<DesignPoint> designPoint, std::shared_ptr<Models::ModelRunner> modelRunner, int loopCounter)
     {
-        LoopMeasureType loopMeasureType = LoopMeasureType::CopyDesignPoint;
+        using enum LoopMeasureType;
+
+        LoopMeasureType loopMeasureType = CopyDesignPoint;
 
         if (loopCounter < Settings->MaxVarianceLoops &&
             Settings->LoopVarianceIncrement > 0 &&
             designPoint->convergenceReport->FailedSamples < Settings->MinimumFailedSamples)
         {
-            loopMeasureType = LoopMeasureType::IncreaseVariance;
+            loopMeasureType = IncreaseVariance;
         }
 
         switch (loopMeasureType)
         {
-        case LoopMeasureType::IncreaseVariance:
+        case IncreaseVariance:
             this->addFactor(importanceSampling->Settings->StochastSet, Settings->LoopVarianceIncrement);
             return true;
-        case LoopMeasureType::CopyDesignPoint:
+        case CopyDesignPoint:
         {
             std::shared_ptr<Sample> newStartPoint = this->getStartPoint(modelRunner, designPoint);
 
