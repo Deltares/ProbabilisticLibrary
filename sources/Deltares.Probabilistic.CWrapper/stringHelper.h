@@ -20,17 +20,21 @@
 // All rights reserved.
 //
 #pragma once
-#include <stddef.h>
 #include <string>
 
-const size_t ERRORMSGLENGTH = 256;
-struct tError
+constexpr size_t error_message_length = 256;
+
+extern "C" struct tError
 {
-    char errorMessage[ERRORMSGLENGTH];
+    char errorMessage[error_message_length];
     int errorCode;
 };
 
-void fillErrorMessage(tError & error, const std::string s);
+/// <summary> fills the error struct with an error message and an error code </summary>
+/// <param name="error_message"> the error message </param>
+/// <param name="error_code"> the error code, defaults to -1 </param>
+/// <returns> the filled error struct </returns>
+tError fillErrorStruct(const std::string& error_message, const int error_code = -1);
 
 void copyStringToCharPointer(const std::string& str, char* p, const size_t size);
 

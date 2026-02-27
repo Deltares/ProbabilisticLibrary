@@ -21,15 +21,18 @@
 //
 #include "stringHelper.h"
 
-void fillErrorMessage(tError & error, const std::string s)
+tError fillErrorStruct(const std::string& error_message, const int error_code)
 {
-    size_t length = std::min(s.length(), ERRORMSGLENGTH);
+    tError error;
+    size_t length = std::min(error_message.length(), error_message_length);
     for (size_t i = 0; i < length; i++)
     {
-        error.errorMessage[i] = s[i];
+        error.errorMessage[i] = error_message[i];
     }
-    size_t last = std::min(s.length(), ERRORMSGLENGTH-1);
-    error.errorMessage[last] = char(0);
+    size_t last = std::min(error_message.length(), error_message_length-1);
+    error.errorMessage[last] = '\0';
+    error.errorCode = error_code;
+    return error;
 }
 
 void copyStringToCharPointer(const std::string& str, char* p, const size_t size)
