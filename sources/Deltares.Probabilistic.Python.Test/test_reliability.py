@@ -464,7 +464,7 @@ def h(a,b,c):
     def test_form_linear_varying_array(self):
         project = project_builder.get_linear_array_project()
 
-        self.assertFalse(, project.variables['L'].is_array)
+        self.assertFalse(project.variables['L'].is_array)
         self.assertTrue(project.variables['a'].is_array)
         self.assertTrue(project.variables['b'].is_array)
 
