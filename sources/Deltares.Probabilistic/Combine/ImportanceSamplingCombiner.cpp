@@ -39,6 +39,7 @@ namespace Deltares::Reliability
 {
     using namespace Deltares::Statistics;
     using namespace Deltares::Reliability;
+    using enum Models::ProgressType;
 
     std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::combineDesignPoints(combineAndOr combineMethodType,
         std::vector<std::shared_ptr<DesignPoint>>& designPoints,
@@ -149,8 +150,8 @@ namespace Deltares::Reliability
             if (progress != nullptr)
             {
                 progress->doProgress(0);
-                progress->doTextualProgress(Models::ProgressType::Detailed,
-                    std::format("Combining design points {0:}/{1:}, Reliability index = {2:.2F}",
+                progress->doTextualProgress(Detailed,
+                    std::format("Combining design points {:}/{:}, Reliability index = {:.2F}",
                         0, designPoints.size(), reliabilityIndex));
             }
 
@@ -182,13 +183,13 @@ namespace Deltares::Reliability
 
                 const double maxProbability = probability + maxRemainingProbability;
                 const double maxReliability = StandardNormal::getUFromQ(maxProbability);
-                double diffReliability = std::fabs(reliabilityIndex - maxReliability);
+                const double diffReliability = std::fabs(reliabilityIndex - maxReliability);
 
                 if (progress != nullptr)
                 {
                     progress->doProgress(Numeric::NumericSupport::Divide(i, designPoints.size()));
-                    progress->doTextualProgress(Models::ProgressType::Detailed,
-                        std::format("{0:}/{1:}, Reliability index = {2:.2F}, Δ Reliability index = {3:.3F}",
+                    progress->doTextualProgress(Detailed,
+                        std::format("{:}/{:}, Reliability index = {:.2F}, Δ Reliability index = {:.3F}",
                             i, designPoints.size(), reliabilityIndex, diffReliability));
                 }
 
@@ -200,7 +201,7 @@ namespace Deltares::Reliability
 
             // create final design point
             std::shared_ptr<DesignPoint> combinedRealization = std::make_shared<DesignPoint>();
-            combinedRealization->Beta = Statistics::StandardNormal::getUFromQ(probability);
+            combinedRealization->Beta = StandardNormal::getUFromQ(probability);
 
             // create alpha values for final design point
             const std::shared_ptr<Models::Sample> designPointSample = builder.getSample();

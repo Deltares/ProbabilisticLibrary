@@ -70,7 +70,7 @@ namespace Deltares::Reliability
             const std::shared_ptr<DesignPoint>& designPoint);
         std::vector<std::shared_ptr<Models::Sample>> getClusterCenters(const std::vector<std::shared_ptr<Models::Sample>>& samples) const;
 
-        void setCallbacks(ImportanceSampling& importanceSampling, int loopCounter);
+        void setCallbacks(int loopCounter);
 
         /**
          * \brief Reports information about the variance lop and clusters
