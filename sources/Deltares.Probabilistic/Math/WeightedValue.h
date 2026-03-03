@@ -25,11 +25,7 @@ namespace Deltares::Numeric
     class WeightedValue
     {
     public:
-        WeightedValue(double value, double weight)
-        {
-            this->value = value;
-            this->weight = weight;
-        }
+        explicit WeightedValue(const double value, const double weight) : value(value), weight(weight)  { }
 
         double value;
         double weight;

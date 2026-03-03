@@ -49,12 +49,14 @@ namespace Deltares::Uncertainty
         // warnings and errors are presented.
         if (nStochasts > 11)
         {
-            modelRunner->reportMessage(Logging::MessageType::Error, "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
-            return UncertaintyResult();
+            modelRunner->reportMessage(Logging::MessageType::Error,
+                "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
+            return {};
         }
         else if (nStochasts > 4)
         {
-            modelRunner->reportMessage(Logging::MessageType::Warning, "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
+            modelRunner->reportMessage(Logging::MessageType::Warning,
+                "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
         }
 
         std::vector<double> zSamples;
@@ -63,12 +65,12 @@ namespace Deltares::Uncertainty
         constexpr double density = 1.0; // joint probability density
         constexpr int nSamples = 1; // number of samples
         constexpr int stochastIndex = 0; // number of the stochastic parameter
-        std::shared_ptr<Sample> rootSample = std::make_shared<Sample>(nStochasts); //local vector with values in u-space
-        bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
+        auto root_sample = Sample(nStochasts); //local vector with values in u-space
+        bool registerSamplesForCorrelation = correlationMatrixBuilder->isEmpty() && Settings->CalculateCorrelations && Settings->CalculateInputCorrelations;
 
-        std::vector<std::shared_ptr<Numeric::WeightedValue>> samples = collectSamples(modelRunner, stochastIndex, rootSample, density, nSamples, registerSamplesForCorrelation);
+        std::vector<std::shared_ptr<Numeric::WeightedValue>> samples = collectSamples(*modelRunner, stochastIndex, root_sample, density, nSamples, registerSamplesForCorrelation);
 
-        std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(samples);
+        std::shared_ptr<Statistics::Stochast> stochast = getStochastFromSamples(samples);
 
         if (this->Settings->CalculateCorrelations)
         {
@@ -77,14 +79,14 @@ namespace Deltares::Uncertainty
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        for (const auto& quantile : Settings->RequestedQuantiles)
         {
             double p = quantile->getProbabilityOfNonFailure();
-            int quantileIndex = this->getQuantileIndex(samples, p);
+            int quantileIndex = getQuantileIndex(samples, p);
 
             if (quantileIndex >= 0)
             {
-                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
+                auto evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
                 evaluation->Quantile = quantile->getProbabilityOfNonFailure();
                 result.quantileEvaluations.push_back(evaluation);
             }
@@ -97,9 +99,9 @@ namespace Deltares::Uncertainty
         return result;
     }
 
-    std::vector<std::shared_ptr<Numeric::WeightedValue>> NumericalIntegrationS::collectSamples(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, double density, int nSamples, bool registerSamplesForCorrelation)
+    std::vector<std::shared_ptr<Numeric::WeightedValue>> NumericalIntegrationS::collectSamples(ModelRunner& modelRunner, int stochastIndex, Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation)
     {
-        const double uDelta = 0.01;
+        constexpr double uDelta = 0.01;
         const int nStochasts = Settings->StochastSet->getVaryingStochastCount();
 
         // Initialize parameters for stochastic parameter u.
@@ -122,7 +124,7 @@ namespace Deltares::Uncertainty
         uValues.push_back(Statistics::StandardNormal::UMax);
 
         // Initialize first probabilities
-        std::shared_ptr<Statistics::ProbabilityIterator> pq = std::make_shared<Statistics::ProbabilityIterator>(uValues[0]);
+        auto pq = Statistics::ProbabilityIterator(uValues[0]);
 
         if (stochastIndex < nStochasts - 1)
         {
@@ -130,19 +132,20 @@ namespace Deltares::Uncertainty
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
-                parentSample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
+                parentSample.Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                double contribution = pq->getDifference(uValues[j + 1]);
+                const double contribution = pq.getDifference(uValues[j + 1]);
 
-                std::vector<std::shared_ptr<Numeric::WeightedValue>> newValues = collectSamples(modelRunner, stochastIndex + 1, parentSample, density * contribution, nSamples * (uValues.size() - 1), registerSamplesForCorrelation);
-                for (std::shared_ptr<Numeric::WeightedValue> v : newValues)
+                const auto new_values = collectSamples(modelRunner, stochastIndex + 1, parentSample, density * contribution,
+                    nSamples * (static_cast<int>(uValues.size()) - 1), registerSamplesForCorrelation);
+                for (const std::shared_ptr<Numeric::WeightedValue>& v : new_values)
                 {
                     values.push_back(v);
                 }
 
                 if (stochastIndex == 0)
                 {
-                    modelRunner->reportProgress(static_cast<int>(j), static_cast<int> (uValues.size()));
+                    modelRunner.reportProgress(static_cast<int>(j), static_cast<int> (uValues.size()));
                 }
             }
 
@@ -156,29 +159,27 @@ namespace Deltares::Uncertainty
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
-                std::shared_ptr<Sample> sample = parentSample->clone();
+                std::shared_ptr<Sample> sample = parentSample.clone();
                 sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                double contribution = pq->getDifference(uValues[j + 1]);
-                sample->Weight = density * contribution * nSamples * (uValues.size() - 1);
+                double contribution = pq.getDifference(uValues[j + 1]);
+                sample->Weight = density * contribution * nSamples * (static_cast<int>(uValues.size()) - 1);
 
                 samples.push_back(sample);
             }
 
             // compute the z-value(s)
-            const std::vector<double> zValues = modelRunner->getZValues(samples);
+            const std::vector<double> zValues = modelRunner.getZValues(samples);
 
-            for (size_t j = 0; j < samples.size(); j++)
+            for (const auto& sample : samples)
             {
-                const std::shared_ptr<Sample> sample = samples[j];
-
                 if (!std::isnan(sample->Z))
                 {
                     values.push_back(std::make_shared<Numeric::WeightedValue>(sample->Z, sample->Weight));
 
                     if (registerSamplesForCorrelation)
                     {
-                        modelRunner->registerSample(this->correlationMatrixBuilder, sample);
+                        modelRunner.registerSample(this->correlationMatrixBuilder, sample);
                     }
                 }
 
