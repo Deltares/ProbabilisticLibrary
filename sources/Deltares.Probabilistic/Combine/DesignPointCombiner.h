@@ -28,7 +28,7 @@
 
 namespace Deltares::Reliability
 {
-    enum class CombinerType { Hohenbichler, ImportanceSampling, DirectionalSampling, HohenbichlerForm };
+    enum class CombinerType { Hohenbichler, ImportanceSamplingCombine, DirectionalSamplingCombine, HohenbichlerForm };
     enum class ExcludingCombinerType { WeightedSum, HohenbichlerExcluding };
 
     /**
@@ -46,7 +46,7 @@ namespace Deltares::Reliability
         /**
          * \brief Specifies the combiner algorithm
          */
-        CombinerType combinerType = CombinerType::ImportanceSampling;
+        CombinerType combinerType = CombinerType::ImportanceSamplingCombine;
 
         /**
          * \brief Specifies the excluding combiner algorithm
@@ -92,9 +92,9 @@ namespace Deltares::Reliability
         std::shared_ptr<Combiner> getCombiner() const;
         std::unique_ptr<ExcludingCombiner> getExcludingCombiner() const;
 
-        static void applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                              std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix,
-                              DesignPoint* combinedDesignPoint);
+        static void applyCorrelation(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                              const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix,
+                              DesignPoint& combinedDesignPoint);
     };
 }
 

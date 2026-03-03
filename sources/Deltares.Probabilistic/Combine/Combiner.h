@@ -23,7 +23,6 @@
 #include <vector>
 #include <memory>
 #include "../Reliability/DesignPoint.h"
-#include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
 #include "../Model/ProgressIndicator.h"
 #include "../Reliability/ReliabilityProject.h"

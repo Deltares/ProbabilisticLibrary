@@ -109,12 +109,12 @@ namespace Deltares::Reliability
             //
             pb = setLargestBeta(beta1Delta, beta2Delta, pf1, pf2);
             //
-            //           Computation of P( Z_2 < - alpha1(k) * epsilon | Z_1 < -alpha2(k) * epsilon * rhoP(k) )
+            // Computation of probability :  Z_2 < - alpha1(k) * epsilon  or Z_1 < -alpha2(k) * epsilon * rhoP(k)
             //
             pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
             if (pf2pf1.second != 0) failureHohenbichler++;
             //
-            //           Computation of combined failure probability (AND/OR)
+            // Computation of combined failure probability (AND/OR)
             //
             double pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
             //
@@ -133,7 +133,7 @@ namespace Deltares::Reliability
                 //
                 pb = setLargestBeta(beta1Delta, beta2Delta, pf1, pf2);
                 //
-                // Computation of P( Z_2 < 0 | Z_1 < -alpha2(k) * epsilon * sqrt( 1 - rhoP(k))^2) )
+                // Computation of probability  Z_2 < 0 or Z_1 < -alpha2(k) * epsilon * sqrt( 1 - rhoP(k))^2)
                 pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
                 failureHohenbichler += pf2pf1.second;
                 //
@@ -165,15 +165,14 @@ namespace Deltares::Reliability
             }
         }
         //
-        //   Determine alpha
-        //   alphaC(k)= (+ or -) sqrt(alpha1(k)^2 + alpha2(k)^2)
+        //   Determine alpha element wise with Pythagoras and sign correction based on largest term:
         for (size_t k = 0; k < nStochasts; k++)
         {
             element3.setAlpha(k, hypot(alphaX1(k), alphaX2(k)));
             if (element3.getAlphaI(k) > 0.0)
             {
                 // Get the sign of the dominant part
-                double alphaSign = fabs(alphaX1(k)) > fabs(alphaX2(k)) ? alphaX1(k) : alphaX2(k);
+                const double alphaSign = fabs(alphaX1(k)) > fabs(alphaX2(k)) ? alphaX1(k) : alphaX2(k);
 
                 element3.setAlpha(k, sign(element3.getAlphaI(k), alphaSign));
             }

@@ -97,7 +97,7 @@ namespace Deltares::Reliability
             //
 
             // alphaO : Uncorrelated part of the equivalent alpha value
-            double alphaO = sqrt(1.0 - alphaC * alphaC);
+            const double alphaO = sqrt(1.0 - alphaC * alphaC);
 
             //
             // Step 5/6: Determine the combined equivalent alpha
@@ -108,7 +108,7 @@ namespace Deltares::Reliability
                     + alphaO / sqrt(1.0 - rhoT) * element.getAlphaI(i) * sqrt(1.0 - inRhoT(i));
             }
             //
-            // Step 6/6: Normalize the alpha TODO: make normalize optional and do it at the end of upscaleToLargestBlock
+            // Step 6/6: Normalize the alpha
             //
             element.setAlpha(alphaT);
             element.normalize();

@@ -47,13 +47,13 @@ namespace Deltares::Models
 
     void ModelRunner::updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings)
     {
-        this->uConverter->updateStochastSettings(settings);
-        this->sampleProvider = std::make_shared<SampleProvider>(*settings);
+        uConverter->updateStochastSettings(settings);
+        sampleProvider = std::make_shared<SampleProvider>(*settings);
     }
 
-    void ModelRunner::setSampleProvider(const std::shared_ptr<SampleProvider>& sampleProvider)
+    void ModelRunner::setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider)
     {
-        this->sampleProvider = sampleProvider;
+        sampleProvider = sample_provider;
     }
 
 
@@ -517,9 +517,9 @@ namespace Deltares::Models
             designPoint->ReliabilityResults.push_back(reliabilityResult);
         }
 
-        for (const auto& evaluation : this->evaluations)
+        for (const auto& value : evaluations)
         {
-            designPoint->Evaluations.push_back(evaluation);
+            designPoint->Evaluations.push_back(value);
         }
 
         for (const auto& message : this->messages)
