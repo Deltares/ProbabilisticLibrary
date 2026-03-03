@@ -24,7 +24,7 @@
 #include "CombineType.h"
 #include "DesignPointModel.h"
 #include "../Reliability/DesignPoint.h"
-#include "../Statistics/CorrelationMatrix.h"
+#include "../Statistics/BaseCorrelation.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
 
 namespace Deltares::Reliability
@@ -72,7 +72,7 @@ namespace Deltares::Reliability
          * \param selfCorrelationMatrix Administration of self-correlations of the stochasts
          * \return Correlation matrix
          */
-        std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix(std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
+        std::shared_ptr<Statistics::BaseCorrelation> getCorrelationMatrix(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix);
 
         /**
          * \brief Gets the u-value with the maximum absolute value in the design points for a certain stochast
@@ -95,7 +95,7 @@ namespace Deltares::Reliability
         bool canCalculateBetaDirection();
 
         /**
-         * \brief Gets the length of of sample in the direction of a given sample where the calculation result is zero
+         * \brief Gets the length of a sample in the direction of a given sample where the calculation result is zero
          * \param sample Sample indicating direction
          * \return Length
          */

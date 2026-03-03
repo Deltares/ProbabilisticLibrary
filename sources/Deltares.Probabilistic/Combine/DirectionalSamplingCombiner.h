@@ -25,7 +25,6 @@
 
 #include "CombinedDesignPointModel.h"
 #include "Combiner.h"
-#include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Reliability/DirectionalSamplingSettings.h"
 #include "../Model/ProgressIndicator.h"

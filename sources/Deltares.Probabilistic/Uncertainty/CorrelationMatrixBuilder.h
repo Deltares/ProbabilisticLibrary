@@ -51,7 +51,7 @@ namespace Deltares::Uncertainty
 
         /**
          * \brief Registers the sample input values
-         * \param sample sample values
+         * \param stochast sample values
          */
         void registerStochastValue(std::shared_ptr<Statistics::Stochast> stochast, double u);
 
@@ -65,7 +65,7 @@ namespace Deltares::Uncertainty
          * \brief Indicates whether input values have been added
          * \return Indication
          */
-        bool isEmpty()
+        bool isEmpty() const
         {
             return stochasts.empty();
         }
