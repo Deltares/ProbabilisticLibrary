@@ -80,15 +80,15 @@ namespace Deltares::Uncertainty
         }
     }
 
-    std::shared_ptr<Statistics::Stochast> UncertaintyMethod::getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+    std::shared_ptr<Statistics::Stochast> UncertaintyMethod::getStochastFromSamples(const std::vector<Numeric::WeightedValue>& weightedValues)
     {
         std::vector<double> values;
         std::vector<double> weights;
 
-        for (const std::shared_ptr<Numeric::WeightedValue>& weightedValue : weightedValues)
+        for (const auto& weightedValue : weightedValues)
         {
-            values.push_back(weightedValue->value);
-            weights.push_back(weightedValue->weight);
+            values.push_back(weightedValue.value);
+            weights.push_back(weightedValue.weight);
         }
 
         return getStochastFromSamples(values, weights);
@@ -126,15 +126,15 @@ namespace Deltares::Uncertainty
         return stochast;
     }
 
-    int UncertaintyMethod::getQuantileIndex(const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile)
+    int UncertaintyMethod::getQuantileIndex(const std::vector<Numeric::WeightedValue>& weightedValues, double quantile)
     {
         std::vector<double> values;
         std::vector<double> weights;
 
-        for (const std::shared_ptr<Numeric::WeightedValue>& weightedValue : weightedValues)
+        for (const auto & weightedValue : weightedValues)
         {
-            values.push_back(weightedValue->value);
-            weights.push_back(weightedValue->weight);
+            values.push_back(weightedValue.value);
+            weights.push_back(weightedValue.weight);
         }
 
         return getQuantileIndex(values, weights, quantile);

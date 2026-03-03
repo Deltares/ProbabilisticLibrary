@@ -43,7 +43,7 @@ namespace Deltares::Uncertainty
          */
         UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
     private:
-        std::vector<std::shared_ptr<Numeric::WeightedValue>> collectSamples(Models::ModelRunner& modelRunner, int stochastIndex, Models::Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
+        std::vector<Numeric::WeightedValue> collectSamples(Models::ModelRunner& modelRunner, int stochastIndex, Models::Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
         std::vector<std::shared_ptr<Models::Sample>> calculatedSamples;
     };
 }

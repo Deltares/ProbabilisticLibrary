@@ -68,7 +68,7 @@ namespace Deltares::Uncertainty
         auto root_sample = Sample(nStochasts); //local vector with values in u-space
         bool registerSamplesForCorrelation = correlationMatrixBuilder->isEmpty() && Settings->CalculateCorrelations && Settings->CalculateInputCorrelations;
 
-        std::vector<std::shared_ptr<Numeric::WeightedValue>> samples = collectSamples(*modelRunner, stochastIndex, root_sample, density, nSamples, registerSamplesForCorrelation);
+        std::vector<Numeric::WeightedValue> samples = collectSamples(*modelRunner, stochastIndex, root_sample, density, nSamples, registerSamplesForCorrelation);
 
         std::shared_ptr<Statistics::Stochast> stochast = getStochastFromSamples(samples);
 
@@ -99,7 +99,7 @@ namespace Deltares::Uncertainty
         return result;
     }
 
-    std::vector<std::shared_ptr<Numeric::WeightedValue>> NumericalIntegrationS::collectSamples(ModelRunner& modelRunner, int stochastIndex, Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation)
+    std::vector<Numeric::WeightedValue> NumericalIntegrationS::collectSamples(ModelRunner& modelRunner, int stochastIndex, Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation)
     {
         constexpr double uDelta = 0.01;
         const int nStochasts = Settings->StochastSet->getVaryingStochastCount();
@@ -128,7 +128,7 @@ namespace Deltares::Uncertainty
 
         if (stochastIndex < nStochasts - 1)
         {
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> values;
+            std::vector<Numeric::WeightedValue> values;
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
@@ -138,7 +138,7 @@ namespace Deltares::Uncertainty
 
                 const auto new_values = collectSamples(modelRunner, stochastIndex + 1, parentSample, density * contribution,
                     nSamples * (static_cast<int>(uValues.size()) - 1), registerSamplesForCorrelation);
-                for (const std::shared_ptr<Numeric::WeightedValue>& v : new_values)
+                for (const Numeric::WeightedValue& v : new_values)
                 {
                     values.push_back(v);
                 }
@@ -153,7 +153,7 @@ namespace Deltares::Uncertainty
         }
         else
         {
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> values;
+            std::vector<Numeric::WeightedValue> values;
 
             std::vector<std::shared_ptr<Sample>> samples;
 
@@ -175,7 +175,7 @@ namespace Deltares::Uncertainty
             {
                 if (!std::isnan(sample->Z))
                 {
-                    values.push_back(std::make_shared<Numeric::WeightedValue>(sample->Z, sample->Weight));
+                    values.emplace_back(sample->Z, sample->Weight);
 
                     if (registerSamplesForCorrelation)
                     {
