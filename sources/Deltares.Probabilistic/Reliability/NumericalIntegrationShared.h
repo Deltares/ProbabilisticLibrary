@@ -20,31 +20,24 @@
 // All rights reserved.
 //
 #pragma once
-#include "NumericalIntegrationSettingsS.h"
-#include "UncertaintyMethod.h"
 
-namespace Deltares::Uncertainty
+#include "StochastSettings.h"
+
+namespace Deltares::Reliability
 {
     /**
-     * \brief Calculates the sensitivity using the numerical integration algorithm
+     * \brief Helper class for NumericalIntegration and NumericalIntegrationS.
      */
-    class NumericalIntegrationS : public UncertaintyMethod
+    class NumericalIntegrationShared
     {
     public:
-        /**
-         * \brief Settings for this algorithm
-         */
-        std::shared_ptr<NumericalIntegrationSettingsS> Settings = std::make_shared<NumericalIntegrationSettingsS>();
 
         /**
-         * \brief Gets the sensitivity
-         * \param modelRunner The model for which the sensitivity is calculated
-         * \return The sensitivity in the form of a stochastic variable
+         * \brief Get the list with u-values
+         * \param varying_stochast_settings settings with ranges for a certain stochast
+         * \return The u-values
          */
-        UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-    private:
-        std::vector<Numeric::WeightedValue> collectSamples(Models::ModelRunner& modelRunner, int stochastIndex, Models::Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
-        std::vector<std::shared_ptr<Models::Sample>> calculatedSamples;
+        static std::vector<double> buildUpList(const StochastSettings& varying_stochast_settings);
     };
 }
 

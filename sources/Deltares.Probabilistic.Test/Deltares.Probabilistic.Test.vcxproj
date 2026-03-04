@@ -160,6 +160,8 @@
     <ClInclude Include="Model\TestRunModel_body.cpp" />
     <ClInclude Include="Reliability\TestStartPointCalculator.h" />
     <ClInclude Include="Reliability\TestStartPointCalculator_body.cpp" />
+    <ClInclude Include="Reliability\TestNumIntShared.h" />
+    <ClInclude Include="Reliability\TestNumIntShared_body.cpp" />
     <ClInclude Include="Reliability\Waarts\TestWaarts.h" />
     <ClInclude Include="Reliability\Waarts\TestWaarts_body.cpp" />
     <ClInclude Include="Reliability\Waarts\TestWaartsLinearResistance.h" />
@@ -229,6 +231,7 @@
     <ClCompile Include="projectBuilder.cpp" />
     <ClCompile Include="Model\TestRunModel.cpp" />
     <ClCompile Include="Reliability\TestStartPointCalculator.cpp" />
+    <ClCompile Include="Reliability\TestNumIntShared.cpp" />
     <ClCompile Include="Reliability\Waarts\TestWaarts.cpp" />
     <ClCompile Include="Reliability\Waarts\TestWaartsLinearResistance.cpp" />
     <ClCompile Include="Reliability\Waarts\TestWaartsResistanceOneQuadraticTerm.cpp" />

@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "NumericalIntegrationS.h"
+#include "../Reliability/NumericalIntegrationShared.h"
 #include <vector>
 #include <cmath>
 #include <memory>
@@ -99,7 +100,8 @@ namespace Deltares::Uncertainty
     {
         const int nStochasts = Settings->StochastSet->getVaryingStochastCount();
 
-        const auto uValues = buildUpList(*Settings->StochastSet->VaryingStochastSettings[stochastIndex]);
+        const auto uValues = Reliability::NumericalIntegrationShared::
+            buildUpList(*Settings->StochastSet->VaryingStochastSettings[stochastIndex]);
 
         // Initialize first probabilities
         auto pq = ProbabilityIterator(uValues[0]);
@@ -171,29 +173,5 @@ namespace Deltares::Uncertainty
         }
     }
 
-    std::vector<double> NumericalIntegrationS::buildUpList(const Reliability::StochastSettings& varying_stochast_settings)
-    {
-        constexpr double u_delta = 0.01;
-
-        // Initialize parameters for stochastic parameter u.
-        const int nr_intervals = varying_stochast_settings.Intervals; // number of intervals in u-space as integer
-        const double u_min = varying_stochast_settings.MinValue; // lower bound for u
-        const double u_max = varying_stochast_settings.MaxValue; // upper bound for u
-        const double range_u = u_max - u_min;
-
-        // Build up list of u values to be computed
-        std::vector u_values = { -StandardNormal::UMax };
-
-        for (int i = 0; i <= nr_intervals; i++)
-        {
-            const double u_value = u_min + i * range_u / nr_intervals;
-            if (u_value > -StandardNormal::UMax + u_delta && u_value < StandardNormal::UMax - u_delta)
-            {
-                u_values.push_back(u_value);
-            }
-        }
-        u_values.push_back(StandardNormal::UMax);
-        return u_values;
-    }
 }
 

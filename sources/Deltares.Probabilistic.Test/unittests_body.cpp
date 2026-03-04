@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 #include "Reliability/TestStartPointCalculator.h"
 #include "Reliability/TestReliabilityMethods.h"
+#include "Reliability/TestNumIntShared.h"
 #include "Math/testCholeskiDecomposition.h"
 #include "Math/testNumericSupport.h"
 #include "Math/testKMean.h"
@@ -202,6 +203,21 @@ TEST(UnitTests, testStartPointCalculator)
 {
     auto tstStartPoint = Deltares::Probabilistic::Test::TestStartPointCalculator();
     tstStartPoint.allStartPointTests();
+}
+
+TEST(UnitTests, testNumIntSharedDefaults)
+{
+    Deltares::Probabilistic::Test::TestNumIntShared::testDefaults();
+}
+
+TEST(UnitTests, testNumIntSharedGivenURange1)
+{
+    Deltares::Probabilistic::Test::TestNumIntShared::testGivenURange();
+}
+
+TEST(UnitTests, testNumIntSharedGivenURange2)
+{
+    Deltares::Probabilistic::Test::TestNumIntShared::testGivenURange2();
 }
 
 TEST(UnitTests, testExceptions)
