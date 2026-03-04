@@ -28,16 +28,12 @@
 #include "../Model/Sample.h"
 #include "../Statistics/ProbabilityIterator.h"
 
-namespace Deltares::Statistics
-{
-    class ProbabilityIterator;
-}
-
 using namespace Deltares::Models;
+using namespace Deltares::Statistics;
 
 namespace Deltares::Uncertainty
 {
-    UncertaintyResult NumericalIntegrationS::getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+    UncertaintyResult NumericalIntegrationS::getUncertaintyStochast(std::shared_ptr<ModelRunner> modelRunner)
     {
         this->calculatedSamples.clear();
 
@@ -70,7 +66,7 @@ namespace Deltares::Uncertainty
 
         std::vector<Numeric::WeightedValue> samples = collectSamples(*modelRunner, stochastIndex, root_sample, density, nSamples, registerSamplesForCorrelation);
 
-        std::shared_ptr<Statistics::Stochast> stochast = getStochastFromSamples(samples);
+        std::shared_ptr<Stochast> stochast = getStochastFromSamples(samples);
 
         if (this->Settings->CalculateCorrelations)
         {
@@ -81,12 +77,12 @@ namespace Deltares::Uncertainty
 
         for (const auto& quantile : Settings->RequestedQuantiles)
         {
-            double p = quantile->getProbabilityOfNonFailure();
-            int quantileIndex = getQuantileIndex(samples, p);
+            const double p = quantile->getProbabilityOfNonFailure();
+            const int quantileIndex = getQuantileIndex(samples, p);
 
             if (quantileIndex >= 0)
             {
-                auto evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
+                auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
                 evaluation->Quantile = quantile->getProbabilityOfNonFailure();
                 result.quantileEvaluations.push_back(evaluation);
             }
@@ -101,30 +97,12 @@ namespace Deltares::Uncertainty
 
     std::vector<Numeric::WeightedValue> NumericalIntegrationS::collectSamples(ModelRunner& modelRunner, int stochastIndex, Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation)
     {
-        constexpr double uDelta = 0.01;
         const int nStochasts = Settings->StochastSet->getVaryingStochastCount();
 
-        // Initialize parameters for stochastic parameter u.
-        const int nrIntervals = Settings->StochastSet->VaryingStochastSettings[stochastIndex]->Intervals; // number of intervals in u-space as integer
-        const double uMin = Settings->StochastSet->VaryingStochastSettings[stochastIndex]->MinValue; // lower bound for u
-        const double uMax = Settings->StochastSet->VaryingStochastSettings[stochastIndex]->MaxValue; // upper bound for u
-        const double rangeU = uMax - uMin;
-
-        // Build up list of u values to be computed
-        std::vector<double> uValues = { -Statistics::StandardNormal::UMax };
-
-        for (int i = 0; i <= nrIntervals; i++)
-        {
-            double uValue = uMin + i * rangeU / nrIntervals;
-            if (uValue > -Statistics::StandardNormal::UMax + uDelta && uValue < Statistics::StandardNormal::UMax - uDelta)
-            {
-                uValues.push_back(uValue);
-            }
-        }
-        uValues.push_back(Statistics::StandardNormal::UMax);
+        const auto uValues = buildUpList(*Settings->StochastSet->VaryingStochastSettings[stochastIndex]);
 
         // Initialize first probabilities
-        auto pq = Statistics::ProbabilityIterator(uValues[0]);
+        auto pq = ProbabilityIterator(uValues[0]);
 
         if (stochastIndex < nStochasts - 1)
         {
@@ -192,7 +170,30 @@ namespace Deltares::Uncertainty
             return values;
         }
     }
+
+    std::vector<double> NumericalIntegrationS::buildUpList(const Reliability::StochastSettings& varying_stochast_settings)
+    {
+        constexpr double u_delta = 0.01;
+
+        // Initialize parameters for stochastic parameter u.
+        const int nr_intervals = varying_stochast_settings.Intervals; // number of intervals in u-space as integer
+        const double u_min = varying_stochast_settings.MinValue; // lower bound for u
+        const double u_max = varying_stochast_settings.MaxValue; // upper bound for u
+        const double range_u = u_max - u_min;
+
+        // Build up list of u values to be computed
+        std::vector u_values = { -StandardNormal::UMax };
+
+        for (int i = 0; i <= nr_intervals; i++)
+        {
+            const double u_value = u_min + i * range_u / nr_intervals;
+            if (u_value > -StandardNormal::UMax + u_delta && u_value < StandardNormal::UMax - u_delta)
+            {
+                u_values.push_back(u_value);
+            }
+        }
+        u_values.push_back(StandardNormal::UMax);
+        return u_values;
+    }
 }
-
-
 
