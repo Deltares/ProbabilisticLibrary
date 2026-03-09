@@ -1989,6 +1989,8 @@ namespace Deltares::Server
             if (property_ == "quantile") return stochast->getQuantile(argument);
             else if (property_ == "x_from_u") return stochast->getXFromU(argument);
             else if (property_ == "u_from_x") return stochast->getUFromX(argument);
+            else if (property_ == "x_from_p") return stochast->getXFromP(argument);
+            else if (property_ == "p_from_x") return stochast->getPFromX(argument);
             else if (property_ == "pdf") return stochast->getPDF(argument);
             else if (property_ == "cdf") return stochast->getCDF(argument);
         }

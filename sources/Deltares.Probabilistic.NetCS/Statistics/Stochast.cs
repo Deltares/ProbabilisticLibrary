@@ -19,7 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Deltares.Probabilistic.Utils;
@@ -291,15 +290,19 @@ namespace Deltares.Probabilistic.Statistics
             return Interface.GetArgValue(id, "x_from_u", u);
         }
 
-        public double GetXFromP(double p)
-        {
-            double u = StandardNormal.GetUFromP(p);
-            return GetXFromU(u);
-        }
-
         public double GetUFromX(double x)
         {
             return Interface.GetArgValue(id, "u_from_x", x);
+        }
+
+        public double GetXFromP(double p)
+        {
+            return Interface.GetArgValue(id, "x_from_p", p);
+        }
+
+        public double GetPFromX(double p)
+        {
+            return Interface.GetArgValue(id, "p_from_x", p);
         }
 
         public double GetPDF(double x)

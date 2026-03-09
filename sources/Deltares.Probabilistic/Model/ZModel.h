@@ -110,7 +110,7 @@ namespace Deltares::Models
          */
         std::shared_ptr<ZValueConverter> zValueConverter = std::make_shared<ZValueConverter>();
 
-        void setBetaLambda(ZBetaLambda zBetaLambda)
+        void setBetaLambda(const ZBetaLambda& zBetaLambda)
         {
             this->zBetaLambda = zBetaLambda;
         }

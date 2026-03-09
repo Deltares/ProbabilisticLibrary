@@ -25,576 +25,572 @@
 #include "../Statistics/Stochast.h"
 #include <cmath>
 
-#include "ModelSample.h"
 #include "../Proxies/ProxyModel.h"
 #include <format>
 
-namespace Deltares
+namespace Deltares::Models
 {
-    namespace Models
+    int ModelRunner::getVaryingStochastCount()
     {
-        int ModelRunner::getVaryingStochastCount()
+        return this->uConverter->getVaryingStochastCount();
+    }
+
+    int ModelRunner::getStochastCount()
+    {
+        return this->uConverter->getStochastCount();
+    }
+
+    bool ModelRunner::isVaryingStochast(int index)
+    {
+        return this->uConverter->isVaryingStochast(index);
+    }
+
+    void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
+    {
+        this->uConverter->updateStochastSettings(settings);
+        this->sampleProvider = std::make_shared<SampleProvider>(*settings);
+    }
+
+    void ModelRunner::setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider)
+    {
+        this->sampleProvider = sampleProvider;
+    }
+
+
+    void ModelRunner::initializeForRun()
+    {
+        this->uConverter->initializeForRun();
+        this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
+        this->zModel->resetModelRuns();
+
+        this->zModel->initializeForRun();
+
+        if (!this->Settings->ReuseCalculations)
         {
-            return this->uConverter->getVaryingStochastCount();
+            this->zModel->clearRepository();
         }
 
-        int ModelRunner::getStochastCount()
+        if (this->locker == nullptr)
         {
-            return this->uConverter->getStochastCount();
+            this->locker = new Utils::Locker();
         }
 
-        bool ModelRunner::isVaryingStochast(int index)
+        if (sampleProvider == nullptr)
         {
-            return this->uConverter->isVaryingStochast(index);
+            sampleProvider = std::make_shared<SampleProvider>(this->uConverter->getVaryingStochastCount(), this->uConverter->getStochastCount());
+        }
+    }
+
+    void ModelRunner::clear()
+    {
+        clearLists();
+        this->runDesignPointCounter = 1;
+    }
+
+    void ModelRunner::clearLists()
+    {
+        this->reliabilityResults.clear();
+        this->evaluations.clear();
+        this->messages.clear();
+    }
+
+    void ModelRunner::releaseCallBacks()
+    {
+        if (this->zModel != nullptr)
+        {
+            zModel->releaseCallBacks();
+        }
+    }
+
+    void ModelRunner::useProxy(bool useProxy)
+    {
+        if (useProxy && !usingProxy)
+        {
+            zModel = std::make_shared<Proxies::ProxyModel>(this->zModel);
+            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
+            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
+            usingProxy = true;
+        }
+        else if (!useProxy && usingProxy)
+        {
+            zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->getZModel();
+            usingProxy = false;
+        }
+        else
+        {
+            // nothing to do
+        }
+    }
+
+
+    std::shared_ptr<ModelSample> ModelRunner::getModelSample(const std::shared_ptr<Sample>& sample) const
+    {
+        std::vector<double> xValues = this->uConverter->getXValues(sample);
+
+        // create a sample with values in x-space
+        std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
+
+        xSample->AllowProxy = sample->AllowProxy;
+        xSample->IterationIndex = sample->IterationIndex;
+        xSample->threadId = sample->threadId;
+        xSample->Weight = sample->Weight;
+        xSample->IsRestartRequired = sample->IsRestartRequired;
+        xSample->Beta = sample->getBeta();
+        xSample->OutputValues.resize(this->zModel->outputParameters.size());
+
+        return xSample;
+    }
+
+    std::shared_ptr<ModelSample> ModelRunner::getModelSampleFromType(Statistics::RunValuesType type) const
+    {
+        std::vector<double> xValues = this->uConverter->getValuesFromType(type);
+
+        // create a sample with values in x-space
+        std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
+        xSample->OutputValues.resize(this->zModel->outputParameters.size());
+
+        return xSample;
+    }
+
+    /**
+     * \brief Calculates a sample
+     * \param sample Sample to be calculated
+     * \return Z-value of the sample
+     */
+    double ModelRunner::getZValue(std::shared_ptr<Sample> sample)
+    {
+        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+
+        this->zModel->invoke(xSample);
+
+        registerEvaluation(xSample);
+
+        sample->Z = xSample->Z;
+
+        return sample->Z;
+    }
+
+    /**
+     * \brief Calculates a sample
+     * \param sample Sample to be calculated
+     * \return Evaluation report of the sample calculation
+     */
+    Evaluation ModelRunner::getEvaluation(std::shared_ptr<Sample> sample)
+    {
+        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+
+        this->zModel->invoke(xSample);
+
+        Evaluation evaluation = getEvaluationFromSample(xSample);
+
+        return evaluation;
+    }
+
+    /**
+     * \brief Indicates whether the sample repository is allowed
+     * \param allowRepository Indication
+     */
+    void ModelRunner::setAllowRepository(bool allowRepository) const
+    {
+        this->zModel->setAllowRepository(allowRepository);
+    }
+
+    /**
+     * \brief Calculates a sample
+     * \param type Run values type
+     * \return Evaluation report of the sample calculation
+     */
+    Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type)
+    {
+        std::shared_ptr<ModelSample> xSample = getModelSampleFromType(type);
+
+        this->zModel->invoke(xSample);
+
+        Evaluation evaluation = getEvaluationFromSample(xSample);
+
+        return evaluation;
+    }
+
+    std::shared_ptr<Sample> ModelRunner::getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint) const
+    {
+        return this->uConverter->getSampleFromStochastPoint(stochastPoint);
+    }
+
+    /**
+     * \brief Runs the model in the design point
+     * \param designPoint design point to be calculated
+     * \return Z-value of the sample
+     */
+    void ModelRunner::runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint)
+    {
+        std::shared_ptr<Sample> sample = designPoint->getSample();
+        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+
+        xSample->ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
+        xSample->LoggingCounter = runDesignPointCounter++;
+
+        this->zModel->invoke(xSample);
+
+        registerEvaluation(xSample);
+
+        for (size_t i = 0; i < xSample->Values.size(); i++)
+        {
+            designPoint->Alphas[i]->X = xSample->Values[i];
+        }
+    }
+
+    /**
+     * \brief Calculates a number of samples
+     * \param samples Samples to be calculated
+     * \return Z-values of the samples
+     */
+    std::vector<double> ModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
+    {
+        std::vector<std::shared_ptr<ModelSample>> xSamples;
+
+        for (size_t i = 0; i < samples.size(); i++)
+        {
+            xSamples.push_back(getModelSample(samples[i]));
         }
 
-        void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
+        this->zModel->invoke(xSamples);
+
+        std::vector<double> zValues(xSamples.size());
+
+        for (size_t i = 0; i < xSamples.size(); i++)
         {
-            this->uConverter->updateStochastSettings(settings);
-            this->sampleProvider = std::make_shared<SampleProvider>(*settings);
+            registerEvaluation(xSamples[i]);
+
+            samples[i]->Z = xSamples[i]->Z;
+            samples[i]->AllowProxy = xSamples[i]->AllowProxy;
+            samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
+            zValues[i] = xSamples[i]->Z;
         }
 
-        void ModelRunner::setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider)
+        return zValues;
+    }
+
+    /**
+     * \brief Sets a callback which calculates the beta in a certain direction
+     * \param zBetaLambda Callback
+     */
+    void ModelRunner::setDirectionModel(const ZBetaLambda& zBetaLambda) const
+    {
+        this->zModel->setBetaLambda(zBetaLambda);
+    }
+
+    /**
+     * \brief Indicates whether this model runner can calculate the beta (distance to limit state) in a given direction
+     * \return Indication
+     */
+    bool ModelRunner::canCalculateBeta() const
+    {
+        return this->zModel->canCalculateBeta();
+    }
+
+    /**
+     * \brief Gets the beta (distance to limit state) in a given direction
+     * \param sample Sample indicating the direction
+     * \return Beta
+     */
+    double ModelRunner::getBeta(const std::shared_ptr<Sample>& sample)
+    {
+        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+
+        return this->zModel->getBeta(xSample, sample->getBeta());
+    }
+
+    Evaluation ModelRunner::getEvaluationFromSample(std::shared_ptr<ModelSample> sample)
+    {
+        Evaluation evaluation = Evaluation();
+
+        evaluation.Z = sample->Z;
+        evaluation.Beta = sample->Beta;
+        evaluation.Iteration = sample->IterationIndex;
+        evaluation.usedProxy = sample->UsedProxy;
+        evaluation.InputValues = sample->Values;
+        evaluation.OutputValues = sample->OutputValues;
+        evaluation.Tag = sample->Tag;
+
+        return evaluation;
+    }
+
+    /**
+     * \brief Registers an evaluation for a calculated sample
+     * \param sample Calculated sample
+     */
+    void ModelRunner::registerEvaluation(std::shared_ptr<ModelSample> sample)
+    {
+        if (this->Settings->SaveEvaluations)
         {
-            this->sampleProvider = sampleProvider;
-        }
+            std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
 
-
-        void ModelRunner::initializeForRun()
-        {
-            this->uConverter->initializeForRun();
-            this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
-            this->zModel->resetModelRuns();
-
-            this->zModel->initializeForRun();
-
-            if (!this->Settings->ReuseCalculations)
+            if (this->Settings->MaxParallelProcesses > 1)
             {
-                this->zModel->clearRepository();
-            }
-
-            if (this->locker == nullptr)
-            {
-                this->locker = new Utils::Locker();
-            }
-
-            if (sampleProvider == nullptr)
-            {
-                sampleProvider = std::make_shared<SampleProvider>(this->uConverter->getVaryingStochastCount(), this->uConverter->getStochastCount());
-            }
-        }
-
-        void ModelRunner::clear()
-        {
-            clearLists();
-            this->runDesignPointCounter = 1;
-        }
-
-        void ModelRunner::clearLists()
-        {
-            this->reliabilityResults.clear();
-            this->evaluations.clear();
-            this->messages.clear();
-        }
-
-        void ModelRunner::releaseCallBacks()
-        {
-            if (this->zModel != nullptr)
-            {
-                zModel->releaseCallBacks();
-            }
-        }
-
-        void ModelRunner::useProxy(bool useProxy)
-        {
-            if (useProxy && !usingProxy)
-            {
-                zModel = std::make_shared<Proxies::ProxyModel>(this->zModel);
-                std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
-                std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
-                usingProxy = true;
-            }
-            else if (!useProxy && usingProxy)
-            {
-                zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->getZModel();
-                usingProxy = false;
+                locker->lock();
+                this->evaluations.push_back(evaluation);
+                locker->unlock();
             }
             else
             {
-                // nothing to do
+                this->evaluations.push_back(evaluation);
+            }
+        }
+    }
+
+    /**
+     * \brief Indicates whether the reliability algorithm should be stopped
+     * \param samples Already calculated samples
+     * \return Indication
+     */
+    bool ModelRunner::shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples)
+    {
+        for (std::shared_ptr<Sample> sample : samples)
+        {
+            if (sample->IsRestartRequired)
+            {
+                return true;
             }
         }
 
-
-        std::shared_ptr<ModelSample> ModelRunner::getModelSample(const std::shared_ptr<Sample>& sample) const
+        if (shouldExitFunction != nullptr)
         {
-            std::vector<double> xValues = this->uConverter->getXValues(sample);
-
-            // create a sample with values in x-space
-            std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
-
-            xSample->AllowProxy = sample->AllowProxy;
-            xSample->IterationIndex = sample->IterationIndex;
-            xSample->threadId = sample->threadId;
-            xSample->Weight = sample->Weight;
-            xSample->IsRestartRequired = sample->IsRestartRequired;
-            xSample->Beta = sample->getBeta();
-            xSample->OutputValues.resize(this->zModel->outputParameters.size());
-
-            return xSample;
+            return shouldExitFunction(false);
         }
 
-        std::shared_ptr<ModelSample> ModelRunner::getModelSampleFromType(Statistics::RunValuesType type) const
+        return false;
+    }
+
+    /**
+     * \brief Removes a task for further processing
+     * \param iterationIndex Iteration index of the task
+     */
+    void ModelRunner::removeTask(int iterationIndex)
+    {
+        if (this->removeTaskFunction != nullptr)
         {
-            std::vector<double> xValues = this->uConverter->getValuesFromType(type);
-
-            // create a sample with values in x-space
-            std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
-            xSample->OutputValues.resize(this->zModel->outputParameters.size());
-
-            return xSample;
+            this->removeTaskFunction(iterationIndex);
         }
+    }
 
-        /**
-         * \brief Calculates a sample
-         * \param sample Sample to be calculated
-         * \return Z-value of the sample
-         */
-        double ModelRunner::getZValue(std::shared_ptr<Sample> sample)
+    /**
+     * \brief Registers intermediate results and provides progress information of a reliability calculation
+     * \param report Intermediate results
+     * \remark The intermediate results will be part of the design point of the reliability calculation
+     */
+    void ModelRunner::reportResult(std::shared_ptr<Reliability::ReliabilityReport> report)
+    {
+        if (Settings->SaveConvergence)
         {
-            std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+            bool hasPreviousReport = this->reliabilityResults.size() > 0;
 
-            this->zModel->invoke(xSample);
-
-            registerEvaluation(xSample);
-
-            sample->Z = xSample->Z;
-
-            return sample->Z;
-        }
-
-        /**
-         * \brief Calculates a sample
-         * \param sample Sample to be calculated
-         * \return Evaluation report of the sample calculation
-         */
-        Evaluation ModelRunner::getEvaluation(std::shared_ptr<Sample> sample)
-        {
-            std::shared_ptr<ModelSample> xSample = getModelSample(sample);
-
-            this->zModel->invoke(xSample);
-
-            Evaluation evaluation = getEvaluationFromSample(xSample);
-
-            return evaluation;
-        }
-
-        /**
-         * \brief Indicates whether the sample repository is allowed
-         * \param allowRepository Indication
-         */
-        void ModelRunner::setAllowRepository(bool allowRepository) const
-        {
-            this->zModel->setAllowRepository(allowRepository);
-        }
-
-        /**
-         * \brief Calculates a sample
-         * \param type Run values type
-         * \return Evaluation report of the sample calculation
-         */
-        Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type)
-        {
-            std::shared_ptr<ModelSample> xSample = getModelSampleFromType(type);
-
-            this->zModel->invoke(xSample);
-
-            Evaluation evaluation = getEvaluationFromSample(xSample);
-
-            return evaluation;
-        }
-
-        std::shared_ptr<Sample> ModelRunner::getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint) const
-        {
-            return this->uConverter->getSampleFromStochastPoint(stochastPoint);
-        }
-
-        /**
-         * \brief Runs the model in the design point
-         * \param designPoint design point to be calculated
-         * \return Z-value of the sample
-         */
-        void ModelRunner::runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint)
-        {
-            std::shared_ptr<Sample> sample = designPoint->getSample();
-            std::shared_ptr<ModelSample> xSample = getModelSample(sample);
-
-            xSample->ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
-            xSample->LoggingCounter = runDesignPointCounter++;
-
-            this->zModel->invoke(xSample);
-
-            registerEvaluation(xSample);
-
-            for (size_t i = 0; i < xSample->Values.size(); i++)
+            std::shared_ptr<Reliability::ReliabilityResult> previousReport = nullptr;
+            if (hasPreviousReport)
             {
-                designPoint->Alphas[i]->X = xSample->Values[i];
-            }
-        }
-
-        /**
-         * \brief Calculates a number of samples
-         * \param samples Samples to be calculated
-         * \return Z-values of the samples
-         */
-        std::vector<double> ModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
-        {
-            std::vector<std::shared_ptr<ModelSample>> xSamples;
-
-            for (size_t i = 0; i < samples.size(); i++)
-            {
-                xSamples.push_back(getModelSample(samples[i]));
+                previousReport = this->reliabilityResults.back();
             }
 
-            this->zModel->invoke(xSamples);
+            std::shared_ptr<Reliability::ReliabilityResult> result = std::make_shared<Reliability::ReliabilityResult>();
+            result->Reliability = report->Reliability;
+            result->ConvBeta = report->ConvBeta;
+            result->Variation = report->Variation;
+            result->Contribution = report->Contribution;
+            result->Index = hasPreviousReport ? previousReport->Index + 1 : 0;
 
-            std::vector<double> zValues(xSamples.size());
-
-            for (size_t i = 0; i < xSamples.size(); i++)
+            if (report->ReportMatchesEvaluation && previousReport != nullptr)
             {
-                registerEvaluation(xSamples[i]);
+                std::shared_ptr<Reliability::ReliabilityResult> previousPreviousReport = this->reliabilityResults.size() > 1
+                    ? this->reliabilityResults[this->reliabilityResults.size() - 2]
+                    : nullptr;
 
-                samples[i]->Z = xSamples[i]->Z;
-                samples[i]->AllowProxy = xSamples[i]->AllowProxy;
-                samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
-                zValues[i] = xSamples[i]->Z;
-            }
-
-            return zValues;
-        }
-
-        /**
-         * \brief Sets a callback which calculates the beat in a certain direction
-         * \param zBetaLambda Callback 
-         */
-        void ModelRunner::setDirectionModel(ZBetaLambda zBetaLambda) const
-        {
-            this->zModel->setBetaLambda(zBetaLambda);
-        }
-
-        /**
-         * \brief Indicates whether this model runner can calculate the beta (distance to limit state) in a given direction
-         * \return Indication
-         */
-        bool ModelRunner::canCalculateBeta() const
-        {
-            return this->zModel->canCalculateBeta();
-        }
-
-        /**
-         * \brief Gets the beta (distance to limit state) in a given direction
-         * \param sample Sample indicating the direction
-         * \return Beta
-         */
-        double ModelRunner::getBeta(std::shared_ptr<Sample> sample)
-        {
-            std::shared_ptr<ModelSample> xSample = getModelSample(sample);
-
-            return this->zModel->getBeta(xSample, sample->getBeta());
-        }
-
-        Evaluation ModelRunner::getEvaluationFromSample(std::shared_ptr<ModelSample> sample)
-        {
-            Evaluation evaluation = Evaluation();
-
-            evaluation.Z = sample->Z;
-            evaluation.Beta = sample->Beta;
-            evaluation.Iteration = sample->IterationIndex;
-            evaluation.usedProxy = sample->UsedProxy;
-            evaluation.InputValues = sample->Values;
-            evaluation.OutputValues = sample->OutputValues;
-            evaluation.Tag = sample->Tag;
-
-            return evaluation;
-        }
-
-        /**
-         * \brief Registers an evaluation for a calculated sample
-         * \param sample Calculated sample
-         */
-        void ModelRunner::registerEvaluation(std::shared_ptr<ModelSample> sample)
-        {
-            if (this->Settings->SaveEvaluations)
-            {
-                std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
-
-                if (this->Settings->MaxParallelProcesses > 1) 
+                // remove the last result
+                if (!previousReport->IsMeaningful(previousPreviousReport, result))
                 {
-                    locker->lock();
-                    this->evaluations.push_back(evaluation);
-                    locker->unlock();
-                }
-                else
-                {
-                    this->evaluations.push_back(evaluation);
-                }
-            }
-        }
-
-        /**
-         * \brief Indicates whether the reliability algorithm should be stopped
-         * \param samples Already calculated samples
-         * \return Indication
-         */
-        bool ModelRunner::shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples)
-        {
-            for (std::shared_ptr<Sample> sample : samples)
-            {
-                if (sample->IsRestartRequired)
-                {
-                    return true;
+                    this->reliabilityResults.pop_back();
                 }
             }
 
-            if (shouldExitFunction != nullptr)
-            {
-                return shouldExitFunction(false);
-            }
-
-            return false;
+            this->reliabilityResults.push_back(result);
         }
 
-        /**
-         * \brief Removes a task for further processing
-         * \param iterationIndex Iteration index of the task
-         */
-        void ModelRunner::removeTask(int iterationIndex)
+        if (this->progressIndicator != nullptr)
         {
-            if (this->removeTaskFunction != nullptr)
+            const double progress = Numeric::NumericSupport::Divide(report->Step, report->MaxSteps);
+
+            double convergence = report->ConvBeta;
+            if (std::isnan(convergence))
             {
-                this->removeTaskFunction(iterationIndex);
+                convergence = report->Variation;
             }
+
+            this->reportProgress(report->Step, report->MaxSteps, report->Reliability, convergence);
+
+            this->progressIndicator->doDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
+        }
+    }
+
+    void ModelRunner::reportProgress(int step, int maxSteps, double reliability, double convergence) const
+    {
+        if (this->progressIndicator != nullptr)
+        {
+            const double progress = Numeric::NumericSupport::Divide(step, maxSteps);
+            this->progressIndicator->doProgress(progress);
+
+            auto text = std::format("{}/{}", step, maxSteps);
+            if (!std::isnan(reliability) || !std::isnan(convergence))
+            {
+                text += std::format(", Reliability = {:.3f}, Convergence = {:.3f}", reliability, convergence);
+            }
+
+            this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
+        }
+    }
+
+    void ModelRunner::reportMessage(Logging::MessageType type, std::string text)
+    {
+        if (Settings->SaveMessages && this->messages.size() < (size_t)this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
+        {
+            this->messages.push_back(std::make_shared<Logging::Message>(type, text));
+        }
+    }
+
+    void ModelRunner::doTextualProgress(ProgressType type, std::string text)
+    {
+        if (this->progressIndicator != nullptr)
+        {
+            this->progressIndicator->doTextualProgress(type, text);
+        }
+    }
+
+    /**
+     * \brief Gets the design point of a reliability calculation
+     * \param sample Sample on which the design point is based
+     * \param beta Reliability index
+     * \param convergenceReport Convergence information, will be appended to design point
+     * \param identifier Identifying text
+     * \return Design point
+     */
+    std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
+    {
+        Evaluation evaluation;
+        bool evaluationAssigned = false;
+
+        if (this->uConverter->haveSampleValuesChanged())
+        {
+            evaluation = this->getEvaluation(sample->getSampleAtBeta(beta));
+            evaluationAssigned = true;
         }
 
-        /**
-         * \brief Registers intermediate results and provides progress information of a reliability calculation
-         * \param report Intermediate results
-         * \remark The intermediate results will be part of the design point of the reliability calculation
-         */
-        void ModelRunner::reportResult(std::shared_ptr<Reliability::ReliabilityReport> report)
+        std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);
+
+        if (this->shouldInvertFunction != nullptr)
         {
-            if (Settings->SaveConvergence)
-            {
-                bool hasPreviousReport = this->reliabilityResults.size() > 0;
-
-                std::shared_ptr<Reliability::ReliabilityResult> previousReport = nullptr;
-                if (hasPreviousReport)
-                {
-                    previousReport = this->reliabilityResults.back();
-                }
-
-                std::shared_ptr<Reliability::ReliabilityResult> result = std::make_shared<Reliability::ReliabilityResult>();
-                result->Reliability = report->Reliability;
-                result->ConvBeta = report->ConvBeta;
-                result->Variation = report->Variation;
-                result->Contribution = report->Contribution;
-                result->Index = hasPreviousReport ? previousReport->Index + 1 : 0;
-
-                if (report->ReportMatchesEvaluation && previousReport != nullptr)
-                {
-                    std::shared_ptr<Reliability::ReliabilityResult> previousPreviousReport = this->reliabilityResults.size() > 1
-                        ? this->reliabilityResults[this->reliabilityResults.size() - 2]
-                        : nullptr;
-
-                    // remove the last result
-                    if (!previousReport->IsMeaningful(previousPreviousReport, result))
-                    {
-                        this->reliabilityResults.pop_back();
-                    }
-                }
-
-                this->reliabilityResults.push_back(result);
-            }
-
-            if (this->progressIndicator != nullptr)
-            {
-                const double progress = Numeric::NumericSupport::Divide(report->Step, report->MaxSteps);
-
-                double convergence = report->ConvBeta;
-                if (std::isnan(convergence))
-                {
-                    convergence = report->Variation;
-                }
-
-                this->reportProgress(report->Step, report->MaxSteps, report->Reliability, convergence);
-
-                this->progressIndicator->doDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
-            }
-        }
-
-        void ModelRunner::reportProgress(int step, int maxSteps, double reliability, double convergence) const
-        {
-            if (this->progressIndicator != nullptr)
-            {
-                const double progress = Numeric::NumericSupport::Divide(step, maxSteps);
-                this->progressIndicator->doProgress(progress);
-
-                auto text = std::format("{}/{}", step, maxSteps);
-                if (!std::isnan(reliability) || !std::isnan(convergence))
-                {
-                    text += std::format(", Reliability = {:.3f}, Convergence = {:.3f}", reliability, convergence);
-                }
-
-                this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
-            }
-        }
-
-        void ModelRunner::reportMessage(Logging::MessageType type, std::string text)
-        {
-            if (Settings->SaveMessages && this->messages.size() < (size_t)this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
-            {
-                this->messages.push_back(std::make_shared<Logging::Message>(type, text));
-            }
-        }
-
-        void ModelRunner::doTextualProgress(ProgressType type, std::string text)
-        {
-            if (this->progressIndicator != nullptr) 
-            {
-                this->progressIndicator->doTextualProgress(type, text);
-            }
-        }
-
-        /**
-         * \brief Gets the design point of a reliability calculation
-         * \param sample Sample on which the design point is based
-         * \param beta Reliability index
-         * \param convergenceReport Convergence information, will be appended to design point
-         * \param identifier Identifying text
-         * \return Design point
-         */
-        std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
-        {
-            Evaluation evaluation;
-            bool evaluationAssigned = false;
-
-            if (this->uConverter->haveSampleValuesChanged())
-            {
-                evaluation = this->getEvaluation(sample->getSampleAtBeta(beta));
-                evaluationAssigned = true;
-            }
-
-            std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);
-
-            if (this->shouldInvertFunction != nullptr)
-            {
-                for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
-                {
-                    if (shouldInvertFunction(static_cast<int>(i)))
-                    {
-                        stochastPoint->Alphas[i]->invert();
-                    }
-                }
-            }
-
-            std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<Reliability::DesignPoint>();
-
-            designPoint->Beta = stochastPoint->Beta;
-
             for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
             {
-                if (evaluationAssigned)
+                if (shouldInvertFunction(static_cast<int>(i)))
                 {
-                    stochastPoint->Alphas[i]->X = evaluation.InputValues[i];
+                    stochastPoint->Alphas[i]->invert();
                 }
-                designPoint->Alphas.push_back(stochastPoint->Alphas[i]);
             }
-
-            designPoint->Identifier = identifier;
-            designPoint->convergenceReport = convergenceReport;
-
-            if (designPoint->convergenceReport != nullptr)
-            {
-                designPoint->convergenceReport->TotalModelRuns = this->zModel->getModelRuns();
-            }
-            this->zModel->resetModelRuns();
-
-            for (size_t i = 0; i < this->reliabilityResults.size(); i++)
-            {
-                designPoint->ReliabililityResults.push_back(this->reliabilityResults[i]);
-            }
-
-            for (size_t i = 0; i < this->evaluations.size(); i++)
-            {
-                designPoint->Evaluations.push_back(this->evaluations[i]);
-            }
-
-            for (size_t i = 0; i < this->messages.size(); i++)
-            {
-                designPoint->Messages.push_back(this->messages[i]);
-            }
-
-            return designPoint;
         }
 
-        /**
-         * \brief Gets the result of an uncertainty calculation
-         * \param stochast Stochast in the uncertainty result
-         * \return Uncertainty result
-         */
-        Uncertainty::UncertaintyResult ModelRunner::getUncertaintyResult(std::shared_ptr<Statistics::Stochast> stochast) const
+        std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<Reliability::DesignPoint>();
+
+        designPoint->Beta = stochastPoint->Beta;
+
+        for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
         {
-            auto result = Uncertainty::UncertaintyResult();
-
-            result.stochast = stochast;
-
-            for (const auto& evaluation : evaluations)
+            if (evaluationAssigned)
             {
-                result.evaluations.push_back(evaluation);
+                stochastPoint->Alphas[i]->X = evaluation.InputValues[i];
             }
-
-            for (const auto& message : messages)
-            {
-                result.messages.push_back(message);
-            }
-
-            return result;
+            designPoint->Alphas.push_back(stochastPoint->Alphas[i]);
         }
 
-        /**
-         * \brief Gets an empty result of a sensitivity calculation with stochast definition and runtime information
-         */
-        Sensitivity::SensitivityResult ModelRunner::getSensitivityResult() const
+        designPoint->Identifier = identifier;
+        designPoint->convergenceReport = convergenceReport;
+
+        if (designPoint->convergenceReport != nullptr)
         {
-            Sensitivity::SensitivityResult result = uConverter->getSensitivityResult();
-
-            for (const auto& evaluation : evaluations)
-            {
-                result.evaluations.push_back(evaluation);
-            }
-
-            for (const auto& message : messages)
-            {
-                result.messages.push_back(message);
-            }
-
-            return result;
+            designPoint->convergenceReport->TotalModelRuns = this->zModel->getModelRuns();
         }
+        this->zModel->resetModelRuns();
 
-        void  ModelRunner::registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
+        for (size_t i = 0; i < this->reliabilityResults.size(); i++)
         {
-            this->uConverter->registerSample(correlationMatrixBuilder, sample);
+            designPoint->ReliabililityResults.push_back(this->reliabilityResults[i]);
         }
 
-        std::vector<double> ModelRunner::getOnlyVaryingValues(std::vector<double> values)
+        for (size_t i = 0; i < this->evaluations.size(); i++)
         {
-            return this->uConverter->getVaryingValues(values);
+            designPoint->Evaluations.push_back(this->evaluations[i]);
         }
 
-        void ModelRunner::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues)
+        for (size_t i = 0; i < this->messages.size(); i++)
         {
-            this->uConverter->updateVariableSample(xValues, originalValues);
+            designPoint->Messages.push_back(this->messages[i]);
         }
+
+        return designPoint;
+    }
+
+    /**
+     * \brief Gets the result of an uncertainty calculation
+     * \param stochast Stochast in the uncertainty result
+     * \return Uncertainty result
+     */
+    Uncertainty::UncertaintyResult ModelRunner::getUncertaintyResult(std::shared_ptr<Statistics::Stochast> stochast) const
+    {
+        auto result = Uncertainty::UncertaintyResult();
+
+        result.stochast = stochast;
+
+        for (const auto& evaluation : evaluations)
+        {
+            result.evaluations.push_back(evaluation);
+        }
+
+        for (const auto& message : messages)
+        {
+            result.messages.push_back(message);
+        }
+
+        return result;
+    }
+
+    /**
+     * \brief Gets an empty result of a sensitivity calculation with stochast definition and runtime information
+     */
+    Sensitivity::SensitivityResult ModelRunner::getSensitivityResult() const
+    {
+        Sensitivity::SensitivityResult result = uConverter->getSensitivityResult();
+
+        for (const auto& evaluation : evaluations)
+        {
+            result.evaluations.push_back(evaluation);
+        }
+
+        for (const auto& message : messages)
+        {
+            result.messages.push_back(message);
+        }
+
+        return result;
+    }
+
+    void  ModelRunner::registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
+    {
+        this->uConverter->registerSample(correlationMatrixBuilder, sample);
+    }
+
+    std::vector<double> ModelRunner::getOnlyVaryingValues(std::vector<double> values)
+    {
+        return this->uConverter->getVaryingValues(values);
+    }
+
+    void ModelRunner::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues)
+    {
+        this->uConverter->updateVariableSample(xValues, originalValues);
     }
 }
 
