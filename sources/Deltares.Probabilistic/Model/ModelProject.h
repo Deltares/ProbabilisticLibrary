@@ -85,6 +85,11 @@ namespace Deltares::Models
         virtual void run() = 0;
 
         /**
+         * \brief Stops the project
+         */
+        virtual void stop() = 0;
+
+        /**
          * \brief Reports whether these settings have valid values
          * \param report Report in which the validity is reported
          */

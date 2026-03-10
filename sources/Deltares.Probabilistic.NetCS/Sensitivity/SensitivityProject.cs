@@ -76,6 +76,11 @@ namespace Deltares.Probabilistic.Sensitivity
             Interface.Execute(id, "run");
         }
 
+        public void Stop()
+        {
+            Interface.Execute(id, "stop");
+        }
+
         public SensitivityResult Result
         {
             get

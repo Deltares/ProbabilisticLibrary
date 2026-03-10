@@ -130,6 +130,11 @@ namespace Deltares.Probabilistic.Logging
 
                 return tag;
             }
+            set
+            {
+                tag = value;
+                tagRepository = null;
+            }
         }
     }
 }

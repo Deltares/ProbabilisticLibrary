@@ -43,6 +43,11 @@ namespace Deltares::Models
         void run() override;
 
         /**
+         * \brief Stop method ignored
+         */
+        void stop() override {}
+
+        /**
          * \brief Sets the settings
          */
         void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override

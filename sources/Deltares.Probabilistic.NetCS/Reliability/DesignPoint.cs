@@ -33,6 +33,7 @@ public class DesignPoint : StochastPoint
     private List<Evaluation> realizations = null;
     private List<ReliabilityResult> reliabilityResults = null;
     private List<Message> messages = null;
+    private ConvergenceReport convergenceReport = null;
     private TagRepository tagRepository = null;
 
     public DesignPoint() : base(-1)
@@ -90,6 +91,28 @@ public class DesignPoint : StochastPoint
     {
         get { return Interface.GetBoolValue(id, "is_converged"); }
         set { Interface.SetBoolValue(id, "is_converged", value); }
+    }
+
+    public ConvergenceReport ConvergenceReport
+    {
+        get
+        {
+            if (convergenceReport == null)
+            {
+                int reportId = Interface.GetIdValue(id, "convergence_report");
+                if (reportId > 0)
+                {
+                    convergenceReport = new ConvergenceReport(reportId);
+                }
+            }
+
+            return convergenceReport;
+        }
+        set
+        {
+            convergenceReport = value;
+            Interface.SetIntValue(id, "convergence_report", convergenceReport.GetId());
+        }
     }
 
     public int TotalDirections

@@ -25,12 +25,16 @@ namespace Deltares.Probabilistic.Logging
     public delegate void ProgressDelegate(double progress);
     public delegate void DetailedProgressDelegate(int step, int loop, double reliability, double convergence);
     public delegate void TextualProgressDelegate(ProgressType progressType, string text);
-
+    
     public class ProgressIndicator
     {
         private ProgressDelegate progressDelegate = null;
         private DetailedProgressDelegate detailedProgressDelegate = null;
         private TextualProgressDelegate textualProgressDelegate = null;
+
+        double progressOffset = 0;
+        double progressFactor = 1;
+        string task = "";
 
         public ProgressIndicator(ProgressDelegate progressDelegate, DetailedProgressDelegate detailedProgressDelegate, TextualProgressDelegate textualProgressDelegate)
         {
@@ -41,7 +45,7 @@ namespace Deltares.Probabilistic.Logging
 
         public void DoProgress(double progress)
         {
-            progressDelegate?.Invoke(progress);
+            progressDelegate?.Invoke(progressOffset + progressFactor * progress);
         }
 
         public void DoDetailedProgress(int step, int loop, double reliability, double convergence)
@@ -54,6 +58,41 @@ namespace Deltares.Probabilistic.Logging
             ProgressType progressType = progressIndicator == 0 ? ProgressType.Global : ProgressType.Detailed;
 
             textualProgressDelegate?.Invoke(progressType, text);
+        }
+
+        public void ReleaseHandles()
+        {
+            // nothing to do, should be removed
+        }
+
+        public void Reset()
+        {
+            this.progressDelegate?.Invoke(0);
+            this.detailedProgressDelegate?.Invoke(0, 0, 0, 0);
+            this.textualProgressDelegate?.Invoke(ProgressType.Detailed, "");
+        }
+
+        public void Complete()
+        {
+            this.progressDelegate?.Invoke(1);
+            this.detailedProgressDelegate?.Invoke(0, 0, 0, 0);
+            this.textualProgressDelegate?.Invoke(ProgressType.Detailed, "");
+        }
+
+        public void Initialize(double factor, double offset)
+        {
+            progressFactor = factor;
+            progressOffset = offset;
+        }
+
+        public void IncreaseOffset()
+        {
+            progressOffset += progressFactor;
+        }
+
+        public void SetTask(string task)
+        {
+            this.task = task;
         }
     }
 }

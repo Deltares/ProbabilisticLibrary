@@ -19,25 +19,26 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class ReliabilityResult
+public class FragilityCurve : Stochast
 {
     private int id = 0;
 
-    public ReliabilityResult()
+    public FragilityCurve()
     {
-        id = Interface.Create("reliability_result");
+        id = Interface.Create("fragility_curve");
     }
 
-    internal ReliabilityResult(int id)
+    internal FragilityCurve(int id)
     {
         this.id = id;
     }
 
-    ~ReliabilityResult()
+    ~FragilityCurve()
     {
         Interface.Destroy(id);
     }
@@ -47,39 +48,21 @@ public class ReliabilityResult
         return id;
     }
 
-    public int Index
+    public bool Inverted
     {
-        get { return Interface.GetIntValue(id, "index"); }
-        set { Interface.SetIntValue(id, "index", value); }
+        get { return Interface.GetBoolValue(id, "inverted"); }
+        set { Interface.SetBoolValue(id, "inverted", value); }
     }
 
-    public double ReliabilityIndex
+    public bool Fixed
     {
-        get { return Interface.GetValue(id, "reliability_index"); }
-        set { Interface.SetValue(id, "reliability_index", value); }
+        get { return Interface.GetBoolValue(id, "fixed"); }
+        set { Interface.SetBoolValue(id, "fixed", value); }
     }
 
-    public double Convergence
+    public double FixedValue
     {
-        get { return Interface.GetValue(id, "convergence"); }
-        set { Interface.SetValue(id, "convergence", value); }
-    }
-
-    public double Variation
-    {
-        get { return Interface.GetValue(id, "variation"); }
-        set { Interface.SetValue(id, "variation", value); }
-    }
-
-    public double Contribution
-    {
-        get { return Interface.GetValue(id, "contribution"); }
-        set { Interface.SetValue(id, "contribution", value); }
-    }
-
-    public int Samples
-    {
-        get { return Interface.GetIntValue(id, "samples"); }
-        set { Interface.SetIntValue(id, "samples", value); }
+        get { return Interface.GetValue(id, "fixed_value"); }
+        set { Interface.SetValue(id, "fixed_value", value); }
     }
 }

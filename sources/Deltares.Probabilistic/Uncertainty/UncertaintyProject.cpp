@@ -97,6 +97,11 @@ namespace Deltares::Uncertainty
         }
     }
 
+    void UncertaintyProject::stop()
+    {
+        uncertaintyMethod->Stop();
+    }
+
     UncertaintyResult UncertaintyProject::getUncertaintyResult()
     {
         model->zValueConverter = outputSelector;

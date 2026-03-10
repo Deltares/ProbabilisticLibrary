@@ -258,6 +258,10 @@ namespace Deltares::Server
         case ObjectType::LengthEffectProject:
             lengthEffectProjects[id] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
             break;
+        case ObjectType::ConvergenceReport:
+            convergenceReports[id] = std::make_shared<Deltares::Reliability::ConvergenceReport>();
+            convergenceReportIds[convergenceReports[id]] = id;
+            break;
         default: throw probLibException("object type");
         }
     }
@@ -312,6 +316,7 @@ namespace Deltares::Server
         case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
         case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
         case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
+        case ObjectType::ConvergenceReport: convergenceReportIds.erase(convergenceReports[id]); convergenceReports.erase(id); break;
         default: throw probLibException("object type");
         }
         types.erase(id);
@@ -429,6 +434,7 @@ namespace Deltares::Server
             std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
 
             if (property_ == "probability") return scenario->probability;
+            else if (property_ == "physical_value") return scenario->parameterValue;
         }
         else if (objectType == ObjectType::Settings)
         {
@@ -500,6 +506,7 @@ namespace Deltares::Server
             if (property_ == "mean") return fragilityCurve->getMean();
             else if (property_ == "deviation") return fragilityCurve->getDeviation();
             else if (property_ == "variation") return fragilityCurve->getVariation();
+            else if (property_ == "fixed_value") return fragilityCurve->fixedValue;
             else return std::nan("");
         }
         else if (objectType == ObjectType::Evaluation)
@@ -517,6 +524,8 @@ namespace Deltares::Server
 
             if (property_ == "reliability_index") return result->Reliability;
             else if (property_ == "convergence") return std::isnan(result->ConvBeta) ? result->Variation : result->ConvBeta;
+            else if (property_ == "variation") return result->Variation;
+            else if (property_ == "contribution") return result->Contribution;
         }
         else if (objectType == ObjectType::SensitivityValue)
         {
@@ -533,6 +542,17 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
 
             if (property_ == "length") return length_effect->length;
+        }
+        else if (objectType == ObjectType::ConvergenceReport)
+        {
+            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+
+            if (property_ == "convergence") return convergence_report->Convergence;
+            else if (property_ == "fail_fraction") return convergence_report->FailFraction;
+            else if (property_ == "fail_weight") return convergence_report->FailWeight;
+            else if (property_ == "max_weight") return convergence_report->MaxWeight;
+            else if (property_ == "relaxation_factor") return convergence_report->RelaxationFactor;
+            else if (property_ == "variance_factor") return convergence_report->VarianceFactor;
         }
         return std::nan("");
     }
@@ -601,6 +621,12 @@ namespace Deltares::Server
 
             fragilityValue->setDirty();
         }
+        else if (objectType == ObjectType::FragilityCurve)
+        {
+            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+            if (property_ == "fixed_value") fragilityCurve->fixedValue = value;
+        }
         else if (objectType == ObjectType::ContributingStochast)
         {
             std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
@@ -640,6 +666,7 @@ namespace Deltares::Server
             std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
 
             if (property_ == "probability") scenario->probability = value;
+            else if (property_ == "physical_value") scenario->parameterValue = value;
         }
         else if (objectType == ObjectType::Settings)
         {
@@ -688,7 +715,7 @@ namespace Deltares::Server
             else if (property_ == "reliability_index") designPoint->Beta = value;
             else if (property_ == "convergence")
             {
-                if (designPoint->convergenceReport == nullptr) designPoint->convergenceReport = std::make_shared<ConvergenceReport>();
+                if (designPoint->convergenceReport == nullptr) designPoint->convergenceReport = std::make_shared<Reliability::ConvergenceReport>();
                 designPoint->convergenceReport->Convergence = value;
             }
         }
@@ -723,6 +750,8 @@ namespace Deltares::Server
 
             if (property_ == "reliability_index") result->Reliability = value;
             else if (property_ == "convergence") result->ConvBeta = value;
+            else if (property_ == "variation") result->Variation = value;
+            else if (property_ == "contribution") result->Contribution = value;
         }
         else if (objectType == ObjectType::SensitivityValue)
         {
@@ -733,6 +762,17 @@ namespace Deltares::Server
             else if (property_ == "high") sensitivity_value->high = value;
             else if (property_ == "first_order_index") sensitivity_value->firstOrderIndex = value;
             else if (property_ == "total_index") sensitivity_value->totalIndex = value;
+        }
+        else if (objectType == ObjectType::ConvergenceReport)
+        {
+            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+
+            if (property_ == "convergence") convergence_report->Convergence = value;
+            else if (property_ == "fail_fraction") convergence_report->FailFraction = value;
+            else if (property_ == "fail_weight") convergence_report->FailWeight = value;
+            else if (property_ == "max_weight") convergence_report->MaxWeight = value;
+            else if (property_ == "relaxation_factor") convergence_report->RelaxationFactor = value;
+            else if (property_ == "variance_factor") convergence_report->VarianceFactor = value;
         }
     }
 
@@ -927,12 +967,19 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::ReliabilityResult> result = reliabilityResults[id];
 
             if (property_ == "index") return result->Index;
+            else if (property_ == "samples") return result->Samples;
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
             std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
             if (property_ == "correlation_lengths_count") return static_cast<int>(project->correlationLengths.size());
+        }
+        else if (objectType == ObjectType::ConvergenceReport)
+        {
+            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+
+            if (property_ == "failed_samples") return convergence_report->FailedSamples;
         }
 
         return 0;
@@ -1050,6 +1097,12 @@ namespace Deltares::Server
 
             if (property_ == "variable") return GetStochastId(result->stochast, newId);
         }
+        else if (objectType == ObjectType::Scenario)
+        {
+            std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+
+            if (property_ == "parameter") return GetStochastId(scenario->parameter, newId);
+        }
         else if (objectType == ObjectType::CombineProject)
         {
             std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
@@ -1069,6 +1122,12 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
             if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
+        }
+        else if (objectType == ObjectType::DesignPoint)
+        {
+            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+            if (property_ == "convergence_report") return GetConvergenceReportId(designPoint->convergenceReport, newId);
         }
 
         return 0;
@@ -1107,6 +1166,7 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::ReliabilityResult> result = reliabilityResults[id];
 
             if (property_ == "index") result->Index = value;
+            else if (property_ == "samples") result->Samples = value;
         }
         else if (objectType == ObjectType::ModelParameter)
         {
@@ -1149,6 +1209,12 @@ namespace Deltares::Server
             std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
 
             if (property_ == "observations") conditionalValue->Stochast->Observations = value;
+        }
+        else if (objectType == ObjectType::Scenario)
+        {
+            std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+
+            if (property_ == "parameter") scenario->parameter = stochasts[value];
         }
         else if (objectType == ObjectType::FragilityCurve)
         {
@@ -1244,6 +1310,12 @@ namespace Deltares::Server
             if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
             else if (property_ == "design_point_cross_section") project->designPointCrossSection = designPoints[value];
         }
+        else if (objectType == ObjectType::ConvergenceReport)
+        {
+            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+
+            if (property_ == "failed_samples") convergence_report->FailedSamples = value;
+        }
     }
 
     double ProjectHandler::GetIntArgValue(int id1, int id2, std::string property_)
@@ -1308,8 +1380,11 @@ namespace Deltares::Server
             else if (property_ == "truncated") return stochast->isTruncated();
             else if (property_ == "conditional") return stochast->IsVariableStochast;
             else if (property_ == "can_fit_prior") return stochast->canFit(false, true);
+            else if (property_ == "can_truncate") return stochast->canTruncate();
+            else if (property_ == "can_invert") return stochast->canInvert();
             else if (property_ == "is_array") return stochast->modelParameter->isArray;
             else if (property_ == "is_varying") return stochast->isVarying();
+            else if (property_ == "is_qualitative") return stochast->isQualitative();
             else if (property_ == "is_valid") return stochast->isValid();
             else if (property_ == "is_used_mean") return true;
             else if (property_ == "is_used_deviation") return stochast->getDistributionType() != DistributionType::Deterministic;
@@ -1322,6 +1397,12 @@ namespace Deltares::Server
             else if (property_ == "is_used_shape") return stochast->hasParameter(DistributionPropertyType::Shape);
             else if (property_ == "is_used_shape_b") return stochast->hasParameter(DistributionPropertyType::ShapeB);
             else if (property_ == "is_used_observations") return stochast->hasParameter(DistributionPropertyType::Observations);
+        }
+        else if (objectType == ObjectType::FragilityCurve)
+        {
+            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+            if (property_ == "fixed") return fragilityCurve->fixed;
         }
         else if (objectType == ObjectType::CorrelationMatrix)
         {
@@ -1386,6 +1467,12 @@ namespace Deltares::Server
 
             if (property_ == "is_valid") return project->is_valid();
         }
+        else if (objectType == ObjectType::ConvergenceReport)
+        {
+            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+
+            if (property_ == "is_converged") return convergence_report->IsConverged;
+        }
 
         return false;
     }
@@ -1419,6 +1506,12 @@ namespace Deltares::Server
             else if (property_ == "truncated") stochast->setTruncated(value);
             else if (property_ == "conditional") stochast->IsVariableStochast = value;
             else if (property_ == "is_array") stochast->modelParameter->isArray = value;
+        }
+        else if (objectType == ObjectType::FragilityCurve)
+        {
+            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+            if (property_ == "fixed") fragilityCurve->fixed = value;
         }
         else if (objectType == ObjectType::ModelParameter)
         {
@@ -1463,6 +1556,12 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "is_converged") designPoint->convergenceReport->IsConverged = value;
+        }
+        else if (objectType == ObjectType::ConvergenceReport)
+        {
+            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+
+            if (property_ == "is_converged") convergence_report->IsConverged = value;
         }
     }
 
@@ -2347,6 +2446,7 @@ namespace Deltares::Server
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
             if (method_ == "run") project->run();
+            else if (method_ == "stop") project->stop();
         }
         else if (objectType == ObjectType::FragilityCurveProject)
         {
@@ -2513,6 +2613,25 @@ namespace Deltares::Server
         }
 
         return alphaIds[alpha];
+    }
+
+    int ProjectHandler::GetConvergenceReportId(std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, int newId)
+    {
+        if (convergenceReport == nullptr)
+        {
+            return 0;
+        }
+        else
+        {
+            if (!convergenceReportIds.contains(convergenceReport))
+            {
+                convergenceReports[newId] = convergenceReport;
+                types[newId] = ObjectType::ConvergenceReport;
+                convergenceReportIds[convergenceReport] = newId;
+            }
+
+            return convergenceReportIds[convergenceReport];
+        }
     }
 
     int ProjectHandler::GetUncertaintyResultId(std::shared_ptr<Uncertainty::UncertaintyResult> result, int newId)

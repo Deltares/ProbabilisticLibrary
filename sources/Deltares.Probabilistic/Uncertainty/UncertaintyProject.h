@@ -97,9 +97,14 @@ namespace Deltares::Uncertainty
         UncertaintyResult getUncertaintyResult();
 
         /**
-         * \brief Runs the reliability calculation
+         * \brief Runs the uncertainty calculation
          */
         void run() override;
+
+        /**
+         * \brief Runs the uncertainty calculation
+         */
+        void stop() override;
 
         /**
          * \brief Sets the settings

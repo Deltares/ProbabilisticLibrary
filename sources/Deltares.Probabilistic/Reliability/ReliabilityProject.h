@@ -91,6 +91,11 @@ namespace Deltares::Reliability
         void run() override;
 
         /**
+         * \brief Stops the reliability calculation
+         */
+        void stop() override;
+
+        /**
          * \brief Sets the settings
          */
         void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override

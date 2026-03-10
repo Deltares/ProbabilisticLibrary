@@ -113,3 +113,8 @@ public class StochastSettings
         set { Interface.SetIntValue(id, "intervals", value); }
     }
 }
+
+public interface IHasStochastSetting
+{
+    StochastSettings GetStochastSetting(Stochast stochast);
+}

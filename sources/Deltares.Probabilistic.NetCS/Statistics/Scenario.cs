@@ -21,23 +21,24 @@
 //
 using Deltares.Probabilistic.Utils;
 
-namespace Deltares.Probabilistic.Reliability;
+namespace Deltares.Probabilistic.Statistics;
 
-public class ReliabilityResult
+public class Scenario
 {
     private int id = 0;
+    private Stochast parameter = null;
 
-    public ReliabilityResult()
+    public Scenario()
     {
-        id = Interface.Create("reliability_result");
+        this.id = Interface.Create("scenario");
     }
 
-    internal ReliabilityResult(int id)
+    internal Scenario(int id)
     {
         this.id = id;
     }
 
-    ~ReliabilityResult()
+    ~Scenario()
     {
         Interface.Destroy(id);
     }
@@ -47,39 +48,42 @@ public class ReliabilityResult
         return id;
     }
 
-    public int Index
+    public string Name
     {
-        get { return Interface.GetIntValue(id, "index"); }
-        set { Interface.SetIntValue(id, "index", value); }
+        get { return Interface.GetStringValue(id, "name"); }
+        set { Interface.SetStringValue(id, "name", value); }
     }
 
-    public double ReliabilityIndex
+    public double Probability
     {
-        get { return Interface.GetValue(id, "reliability_index"); }
-        set { Interface.SetValue(id, "reliability_index", value); }
+        get { return Interface.GetValue(id, "probability"); }
+        set { Interface.SetValue(id, "probability", value); }
     }
 
-    public double Convergence
+    public double PhysicalValue
     {
-        get { return Interface.GetValue(id, "convergence"); }
-        set { Interface.SetValue(id, "convergence", value); }
+        get { return Interface.GetValue(id, "physical_value"); }
+        set { Interface.SetValue(id, "physical_value", value); }
     }
 
-    public double Variation
+    public Stochast Parameter
     {
-        get { return Interface.GetValue(id, "variation"); }
-        set { Interface.SetValue(id, "variation", value); }
-    }
-
-    public double Contribution
-    {
-        get { return Interface.GetValue(id, "contribution"); }
-        set { Interface.SetValue(id, "contribution", value); }
-    }
-
-    public int Samples
-    {
-        get { return Interface.GetIntValue(id, "samples"); }
-        set { Interface.SetIntValue(id, "samples", value); }
+        get
+        {
+            if (parameter == null)
+            {
+                int parameterId = Interface.GetIdValue(id, "parameter");
+                if (parameterId > 0)
+                {
+                    this.parameter = ObjectFactory.GetObject<Stochast>(parameterId);
+                }
+            }
+            return parameter;
+        }
+        set
+        {
+            parameter = value;
+            Interface.SetValue(id, "parameter", value.GetId());
+        }
     }
 }

@@ -90,6 +90,7 @@ namespace Deltares::Server
         int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newid);
         int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId);
         int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId);
+        int GetConvergenceReportId(std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, int newId);
         int GetUncertaintyResultId(std::shared_ptr<Uncertainty::UncertaintyResult> result, int newId);
         int GetSensitivityResultId(std::shared_ptr<Sensitivity::SensitivityResult> result, int newId);
         int GetSensitivityValueId(std::shared_ptr<Sensitivity::SensitivityValue> result, int newId);
@@ -113,7 +114,8 @@ namespace Deltares::Server
             StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
             ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
             CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult,
-            SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation
+            SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation,
+            ConvergenceReport
             
         };
         ObjectType GetType(std::string object_type);
@@ -156,6 +158,7 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
         std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyResult>> uncertaintyResults;
+        std::unordered_map<int, std::shared_ptr<Reliability::ConvergenceReport>> convergenceReports;
 
         std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
         std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
@@ -176,6 +179,7 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Models::Evaluation>, int> evaluationIds;
         std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
         std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
+        std::unordered_map<std::shared_ptr<Reliability::ConvergenceReport>, int> convergenceReportIds;
 
         std::unordered_map <std::string, std::vector<double>> tempValues;
         double argValue = nan("");

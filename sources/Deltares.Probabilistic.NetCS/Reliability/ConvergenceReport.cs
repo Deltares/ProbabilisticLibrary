@@ -19,25 +19,28 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+using System.Collections.Generic;
+using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class ReliabilityResult
+public class ConvergenceReport
 {
     private int id = 0;
 
-    public ReliabilityResult()
+    public ConvergenceReport()
     {
-        id = Interface.Create("reliability_result");
+        id = Interface.Create("convergence_report");
     }
 
-    internal ReliabilityResult(int id)
+    internal ConvergenceReport(int id)
     {
         this.id = id;
     }
 
-    ~ReliabilityResult()
+    ~ConvergenceReport()
     {
         Interface.Destroy(id);
     }
@@ -47,39 +50,39 @@ public class ReliabilityResult
         return id;
     }
 
-    public int Index
-    {
-        get { return Interface.GetIntValue(id, "index"); }
-        set { Interface.SetIntValue(id, "index", value); }
-    }
-
-    public double ReliabilityIndex
-    {
-        get { return Interface.GetValue(id, "reliability_index"); }
-        set { Interface.SetValue(id, "reliability_index", value); }
-    }
-
     public double Convergence
     {
         get { return Interface.GetValue(id, "convergence"); }
         set { Interface.SetValue(id, "convergence", value); }
     }
 
-    public double Variation
+    public bool IsConverged
     {
-        get { return Interface.GetValue(id, "variation"); }
-        set { Interface.SetValue(id, "variation", value); }
+        get { return Interface.GetBoolValue(id, "is_converged"); }
+        set { Interface.SetBoolValue(id, "is_converged", value); }
     }
 
-    public double Contribution
+    public double VarianceFactor
     {
-        get { return Interface.GetValue(id, "contribution"); }
-        set { Interface.SetValue(id, "contribution", value); }
+        get { return Interface.GetValue(id, "variance_factor"); }
+        set { Interface.SetValue(id, "variance_factor", value); }
     }
 
-    public int Samples
+    public double RelaxationFactor
     {
-        get { return Interface.GetIntValue(id, "samples"); }
-        set { Interface.SetIntValue(id, "samples", value); }
+        get { return Interface.GetValue(id, "relaxation_factor"); }
+        set { Interface.SetValue(id, "relaxation_factor", value); }
+    }
+
+    public double FailFraction
+    {
+        get { return Interface.GetValue(id, "fail_fraction"); }
+        set { Interface.SetValue(id, "fail_fraction", value); }
+    }
+
+    public int FailedSamples
+    {
+        get { return Interface.GetIntValue(id, "failed_samples"); }
+        set { Interface.SetIntValue(id, "failed_samples", value); }
     }
 }

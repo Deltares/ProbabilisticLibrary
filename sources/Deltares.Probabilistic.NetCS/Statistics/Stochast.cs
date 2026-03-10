@@ -70,6 +70,12 @@ namespace Deltares.Probabilistic.Statistics
             set { Interface.SetStringValue(id, "distribution", DistributionTypeConverter.ConvertToString(value)); }
         }
 
+        public ConstantParameterType ConstantParameterType
+        {
+            get { return ConstantParameterTypeConverter.ConvertFromString(Interface.GetStringValue(id, "constant_parameter")); }
+            set { Interface.SetStringValue(id, "constant_parameter", ConstantParameterTypeConverter.ConvertToString(value)); }
+        }
+
         public bool Inverted
         {
             get { return Interface.GetBoolValue(id, "inverted"); }
@@ -452,6 +458,11 @@ namespace Deltares.Probabilistic.Statistics
             return Interface.GetValue(id, "ks_test");
         }
 
+        public double[] GetSpecialXValues()
+        {
+            return Interface.GetArrayValue(id, "special_values");
+        }
+
         public void CopyFrom(Stochast source)
         {
             if (source != null)
@@ -469,6 +480,43 @@ namespace Deltares.Probabilistic.Statistics
         public void InitializeForRun()
         {
             Interface.Execute(id, "initialize_for_run");
+        }
+
+        public bool CanTruncate()
+        {
+            return Interface.GetBoolValue(id, "can_truncate");
+        }
+
+        public bool CanInvert()
+        {
+            return Interface.GetBoolValue(id, "can_invert");
+        }
+
+        public bool HasParameter(DistributionPropertyType property)
+        {
+            switch (property)
+            {
+                case DistributionPropertyType.Location: return Interface.GetBoolValue(id, "is_used_location");
+                case DistributionPropertyType.Scale: return Interface.GetBoolValue(id, "is_used_scale");
+                case DistributionPropertyType.Minimum: return Interface.GetBoolValue(id, "is_used_minimum");
+                case DistributionPropertyType.Maximum: return Interface.GetBoolValue(id, "is_used_maximum");
+                case DistributionPropertyType.Shift: return Interface.GetBoolValue(id, "is_used_shift");
+                case DistributionPropertyType.ShiftB: return Interface.GetBoolValue(id, "is_used_shift_b");
+                case DistributionPropertyType.Shape: return Interface.GetBoolValue(id, "is_used_shape");
+                case DistributionPropertyType.ShapeB: return Interface.GetBoolValue(id, "is_used_shape_b");
+                case DistributionPropertyType.Observations: return Interface.GetBoolValue(id, "is_used_observations");
+                default: throw new System.NotSupportedException(property.ToString());
+            }
+        }
+
+        public bool IsQualitative()
+        {
+            return Interface.GetBoolValue(id, "is_qualitative");
+        }
+
+        public bool IsValid()
+        {
+            return Interface.GetBoolValue(id, "is_valid");
         }
     }
 }

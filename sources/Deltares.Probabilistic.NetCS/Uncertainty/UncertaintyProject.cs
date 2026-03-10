@@ -84,6 +84,11 @@ namespace Deltares.Probabilistic.Uncertainty
             Interface.Execute(id, "run");
         }
 
+        public void Stop()
+        {
+            Interface.Execute(id, "stop");
+        }
+
         public UncertaintyResult Result
         {
             get

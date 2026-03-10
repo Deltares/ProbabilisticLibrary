@@ -64,6 +64,16 @@ public static class StandardNormal
         return Interface.GetArgValue(id, "u_from_t", t);
     }
 
+    public static double GetTFromP(double p)
+    {
+        return Interface.GetArgValue(id, "t_from_p", p);
+    }
+
+    public static double GetPFromT(double t)
+    {
+        return Interface.GetArgValue(id, "p_from_t", t);
+    }
+
     public static double BetaMax
     {
         get
@@ -76,6 +86,17 @@ public static class StandardNormal
             return betaMax;
         }
     }
+
+    public static bool IsBetaMin(double beta)
+    {
+        return beta <= -BetaMax;
+    }
+
+    public static bool IsBetaMax(double beta)
+    {
+        return beta >= BetaMax;
+    }
+
 
     public static double UMax
     {

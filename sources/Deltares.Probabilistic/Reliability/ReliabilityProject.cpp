@@ -39,6 +39,11 @@ namespace Deltares::Reliability
         }
     }
 
+    void ReliabilityProject::stop()
+    {
+        this->reliabilityMethod->Stop();
+    }
+
     std::shared_ptr<Reliability::DesignPoint> ReliabilityProject::getDesignPoint()
     {
         this->model->zValueConverter = this->limitStateFunction;

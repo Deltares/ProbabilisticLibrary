@@ -86,6 +86,11 @@ namespace Deltares::Sensitivity
         model->Index = 0;
     }
 
+    void SensitivityProject::stop()
+    {
+        sensitivityMethod->Stop();
+    }
+
     SensitivityResult SensitivityProject::getSensitivityResult()
     {
         model->zValueConverter = outputSelector;

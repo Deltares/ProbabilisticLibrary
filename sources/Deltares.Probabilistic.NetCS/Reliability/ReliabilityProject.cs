@@ -73,6 +73,11 @@ namespace Deltares.Probabilistic.Reliability
             Interface.Execute(id, "run");
         }
 
+        public void Stop()
+        {
+            Interface.Execute(id, "stop");
+        }
+
         public DesignPoint DesignPoint
         {
             get

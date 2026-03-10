@@ -85,9 +85,14 @@ namespace Deltares::Sensitivity
         SensitivityResult getSensitivityResult();
 
         /**
-         * \brief Runs the reliability calculation
+         * \brief Runs the sensitivity calculation
          */
         void run() override;
+
+        /**
+         * \brief Stops the sensitivity calculation
+         */
+        void stop() override;
 
         /**
          * \brief Sets the settings
