@@ -55,6 +55,8 @@ public class TestObjectProperties
     [TestCase(typeof(StochastSettings))]
     [TestCase(typeof(DesignPoint))]
     [TestCase(typeof(ReliabilityResult))]
+    [TestCase(typeof(ConvergenceReport))]
+    [TestCase(typeof(FragilityCurve), "DistributionType", "ConstantParameterType", "Truncated", "Mean", "Deviation", "Variation", "DesignValue")]
     [TestCase(typeof(CombineProject))]
     [TestCase(typeof(CombineSettings))]
     [TestCase(typeof(SensitivityProject))]

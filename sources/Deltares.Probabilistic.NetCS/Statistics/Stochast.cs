@@ -58,6 +58,11 @@ namespace Deltares.Probabilistic.Statistics
             return id;
         }
 
+        internal void SetId(int id)
+        {
+            this.id = id;
+        }
+
         public string Name
         {
             get { return Interface.GetStringValue(id, "name"); }

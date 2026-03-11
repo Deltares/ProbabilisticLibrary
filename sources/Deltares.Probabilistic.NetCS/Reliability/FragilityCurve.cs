@@ -28,12 +28,13 @@ public class FragilityCurve : Stochast
 {
     private int id = 0;
 
-    public FragilityCurve()
+    public FragilityCurve() : base(-1)
     {
         id = Interface.Create("fragility_curve");
+        base.SetId(id);
     }
 
-    internal FragilityCurve(int id)
+    internal FragilityCurve(int id) : base(id)
     {
         this.id = id;
     }
@@ -48,11 +49,11 @@ public class FragilityCurve : Stochast
         return id;
     }
 
-    public bool Inverted
-    {
-        get { return Interface.GetBoolValue(id, "inverted"); }
-        set { Interface.SetBoolValue(id, "inverted", value); }
-    }
+    //public bool Inverted
+    //{
+    //    get { return Interface.GetBoolValue(id, "inverted"); }
+    //    set { Interface.SetBoolValue(id, "inverted", value); }
+    //}
 
     public bool Fixed
     {

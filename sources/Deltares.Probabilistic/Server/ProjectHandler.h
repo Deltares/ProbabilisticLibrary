@@ -187,7 +187,9 @@ namespace Deltares::Server
 
         std::shared_ptr<Models::ModelProject> GetProject(int id);
         std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
+        std::shared_ptr<Statistics::Stochast> GetStochast(int id);
         static bool IsModelProjectType(ObjectType objectType);
         static bool IsModelSettingsType(ObjectType objectType);
+        static bool IsStochast(ObjectType objectType);
     };
 }

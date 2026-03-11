@@ -32,7 +32,7 @@ internal static class ConstantParameterTypeConverter
         return method switch
         {
             ConstantParameterType.Deviation => "deviation",
-            ConstantParameterType.VariationCoefficient => "variation_coefficient",
+            ConstantParameterType.VariationCoefficient => "variation",
             _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
         };
     }
@@ -42,8 +42,8 @@ internal static class ConstantParameterTypeConverter
         return value switch
         {
             "deviation" => ConstantParameterType.Deviation,
-            "variation_coefficient" => ConstantParameterType.VariationCoefficient,
-            _ => throw new ArgumentException($"Unknown gradient method: '{value}'", nameof(value))
+            "variation" => ConstantParameterType.VariationCoefficient,
+            _ => throw new ArgumentException($"Unknown constant parameter type: '{value}'", nameof(value))
         };
     }
 }
