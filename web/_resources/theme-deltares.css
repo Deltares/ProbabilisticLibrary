@@ -1,0 +1,295 @@
+/* Deltares Probabilistic Library - Professional Theme Enhancement */
+/* Maintains PyData scientific credibility with subtle Deltares branding */
+
+:root {
+    /* Deltares Brand Colors - used subtly throughout */
+    --deltares-blue: #0071bc;
+    --deltares-blue-dark: #005a94;
+    --deltares-blue-light: #339fd9;
+    --deltares-teal: #00a19a;
+    --deltares-gray: #63666a;
+    --deltares-gray-light: #e8e9ea;
+}
+
+/* ========== Header & Navigation ========== */
+
+.bd-header {
+    border-bottom: 3px solid var(--deltares-teal);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.bd-header .navbar-nav .nav-link {
+    transition: color 0.2s ease;
+}
+
+.bd-header .navbar-nav .nav-link:hover {
+    color: var(--deltares-teal);
+}
+
+/* ========== Sidebar Navigation ========== */
+
+.bd-sidebar .nav-link {
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.bd-sidebar .nav-link:hover {
+    border-left-color: var(--deltares-blue-light);
+    background-color: rgba(0, 113, 188, 0.04);
+}
+
+.bd-sidebar .nav-link.active {
+    border-left-color: var(--deltares-blue);
+    background-color: rgba(0, 113, 188, 0.08);
+    font-weight: 500;
+    color: var(--deltares-blue-dark);
+}
+
+/* ========== Typography & Headings ========== */
+
+h1 {
+    color: var(--deltares-blue-dark);
+    border-bottom: 2px solid var(--deltares-teal);
+    padding-bottom: 0.5rem;
+}
+
+h2 {
+    color: var(--deltares-blue);
+    border-bottom: 1px solid var(--deltares-gray-light);
+    padding-bottom: 0.4rem;
+    margin-top: 2rem;
+}
+
+h3 {
+    color: var(--deltares-blue);
+}
+
+h4, h5, h6 {
+    color: var(--deltares-gray);
+}
+
+/* ========== Links ========== */
+
+a {
+    color: var(--deltares-blue);
+}
+
+a:hover {
+    color: var(--deltares-teal);
+}
+
+.bd-content a code {
+    color: var(--deltares-blue);
+}
+
+/* ========== Tutorial Gallery Cards ========== */
+
+/* Enhance the tutorial image cards */
+table.docutils {
+    border-collapse: separate;
+    border-spacing: 1rem;
+    margin: 2rem 0;
+}
+
+table.docutils td {
+    padding: 0.75rem;
+    vertical-align: top;
+    background-color: #fafbfc;
+    border: 1px solid var(--deltares-gray-light);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+table.docutils td:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 113, 188, 0.15);
+    border-color: var(--deltares-blue-light);
+}
+
+table.docutils img {
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+    margin: 0 auto 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+table.docutils td:hover img {
+    transform: scale(1.02);
+}
+
+table.docutils a {
+    display: block;
+    text-align: center;
+    font-weight: 500;
+    padding: 0.5rem;
+    color: var(--deltares-blue-dark);
+    text-decoration: none;
+}
+
+table.docutils a:hover {
+    color: var(--deltares-teal);
+    background-color: rgba(0, 113, 188, 0.05);
+    border-radius: 4px;
+}
+
+/* ========== Tables (Data Tables) ========== */
+
+table.table,
+table.dataframe {
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+}
+
+table thead {
+    background-color: var(--deltares-blue);
+    color: white;
+}
+
+table thead th {
+    padding: 0.75rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--deltares-blue-dark);
+}
+
+table tbody tr {
+    border-bottom: 1px solid var(--deltares-gray-light);
+    transition: background-color 0.15s ease;
+}
+
+table tbody tr:hover {
+    background-color: rgba(0, 113, 188, 0.04);
+}
+
+table tbody td {
+    padding: 0.65rem 0.75rem;
+}
+
+/* ========== Admonitions ========== */
+
+.admonition {
+    border-left: 4px solid var(--deltares-blue);
+    border-radius: 4px;
+    margin: 1.5rem 0;
+}
+
+.admonition.note {
+    border-left-color: var(--deltares-blue);
+}
+
+.admonition.tip {
+    border-left-color: var(--deltares-teal);
+}
+
+.admonition-title {
+    font-weight: 600;
+}
+
+/* ========== Horizontal Rules ========== */
+
+hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        var(--deltares-blue) 0%, 
+        var(--deltares-teal) 100%);
+    margin: 2rem 0;
+}
+
+/* ========== Footer ========== */
+
+.bd-footer {
+    border-top: 3px solid var(--deltares-teal);
+    margin-top: 4rem;
+}
+
+/* ========== Icon Links ========== */
+
+.navbar-icon-links a {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.navbar-icon-links a:hover {
+    transform: translateY(-2px);
+    opacity: 0.8;
+}
+
+/* ========== Search Box ========== */
+
+.bd-search {
+    transition: all 0.2s ease;
+}
+
+.bd-search:focus-within {
+    box-shadow: 0 0 0 3px rgba(0, 113, 188, 0.15);
+}
+
+/* ========== Mermaid Diagrams ========== */
+
+.mermaid {
+    background-color: #fafbfc;
+    border: 1px solid var(--deltares-gray-light);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+/* ========== Notebook Cells ========== */
+
+.nbinput {
+    border-left: none;
+}
+
+.nboutput {
+    border-left: none;
+}
+
+/* ========== Section Navigation ========== */
+
+.toc-entry a {
+    transition: color 0.2s ease;
+}
+
+.toc-entry a:hover {
+    color: var(--deltares-teal);
+}
+
+/* ========== Accessibility ========== */
+
+*:focus-visible {
+    outline: 2px solid var(--deltares-blue);
+    outline-offset: 2px;
+}
+
+/* ========== Responsive Adjustments ========== */
+
+@media (max-width: 768px) {
+    table.docutils {
+        border-spacing: 0.5rem;
+    }
+    
+    table.docutils img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* ========== Print Styles ========== */
+
+@media print {
+    .bd-header,
+    .bd-sidebar,
+    .bd-footer {
+        display: none;
+    }
+    
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: var(--deltares-gray);
+    }
+}

@@ -4,3 +4,6 @@ create_wheel.bat - Creates the wheel file
 install_wheel.bat - Installs the wheel (reinstall if already existing)
 uninstall_wheel.bat - Uninstalls the wheel 
 update_wheel.bat - Combines create wheel and (re)install wheel 
+
+
+build sphinx documentation: in folder Deltares.Probabilistic.PWrapper, run: Deltares.Probabilistic.PWrapper>    sphinx-build -b html ../../docs ../../docs/build/html
