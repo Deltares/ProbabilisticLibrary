@@ -76,7 +76,6 @@ public class CorrelationMatrix
         }
     }
 
-
     public double GetCorrelation(Stochast stochast1, Stochast stochast2)
     {
         return Interface.GetIndexedIndexedValue(id, "correlation", stochast1.GetId(), stochast2.GetId());

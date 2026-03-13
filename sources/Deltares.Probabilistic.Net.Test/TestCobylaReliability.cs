@@ -44,5 +44,18 @@ namespace Deltares.Probabilistic.Test
             ClassicAssert.AreEqual(2.326, designPoint.Beta, margin);
         }
 
+        [Test]
+        public void TestBligh()
+        {
+            var project = ProjectBuilder.GetBlighProject();
+
+            project.Settings.ReliabilityMethod = ReliabilityMethod.Cobyla;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
+
+            ClassicAssert.AreEqual(1.68, designPoint.Beta, margin);
+        }
+
     }
 }
