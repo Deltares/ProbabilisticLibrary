@@ -19,29 +19,31 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability
 {
-    public class ReliabilityProject : ModelProject
+    public class FragilityCurveProject
     {
         private readonly int id = 0;
-        private ReliabilitySettings settings = null;
+        private FragilitySettings settings = null;
+        private Stochast integrand = null;
+        private FragilityCurve fragilityCurve = null;
+        private FragilityCurve fragilityCurveNormalized = null;
         private DesignPoint designPoint = null;
 
-        public ReliabilityProject() : base(-1)
+        public FragilityCurveProject()
         {
-            this.id = Interface.Create("project");
-            base.SetId(id);
+            this.id = Interface.Create("fragility_project");
         }
 
-        internal ReliabilityProject(int id) : base(id)
+        internal FragilityCurveProject(int id)
         {
             this.id = id;
         }
 
-        public ReliabilitySettings Settings
+        public FragilitySettings Settings
         {
             get
             {
@@ -50,20 +52,59 @@ namespace Deltares.Probabilistic.Reliability
                     int settingsId = Interface.GetIdValue(id, "settings");
                     if (settingsId == 0)
                     {
-                        settings = new ReliabilitySettings();
+                        settings = new FragilitySettings();
                         Interface.SetIntValue(id, "settings", settings.GetId());
                     }
                     else
                     {
-                        settings = new ReliabilitySettings(settingsId);
+                        settings = new FragilitySettings(settingsId);
                     }
                 }
                 return settings;
             }
             set
             {
-                Interface.SetIntValue(id, "settings", value.GetId());
+                Interface.SetIntValue(id, "settings",  value.GetId()); 
                 settings = value;
+            }
+        }
+
+        public Stochast Integrand
+        {
+            get
+            {
+                return integrand;
+            }
+            set
+            {
+                Interface.SetIntValue(id, "integrand", value.GetId());
+                integrand = value;
+            }
+        }
+
+        public FragilityCurve FragilityCurve
+        {
+            get
+            {
+                return fragilityCurve;
+            }
+            set
+            {
+                Interface.SetIntValue(id, "fragility_curve", value.GetId());
+                fragilityCurve = value;
+            }
+        }
+
+        public FragilityCurve FragilityCurveNormalized
+        {
+            get
+            {
+                return fragilityCurveNormalized;
+            }
+            set
+            {
+                Interface.SetIntValue(id, "fragility_curve_normalized", value.GetId());
+                fragilityCurveNormalized = value;
             }
         }
 
@@ -86,7 +127,6 @@ namespace Deltares.Probabilistic.Reliability
                 {
                     int designPointId = Interface.GetIdValue(id, "design_point");
                     designPoint = ObjectFactory.GetObject<DesignPoint>(designPointId);
-                    designPoint.SetTagRepository(this.TagRepository);
                 }
 
                 return designPoint;
@@ -96,12 +136,6 @@ namespace Deltares.Probabilistic.Reliability
                 Interface.SetIntValue(id, "design_point", value.GetId());
                 designPoint = value;
             }
-        }
-
-        public int TotalModelRuns
-        {
-            get { return Interface.GetIntValue(id, "total_model_runs"); }
-            set { Interface.SetIntValue(id, "total_model_runs", value); }
         }
     }
 }

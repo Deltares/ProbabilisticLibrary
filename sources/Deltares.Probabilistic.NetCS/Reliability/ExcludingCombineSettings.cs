@@ -1,4 +1,4 @@
-// Copyright (C) Stichting Deltares. All rights reserved.
+﻿// Copyright (C) Stichting Deltares. All rights reserved.
 //
 // This file is part of the Probabilistic Library.
 //
@@ -19,19 +19,37 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "FragilityCurveProject.h"
-#include "FragilityCurveIntegration.h"
+using Deltares.Probabilistic.Utils;
 
-#include <memory>
+namespace Deltares.Probabilistic.Reliability;
 
-namespace Deltares::Reliability
+public class ExcludingCombineSettings
 {
-    void FragilityCurveProject::run()
-    {
-        std::unique_ptr<FragilityCurveIntegration> calculator = std::make_unique<FragilityCurveIntegration>();
-        calculator->Settings = this->settings;
+    private int id = 0;
 
-        this->designPoint = calculator->getDesignPoint(this->integrand, this->fragilityCurve, this->fragilityCurveNormalized);
+    public ExcludingCombineSettings()
+    {
+        this.id = Interface.Create("excluding_combine_settings");
+    }
+
+    internal ExcludingCombineSettings(int id)
+    {
+        this.id = id;
+    }
+
+    ~ExcludingCombineSettings()
+    {
+        Interface.Destroy(id);
+    }
+
+    internal int GetId()
+    {
+        return id;
+    }
+
+    public ExcludingCombineType CombineType
+    {
+        get { return ExcludingCombineTypeConverter.ConvertFromString(Interface.GetStringValue(id, "combine_type")); }
+        set { Interface.SetStringValue(id, "combine_type", ExcludingCombineTypeConverter.ConvertToString(value)); }
     }
 }
-

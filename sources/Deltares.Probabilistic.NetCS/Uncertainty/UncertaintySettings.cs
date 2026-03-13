@@ -155,6 +155,36 @@ public class UncertaintySettings
         set { Interface.SetBoolValue(id, "calculate_input_correlations", value); }
     }
 
+    public double ProbabilityForConvergence
+    {
+        get { return Interface.GetValue(id, "probability_for_convergence"); }
+        set { Interface.SetValue(id, "probability_for_convergence", value); }
+    }
+
+    public GradientMethod GradientType
+    {
+        get { return GradientMethodConverter.ConvertFromString(Interface.GetStringValue(id, "gradient_type")); }
+        set { Interface.SetStringValue(id, "gradient_type", GradientMethodConverter.ConvertToString(value)); }
+    }
+
+    public double MinimumU
+    {
+        get { return Interface.GetValue(id, "minimum_u"); }
+        set { Interface.SetValue(id, "minimum_u", value); }
+    }
+
+    public double MaximumU
+    {
+        get { return Interface.GetValue(id, "maximum_u"); }
+        set { Interface.SetValue(id, "maximum_u", value); }
+    }
+
+    public double GlobalStepSize
+    {
+        get { return Interface.GetValue(id, "global_step_size"); }
+        set { Interface.SetValue(id, "global_step_size", value); }
+    }
+
     public int GetRequiredSamples()
     {
         return Interface.GetIntValue(id, "required_samples");

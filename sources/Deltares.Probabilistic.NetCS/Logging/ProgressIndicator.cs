@@ -56,7 +56,11 @@ namespace Deltares.Probabilistic.Logging
         public void DoTextualProgress(int progressIndicator, string text)
         {
             ProgressType progressType = progressIndicator == 0 ? ProgressType.Global : ProgressType.Detailed;
+            DoTextualProgress(progressType, text);
+        }
 
+        public void DoTextualProgress(ProgressType progressType, string text)
+        {
             textualProgressDelegate?.Invoke(progressType, text);
         }
 

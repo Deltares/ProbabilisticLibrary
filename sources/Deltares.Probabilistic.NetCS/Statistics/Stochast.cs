@@ -301,7 +301,7 @@ namespace Deltares.Probabilistic.Statistics
             return Interface.GetArgValue(id, "x_from_u", u);
         }
 
-        public double GetUFromX(double x)
+        public virtual double GetUFromX(double x)
         {
             return Interface.GetArgValue(id, "u_from_x", x);
         }
@@ -405,6 +405,14 @@ namespace Deltares.Probabilistic.Statistics
         private void ConditionalValuesChanged(ListOperationType listOperation, ConditionalValue item)
         {
             Interface.SetArrayIntValue(id, "conditional_values", this.conditionalValues.Select(s => s.GetId()).ToArray());
+        }
+
+        public Stochast GetConditionalStochast(double x)
+        {
+            Interface.SetValue(id, "conditional_x", x);
+            int stochastId = Interface.GetIdValue(id, "conditional_x");
+
+            return new Stochast(stochastId);
         }
 
         public bool CanFit()

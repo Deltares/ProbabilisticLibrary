@@ -80,9 +80,23 @@ public class ConvergenceReport
         set { Interface.SetValue(id, "fail_fraction", value); }
     }
 
+    public double FailWeight
+    {
+        get { return Interface.GetValue(id, "fail_weight"); }
+        set { Interface.SetValue(id, "fail_weight", value); }
+    }
+
+    public double MaxWeight
+    {
+        get { return Interface.GetValue(id, "max_weight"); }
+        set { Interface.SetValue(id, "max_weight", value); }
+    }
+
     public int FailedSamples
     {
         get { return Interface.GetIntValue(id, "failed_samples"); }
         set { Interface.SetIntValue(id, "failed_samples", value); }
     }
+
+    public double ZMargin { get; set; }
 }

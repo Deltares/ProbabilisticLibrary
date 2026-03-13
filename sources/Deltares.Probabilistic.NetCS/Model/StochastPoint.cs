@@ -92,4 +92,9 @@ public class StochastPoint
     {
         return new ModelSample(this.Alphas.Select(p => p.X).ToArray());
     }
+
+    public ModelSample GetUModelSample()
+    {
+        return new ModelSample(this.Alphas.Select(p => p.U).ToArray());
+    }
 }

@@ -283,6 +283,36 @@ public class ReliabilitySettings
         set { Interface.SetBoolValue(id, "optimize_number_clusters", value); }
     }
 
+    public double EpsilonUStepSize
+    {
+        get { return Interface.GetValue(id, "epsilon_u_step_size"); }
+        set { Interface.SetValue(id, "epsilon_u_step_size", value); }
+    }
+
+    public double EpsilonZStepSize
+    {
+        get { return Interface.GetValue(id, "epsilon_z_step_size"); }
+        set { Interface.SetValue(id, "epsilon_z_step_size", value); }
+    }
+
+    public double MaximumLengthU
+    {
+        get { return Interface.GetValue(id, "maximum_length_u"); }
+        set { Interface.SetValue(id, "maximum_length_u", value); }
+    }
+
+    public double Dsdu
+    {
+        get { return Interface.GetValue(id, "dsdu"); }
+        set { Interface.SetValue(id, "dsdu", value); }
+    }
+
+    public double GlobalStepSize
+    {
+        get { return Interface.GetValue(id, "global_step_size"); }
+        set { Interface.SetValue(id, "global_step_size", value); }
+    }
+
     public void SetStartPoint(StochastPoint stochastPoint)
     {
         Interface.SetIntValue(id, "start_point", stochastPoint.GetId());

@@ -112,4 +112,9 @@ public class CorrelationMatrix
     {
         return Interface.GetBoolValue(id, "has_conflicting_correlations");
     }
+
+    public bool IsValid()
+    {
+        return Interface.GetBoolValue(id, "is_valid");
+    }
 }

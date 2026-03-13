@@ -134,7 +134,7 @@ namespace Deltares::Reliability
         /**
          * \brief Default number of intervals in numerical integration
          */
-        int Intervals = 200;
+        //int Intervals = 200;
 
         /**
          * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration

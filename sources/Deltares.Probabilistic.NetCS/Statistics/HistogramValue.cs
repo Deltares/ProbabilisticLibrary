@@ -72,4 +72,13 @@ public class HistogramValue
         set { Interface.SetValue(id, "amount", value); }
     }
 
+    public double Center
+    {
+        get { return (LowerBound + UpperBound) / 2; }
+    }
+
+    public double Size
+    {
+        get { return UpperBound - LowerBound; }
+    }
 }

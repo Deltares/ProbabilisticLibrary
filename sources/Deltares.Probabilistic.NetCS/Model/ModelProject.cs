@@ -206,5 +206,10 @@ namespace Deltares.Probabilistic.Model
         {
             get { return tagRepository; }
         }
+
+        public bool IsValid()
+        {
+            return Interface.GetBoolValue(id, "is_valid");
+        }
     }
 }

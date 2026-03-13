@@ -19,8 +19,10 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
+using System.Collections.Generic;
 
 namespace Deltares.Probabilistic.Reliability;
 
@@ -49,12 +51,6 @@ public class FragilityCurve : Stochast
         return id;
     }
 
-    //public bool Inverted
-    //{
-    //    get { return Interface.GetBoolValue(id, "inverted"); }
-    //    set { Interface.SetBoolValue(id, "inverted", value); }
-    //}
-
     public bool Fixed
     {
         get { return Interface.GetBoolValue(id, "fixed"); }
@@ -65,5 +61,13 @@ public class FragilityCurve : Stochast
     {
         get { return Interface.GetValue(id, "fixed_value"); }
         set { Interface.SetValue(id, "fixed_value", value); }
+    }
+
+    public virtual StochastPoint GetRealization(double x)
+    {
+        Interface.SetValue(id, "design_point_x", x);
+        int designPointId = Interface.GetIdValue(id, "design_point_x");
+
+        return new DesignPoint(designPointId);
     }
 }

@@ -118,6 +118,26 @@ public class ModelSample
     public bool IsRestartRequired { get; set; }
 
     public object Tag { get; set; } = null;
+
+    public bool AreValuesEqual(ModelSample sample)
+    {
+        const double tolerance = 1E10;
+
+        if (sample.Values.Length != Values.Length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < Values.Length; i++)
+        {
+            if (Math.Abs(Values[i] - sample.Values[i]) > tolerance)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
 [StructLayout(LayoutKind.Sequential)]

@@ -40,6 +40,19 @@ namespace Deltares::Reliability
     class DesignPoint : public Models::StochastPoint
     {
     public:
+        DesignPoint() = default;
+
+        /**
+         * \brief Transforms a stochast point to a design point
+         */
+        DesignPoint(Models::StochastPoint& stochastPoint)
+        {
+            for (auto alpha : stochastPoint.Alphas)
+            {
+                this->Alphas.push_back(alpha);
+            }
+        }
+
         std::string Identifier;
 
         /**

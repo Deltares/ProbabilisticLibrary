@@ -21,29 +21,23 @@
 //
 using Deltares.Probabilistic.Utils;
 
-namespace Deltares.Probabilistic.Statistics;
+namespace Deltares.Probabilistic.Reliability;
 
-public class DiscreteValue
+public class FragilitySettings
 {
     private int id = 0;
 
-    public DiscreteValue()
+    public FragilitySettings()
     {
-        this.id = Interface.Create("discrete_value");
+        this.id = Interface.Create("fragility_settings");
     }
 
-    public DiscreteValue(double x, double amount) : this()
-    {
-        this.X = x;
-        this.Amount = amount;
-    }
-
-    internal DiscreteValue(int id)
+    internal FragilitySettings(int id)
     {
         this.id = id;
     }
 
-    ~DiscreteValue()
+    ~FragilitySettings()
     {
         Interface.Destroy(id);
     }
@@ -53,25 +47,15 @@ public class DiscreteValue
         return id;
     }
 
-    public double X
+    public double StepSize
     {
-        get { return Interface.GetValue(id, "x"); }
-        set { Interface.SetValue(id, "x", value); }
+        get { return Interface.GetValue(id, "step_size"); }
+        set { Interface.SetValue(id, "step_size", value); }
     }
 
-    public double Amount
+    public DesignPointMethod DesignPointMethod
     {
-        get { return Interface.GetValue(id, "amount"); }
-        set { Interface.SetValue(id, "amount", value); }
-    }
-
-    public double NormalizedAmount
-    {
-        get { return Interface.GetValue(id, "normalized_amount"); }
-    }
-
-    public double CumulativeAmount
-    {
-        get { return Interface.GetValue(id, "cumulative_amount"); }
+        get { return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method")); }
+        set { Interface.SetStringValue(id, "design_point_method", DesignPointMethodConverter.ConvertToString(value)); }
     }
 }

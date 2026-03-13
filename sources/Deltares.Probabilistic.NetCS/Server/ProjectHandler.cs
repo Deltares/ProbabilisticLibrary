@@ -132,4 +132,14 @@ public class ProjectHandler
     {
         return Interface.GetIdValue(id, property);
     }
+
+    public virtual double GetIndexedIndexedValue(int id, string property, int index1, int index2)
+    {
+        return Interface.GetIndexedIndexedValue(id, property, index1, index2);
+    }
+
+    public virtual void SetIndexedIndexedValue(int id, string property, int index1, int index2, double value)
+    {
+        Interface.SetIndexedIndexedValue(id, property, index1, index2, value);
+    }
 }

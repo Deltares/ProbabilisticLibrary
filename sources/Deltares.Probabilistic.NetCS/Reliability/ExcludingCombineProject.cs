@@ -27,27 +27,25 @@ using System.Linq;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class CombineProject
+public class ExcludingCombineProject
 {
     private readonly int id = 0;
-    private CombineSettings settings = null;
-    private CorrelationMatrix correlationMatrix = null;
-    private SelfCorrelationMatrix selfCorrelationMatrix = null;
+    private ExcludingCombineSettings settings = null;
     private CallBackList<DesignPoint> designPoints = null;
+    private CallBackList<Scenario> scenarios = null;
     private DesignPoint designPoint = null;
-    private ProgressIndicator progressIndicator = null;
 
-    public CombineProject()
+    public ExcludingCombineProject()
     {
         this.id = Interface.Create("combine_project");
     }
 
-    internal CombineProject(int id)
+    internal ExcludingCombineProject(int id)
     {
         this.id = id;
     }
 
-    ~CombineProject()
+    ~ExcludingCombineProject()
     {
         Interface.Destroy(id);
     }
@@ -57,7 +55,7 @@ public class CombineProject
         return id;
     }
 
-    public CombineSettings Settings
+    public ExcludingCombineSettings Settings
     {
         get
         {
@@ -66,14 +64,15 @@ public class CombineProject
                 int settingsId = Interface.GetIdValue(id, "settings");
                 if (settingsId == 0)
                 {
-                    settings = new CombineSettings();
+                    settings = new ExcludingCombineSettings();
                     Interface.SetIntValue(id, "settings", settings.GetId());
                 }
                 else
                 {
-                    settings = new CombineSettings(settingsId);
+                    settings = new ExcludingCombineSettings(settingsId);
                 }
             }
+
             return settings;
         }
         set
@@ -107,56 +106,28 @@ public class CombineProject
         Interface.SetArrayIntValue(id, "design_points", this.designPoints.Select(p => p.GetId()).ToArray());
     }
 
-    public CorrelationMatrix CorrelationMatrix
+    public IList<Scenario> Scenarios
     {
         get
         {
-            if (correlationMatrix == null)
+            if (scenarios == null)
             {
-                int correlationMatrixId = Interface.GetIdValue(id, "design_point_correlation_matrix");
-                if (correlationMatrixId == 0)
+                scenarios = new CallBackList<Scenario>(ScenariosChanged);
+
+                int[] scenarioIds = Interface.GetArrayIdValue(id, "scenarios");
+                foreach (int scenarioId in scenarioIds)
                 {
-                    correlationMatrix = new CorrelationMatrix();
-                    Interface.SetIntValue(id, "design_point_correlation_matrix", correlationMatrix.GetId());
-                }
-                else
-                {
-                    correlationMatrix = new CorrelationMatrix(correlationMatrixId);
+                    scenarios.AddWithoutCallBack(ObjectFactory.GetObject<Scenario>(scenarioId));
                 }
             }
-            return correlationMatrix;
-        }
-        set
-        {
-            Interface.SetIntValue(id, "design_point_correlation_matrix", value.GetId());
-            correlationMatrix = value;
+
+            return scenarios;
         }
     }
 
-    public SelfCorrelationMatrix SelfCorrelationMatrix
+    private void ScenariosChanged(ListOperationType listOperation, Scenario item)
     {
-        get
-        {
-            if (selfCorrelationMatrix == null)
-            {
-                int selfCorrelationMatrixId = Interface.GetIdValue(id, "correlation_matrix");
-                if (selfCorrelationMatrixId == 0)
-                {
-                    selfCorrelationMatrix = new SelfCorrelationMatrix();
-                    Interface.SetIntValue(id, "correlation_matrix", correlationMatrix.GetId());
-                }
-                else
-                {
-                    selfCorrelationMatrix = new SelfCorrelationMatrix(selfCorrelationMatrixId);
-                }
-            }
-            return selfCorrelationMatrix;
-        }
-        set
-        {
-            Interface.SetIntValue(id, "correlation_matrix", value.GetId());
-            selfCorrelationMatrix = value;
-        }
+        Interface.SetArrayIntValue(id, "scenarios", this.scenarios.Select(p => p.GetId()).ToArray());
     }
 
     public void Run()
@@ -183,18 +154,6 @@ public class CombineProject
             designPoint = value;
         }
     }
-
-    public ProgressIndicator ProgressIndicator
-    {
-        get { return progressIndicator; }
-        set
-        {
-            if (value != null)
-            {
-                Interface.SetProgressCallbacks(id, value.DoProgress, value.DoDetailedProgress, value.DoTextualProgress);
-            }
-
-            progressIndicator = value;
-        }
-    }
 }
+
+ 

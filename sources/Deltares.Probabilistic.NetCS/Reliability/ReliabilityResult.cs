@@ -82,4 +82,8 @@ public class ReliabilityResult
         get { return Interface.GetIntValue(id, "samples"); }
         set { Interface.SetIntValue(id, "samples", value); }
     }
+
+    public double Difference { get; set; }
+    public double LowReliability { get; set; }
+    public double HighReliability { get; set; }
 }
