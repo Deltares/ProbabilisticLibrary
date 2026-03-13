@@ -459,7 +459,6 @@ namespace Deltares::Server
             else if (property_ == "epsilon_z_step_size") return settings->DirectionSettings->EpsilonZStepSize;
             else if (property_ == "dsdu") return settings->DirectionSettings->Dsdu;
             else if (property_ == "maximum_length_u") return settings->DirectionSettings->MaximumLengthU;
-            else if (property_ == "global_step_size") return settings->GradientSettings->StepSize;
             else if (property_ == "markov_chain_deviation") return settings->MarkovChainDeviation;
             else if (property_ == "subset_fraction") return settings->SubsetFraction;
             else if (property_ == "step_size") return settings->GradientSettings->StepSize;
@@ -689,7 +688,7 @@ namespace Deltares::Server
             else if (property_ == "epsilon_z_step_size") settings->DirectionSettings->EpsilonZStepSize = value;
             else if (property_ == "dsdu") settings->DirectionSettings->Dsdu = value;
             else if (property_ == "maximum_length_u") settings->DirectionSettings->MaximumLengthU = value;
-            else if (property_ == "global_step_size") settings->GradientSettings->StepSize = value;
+            //else if (property_ == "global_step_size") settings->GradientSettings->StepSize = value;
             else if (property_ == "markov_chain_deviation") settings->MarkovChainDeviation = value;
             else if (property_ == "subset_fraction") settings->SubsetFraction = value;
             else if (property_ == "step_size") settings->GradientSettings->StepSize = value;

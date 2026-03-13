@@ -307,12 +307,6 @@ public class ReliabilitySettings
         set { Interface.SetValue(id, "dsdu", value); }
     }
 
-    public double GlobalStepSize
-    {
-        get { return Interface.GetValue(id, "global_step_size"); }
-        set { Interface.SetValue(id, "global_step_size", value); }
-    }
-
     public void SetStartPoint(StochastPoint stochastPoint)
     {
         Interface.SetIntValue(id, "start_point", stochastPoint.GetId());

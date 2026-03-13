@@ -128,7 +128,7 @@ public class CombineProject
         }
         set
         {
-            Interface.SetIntValue(id, "design_point_correlation_matrix", value.GetId());
+            Interface.SetIntValue(id, "design_point_correlation_matrix", value?.GetId() ?? 0);
             correlationMatrix = value;
         }
     }
