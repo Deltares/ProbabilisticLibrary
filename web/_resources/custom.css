@@ -395,9 +395,9 @@ a.headerlink:hover {
 .psl-hero {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #003d6b 0%, #0071bc 40%, #00a19a 100%);
+    background: #0071bc;
     color: #fff;
-    padding: 5rem 2rem 4rem;
+    padding: 3rem 2rem 2.5rem;
     text-align: center;
     border-radius: 0 0 1.5rem 1.5rem;
 }
@@ -415,18 +415,18 @@ a.headerlink:hover {
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 999px;
-    padding: 0.35rem 1.2rem;
-    font-size: 0.85rem;
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.5px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .psl-hero-title {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
     font-weight: 700;
     line-height: 1.15;
-    margin: 0 0 1rem;
+    margin: 0 0 0.75rem;
     color: #fff;
     border: none;
 }
@@ -438,11 +438,11 @@ a.headerlink:hover {
 }
 
 .psl-hero-sub {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.9);
     max-width: 640px;
-    margin: 0 auto 2rem;
+    margin: 0 auto 1.5rem;
 }
 
 /* Hero CTA buttons */
@@ -451,7 +451,6 @@ a.headerlink:hover {
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 2.5rem;
 }
 
 .psl-btn {
@@ -646,7 +645,7 @@ a.headerlink:hover {
 
 @media (max-width: 768px) {
     .psl-hero {
-        padding: 3rem 1.5rem 2.5rem;
+        padding: 2rem 1.5rem 1.5rem;
     }
 
     .psl-hero-title {

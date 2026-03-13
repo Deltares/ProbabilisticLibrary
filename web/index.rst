@@ -21,30 +21,26 @@
          <a href="installation.html" class="psl-btn psl-btn--light">
            ▶ &nbsp;Get Started
          </a>
-         <a href="https://github.com/Deltares/ProbabilisticLibrary" class="psl-btn psl-btn--outline">
-           ⌥ &nbsp;GitHub
+         <a href="https://github.com/Deltares/ProbabilisticLibrary/discussions" class="psl-btn psl-btn--light">
+           ⌥ &nbsp;Forum
          </a>
-       </div>
-       <div class="psl-hero-stats">
-         <div class="psl-stat"><span class="psl-stat-num">6+</span><span class="psl-stat-label">Reliability Methods</span></div>
-         <div class="psl-stat"><span class="psl-stat-num">Python</span><span class="psl-stat-label">First-class Interface</span></div>
-         <div class="psl-stat"><span class="psl-stat-num">C++</span><span class="psl-stat-label">High-perf Kernel</span></div>
-         <div class="psl-stat"><span class="psl-stat-num">Open</span><span class="psl-stat-label">Community-driven</span></div>
        </div>
      </div>
    </div>
 
 
-Suite Components
-----------------
+What is the Probabilistic Suite?
+--------------------------------
+The Probabilistic Suite enables quantitative analysis of uncertainty and risk in engineering and scientific models.
+It consists of the following components:
 
 .. grid:: 1 1 3 3
    :gutter: 3
    :class-container: psl-section psl-cards-section
 
    .. grid-item-card:: ⚡ Probabilistic Library (C++)
-      :link: api_reference/index
-      :link-type: doc
+      :link: https://github.com/Deltares/ProbabilisticLibrary
+      :link-type: url
       :class-card: psl-card
       :class-header: psl-card-header psl-card-header--teal
 
@@ -52,7 +48,7 @@ Suite Components
       analyses. The computational core powering the entire suite.
 
       +++
-      .. button-ref:: api_reference/index
+      .. button-link:: https://github.com/Deltares/ProbabilisticLibrary
          :color: primary
          :outline:
          :expand:
@@ -69,7 +65,7 @@ Suite Components
       scripting, automation, and integration with your toolchain.
 
       +++
-      .. button-ref:: installation
+      .. button-ref:: api_reference/index
          :color: primary
          :outline:
          :expand:
@@ -92,6 +88,9 @@ Suite Components
          :expand:
 
          Download PTK →
+
+Together, these components allow users to move seamlessly from exploratory analysis to automated workflows and large-scale studies.
+The algorithms implemented in the Probabilistic Suite are described in detail in the scientific background.
 
 
 What You'll Find Here
