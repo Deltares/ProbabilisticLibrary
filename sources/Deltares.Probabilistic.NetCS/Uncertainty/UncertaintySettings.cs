@@ -31,7 +31,7 @@ namespace Deltares.Probabilistic.Uncertainty;
 public class UncertaintySettings
 {
     private int id = 0;
-    private List<StochastSettings> stochastSettings = null;
+    private CallBackList<StochastSettings> stochastSettings = null;
 
     public UncertaintySettings()
     {
@@ -190,35 +190,13 @@ public class UncertaintySettings
         return Interface.GetIntValue(id, "required_samples");
     }
 
-    internal void SetVariables(IList<Stochast> stochasts)
-    {
-        List<StochastSettings> newStochastSettings = new List<StochastSettings>();
-
-        foreach (Stochast stochast in stochasts)
-        {
-            StochastSettings stochastSettings = StochastSettings.FirstOrDefault(p => p.Stochast == stochast);
-            if (stochastSettings == null)
-            {
-                stochastSettings = new StochastSettings();
-                stochastSettings.Stochast = stochast;
-            }
-
-            newStochastSettings.Add(stochastSettings);
-        }
-
-        StochastSettings.Clear();
-        stochastSettings.AddRange(newStochastSettings);
-
-        Interface.SetArrayIntValue(id, "stochast_settings", StochastSettings.Select(p => p.GetId()).ToArray());
-    }
-
     public IList<StochastSettings> StochastSettings
     {
         get
         {
             if (stochastSettings == null)
             {
-                stochastSettings = new List<StochastSettings>();
+                stochastSettings = new CallBackList<StochastSettings>(StochastSettingsChanged);
 
                 int[] stochastSettingsIds = Interface.GetArrayIdValue(id, "stochast_settings");
                 foreach (int stochastSettingsId in stochastSettingsIds)
@@ -229,5 +207,10 @@ public class UncertaintySettings
 
             return stochastSettings;
         }
+    }
+
+    private void StochastSettingsChanged(ListOperationType listOperation, StochastSettings item)
+    {
+        Interface.SetArrayIntValue(id, "stochast_settings", this.stochastSettings.Select(p => p.GetId()).ToArray());
     }
 }

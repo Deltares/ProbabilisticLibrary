@@ -69,6 +69,12 @@ namespace Deltares.Probabilistic.Sensitivity
             }
         }
 
+        public string Parameter
+        {
+            get { return Interface.GetStringValue(id, "parameter"); }
+            set { Interface.SetStringValue(id, "parameter", value); }
+        }
+
         public void Run()
         {
             result = null;
