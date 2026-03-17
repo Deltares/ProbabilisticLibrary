@@ -32,25 +32,29 @@
 #include "../Reliability/ReliabilityProject.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/StandardNormal.h"
-#include "combiner.h"
+#include "Combiner.h"
 #include "CombinedDesignPointModel.h"
 
 namespace Deltares::Reliability
 {
     using namespace Deltares::Statistics;
     using namespace Deltares::Reliability;
+    using enum Models::ProgressType;
 
-    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress)
+    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::combineDesignPoints(combineAndOr combineMethodType,
+        std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+        const std::shared_ptr<SelfCorrelationMatrix>& selfCorrelationMatrix,
+        const std::shared_ptr<Models::ProgressIndicator>& progress)
     {
         constexpr double invertProbability = 0.1;
 
-        double approximatedProbability = this->getApproximatedProbability(combineMethodType, designPoints);
+        double approximatedProbability = getApproximatedProbability(combineMethodType, designPoints);
 
         if (combineMethodType == combineAndOr::combOr && approximatedProbability > invertProbability)
         {
             combineMethodType = combineAndOr::combAnd;
 
-            for (std::shared_ptr<DesignPoint> designPoint : designPoints)
+            for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
             {
                 invert(designPoint);
             }
@@ -59,7 +63,7 @@ namespace Deltares::Reliability
 
             invert(invertedDesignPoint);
 
-            for (std::shared_ptr<DesignPoint> designPoint : designPoints)
+            for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
             {
                 invert(designPoint);
                 invertedDesignPoint->ContributingDesignPoints.push_back(designPoint);
@@ -71,23 +75,23 @@ namespace Deltares::Reliability
         {
             std::shared_ptr<DesignPoint> designPoint =  combineDesignPointsAdjusted(combineMethodType, selfCorrelationMatrix, progress, designPoints);
 
-            for (size_t i = 0; i < designPoints.size(); i++)
+            for (const auto& i : designPoints)
             {
-                designPoint->ContributingDesignPoints.push_back(designPoints[i]);
+                designPoint->ContributingDesignPoints.push_back(i);
             }
 
             return designPoint;
         }
     }
 
-    double ImportanceSamplingCombiner::getApproximatedProbability(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints)
+    double ImportanceSamplingCombiner::getApproximatedProbability(combineAndOr combineMethodType, const std::vector<std::shared_ptr<DesignPoint>>& designPoints)
     {
         if (combineMethodType == combineAndOr::combAnd)
         {
             double prob = 1.0;
             for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
             {
-                prob *= Statistics::StandardNormal::getQFromU(designPoint->Beta);
+                prob *= StandardNormal::getQFromU(designPoint->Beta);
             }
 
             return prob;
@@ -97,29 +101,31 @@ namespace Deltares::Reliability
             double prob = 1.0;
             for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
             {
-                prob *= Statistics::StandardNormal::getPFromU(designPoint->Beta);
+                prob *= StandardNormal::getPFromU(designPoint->Beta);
             }
 
             return 1.0 - prob;
         }
     }
 
-    void ImportanceSamplingCombiner::invert(std::shared_ptr<DesignPoint>& designPoint)
+    void ImportanceSamplingCombiner::invert(const std::shared_ptr<DesignPoint>& designPoint)
     {
         designPoint->Beta = -designPoint->Beta;
-        for (std::shared_ptr<Models::StochastPointAlpha>& alpha : designPoint->Alphas)
+        for (const std::shared_ptr<Models::StochastPointAlpha>& alpha : designPoint->Alphas)
         {
             alpha->Alpha = -alpha->Alpha;
             alpha->AlphaCorrelated = -alpha->AlphaCorrelated;
         }
 
-        for (std::shared_ptr<ReliabilityResult>& report : designPoint->ReliabililityResults)
+        for (const std::shared_ptr<ReliabilityResult>& result : designPoint->ReliabilityResults)
         {
-            report->Reliability = -report->Reliability;
+            result->Reliability = -result->Reliability;
         }
     }
 
-    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::combineDesignPointsAdjusted(combineAndOr combineMethodType, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints)
+    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::combineDesignPointsAdjusted(combineAndOr combineMethodType,
+        const std::shared_ptr<SelfCorrelationMatrix>& selfCorrelationMatrix,
+        const std::shared_ptr<Models::ProgressIndicator>& progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints)
     {
         constexpr double deltaReliabilityIndex = 0.01;
 
@@ -127,7 +133,8 @@ namespace Deltares::Reliability
 
         if (combineMethodType == combineAndOr::combOr)
         {
-            std::sort(designPoints.begin(), designPoints.end(), [](std::shared_ptr<DesignPoint> val1, std::shared_ptr<DesignPoint> val2) {return val1->Beta < val2->Beta; });
+            std::sort(designPoints.begin(), designPoints.end(), [](const std::shared_ptr<DesignPoint>& val1, const
+                                                                   std::shared_ptr<DesignPoint>& val2) {return val1->Beta < val2->Beta; });
 
             // administration for design point
             auto builder = DesignPointBuilder(stochasts.size(), DesignPointMethod::CenterOfGravity);
@@ -143,8 +150,8 @@ namespace Deltares::Reliability
             if (progress != nullptr)
             {
                 progress->doProgress(0);
-                progress->doTextualProgress(Models::ProgressType::Detailed,
-                    std::format("Combining design points {0:}/{1:}, Reliability index = {2:.2F}",
+                progress->doTextualProgress(Detailed,
+                    std::format("Combining design points {:}/{:}, Reliability index = {:.2F}",
                         0, designPoints.size(), reliabilityIndex));
             }
 
@@ -161,7 +168,8 @@ namespace Deltares::Reliability
                 builder.addSample(designPointSample);
 
                 // calculate contributing probability for the stochast
-                const std::shared_ptr<DesignPoint> contributingRealization = getSeriesProbability(selfCorrelationMatrix, currentDesignPoint, previousRealizations, currentDesignPoint, stochasts, progress);
+                const auto contributingRealization = getSeriesProbability(selfCorrelationMatrix, currentDesignPoint,
+                    previousRealizations, currentDesignPoint, stochasts);
 
                 // add contributing probability of total probability
                 probability += currentDesignPoint->getFailureProbability() * contributingRealization->getNonFailureProbability();
@@ -174,14 +182,14 @@ namespace Deltares::Reliability
                 }
 
                 const double maxProbability = probability + maxRemainingProbability;
-                const double maxReliability = Statistics::StandardNormal::getUFromQ(maxProbability);
-                double diffReliability = std::fabs(reliabilityIndex - maxReliability);
+                const double maxReliability = StandardNormal::getUFromQ(maxProbability);
+                const double diffReliability = std::fabs(reliabilityIndex - maxReliability);
 
                 if (progress != nullptr)
                 {
                     progress->doProgress(Numeric::NumericSupport::Divide(i, designPoints.size()));
-                    progress->doTextualProgress(Models::ProgressType::Detailed,
-                        std::format("{0:}/{1:}, Reliability index = {2:.2F}, Δ Reliability index = {3:.3F}",
+                    progress->doTextualProgress(Detailed,
+                        std::format("{:}/{:}, Reliability index = {:.2F}, Δ Reliability index = {:.3F}",
                             i, designPoints.size(), reliabilityIndex, diffReliability));
                 }
 
@@ -193,7 +201,7 @@ namespace Deltares::Reliability
 
             // create final design point
             std::shared_ptr<DesignPoint> combinedRealization = std::make_shared<DesignPoint>();
-            combinedRealization->Beta = Statistics::StandardNormal::getUFromQ(probability);
+            combinedRealization->Beta = StandardNormal::getUFromQ(probability);
 
             // create alpha values for final design point
             const std::shared_ptr<Models::Sample> designPointSample = builder.getSample();
@@ -225,10 +233,14 @@ namespace Deltares::Reliability
     }
 
 
-    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::getSeriesProbability(std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, std::vector<std::shared_ptr<Stochast>>& stochasts, std::shared_ptr<Models::ProgressIndicator> progress)
+    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::getSeriesProbability(const std::shared_ptr<SelfCorrelationMatrix>&
+        selfCorrelationMatrix, const std::shared_ptr<DesignPoint>& currentDesignPoint,
+        const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints,
+        const std::shared_ptr<DesignPoint>& startPoint, const std::vector<std::shared_ptr<Stochast>>& stochasts)
     {
         // create the model from design points
-        const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineAndOr::combOr, currentDesignPoint, previousDesignPoints, stochasts, selfCorrelationMatrix);
+        const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineAndOr::combOr, currentDesignPoint,
+            previousDesignPoints, stochasts, selfCorrelationMatrix);
 
         const std::shared_ptr<ReliabilityProject> project = getProject(model, selfCorrelationMatrix);
 
@@ -245,7 +257,9 @@ namespace Deltares::Reliability
         return combinedDesignPoint;
     }
 
-    void ImportanceSamplingCombiner::fillSettingsSeries(std::shared_ptr<DesignPoint> startPoint, std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<ImportanceSamplingSettings> settings)
+    void ImportanceSamplingCombiner::fillSettingsSeries(const std::shared_ptr<DesignPoint>& startPoint, const
+                                                        std::shared_ptr<CombinedDesignPointModel>& model, const
+                                                        std::shared_ptr<ImportanceSamplingSettings>& settings)
     {
         settings->MinimumSamples = 2000;
         settings->MaximumSamples = 10000;
@@ -270,7 +284,9 @@ namespace Deltares::Reliability
         }
     }
 
-    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::getParallelProbability(std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Stochast>>& stochasts, std::shared_ptr<Models::ProgressIndicator> progress)
+    std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::getParallelProbability(const std::shared_ptr<SelfCorrelationMatrix>&
+        selfCorrelationMatrix, const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, const std::vector<std::shared_ptr<Stochast>>& stochasts, const
+        std::shared_ptr<Models::ProgressIndicator>& progress)
     {
         constexpr int maxIterations = 4;
         constexpr double requiredFailures = 0.1;
@@ -362,7 +378,8 @@ namespace Deltares::Reliability
         return bestDesignPoint;
     }
 
-    void ImportanceSamplingCombiner::fillSettingsParallel(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<ImportanceSamplingSettings> settings, double factor)
+    void ImportanceSamplingCombiner::fillSettingsParallel(const std::shared_ptr<CombinedDesignPointModel>& model, const
+                                                          std::shared_ptr<ImportanceSamplingSettings>& settings, double factor)
     {
         settings->MinimumSamples = 20000;
         settings->MaximumSamples = 100000;

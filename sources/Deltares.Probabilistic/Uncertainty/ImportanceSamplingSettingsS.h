@@ -96,6 +96,14 @@ namespace Deltares::Uncertainty
             RunSettings->validate(report);
         }
 
+        /**
+         * \brief gets the normalized probability for convergence
+         */
+        double normalizedProbabilityForConvergence() const
+        {
+            return std::min(ProbabilityForConvergence, 1.0 - ProbabilityForConvergence);
+        }
+
     private:
         double getStartPointWeight();
     };

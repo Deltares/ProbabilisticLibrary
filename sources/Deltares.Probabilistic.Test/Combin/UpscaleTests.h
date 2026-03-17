@@ -20,8 +20,8 @@
 // All rights reserved.
 //
 #pragma once
-#include "../../Deltares.Probabilistic/Combine/upscaling.h"
-#include "../../Deltares.Probabilistic/Combine/combineElements.h"
+#include "../../Deltares.Probabilistic/Combine/UpScaling.h"
+#include "../../Deltares.Probabilistic/Combine/CombineElements.h"
 #include "../Utils/testutils.h"
 
 namespace Deltares::Probabilistic::Test

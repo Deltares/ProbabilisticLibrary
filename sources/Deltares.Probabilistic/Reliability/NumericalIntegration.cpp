@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "NumericalIntegration.h"
+#include "NumericalIntegrationShared.h"
 #include "DesignPoint.h"
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
@@ -96,27 +97,10 @@ namespace Deltares::Reliability
 
     double NumericalIntegration::getStochastProbability(int stochastIndex, Models::Sample& parentSample, double density, double& totalDensity, int nSamples)
     {
-        const double uDelta = 0.01;
         const int nStochasts = Settings.StochastSet->getVaryingStochastCount();
 
-        // Initialize parameters for stochastic parameter u.
-        const int nrIntervals = Settings.StochastSet->VaryingStochastSettings[stochastIndex]->Intervals; // number of intervals in u-space as integer
-        const double uMin = Settings.StochastSet->VaryingStochastSettings[stochastIndex]->MinValue; // lower bound for u
-        const double uMax = Settings.StochastSet->VaryingStochastSettings[stochastIndex]->MaxValue; // upper bound for u
-        const double rangeU = uMax - uMin;
-
-        // Build up list of u values to be computed
-        std::vector<double> uValues = { - Statistics::StandardNormal::UMax };
-
-        for (int i = 0; i <= nrIntervals; i++)
-        {
-            double uValue = uMin + i * rangeU / nrIntervals;
-            if (uValue > -Statistics::StandardNormal::UMax + uDelta && uValue < Statistics::StandardNormal::UMax - uDelta)
-            {
-                uValues.push_back(uValue);
-            }
-        }
-        uValues.push_back(Statistics::StandardNormal::UMax);
+        const auto uValues = NumericalIntegrationShared::
+            buildUpList(*Settings.StochastSet->VaryingStochastSettings[stochastIndex]);
 
         // Initialize first probabilities
         auto pq = Statistics::ProbabilityIterator(uValues[0]);

@@ -792,8 +792,7 @@ namespace Deltares::Probabilistic::Test
         auto ref = alphaBeta(4.38787743765301, // pre-computed
         {0.635285167139092, 0.393519326675495, 0.565059833788674, 0.349660807332817}); // pre-computed
 
-        std::string message;
-        const auto [section, nFail] = upscaler.upscaleLength(CrossSection, rhoXK, dXK, sectionLength, message);
+        const auto [section, nFail, message] = upscaler.upscaleLength(CrossSection, rhoXK, dXK, sectionLength);
         EXPECT_EQ(nFail, 0);
         auto Elements = elements(nElements);
         for (size_t i = 0; i < nElements; i++)
@@ -821,8 +820,7 @@ namespace Deltares::Probabilistic::Test
         auto ref = alphaBeta(4.61415014812874,
         {0.597708361676096, 0.375385677437277, 0.599181645055476, 0.377904305064187}); // pre-computed
 
-        std::string message;
-        const auto [section, nFail] = upscaler.upscaleLength(crossSection, rhoXK, dXK, sectionLength, message);
+        const auto [section, nFail, message] = upscaler.upscaleLength(crossSection, rhoXK, dXK, sectionLength);
         EXPECT_EQ(nFail, 0);
         auto elms = elements(nElements);
         for (size_t i = 0; i < nElements; i++)
@@ -854,8 +852,7 @@ namespace Deltares::Probabilistic::Test
         auto ref = alphaBeta(4.5064103581966,
         {0.578741673689891, 0.385418150246354, 0.598199853682860, 0.398331344045516}); // pre-computed
 
-        std::string message;
-        const auto [section, nFail] = upscaler.upscaleLength(crossSection, rhoXK, dXK, nElements * sectionLength, message);
+        const auto [section, nFail, message] = upscaler.upscaleLength(crossSection, rhoXK, dXK, nElements * sectionLength);
 
         test_utilities.checkAlphaBeta(section, ref, 1e-6);
         EXPECT_EQ(nFail, 0);
@@ -915,15 +912,13 @@ namespace Deltares::Probabilistic::Test
         const Numeric::vector1D rhoXK = { 0.8, 0.8, 0.8, 0.8, 0.8 };
         const Numeric::vector1D dXK = { 200.0, 200.0, 200.0, 200.0, 200.0 };
 
-        std::string message;
-        auto [resulting_design_point, no_convergence_count] = upscaler.upscaleLength(design_point, rhoXK, dXK,
-            section_length, message);
-        EXPECT_EQ(no_convergence_count, 0);
+        const auto resulting_design_point = upscaler.upscaleLength(design_point, rhoXK, dXK, section_length);
+        EXPECT_EQ(resulting_design_point.counter, 0);
         //The expected value of alphaSection() is alphaCrossSection for the given length
         for (size_t i = 0; i < alpha_cross_section.size(); i++)
         {
             constexpr double my_margin = 1.0e-6;
-            EXPECT_NEAR(resulting_design_point.getAlphaI(i), alpha_cross_section(i), my_margin);
+            EXPECT_NEAR(resulting_design_point.design_point.getAlphaI(i), alpha_cross_section(i), my_margin);
         }
     }
 
@@ -938,15 +933,13 @@ namespace Deltares::Probabilistic::Test
 
         for (size_t iLength = 1; iLength < section_lengths.size(); iLength++)
         {
-            std::string message;
-            auto [resulting_design_point, no_convergence_count] =
-                upscaler.upscaleLength(design_point, rhoXK, dXK, section_lengths[iLength], message);
-            EXPECT_EQ(no_convergence_count, 0);
+            const auto result = upscaler.upscaleLength(design_point, rhoXK, dXK, section_lengths[iLength]);
+            EXPECT_EQ(result.counter, 0);
             //The expected value of alphaSection() is alphaCrossSection for the given length
             for (size_t i = 0; i < alpha_cross_section.size(); i++)
             {
                 constexpr double my_margin = 1.0e-6;
-                EXPECT_NEAR(resulting_design_point.getAlphaI(i), alpha_cross_section(i), my_margin);
+                EXPECT_NEAR(result.design_point.getAlphaI(i), alpha_cross_section(i), my_margin);
             }
         }
     }

@@ -37,9 +37,9 @@ namespace Deltares
                     this->ConvergenceReport = gcnew Wrappers::ConvergenceReport(shared->object->convergenceReport);
                 }
 
-                for (int i = 0; i < shared->object->ReliabililityResults.size(); i++)
+                for (int i = 0; i < shared->object->ReliabilityResults.size(); i++)
                 {
-                    Wrappers::ReliabilityResult^ resultWrapper = gcnew Wrappers::ReliabilityResult(shared->object->ReliabililityResults[i]);
+                    Wrappers::ReliabilityResult^ resultWrapper = gcnew Wrappers::ReliabilityResult(shared->object->ReliabilityResults[i]);
                     this->ReliabilityResults->Add(resultWrapper);
                 }
 

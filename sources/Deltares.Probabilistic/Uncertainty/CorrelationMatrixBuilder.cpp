@@ -44,15 +44,15 @@ namespace Deltares::Uncertainty
         this->stochastValues[stochast] = uValues;
     };
 
-    void CorrelationMatrixBuilder::registerWeightedValues(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+    void CorrelationMatrixBuilder::registerWeightedValues(const std::shared_ptr<Statistics::Stochast>& stochast, const std::vector<Numeric::WeightedValue>& weightedValues)
     {
         std::vector<double> values;
         std::vector<double> weights;
 
         for (auto weightedValue : weightedValues)
         {
-            values.push_back(weightedValue->value);
-            weights.push_back(weightedValue->weight);
+            values.push_back(weightedValue.value);
+            weights.push_back(weightedValue.weight);
         }
 
         registerWeights(weights);

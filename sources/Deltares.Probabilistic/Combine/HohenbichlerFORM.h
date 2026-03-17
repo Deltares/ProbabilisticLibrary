@@ -27,7 +27,7 @@ namespace Deltares::Reliability
     class HohenbichlerFORM
     {
     public:
-        std::pair<double, int> PerformHohenbichler(const double betaV, const double pfU, const double rhoInput);
+        std::pair<double, int> PerformHohenbichler(const double betaV, const double pfU, const double rhoInput) const;
     private:
         const int maxTrialLoops = 3;
         const double rhoLimitHohenbichler = 0.98;  // Limit value for the correlation coefficient

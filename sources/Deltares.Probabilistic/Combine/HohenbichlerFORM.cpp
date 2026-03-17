@@ -63,7 +63,7 @@ namespace Deltares::Reliability
     // is needed for the computation of the alpha's (i.e. direction of the design point).
     // So the output of the subroutine Hohenbichler is \f$ P\left( {Z_2  < 0|Z_1  < 0} \right)\ \f$
 
-    std::pair<double, int> HohenbichlerFORM::PerformHohenbichler(const double betaV, const double pfU, const double rhoInput)
+    std::pair<double, int> HohenbichlerFORM::PerformHohenbichler(const double betaV, const double pfU, const double rhoInput) const
     {
         //
         //   INPUT/OUTPUT VARIABLES

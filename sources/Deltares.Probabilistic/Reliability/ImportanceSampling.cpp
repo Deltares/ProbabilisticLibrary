@@ -143,7 +143,7 @@ namespace Deltares::Reliability
                         modifiedSample->Values[k] = factors[k] * sample->Values[k] + cluster->Center->Values[k];
                     }
 
-                    modifiedSample->Weight = ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
+                    modifiedSample->Weight = ImportanceSamplingSupport::getWeight(*modifiedSample, *sample, dimensionality);
 
                     samples.push_back(modifiedSample);
                     clusters.push_back(cluster);
@@ -168,7 +168,8 @@ namespace Deltares::Reliability
                 if (modelRunner->shouldExitPrematurely(samples))
                 {
                     // return the result so far
-                    std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(combinedCluster->designPointBuilder.getSample(), Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure), convergenceReport);
+                    auto designPoint = modelRunner->getDesignPoint(combinedCluster->designPointBuilder.getSample(),
+                        Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure), convergenceReport);
                     if (startDesignPoint != nullptr)
                     {
                         designPoint->ContributingDesignPoints.push_back(startDesignPoint);
@@ -243,7 +244,7 @@ namespace Deltares::Reliability
                 std::shared_ptr<Sample> designPoint = combinedCluster->designPointBuilder.getSample();
 
                 std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = findMostContributingCluster(clusterResults);
-                double designPointWeight = ImportanceSamplingSupport::getSampleWeight(designPoint, mostContributingCluster->Center, dimensionality, factors);
+                double designPointWeight = ImportanceSamplingSupport::getSampleWeight(*designPoint, *mostContributingCluster->Center, dimensionality, factors);
 
                 convergenceReport->IsConverged = checkConvergence(*modelRunner, probFailure, designPointWeight, combinedCluster->TotalCount, sampleIndex);
                 convergenceReport->FailWeight = combinedCluster->FailWeight;
@@ -266,7 +267,7 @@ namespace Deltares::Reliability
         std::shared_ptr<Sample> minSample = combinedCluster->designPointBuilder.getSample();
 
         std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = findMostContributingCluster(clusterResults);
-        double designPointWeight = ImportanceSamplingSupport::getSampleWeight(minSample, mostContributingCluster->Center, dimensionality, factors);
+        double designPointWeight = ImportanceSamplingSupport::getSampleWeight(*minSample, *mostContributingCluster->Center, dimensionality, factors);
         convergenceReport->Convergence = ImportanceSamplingSupport::getConvergence(probFailure, designPointWeight, combinedCluster->TotalCount);
         convergenceReport->NearestSample = combinedCluster->NearestSample;
 
@@ -293,7 +294,7 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    std::vector<double> ImportanceSampling::getFactors(StochastSettingsSet& stochastSettings)
+    std::vector<double> ImportanceSampling::getFactors(const StochastSettingsSet& stochastSettings)
     {
         std::vector<double> factors(stochastSettings.getVaryingStochastCount());
 
@@ -305,7 +306,7 @@ namespace Deltares::Reliability
         return factors;
     }
 
-    bool ImportanceSampling::checkConvergence(Models::ModelRunner& modelRunner, double pf, double minWeight, int samples, int nmaal) const
+    bool ImportanceSampling::checkConvergence(ModelRunner& modelRunner, double pf, double minWeight, int samples, int nmaal) const
     {
         std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
         report->Step = nmaal;

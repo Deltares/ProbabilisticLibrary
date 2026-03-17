@@ -19,25 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <vector>
-#include <memory>
-#include "Combiner.h"
-#include "IndexPair.h"
-
-namespace Deltares::Reliability
-{
-    class HohenbichlerNumIntCombiner : public Combiner
-    {
-    public:
-        std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::shared_ptr<Models::ProgressIndicator>& progress) override;
-
-    private:
-        static indexPair findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
-    };
-}
+#include "pch.h"
+#include "TestNumIntShared_body.cpp"

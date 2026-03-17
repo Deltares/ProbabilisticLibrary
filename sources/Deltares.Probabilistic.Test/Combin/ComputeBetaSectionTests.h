@@ -19,25 +19,19 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <vector>
-#include <memory>
-#include "Combiner.h"
-#include "IndexPair.h"
 
-namespace Deltares::Reliability
+#pragma once
+
+namespace Deltares::Probabilistic::Test
 {
-    class HohenbichlerNumIntCombiner : public Combiner
+    class ComputeBetaSectionTests
     {
     public:
-        std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::shared_ptr<Models::ProgressIndicator>& progress) override;
-
+        static void Test1();
+        static void Test2();
+        static void Test3();
     private:
-        static indexPair findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
+        static constexpr double margin = 1e-9;
     };
 }
+

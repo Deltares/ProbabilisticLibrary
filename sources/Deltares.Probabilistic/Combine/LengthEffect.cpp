@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "LengthEffect.h"
-#include "upscaling.h"
+#include "UpScaling.h"
 
 namespace Deltares::Reliability
 {
@@ -63,9 +63,8 @@ namespace Deltares::Reliability
             rho2(i) = correlationLengths[i];
         }
 
-        auto message = std::make_shared<Logging::Message>();
-        message->Type = Logging::MessageType::Debug;
-        auto [dpLength, nFail] = up.upscaleLength(dp, rho1, rho2, length, message->Text);
+        auto [dpLength, nFail, msg] = up.upscaleLength(dp, rho1, rho2, length);
+        auto message = std::make_shared<Logging::Message>(msg);
         auto dpL = DesignPoint();
         dpL.Identifier = "Length Effect";
         dpL.Beta = dpLength.getBeta();
@@ -73,8 +72,8 @@ namespace Deltares::Reliability
         if (nFail > 0)
         {
             auto warning = std::make_shared<Logging::Message>();
-            message->Type = Logging::MessageType::Warning;
-            message->Text = "non-convergence in Hohenbichler";
+            warning->Type = Logging::MessageType::Warning;
+            warning->Text = "non-convergence in Hohenbichler";
             dpL.Messages.push_back(warning);
         }
 

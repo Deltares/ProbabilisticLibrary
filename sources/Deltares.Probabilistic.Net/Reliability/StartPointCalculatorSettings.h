@@ -91,10 +91,10 @@ namespace Deltares
                     {
                         switch (value)
                         {
-                        case Wrappers::StartMethodType::FixedValue: shared->object->StartMethod = Reliability::FixedValue; break;
-                        case Wrappers::StartMethodType::RaySearch: shared->object->StartMethod = Reliability::RaySearch; break;
-                        case Wrappers::StartMethodType::SensitivitySearch: shared->object->StartMethod = Reliability::SensitivitySearch; break;
-                        case Wrappers::StartMethodType::SphereSearch: shared->object->StartMethod = Reliability::SphereSearch; break;
+                        case Wrappers::StartMethodType::FixedValue: shared->object->StartMethod = Reliability::StartMethodType::FixedValue; break;
+                        case Wrappers::StartMethodType::RaySearch: shared->object->StartMethod = Reliability::StartMethodType::RaySearch; break;
+                        case Wrappers::StartMethodType::SensitivitySearch: shared->object->StartMethod = Reliability::StartMethodType::SensitivitySearch; break;
+                        case Wrappers::StartMethodType::SphereSearch: shared->object->StartMethod = Reliability::StartMethodType::SphereSearch; break;
                         default: throw gcnew System::NotSupportedException("Start method");
                         }
                     }

@@ -22,7 +22,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "../../Deltares.Probabilistic/Combine/alphaBeta.h"
+#include "../../Deltares.Probabilistic/Combine/AlphaBeta.h"
 #include "../../Deltares.Probabilistic/Math/matrix.h"
 
 

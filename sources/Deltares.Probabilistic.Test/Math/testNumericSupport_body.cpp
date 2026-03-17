@@ -53,31 +53,33 @@ namespace Deltares::Probabilistic::Test
 
     void testNumericSupport::testLogLinearInterpolate()
     {
+        using enum Numeric::InterpolationType;
         constexpr double margin = 1e-9;
         auto x = std::vector{ 1.0, 4.0 };
         auto y = std::vector{ 3.0, 4.0 };
-        auto result = Numeric::NumericSupport::interpolate(2.0, x, y, false, Numeric::Logarithmic);
+        auto result = Numeric::NumericSupport::interpolate(2.0, x, y, false, Logarithmic);
         EXPECT_NEAR(result, 3.5, margin);
 
-        result = Numeric::NumericSupport::interpolate(8.0, x, y, true, Numeric::Logarithmic);
+        result = Numeric::NumericSupport::interpolate(8.0, x, y, true, Logarithmic);
         EXPECT_NEAR(result, 4.5, margin);
 
-        result = Numeric::NumericSupport::interpolate(8.0, x, y, false, Numeric::Logarithmic);
+        result = Numeric::NumericSupport::interpolate(8.0, x, y, false, Logarithmic);
         EXPECT_NEAR(result, 4.0, margin);
     }
 
     void testNumericSupport::testHarmonicInterpolate()
     {
+        using enum Numeric::InterpolationType;
         constexpr double margin = 1e-9;
         auto x = std::vector{ 1.0, 4.0 };
         auto y = std::vector{ 3.0, 4.0 };
-        auto result = Numeric::NumericSupport::interpolate(2.0, x, y, false, Numeric::Harmonic);
+        auto result = Numeric::NumericSupport::interpolate(2.0, x, y, false, Harmonic);
         EXPECT_NEAR(result, 3.0 + 2.0/3.0, margin);
 
-        result = Numeric::NumericSupport::interpolate(8.0, x, y, true, Numeric::Harmonic);
+        result = Numeric::NumericSupport::interpolate(8.0, x, y, true, Harmonic);
         EXPECT_NEAR(result, 4.0 + 1.0/6.0, margin);
 
-        result = Numeric::NumericSupport::interpolate(8.0, x, y, false, Numeric::Harmonic);
+        result = Numeric::NumericSupport::interpolate(8.0, x, y, false, Harmonic);
         EXPECT_NEAR(result, 4.0, margin);
     }
 

@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 #include "Reliability/TestStartPointCalculator.h"
 #include "Reliability/TestReliabilityMethods.h"
+#include "Reliability/TestNumIntShared.h"
 #include "Math/testCholeskiDecomposition.h"
 #include "Math/testNumericSupport.h"
 #include "Math/testKMean.h"
@@ -36,6 +37,7 @@
 #include "Combin/UpscaleTests.h"
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
+#include "Combin/ComputeBetaSectionTests.h"
 #include "Statistics/TestStandardNormal.h"
 #include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
@@ -61,7 +63,6 @@
 #include "Reliability/Waarts/TestWaartsSeriesSystem.h"
 #include "Reliability/Waarts/TestWaartsParallelSystem.h"
 #include "Reliability/Waarts/TestWaartsResistance25QuadraticTermsSparse.h"
-#include "Statistics/TestXfromU.h"
 
 int main(int argc, char** argv)
 {
@@ -92,6 +93,21 @@ TEST(UnitTests, testLengthEffect)
 {
     auto h = Deltares::Probabilistic::Test::combinElementsTests();
     h.runAllLengthEffectTests();
+}
+
+TEST(UnitTests, testComputeBetaSectionTest1)
+{
+    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test1();
+}
+
+TEST(UnitTests, testComputeBetaSectionTest2)
+{
+    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test2();
+}
+
+TEST(UnitTests, testComputeBetaSectionTest3)
+{
+    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test3();
 }
 
 TEST(UnitTests, AllUpscaleInTimeTests)
@@ -187,6 +203,21 @@ TEST(UnitTests, testStartPointCalculator)
 {
     auto tstStartPoint = Deltares::Probabilistic::Test::TestStartPointCalculator();
     tstStartPoint.allStartPointTests();
+}
+
+TEST(UnitTests, testNumIntSharedDefaults)
+{
+    Deltares::Probabilistic::Test::TestNumIntShared::testDefaults();
+}
+
+TEST(UnitTests, testNumIntSharedGivenURange1)
+{
+    Deltares::Probabilistic::Test::TestNumIntShared::testGivenURange();
+}
+
+TEST(UnitTests, testNumIntSharedGivenURange2)
+{
+    Deltares::Probabilistic::Test::TestNumIntShared::testGivenURange2();
 }
 
 TEST(UnitTests, testExceptions)
@@ -574,10 +605,59 @@ TEST(CopulasTest, testGaussianValidationMessages)
     Deltares::Probabilistic::Test::TestCopula::testGaussianValidationMessages();
 }
 
-TEST(UnitTests, testUncertainty)
+TEST(UnitTests, testUncCrudeMonteCarloAddOne)
 {
-    auto tstUncertainty = Deltares::Probabilistic::Test::TestUncertainty();
-    tstUncertainty.allUncertaintyTests();
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloAddOne();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinear)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinear();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinearNonRepeatable)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearNonRepeatable();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinearOutput)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearOutput();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinearManySamples)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearManySamples();
+}
+
+TEST(UnitTests, testUncCrudeMonteCarloLinearAutoSamples)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearAutoSamples();
+}
+
+TEST(UnitTests, testUncImportanceSamplingAddOne)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testImportanceSamplingAddOne();
+}
+
+TEST(UnitTests, testUncNumericalIntegration)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testNumericalIntegration();
+}
+
+TEST(UnitTests, testUncDirectionalSampling)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testDirectionalSampling();
+}
+
+TEST(UnitTests, testUncFORM)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testFORM();
+}
+
+TEST(UnitTests, testUncFOSM)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testFOSM();
 }
 
 TEST(UnitTests, testSensitivity)
@@ -652,19 +732,19 @@ TEST(WaartsTests, testLinearResistanceNumericalIntegration)
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfGravity)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(Deltares::Reliability::CenterOfGravity);
+    tester.runNumInt(Deltares::Reliability::DesignPointMethod::CenterOfGravity);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfAngles)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(Deltares::Reliability::CenterOfAngles);
+    tester.runNumInt(Deltares::Reliability::DesignPointMethod::CenterOfAngles);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationNearestToMean)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
-    tester.runNumInt(Deltares::Reliability::NearestToMean);
+    tester.runNumInt(Deltares::Reliability::DesignPointMethod::NearestToMean);
 }
 
 TEST(WaartsTests, testLinearResistanceImportanceSampling)

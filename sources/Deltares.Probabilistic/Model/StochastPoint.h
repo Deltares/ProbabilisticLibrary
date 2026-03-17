@@ -84,7 +84,7 @@ namespace Deltares::Models
          */
         void updateInfluenceFactors();
 
-        virtual ~StochastPoint() { }
+        virtual ~StochastPoint() = default;
 
     };
 }

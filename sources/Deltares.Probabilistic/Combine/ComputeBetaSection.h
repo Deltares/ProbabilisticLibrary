@@ -20,24 +20,34 @@
 // All rights reserved.
 //
 #pragma once
-#include <vector>
-#include <memory>
-#include "Combiner.h"
-#include "IndexPair.h"
+
+#include "../Logging/Message.h"
 
 namespace Deltares::Reliability
 {
-    class HohenbichlerNumIntCombiner : public Combiner
+    struct BetaSectionInput
+    {
+        double section_length;
+        double rho_z;
+        double dz;
+        double beta;
+    };
+
+    //
+    // Helper class for upscaling
+    //
+    class ComputeBetaSection
     {
     public:
-        std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::shared_ptr<Models::ProgressIndicator>& progress) override;
-
+        explicit ComputeBetaSection(const BetaSectionInput& input);
+        double Compute(const double beta_cross_section);
+        Logging::Message createMessage() const;
+        int getCounterNonConv() const;
+        double getDeltaL() const;
+        bool hasLengthEffect() const;
     private:
-        static indexPair findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
+        const BetaSectionInput input;
+        double deltaL;
+        int conv = 0;  // indicator of non-converged Hohenbichler calculation
     };
 }

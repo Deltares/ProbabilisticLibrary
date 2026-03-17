@@ -30,13 +30,13 @@ namespace Deltares::Reliability
     {
     public:
         //
-        // Method for combining failure probabilities over equal elements (core of upscaling methodes)
+        // Method for combining failure probabilities over equal elements (core of upscaling methods)
         //
         template <typename T>
         double integrateEqualElements(const double beta, const double rhoT, const T nrElements)
         {
             // beta       : Reliability index of a single time element
-            // rhoT       : Autocorrelation coefficients for each of the variables, over the elements to be combined (space or time)
+            // rhoT       : Auto-correlation coefficients for each of the variables, over the elements to be combined (space or time)
             // nrElements : Number of time elements (e.g. tidal periods)
             // returns    : Reliability index of combined elements
 
@@ -47,26 +47,26 @@ namespace Deltares::Reliability
             // vDelta   : Step size of the numerical integration
             // vDensity : Density function (standard normal) evaluated at v, for use in the numerical integration of the probability
 
-            const int numSteps = 90001;  // Number of grid points in the integration (intervals= numSteps- 1)
-            const double LB = -30.0;  // Lower bound of v-values in the numerical integration
-            const double UB = 30.0;  // Upper bound of v-values in the numerical integration
+            constexpr int numSteps = 90001;  // Number of grid points in the integration (intervals= numSteps- 1)
+            constexpr double LB = -30.0;  // Lower bound of v-values in the numerical integration
+            constexpr double UB = 30.0;  // Upper bound of v-values in the numerical integration
             //
             // Perform integration
             //
             // Get delta v
-            const double vDelta = (UB - LB) / double(numSteps - 1);
+            constexpr double vDelta = (UB - LB) / static_cast<double>(numSteps - 1);
             //
             // Find first non-zero term in numerical integration
             //
             size_t iStart = 0;
             if (rhoT > 0.0)
             {
-                const double betaStart = 8.293;  // lowest beta with PfromBeta == 1.0
+                constexpr double betaStart = 8.293;  // lowest beta with PfromBeta == 1.0
                 const double vStart = (beta - betaStart * sqrt(1.0 - rhoT)) / sqrt(rhoT);
                 const double rStart = (vStart - LB) / vDelta;
                 if (rStart >= 1.0)
                 {
-                    iStart = (size_t)rStart;
+                    iStart = static_cast<size_t>(rStart);
                 }
             }
             //
@@ -75,7 +75,7 @@ namespace Deltares::Reliability
             double PfT = 0.0;
             for (size_t i = iStart; i < numSteps; i++)
             {
-                double v = LB + vDelta * double(i);
+                double v = LB + vDelta * static_cast<double>(i);
                 double betaStar = (beta - sqrt(rhoT) * v) / sqrt(1.0 - rhoT);
                 double p = Deltares::Statistics::StandardNormal::getPFromU(betaStar);
                 double vDensity = exp(-v * v / 2.0) / sqrt(2.0 * std::numbers::pi);
