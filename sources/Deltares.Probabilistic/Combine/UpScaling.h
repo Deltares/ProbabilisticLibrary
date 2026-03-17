@@ -23,6 +23,7 @@
 #include "../Math/vector1D.h"
 #include "AlphaBeta.h"
 #include "HohenbichlerFORM.h"
+#include "../Logging/Message.h"
 
 namespace Deltares::Reliability
 {
@@ -33,7 +34,7 @@ namespace Deltares::Reliability
     {
         alphaBeta design_point;
         int counter = 0;
-        std::string message;
+        Logging::Message message;
     };
 
     struct upscalingToLargestBlockInput

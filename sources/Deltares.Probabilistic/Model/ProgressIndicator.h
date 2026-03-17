@@ -75,7 +75,7 @@ namespace Deltares::Models
         void initialize(double factor, double offset);
         void complete() const;
         void increaseOffset();
-        void setTask(const std::string& task);
+        void setTask(const std::string& newTask);
     };
 }
 

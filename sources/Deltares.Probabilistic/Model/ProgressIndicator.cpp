@@ -50,8 +50,8 @@ namespace Deltares::Models
         this->progressOffset += progressFactor;
     }
 
-    void ProgressIndicator::setTask(const std::string& _task)
+    void ProgressIndicator::setTask(const std::string& newTask)
     {
-        this->task = _task;
+        this->task = newTask;
     }
 }

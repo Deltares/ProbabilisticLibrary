@@ -294,7 +294,7 @@ void calculateCombinationWithLargestCorrelation(const multipleElements* elements
     std::vector<alphaBeta> alpha;
     for (int i = 0; i < number_of_elements ; i++)
     {
-        auto alpha_i = vector1D(number_of_stochasts );
+        vector1D alpha_i = vector1D(number_of_stochasts);
         for (int j = 1; j < number_of_stochasts ; j++)
         {
             alpha_i(j) = elements->designPoints[i].alpha[j];

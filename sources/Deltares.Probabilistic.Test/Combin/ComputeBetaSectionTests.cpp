@@ -71,7 +71,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(beta_expected, beta_section, margin);
         EXPECT_NEAR(delta_l_expected, calculator.getDeltaL(), margin);
         EXPECT_TRUE(calculator.hasLengthEffect());
-        EXPECT_EQ(calculator.createMessage(), expected_message);
+        EXPECT_EQ(calculator.createMessage().Text, expected_message);
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(beta_expected, beta_section, margin);
         EXPECT_NEAR(delta_l_expected, calculator.getDeltaL(), margin);
         EXPECT_TRUE(calculator.hasLengthEffect());
-        EXPECT_EQ(calculator.createMessage(), expected_message);
+        EXPECT_EQ(calculator.createMessage().Text, expected_message);
         EXPECT_EQ(calculator.getCounterNonConv(), 0);
     }
 

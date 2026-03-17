@@ -21,7 +21,7 @@
 //
 #pragma once
 
-#include <string>
+#include "../Logging/Message.h"
 
 namespace Deltares::Reliability
 {
@@ -41,7 +41,7 @@ namespace Deltares::Reliability
     public:
         explicit ComputeBetaSection(const BetaSectionInput& input);
         double Compute(const double beta_cross_section);
-        std::string createMessage() const;
+        Logging::Message createMessage() const;
         int getCounterNonConv() const;
         double getDeltaL() const;
         bool hasLengthEffect() const;

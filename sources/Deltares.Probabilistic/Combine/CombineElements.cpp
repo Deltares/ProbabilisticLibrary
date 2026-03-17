@@ -289,7 +289,7 @@ namespace Deltares::Reliability
                 // The elements i1 and i2 are removed from the vector betaLocal and the combined result is added last
                 // betaLocal(1:i1-1) stays unchanged
                 //
-                for (auto i = i1; i < i2 - 1; i++)
+                for (long long i = i1; i < i2 - 1; i++)
                 {
                     local[i] = local[i + 1];
                 }

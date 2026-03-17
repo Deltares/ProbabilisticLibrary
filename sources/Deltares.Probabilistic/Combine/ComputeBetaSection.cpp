@@ -121,9 +121,13 @@ namespace Deltares::Reliability
     /// <summary>
     /// Get a summary of intermediate terms
     /// </summary>
-    std::string ComputeBetaSection::createMessage() const
+    Logging::Message ComputeBetaSection::createMessage() const
     {
-        return std::format("Intermediate results: Delta L = {:.6F}; rhoZ = {:.6F}; dZ = {:.6F}", deltaL, input.rho_z, input.dz);
+        auto message = Logging::Message();
+        message.Text = std::format("Intermediate results: Delta L = {:.6F}; rhoZ = {:.6F}; dZ = {:.6F}",
+            deltaL, input.rho_z, input.dz);
+        message.Type = Logging::MessageType::Debug;
+        return message;
     }
 
 }
