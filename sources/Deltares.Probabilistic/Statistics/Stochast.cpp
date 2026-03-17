@@ -93,6 +93,18 @@ namespace Deltares::Statistics
         return distribution->getUFromX(*properties, x);
     }
 
+    double Stochast::getXFromP(double p)
+    {
+        double u = StandardNormal::getUFromP(p);
+        return getXFromU(u);
+    }
+
+    double Stochast::getPFromX(double x)
+    {
+        double u = getUFromX(x);
+        return StandardNormal::getPFromU(u);
+    }
+
     double Stochast::getXFromUAndSource(double xSource, double u)
     {
         if (isVariable())

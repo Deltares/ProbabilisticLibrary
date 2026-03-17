@@ -20,11 +20,11 @@
 // All rights reserved.
 //
 ﻿using System;
-using Deltares.Statistics.Wrappers;
+using Deltares.Probabilistic.Statistics;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestStandardNormal
@@ -77,6 +77,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             ClassicAssert.AreEqual(double.NaN, StandardNormal.GetQFromU(Double.NaN));
         }
-
     }
 }
+
+    

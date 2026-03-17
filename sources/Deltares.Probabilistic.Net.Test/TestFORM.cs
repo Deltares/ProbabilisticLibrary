@@ -19,13 +19,15 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-﻿using Deltares.Models.Wrappers;
-using Deltares.Reliability.Wrappers;
-using Deltares.Statistics.Wrappers;
+
+using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
+using Deltares.Probabilistic.Statistics;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestFORM
@@ -37,11 +39,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.33, designPoint.Beta, margin);
-            ClassicAssert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+            ClassicAssert.IsTrue(designPoint.IsConverged);
 
             ClassicAssert.AreEqual(0.01, designPoint.ProbabilityFailure, margin / 10);
             ClassicAssert.AreEqual(0.99, designPoint.ProbabilityNonFailure, margin / 10);
@@ -59,11 +63,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearArrayProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(0.71, designPoint.Beta, margin);
-            ClassicAssert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+            ClassicAssert.IsTrue(designPoint.IsConverged);
 
             ClassicAssert.AreEqual(0.24, designPoint.ProbabilityFailure, margin);
             ClassicAssert.AreEqual(0.76, designPoint.ProbabilityNonFailure, margin);
@@ -92,27 +98,29 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
-            project.Stochasts[1].IsVariableStochast = true;
+            project.Stochasts[1].IsConditional = true;
 
-            VariableStochastValue conditional1 = new VariableStochastValue();
+            ConditionalValue conditional1 = new ConditionalValue();
             conditional1.X = -1;
             conditional1.Minimum = -1.2;
             conditional1.Maximum = -0.8;
-            project.Stochasts[1].ValueSet.StochastValues.Add(conditional1);
+            project.Stochasts[1].ConditionalValues.Add(conditional1);
 
-            VariableStochastValue conditional2 = new VariableStochastValue();
+            ConditionalValue conditional2 = new ConditionalValue();
             conditional2.X = 1;
             conditional2.Minimum = 0.8;
             conditional2.Maximum = 1.2;
-            project.Stochasts[1].ValueSet.StochastValues.Add(conditional2);
+            project.Stochasts[1].ConditionalValues.Add(conditional2);
 
-            project.Stochasts[1].VariableSource = project.Stochasts[0];
+            project.Stochasts[1].ConditionalSource = project.Stochasts[0];
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.56, designPoint.Beta, margin);
-            ClassicAssert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+            ClassicAssert.IsTrue(designPoint.IsConverged);
 
             ClassicAssert.AreEqual(-0.96, designPoint.Alphas[0].Alpha, margin);
             ClassicAssert.AreEqual(-0.29, designPoint.Alphas[1].Alpha, margin);
@@ -130,27 +138,29 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Stochasts[1].Name = "a";
             project.Stochasts[2].Name = "b";
 
-            project.Stochasts[2].IsVariableStochast = true;
+            project.Stochasts[2].IsConditional = true;
 
-            VariableStochastValue conditional1 = new VariableStochastValue();
+            ConditionalValue conditional1 = new ConditionalValue();
             conditional1.X = -1;
             conditional1.Minimum = -1.2;
             conditional1.Maximum = -0.8;
-            project.Stochasts[2].ValueSet.StochastValues.Add(conditional1);
+            project.Stochasts[2].ConditionalValues.Add(conditional1);
 
-            VariableStochastValue conditional2 = new VariableStochastValue();
+            ConditionalValue conditional2 = new ConditionalValue();
             conditional2.X = 1;
             conditional2.Minimum = 0.8;
             conditional2.Maximum = 1.2;
-            project.Stochasts[2].ValueSet.StochastValues.Add(conditional2);
+            project.Stochasts[2].ConditionalValues.Add(conditional2);
 
-            project.Stochasts[2].VariableSource = project.Stochasts[1];
+            project.Stochasts[2].ConditionalSource = project.Stochasts[1];
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(0.51, designPoint.Beta, margin);
-            ClassicAssert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+            ClassicAssert.IsTrue(designPoint.IsConverged);
 
             ClassicAssert.AreEqual(11, designPoint.Alphas.Count);
 
@@ -185,12 +195,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.33, designPoint.Beta, margin);
 
-            DesignPoint designPoint2 = project.GetDesignPoint();
+            project.Run();
+            DesignPoint designPoint2 = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.33, designPoint2.Beta, margin);
 
@@ -204,11 +217,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(-2.33, designPoint.Beta, margin);
-            ClassicAssert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+            ClassicAssert.IsTrue(designPoint.IsConverged);
 
             ClassicAssert.AreEqual(0.7, designPoint.Alphas[0].Alpha, margin);
             ClassicAssert.AreEqual(0.7, designPoint.Alphas[1].Alpha, margin);
@@ -222,25 +237,26 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
             project.Settings.SaveConvergence = true;
-            project.Settings.SaveEvaluations = true;
+            project.Settings.SaveRealizations = true;
+            project.Run();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.33, designPoint.Beta, margin);
 
             ClassicAssert.AreEqual(6, designPoint.ReliabilityResults.Count);
-            ClassicAssert.AreEqual(18, designPoint.Evaluations.Count);
+            ClassicAssert.AreEqual(18, designPoint.Realizations.Count);
 
-            ClassicAssert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
+            ClassicAssert.IsTrue(designPoint.Realizations[0].Tag is ZFunctionOutput);
 
             for (int i = 0; i < designPoint.ReliabilityResults.Count; i++)
             {
                 ClassicAssert.AreEqual(i, designPoint.ReliabilityResults[i].Index);
-                ClassicAssert.AreEqual(i, designPoint.Evaluations[3 * i].Iteration);
-                ClassicAssert.AreEqual(i, designPoint.Evaluations[3 * i + 1].Iteration);
-                ClassicAssert.AreEqual(i, designPoint.Evaluations[3 * i + 2].Iteration);
+                ClassicAssert.AreEqual(i, designPoint.Realizations[3 * i].Iteration);
+                ClassicAssert.AreEqual(i, designPoint.Realizations[3 * i + 1].Iteration);
+                ClassicAssert.AreEqual(i, designPoint.Realizations[3 * i + 2].Iteration);
             }
         }
 
@@ -254,8 +270,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.ProgressIndicator = new ProgressIndicator(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.33, designPoint.Beta, margin);
 
@@ -273,8 +291,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearFullyCorrelatedProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.33, designPoint.Beta, margin);
 
@@ -291,8 +311,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLinearPartialCorrelatedProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.15, designPoint.Beta, margin);
 
@@ -309,8 +331,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.CorrelationMatrix.ResolveConflictingCorrelations();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.65, designPoint.Beta, margin);
 
@@ -332,8 +356,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.CorrelationMatrix.ResolveConflictingCorrelations();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.65, designPoint.Beta, margin);
 
@@ -355,8 +381,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetLoadStrengthProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.41, designPoint.Beta, margin);
         }
@@ -366,12 +394,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
-            FORM form = new FORM();
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
-            project.ReliabilityMethod = form;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
+            project.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.5, designPoint.Beta, margin);
         }
@@ -381,13 +409,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
-            FORM form = new FORM();
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
-            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
-            project.ReliabilityMethod = form;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
+            project.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
+            project.Settings.StartMethod = StartPointMethod.RaySearch;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.5, designPoint.Beta, margin);
         }
@@ -397,11 +425,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
-            FORM form = new FORM();
-            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
-            project.ReliabilityMethod = form;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Settings.StartMethod = StartPointMethod.RaySearch;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.5, designPoint.Beta, margin);
         }
@@ -411,12 +439,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
-            FORM form = new FORM();
-            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SphereSearch;
-            form.Settings.StartPointCalculatorSettings.AllQuadrants = true;
-            project.ReliabilityMethod = form;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Settings.StartMethod = StartPointMethod.SphereSearch;
+            project.Settings.AllQuadrants = true;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.5, designPoint.Beta, margin);
 
@@ -429,11 +457,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
-            FORM form = new FORM();
-            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SensitivitySearch;
-            project.ReliabilityMethod = form;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Settings.StartMethod = StartPointMethod.SensitivitySearch;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.5, designPoint.Beta, margin);
         }
@@ -443,8 +471,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetNoisyProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.59, designPoint.Beta, margin);
         }
@@ -454,8 +484,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetOblateSpheroidProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(3.39, designPoint.Beta, margin);
         }
@@ -465,8 +497,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetQuadraticProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(-4.5, designPoint.Beta, margin);
         }
@@ -476,12 +510,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetWaveProject();
 
-            FORM form = new FORM();
-            form.Settings.RelaxationFactor = 0.7;
-            form.Settings.RelaxationLoops = 5;
-            project.ReliabilityMethod = form;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Settings.RelaxationFactor = 0.7;
+            project.Settings.RelaxationLoops = 5;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.09, designPoint.Beta, margin);
             ClassicAssert.AreEqual(2, designPoint.ContributingDesignPoints.Count);
@@ -492,18 +526,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetWaveProject();
 
-            FORM form = new FORM();
-            form.Settings.RelaxationFactor = 0.7;
-            form.Settings.RelaxationLoops = 5;
-            form.Settings.GradientCalculatorSettings.GradientType = GradientType.TwoDirections;
-            project.ReliabilityMethod = form;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Settings.RelaxationFactor = 0.7;
+            project.Settings.RelaxationLoops = 5;
+            project.Settings.GradientType = GradientMethod.TwoDirections;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.08, designPoint.Beta, margin);
             ClassicAssert.AreEqual(1, designPoint.ContributingDesignPoints.Count);
 
-            ClassicAssert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+            ClassicAssert.IsTrue(designPoint.IsConverged);
         }
 
         [Test]
@@ -511,28 +545,31 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetNonLinearProject();
 
-            FORM form = new FORM();
-            form.Settings.RelaxationFactor = 0.75;
-            form.Settings.RelaxationLoops = 8;
-            form.Settings.FilterAtNonConvergence = false;
-            project.ReliabilityMethod = form;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Settings.RelaxationFactor = 0.75;
+            project.Settings.RelaxationLoops = 8;
+            project.Settings.FilterAtNonConvergence = false;
 
-            DesignPoint designPoint1 = project.GetDesignPoint();
+            project.Run();
+
+            DesignPoint designPoint1 = project.DesignPoint;
 
             ClassicAssert.AreEqual(3.01, designPoint1.Beta, margin);
             ClassicAssert.AreEqual(7, designPoint1.ContributingDesignPoints.Count);
             ClassicAssert.AreEqual("Relaxation loop 1", designPoint1.ContributingDesignPoints[0].Identifier);
 
-            ClassicAssert.IsFalse(designPoint1.ConvergenceReport.IsConverged);
-            form.Settings.FilterAtNonConvergence = true;
+            ClassicAssert.IsFalse(designPoint1.IsConverged);
+            project.Settings.FilterAtNonConvergence = true;
 
-            DesignPoint designPoint2 = project.GetDesignPoint();
+            project.Run();
+
+            DesignPoint designPoint2 = project.DesignPoint;
 
             ClassicAssert.AreEqual(0.674, designPoint2.Beta, margin);
             ClassicAssert.AreEqual(7, designPoint2.ContributingDesignPoints.Count);
             ClassicAssert.AreEqual("Relaxation loop 1", designPoint2.ContributingDesignPoints[0].Identifier);
 
-            ClassicAssert.IsFalse(designPoint2.ConvergenceReport.IsConverged);
+            ClassicAssert.IsFalse(designPoint2.IsConverged);
         }
 
         [Test]
@@ -540,10 +577,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetBlighProject();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
+            project.Run();
 
-            ClassicAssert.AreEqual(1.63, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(1.63, project.DesignPoint.Beta, margin);
         }
 
         [Test]
@@ -551,12 +588,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetNonVaryingProject();
 
+            project.Settings.ReliabilityMethod = ReliabilityMethod.FORM;
             project.Settings.SaveMessages = true;
             project.Settings.MaxMessages = 1000;
             project.Settings.LowestMessageType = MessageType.Warning;
+            project.Run();
 
-            project.ReliabilityMethod = new FORM();
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(40, designPoint.Beta, margin);
             ClassicAssert.AreEqual(1, designPoint.Messages.Count);

@@ -31,7 +31,7 @@ namespace Deltares::Server
     {
     public:
         virtual bool CanHandle(std::string object_type) { return false; }
-        virtual void Create(std::string object_type, int id) { }
+        virtual void Create(std::string object_type, int id) {}
         virtual void Destroy(int id) {}
         virtual void Exit() {}
         virtual bool ShouldClose() { return false; }
@@ -67,6 +67,8 @@ namespace Deltares::Server
         virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
         virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
         virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
+        virtual void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) {}
+        virtual void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack) {}
         virtual void Execute(int id, std::string method_) {}
     };
 }

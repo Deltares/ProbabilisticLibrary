@@ -25,7 +25,6 @@
 #include "../Statistics/Stochast.h"
 #include <cmath>
 
-#include "ModelSample.h"
 #include "../Proxies/ProxyModel.h"
 #include <format>
 
@@ -137,6 +136,7 @@ namespace Deltares::Models
         xSample->Weight = sample->Weight;
         xSample->IsRestartRequired = sample->IsRestartRequired;
         xSample->Beta = sample->getBeta();
+        xSample->OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
     }
@@ -147,6 +147,7 @@ namespace Deltares::Models
 
         // create a sample with values in x-space
         std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
+        xSample->OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
     }
@@ -270,10 +271,10 @@ namespace Deltares::Models
     }
 
     /**
-     * \brief Sets a callback which calculates the beat in a certain direction
-     * \param zBetaLambda Callback 
+     * \brief Sets a callback which calculates the beta in a certain direction
+     * \param zBetaLambda Callback
      */
-    void ModelRunner::setDirectionModel(ZBetaLambda zBetaLambda) const
+    void ModelRunner::setDirectionModel(const ZBetaLambda& zBetaLambda) const
     {
         this->zModel->setBetaLambda(zBetaLambda);
     }
@@ -292,7 +293,7 @@ namespace Deltares::Models
      * \param sample Sample indicating the direction
      * \return Beta
      */
-    double ModelRunner::getBeta(std::shared_ptr<Sample> sample)
+    double ModelRunner::getBeta(const std::shared_ptr<Sample>& sample)
     {
         std::shared_ptr<ModelSample> xSample = getModelSample(sample);
 
@@ -324,7 +325,7 @@ namespace Deltares::Models
         {
             std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
 
-            if (this->Settings->MaxParallelProcesses > 1) 
+            if (this->Settings->MaxParallelProcesses > 1)
             {
                 locker->lock();
                 this->evaluations.push_back(evaluation);
@@ -455,7 +456,7 @@ namespace Deltares::Models
 
     void ModelRunner::doTextualProgress(ProgressType type, std::string text)
     {
-        if (this->progressIndicator != nullptr) 
+        if (this->progressIndicator != nullptr)
         {
             this->progressIndicator->doTextualProgress(type, text);
         }
@@ -592,4 +593,6 @@ namespace Deltares::Models
         this->uConverter->updateVariableSample(xValues, originalValues);
     }
 }
+
+
 

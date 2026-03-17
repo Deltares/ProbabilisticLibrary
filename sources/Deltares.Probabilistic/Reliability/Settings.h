@@ -29,6 +29,7 @@
 #include "DesignPointBuilder.h"
 #include "DirectionalSampling.h"
 #include "DirectionalSamplingThenFORM.h"
+#include "DirectionReliability.h"
 #include "FORM.h"
 #include "FORMThenDirectionalSampling.h"
 #include "LatinHyperCube.h"
@@ -44,12 +45,14 @@
 
 namespace Deltares::Reliability
 {
-    enum ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
+    enum ReliabilityResultType { ResultDesignPoint, ResultFragilityCurve };
 
-    enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
-        ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
+    enum ReliabilityMethodType {
+        ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
+        ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilityDirectionReliability,
         ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
-        ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM};
+        ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM
+    };
 
     /**
      * \brief General settings applicable to all mechanisms
@@ -72,11 +75,6 @@ namespace Deltares::Reliability
          * \brief Method type how the design point (alpha values) is calculated
          */
         DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-
-        /**
-         * \brief Defines the way new samples are generated
-         */
-        SampleMethodType SampleMethod = SampleMethodType::MarkovChain;
 
         /**
          * \brief The minimum samples to be examined
@@ -136,7 +134,7 @@ namespace Deltares::Reliability
         /**
          * \brief Default number of intervals in numerical integration
          */
-        int Intervals = 200;
+        //int Intervals = 200;
 
         /**
          * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration
@@ -177,6 +175,21 @@ namespace Deltares::Reliability
          * \brief Fraction of the samples which will be used in the next iteration
          */
         double SubsetFraction = 0.1;
+
+        /**
+         * \brief Indicates whether adaptive sampling is based on (true) clustering or (false) moving the center point based on the last importance sampling design point
+         */
+        bool Clustering = false;
+
+        /**
+         * \brief Maximum number of clusters when OptimizeNumberOfClusters is true or number of clusters to be generated when OptimizeNumberOfClusters is false
+         */
+        int MaxClusters = 100;
+
+        /**
+         * \brief Indicates whether number of clusters is fixed (false) or determined by the <see cref="IClusterMethod"/> algorithm
+         */
+        bool OptimizeNumberOfClusters = false;
 
         /**
          * \brief Settings for generating random values
@@ -227,6 +240,7 @@ namespace Deltares::Reliability
         std::shared_ptr<DirectionalSampling> GetDirectionalSamplingMethod() const;
         std::shared_ptr<NumericalBisection> GetNumericalBisectionMethod() const;
         std::shared_ptr<LatinHyperCube> GetLatinHypercubeMethod() const;
+        std::shared_ptr<DirectionReliability> GetDirectionReliabilityMethod() const;
         std::shared_ptr<SubsetSimulation> GetSubsetSimulationMethod() const;
         std::shared_ptr<CobylaReliability> GetCobylaReliabilityMethod() const;
         std::shared_ptr<FORMThenDirectionalSampling> GetFormThenDsReliabilityMethod() const;

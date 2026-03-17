@@ -21,8 +21,6 @@
 //
 #include "ReliabilityProject.h"
 
-#include <iostream>
-
 namespace Deltares::Reliability
 {
     void ReliabilityProject::run()
@@ -39,6 +37,11 @@ namespace Deltares::Reliability
         {
             this->fragilityCurve = this->getFragilityCurve();
         }
+    }
+
+    void ReliabilityProject::stop()
+    {
+        this->reliabilityMethod->Stop();
     }
 
     std::shared_ptr<Reliability::DesignPoint> ReliabilityProject::getDesignPoint()

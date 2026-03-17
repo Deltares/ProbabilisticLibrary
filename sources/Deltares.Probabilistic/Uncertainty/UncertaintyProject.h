@@ -89,6 +89,7 @@ namespace Deltares::Uncertainty
          */
         void validate(Logging::ValidationReport& report) override;
 
+        // TODO: make private when C++/CLI has been phased out
         /**
          * \brief Performs the sensitivity calculation
          * \return Sensitivity result
@@ -96,9 +97,14 @@ namespace Deltares::Uncertainty
         UncertaintyResult getUncertaintyResult();
 
         /**
-         * \brief Runs the reliability calculation
+         * \brief Runs the uncertainty calculation
          */
         void run() override;
+
+        /**
+         * \brief Runs the uncertainty calculation
+         */
+        void stop() override;
 
         /**
          * \brief Sets the settings
@@ -109,7 +115,7 @@ namespace Deltares::Uncertainty
         }
 
     private:
-        std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+        std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
     };
 }
 

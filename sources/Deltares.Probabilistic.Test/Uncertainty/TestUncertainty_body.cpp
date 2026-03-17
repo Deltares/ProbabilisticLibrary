@@ -57,11 +57,12 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getAddOneProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
+        //std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
 
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
+        project->run();
 
-        std::shared_ptr<Statistics::Stochast> stochast = project->getUncertaintyResult().stochast;
+        std::shared_ptr<Statistics::Stochast> stochast = project->uncertaintyResult->stochast;
 
         ASSERT_NEAR(stochast->getMean(), 1.0, margin);
 
@@ -75,21 +76,21 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->run();
 
-        auto result = project->getUncertaintyResult();
+        auto result = project->uncertaintyResult;
 
-        ASSERT_NEAR(1.8, result.stochast->getMean(), margin);
-        ASSERT_NEAR(0.82, result.stochast->getDeviation(), margin);
+        ASSERT_NEAR(1.8, result->stochast->getMean(), margin);
+        ASSERT_NEAR(0.82, result->stochast->getDeviation(), margin);
 
-        std::shared_ptr<Models::Evaluation> evaluation05 = result.quantileEvaluations[0];
-        std::shared_ptr<Models::Evaluation> evaluation50 = result.quantileEvaluations[1];
-        std::shared_ptr<Models::Evaluation> evaluation95 = result.quantileEvaluations[2];
+        std::shared_ptr<Models::Evaluation> evaluation05 = result->quantileEvaluations[0];
+        std::shared_ptr<Models::Evaluation> evaluation50 = result->quantileEvaluations[1];
+        std::shared_ptr<Models::Evaluation> evaluation95 = result->quantileEvaluations[2];
 
         ASSERT_NEAR(0.42, evaluation05->Z, margin);
         ASSERT_NEAR(1.78, evaluation50->Z, margin);
@@ -105,35 +106,37 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        uncertaintyMethod->Settings->randomSettings->IsRepeatableRandom = false;
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.10));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.90));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
+        project->settings->RandomSettings->IsRepeatableRandom = false;
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.10));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.90));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->run();
 
-        auto result = project->getUncertaintyResult();
+        auto result = project->uncertaintyResult;
 
-        ASSERT_LE(result.quantileEvaluations[0]->Z, 1.5);
-        ASSERT_LE(result.quantileEvaluations[1]->Z, 1.5);
-        ASSERT_GE(result.quantileEvaluations[2]->Z, 2.1);
-        ASSERT_GE(result.quantileEvaluations[3]->Z, 2.1);
+        ASSERT_LE(result->quantileEvaluations[0]->Z, 1.5);
+        ASSERT_LE(result->quantileEvaluations[1]->Z, 1.5);
+        ASSERT_GE(result->quantileEvaluations[2]->Z, 2.1);
+        ASSERT_GE(result->quantileEvaluations[3]->Z, 2.1);
 
-        ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
-        ASSERT_NEAR(0.10, result.quantileEvaluations[1]->Quantile, margin);
+        ASSERT_NEAR(0.05, result->quantileEvaluations[0]->Quantile, margin);
+        ASSERT_NEAR(0.10, result->quantileEvaluations[1]->Quantile, margin);
 
         // do it again, check results are not equal
 
-        auto result2 = project->getUncertaintyResult();
+        project->run();
+
+        auto result2 = project->uncertaintyResult;
 
         const double smallMargin = 1E-10;
 
-        ASSERT_NE(result.stochast, result2.stochast);
+        ASSERT_NE(result->stochast, result2->stochast);
 
-        double m1 = result.stochast->getMean();
-        double m2 = result2.stochast->getMean();
+        double m1 = result->stochast->getMean();
+        double m2 = result2->stochast->getMean();
 
         ASSERT_FALSE(std::abs(m1 - m2) < smallMargin);
     }
@@ -182,12 +185,11 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        uncertaintyMethod->Settings->MaximumSamples = 100000;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
+        project->settings->MaximumSamples = 100000;
+        project->run();
 
-        project->uncertaintyMethod = uncertaintyMethod;
-
-        std::shared_ptr<Statistics::Stochast> stochast = project->getUncertaintyResult().stochast;
+        std::shared_ptr<Statistics::Stochast> stochast = project->uncertaintyResult->stochast;
 
         ASSERT_NEAR(1.8, stochast->getMean(), margin);
         ASSERT_NEAR(0.82, stochast->getDeviation(), margin);
@@ -202,14 +204,13 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        uncertaintyMethod->Settings->DeriveSamplesFromVariationCoefficient = true;
-
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
+        project->settings->DeriveSamplesFromVariationCoefficient = true;
+        project->run();
 
         std::shared_ptr<Statistics::Stochast> stochast = project->getUncertaintyResult().stochast;
 
-        ASSERT_EQ(7600, uncertaintyMethod->Settings->getRequiredSamples());
+        ASSERT_EQ(7600, project->settings->getRequiredSamples());
         ASSERT_NEAR(1.8, stochast->getMean(), margin);
         ASSERT_NEAR(0.82, stochast->getDeviation(), margin);
     }
@@ -218,112 +219,112 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getAddOneProject());
 
-        std::shared_ptr<Uncertainty::ImportanceSamplingS> uncertaintyMethod = std::make_shared<Uncertainty::ImportanceSamplingS>();
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyImportanceSampling;
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->run();
 
-        auto result = project->getUncertaintyResult();
+        auto result = project->uncertaintyResult;
 
-        ASSERT_NEAR(result.stochast->getMean(), 1.0, margin);
+        ASSERT_NEAR(result->stochast->getMean(), 1.0, margin);
 
-        result.stochast->setDistributionType(Statistics::DistributionType::Uniform);
+        result->stochast->setDistributionType(Statistics::DistributionType::Uniform);
 
-        ASSERT_NEAR(0.0, result.stochast->getProperties()->Minimum, margin);
-        ASSERT_NEAR(2.0, result.stochast->getProperties()->Maximum, margin);
+        ASSERT_NEAR(0.0, result->stochast->getProperties()->Minimum, margin);
+        ASSERT_NEAR(2.0, result->stochast->getProperties()->Maximum, margin);
 
-        ASSERT_NEAR(1.00, result.quantileEvaluations[0]->Z, margin);
-        ASSERT_NEAR(1.90, result.quantileEvaluations[1]->Z, margin);
+        ASSERT_NEAR(1.00, result->quantileEvaluations[0]->Z, margin);
+        ASSERT_NEAR(1.90, result->quantileEvaluations[1]->Z, margin);
 
-        ASSERT_NEAR(0.50, result.quantileEvaluations[0]->Quantile, margin);
+        ASSERT_NEAR(0.50, result->quantileEvaluations[0]->Quantile, margin);
     }
 
     void TestUncertainty::testNumericalIntegration() const
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::NumericalIntegrationS> uncertaintyMethod = std::make_shared<Uncertainty::NumericalIntegrationS>();
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyNumericalIntegration;
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->run();
 
-        auto result = project->getUncertaintyResult();
+        auto result = project->uncertaintyResult;
 
-        ASSERT_NEAR(result.stochast->getMean(), 1.8, margin);
-        ASSERT_NEAR(result.stochast->getDeviation(), 0.81, margin);
+        ASSERT_NEAR(result->stochast->getMean(), 1.8, margin);
+        ASSERT_NEAR(result->stochast->getDeviation(), 0.81, margin);
 
-        ASSERT_NEAR(0.43, result.quantileEvaluations[0]->Z, margin);
-        ASSERT_NEAR(1.80, result.quantileEvaluations[1]->Z, margin);
-        ASSERT_NEAR(3.17, result.quantileEvaluations[2]->Z, margin);
+        ASSERT_NEAR(0.43, result->quantileEvaluations[0]->Z, margin);
+        ASSERT_NEAR(1.80, result->quantileEvaluations[1]->Z, margin);
+        ASSERT_NEAR(3.17, result->quantileEvaluations[2]->Z, margin);
 
-        ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
+        ASSERT_NEAR(0.05, result->quantileEvaluations[0]->Quantile, margin);
     }
 
     void TestUncertainty::testDirectionalSampling() const
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::DirectionalSamplingS> uncertaintyMethod = std::make_shared<Uncertainty::DirectionalSamplingS>();
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyDirectionalSampling;
 
         std::shared_ptr<Statistics::ProbabilityValue> value1 = std::make_shared<Statistics::ProbabilityValue>();
         value1->setProbabilityOfNonFailure(0.9);
 
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(value1);
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->settings->RequestedQuantiles.push_back(value1);
+        project->run();
 
-        auto result = project->getUncertaintyResult();
+        auto result = project->uncertaintyResult;
 
-        ASSERT_NEAR(result.stochast->getProperties()->FragilityValues[0]->X, 2.9, margin);
-        ASSERT_NEAR(result.stochast->getProperties()->FragilityValues[0]->getProbabilityOfNonFailure(), 0.9, margin);
+        ASSERT_NEAR(result->stochast->getProperties()->FragilityValues[0]->X, 2.9, margin);
+        ASSERT_NEAR(result->stochast->getProperties()->FragilityValues[0]->getProbabilityOfNonFailure(), 0.9, margin);
 
-        ASSERT_NEAR(2.91, result.quantileEvaluations[0]->Z, margin);
-        ASSERT_NEAR(0.90, result.quantileEvaluations[0]->Quantile, margin);
+        ASSERT_NEAR(2.91, result->quantileEvaluations[0]->Z, margin);
+        ASSERT_NEAR(0.90, result->quantileEvaluations[0]->Quantile, margin);
     }
 
     void TestUncertainty::testFORM() const
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::FORMS> uncertaintyMethod = std::make_shared<Uncertainty::FORMS>();
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyFORM;
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->run();
 
-        auto result = project->getUncertaintyResult();
+        auto result = project->uncertaintyResult;
 
-        ASSERT_NEAR(result.stochast->getMean(), 1.8, margin);
-        ASSERT_NEAR(result.stochast->getDeviation(), 0.92, margin);
+        ASSERT_NEAR(result->stochast->getMean(), 1.8, margin);
+        ASSERT_NEAR(result->stochast->getDeviation(), 0.92, margin);
 
-        ASSERT_NEAR(0.30, result.quantileEvaluations[0]->Z, margin);
-        ASSERT_NEAR(1.80, result.quantileEvaluations[1]->Z, margin);
-        ASSERT_NEAR(3.30, result.quantileEvaluations[2]->Z, margin);
+        ASSERT_NEAR(0.30, result->quantileEvaluations[0]->Z, margin);
+        ASSERT_NEAR(1.80, result->quantileEvaluations[1]->Z, margin);
+        ASSERT_NEAR(3.30, result->quantileEvaluations[2]->Z, margin);
 
-        ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
+        ASSERT_NEAR(0.05, result->quantileEvaluations[0]->Quantile, margin);
     }
 
     void TestUncertainty::testFOSM() const
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::FOSM> uncertaintyMethod = std::make_shared<Uncertainty::FOSM>();
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
-        project->uncertaintyMethod = uncertaintyMethod;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyFOSM;
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->run();
 
-        auto result = project->getUncertaintyResult();
+        auto result = project->uncertaintyResult;
 
-        ASSERT_NEAR(result.stochast->getMean(), 1.8, margin);
-        ASSERT_NEAR(result.stochast->getDeviation(), 1.04, margin);
+        ASSERT_NEAR(result->stochast->getMean(), 1.8, margin);
+        ASSERT_NEAR(result->stochast->getDeviation(), 1.04, margin);
 
-        ASSERT_NEAR(0.29, result.quantileEvaluations[0]->Z, margin);
-        ASSERT_NEAR(1.80, result.quantileEvaluations[1]->Z, margin);
-        ASSERT_NEAR(3.31, result.quantileEvaluations[2]->Z, margin);
+        ASSERT_NEAR(0.29, result->quantileEvaluations[0]->Z, margin);
+        ASSERT_NEAR(1.80, result->quantileEvaluations[1]->Z, margin);
+        ASSERT_NEAR(3.31, result->quantileEvaluations[2]->Z, margin);
 
-        ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
+        ASSERT_NEAR(0.05, result->quantileEvaluations[0]->Quantile, margin);
     }
 }
 

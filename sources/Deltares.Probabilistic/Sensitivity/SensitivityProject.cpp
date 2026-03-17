@@ -32,8 +32,18 @@ namespace Deltares::Sensitivity
 
         sensitivityMethod = settings->GetSensitivityMethod();
 
-        if (parameter.empty())
+        if (model->outputParameters.empty())
         {
+            this->outputSelector = std::make_shared<Models::ZValueConverter>();
+
+            auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
+            sensitivityResults.push_back(result);
+        }
+        else if (parameter.empty())
+        {
+            std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+            this->outputSelector = std::dynamic_pointer_cast<Models::ZValueConverter>(parameterSelector);
+
             for (const auto& modelParameter : model->outputParameters)
             {
                 parameterSelector->parameter = modelParameter->name;
@@ -57,6 +67,9 @@ namespace Deltares::Sensitivity
         }
         else
         {
+            std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+            this->outputSelector = std::dynamic_pointer_cast<Models::ZValueConverter>(parameterSelector);
+
             parameterSelector->parameter = parameter;
             parameterSelector->arrayIndex = arrayIndex;
 
@@ -73,9 +86,14 @@ namespace Deltares::Sensitivity
         model->Index = 0;
     }
 
+    void SensitivityProject::stop()
+    {
+        sensitivityMethod->Stop();
+    }
+
     SensitivityResult SensitivityProject::getSensitivityResult()
     {
-        model->zValueConverter = parameterSelector;
+        model->zValueConverter = outputSelector;
 
         std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, correlation);
         const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(model, uConverter, progressIndicator);
@@ -83,7 +101,7 @@ namespace Deltares::Sensitivity
         modelRunner->initializeForRun();
 
         auto result = sensitivityMethod->getSensitivityResult(modelRunner);
-        result.identifier = parameterSelector->parameter;
+        result.identifier = outputSelector->getIdentifier();
 
         modelRuns += model->getModelRuns();
 

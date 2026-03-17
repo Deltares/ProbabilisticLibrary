@@ -22,9 +22,10 @@
 #pragma once
 
 #include <cmath>
-#include <functional>
 #include <vector>
 #include <memory>
+
+#include "ModelSampleStruct.h"
 
 namespace Deltares::Models
 {
@@ -34,36 +35,6 @@ namespace Deltares::Models
         ModelSample(std::vector<double> values)
         {
             this->Values = values;
-        }
-
-        /**
-         * \brief Resets all contents of the sample to its default values
-         * \remark Values are not cleared, since they are provided in the constructor
-         */
-        void clear()
-        {
-            IterationIndex = -1;
-            threadId = 0;
-            Weight = std::nan("");
-            AllowProxy = true;
-            UsedProxy = false;
-            IsRestartRequired = false;
-            Z = std::nan("");
-            Beta = 0;
-            Tag = 0;
-        }
-
-        /**
-         * \brief Copies the results from another sample
-         */
-        void copyFrom(const std::shared_ptr<ModelSample>& source)
-        {
-            this->Z = source->Z;
-            this->OutputValues = std::vector<double>(source->OutputValues.size());
-            for (size_t i = 0; i < this->OutputValues.size(); i++)
-            {
-                this->OutputValues[i] = source->OutputValues[i];
-            }
         }
 
         std::vector<double> Values;
@@ -87,23 +58,22 @@ namespace Deltares::Models
 
         int Tag = 0;
 
-        bool hasSameValues(std::shared_ptr<ModelSample> other)
-        {
-            if (this->Values.size() != other->Values.size())
-            {
-                return false;
-            }
+        bool hasSameValues(std::shared_ptr<ModelSample> other);
 
-            for (int i = 0; i < this->Values.size(); i++)
-            {
-                if (this->Values[i] != other->Values[i])
-                {
-                    return false;
-                }
-            }
+        /**
+         * \brief Resets all contents of the sample to its default values
+         * \remark Values are not cleared, since they are provided in the constructor
+         */
+        void clear();
 
-            return true;
-        }
+        /**
+         * \brief Copies the results from another sample
+         */
+        void copyFrom(const std::shared_ptr<ModelSample>& source);
+
+        ModelSampleStruct getModelSampleStruct() const;
+
+        void setModelSampleStruct(ModelSampleStruct* sampleStruct);
 
         /**
          * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
@@ -125,4 +95,5 @@ namespace Deltares::Models
         }
     };
 }
+
 

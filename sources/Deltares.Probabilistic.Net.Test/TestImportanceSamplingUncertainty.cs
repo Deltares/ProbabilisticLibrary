@@ -21,11 +21,11 @@
 //
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Models.Wrappers;
-using Deltares.Statistics.Wrappers;
-using Deltares.Uncertainty.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Statistics;
+using Deltares.Probabilistic.Uncertainty;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestImportanceSamplingUncertainty
@@ -37,9 +37,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetAddOneProject());
 
-            project.UncertaintyMethod = new ImportanceSamplingS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.ImportanceSampling;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1, stochast.Mean, margin);
 
@@ -54,9 +55,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
-            project.UncertaintyMethod = new ImportanceSamplingS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.ImportanceSampling;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.8, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
@@ -67,14 +69,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
-            project.UncertaintyMethod = new ImportanceSamplingS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.ImportanceSampling;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.8, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
 
-            Stochast stochast2 = project.GetStochast();
+            project.Run();
+            Stochast stochast2 = project.Stochast;
 
             ClassicAssert.AreNotSame(stochast, stochast2);
             ClassicAssert.AreEqual(stochast.Mean, stochast2.Mean);
@@ -84,11 +88,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearParallel()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
+
+            project.Settings.UncertaintyMethod = UncertaintyMethod.ImportanceSampling;
             project.Settings.MaxParallelProcesses = 4;
+            project.Run();
 
-            project.UncertaintyMethod = new ImportanceSamplingS();
-
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.8, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
@@ -98,14 +103,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearManySamples()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
+
+            project.Settings.UncertaintyMethod = UncertaintyMethod.ImportanceSampling;
             project.Settings.SaveConvergence = false;
-            project.Settings.SaveEvaluations = false;
+            project.Settings.SaveRealizations = false;
             project.Settings.SaveMessages = false;
+            project.Settings.MaximumSamples = 100000;
+            project.Run();
 
-            project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.MaximumSamples = 100000;
-
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.8, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
@@ -120,9 +126,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearFullyCorrelated()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearFullyCorrelatedProject());
-            project.UncertaintyMethod = new ImportanceSamplingS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.ImportanceSampling;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.79, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.82, stochast.Deviation, margin);
@@ -137,9 +144,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearNegativeFullyCorrelated()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearNegativeFullyCorrelatedProject());
-            project.UncertaintyMethod = new ImportanceSamplingS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.ImportanceSampling;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.04, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.59, stochast.Deviation, margin);
@@ -149,9 +157,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinearPartialCorrelated()
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearPartialCorrelatedProject());
-            project.UncertaintyMethod = new ImportanceSamplingS();
+            project.Settings.UncertaintyMethod = UncertaintyMethod.ImportanceSampling;
+            project.Run();
 
-            Stochast stochast = project.GetStochast();
+            Stochast stochast = project.Stochast;
 
             ClassicAssert.AreEqual(1.79, stochast.Mean, margin);
             ClassicAssert.AreEqual(0.76, stochast.Deviation, margin);

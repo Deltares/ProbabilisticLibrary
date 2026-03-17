@@ -12,7 +12,7 @@
     <WorkingDirectory>$(OutDir)</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Deltares.Probabilistic.Python</Name>
-    <RootNamespace>Deltares.Probabilistic.PWrapper</RootNamespace>
+    <RootNamespace>Deltares.Probabilistic.Python</RootNamespace>
     <IsWindowsApplication>False</IsWindowsApplication>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>

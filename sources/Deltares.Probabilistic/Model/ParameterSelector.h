@@ -32,6 +32,8 @@ namespace Deltares::Models
         int arrayIndex = 0;
         void initialize(std::vector<std::shared_ptr<ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<ModelInputParameter>>& outputParameters) override;
         void updateZValue(std::shared_ptr<ModelSample> sample) override;
+        std::string getIdentifier() override { return parameter; }
+
     private:
         int parameterIndex = 0;
         bool parameterIndexFromInput = false;

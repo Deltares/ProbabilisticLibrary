@@ -39,6 +39,10 @@ namespace Deltares::Models
     using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
     using EmptyCallBack = void(*)();
 
+    using ProgressCallBack = void(*)(double progress);
+    using DetailedProgressCallBack = void(*)(int step, int loop, double reliability, double convergence);
+    using TextualProgressCallBack = void(*)(int progressIndicator, const char* text);
+
     class ZModel
     {
     public:
@@ -64,6 +68,11 @@ namespace Deltares::Models
         void setMultipleCallback(ZValuesMultipleCallBack multipleCallBack)
         {
             this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(multipleCallBack);
+        }
+
+        void setModelSampleCallback(Models::ModelSampleCallback modelSampleCallBack)
+        {
+            this->zLambda = this->getLambdaFromModelSampleCallBack(modelSampleCallBack);
         }
 
         /**
@@ -101,7 +110,7 @@ namespace Deltares::Models
          */
         std::shared_ptr<ZValueConverter> zValueConverter = std::make_shared<ZValueConverter>();
 
-        void setBetaLambda(ZBetaLambda zBetaLambda)
+        void setBetaLambda(const ZBetaLambda& zBetaLambda)
         {
             this->zBetaLambda = zBetaLambda;
         }
@@ -174,6 +183,8 @@ namespace Deltares::Models
         int outputParametersCount = 0;
         ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
         ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
+
+        ZLambda getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const;
 
         /**
          * \brief Calculates a sample

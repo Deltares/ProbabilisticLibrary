@@ -35,6 +35,8 @@ namespace Deltares::Sensitivity
     class SensitivityProject : public Models::ModelProject
     {
     public:
+        // TODO: Make sensitivityMethod private when C++/CLI code has been phased out
+
         /**
          * \brief Method which performs a uncertainty calculation
          */
@@ -83,9 +85,14 @@ namespace Deltares::Sensitivity
         SensitivityResult getSensitivityResult();
 
         /**
-         * \brief Runs the reliability calculation
+         * \brief Runs the sensitivity calculation
          */
         void run() override;
+
+        /**
+         * \brief Stops the sensitivity calculation
+         */
+        void stop() override;
 
         /**
          * \brief Sets the settings
@@ -106,7 +113,7 @@ namespace Deltares::Sensitivity
         std::vector<std::shared_ptr<Logging::Message>> messages;
 
     private:
-        std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+        std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
     };
 }
 

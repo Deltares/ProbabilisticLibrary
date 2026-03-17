@@ -164,6 +164,8 @@
     <ClInclude Include="Combine\ExcludingCombiner.h" />
     <ClInclude Include="Combine\WeightedSumCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
+    <ClInclude Include="Model\ModelSample.h" />
+    <ClInclude Include="Model\ModelSampleStruct.h" />
     <ClInclude Include="Proxies\ProxyCoefficients.h" />
     <ClInclude Include="Model\Validatable.h" />
     <ClInclude Include="Proxies\ProxySettings.h" />
@@ -308,7 +310,6 @@
     <ClInclude Include="Combine\intEqualElements.h" />
     <ClInclude Include="Combine\upscaling.h" />
     <ClInclude Include="Combine\LengthEffect.h" />
-    <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Reliability\SphereTasks.h" />
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
     <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
@@ -425,6 +426,7 @@
     <ClCompile Include="Proxies\ProxyCoefficient.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
     <ClCompile Include="Logging\ValidationSupport.cpp" />
+    <ClCompile Include="Model\ModelSample.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
     <ClCompile Include="Model\ModelProject.cpp" />
     <ClCompile Include="Reliability\FragilityCurveProject.cpp" />

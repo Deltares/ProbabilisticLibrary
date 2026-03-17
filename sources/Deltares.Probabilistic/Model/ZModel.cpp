@@ -25,8 +25,10 @@
 #include <omp.h>
 
 #include "ModelSample.h"
+#include "ModelSampleStruct.h"
 #include "../Logging/ValidationSupport.h"
 #include "../Utils/probLibException.h"
+
 
 namespace Deltares::Models
 {
@@ -104,6 +106,20 @@ namespace Deltares::Models
 
             delete[] inputValues;
             delete[] outputValues;
+        };
+
+        return calcValuesLambda;
+    }
+
+    ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const
+    {
+        ZLambda calcValuesLambda = [modelSampleLambda, this](std::shared_ptr<ModelSample> sample)
+        {
+            ModelSampleStruct modelSampleStruct = sample->getModelSampleStruct();
+
+            (*modelSampleLambda)(&modelSampleStruct);
+
+            sample->setModelSampleStruct(&modelSampleStruct);
         };
 
         return calcValuesLambda;
@@ -297,4 +313,6 @@ namespace Deltares::Models
         Logging::ValidationSupport::checkNotNull(report, !callbackAssigned, "model", subject);
     }
 }
+
+
 

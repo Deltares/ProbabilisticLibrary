@@ -42,11 +42,6 @@
 #include "../Uncertainty/UncertaintyResult.h"
 #include "../Sensitivity/SensitivityResult.h"
 
-namespace Deltares::Proxies
-{
-class ProxyModel;
-}
-
 namespace Deltares::Models
 {
     typedef std::function<bool(bool finalCall)> ShouldExitLambda;
@@ -80,7 +75,7 @@ namespace Deltares::Models
         void setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider);
         double getZValue(std::shared_ptr<Sample> sample);
         std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
-        double getBeta(std::shared_ptr<Sample> sample);
+        double getBeta(const std::shared_ptr<Sample>& sample);
         bool canCalculateBeta() const;
         int getStochastCount();
         int getVaryingStochastCount();
@@ -100,7 +95,7 @@ namespace Deltares::Models
         std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type) const;
         std::vector<double> getOnlyVaryingValues(std::vector<double> values);
 
-        void setDirectionModel(ZBetaLambda zBetaLambda) const;
+        void setDirectionModel(const ZBetaLambda& zBetaLambda) const;
         void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
         void setShouldInvertFunction(ShouldInvertLambda shouldInvertFunction) { this->shouldInvertFunction = shouldInvertFunction; }
         void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }

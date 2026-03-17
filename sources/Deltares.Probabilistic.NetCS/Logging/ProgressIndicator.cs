@@ -1,0 +1,102 @@
+﻿// Copyright (C) Stichting Deltares. All rights reserved.
+//
+// This file is part of the Probabilistic Library.
+//
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+// All names, logos, and references to "Deltares" are registered trademarks of
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
+
+namespace Deltares.Probabilistic.Logging
+{
+    public delegate void ProgressDelegate(double progress);
+    public delegate void DetailedProgressDelegate(int step, int loop, double reliability, double convergence);
+    public delegate void TextualProgressDelegate(ProgressType progressType, string text);
+    
+    public class ProgressIndicator
+    {
+        private ProgressDelegate progressDelegate = null;
+        private DetailedProgressDelegate detailedProgressDelegate = null;
+        private TextualProgressDelegate textualProgressDelegate = null;
+
+        double progressOffset = 0;
+        double progressFactor = 1;
+        string task = "";
+
+        public ProgressIndicator(ProgressDelegate progressDelegate, DetailedProgressDelegate detailedProgressDelegate, TextualProgressDelegate textualProgressDelegate)
+        {
+            this.progressDelegate = progressDelegate;
+            this.detailedProgressDelegate = detailedProgressDelegate;
+            this.textualProgressDelegate = textualProgressDelegate;
+        }
+
+        public void DoProgress(double progress)
+        {
+            progressDelegate?.Invoke(progressOffset + progressFactor * progress);
+        }
+
+        public void DoDetailedProgress(int step, int loop, double reliability, double convergence)
+        {
+            detailedProgressDelegate?.Invoke(step, loop, reliability, convergence);
+        }
+
+        public void DoTextualProgress(int progressIndicator, string text)
+        {
+            ProgressType progressType = progressIndicator == 0 ? ProgressType.Global : ProgressType.Detailed;
+            DoTextualProgress(progressType, text);
+        }
+
+        public void DoTextualProgress(ProgressType progressType, string text)
+        {
+            textualProgressDelegate?.Invoke(progressType, text);
+        }
+
+        public void ReleaseHandles()
+        {
+            // nothing to do, should be removed
+        }
+
+        public void Reset()
+        {
+            this.progressDelegate?.Invoke(0);
+            this.detailedProgressDelegate?.Invoke(0, 0, 0, 0);
+            this.textualProgressDelegate?.Invoke(ProgressType.Detailed, "");
+        }
+
+        public void Complete()
+        {
+            this.progressDelegate?.Invoke(1);
+            this.detailedProgressDelegate?.Invoke(0, 0, 0, 0);
+            this.textualProgressDelegate?.Invoke(ProgressType.Detailed, "");
+        }
+
+        public void Initialize(double factor, double offset)
+        {
+            progressFactor = factor;
+            progressOffset = offset;
+        }
+
+        public void IncreaseOffset()
+        {
+            progressOffset += progressFactor;
+        }
+
+        public void SetTask(string task)
+        {
+            this.task = task;
+        }
+    }
+}

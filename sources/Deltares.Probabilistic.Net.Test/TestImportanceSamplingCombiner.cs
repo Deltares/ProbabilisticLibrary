@@ -20,12 +20,13 @@
 // All rights reserved.
 //
 ﻿using System.Collections.Generic;
-using Deltares.Reliability.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Statistics;
+using Deltares.Probabilistic.Reliability;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Statistics.Wrappers;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestImportanceSamplingCombiner
@@ -42,9 +43,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             List<DesignPoint> designPoints = new List<DesignPoint> { dp1, dp2 };
 
-            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.ImportanceSampling };
+            CombineProject project = new CombineProject();
+            project.Settings.CombineMethod = CombineMethod.ImportanceSampling;
+            project.Settings.CombineType = CombineType.Series;
 
-            DesignPoint combined = combiner.Combine(CombinationType.OneFails, designPoints);
+            project.DesignPoints.Add(dp1);
+            project.DesignPoints.Add(dp2);
+
+            project.Run();
+
+            DesignPoint combined = project.DesignPoint;
 
             ClassicAssert.AreEqual(StandardNormal.GetUFromQ(2 * q - q * q), combined.Beta, margin);
 
@@ -61,11 +69,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
             DesignPoint dp2 = ProjectBuilder.GetSimpleDesignPoint(StandardNormal.GetUFromQ(q), 2);
             DesignPoint dp3 = ProjectBuilder.GetSimpleDesignPoint(StandardNormal.GetUFromQ(q), 2);
 
-            List<DesignPoint> designPoints = new List<DesignPoint> { dp1, dp2, dp3 };
+            CombineProject project = new CombineProject();
+            project.Settings.CombineMethod = CombineMethod.ImportanceSampling;
+            project.Settings.CombineType = CombineType.Series;
 
-            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.ImportanceSampling };
+            project.DesignPoints.Add(dp1);
+            project.DesignPoints.Add(dp2);
+            project.DesignPoints.Add(dp3);
 
-            DesignPoint combined = combiner.Combine(CombinationType.OneFails, designPoints);
+            project.Run();
+
+            DesignPoint combined = project.DesignPoint;
 
             ClassicAssert.AreEqual(StandardNormal.GetUFromQ(3*q - 3*q*q - q*q*q), combined.Beta, margin);
         }
@@ -78,11 +92,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
             DesignPoint dp1 = ProjectBuilder.GetSimpleDesignPoint(StandardNormal.GetUFromQ(q), 2);
             DesignPoint dp2 = ProjectBuilder.GetSimpleDesignPoint(StandardNormal.GetUFromQ(q), 2);
 
-            List<DesignPoint> designPoints = new List<DesignPoint> { dp1, dp2 };
+            CombineProject project = new CombineProject();
+            project.Settings.CombineMethod = CombineMethod.ImportanceSampling;
+            project.Settings.CombineType = CombineType.Parallel;
 
-            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.ImportanceSampling };
+            project.DesignPoints.Add(dp1);
+            project.DesignPoints.Add(dp2);
 
-            DesignPoint combined = combiner.Combine(CombinationType.AllFail, designPoints);
+            project.Run();
+
+            DesignPoint combined = project.DesignPoint;
 
             ClassicAssert.AreEqual(StandardNormal.GetUFromQ(q * q), combined.Beta, margin);
         }
@@ -96,11 +115,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
             DesignPoint dp2 = ProjectBuilder.GetSimpleDesignPoint(StandardNormal.GetUFromQ(q), 2);
             DesignPoint dp3 = ProjectBuilder.GetSimpleDesignPoint(StandardNormal.GetUFromQ(q), 2);
 
-            List<DesignPoint> designPoints = new List<DesignPoint> { dp1, dp2, dp3 };
+            CombineProject project = new CombineProject();
+            project.Settings.CombineMethod = CombineMethod.ImportanceSampling;
+            project.Settings.CombineType = CombineType.Parallel;
 
-            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.ImportanceSampling };
+            project.DesignPoints.Add(dp1);
+            project.DesignPoints.Add(dp2);
+            project.DesignPoints.Add(dp3);
 
-            DesignPoint combined = combiner.Combine(CombinationType.AllFail, designPoints);
+            project.Run();
+
+            DesignPoint combined = project.DesignPoint;
 
             ClassicAssert.AreEqual(StandardNormal.GetUFromQ(q * q * q), combined.Beta, margin);
         }
