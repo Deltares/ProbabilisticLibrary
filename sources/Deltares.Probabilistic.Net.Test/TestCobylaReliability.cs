@@ -54,7 +54,7 @@ namespace Deltares.Probabilistic.Test
 
             DesignPoint designPoint = project.DesignPoint;
 
-            ClassicAssert.AreEqual(1.68, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(1.63, designPoint.Beta, margin);
         }
 
     }

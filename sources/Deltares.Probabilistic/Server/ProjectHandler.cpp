@@ -937,6 +937,7 @@ namespace Deltares::Server
             std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
 
             if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
+            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
             else if (property_ == "iterations") return settings->Iterations;
         }
         else if (objectType == ObjectType::UncertaintySettings)
@@ -944,6 +945,7 @@ namespace Deltares::Server
             std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
             if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
+            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
             else if (property_ == "minimum_samples") return settings->MinimumSamples;
             else if (property_ == "maximum_samples") return settings->MaximumSamples;
             else if (property_ == "maximum_iterations") return settings->MaximumIterations;
@@ -1287,6 +1289,7 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
             if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
+            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
             else if (property_ == "minimum_samples") settings->MinimumSamples = value;
             else if (property_ == "maximum_samples") settings->MaximumSamples = value;
             else if (property_ == "maximum_samples_no_result") settings->MaximumSamplesNoResult = value;
@@ -1313,6 +1316,7 @@ namespace Deltares::Server
             std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
 
             if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
+            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
             else if (property_ == "iterations") settings->Iterations = value;
         }
         else if (objectType == ObjectType::UncertaintySettings)
@@ -1320,6 +1324,7 @@ namespace Deltares::Server
             std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
             if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
+            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
             else if (property_ == "minimum_samples") settings->MinimumSamples = value;
             else if (property_ == "maximum_samples") settings->MaximumSamples = value;
             else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
@@ -1723,6 +1728,7 @@ namespace Deltares::Server
             std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
 
             if (property_ == "run_values_type") return Models::RunProjectSettings::getRunValuesTypeString(settings->runValuesType);
+            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
         }
         else if (objectType == ObjectType::UncertaintySettings)
         {
@@ -1730,6 +1736,7 @@ namespace Deltares::Server
 
             if (property_ == "uncertainty_method") return Uncertainty::SettingsS::getUncertaintyMethodTypeString(settings->UncertaintyMethod);
             else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
+            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
         }
         else if (objectType == ObjectType::UncertaintyProject)
         {
@@ -1748,6 +1755,7 @@ namespace Deltares::Server
             std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
 
             if (property_ == "sensitivity_method") return Sensitivity::SensitivitySettings::getSensitivityMethodTypeString(settings->SensitivityMethod);
+            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
         }
         else if (objectType == ObjectType::CombineSettings)
         {
@@ -1873,6 +1881,7 @@ namespace Deltares::Server
             std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
 
             if (property_ == "run_values_type") settings->runValuesType = Models::RunProjectSettings::getRunValuesType(value);
+            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
         }
         else if (objectType == ObjectType::UncertaintySettings)
         {
@@ -1880,12 +1889,14 @@ namespace Deltares::Server
 
             if (property_ == "uncertainty_method") settings->UncertaintyMethod = Uncertainty::SettingsS::getUncertaintyMethodType(value);
             else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
+            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
         }
         else if (objectType == ObjectType::SensitivitySettings)
         {
             std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
 
             if (property_ == "sensitivity_method") settings->SensitivityMethod = Sensitivity::SensitivitySettings::getSensitivityMethodType(value);
+            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
         }
         else if (objectType == ObjectType::CombineSettings)
         {
