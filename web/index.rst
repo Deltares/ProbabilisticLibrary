@@ -28,11 +28,9 @@
      </div>
    </div>
 
+The Probabilistic Suite enables quantitative analysis of uncertainty, reliability, and sensitivity in engineering and scientific models. 
 
-What is the Probabilistic Suite?
---------------------------------
-The Probabilistic Suite enables quantitative analysis of uncertainty and risk in engineering and scientific models.
-It consists of the following components:
+Three tightly integrated components: choose your entry point or use all three together.
 
 .. grid:: 1 1 3 3
    :gutter: 3
@@ -79,7 +77,7 @@ It consists of the following components:
       :class-header: psl-card-header psl-card-header--green
 
       A graphical user interface for setting up, executing, and visualizing
-      probabilistic analyses — no coding required.
+      probabilistic analyses. No coding required!
 
       +++
       .. button-link:: https://download.deltares.nl/en/download/probabilistic-toolkit-ptk/
@@ -89,82 +87,116 @@ It consists of the following components:
 
          Download PTK →
 
-Together, these components allow users to move seamlessly from exploratory analysis to automated workflows and large-scale studies.
-The algorithms implemented in the Probabilistic Suite are described in detail in the scientific background.
-
-
-What You'll Find Here
----------------------
-
 .. raw:: html
 
-   <p class="psl-section-sub">
-     This GitHub Pages site is maintained by Deltares and the Probabilistic Suite community.
-   </p>
+   <div class="psl-apart">
+     <div class="psl-apart-header">
+       <h2 class="psl-apart-title">Why engineers use the suite</h2>
+     </div>
+     <div class="psl-apart-grid">
 
-.. grid:: 1 2 2 4
-   :gutter: 2
-   :class-container: psl-find-grid
+       <div class="psl-apart-item">
+         <div class="psl-apart-icon">&#9881;</div>
+         <div class="psl-apart-body">
+           <p class="psl-apart-item-title">Multi-interface, single engine</p>
+           <p class="psl-apart-item-desc">
+             A graphical interface for practitioners, a clean Python API for scripting and
+             automation, and a .NET layer for application builders. All running on one
+             consistent, high-performance C++ engine underneath.
+           </p>
+         </div>
+       </div>
 
-   .. grid-item-card::
-      :class-card: psl-find-card
-      :shadow: sm
+       <div class="psl-apart-item">
+         <div class="psl-apart-icon">&#10003;</div>
+         <div class="psl-apart-body">
+           <p class="psl-apart-item-title">Institutional trust</p>
+           <p class="psl-apart-item-desc">
+             Part of the Deltares software product line. Every component is thoroughly
+             reviewed, tested, validated, and documented — reaching TRL&nbsp;8/9 and
+             actively maintained in stable release.
+           </p>
+         </div>
+       </div>
 
-      **Getting Started Guides**
+       <div class="psl-apart-item">
+         <div class="psl-apart-icon">&#128279;</div>
+         <div class="psl-apart-body">
+           <p class="psl-apart-item-title">Plug in your own model</p>
+           <p class="psl-apart-item-desc">
+             Proven integration with D-Series, FEM solvers, and more. If your model can
+             be driven by a Python wrapper, it connects directly to the probabilistic engine.
+           </p>
+         </div>
+       </div>
 
-      Step-by-step instructions to install the Python libraries and run your
-      first analyses.
+       <div class="psl-apart-item">
+         <div class="psl-apart-icon">&#128202;</div>
+         <div class="psl-apart-body">
+           <p class="psl-apart-item-title">One library, complete workflow</p>
+           <p class="psl-apart-item-desc">
+             From uncertainty definition to sensitivity analysis, reliability methods, and
+             system assemblage — the full probabilistic workflow in a single framework,
+             with methods that chain into end-to-end analysis pipelines.
+           </p>
+         </div>
+       </div>
 
-      .. button-ref:: installation
+     </div>
+   </div>
+
+
+Where do you want to start?
+---------------------------
+
+.. grid:: 1 1 3 3
+   :gutter: 3
+   :class-container: psl-start-grid
+
+   .. grid-item-card:: 📊 Uncertainty Analysis
+      :class-card: psl-start-card psl-start-card--uncertainty
+      :class-header: psl-start-card-header
+
+      Define input distributions, propagate uncertainty through your model,
+      and obtain probabilistic output statistics.
+
+      +++
+      .. button-link:: /_examples/uncertainty_analysis.html
          :color: primary
          :outline:
+         :expand:
 
-         Open →
+         Get started →
 
-   .. grid-item-card::
-      :class-card: psl-find-card
-      :shadow: sm
+   .. grid-item-card:: 📈 Sensitivity Analysis
+      :class-card: psl-start-card psl-start-card--sensitivity
+      :class-header: psl-start-card-header
 
-      **Tutorials**
+      Identify which input variables drive output variance. Rank importance
+      factors and focus modelling effort where it matters most.
 
-      Usage of probabilistic methods, workflows, and best practices for
-      real-world problems.
-
-      .. button-ref:: tutorials/tutorials
+      +++
+      .. button-link:: /_examples/sensitivity_analysis.html
          :color: primary
          :outline:
+         :expand:
 
-         Open →
+         Get started →
 
-   .. grid-item-card::
-      :class-card: psl-find-card
-      :shadow: sm
+   .. grid-item-card:: 🛡️ Reliability Analysis
+      :class-card: psl-start-card psl-start-card--reliability
+      :class-header: psl-start-card-header
 
-      **Gallery of Examples**
+      Compute failure probabilities and reliability indices using FORM, SORM,
+      Monte Carlo, and other industry-standard methods.
 
-      Ready-to-run Jupyter notebooks showcasing the full range of available
-      methods.
-
-      .. button-ref:: tutorials/tutorials
+      +++
+      .. button-link:: /_examples/hybrid_reliability_methods.html
          :color: primary
          :outline:
+         :expand:
 
-         Open →
-
-   .. grid-item-card::
-      :class-card: psl-find-card
-      :shadow: sm
-
-      **API Reference**
-
-      Complete auto-generated documentation for every class and function in
-      the Python library.
-
-      .. button-ref:: api_reference/index
-         :color: primary
-         :outline:
-
-         Open →
+         Get started →
 
 
 .. raw:: html

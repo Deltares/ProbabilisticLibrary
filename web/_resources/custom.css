@@ -587,6 +587,115 @@ a.headerlink:hover {
 .psl-card-header--blue  { border-bottom: 3px solid #0071bc; }
 .psl-card-header--green { border-bottom: 3px solid #28a745; }
 
+/* ---- "What Sets Us Apart" Section ---- */
+
+.psl-apart {
+    margin: 3.5rem 0 2rem;
+}
+
+.psl-apart-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.psl-apart-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--deltares-teal);
+    margin-bottom: 0.5rem;
+}
+
+.psl-apart-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--deltares-blue-dark);
+    margin: 0;
+    border: none;
+}
+
+.psl-apart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .psl-apart-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.psl-apart-item {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    background: #fff;
+    border: 1px solid var(--deltares-gray-light);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.psl-apart-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--deltares-blue);
+    border-radius: 10px 0 0 10px;
+    transition: background 0.2s ease;
+}
+
+.psl-apart-item:nth-child(2)::before { background: var(--deltares-teal); }
+.psl-apart-item:nth-child(3)::before { background: #5c45c8; }
+.psl-apart-item:nth-child(4)::before { background: #f58220; }
+
+.psl-apart-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.09);
+    border-color: transparent;
+}
+
+.psl-apart-icon {
+    flex-shrink: 0;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.psl-apart-item:nth-child(1) .psl-apart-icon { background: rgba(0, 113, 188, 0.1);  color: var(--deltares-blue); }
+.psl-apart-item:nth-child(2) .psl-apart-icon { background: rgba(0, 161, 154, 0.1);  color: var(--deltares-teal); }
+.psl-apart-item:nth-child(3) .psl-apart-icon { background: rgba(92,  69, 200, 0.1); color: #5c45c8; }
+.psl-apart-item:nth-child(4) .psl-apart-icon { background: rgba(245,130, 32, 0.1);  color: #f58220; }
+
+.psl-apart-item-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deltares-blue-dark);
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+}
+
+.psl-apart-item-desc {
+    font-size: 0.88rem;
+    color: #4a4e54;
+    line-height: 1.6;
+    margin: 0;
+}
+
 /* ---- "What You'll Find" Section ---- */
 
 .psl-section-sub {
@@ -604,6 +713,33 @@ a.headerlink:hover {
 .psl-find-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ---- "Where do you want to start?" Action Cards ---- */
+
+.psl-start-grid {
+    margin-top: 1.5rem;
+}
+
+.psl-start-card {
+    border: 1px solid var(--deltares-gray-light);
+    border-radius: 10px;
+    border-top-width: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.psl-start-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+}
+
+.psl-start-card--uncertainty { border-top-color: var(--deltares-teal); }
+.psl-start-card--sensitivity  { border-top-color: var(--deltares-blue); }
+.psl-start-card--reliability  { border-top-color: #5c45c8; }
+
+.psl-start-card-header {
+    font-size: 1rem;
+    font-weight: 700;
 }
 
 /* ---- Community Banner ---- */
