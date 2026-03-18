@@ -78,8 +78,9 @@ namespace Deltares.Probabilistic.Utils
         {
             if (list.Count > 0)
             {
-                callBack?.Invoke(ListOperationType.Clear, list[0]);
+                T firstItem = list[0];
                 list.Clear();
+                callBack?.Invoke(ListOperationType.Clear, firstItem);
             }
         }
 
@@ -95,8 +96,15 @@ namespace Deltares.Probabilistic.Utils
 
         public bool Remove(T item)
         {
-            callBack?.Invoke(ListOperationType.Remove, item);
-            return list.Remove(item);
+            if (list.Remove(item))
+            {
+                callBack?.Invoke(ListOperationType.Remove, item);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public int Count => list.Count;

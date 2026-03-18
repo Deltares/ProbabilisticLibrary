@@ -58,6 +58,12 @@ public class ReliabilitySettings
         set { Interface.SetStringValue(id, "reliability_method", ReliabilityMethodConverter.ConvertToString(value)); }
     }
 
+    public HandleInvalidType HandleInvalidType
+    {
+        get { return HandleInvalidTypeConverter.ConvertFromString(Interface.GetStringValue(id, "handle_invalid_type")); }
+        set { Interface.SetStringValue(id, "handle_invalid_type", HandleInvalidTypeConverter.ConvertToString(value)); }
+    }
+
     public int MaxParallelProcesses
     {
         get { return Interface.GetIntValue(id, "max_parallel_processes"); }
@@ -92,6 +98,12 @@ public class ReliabilitySettings
     {
         get { return MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "lowest_message_type")); }
         set { Interface.SetStringValue(id, "lowest_message_type", MessageTypeConverter.ConvertToString(value)); }
+    }
+
+    public int MaxChunkSize
+    {
+        get { return Interface.GetIntValue(id, "max_chunk_size"); }
+        set { Interface.SetIntValue(id, "max_chunk_size", value); }
     }
 
     public bool ReuseCalculations
@@ -241,6 +253,12 @@ public class ReliabilitySettings
         set { Interface.SetIntValue(id, "maximum_variance_loops", value); }
     }
 
+    public bool AutoMaximumSamples
+    {
+        get { return Interface.GetBoolValue(id, "auto_maximum_samples"); }
+        set { Interface.SetBoolValue(id, "auto_maximum_samples", value); }
+    }
+
     public double VariationCoefficient
     {
         get { return Interface.GetValue(id, "variation_coefficient"); }
@@ -283,6 +301,12 @@ public class ReliabilitySettings
         set { Interface.SetBoolValue(id, "optimize_number_clusters", value); }
     }
 
+    public double VarianceFactor
+    {
+        get { return Interface.GetValue(id, "variance_factor"); }
+        set { Interface.SetValue(id, "variance_factor", value); }
+    }
+
     public double EpsilonUStepSize
     {
         get { return Interface.GetValue(id, "epsilon_u_step_size"); }
@@ -295,10 +319,28 @@ public class ReliabilitySettings
         set { Interface.SetValue(id, "epsilon_z_step_size", value); }
     }
 
+    public double EpsilonWeightSample
+    {
+        get { return Interface.GetValue(id, "epsilon_weight_sample"); }
+        set { Interface.SetValue(id, "epsilon_weight_sample", value); }
+    }
+
     public double MaximumLengthU
     {
         get { return Interface.GetValue(id, "maximum_length_u"); }
         set { Interface.SetValue(id, "maximum_length_u", value); }
+    }
+
+    public double MaximumLengthStartPoint
+    {
+        get { return Interface.GetValue(id, "maximum_length_start_point"); }
+        set { Interface.SetValue(id, "maximum_length_start_point", value); }
+    }
+
+    public double RadiusSphereSearch
+    {
+        get { return Interface.GetValue(id, "radius_sphere_search"); }
+        set { Interface.SetValue(id, "radius_sphere_search", value); }
     }
 
     public double Dsdu

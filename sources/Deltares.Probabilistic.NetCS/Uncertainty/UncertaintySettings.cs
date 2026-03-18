@@ -19,12 +19,13 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Deltares.Probabilistic.Uncertainty;
 
@@ -87,6 +88,18 @@ public class UncertaintySettings
     {
         get { return Interface.GetBoolValue(id, "reuse_calculations"); }
         set { Interface.SetBoolValue(id, "reuse_calculations", value); }
+    }
+
+    public MessageType LowestMessageType
+    {
+        get { return MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "lowest_message_type")); }
+        set { Interface.SetStringValue(id, "lowest_message_type", MessageTypeConverter.ConvertToString(value)); }
+    }
+
+    public int MaxChunkSize
+    {
+        get { return Interface.GetIntValue(id, "max_chunk_size"); }
+        set { Interface.SetIntValue(id, "max_chunk_size", value); }
     }
 
     public bool IsRepeatableRandom

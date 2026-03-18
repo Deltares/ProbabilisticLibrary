@@ -42,6 +42,7 @@ namespace Deltares::Server
                 object_type == "reliability_result" ||
                 object_type == "model_parameter" ||
                 object_type == "limit_state_function" ||
+                object_type == "combined_limit_state_function" ||
                 object_type == "stochast" ||
                 object_type == "discrete_value" ||
                 object_type == "histogram_value" ||
@@ -85,7 +86,8 @@ namespace Deltares::Server
         else if (object_type == "validation_report") return ObjectType::ValidationReport;
         else if (object_type == "project") return ObjectType::Project;
         else if (object_type == "model_parameter") return ObjectType::ModelParameter;
-        else if (object_type == "limit_state_function") return  ObjectType::LimitStateFunction;
+        else if (object_type == "limit_state_function") return ObjectType::LimitStateFunction;
+        else if (object_type == "combined_limit_state_function") return ObjectType::CombinedLimitStateFunction;
         else if (object_type == "stochast") return ObjectType::Stochast;
         else if (object_type == "discrete_value") return ObjectType::DiscreteValue;
         else if (object_type == "histogram_value") return ObjectType::HistogramValue;
@@ -147,6 +149,11 @@ namespace Deltares::Server
             break;
         case ObjectType::LimitStateFunction:
             limitStateFunctions[id] = std::make_shared<Deltares::Reliability::LimitStateFunction>();
+            limitStateFunctionIds[limitStateFunctions[id]] = id;
+            break;
+        case ObjectType::CombinedLimitStateFunction:
+            combinedLimitStateFunctions[id] = std::make_shared<Deltares::Reliability::CombinedLimitStateFunction>();
+            combinedLimitStateFunctionIds[combinedLimitStateFunctions[id]] = id;
             break;
         case ObjectType::Stochast:
             stochasts[id] = std::make_shared<Deltares::Statistics::Stochast>();
@@ -290,6 +297,7 @@ namespace Deltares::Server
         case ObjectType::Project: projects.erase(id); break;
         case ObjectType::ModelParameter: modelParameters.erase(id); break;
         case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
+        case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
         case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
         case ObjectType::DiscreteValue: discreteValueIds.erase(discreteValues[id]); discreteValues.erase(id); break;
         case ObjectType::HistogramValue: histogramValueIds.erase(histogramValues[id]); histogramValues.erase(id); break;
@@ -453,12 +461,16 @@ namespace Deltares::Server
 
             if (property_ == "relaxation_factor") return settings->RelaxationFactor;
             else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
+            else if (property_ == "variance_factor") return settings->VarianceFactor;
             else if (property_ == "fraction_failed") return settings->FractionFailed;
-            else if (property_ == "epsilon_beta") return settings->EpsilonBeta; 
+            else if (property_ == "epsilon_beta") return settings->EpsilonBeta;
+            else if (property_ == "epsilon_weight_sample") return settings->EpsilonWeightSample;
             else if (property_ == "epsilon_u_step_size") return settings->DirectionSettings->EpsilonUStepSize;
             else if (property_ == "epsilon_z_step_size") return settings->DirectionSettings->EpsilonZStepSize;
             else if (property_ == "dsdu") return settings->DirectionSettings->Dsdu;
             else if (property_ == "maximum_length_u") return settings->DirectionSettings->MaximumLengthU;
+            else if (property_ == "maximum_length_start_point") return settings->StartPointSettings->MaximumLengthStartPoint;
+            else if (property_ == "radius_sphere_search") return settings->StartPointSettings->RadiusSphereSearch;
             else if (property_ == "markov_chain_deviation") return settings->MarkovChainDeviation;
             else if (property_ == "subset_fraction") return settings->SubsetFraction;
             else if (property_ == "step_size") return settings->GradientSettings->StepSize;
@@ -682,13 +694,16 @@ namespace Deltares::Server
 
             if (property_ == "relaxation_factor") settings->RelaxationFactor = value;
             else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
+            else if (property_ == "variance_factor") settings->VarianceFactor = value;
             else if (property_ == "fraction_failed") settings->FractionFailed = value;
+            else if (property_ == "epsilon_weight_sample") settings->EpsilonWeightSample = value;
             else if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
             else if (property_ == "epsilon_u_step_size") settings->DirectionSettings->EpsilonUStepSize = value;
             else if (property_ == "epsilon_z_step_size") settings->DirectionSettings->EpsilonZStepSize = value;
             else if (property_ == "dsdu") settings->DirectionSettings->Dsdu = value;
             else if (property_ == "maximum_length_u") settings->DirectionSettings->MaximumLengthU = value;
-            //else if (property_ == "global_step_size") settings->GradientSettings->StepSize = value;
+            else if (property_ == "maximum_length_start_point") settings->StartPointSettings->MaximumLengthStartPoint = value;
+            else if (property_ == "radius_sphere_search") settings->StartPointSettings->RadiusSphereSearch = value;
             else if (property_ == "markov_chain_deviation") settings->MarkovChainDeviation = value;
             else if (property_ == "subset_fraction") settings->SubsetFraction = value;
             else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
@@ -890,6 +905,12 @@ namespace Deltares::Server
 
             if (property_ == "variables_count") return correlationMatrix->GetDimension();
         }
+        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+
+            if (property_ == "limit_state_functions_count") return static_cast<int>(limitStateFunction->limitStateFunctions.size());
+        }
         else if (objectType == ObjectType::Settings)
         {
             std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -905,6 +926,7 @@ namespace Deltares::Server
             else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
             else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
             else if (property_ == "random_seed") return settings->RandomSettings->Seed;
+            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
             else if (property_ == "max_messages") return settings->RunSettings->MaxMessages;
             else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
             else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
@@ -1188,7 +1210,8 @@ namespace Deltares::Server
             else if (property_ == "share_project") project->shareStochasts(GetProject(value));
             else if (property_ == "total_model_runs") project->modelRuns = value;
         }
-        else if (objectType == ObjectType::FragilityCurveProject)
+
+        if (objectType == ObjectType::FragilityCurveProject)
         {
             std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
 
@@ -1276,6 +1299,7 @@ namespace Deltares::Server
             else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
             else if (property_ == "max_clusters") settings->MaxClusters = value;
             else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
+            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
             else if (property_ == "max_messages") settings->RunSettings->MaxMessages = value;
             else if (property_ == "max_steps_sphere_search") settings->StartPointSettings->maxStepsSphereSearch = value;
             else if (property_ == "start_point")
@@ -1309,6 +1333,12 @@ namespace Deltares::Server
 
             if (property_ == "variable") stochastSettings->stochast = stochasts[value];
             else if (property_ == "intervals") stochastSettings->Intervals = value;
+        }
+        else if (objectType == ObjectType::Project)
+        {
+            std::shared_ptr<Reliability::ReliabilityProject> reliabilityProject = projects[id];
+
+            if (property_ == "limit_state_function") reliabilityProject->limitStateFunction = GetLimitStateFunction(value);
         }
         else if (objectType == ObjectType::FragilityCurveProject)
         {
@@ -1466,6 +1496,13 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
             if (property_ == "use_compare_parameter") return limitStateFunction->useCompareParameter;
+            else if (property_ == "normalize") return limitStateFunction->normalize;
+        }
+        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+
+            if (property_ == "normalize") return limitStateFunction->normalize;
         }
         else if (objectType == ObjectType::StochastSettings)
         {
@@ -1498,6 +1535,7 @@ namespace Deltares::Server
             else if (property_ == "filter_at_non_convergence") return setting->FilterAtNonConvergence;
             else if (property_ == "clustering") return setting->Clustering;
             else if (property_ == "optimize_number_clusters") return setting->OptimizeNumberOfClusters;
+            else if (property_ == "auto_maximum_samples") return setting->AutoMaximumSamples;
         }
         else if (objectType == ObjectType::CombineProject)
         {
@@ -1563,6 +1601,13 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
             if (property_ == "use_compare_parameter") limitStateFunction->useCompareParameter = value;
+            else if (property_ == "normalize") limitStateFunction->normalize = value;
+        }
+        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+
+            if (property_ == "normalize") limitStateFunction->normalize = value;
         }
         else if (objectType == ObjectType::StochastSettings)
         {
@@ -1589,6 +1634,7 @@ namespace Deltares::Server
             else if (property_ == "filter_at_non_convergence") setting->FilterAtNonConvergence = value;
             else if (property_ == "clustering") setting->Clustering = value;
             else if (property_ == "optimize_number_clusters") setting->OptimizeNumberOfClusters = value;
+            else if (property_ == "auto_maximum_samples") setting->AutoMaximumSamples = value;
         }
         else if (objectType == ObjectType::DesignPoint)
         {
@@ -1640,6 +1686,12 @@ namespace Deltares::Server
             else if (property_ == "compare_parameter") return limitStateFunction->compareParameter;
             else if (property_ == "compare_type") return LimitStateFunction::GetCompareTypeString(limitStateFunction->compareType);
         }
+        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+
+            if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(limitStateFunction->combineType);
+        }
         else if (objectType == ObjectType::Scenario)
         {
             std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
@@ -1651,6 +1703,7 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
             if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
+            else if (property_ == "handle_invalid_type") return Models::RunSettings::getHandleInvalidTypeString(settings->RunSettings->HandleInvalidType);
             else if (property_ == "reliability_result") return Settings::getReliabilityResultTypeString(settings->ReliabilityResult);
             else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
             else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
@@ -1771,6 +1824,12 @@ namespace Deltares::Server
             else if (property_ == "compare_parameter") limitStateFunction->compareParameter = value;
             else if (property_ == "compare_type") limitStateFunction->compareType = LimitStateFunction::GetCompareType(value);
         }
+        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+
+            if (property_ == "combine_type") limitStateFunction->combineType = DesignPointCombiner::getCombineType(value);
+        }
         else if (objectType == ObjectType::Scenario)
         {
             std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
@@ -1795,6 +1854,7 @@ namespace Deltares::Server
 
             if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
             else if (property_ == "reliability_result") settings->ReliabilityResult = Settings::getReliabilityResultType(value);
+            else if (property_ == "handle_invalid_type") settings->RunSettings->HandleInvalidType = Models::RunSettings::getHandleInvalidType(value);
             else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
             else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
             else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
@@ -2015,6 +2075,19 @@ namespace Deltares::Server
                 }
 
                 correlationMatrix->Init(correlationMatrixStochasts);
+            }
+        }
+        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+
+            if (property_ == "limit_state_functions")
+            {
+                limitStateFunction->limitStateFunctions.clear();
+                for (int i = 0; i < size; i++)
+                {
+                    limitStateFunction->limitStateFunctions.push_back(GetLimitStateFunction(values[i]));
+                }
             }
         }
         else if (objectType == ObjectType::Settings)
@@ -2285,6 +2358,12 @@ namespace Deltares::Server
             std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "variables") return GetStochastId(correlationMatrix->GetStochast(index), newId);
+        }
+        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+
+            if (property_ == "limit_state_functions") return GetLimitStateFunctionId(limitStateFunction->limitStateFunctions[index], newId);
         }
         else if (objectType == ObjectType::UncertaintyProject)
         {
@@ -2910,6 +2989,23 @@ namespace Deltares::Server
             return nullptr;
         }
     }
+
+    std::shared_ptr<Reliability::LimitStateFunction> ProjectHandler::GetLimitStateFunction(int id)
+    {
+        if (limitStateFunctions.contains(id))
+        {
+            return limitStateFunctions[id];
+        }
+        else if (combinedLimitStateFunctions.contains(id))
+        {
+            return combinedLimitStateFunctions[id];
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+
 
     bool ProjectHandler::IsModelProjectType(ObjectType objectType)
     {

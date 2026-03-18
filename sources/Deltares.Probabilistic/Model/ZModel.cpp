@@ -207,6 +207,7 @@ namespace Deltares::Models
         }
 
         this->zValueConverter->updateZValue(sample);
+        this->handleInvalidSample(sample);
 
         this->modelRuns++;
     }
@@ -300,6 +301,7 @@ namespace Deltares::Models
         for (size_t i = 0; i < samples.size(); i++)
         {
             this->zValueConverter->updateZValue(samples[i]);
+            this->handleInvalidSample(samples[i]);
         }
     }
 
@@ -307,6 +309,21 @@ namespace Deltares::Models
     {
         return this->zBetaLambda(sample, beta);
     }
+
+    void ZModel::handleInvalidSample(const std::shared_ptr<ModelSample>& sample)
+    {
+        if (std::isnan(sample->Z))
+        {
+            switch (handleInvalidType)
+            {
+            case HandleInvalidType::Ignore: break; // nothing to do
+            case HandleInvalidType::Fail: sample->Z = -std::numeric_limits<double>::max();  break; 
+            case HandleInvalidType::NoFail: sample->Z = std::numeric_limits<double>::max();  break;
+            default: throw Reliability::probLibException("invalid handle type not known");
+            }
+        }
+    }
+
 
     void ZModel::validate(Logging::ValidationReport& report, const std::string& subject) const
     {

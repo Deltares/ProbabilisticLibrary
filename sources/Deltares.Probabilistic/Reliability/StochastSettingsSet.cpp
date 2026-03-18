@@ -56,12 +56,25 @@ namespace Deltares::Reliability
 
     void StochastSettingsSet::setStartPoint(const std::shared_ptr<Models::Sample> startPoint)
     {
-        for (int i = 0; i < this->getVaryingStochastCount(); i++)
+        if (startPoint->Values.size() == this->VaryingStochastSettings.size())
         {
-            this->VaryingStochastSettings[i]->StartValue = startPoint->Values[i];
-            this->VaryingStochastSettings[i]->UncorrelatedStartValue = startPoint->Values[i];
+            for (size_t i = 0; i < this->VaryingStochastSettings.size(); i++)
+            {
+                this->VaryingStochastSettings[i]->StartValue = startPoint->Values[i];
+                this->VaryingStochastSettings[i]->UncorrelatedStartValue = startPoint->Values[i];
 
-            this->AreStartValuesCorrelated = false;
+                this->AreStartValuesCorrelated = false;
+            }
+        }
+        else if (startPoint->Values.size() == this->stochastSettings.size())
+        {
+            for (size_t i = 0; i < this->stochastSettings.size(); i++)
+            {
+                stochastSettings[i]->StartValue = startPoint->Values[i];
+                stochastSettings[i]->UncorrelatedStartValue = startPoint->Values[i];
+
+                this->AreStartValuesCorrelated = false;
+            }
         }
     }
 }

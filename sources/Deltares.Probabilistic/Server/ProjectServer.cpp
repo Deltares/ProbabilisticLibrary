@@ -36,6 +36,8 @@ namespace Deltares::Server
 
     int ProjectServer::GetNewObjectId(int handlerIndex)
     {
+        std::lock_guard<std::mutex> lock(mtx);
+
         id_ += 1;
         handlersTable[id_] = this->handlers[handlerIndex];
         return id_;
@@ -59,7 +61,13 @@ namespace Deltares::Server
 
     void ProjectServer::Destroy(int id)
     {
-        handlersTable[id]->Destroy(id);
+        std::lock_guard<std::mutex> lock(mtx);
+
+        if (handlersTable.contains(id))
+        {
+            handlersTable[id]->Destroy(id);
+            handlersTable.erase(id);
+        }
     }
 
     void ProjectServer::Exit()
@@ -192,6 +200,8 @@ namespace Deltares::Server
 
     int ProjectServer::GetIdValue(int id, std::string property_)
     {
+        std::lock_guard<std::mutex> lock(mtx);
+
         int newId = id_ + 1;
         int objectId = handlersTable[id]->GetIdValue(id, property_, newId);
         if (objectId == newId)
@@ -205,6 +215,8 @@ namespace Deltares::Server
 
     int ProjectServer::GetIndexedIdValue(int id, std::string property_, int index)
     {
+        std::lock_guard<std::mutex> lock(mtx);
+
         int newId = id_ + 1;
         int objectId = handlersTable[id]->GetIndexedIdValue(id, property_, index, newId);
         if (objectId == newId)

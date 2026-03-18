@@ -124,6 +124,15 @@ namespace Deltares::Models
         void setMaxProcesses(int maxProcesses);
 
         /**
+         * \brief Sets how to handle an invalid result
+         * \param handleInvalidType The way of handling
+         */
+        void setHandleInvalidType(HandleInvalidType handleInvalidType)
+        {
+            this->handleInvalidType = handleInvalidType;
+        }
+
+        /**
          * \brief Calculates a sample
          */
         virtual void invoke(const std::shared_ptr<ModelSample>& sample);
@@ -181,6 +190,7 @@ namespace Deltares::Models
         int modelRuns = 0;
         int inputParametersCount = 0;
         int outputParametersCount = 0;
+        HandleInvalidType handleInvalidType = HandleInvalidType::Ignore;
         ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
         ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
 
@@ -225,6 +235,12 @@ namespace Deltares::Models
          * \brief Holds calculated samples
          */
         SampleRepository repository = SampleRepository();
+
+        /**
+         * \brief Handles an invalid sample
+         * \param sample The sample which can be invalid
+         */
+        void handleInvalidSample(const std::shared_ptr<ModelSample>& sample);
     };
 }
 

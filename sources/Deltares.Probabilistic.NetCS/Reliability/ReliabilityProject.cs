@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Reliability
@@ -28,6 +29,7 @@ namespace Deltares.Probabilistic.Reliability
     {
         private readonly int id = 0;
         private ReliabilitySettings settings = null;
+        private LimitStateFunction limitStateFunction = null;
         private DesignPoint designPoint = null;
 
         public ReliabilityProject() : base(-1)
@@ -66,6 +68,35 @@ namespace Deltares.Probabilistic.Reliability
                 settings = value;
             }
         }
+
+        public LimitStateFunction LimitStateFunction
+        {
+            get
+            {
+                if (limitStateFunction == null)
+                {
+                    int limitStateFunctionId = Interface.GetIdValue(id, "limit_state_function");
+                    if (limitStateFunctionId == 0)
+                    {
+                        limitStateFunction = new LimitStateFunction();
+                        Interface.SetIntValue(id, "limit_state_function", limitStateFunction.GetId());
+                    }
+                    else
+                    {
+                        limitStateFunction = new LimitStateFunction(limitStateFunctionId);
+                    }
+                }
+
+                return limitStateFunction;
+            }
+            set
+            {
+                Interface.SetIntValue(id, "limit_state_function", value.GetId());
+                limitStateFunction = value;
+            }
+        }
+
+
 
         public void Run()
         {

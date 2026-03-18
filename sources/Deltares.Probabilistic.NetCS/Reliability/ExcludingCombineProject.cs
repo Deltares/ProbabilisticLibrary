@@ -19,7 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 using System.Collections.Generic;
@@ -37,7 +36,7 @@ public class ExcludingCombineProject
 
     public ExcludingCombineProject()
     {
-        this.id = Interface.Create("combine_project");
+        this.id = Interface.Create("excluding_combine_project");
     }
 
     internal ExcludingCombineProject(int id)

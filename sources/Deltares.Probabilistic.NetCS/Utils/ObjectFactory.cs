@@ -28,30 +28,40 @@ public static class ObjectFactory
 {
     private static Dictionary<int, WeakReference> objects = new Dictionary<int, WeakReference>();
     private static int lastId = 0;
+    private static object lockObject = new object();
 
     public static T GetObject<T>(int id)
     {
-        if (objects.ContainsKey(id))
+        lock (lockObject)
         {
-            return (T) objects[id].Target;
-        }
-        else
-        {
-            object newObject = Activator.CreateInstance(typeof(T), id);
-            return (T)newObject;
+            if (objects.ContainsKey(id))
+            {
+                return (T)objects[id].Target;
+            }
+            else
+            {
+                object newObject = Activator.CreateInstance(typeof(T), id);
+                return (T)newObject;
+            }
         }
     }
 
     public static void Register (object obj, int id)
     {
-        objects[id] = new WeakReference(obj);
-        lastId = id;
+        lock (lockObject)
+        {
+            objects[id] = new WeakReference(obj);
+            lastId = id;
+        }
     }
 
     public static void Destroy(int id)
     {
-        objects.Remove(id);
-        Interface.Destroy(id);
+        lock (lockObject)
+        {
+            objects.Remove(id);
+            Interface.Destroy(id);
+        }
     }
 
     // for testing

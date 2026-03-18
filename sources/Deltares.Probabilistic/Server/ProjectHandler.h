@@ -26,6 +26,7 @@
 #include "../Reliability/FragilityCurveProject.h"
 #include "../Reliability/FragilityCurveIntegrationSettings.h"
 #include "../Reliability/LimitStateFunction.h"
+#include "../Reliability/CombinedLimitStateFunction.h"
 #include "../Reliability/Settings.h"
 #include "../Model/Evaluation.h"
 #include "../Model/RunProject.h"
@@ -113,11 +114,11 @@ namespace Deltares::Server
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
         enum ObjectType {
-            StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
-            ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject,
-            FragilityCurveSettings, Evaluation, CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject,
-            UncertaintySettings, UncertaintyResult, SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings,
-            ReliabilityResult, CopulaCorrelation, ConvergenceReport
+            StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, CombinedLimitStateFunction, Stochast, DiscreteValue,
+            HistogramValue, FragilityValue, ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha,
+            FragilityCurve, FragilityCurveProject, FragilityCurveSettings, Evaluation, CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings,
+            SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult, SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue,
+            LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation, ConvergenceReport
             
         };
         ObjectType GetType(std::string object_type);
@@ -130,6 +131,7 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
         std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
         std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;
+        std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
         std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
         std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
@@ -164,6 +166,7 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Reliability::ConvergenceReport>> convergenceReports;
 
         std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
+        std::unordered_map<std::shared_ptr<Reliability::CombinedLimitStateFunction>, int> combinedLimitStateFunctionIds;
         std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
         std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
         std::unordered_map<std::shared_ptr<Uncertainty::UncertaintyResult>, int> uncertaintyResultsIds;
@@ -192,6 +195,7 @@ namespace Deltares::Server
         std::shared_ptr<Models::ModelProject> GetProject(int id);
         std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
         std::shared_ptr<Statistics::Stochast> GetStochast(int id);
+        std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
         static bool IsModelProjectType(ObjectType objectType);
         static bool IsModelSettingsType(ObjectType objectType);
         static bool IsStochast(ObjectType objectType);

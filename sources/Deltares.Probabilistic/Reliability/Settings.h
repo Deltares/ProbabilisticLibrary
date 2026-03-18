@@ -117,9 +117,24 @@ namespace Deltares::Reliability
         double VariationCoefficient = 0.05;
 
         /**
+         * \brief The default variance factor in importance sampling
+         */
+        double VarianceFactor = 1.5;
+
+        /**
          * \brief The calls to importance sampling will be stopped until the fraction of failed samples (Z < 0) is between this value and 1 - this value
          */
         double FractionFailed = 0.1;
+
+        /**
+         * \brief Criterion for automatic break in adaptive importance sampling
+         */
+        double EpsilonWeightSample = 0.1;
+
+        /**
+         * \brief Indicates whether the maximum samples is set automatically
+         */
+        bool AutoMaximumSamples = false;
 
         /**
          * \brief Minimum number of iterations in numerical bisection

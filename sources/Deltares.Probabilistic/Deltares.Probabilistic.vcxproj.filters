@@ -266,6 +266,8 @@
     <ClCompile Include="Statistics\GaussianCopula.cpp" />
     <ClCompile Include="Statistics\DiagonalBandCopula.cpp" />
     <ClCompile Include="Statistics\GumbelCopula.cpp" />
+    <ClCompile Include="Model\ModelSample.cpp" />
+    <ClCompile Include="Reliability\CombinedLimitStateFunction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -562,7 +564,7 @@
     <ClInclude Include="Statistics\DiagonalBandCopula.h" />
     <ClInclude Include="Statistics\GumbelCopula.h" />
     <ClInclude Include="Model\ModelSampleStruct.h" />
-    <ClInclude Include="Model\ModelSample.cpp" />
+    <ClInclude Include="Reliability\CombinedLimitStateFunction.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

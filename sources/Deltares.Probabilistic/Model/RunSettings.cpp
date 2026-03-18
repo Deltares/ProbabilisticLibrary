@@ -20,3 +20,27 @@
 // All rights reserved.
 //
 #include "RunSettings.h"
+#include "../Utils/probLibException.h"
+
+namespace Deltares::Models
+{
+    std::string RunSettings::getHandleInvalidTypeString(Deltares::Models::HandleInvalidType type)
+    {
+        switch (type)
+        {
+        case HandleInvalidType::Ignore: return "ignore";
+        case HandleInvalidType::Fail: return "fail";
+        case HandleInvalidType::NoFail: return "no_fail";
+        default: throw Reliability::probLibException("handle invalid type");
+        }
+    }
+
+    Deltares::Models::HandleInvalidType RunSettings::getHandleInvalidType(const std::string& type)
+    {
+        if (type == "ignore")  return  HandleInvalidType::Ignore;
+        else if (type == "fail") return  HandleInvalidType::Fail;
+        else if (type == "no_fail") return  HandleInvalidType::NoFail;
+        else throw Reliability::probLibException("handle invalid type " + type + " not a known type");
+    }
+}
+

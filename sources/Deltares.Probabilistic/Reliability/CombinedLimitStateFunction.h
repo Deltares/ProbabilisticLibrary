@@ -1,4 +1,4 @@
-﻿// Copyright (C) Stichting Deltares. All rights reserved.
+// Copyright (C) Stichting Deltares. All rights reserved.
 //
 // This file is part of the Probabilistic Library.
 //
@@ -19,37 +19,26 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Probabilistic.Utils;
 
-namespace Deltares.Probabilistic.Reliability;
+#pragma once
+#include <memory>
+#include <vector>
 
-public class ExcludingCombineSettings
+#include "LimitStateFunction.h"
+#include "../Combine/DesignPointCombiner.h"
+
+namespace Deltares::Reliability
 {
-    private int id = 0;
-
-    public ExcludingCombineSettings()
+    class CombinedLimitStateFunction : public LimitStateFunction
     {
-        this.id = Interface.Create("excluding_combine_settings");
-    }
+    public:
+        combineAndOr combineType = combineAndOr::combOr;
 
-    internal ExcludingCombineSettings(int id)
-    {
-        this.id = id;
-    }
+        std::vector<std::shared_ptr<LimitStateFunction>> limitStateFunctions;
 
-    ~ExcludingCombineSettings()
-    {
-        Interface.Destroy(id);
-    }
+        void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
 
-    internal int GetId()
-    {
-        return id;
-    }
-
-    public ExcludingCombineType CombineType
-    {
-        get { return ExcludingCombineTypeConverter.ConvertFromString(Interface.GetStringValue(id, "combiner_method")); }
-        set { Interface.SetStringValue(id, "combiner_method", ExcludingCombineTypeConverter.ConvertToString(value)); }
-    }
+        void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
+    };
 }
+

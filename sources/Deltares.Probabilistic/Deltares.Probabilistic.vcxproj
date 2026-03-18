@@ -164,6 +164,7 @@
     <ClInclude Include="Combine\ExcludingCombiner.h" />
     <ClInclude Include="Combine\WeightedSumCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
+    <ClInclude Include="Reliability\CombinedLimitStateFunction.h" />
     <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Model\ModelSampleStruct.h" />
     <ClInclude Include="Proxies\ProxyCoefficients.h" />
@@ -415,6 +416,7 @@
     <ClCompile Include="Combine\ExcludingCombiner.cpp" />
     <ClCompile Include="Combine\WeightedSumCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
+    <ClCompile Include="Reliability\CombinedLimitStateFunction.cpp" />
     <ClCompile Include="Proxies\ProxyCoefficients.cpp" />
     <ClCompile Include="Model\Validatable.cpp" />
     <ClCompile Include="Proxies\ProxySettings.cpp" />

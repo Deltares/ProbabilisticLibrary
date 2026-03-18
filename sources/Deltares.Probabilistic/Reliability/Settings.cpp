@@ -109,9 +109,9 @@ namespace Deltares::Reliability
         auto cobyla_reliability = std::make_shared<CobylaReliability>();
 
         cobyla_reliability->Settings->designPointMethod = this->designPointMethod;
-        cobyla_reliability->Settings->StochastSet = this->StochastSet;
         cobyla_reliability->Settings->EpsilonBeta = this->EpsilonBeta;
-        cobyla_reliability->Settings->MaximumIterations = this->MaximumIterations;
+        cobyla_reliability->Settings->MaximumIterations = this->MaximumSamples;
+        cobyla_reliability->Settings->StochastSet = this->StochastSet;
 
         return cobyla_reliability;
     }
@@ -192,6 +192,7 @@ namespace Deltares::Reliability
         importanceSampling->Settings->MinimumSamples = this->MinimumSamples;
         importanceSampling->Settings->MaximumSamples = this->MaximumSamples;
         importanceSampling->Settings->designPointMethod = this->designPointMethod;
+        importanceSampling->Settings->VarianceFactor = this->VarianceFactor;
         importanceSampling->Settings->VariationCoefficient = this->VariationCoefficient;
         importanceSampling->Settings->runSettings = this->RunSettings;
         importanceSampling->Settings->randomSettings = this->RandomSettings;
@@ -209,13 +210,19 @@ namespace Deltares::Reliability
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamplesNoResult = this->MaximumSamplesNoResult;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->designPointMethod = this->designPointMethod;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->VariationCoefficient = this->VariationCoefficient;
+        adaptiveImportanceSampling->Settings->importanceSamplingSettings->VarianceFactor = this->VarianceFactor;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->runSettings = this->RunSettings;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->randomSettings = this->RandomSettings;
+        adaptiveImportanceSampling->Settings->importanceSamplingSettings->startPointSettings = this->StartPointSettings;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->StochastSet = this->StochastSet;
 
         adaptiveImportanceSampling->Settings->MinVarianceLoops = this->MinimumVarianceLoops;
         adaptiveImportanceSampling->Settings->MaxVarianceLoops = this->MaximumVarianceLoops;
         adaptiveImportanceSampling->Settings->FractionFailed = this->FractionFailed;
+        adaptiveImportanceSampling->Settings->EpsWeightSample = this->EpsilonWeightSample;
+        adaptiveImportanceSampling->Settings->VarianceFactor = this->VarianceFactor;
+        adaptiveImportanceSampling->Settings->AutoMaximumSamples = this->AutoMaximumSamples;
+        adaptiveImportanceSampling->Settings->startPointSettings = this->StartPointSettings;
 
         adaptiveImportanceSampling->Settings->Clustering = this->Clustering;
         adaptiveImportanceSampling->Settings->clusterSettings->MaxClusters = this->MaxClusters;

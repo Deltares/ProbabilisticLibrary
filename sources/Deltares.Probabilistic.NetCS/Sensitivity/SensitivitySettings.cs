@@ -19,6 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Sensitivity;
@@ -75,6 +76,18 @@ public class SensitivitySettings
     {
         get { return Interface.GetBoolValue(id, "reuse_calculations"); }
         set { Interface.SetBoolValue(id, "reuse_calculations", value); }
+    }
+
+    public MessageType LowestMessageType
+    {
+        get { return MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "lowest_message_type")); }
+        set { Interface.SetStringValue(id, "lowest_message_type", MessageTypeConverter.ConvertToString(value)); }
+    }
+
+    public int MaxChunkSize
+    {
+        get { return Interface.GetIntValue(id, "max_chunk_size"); }
+        set { Interface.SetIntValue(id, "max_chunk_size", value); }
     }
 
     public double LowValue

@@ -38,6 +38,7 @@ namespace Deltares::Reliability
         CompareType compareType = CompareType::LessThan;
         double criticalValue = 0;
         bool useCompareParameter = false;
+        bool normalize = false;
 
         void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
         void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;

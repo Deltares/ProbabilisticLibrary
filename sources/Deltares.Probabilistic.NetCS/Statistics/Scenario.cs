@@ -83,7 +83,7 @@ public class Scenario
         set
         {
             parameter = value;
-            Interface.SetValue(id, "parameter", value.GetId());
+            Interface.SetIntValue(id, "parameter", value.GetId());
         }
     }
 }

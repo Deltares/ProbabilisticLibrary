@@ -96,6 +96,7 @@ namespace Deltares::Server
         void Exit();
 
     private:
+        std::mutex mtx;
         int id_ = 0;
         std::vector<std::shared_ptr<BaseHandler>> handlers;
         std::unordered_map<int, std::shared_ptr<BaseHandler>> handlersTable;

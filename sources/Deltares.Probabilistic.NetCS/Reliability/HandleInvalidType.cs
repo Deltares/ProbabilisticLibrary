@@ -19,37 +19,38 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Probabilistic.Utils;
+using System;
 
 namespace Deltares.Probabilistic.Reliability;
 
-public class ExcludingCombineSettings
+public enum HandleInvalidType
 {
-    private int id = 0;
+    Ignore,
+    Fail,
+    NoFail
+}
 
-    public ExcludingCombineSettings()
+internal static class HandleInvalidTypeConverter
+{
+    public static string ConvertToString(HandleInvalidType method)
     {
-        this.id = Interface.Create("excluding_combine_settings");
+        return method switch
+        {
+            HandleInvalidType.Ignore => "ignore",
+            HandleInvalidType.Fail => "fail",
+            HandleInvalidType.NoFail => "no_fail",
+            _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
+        };
     }
 
-    internal ExcludingCombineSettings(int id)
+    public static HandleInvalidType ConvertFromString(string value)
     {
-        this.id = id;
-    }
-
-    ~ExcludingCombineSettings()
-    {
-        Interface.Destroy(id);
-    }
-
-    internal int GetId()
-    {
-        return id;
-    }
-
-    public ExcludingCombineType CombineType
-    {
-        get { return ExcludingCombineTypeConverter.ConvertFromString(Interface.GetStringValue(id, "combiner_method")); }
-        set { Interface.SetStringValue(id, "combiner_method", ExcludingCombineTypeConverter.ConvertToString(value)); }
+        return value switch
+        {
+            "ignore" => HandleInvalidType.Ignore,
+            "fail" => HandleInvalidType.Fail,
+            "no_fail" => HandleInvalidType.NoFail,
+            _ => throw new ArgumentException($"Unknown model varying type: '{value}'", nameof(value))
+        };
     }
 }
