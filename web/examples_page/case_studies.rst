@@ -31,19 +31,19 @@ how to interpret results in a professional setting.
       :class-card: psl-start-card psl-case-card psl-case-card--geo
       :class-header: psl-case-header psl-case-header--geo
 
-      Assess the probability of failure of a sheet pile retaining wall
-      under uncertain soil parameters and water levels. Combines
-      FORM analysis with sensitivity ranking.
+      Assess the probability of failure of a gravity-based retaining wall
+      under uncertain soil parameters. Combines
+      FORM analysis with Monte Carlo.
 
       .. raw:: html
 
          <div class="psl-card-meta">
            <div class="psl-tag-row">
              <span class="psl-tag">FORM</span>
-             <span class="psl-tag">Sensitivity</span>
+             <span class="psl-tag">Reliability</span>
              <span class="psl-tag">Geotechnical</span>
            </div>
-           <span class="psl-difficulty psl-difficulty--intermediate">&#9632;&#9632;&#9633; Intermediate</span>
+           <span class="psl-difficulty psl-difficulty--beginner">&#9632;&#9633;&#9633; Beginner</span>
          </div>
 
       +++
@@ -54,27 +54,109 @@ how to interpret results in a professional setting.
 
          Open example →
 
-   .. grid-item-card:: Slope Stability under Uncertain Soil Properties
+   .. grid-item-card:: Connect D-Stability model (GEOLIB)
       :class-card: psl-start-card psl-case-card psl-case-card--geo
       :class-header: psl-case-header psl-case-header--geo
 
-      Probabilistic slope stability analysis using a Bishop-simplified
-      model. Demonstrates the effect of spatial variability and
+      How to connect D-Stability to a probabilistic workflow using the GEOLIB Python library. Demonstrates the effect of load variability and
       correlated soil parameters.
 
       .. raw:: html
 
          <div class="psl-card-meta">
            <div class="psl-tag-row">
-             <span class="psl-tag">Monte Carlo</span>
-             <span class="psl-tag">Correlation</span>
-             <span class="psl-tag">Spatial variability</span>
+             <span class="psl-tag">D-Stability</span>
+             <span class="psl-tag">Stochastic loads</span>
+             <span class="psl-tag">Slope stability</span>
+             <span class="psl-tag">Geotechnical</span>
+
            </div>
-           <span class="psl-difficulty psl-difficulty--advanced">&#9632;&#9632;&#9632; Advanced</span>
+           <span class="psl-difficulty psl-difficulty--beginner">&#9632;&#9633;&#9633; Beginner</span>
          </div>
 
       +++
       .. button-link:: slope_stability.html
+         :color: primary
+         :outline:
+         :expand:
+
+         Open example →  *(coming soon)*
+
+   .. grid-item-card:: Connect D-Settlement model (GEOLIB)
+      :class-card: psl-start-card psl-case-card psl-case-card--geo
+      :class-header: psl-case-header psl-case-header--geo
+
+      Probabilistic settlement analysis by coupling D-Settlement to the
+      probabilistic engine via a Python wrapper. Propagate soil parameter
+      uncertainty through a full settlement model.
+
+      .. raw:: html
+
+         <div class="psl-card-meta">
+           <div class="psl-tag-row">
+             <span class="psl-tag">D-Settlement</span>
+             <span class="psl-tag">External model</span>
+             <span class="psl-tag">Uncertainty propagation</span>
+           </div>
+           <span class="psl-difficulty psl-difficulty--beginner">&#9632;&#9633;&#9633; Beginner</span>
+         </div>
+
+      +++
+      .. button-link:: d_settlement.html
+         :color: primary
+         :outline:
+         :expand:
+
+         Open example →  *(coming soon)*
+
+   .. grid-item-card:: Connect D-Sheetpiling model (GEOLIB)
+      :class-card: psl-start-card psl-case-card psl-case-card--geo
+      :class-header: psl-case-header psl-case-header--geo
+
+      Reliability analysis of a sheet pile wall using D-Sheetpiling as
+      the structural model. Demonstrates how to wrap a commercial geotech
+      solver and run FORM and Monte Carlo through it.
+
+      .. raw:: html
+
+         <div class="psl-card-meta">
+           <div class="psl-tag-row">
+             <span class="psl-tag">D-Sheetpiling</span>
+             <span class="psl-tag">External model</span>
+             <span class="psl-tag">FORM</span>
+           </div>
+           <span class="psl-difficulty psl-difficulty--beginner">&#9632;&#9633;&#9633; Beginner</span>
+         </div>
+
+      +++
+      .. button-link:: d_sheetpiling.html
+         :color: primary
+         :outline:
+         :expand:
+
+         Open example →  *(coming soon)*
+
+   .. grid-item-card:: Connect D-Stability model(PTK Wheel)
+      :class-card: psl-start-card psl-case-card psl-case-card--geo
+      :class-header: psl-case-header psl-case-header--geo
+
+      Slope stability reliability analysis driven by D-Stability. Uses the
+      PTK Python wheel integration to evaluate the limit state function, enabling
+      FORM and Monte Carlo runs directly against the D-Stability engine.
+
+      .. raw:: html
+
+         <div class="psl-card-meta">
+           <div class="psl-tag-row">
+             <span class="psl-tag">D-Stability</span>
+             <span class="psl-tag">PTK wheel</span>
+             <span class="psl-tag">FORM</span>
+           </div>
+           <span class="psl-difficulty psl-difficulty--intermediate">&#9632;&#9633;&#9633; Intermediate</span>
+         </div>
+
+      +++
+      .. button-link:: d_stability.html
          :color: primary
          :outline:
          :expand:
@@ -105,7 +187,7 @@ how to interpret results in a professional setting.
              <span class="psl-tag">FORM</span>
              <span class="psl-tag">WBI</span>
            </div>
-           <span class="psl-difficulty psl-difficulty--advanced">&#9632;&#9632;&#9632; Advanced</span>
+           <span class="psl-difficulty psl-difficulty--beginner">&#9632;&#9633;&#9633; Beginner</span>
          </div>
 
       +++
@@ -132,72 +214,11 @@ how to interpret results in a professional setting.
              <span class="psl-tag">Uncertainty analysis</span>
              <span class="psl-tag">Hydraulics</span>
            </div>
-           <span class="psl-difficulty psl-difficulty--intermediate">&#9632;&#9632;&#9633; Intermediate</span>
+           <span class="psl-difficulty psl-difficulty--beginner">&#9632;&#9633;&#9633; Beginner</span>
          </div>
 
       +++
       .. button-link:: fragility_barrier.html
-         :color: primary
-         :outline:
-         :expand:
-
-         Open example →  *(coming soon)*
-
-.. raw:: html
-
-   <h2 class="psl-category-heading">Hydraulics &amp; Other</h2>
-
-.. grid:: 1 1 2 2
-   :gutter: 3
-
-   .. grid-item-card:: Uncertainty in a Hydrodynamic Model
-      :class-card: psl-start-card psl-case-card psl-case-card--hydraulics
-      :class-header: psl-case-header psl-case-header--hydraulics
-
-      Propagate parametric uncertainty through an external hydrodynamic
-      simulation (D-Flow FM wrapper). Demonstrates how to connect any
-      Python-scriptable model to the probabilistic engine.
-
-      .. raw:: html
-
-         <div class="psl-card-meta">
-           <div class="psl-tag-row">
-             <span class="psl-tag">Uncertainty propagation</span>
-             <span class="psl-tag">External model</span>
-             <span class="psl-tag">D-Flow</span>
-           </div>
-           <span class="psl-difficulty psl-difficulty--intermediate">&#9632;&#9632;&#9633; Intermediate</span>
-         </div>
-
-      +++
-      .. button-link:: hydrodynamic_uncertainty.html
-         :color: primary
-         :outline:
-         :expand:
-
-         Open example →  *(coming soon)*
-
-   .. grid-item-card:: Response Surface for an Expensive Model
-      :class-card: psl-start-card psl-case-card psl-case-card--hydraulics
-      :class-header: psl-case-header psl-case-header--hydraulics
-
-      Speed up reliability analysis by replacing a computationally
-      expensive FEM model with a surrogate (response surface). Compares
-      Monte Carlo results with and without the surrogate.
-
-      .. raw:: html
-
-         <div class="psl-card-meta">
-           <div class="psl-tag-row">
-             <span class="psl-tag">Surrogate model</span>
-             <span class="psl-tag">Response surface</span>
-             <span class="psl-tag">FEM coupling</span>
-           </div>
-           <span class="psl-difficulty psl-difficulty--advanced">&#9632;&#9632;&#9632; Advanced</span>
-         </div>
-
-      +++
-      .. button-link:: surrogate_fem.html
          :color: primary
          :outline:
          :expand:
