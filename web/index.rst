@@ -32,7 +32,7 @@
      </div>
    </div>
 
-The Probabilistic Suite enables quantitative analysis of uncertainty, reliability, and sensitivity in engineering and scientific models. 
+The Probabilistic Suite enables quantitative analysis of uncertainty, reliability, and sensitivity in engineering and scientific models.
 
 Three tightly integrated components: choose your entry point or use all three together.
 
@@ -117,8 +117,7 @@ Three tightly integrated components: choose your entry point or use all three to
            <p class="psl-apart-item-title">Institutional trust</p>
            <p class="psl-apart-item-desc">
              Part of the Deltares software product line. Every component is thoroughly
-             reviewed, tested, validated, and documented — reaching TRL&nbsp;8/9 and
-             actively maintained in stable release.
+             reviewed, tested, validated, documented, and actively maintained in stable release. Trusted for the flood safety assessment of the Netherlands.  
            </p>
          </div>
        </div>
@@ -210,7 +209,7 @@ Where do you want to start?
        <h2>Join the Community</h2>
        <p>
          The Probabilistic Suite Community is open and evolving.
-         Contributions are welcome — share examples, improve docs, or discuss best practices.
+         Join Dutch water engineers, researchers, and consultants building the probabilistic and reliability community together. Share examples, ask questions and contribute 😊.
        </p>
      </div>
      <div class="psl-community-ctas">
@@ -227,3 +226,4 @@ Where do you want to start?
    installation
    tutorials/tutorials
    api_reference/index
+   examples_page/examples_index
