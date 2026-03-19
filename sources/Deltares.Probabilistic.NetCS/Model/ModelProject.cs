@@ -150,7 +150,6 @@ namespace Deltares.Probabilistic.Model
             Interface.SetArrayIntValue(id, "output_parameters", this.outputParameters.Select(p => p.GetId()).ToArray());
         }
 
-
         public IList<Stochast> Stochasts
         {
             get

@@ -87,6 +87,7 @@ namespace Deltares::Server
         int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);
         int GetValidationReportId(std::shared_ptr<Logging::ValidationReport> validationReport, int newId);
         int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
+        int GetModelParameterId(std::shared_ptr<Models::ModelInputParameter> modelParameter, int newId);
         int GetFragilityCurveId(std::shared_ptr<Reliability::FragilityCurve> fragilityCurve, int newId);
         int GetCorrelationMatrixId(std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix, int newid);
         int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newid);
@@ -175,6 +176,7 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Models::StochastPointAlpha>, int> alphaIds;
         std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
         std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
+        std::unordered_map<std::shared_ptr<Models::ModelInputParameter>, int> modelParameterIds;
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, int> probabilityValueIds;
         std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
         std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;

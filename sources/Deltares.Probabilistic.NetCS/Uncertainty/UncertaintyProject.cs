@@ -31,6 +31,7 @@ namespace Deltares.Probabilistic.Uncertainty
     {
         private int id = 0;
         private UncertaintySettings settings = null;
+        private CallBackList<ModelParameter> uncertaintyParameters = null;
         private UncertaintyResult result = null;
         private List<UncertaintyResult> results = null;
         private CorrelationMatrix outputCorrelationMatrix = null;
@@ -72,6 +73,30 @@ namespace Deltares.Probabilistic.Uncertainty
                 Interface.SetIntValue(id, "settings", value.GetId());
                 settings = value;
             }
+        }
+
+        public IList<ModelParameter> UncertaintyParameters
+        {
+            get
+            {
+                if (uncertaintyParameters == null)
+                {
+                    uncertaintyParameters = new CallBackList<ModelParameter>(UncertaintyParametersChanged);
+
+                    int[] parameterIds = Interface.GetArrayIdValue(id, "uncertainty_parameters");
+                    foreach (int parameterId in parameterIds)
+                    {
+                        uncertaintyParameters.AddWithoutCallBack(new ModelParameter(parameterId));
+                    }
+                }
+
+                return uncertaintyParameters;
+            }
+        }
+
+        private void UncertaintyParametersChanged(ListOperationType listOperation, ModelParameter item)
+        {
+            Interface.SetArrayIntValue(id, "uncertainty_parameters", this.uncertaintyParameters.Select(p => p.GetId()).ToArray());
         }
 
         public void Run()

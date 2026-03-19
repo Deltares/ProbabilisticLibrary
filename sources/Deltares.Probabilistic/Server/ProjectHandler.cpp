@@ -146,6 +146,7 @@ namespace Deltares::Server
             break;
         case ObjectType::ModelParameter:
             modelParameters[id] = std::make_shared<Deltares::Models::ModelInputParameter>();
+            modelParameterIds[modelParameters[id]] = id;
             break;
         case ObjectType::LimitStateFunction:
             limitStateFunctions[id] = std::make_shared<Deltares::Reliability::LimitStateFunction>();
@@ -295,7 +296,7 @@ namespace Deltares::Server
         case ObjectType::Message: messageIds.erase(messages[id]); messages.erase(id); break;
         case ObjectType::ValidationReport: validationReports.erase(id); break;
         case ObjectType::Project: projects.erase(id); break;
-        case ObjectType::ModelParameter: modelParameters.erase(id); break;
+        case ObjectType::ModelParameter: modelParameterIds.erase(modelParameters[id]); modelParameters.erase(id); break;
         case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
         case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
         case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
@@ -857,12 +858,14 @@ namespace Deltares::Server
 
             if (property_ == "uncertainty_stochasts_count") return static_cast<int>(project->uncertaintyResults.size());
             else if (property_ == "uncertainty_results_count") return static_cast<int>(project->uncertaintyResults.size());
+            else if (property_ == "uncertainty_parameters_count") return static_cast<int>(project->uncertaintyParameters.size());
         }
         else if (objectType == ObjectType::SensitivityProject)
         {
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
             if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
+            else if (property_ == "sensitivity_parameters_count") return static_cast<int>(project->sensitivityParameters.size());
         }
         else if (objectType == ObjectType::SensitivityResult)
         {
@@ -2003,7 +2006,8 @@ namespace Deltares::Server
                 }
             }
         }
-        else if (IsStochast(objectType))
+
+        if (IsStochast(objectType))
         {
             std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
 
@@ -2098,6 +2102,34 @@ namespace Deltares::Server
                 for (int i = 0; i < size; i++)
                 {
                     limitStateFunction->limitStateFunctions.push_back(GetLimitStateFunction(values[i]));
+                }
+            }
+        }
+        else if (objectType == ObjectType::UncertaintyProject)
+        {
+            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
+
+            if (property_ == "uncertainty_parameters")
+            {
+                project->uncertaintyParameters.clear();
+
+                for (int i = 0; i < size; i++)
+                {
+                    project->uncertaintyParameters.push_back(modelParameters[values[i]]);
+                }
+            }
+        }
+        else if (objectType == ObjectType::SensitivityProject)
+        {
+            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+
+            if (property_ == "sensitivity_parameters")
+            {
+                project->sensitivityParameters.clear();
+
+                for (int i = 0; i < size; i++)
+                {
+                    project->sensitivityParameters.push_back(modelParameters[values[i]]);
                 }
             }
         }
@@ -2382,12 +2414,14 @@ namespace Deltares::Server
 
             if (property_ == "uncertainty_stochasts") return GetStochastId(project->uncertaintyResults[index]->stochast, newId);
             else if (property_ == "uncertainty_results") return GetUncertaintyResultId(project->uncertaintyResults[index], newId);
+            else if (property_ == "uncertainty_parameters") return GetModelParameterId(project->uncertaintyParameters[index], newId);
         }
         else if (objectType == ObjectType::SensitivityProject)
         {
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
             if (property_ == "results") return GetSensitivityResultId(project->sensitivityResults[index], newId);
+            else if (property_ == "sensitivity_parameters") return GetModelParameterId(project->sensitivityParameters[index], newId);
         }
         else if (objectType == ObjectType::SensitivityResult)
         {
@@ -2643,6 +2677,25 @@ namespace Deltares::Server
             }
 
             return stochastIds[stochast];
+        }
+    }
+
+    int ProjectHandler::GetModelParameterId(std::shared_ptr<Models::ModelInputParameter> modelParameter, int newId)
+    {
+        if (modelParameter == nullptr)
+        {
+            return 0;
+        }
+        else
+        {
+            if (!modelParameterIds.contains(modelParameter))
+            {
+                modelParameters[newId] = modelParameter;
+                types[newId] = ObjectType::ModelParameter;
+                modelParameterIds[modelParameter] = newId;
+            }
+
+            return modelParameterIds[modelParameter];
         }
     }
 

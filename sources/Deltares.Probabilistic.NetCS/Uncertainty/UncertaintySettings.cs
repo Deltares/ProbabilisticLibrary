@@ -32,6 +32,7 @@ namespace Deltares.Probabilistic.Uncertainty;
 public class UncertaintySettings
 {
     private int id = 0;
+    private CallBackList<ProbabilityValue> quantiles = null;
     private CallBackList<StochastSettings> stochastSettings = null;
 
     public UncertaintySettings()
@@ -202,6 +203,31 @@ public class UncertaintySettings
     {
         return Interface.GetIntValue(id, "required_samples");
     }
+
+    public IList<ProbabilityValue> Quantiles
+    {
+        get
+        {
+            if (quantiles == null)
+            {
+                quantiles = new CallBackList<ProbabilityValue>(RequestedQuantilesChanged);
+
+                int[] quantilesIds = Interface.GetArrayIdValue(id, "quantiles");
+                foreach (int quantilesId in quantilesIds)
+                {
+                    quantiles.Add(new ProbabilityValue(quantilesId));
+                }
+            }
+
+            return quantiles;
+        }
+    }
+
+    private void RequestedQuantilesChanged(ListOperationType listOperation, ProbabilityValue item)
+    {
+        Interface.SetArrayIntValue(id, "quantiles", this.quantiles.Select(p => p.GetId()).ToArray());
+    }
+
 
     public IList<StochastSettings> StochastSettings
     {

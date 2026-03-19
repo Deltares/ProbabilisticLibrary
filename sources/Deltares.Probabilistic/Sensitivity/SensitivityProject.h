@@ -43,10 +43,15 @@ namespace Deltares::Sensitivity
         std::shared_ptr<SensitivityMethod> sensitivityMethod = nullptr;
 
         /**
-         * \brief Output parameter for which the uncertainty is calculated, blank for all parameters
+         * \brief Output parameters for which the sensitivity will be calculated, empty for all parameters
+         */
+        std::vector<std::shared_ptr<Models::ModelInputParameter>> sensitivityParameters;
+
+        /**
+         * \brief Output parameter for which the sensitivity is calculated, blank for all parameters
          */
         std::string parameter = "";
-
+        
         /**
          * \brief Array index of the output parameter if the parameter is an array
          */

@@ -48,6 +48,11 @@ namespace Deltares::Uncertainty
         std::string parameter = "";
 
         /**
+         * \brief Output parameters for which the uncertainty will be calculated, empty for all parameters
+         */
+        std::vector<std::shared_ptr<Models::ModelInputParameter>> uncertaintyParameters;
+
+        /**
          * \brief Array index of the output parameter if the parameter is an array
          */
         int arrayIndex = 0;

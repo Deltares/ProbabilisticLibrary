@@ -44,10 +44,20 @@ namespace Deltares::Uncertainty
         }
         else if (parameter.empty())
         {
+            std::vector<std::shared_ptr<Models::ModelInputParameter>> parameters;
+            if (uncertaintyParameters.empty())
+            {
+                parameters = model->outputParameters;
+            }
+            else
+            {
+                parameters = uncertaintyParameters;
+            }
+
             std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
             this->outputSelector = std::dynamic_pointer_cast<Models::ZValueConverter>(parameterSelector);
 
-            for (const auto& modelParameter : model->outputParameters)
+            for (const auto& modelParameter : parameters)
             {
                 parameterSelector->parameter = modelParameter->name;
                 if (modelParameter->isArray)

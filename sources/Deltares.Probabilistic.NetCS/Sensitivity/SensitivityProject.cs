@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Utils;
 
@@ -31,6 +32,7 @@ namespace Deltares.Probabilistic.Sensitivity
     {
         private int id = 0;
         private SensitivitySettings settings = null;
+        private CallBackList<ModelParameter> sensitivityParameters = null;
         private SensitivityResult result = null;
         private List<SensitivityResult> results = null;
 
@@ -69,6 +71,30 @@ namespace Deltares.Probabilistic.Sensitivity
                 Interface.SetIntValue(id, "settings", value.GetId());
                 settings = value;
             }
+        }
+
+        public IList<ModelParameter> SensitivityParameters
+        {
+            get
+            {
+                if (sensitivityParameters == null)
+                {
+                    sensitivityParameters = new CallBackList<ModelParameter>(SensitivityParametersChanged);
+
+                    int[] parameterIds = Interface.GetArrayIdValue(id, "sensitivity_parameters");
+                    foreach (int parameterId in parameterIds)
+                    {
+                        sensitivityParameters.AddWithoutCallBack(new ModelParameter(parameterId));
+                    }
+                }
+
+                return sensitivityParameters;
+            }
+        }
+
+        private void SensitivityParametersChanged(ListOperationType listOperation, ModelParameter item)
+        {
+            Interface.SetArrayIntValue(id, "sensitivity_parameters", this.sensitivityParameters.Select(p => p.GetId()).ToArray());
         }
 
         public string Parameter
