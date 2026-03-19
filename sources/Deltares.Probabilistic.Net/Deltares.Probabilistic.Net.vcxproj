@@ -26,8 +26,10 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <EnableManagedPackageReferenceSupport>true</EnableManagedPackageReferenceSupport>
     <TargetFramework>net8.0</TargetFramework>
-    <WindowsTargetPlatformMinVersion>7.0</WindowsTargetPlatformMinVersion>
-    <TargetFrameworkVersion>.net 8.0</TargetFrameworkVersion>
+    <WindowsTargetPlatformMinVersion>
+    </WindowsTargetPlatformMinVersion>
+    <TargetFrameworkVersion>
+    </TargetFrameworkVersion>
     <ProjectName>Deltares.Probabilistic.Net</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -164,7 +166,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Reliability\ReliabilitySettings.h" />
     <ClInclude Include="Sensitivity\SensitivityValue.h" />
     <ClInclude Include="Sensitivity\Sobol.h" />
     <ClInclude Include="Sensitivity\SobolSettings.h" />
@@ -173,7 +174,6 @@
     <ClInclude Include="Sensitivity\SensitivityResult.h" />
     <ClInclude Include="Sensitivity\SingleVariation.h" />
     <ClInclude Include="Sensitivity\SingleVariationSettings.h" />
-    <ClInclude Include="Model\ModelProject.h" />
     <ClInclude Include="Utils\RandomValueGenerator.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />
@@ -263,7 +263,6 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Reliability\ReliabilitySettings.cpp" />
     <ClCompile Include="Sensitivity\SensitivityValue.cpp" />
     <ClCompile Include="Sensitivity\Sobol.cpp" />
     <ClCompile Include="Sensitivity\SobolSettings.cpp" />
@@ -272,7 +271,6 @@
     <ClCompile Include="Sensitivity\SensitivityResult.cpp" />
     <ClCompile Include="Sensitivity\SingleVariation.cpp" />
     <ClCompile Include="Sensitivity\SingleVariationSettings.cpp" />
-    <ClCompile Include="Model\ModelProject.cpp" />
     <ClCompile Include="Utils\RandomValueGenerator.cpp" />
     <ClCompile Include="Reliability\FragilityCurve.cpp" />
     <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
