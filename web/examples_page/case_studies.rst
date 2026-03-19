@@ -47,7 +47,7 @@ how to interpret results in a professional setting.
          </div>
 
       +++
-      .. button-link:: retaining_wall.html
+      .. button-link:: ../_examples/Case_1_retaining_wall.html
          :color: primary
          :outline:
          :expand:

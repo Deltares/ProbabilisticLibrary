@@ -46,18 +46,12 @@ if mmdc_path is None:
 # ---------------------------------------------------------------------------
 
 def _copy_notebooks_if_changed(src_folder: str, dst_folder: str) -> None:
-    """Copy notebooks from src to dst only when the source is newer.
-
-    Notebooks with 'Case' in their filename are skipped here — they are
-    handled separately under examples/ as case study pages.
-    """
+    """Copy notebooks from src to dst only when the source is newer."""
     dst = Path(dst_folder)
     dst.mkdir(parents=True, exist_ok=True)
     copied = skipped = 0
 
     for src_file in Path(src_folder).rglob("*.ipynb"):
-        if "Case" in src_file.name:
-            continue
         dst_file = dst / src_file.name
         if not dst_file.exists() or src_file.stat().st_mtime > dst_file.stat().st_mtime:
             shutil.copy2(src_file, dst_file)
@@ -94,6 +88,8 @@ _wipe_dir("build")
 os.makedirs("_examples", exist_ok=True)
 _remove_stale_notebooks("notebooks", "_examples")
 _copy_notebooks_if_changed("notebooks", "_examples")
+
+# Case study notebooks are managed manually in _examples/ — no automated copy needed.
 
 
 # ---------------------------------------------------------------------------
