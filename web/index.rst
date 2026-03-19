@@ -25,6 +25,10 @@
            ⌥ &nbsp;Forum
          </a>
        </div>
+       <p class="psl-hero-proof">
+         &#9679;&nbsp; Used in national flood-safety assessments in the Netherlands
+         and applied to geotechnical projects worldwide
+       </p>
      </div>
    </div>
 

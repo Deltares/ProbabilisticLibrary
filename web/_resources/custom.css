@@ -445,6 +445,14 @@ a.headerlink:hover {
     margin: 0 auto 1.5rem;
 }
 
+.psl-hero-proof {
+    margin: 1.25rem auto 0;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.2px;
+    max-width: 520px;
+}
+
 /* Hero CTA buttons */
 .psl-hero-ctas {
     display: flex;
