@@ -42,22 +42,30 @@ namespace Deltares::Reliability
             this->useSampleZValue = false;
             this->criticalParameterIndex = -1;
 
+            int index = 0;
+
             for (size_t i = 0; i < inputParameters.size(); i++)
             {
                 if (inputParameters[i]->name == this->criticalParameter)
                 {
-                    this->criticalParameterIndex = inputParameters[i]->computationalIndex;
+                    this->criticalParameterIndex = index;
                     this->criticalParameterIndexFromInput = true;
                 }
+
+                index += inputParameters[i]->isArray ? inputParameters[i]->arraySize : 1;
             }
+
+            index = 0;
 
             for (size_t i = 0; i < outputParameters.size(); i++)
             {
                 if (outputParameters[i]->name == this->criticalParameter)
                 {
-                    this->criticalParameterIndex = outputParameters[i]->computationalIndex;
+                    this->criticalParameterIndex = index;
                     this->criticalParameterIndexFromInput = false;
                 }
+
+                index += outputParameters[i]->isArray ? outputParameters[i]->arraySize : 1;
             }
         }
 
@@ -65,22 +73,30 @@ namespace Deltares::Reliability
 
         if (this->useCompareParameter)
         {
+            int index = 0;
+
             for (size_t i = 0; i < inputParameters.size(); i++)
             {
                 if (inputParameters[i]->name == this->compareParameter)
                 {
-                    this->compareParameterIndex = inputParameters[i]->computationalIndex;
+                    this->compareParameterIndex = index;
                     this->compareParameterIndexFromInput = true;
                 }
+
+                index += inputParameters[i]->isArray ? inputParameters[i]->arraySize : 1;
             }
+
+            index = 0;
 
             for (size_t i = 0; i < outputParameters.size(); i++)
             {
                 if (outputParameters[i]->name == this->compareParameter)
                 {
-                    this->compareParameterIndex = outputParameters[i]->computationalIndex;
+                    this->compareParameterIndex = index;
                     this->compareParameterIndexFromInput = false;
                 }
+
+                index += outputParameters[i]->isArray ? outputParameters[i]->arraySize : 1;
             }
         }
     }

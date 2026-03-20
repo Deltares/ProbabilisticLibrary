@@ -35,7 +35,7 @@ namespace Deltares.Probabilistic.Reliability
 
         public FragilityCurveProject()
         {
-            this.id = Interface.Create("fragility_project");
+            this.id = Interface.Create("fragility_curve_project");
         }
 
         internal FragilityCurveProject(int id)

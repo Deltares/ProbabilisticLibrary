@@ -116,7 +116,7 @@ namespace Deltares::Server
     private:
         enum ObjectType {
             StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, CombinedLimitStateFunction, Stochast, DiscreteValue,
-            HistogramValue, FragilityValue, ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha,
+            HistogramValue, FragilityValue, ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, StochastPoint, DesignPoint, Alpha,
             FragilityCurve, FragilityCurveProject, FragilityCurveSettings, Evaluation, CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings,
             SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult, SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue,
             LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation, ConvergenceReport
@@ -142,6 +142,7 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
         std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
+        std::unordered_map<int, std::shared_ptr<Models::StochastPoint>> stochastPoints;
         std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
         std::unordered_map<int, std::shared_ptr<Models::StochastPointAlpha>> alphas;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;

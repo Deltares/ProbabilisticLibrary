@@ -54,6 +54,7 @@ namespace Deltares::Server
                 object_type == "scenario" ||
                 object_type == "settings" ||
                 object_type == "stochast_settings" ||
+                object_type == "stochast_point" ||
                 object_type == "design_point" ||
                 object_type == "alpha" ||
                 object_type == "fragility_curve" ||
@@ -99,6 +100,7 @@ namespace Deltares::Server
         else if (object_type == "scenario") return ObjectType::Scenario;
         else if (object_type == "settings") return ObjectType::Settings;
         else if (object_type == "stochast_settings") return  ObjectType::StochastSettings;
+        else if (object_type == "stochast_point") return  ObjectType::StochastPoint;
         else if (object_type == "design_point") return  ObjectType::DesignPoint;
         else if (object_type == "alpha") return  ObjectType::Alpha;
         else if (object_type == "fragility_curve") return  ObjectType::FragilityCurve;
@@ -197,6 +199,9 @@ namespace Deltares::Server
             break;
         case ObjectType::StochastSettings:
             stochastSettingsValues[id] = std::make_shared<Deltares::Reliability::StochastSettings>();
+            break;
+        case ObjectType::StochastPoint:
+            stochastPoints[id] = std::make_shared<Models::StochastPoint>();
             break;
         case ObjectType::DesignPoint:
             designPoints[id] = std::make_shared<Deltares::Reliability::DesignPoint>();
@@ -311,6 +316,7 @@ namespace Deltares::Server
         case ObjectType::Scenario: scenarios.erase(id); break;
         case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
         case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
+        case ObjectType::StochastPoint: stochastPoints.erase(id); break;
         case ObjectType::DesignPoint: designPointIds.erase(designPoints[id]); designPoints.erase(id); break;
         case ObjectType::Alpha: alphaIds.erase(alphas[id]); alphas.erase(id); break;
         case ObjectType::FragilityCurve: fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
@@ -508,6 +514,13 @@ namespace Deltares::Server
 
             if (property_ == "low_value") return settings->LowValue;
             else if (property_ == "high_value") return settings->HighValue;
+        }
+        else if (objectType == ObjectType::StochastPoint)
+        {
+            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
+
+            if (property_ == "beta") return stochastPoint->Beta;
+            else if (property_ == "reliability_index") return stochastPoint->Beta;
         }
         else if (objectType == ObjectType::DesignPoint)
         {
@@ -742,6 +755,13 @@ namespace Deltares::Server
             else if (property_ == "start_value") stochastSettings->StartValue = value;
             else if (property_ == "variance_factor") stochastSettings->VarianceFactor = value;
         }
+        else if (objectType == ObjectType::StochastPoint)
+        {
+            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
+
+            if (property_ == "beta") stochastPoint->Beta = value;
+            else if (property_ == "reliability_index") stochastPoint->Beta = value;
+        }
         else if (objectType == ObjectType::DesignPoint)
         {
             std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
@@ -972,6 +992,12 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "intervals") return stochastSettings->Intervals;
+        }
+        else if (objectType == ObjectType::StochastPoint)
+        {
+            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
+
+            if (property_ == "alphas_count") return static_cast<int>(stochastPoint->Alphas.size());
         }
         else if (objectType == ObjectType::DesignPoint)
         {
@@ -2064,6 +2090,19 @@ namespace Deltares::Server
                 }
             }
         }
+        else if (objectType == ObjectType::StochastPoint)
+        {
+            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
+
+            if (property_ == "alphas")
+            {
+                stochastPoint->Alphas.clear();
+                for (int i = 0; i < size; i++)
+                {
+                    stochastPoint->Alphas.push_back(alphas[values[i]]);
+                }
+            }
+        }
         else if (objectType == ObjectType::DesignPoint)
         {
             std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
@@ -2430,6 +2469,12 @@ namespace Deltares::Server
             if (property_ == "values") return GetSensitivityValueId(result->values[index], newId);
             else if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
             else if (property_ == "messages") return GetMessageId(result->messages[index], newId);
+        }
+        else if (objectType == ObjectType::StochastPoint)
+        {
+            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
+
+            if (property_ == "alphas") return GetAlphaId(stochastPoint->Alphas[index], newId);
         }
         else if (objectType == ObjectType::DesignPoint)
         {
