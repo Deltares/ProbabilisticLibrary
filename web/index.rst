@@ -24,15 +24,18 @@
          <a href="https://github.com/Deltares/ProbabilisticLibrary/discussions" class="psl-btn psl-btn--light">
            ⌥ &nbsp;Forum
          </a>
+         <a href="https://pypi.org/project/probabilistic-library/" class="psl-btn psl-btn--light">
+           &#x1F4E6; &nbsp;PyPI
+         </a>
        </div>
        <p class="psl-hero-proof">
          &#9679;&nbsp; Used in national flood-safety assessments in the Netherlands
-         and applied to geotechnical projects worldwide
+         and applied to geotechnical projects
        </p>
      </div>
    </div>
 
-The Probabilistic Suite enables quantitative analysis of uncertainty, reliability, and sensitivity in engineering and scientific models. 
+The Probabilistic Suite enables quantitative analysis of uncertainty, reliability, and sensitivity in engineering and scientific models.
 
 Three tightly integrated components: choose your entry point or use all three together.
 
@@ -58,7 +61,7 @@ Three tightly integrated components: choose your entry point or use all three to
          Explore API →
 
    .. grid-item-card:: 🐍 Python Library
-      :link: installation
+      :link: api_reference/index
       :link-type: doc
       :class-card: psl-card
       :class-header: psl-card-header psl-card-header--blue
@@ -117,8 +120,7 @@ Three tightly integrated components: choose your entry point or use all three to
            <p class="psl-apart-item-title">Institutional trust</p>
            <p class="psl-apart-item-desc">
              Part of the Deltares software product line. Every component is thoroughly
-             reviewed, tested, validated, and documented — reaching TRL&nbsp;8/9 and
-             actively maintained in stable release.
+             reviewed, tested, validated, documented, and actively maintained in stable release. Trusted for the flood safety assessment of the Netherlands.  
            </p>
          </div>
        </div>
@@ -165,7 +167,7 @@ Where do you want to start?
       and obtain probabilistic output statistics.
 
       +++
-      .. button-link:: /_examples/uncertainty_analysis.html
+      .. button-link:: _examples/uncertainty_analysis.html
          :color: primary
          :outline:
          :expand:
@@ -180,7 +182,7 @@ Where do you want to start?
       factors and focus modelling effort where it matters most.
 
       +++
-      .. button-link:: /_examples/sensitivity_analysis.html
+      .. button-link:: _examples/sensitivity_analysis.html
          :color: primary
          :outline:
          :expand:
@@ -195,7 +197,7 @@ Where do you want to start?
       Monte Carlo, and other industry-standard methods.
 
       +++
-      .. button-link:: /_examples/hybrid_reliability_methods.html
+      .. button-link:: _examples/hybrid_reliability_methods.html
          :color: primary
          :outline:
          :expand:
@@ -210,7 +212,7 @@ Where do you want to start?
        <h2>Join the Community</h2>
        <p>
          The Probabilistic Suite Community is open and evolving.
-         Contributions are welcome — share examples, improve docs, or discuss best practices.
+         Join Dutch water engineers, researchers, and consultants building the probabilistic and reliability community together. Share examples, ask questions and contribute 😊.
        </p>
      </div>
      <div class="psl-community-ctas">
@@ -227,3 +229,4 @@ Where do you want to start?
    installation
    tutorials/tutorials
    api_reference/index
+   examples_page/examples_index
