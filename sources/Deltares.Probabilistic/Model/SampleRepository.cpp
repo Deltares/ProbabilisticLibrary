@@ -59,16 +59,19 @@ namespace Deltares::Models
     {
         double key = this->getKey(sample);
 
-        locker->lock();
-
-        if (!this->sampleCollections.contains(key))
+        if (!std::isnan(key) && !std::isinf(key))
         {
-            sampleCollections[key] = std::make_unique<SampleCollection>();
+            locker->lock();
+
+            if (!this->sampleCollections.contains(key))
+            {
+                sampleCollections[key] = std::make_unique<SampleCollection>();
+            }
+
+            locker->unlock();
+
+            sampleCollections[key]->registerSample(sample);
         }
-
-        locker->unlock();
-
-        sampleCollections[key]->registerSample(sample);
     }
 
     std::shared_ptr<ModelSample> SampleRepository::retrieveSample(std::shared_ptr<ModelSample> sample)

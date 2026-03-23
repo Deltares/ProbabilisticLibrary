@@ -1289,10 +1289,6 @@ namespace Deltares::Server
             if (property_ == "design_point")
             {
                 fragilityValue->designPoint = designPoints.contains(value) ? designPoints[value] : nullptr;
-                if (fragilityValue->designPoint != nullptr)
-                {
-                    fragilityValue->Reliability = fragilityValue->designPoint->Beta;
-                }
             }
         }
         else if (objectType == ObjectType::ContributingStochast)

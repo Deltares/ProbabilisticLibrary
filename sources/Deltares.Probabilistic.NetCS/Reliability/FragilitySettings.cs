@@ -29,7 +29,7 @@ public class FragilitySettings
 
     public FragilitySettings()
     {
-        this.id = Interface.Create("fragility_settings");
+        this.id = Interface.Create("fragility_curve_settings");
     }
 
     internal FragilitySettings(int id)

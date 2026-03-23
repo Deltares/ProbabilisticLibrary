@@ -22,6 +22,7 @@
 #pragma once
 
 #include "StandardNormal.h"
+#include <cmath>
 
 namespace Deltares::Statistics
 {
@@ -49,7 +50,7 @@ namespace Deltares::Statistics
         /**
          * \brief Reliability of the fragility point
          */
-        double Reliability;
+        double Reliability = std::nan("");
 
         double getProbabilityOfFailure()
         {
