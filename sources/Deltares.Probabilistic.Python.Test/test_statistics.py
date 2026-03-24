@@ -266,6 +266,7 @@ class Test_statistics(unittest.TestCase):
 
         self.assertEqual(3, len(stochast2.get_series(xmin = 1, number_of_points=3)))
 
+    @pytest.mark.plotting
     def test_multiple_plot(self):
         stochast1 = Stochast()
         stochast1.name = 'stochast 1'
