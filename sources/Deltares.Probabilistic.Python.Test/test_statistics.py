@@ -296,13 +296,14 @@ class Test_statistics(unittest.TestCase):
         pdf3 = [stochast3.get_pdf(x) for x in values3]
 
         plt.close()
+    
+        ax1 = plt.subplot()
+        ax1.set_xlabel("value [x]")
+        ax1.set_ylabel("pdf [-]")
 
-        plt.set_xlabel("value [x]")
-        plt.set_ylabel("pdf [-]")
-
-        plt.plot(values1, pdf1, label = stochast1.name)
-        plt.plot(values2, pdf2, label = stochast2.name)
-        plt.plot(values3, pdf3, label = stochast3.name)
+        ax1.plot(values1, pdf1, label = stochast1.name)
+        ax1.plot(values2, pdf2, label = stochast2.name)
+        ax1.plot(values3, pdf3, label = stochast3.name)
 
         plt.grid()
         plt.legend()
