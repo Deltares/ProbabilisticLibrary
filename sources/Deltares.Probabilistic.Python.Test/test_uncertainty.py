@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 import unittest
+import pytest
 import sys
 import os
 from io import StringIO
