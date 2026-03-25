@@ -131,6 +131,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(1.8, sens.mean, delta=margin)
         self.assertAlmostEqual(0.83, sens.deviation, delta=margin)
 
+    @pytest.mark.plotting
     def test_crude_monte_carlo_plot(self):
         project = project_builder.get_uncertainty_linear_project()
 
