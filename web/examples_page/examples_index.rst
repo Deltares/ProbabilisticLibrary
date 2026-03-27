@@ -25,7 +25,7 @@ Examples
       :class-card: psl-card psl-card--casestudy
 
       End-to-end worked examples on realistic
-      engineering problems — flood defenses, geotechnical structures,
+      engineering problems: flood defenses, geotechnical structures,
       hydraulic systems. Each example shows the full workflow from
       uncertainty definition to final reliability assessment.
 
@@ -42,9 +42,9 @@ Examples
       :link-type: doc
       :class-card: psl-card psl-card--community
 
-      **Contributed by users.** See how engineers, researchers, and
-      consultants around the world are applying the Probabilistic Suite
-      to their own projects. Want to share yours?
+      **Contributed by members.** See how engineers, researchers, and
+      consultants are applying the Probabilistic Suite
+      to their own projects. Feel free to share yours too!
 
       +++
       .. button-ref:: community_showcase

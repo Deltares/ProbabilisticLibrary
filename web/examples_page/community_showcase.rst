@@ -57,17 +57,3 @@ Featured Examples
    </div>
 
 ----
-
-What Makes a Good Showcase Entry?
-----------------------------------
-
-A strong community example typically includes:
-
-- **Context** — what was the engineering problem and why did probabilistic analysis matter?
-- **Approach** — which methods from the suite were used and why?
-- **Code** — a reproducible notebook or script others can run and adapt
-- **Results** — key outputs with interpretation, not just plots
-- **Lessons learned** — what worked, what was tricky, what you'd do differently
-
-You don't need a perfect polished example — practical, honest, real-world contributions
-are more valuable than textbook-clean ones.
