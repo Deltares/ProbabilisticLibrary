@@ -1503,7 +1503,15 @@ namespace Deltares::Server
 
             if (property_ == "is_valid") return validationReport->isValid();
         }
-        else if (IsStochast(objectType))
+        else if (objectType == ObjectType::FragilityCurve)
+        {
+            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+            if (property_ == "inverted") return fragilityCurve->inverted;
+            else if (property_ == "fixed") return fragilityCurve->fixed;
+        }
+
+        if (IsStochast(objectType))
         {
             std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
 
@@ -1641,10 +1649,16 @@ namespace Deltares::Server
             else if (property_ == "truncated") stochast->setTruncated(value);
             else if (property_ == "conditional") stochast->IsVariableStochast = value;
             else if (property_ == "is_array") stochast->modelParameter->isArray = value;
-            else if (property_ == "fixed") std::dynamic_pointer_cast<Reliability::FragilityCurve>(stochast)->fixed = value;
         }
 
-        if (objectType == ObjectType::ModelParameter)
+        if (objectType == ObjectType::FragilityCurve)
+        {
+            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+            if (property_ == "inverted") fragilityCurve->inverted = value;
+            else if (property_ == "fixed") fragilityCurve->fixed = value;
+        }
+        else if (objectType == ObjectType::ModelParameter)
         {
             std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 

@@ -29,14 +29,7 @@ namespace Deltares::Reliability
         double x = sample->Values[0];
         double u = fragilityCurve->getUFromX(x);
 
-        if (fragilityCurve->inverted)
-        {
-            sample->Z = Statistics::StandardNormal::getPFromU(u);
-        }
-        else
-        {
-            sample->Z = Statistics::StandardNormal::getQFromU(u);
-        }
+        sample->Z = Statistics::StandardNormal::getQFromU(u);
     }
 }
 
