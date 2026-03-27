@@ -120,7 +120,7 @@ Three tightly integrated components: choose your entry point or use all three to
            <p class="psl-apart-item-title">Institutional trust</p>
            <p class="psl-apart-item-desc">
              Part of the Deltares software product line. Every component is thoroughly
-             reviewed, tested, validated, documented, and actively maintained in stable release. Trusted for the flood safety assessment of the Netherlands.  
+             reviewed, tested, validated, documented, and actively maintained in stable release. Trusted for the flood safety assessment of the Netherlands.
            </p>
          </div>
        </div>
@@ -151,58 +151,6 @@ Three tightly integrated components: choose your entry point or use all three to
      </div>
    </div>
 
-
-Where do you want to start?
----------------------------
-
-.. grid:: 1 1 3 3
-   :gutter: 3
-   :class-container: psl-start-grid
-
-   .. grid-item-card:: 📊 Uncertainty Analysis
-      :class-card: psl-start-card psl-start-card--uncertainty
-      :class-header: psl-start-card-header
-
-      Define input distributions, propagate uncertainty through your model,
-      and obtain probabilistic output statistics.
-
-      +++
-      .. button-link:: _examples/uncertainty_analysis.html
-         :color: primary
-         :outline:
-         :expand:
-
-         Get started →
-
-   .. grid-item-card:: 📈 Sensitivity Analysis
-      :class-card: psl-start-card psl-start-card--sensitivity
-      :class-header: psl-start-card-header
-
-      Identify which input variables drive output variance. Rank importance
-      factors and focus modelling effort where it matters most.
-
-      +++
-      .. button-link:: _examples/sensitivity_analysis.html
-         :color: primary
-         :outline:
-         :expand:
-
-         Get started →
-
-   .. grid-item-card:: 🛡️ Reliability Analysis
-      :class-card: psl-start-card psl-start-card--reliability
-      :class-header: psl-start-card-header
-
-      Compute failure probabilities and reliability indices using FORM, SORM,
-      Monte Carlo, and other industry-standard methods.
-
-      +++
-      .. button-link:: _examples/hybrid_reliability_methods.html
-         :color: primary
-         :outline:
-         :expand:
-
-         Get started →
 
 
 .. raw:: html
