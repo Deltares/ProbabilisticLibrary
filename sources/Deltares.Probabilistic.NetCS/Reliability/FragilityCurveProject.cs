@@ -64,7 +64,7 @@ namespace Deltares.Probabilistic.Reliability
             }
             set
             {
-                Interface.SetIntValue(id, "settings",  value.GetId()); 
+                Interface.SetIntValue(id, "settings",  value?.GetId() ?? 0); 
                 settings = value;
             }
         }
@@ -77,7 +77,7 @@ namespace Deltares.Probabilistic.Reliability
             }
             set
             {
-                Interface.SetIntValue(id, "integrand", value.GetId());
+                Interface.SetIntValue(id, "integrand", value?.GetId() ?? 0);
                 integrand = value;
             }
         }
@@ -90,7 +90,7 @@ namespace Deltares.Probabilistic.Reliability
             }
             set
             {
-                Interface.SetIntValue(id, "fragility_curve", value.GetId());
+                Interface.SetIntValue(id, "fragility_curve", value?.GetId() ?? 0);
                 fragilityCurve = value;
             }
         }
@@ -103,7 +103,7 @@ namespace Deltares.Probabilistic.Reliability
             }
             set
             {
-                Interface.SetIntValue(id, "fragility_curve_normalized", value.GetId());
+                Interface.SetIntValue(id, "fragility_curve_normalized", value?.GetId() ?? 0);
                 fragilityCurveNormalized = value;
             }
         }

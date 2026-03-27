@@ -191,6 +191,12 @@ namespace Deltares::Reliability
 
         double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
+        // correct for negative beta and fragility curve, but maybe it is correct
+        //if (beta < 0)
+        //{
+        //    designPointSample->Values[0] = -designPointSample->Values[0];
+        //}
+
         if (modelRunner->getVaryingStochastCount() == 1)
         {
             double alphaFragilityCurve = - designPointSample->Values[1] / beta; // u = - beta * alpha
