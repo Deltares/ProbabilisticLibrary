@@ -114,11 +114,14 @@ public class ReliabilitySettings
 
     public DesignPointMethod DesignPointMethod
     {
-        get
-        {
-            return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method"));
-        }
+        get { return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method")); }
         set { Interface.SetStringValue(id, "design_point_method", DesignPointMethodConverter.ConvertToString(value)); }
+    }
+
+    public DesignPointMethod FragilityCurveDesignPointMethod
+    {
+        get { return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "fragility_curve_design_point_method")); }
+        set { Interface.SetStringValue(id, "fragility_curve_design_point_method", DesignPointMethodConverter.ConvertToString(value)); }
     }
 
     public StartPointMethod StartMethod
@@ -275,6 +278,12 @@ public class ReliabilitySettings
     {
         get { return Interface.GetValue(id, "subset_fraction"); }
         set { Interface.SetValue(id, "subset_fraction", value); }
+    }
+
+    public double FragilityCurveStepSize
+    {
+        get { return Interface.GetValue(id, "fragility_curve_step_size"); }
+        set { Interface.SetValue(id, "fragility_curve_step_size", value); }
     }
 
     public double FractionFailed

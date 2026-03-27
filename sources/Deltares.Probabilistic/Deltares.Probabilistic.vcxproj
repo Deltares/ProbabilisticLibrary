@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\ProbabilityLimitStateFunction.h" />
     <ClInclude Include="Combine\ExcludingCombineSettings.h" />
     <ClInclude Include="Combine\ExcludingCombineProject.h" />
     <ClInclude Include="Combine\ExcludingCombiner.h" />
@@ -411,6 +412,7 @@
     <ClInclude Include="Model\DefaultValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />
     <ClCompile Include="Combine\ExcludingCombineSettings.cpp" />
     <ClCompile Include="Combine\ExcludingCombineProject.cpp" />
     <ClCompile Include="Combine\ExcludingCombiner.cpp" />

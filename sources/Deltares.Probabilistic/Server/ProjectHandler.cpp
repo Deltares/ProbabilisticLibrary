@@ -481,6 +481,7 @@ namespace Deltares::Server
             else if (property_ == "markov_chain_deviation") return settings->MarkovChainDeviation;
             else if (property_ == "subset_fraction") return settings->SubsetFraction;
             else if (property_ == "step_size") return settings->GradientSettings->StepSize;
+            else if (property_ == "fragility_curve_step_size") return settings->FragilityCurveStepSize;
         }
         else if (objectType == ObjectType::StochastSettings)
         {
@@ -721,6 +722,7 @@ namespace Deltares::Server
             else if (property_ == "markov_chain_deviation") settings->MarkovChainDeviation = value;
             else if (property_ == "subset_fraction") settings->SubsetFraction = value;
             else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
+            else if (property_ == "fragility_curve_step_size") settings->FragilityCurveStepSize = value;
         }
         else if (objectType == ObjectType::FragilityCurveSettings)
         {
@@ -1736,6 +1738,7 @@ namespace Deltares::Server
             else if (property_ == "handle_invalid_type") return Models::RunSettings::getHandleInvalidTypeString(settings->RunSettings->HandleInvalidType);
             else if (property_ == "reliability_result") return Settings::getReliabilityResultTypeString(settings->ReliabilityResult);
             else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
+            else if (property_ == "fragility_curve_design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->fragilityCurveDesignPointMethod);
             else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
             else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
             else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
@@ -1889,6 +1892,7 @@ namespace Deltares::Server
             else if (property_ == "reliability_result") settings->ReliabilityResult = Settings::getReliabilityResultType(value);
             else if (property_ == "handle_invalid_type") settings->RunSettings->HandleInvalidType = Models::RunSettings::getHandleInvalidType(value);
             else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
+            else if (property_ == "fragility_curve_design_point_method") settings->fragilityCurveDesignPointMethod = DesignPointBuilder::getDesignPointMethod(value);
             else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
             else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
             else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
@@ -3087,7 +3091,7 @@ namespace Deltares::Server
         }
         else if (fragilityCurves.contains(id))
         {
-            return fragilityCurves[id];
+            return std::dynamic_pointer_cast<Statistics::Stochast>(fragilityCurves[id]);
         }
         else
         {

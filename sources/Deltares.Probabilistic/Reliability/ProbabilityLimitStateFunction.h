@@ -19,30 +19,23 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
-#include "DesignPoint.h"
+
 #include "LimitStateFunction.h"
-#include "../Model/ModelRunner.h"
+#include "FragilityCurve.h"
+#include "../Statistics/Stochast.h"
 
 namespace Deltares::Reliability
 {
-    class ReliabilityMethod
+    class ProbabilityLimitStateFunction : public Reliability::LimitStateFunction
     {
-    private:
-        bool stopped = false;
-
-    protected:
-
-        virtual void setStopped();
-
     public:
-        static int getZFactor(double z);
-        virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
-        virtual ~ReliabilityMethod() = default;
+        std::shared_ptr<Statistics::Stochast> fragilityCurve = nullptr;
+        bool inverted = false;
 
-        virtual bool isValid() { return false; }
-        bool isStopped();
-        void Stop();
+        void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
+    private:
     };
 }
 

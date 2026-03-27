@@ -28,6 +28,9 @@
 #include "../Proxies/ProxyModel.h"
 #include <format>
 
+#include "../Reliability/FragilityCurve.h"
+#include "../Reliability/ProbabilityLimitStateFunction.h"
+
 namespace Deltares::Models
 {
     int ModelRunner::getVaryingStochastCount()
@@ -151,6 +154,51 @@ namespace Deltares::Models
         xSample->OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
+    }
+
+    /**
+     * \brief Specifies that the z value converted should return a reliability instead of a z-value
+     */
+    void ModelRunner::setZValueToReliability()
+    {
+        std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = std::dynamic_pointer_cast<Reliability::LimitStateFunction>(this->zModel->zValueConverter);
+
+        std::shared_ptr<Statistics::Stochast> limitStateStochast = uConverter->GetStochast(limitStateFunction->criticalParameter);
+
+        std::shared_ptr<Reliability::ProbabilityLimitStateFunction> probabilityLimitStateFunction = std::make_shared<Reliability::ProbabilityLimitStateFunction>();
+        probabilityLimitStateFunction->inverted = limitStateFunction->compareType == Reliability::GreaterThan;
+        probabilityLimitStateFunction->fragilityCurve = getStochastForReliability(limitStateFunction, limitStateStochast, probabilityLimitStateFunction->inverted);
+
+        this->zModel->zValueConverter = probabilityLimitStateFunction;
+    }
+
+    std::shared_ptr<Statistics::Stochast> ModelRunner::getStochastForReliability(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, std::shared_ptr<Statistics::Stochast> stochast, bool inverted)
+    {
+        std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = std::make_shared<Reliability::FragilityCurve>();
+
+        if (stochast->getDistributionType() == Statistics::DistributionType::CDFCurve)
+        {
+            fragilityCurve->copyFrom(stochast);
+            fragilityCurve->fixed = !limitStateFunction->useCompareParameter;
+
+            if (fragilityCurve->fixed)
+            {
+                fragilityCurve->fixedValue = limitStateFunction->criticalValue;
+
+                fragilityCurve->fixedValue = fragilityCurve->getUFromX(limitStateFunction->criticalValue);
+                if (inverted)
+                {
+                    fragilityCurve->fixedValue = -fragilityCurve->fixedValue;
+                }
+            }
+        }
+
+        if (fragilityCurve == nullptr)
+        {
+            throw Reliability::probLibException("expected fragility curve");
+        }
+
+        return fragilityCurve;
     }
 
     /**

@@ -63,7 +63,7 @@ public class StochastPointAlpha
         }
         set
         {
-            Interface.SetIntValue(id, "variable", value.GetId());
+            Interface.SetIntValue(id, "variable", value?.GetId() ?? 0);
             stochast = value;
         }
     }

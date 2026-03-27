@@ -24,6 +24,7 @@
 #include <memory>
 
 #include "DirectionReliability.h"
+#include "FragilityCurveIntegration.h"
 
 namespace Deltares::Reliability
 {
@@ -44,6 +45,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityCobyla: return this->GetCobylaReliabilityMethod();
         case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling: return this->GetFormThenDsReliabilityMethod();
         case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM: return this->GetDsThenFormReliabilityMethod();
+        case ReliabilityMethodType::ReliabilityFragilityCurveIntegration: return this->GetFragilityCurveIntegrationMethod();
 
         default: throw probLibException("Reliability method");
         }
@@ -274,6 +276,19 @@ namespace Deltares::Reliability
         return subsetSimulation;
     }
 
+    std::shared_ptr<FragilityCurveIntegration> Settings::GetFragilityCurveIntegrationMethod() const
+    {
+        auto fragilityCurveIntegration = std::make_shared<FragilityCurveIntegration>();
+
+        fragilityCurveIntegration->Settings->designPointMethod = this->fragilityCurveDesignPointMethod;
+        fragilityCurveIntegration->Settings->StepSize = this->FragilityCurveStepSize;
+        fragilityCurveIntegration->Settings->StochastSet = this->StochastSet;
+
+        return fragilityCurveIntegration;
+    }
+
+
+
     void Settings::validate(Logging::ValidationReport& report) const
     {
         switch (this->ReliabilityMethod)
@@ -324,6 +339,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityCobyla: return "cobyla_reliability";
         case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling: return "form_then_directional_sampling";
         case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM: return "directional_sampling_then_form";
+        case ReliabilityMethodType::ReliabilityFragilityCurveIntegration: return "fragility_curve_integration";
         default: throw probLibException("Reliability method");
         }
     }
@@ -343,6 +359,7 @@ namespace Deltares::Reliability
         else if (method == "cobyla_reliability") return ReliabilityMethodType::ReliabilityCobyla;
         else if (method == "form_then_directional_sampling") return ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling;
         else if (method == "directional_sampling_then_form") return ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM;
+        else if (method == "fragility_curve_integration") return ReliabilityMethodType::ReliabilityFragilityCurveIntegration;
         else throw probLibException("Reliability method");
     }
 

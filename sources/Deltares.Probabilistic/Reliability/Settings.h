@@ -36,6 +36,7 @@
 #include "NumericalBisection.h"
 #include "NumericalIntegration.h"
 #include "DirectionReliabilitySettings.h"
+#include "FragilityCurveIntegration.h"
 #include "ReliabilityMethod.h"
 #include "SubsetSimulation.h"
 #include "SubsetSimulationSettings.h"
@@ -51,7 +52,8 @@ namespace Deltares::Reliability
         ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
         ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilityDirectionReliability,
         ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
-        ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM
+        ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM,
+        ReliabilityFragilityCurveIntegration
     };
 
     /**
@@ -75,6 +77,11 @@ namespace Deltares::Reliability
          * \brief Method type how the design point (alpha values) is calculated
          */
         DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+        /**
+         * \brief Method type how the design point (alpha values) is calculated for fragility curve integration
+         */
+        DesignPointMethod fragilityCurveDesignPointMethod = DesignPointMethod::NearestToMean;
 
         /**
          * \brief The minimum samples to be examined
@@ -207,6 +214,11 @@ namespace Deltares::Reliability
         bool OptimizeNumberOfClusters = false;
 
         /**
+         * \brief Step size in fragility curve integration
+         */
+        double FragilityCurveStepSize = 0.001;
+
+        /**
          * \brief Settings for generating random values
          */
         std::shared_ptr<Deltares::Models::RandomSettings> RandomSettings = std::make_shared<Deltares::Models::RandomSettings>();
@@ -260,7 +272,7 @@ namespace Deltares::Reliability
         std::shared_ptr<CobylaReliability> GetCobylaReliabilityMethod() const;
         std::shared_ptr<FORMThenDirectionalSampling> GetFormThenDsReliabilityMethod() const;
         std::shared_ptr<DirectionalSamplingThenFORM> GetDsThenFormReliabilityMethod() const;
-
+        std::shared_ptr<FragilityCurveIntegration> GetFragilityCurveIntegrationMethod() const;
     };
 }
 

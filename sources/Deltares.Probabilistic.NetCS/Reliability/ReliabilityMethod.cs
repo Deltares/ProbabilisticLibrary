@@ -37,7 +37,8 @@ public enum ReliabilityMethod
     Cobyla,
     FORM,
     FORMThenDirectionalSampling,
-    DirectionalSamplingThenFORM
+    DirectionalSamplingThenFORM,
+    FragilityCurveIntegration
 }
 
 internal static class ReliabilityMethodConverter
@@ -59,6 +60,7 @@ internal static class ReliabilityMethodConverter
             ReliabilityMethod.FORM => "form",
             ReliabilityMethod.FORMThenDirectionalSampling => "form_then_directional_sampling",
             ReliabilityMethod.DirectionalSamplingThenFORM => "directional_sampling_then_form",
+            ReliabilityMethod.FragilityCurveIntegration => "fragility_curve_integration",
             _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
         };
     }
@@ -80,6 +82,7 @@ internal static class ReliabilityMethodConverter
             "form" => ReliabilityMethod.FORM,
             "form_then_directional_sampling" => ReliabilityMethod.FORMThenDirectionalSampling,
             "directional_sampling_then_form" => ReliabilityMethod.DirectionalSamplingThenFORM,
+            "fragility_curve_integration" => ReliabilityMethod.FragilityCurveIntegration,
             _ => throw new ArgumentException($"Unknown reliability method: '{value}'", nameof(value))
         };
     }

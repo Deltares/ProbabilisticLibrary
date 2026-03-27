@@ -268,6 +268,7 @@
     <ClCompile Include="Statistics\GumbelCopula.cpp" />
     <ClCompile Include="Model\ModelSample.cpp" />
     <ClCompile Include="Reliability\CombinedLimitStateFunction.cpp" />
+    <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -565,6 +566,7 @@
     <ClInclude Include="Statistics\GumbelCopula.h" />
     <ClInclude Include="Model\ModelSampleStruct.h" />
     <ClInclude Include="Reliability\CombinedLimitStateFunction.h" />
+    <ClInclude Include="Reliability\ProbabilityLimitStateFunction.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
