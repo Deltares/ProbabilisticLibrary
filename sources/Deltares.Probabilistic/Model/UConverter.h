@@ -83,7 +83,6 @@ namespace Deltares::Models
         Sensitivity::SensitivityResult getSensitivityResult();
         void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
         bool haveSampleValuesChanged() const { return sampleValuesChanged; }
-        std::shared_ptr<Statistics::Stochast> GetStochast(const std::string& stochastName);
     };
 }
 

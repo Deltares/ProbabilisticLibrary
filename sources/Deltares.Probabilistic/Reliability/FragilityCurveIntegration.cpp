@@ -138,8 +138,6 @@ namespace Deltares::Reliability
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-        modelRunner->setZValueToReliability();
-
         double stepSize = Settings->StepSize;
         double uMin = - Statistics::StandardNormal::UMax - stepSize / 2;
         double uMax = Statistics::StandardNormal::UMax + stepSize / 2;
@@ -170,9 +168,6 @@ namespace Deltares::Reliability
 
             double prob = modelRunner->getZValue(sample);
             double uFrag = Statistics::StandardNormal::getUFromQ(prob);
-
-            //double uFrag = modelRunner->getZValue(sample);
-            //double prob = Statistics::StandardNormal::getQFromU(uFrag);
 
             // Multiply this probability with the probability of the fragility curve stochast value
             double addition = pdf * prob;

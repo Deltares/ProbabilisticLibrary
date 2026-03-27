@@ -24,18 +24,14 @@
 
 #include "LimitStateFunction.h"
 #include "FragilityCurve.h"
-#include "../Statistics/Stochast.h"
 
 namespace Deltares::Reliability
 {
     class ProbabilityLimitStateFunction : public Reliability::LimitStateFunction
     {
     public:
-        std::shared_ptr<Statistics::Stochast> fragilityCurve = nullptr;
-        bool inverted = false;
-
+        std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = nullptr;
         void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
-    private:
     };
 }
 

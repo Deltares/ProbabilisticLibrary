@@ -24,6 +24,7 @@
 #include <string>
 #include <memory>
 
+#include "../Reliability/ProbabilityLimitStateFunction.h"
 #include "../Statistics/CopulaCorrelation.h"
 
 namespace Deltares::Server
@@ -43,6 +44,7 @@ namespace Deltares::Server
                 object_type == "model_parameter" ||
                 object_type == "limit_state_function" ||
                 object_type == "combined_limit_state_function" ||
+                object_type == "probability_limit_state_function" ||
                 object_type == "stochast" ||
                 object_type == "discrete_value" ||
                 object_type == "histogram_value" ||
@@ -89,6 +91,7 @@ namespace Deltares::Server
         else if (object_type == "model_parameter") return ObjectType::ModelParameter;
         else if (object_type == "limit_state_function") return ObjectType::LimitStateFunction;
         else if (object_type == "combined_limit_state_function") return ObjectType::CombinedLimitStateFunction;
+        else if (object_type == "probability_limit_state_function") return ObjectType::ProbabilityLimitStateFunction;
         else if (object_type == "stochast") return ObjectType::Stochast;
         else if (object_type == "discrete_value") return ObjectType::DiscreteValue;
         else if (object_type == "histogram_value") return ObjectType::HistogramValue;
@@ -157,6 +160,9 @@ namespace Deltares::Server
         case ObjectType::CombinedLimitStateFunction:
             combinedLimitStateFunctions[id] = std::make_shared<Deltares::Reliability::CombinedLimitStateFunction>();
             combinedLimitStateFunctionIds[combinedLimitStateFunctions[id]] = id;
+            break;
+        case ObjectType::ProbabilityLimitStateFunction:
+            probabilityLimitStateFunctions[id] = std::make_shared<Deltares::Reliability::ProbabilityLimitStateFunction>();
             break;
         case ObjectType::Stochast:
             stochasts[id] = std::make_shared<Deltares::Statistics::Stochast>();
@@ -304,6 +310,7 @@ namespace Deltares::Server
         case ObjectType::ModelParameter: modelParameterIds.erase(modelParameters[id]); modelParameters.erase(id); break;
         case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
         case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
+        case ObjectType::ProbabilityLimitStateFunction: probabilityLimitStateFunctions.erase(id); break;
         case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
         case ObjectType::DiscreteValue: discreteValueIds.erase(discreteValues[id]); discreteValues.erase(id); break;
         case ObjectType::HistogramValue: histogramValueIds.erase(histogramValues[id]); histogramValues.erase(id); break;
@@ -319,7 +326,7 @@ namespace Deltares::Server
         case ObjectType::StochastPoint: stochastPoints.erase(id); break;
         case ObjectType::DesignPoint: designPointIds.erase(designPoints[id]); designPoints.erase(id); break;
         case ObjectType::Alpha: alphaIds.erase(alphas[id]); alphas.erase(id); break;
-        case ObjectType::FragilityCurve: fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
+        case ObjectType::FragilityCurve:  fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
         case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
         case ObjectType::FragilityCurveSettings: fragilityCurveSettings.erase(id); break;
         case ObjectType::Evaluation: evaluationIds.erase(evaluations[id]); evaluations.erase(id); break;
@@ -1177,6 +1184,12 @@ namespace Deltares::Server
 
             if (property_ == "variable") return GetStochastId(result->stochast, newId);
         }
+        else if (objectType == ObjectType::ProbabilityLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
+
+            if (property_ == "fragility_curve") return GetFragilityCurveId(probabilityLimitStateFunction->fragilityCurve, newId);
+        }
         else if (objectType == ObjectType::SensitivityValue)
         {
             std::shared_ptr<Sensitivity::SensitivityValue> result = sensitivityValues[id];
@@ -1253,6 +1266,12 @@ namespace Deltares::Server
             else if (property_ == "fragility_curve_normalized") project->fragilityCurveNormalized = fragilityCurves[value];
             else if (property_ == "settings") project->settings = fragilityCurveSettings[value];
         }
+        else if (objectType == ObjectType::ProbabilityLimitStateFunction)
+        {
+            std::shared_ptr<Reliability::ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
+
+            if (property_ == "fragility_curve") probabilityLimitStateFunction->fragilityCurve = fragilityCurves[value];
+        }
         else if (objectType == ObjectType::Evaluation)
         {
             std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
@@ -1282,6 +1301,9 @@ namespace Deltares::Server
             else if (property_ == "array_size") stochast->modelParameter->arraySize = value;
             else if (property_ == "copy_from") stochast->copyFrom(stochasts[value]);
             else if (property_ == "conditional_source") stochast->VariableSource = stochasts[value];
+            else if (property_ == "histogram_values") stochast->getProperties()->HistogramValues.push_back(histogramValues[value]);
+            else if (property_ == "fragility_values") stochast->getProperties()->FragilityValues.push_back(fragilityValues[value]);
+            else if (property_ == "discrete_values") stochast->getProperties()->DiscreteValues.push_back(discreteValues[value]);
             else if (property_ == "prior") tempIntValue = value;
         }
         else if (objectType == ObjectType::FragilityValue)
@@ -3091,7 +3113,7 @@ namespace Deltares::Server
         }
         else if (fragilityCurves.contains(id))
         {
-            return std::dynamic_pointer_cast<Statistics::Stochast>(fragilityCurves[id]);
+            return fragilityCurves[id];
         }
         else
         {
@@ -3108,6 +3130,10 @@ namespace Deltares::Server
         else if (combinedLimitStateFunctions.contains(id))
         {
             return combinedLimitStateFunctions[id];
+        }
+        else if (probabilityLimitStateFunctions.contains(id))
+        {
+            return probabilityLimitStateFunctions[id];
         }
         else
         {

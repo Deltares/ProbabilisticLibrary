@@ -751,19 +751,5 @@ namespace Deltares::Models
             correlationMatrixBuilder->registerStochastValue(this->varyingStochasts[i]->definition, uValues[varyingStochastIndex[i]]);
         }
     }
-
-    std::shared_ptr<Statistics::Stochast> UConverter::GetStochast(const std::string& stochastName)
-    {
-        for (auto stochast : stochasts)
-        {
-            if (stochast->definition->name == stochastName)
-            {
-                return stochast->definition;
-            }
-        }
-
-        return nullptr;
-    }
-
 }
 

@@ -234,7 +234,14 @@ namespace Deltares.Probabilistic.Statistics
 
         private void FragilityValuesChanged(ListOperationType listOperation, FragilityValue item)
         {
-            Interface.SetArrayIntValue(id, "fragility_values", this.fragilityValues.Select(p => p.GetId()).ToArray());
+            if (listOperation == ListOperationType.Add)
+            {
+                Interface.SetIntValue(id, "fragility_values", item.GetId());
+            }
+            else
+            {
+                Interface.SetArrayIntValue(id, "fragility_values", this.fragilityValues.Select(p => p.GetId()).ToArray());
+            }
         }
 
         public IList<ContributingStochast> ContributingStochasts

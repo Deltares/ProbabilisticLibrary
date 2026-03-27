@@ -45,6 +45,11 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/DiscreteValue.h"
 
+namespace Deltares::Reliability
+{
+    class ProbabilityLimitStateFunction;
+}
+
 namespace Deltares::Server
 {
     class ProjectHandler : public BaseHandler
@@ -115,11 +120,12 @@ namespace Deltares::Server
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
         enum ObjectType {
-            StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, CombinedLimitStateFunction, Stochast, DiscreteValue,
-            HistogramValue, FragilityValue, ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, StochastPoint, DesignPoint, Alpha,
-            FragilityCurve, FragilityCurveProject, FragilityCurveSettings, Evaluation, CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings,
-            SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult, SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue,
-            LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation, ConvergenceReport
+            StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, CombinedLimitStateFunction, ProbabilityLimitStateFunction,
+            Stochast, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings,
+            StochastPoint, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, FragilityCurveSettings, Evaluation, CombineProject, CombineSettings,
+            ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult, SensitivityProject,
+            SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation,
+            ConvergenceReport
             
         };
         ObjectType GetType(std::string object_type);
@@ -133,6 +139,7 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
         std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
+        std::unordered_map<int, std::shared_ptr<Reliability::ProbabilityLimitStateFunction>> probabilityLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
         std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
         std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;

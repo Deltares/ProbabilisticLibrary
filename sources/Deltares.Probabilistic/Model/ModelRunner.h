@@ -104,7 +104,6 @@ namespace Deltares::Models
         void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
         void setShouldInvertFunction(ShouldInvertLambda shouldInvertFunction) { this->shouldInvertFunction = shouldInvertFunction; }
         void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
-        void setZValueToReliability();
         void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
         std::shared_ptr<Sample> getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint) const;
         void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
@@ -112,7 +111,7 @@ namespace Deltares::Models
         Evaluation getEvaluationFromType(Statistics::RunValuesType type);
 
         bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
-        void setAllowRepository(bool proxyModel) const;
+        void setAllowRepository(bool allowRepository) const;
         Evaluation getEvaluation(std::shared_ptr<Sample> sample);
     private:
         std::shared_ptr<ZModel> zModel;
@@ -125,7 +124,6 @@ namespace Deltares::Models
         std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
         Evaluation getEvaluationFromSample(std::shared_ptr<ModelSample> sample);
-        std::shared_ptr<Statistics::Stochast> getStochastForReliability(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, std::shared_ptr<Statistics::Stochast> stochast, bool inverted);
 
         void registerEvaluation(std::shared_ptr<ModelSample> sample);
 
