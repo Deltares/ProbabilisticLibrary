@@ -32,7 +32,6 @@ namespace Deltares::Numeric
 
     class NumericSupport
     {
-    private:
     public:
         static double GetSign(double value);
         static double GetPrevailingSign(std::vector<double> values);
@@ -50,11 +49,8 @@ namespace Deltares::Numeric
         static bool isBetween(double xLow, double x, double xHigh, double tolerance);
         static CmpResult compareDouble(const double x1, const double x2, const double tol = 1e-14);
         static bool doublesAreEqual(const std::vector<double>& p1, const std::vector<double>& p2, const double tol = 1e-14);
-        static double* getCopy(double* values, int count);
-        static double* getCopy(const std::vector<double>& values);
-        static double* getArray(double initialValue, int count);
         static DoubleType getDoubleType(double value);
-        static double getSign(DoubleType value);
+        static double getSign(DoubleType doubleType);
         static double getFraction(double value, double fraction);
         static bool isValidValue(double x);
         static double getMinimum(const std::vector<double>& values);
