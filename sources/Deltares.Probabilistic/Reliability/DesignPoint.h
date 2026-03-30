@@ -72,7 +72,6 @@ namespace Deltares::Reliability
         double getReturnPeriod() { return Statistics::StandardNormal::getTFromU(this->Beta); }
 
         void expandContributions();
-        void correctFragilityCurves() const;
 
         /**
          * \brief Gets the total model runs including contributing design points

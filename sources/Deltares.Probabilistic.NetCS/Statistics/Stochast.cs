@@ -126,7 +126,12 @@ namespace Deltares.Probabilistic.Statistics
         public double Shift
         {
             get { return Interface.GetValue(id, "shift"); }
-            set { Interface.SetValue(id, "shift", value); }
+            set { Interface.SetValue(id, "set_shift", value); }
+        }
+
+        public void SetShift(double value)
+        {
+            Interface.SetValue(id, "shift", value);
         }
 
         public double ShiftB
