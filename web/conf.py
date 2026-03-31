@@ -1,105 +1,113 @@
 #!/usr/bin/env python
+"""Sphinx configuration for the Probabilistic Library documentation."""
 
 import os
 import shutil
 import subprocess
 import sys
-from distutils.dir_util import copy_tree
 from pathlib import Path
 
 import sphinx_autosummary_accessors
 
-sys.path.insert(
-    0,
-    os.path.abspath("../sources/Deltares.Probabilistic.Python")
-)
+# ---------------------------------------------------------------------------
+# Python path
+# ---------------------------------------------------------------------------
+
+sys.path.insert(0, os.path.abspath("../sources/Deltares.Probabilistic.Python"))
 
 
+# ---------------------------------------------------------------------------
+# Environment setup
+# ---------------------------------------------------------------------------
 
-# Ensure the current conda env's Library\bin is on PATH (Windows only)
+# Ensure the active conda env's Library/bin is on PATH (Windows only)
 if sys.platform.startswith("win") and "CONDA_PREFIX" in os.environ:
     conda_bin = os.path.join(os.environ["CONDA_PREFIX"], "Library", "bin")
     os.environ["PATH"] = conda_bin + os.pathsep + os.environ.get("PATH", "")
 
-# Optional: verify pandoc is detected
+# Verify pandoc is available — required by nbsphinx to render notebooks
 try:
-    subprocess.run(["pandoc", "--version"], check=True)
+    subprocess.run(["pandoc", "--version"], check=True, capture_output=True)
 except Exception as e:
-    print("Warning: Pandoc not found! nbsphinx will fail to render notebooks.", e)
+    print(f"Warning: pandoc not found — nbsphinx will fail to render notebooks. ({e})")
 
-# -- Helper functions ---------------------------------
-def remove_dir_content(path: str) -> None:
-    for root, dirs, files in os.walk(path):
-        for f in files:
-            os.unlink(os.path.join(root, f))
-        for d in dirs:
-            shutil.rmtree(os.path.join(root, d))
+# Verify mermaid CLI is available — required to render mermaid diagrams
+mmdc_path = shutil.which("mmdc")
+if mmdc_path is None:
+    raise RuntimeError(
+        "Mermaid CLI 'mmdc' not found. "
+        "Install with: npm install -g @mermaid-js/mermaid-cli "
+        "and ensure the npm global bin folder is on PATH."
+    )
+
+
+# ---------------------------------------------------------------------------
+# Notebook helpers — incremental copy, no unnecessary rebuilds
+# ---------------------------------------------------------------------------
+
+def _copy_notebooks_if_changed(src_folder: str, dst_folder: str) -> None:
+    """Copy notebooks from src to dst only when the source is newer."""
+    dst = Path(dst_folder)
+    dst.mkdir(parents=True, exist_ok=True)
+    copied = skipped = 0
+
+    for src_file in Path(src_folder).rglob("*.ipynb"):
+        dst_file = dst / src_file.name
+        if not dst_file.exists() or src_file.stat().st_mtime > dst_file.stat().st_mtime:
+            shutil.copy2(src_file, dst_file)
+            copied += 1
+        else:
+            skipped += 1
+
+    print(f"Notebooks: {copied} copied, {skipped} up-to-date.")
+
+
+def _remove_stale_notebooks(src_folder: str, dst_folder: str) -> None:
+    """Remove notebooks from dst that no longer exist in src."""
+    src_names = {f.name for f in Path(src_folder).rglob("*.ipynb")}
+    for dst_file in Path(dst_folder).rglob("*.ipynb"):
+        if dst_file.name not in src_names:
+            dst_file.unlink()
+            print(f"Removed stale notebook: {dst_file.name}")
+
+
+def _wipe_dir(path: str) -> None:
+    """Remove a directory and all its contents."""
     if os.path.isdir(path):
         shutil.rmtree(path)
 
 
-# NOTE: the examples/ folder in the root should be copied to docs/_examples after running sphinx
-# # -- Copy notebooks to include in docs -------
-if os.path.isdir("build"):
-    remove_dir_content("build")
-if os.path.isdir("_examples"):
-    remove_dir_content("_examples")
+# ---------------------------------------------------------------------------
+# Build preparation
+# ---------------------------------------------------------------------------
 
-os.makedirs("_examples")
+# Sphinx output is fully disposable — always rebuild clean
+_wipe_dir("build")
 
-def copy_notebooks(src_folder, dst_folder):
-    if os.path.exists(dst_folder):
-        shutil.rmtree(dst_folder)
-    os.makedirs(dst_folder, exist_ok=True)
+# _examples is a prepared source cache — update incrementally, don't wipe
+os.makedirs("_examples", exist_ok=True)
+_remove_stale_notebooks("notebooks", "_examples")
+_copy_notebooks_if_changed("notebooks", "_examples")
 
-    for root, _, files in os.walk(src_folder):
-        for f in files:
-            if f.endswith(".ipynb"):
-                if 'Case' in f:
-                    continue
-                src_file = os.path.join(root, f)
-                dst_file = os.path.join(dst_folder, f)
-                shutil.copy2(src_file, dst_file)
-
-# Copy notebooks from sources into web/_examples
-copy_notebooks("notebooks", "_examples")
-
-# Exclude some of the examples content:
-_files_to_include = ["summary_"]
+# Case study notebooks are managed manually in _examples/ — no automated copy needed.
 
 
-def remove_extra_files_from_dir(dir_path: Path):
-    assert dir_path.exists(), "Examples dir was not correctly copied!"
-    for _file in dir_path.rglob("*"):
-        if _file.suffix.lower() in [".md", ".ipynb"]:
-            if not any(_fi in _file.stem for _fi in _files_to_include):
-                _file.unlink()
+# ---------------------------------------------------------------------------
+# Project metadata
+# ---------------------------------------------------------------------------
 
-
-if os.path.isdir("docs"):
-    remove_dir_content("docs")
-
-_src_diagrams = "../docs/_diagrams/"
-_dst_diagrams = "docs/_diagrams/"
-
-# -- General configuration ---------------------------------------------
-
-# If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-
-# General information about the project.
-project = "Probabilistic Library"
+project   = "Probabilistic Library"
 copyright = "2026, Deltares"
-author = "Rob Brinkman\\Karolina Wojciechowska\\Edwin Spee\\Matthias Hauth"
+author    = "Rob Brinkman, Karolina Wojciechowska, Edwin Spee, Matthias Hauth"
 
+
+# ---------------------------------------------------------------------------
+# Extensions
+# ---------------------------------------------------------------------------
 
 extensions = [
     "sphinx_design",
-    "myst_parser",
+    "myst_parser",          # kept for Markdown support in notebook cells
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
@@ -111,85 +119,60 @@ extensions = [
     "sphinxcontrib.mermaid",
 ]
 
-# source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
 
-# The master toctree document.
-master_doc = "index"
+# ---------------------------------------------------------------------------
+# Source & templates
+# ---------------------------------------------------------------------------
 
-nb_execution_mode = "off"  # notebook will not be executed during the build process
-# Disable input prompts in code cells
-
-nbsphinx_prompt_width = "0px"  # string with units
-nbsphinx_show_input_prompt = False  # hides input prompts
-nbsphinx_show_output_prompt = False  # hides output prompts
-
-# -- Mermaid configuration ------------------------------
-mermaid_version = "10.4.0"  # specify Mermaid version if needed
-mermaid_output_format = "png"  # or "svg"
-mermaid_cmd_args = ["--width", "800"]  # optional CLI args
-
-mmdc_path = shutil.which("mmdc")
-if mmdc_path is None:
-    raise RuntimeError(
-        "Mermaid CLI 'mmdc' not found. "
-        "Install with 'npm install -g @mermaid-js/mermaid-cli' "
-        "and make sure the npm global folder is on PATH."
-    )
-
-mermaid_cmd = mmdc_path  # this is necessary to render the mermaid diagrams
-
-autosummary_generate = True  # generates stub .rst files automatically
-
+source_suffix  = ".rst"
+master_doc     = "index"
+language       = "en"
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 templates_path = ["_templates", sphinx_autosummary_accessors.templates_path]
 
-# The language for content autogenerated by Sphinx. Refer to documentation
-# for a list of supported languages.
-#
-# This is also used if you do content translation via gettext catalogs.
-# Usually you set "language" from the command line for these cases.
-language = "en"
-
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-
-
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "sphinx"
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = False
-
-# # Napoleon settings
-# napoleon_use_param = True
-# napoleon_use_rtype = True
-# napoleon_numpy_docstring = True
-# napoleon_google_docstring = False
-# napoleon_preprocess_types = True
+autosummary_generate  = True   # auto-generate stub .rst files for API docs
+autodoc_typehints     = "description"  # type hints in description, not signature
+add_module_names      = False  # shorten class names in docs
 
 suppress_warnings = ["ref.unknown_target"]
 
-# -- Options for HTML output -------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
+# ---------------------------------------------------------------------------
+# nbsphinx
+# ---------------------------------------------------------------------------
+
+nbsphinx_execute         = "never"   # notebooks are pre-executed, not run at build
+nbsphinx_allow_errors    = True      # a broken notebook won't abort the whole build
+nbsphinx_prompt_width    = "0px"
+nbsphinx_show_input_prompt  = False
+nbsphinx_show_output_prompt = False
+
+
+# ---------------------------------------------------------------------------
+# Mermaid
+# ---------------------------------------------------------------------------
+
+mermaid_version       = "10.4.0"
+mermaid_output_format = "png"
+mermaid_cmd_args      = ["--width", "800"]
+mermaid_cmd           = mmdc_path
+
+
+# ---------------------------------------------------------------------------
+# HTML output
+# ---------------------------------------------------------------------------
+
 html_theme = "pydata_sphinx_theme"
-html_logo = "_resources/PTK_logo.png"
-
-# Theme options are theme-specific and customize the look and feel of a
-# theme further.  For a list of options available for each theme, see the
-# documentation.
+html_logo  = "_resources/PTK_logo.png"
+html_static_path = ["_resources"]
+html_css_files   = ["theme-deltares.css", "python-code-block-style.css", "custom.css"]
 
 html_theme_options = {
     "show_nav_level": 2,
     "navbar_align": "content",
     "use_edit_page_button": True,
+    "navbar_end": ["navbar-icon-links"],  # removes the dark-mode toggle
     "icon_links": [
-
         {
             "name": "Forum",
             "url": "https://github.com/Deltares/ProbabilisticLibrary/discussions",
@@ -214,61 +197,26 @@ html_theme_options = {
             "icon": "../../_resources/deltares.jpg",
             "type": "local",
         },
-
-
     ],
     "logo": {
         "text": "Probabilistic Library",
     },
-    "navbar_end": ["navbar-icon-links"],  # remove dark mode switch
 }
 
 html_context = {
-    "github_url": "https://github.com",  # or your GitHub Enterprise interprise
+    "github_url": "https://github.com",
     "github_user": "Deltares",
     "github_repo": "ProbabilisticLibrary",
-    "github_version": "master",  # FIXME
+    "github_version": "master",  # update if default branch changes
     "doc_path": "docs",
     "default_mode": "light",
 }
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_resources"]
-html_css_files = ["theme-deltares.css", "python-code-block-style.css", "custom.css"]
 
+# ---------------------------------------------------------------------------
+# LaTeX output (defaults kept, customise if needed)
+# ---------------------------------------------------------------------------
 
-# -- Options for HTMLHelp output ---------------------------------------
-
-# Output file base name for HTML help builder.
+latex_elements = {}
 htmlhelp_basename = "ProbLibdoc"
-
-
-# -- Options for LaTeX output ------------------------------------------
-
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
-}
-
-
-# Allow errors in notebooks
-nbsphinx_allow_errors = True
-# Do not execute the scripts during the build process.
-nbsphinx_execute = "never"
-
-autodoc_typehints = (
-    "description"  # put type hints in the description instead of signature
-)
-add_module_names = False  # shorten class names in the docs
+pygments_style = "sphinx"

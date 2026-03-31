@@ -725,6 +725,35 @@ a.headerlink:hover {
 
 /* ---- "Where do you want to start?" Action Cards ---- */
 
+/* ---- Examples page hero ---- */
+
+/* Hide the RST-generated h1 on the examples page — the hero provides the visual title */
+.psl-examples-hero ~ * h1:first-of-type,
+.psl-examples-hero + h1 {
+    display: none;
+}
+
+/* Suppress the article h1 that Sphinx injects before the raw-html block */
+.bd-article > section > h1:first-child:has(+ .psl-examples-hero),
+section:has(.psl-examples-hero) > h1 {
+    display: none;
+}
+
+.psl-examples-hero {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+}
+
+.psl-section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--deltares-blue-dark);
+    margin: 0.5rem 0 0.75rem;
+    line-height: 1.2;
+}
+
+/* ---- "Where do you want to start?" Action Cards ---- */
+
 .psl-start-grid {
     margin-top: 1.5rem;
 }
@@ -748,6 +777,141 @@ a.headerlink:hover {
 .psl-start-card-header {
     font-size: 1rem;
     font-weight: 700;
+}
+
+/* ---- Case study card tags & difficulty badges ---- */
+
+.psl-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
+}
+
+.psl-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.psl-tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(0, 113, 188, 0.1);
+    color: var(--deltares-blue-dark);
+    border: 1px solid rgba(0, 113, 188, 0.2);
+    white-space: nowrap;
+}
+
+.psl-difficulty {
+    display: inline-block;
+    padding: 0.18rem 0.65rem;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.psl-difficulty--beginner {
+    background: #e6f4ea;
+    color: #1e7e34;
+}
+
+.psl-difficulty--intermediate {
+    background: #fff8e1;
+    color: #856404;
+}
+
+.psl-difficulty--advanced {
+    background: #fdecea;
+    color: #842029;
+}
+
+/* ---- Case study category section headings ---- */
+
+.psl-category-heading {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    border-bottom: 2px solid var(--deltares-gray-light);
+    padding-bottom: 0.4rem;
+    margin: 2.5rem 0 1.25rem;
+}
+
+/* ---- Case study coloured card headers ---- */
+
+.sd-card-header.psl-case-header {
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    padding: 0.75rem 1rem;
+}
+
+.sd-card-header.psl-case-header--geo {
+    background: #f0ece8 !important;
+    color: #5c3d1e !important;
+}
+
+.sd-card-header.psl-case-header--flood {
+    background: #e8f0fb !important;
+    color: #1a3f7a !important;
+}
+
+.sd-card-header.psl-case-header--hydraulics {
+    background: #e4f6f7 !important;
+    color: #005a61 !important;
+}
+
+/* ---- Case study category card colours ---- */
+/*
+   Three categories: geo (brown/earth), flood (blue), hydraulics (teal)
+   Each tints: top border, tag pills, and card header text
+*/
+
+.psl-case-card {
+    border-top-width: 4px;
+}
+
+/* Geotechnical — earthy amber */
+.psl-case-card--geo {
+    border-top-color: #a0522d;
+}
+.psl-case-card--geo .psl-tag {
+    background: rgba(160, 82, 45, 0.1);
+    color: #7a3b16;
+    border-color: rgba(160, 82, 45, 0.25);
+}
+.psl-case-card--geo .card-header {
+    color: #7a3b16;
+}
+
+/* Flood Defences — Deltares blue */
+.psl-case-card--flood {
+    border-top-color: var(--deltares-blue);
+}
+.psl-case-card--flood .psl-tag {
+    background: rgba(0, 113, 188, 0.1);
+    color: var(--deltares-blue-dark);
+    border-color: rgba(0, 113, 188, 0.25);
+}
+.psl-case-card--flood .card-header {
+    color: var(--deltares-blue-dark);
+}
+
+/* Hydraulics & Other — teal */
+.psl-case-card--hydraulics {
+    border-top-color: var(--deltares-teal);
+}
+.psl-case-card--hydraulics .psl-tag {
+    background: rgba(0, 161, 154, 0.1);
+    color: #00635e;
+    border-color: rgba(0, 161, 154, 0.25);
+}
+.psl-case-card--hydraulics .card-header {
+    color: #00635e;
 }
 
 /* ---- Community Banner ---- */
