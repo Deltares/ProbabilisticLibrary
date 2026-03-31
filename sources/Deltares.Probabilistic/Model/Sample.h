@@ -79,13 +79,13 @@ namespace Deltares::Models
         bool IsRestartRequired = false;
         double Z = nan("");
 
-        int getSize();
+        int getSize() const;
 
-        double getBeta();
+        double getBeta() const;
         double getDistance(const std::shared_ptr<Sample>& other) const;
         double getDistance2(const std::shared_ptr<Sample>& other) const;
         void setInitialValues(double beta);
-        std::shared_ptr<Sample> clone();
+        std::shared_ptr<Sample> clone() const;
         std::shared_ptr<Sample> getNormalizedSample() { return getSampleAtBeta(1); }
         std::shared_ptr<Sample> getSampleAtBeta(double beta);
         std::shared_ptr<Sample> getMultipliedSample(double factor);

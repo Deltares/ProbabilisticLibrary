@@ -23,13 +23,13 @@
 
 #include "../Reliability/DesignPoint.h"
 #include "../Statistics/Scenario.h"
-#include "combiner.h"
+#include "Combiner.h"
 #include "ExcludingCombiner.h"
 
 namespace Deltares::Reliability
 {
-    enum CombinerType { Hohenbichler, ImportanceSampling, DirectionalSampling, HohenbichlerForm };
-    enum ExcludingCombinerType { WeightedSum, HohenbichlerExcluding };
+    enum class CombinerType { Hohenbichler, ImportanceSamplingCombine, DirectionalSamplingCombine, HohenbichlerForm };
+    enum class ExcludingCombinerType { WeightedSum, HohenbichlerExcluding };
 
     /**
      * \brief Combines design points
@@ -37,8 +37,8 @@ namespace Deltares::Reliability
     class DesignPointCombiner
     {
     public:
-        DesignPointCombiner() {}
-        DesignPointCombiner(CombinerType combinerType)
+        DesignPointCombiner() = default;
+        explicit DesignPointCombiner(CombinerType combinerType)
         {
             this->combinerType = combinerType;
         }
@@ -46,7 +46,7 @@ namespace Deltares::Reliability
         /**
          * \brief Specifies the combiner algorithm
          */
-        CombinerType combinerType = CombinerType::ImportanceSampling;
+        CombinerType combinerType = CombinerType::ImportanceSamplingCombine;
 
         /**
          * \brief Specifies the excluding combiner algorithm
@@ -92,9 +92,9 @@ namespace Deltares::Reliability
         std::shared_ptr<Combiner> getCombiner() const;
         std::unique_ptr<ExcludingCombiner> getExcludingCombiner() const;
 
-        static void applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                              std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix,
-                              DesignPoint* combinedDesignPoint);
+        static void applyCorrelation(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                              const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix,
+                              DesignPoint& combinedDesignPoint);
     };
 }
 

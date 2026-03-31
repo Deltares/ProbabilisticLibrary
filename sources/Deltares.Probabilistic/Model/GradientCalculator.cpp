@@ -32,6 +32,8 @@ using namespace Deltares::Reliability;
 
 namespace Deltares::Models
 {
+    using enum GradientType;
+
     std::vector<double> GradientCalculator::getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const
     {
         int nStochasts = modelRunner.getVaryingStochastCount();

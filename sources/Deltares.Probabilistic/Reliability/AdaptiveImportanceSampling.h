@@ -29,7 +29,7 @@ namespace Deltares::Reliability
     /**
      * \brief Different types of modifying the start point of importance sampling
      */
-    enum LoopMeasureType { IncreaseVariance, CopyDesignPoint };
+    enum class LoopMeasureType { IncreaseVariance, CopyDesignPoint };
 
     /**
      * \brief Performs adaptive importance sampling
@@ -57,25 +57,27 @@ namespace Deltares::Reliability
     protected:
         void setStopped() override;
     private:
-        bool isNextLoopAllowed(std::shared_ptr<AdaptiveImportanceSamplingSettings> settings, int counter, std::shared_ptr<ConvergenceReport> convergenceReport, std::shared_ptr<DesignPoint> designPoint);
-        bool isConverged(std::shared_ptr<AdaptiveImportanceSamplingSettings> settings, std::shared_ptr<ConvergenceReport> convergenceReport);
-        bool nextLoopsAllowed(std::shared_ptr<AdaptiveImportanceSamplingSettings> settings, double beta);
+        bool isNextLoopAllowed(int counter, const ConvergenceReport& convergenceReport, const DesignPoint& designPoint);
+        bool isConverged(const ConvergenceReport& convergenceReport) const;
+        bool nextLoopsAllowed(double beta) const;
 
-        void addFactor(std::shared_ptr<StochastSettingsSet> stochastSet, double addValue);
-        void setFactor(std::shared_ptr<StochastSettingsSet> stochastSet, double setValue);
-        bool updateClusters(int loopCounter);
-        bool updateStartPoint(std::shared_ptr<DesignPoint> designPoint, std::shared_ptr<Models::ModelRunner> modelRunner, int loopCounter);
-        std::shared_ptr<Models::Sample> getStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DesignPoint> designPoint);
-        std::vector<std::shared_ptr<Models::Sample>> getClusterCenters(std::vector<std::shared_ptr<Models::Sample>>& samples);
+        static void addFactor(const StochastSettingsSet& stochastSet, double addValue);
+        static void setFactor(const StochastSettingsSet& stochastSet, double setValue);
+        bool updateClusters(int loopCounter) const;
+        bool updateStartPoint(const std::shared_ptr<DesignPoint>& designPoint,
+            const std::shared_ptr<Models::ModelRunner>& modelRunner, int loopCounter);
+        std::shared_ptr<Models::Sample> getStartPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            const std::shared_ptr<DesignPoint>& designPoint);
+        std::vector<std::shared_ptr<Models::Sample>> getClusterCenters(const std::vector<std::shared_ptr<Models::Sample>>& samples) const;
 
-        void setCallbacks(std::shared_ptr<ImportanceSampling> importanceSampling, int loopCounter);
+        void setCallbacks(int loopCounter);
 
         /**
          * \brief Reports information about the variance lop and clusters
          * \param modelRunner Performs execution of model, also registers reports
          * \param loopCounter Counter of the variance loops
          */
-        void reportVarianceLoop(std::shared_ptr<Models::ModelRunner> modelRunner, const int loopCounter) const;
+        void reportVarianceLoop(Models::ModelRunner& modelRunner, const int loopCounter) const;
 
         /**
          * \brief Previous start point 

@@ -23,7 +23,6 @@
 #include <vector>
 #include <memory>
 #include "../Reliability/DesignPoint.h"
-#include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
 #include "../Model/ProgressIndicator.h"
 #include "../Reliability/ReliabilityProject.h"
@@ -46,7 +45,10 @@ namespace Deltares::Reliability
          * \param progress Progress indicator (optional)
          * \return Design point resembling the combined reliability and alpha values
          */
-        virtual std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress) = 0;
+        virtual std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
+            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::shared_ptr<Models::ProgressIndicator>& progress) = 0;
 
     protected:
         /**
@@ -58,16 +60,20 @@ namespace Deltares::Reliability
          * \param selfCorrelationMatrix Administration of correlations between different design points
          * \return Linearized model
          */
-        std::shared_ptr<CombinedDesignPointModel> getModel(combineAndOr combineMethodType, std::shared_ptr<Reliability::DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<Reliability::DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
+        static std::shared_ptr<CombinedDesignPointModel> getModel(combineAndOr combineMethodType,
+            const std::shared_ptr<DesignPoint>& currentDesignPoint,
+            const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints,
+            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts,
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix);
 
         /**
          * \brief Gets a project containing the linearized model
          * \param model Linearized model
-         * \param correlationMatrix Correlation matrix
          * \param selfCorrelationMatrix Self correlation administration
          * \return Project
          */
-        std::shared_ptr<ReliabilityProject> getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
+        static std::shared_ptr<ReliabilityProject> getProject(const std::shared_ptr<CombinedDesignPointModel>& model,
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix);
 
     };
 }

@@ -81,8 +81,8 @@ namespace Deltares
                         {
                         case Reliability::CombinerType::Hohenbichler: return Wrappers::CombinerType::Hohenbichler;
                         case Reliability::CombinerType::HohenbichlerForm: return Wrappers::CombinerType::HohenbichlerForm;
-                        case Reliability::CombinerType::ImportanceSampling: return Wrappers::CombinerType::ImportanceSampling;
-                        case Reliability::CombinerType::DirectionalSampling: return Wrappers::CombinerType::DirectionalSampling;
+                        case Reliability::CombinerType::ImportanceSamplingCombine: return Wrappers::CombinerType::ImportanceSampling;
+                        case Reliability::CombinerType::DirectionalSamplingCombine: return Wrappers::CombinerType::DirectionalSampling;
                         default: throw gcnew System::NotSupportedException("Combiner type");
                         }
                     }
@@ -92,8 +92,8 @@ namespace Deltares
                         {
                         case Wrappers::CombinerType::Hohenbichler: shared->object->combinerType = Reliability::CombinerType::Hohenbichler; break;
                         case Wrappers::CombinerType::HohenbichlerForm: shared->object->combinerType = Reliability::CombinerType::HohenbichlerForm; break;
-                        case Wrappers::CombinerType::ImportanceSampling:shared->object->combinerType = Reliability::CombinerType::ImportanceSampling; break;
-                        case Wrappers::CombinerType::DirectionalSampling: shared->object->combinerType = Reliability::CombinerType::DirectionalSampling; break;
+                        case Wrappers::CombinerType::ImportanceSampling:shared->object->combinerType = Reliability::CombinerType::ImportanceSamplingCombine; break;
+                        case Wrappers::CombinerType::DirectionalSampling: shared->object->combinerType = Reliability::CombinerType::DirectionalSamplingCombine; break;
                         default: throw gcnew System::NotSupportedException("Combiner type");
                         }
                     }

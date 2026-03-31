@@ -21,31 +21,50 @@
 //
 #pragma once
 #include "../Math/vector1D.h"
-#include "alphaBeta.h"
+#include "AlphaBeta.h"
 #include "HohenbichlerFORM.h"
+#include "../Logging/Message.h"
 
 namespace Deltares::Reliability
 {
+    /// <summary>
+    /// class with result of an upscaling calculation
+    /// </summary>
+    struct upscalingResult
+    {
+        alphaBeta design_point;
+        int counter = 0;
+        Logging::Message message;
+    };
+
+    struct upscalingToLargestBlockInput
+    {
+        alphaBeta small_block;
+        Numeric::vector1D rho_t_small_block;
+        Numeric::vector1D block_durations;
+        double largest_block_duration;
+    };
+
+    struct upscalingToLargestBlockResult
+    {
+        alphaBeta largest_block;
+        Numeric::vector1D durations_largest_block;
+    };
+
     //
     // Class to combine failure probabilities for identical time elements (identical = same reliability index and alpha values)
     //
     class upscaling
     {
     public:
-        int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::vector1D& inRhoT);
-        std::pair<alphaBeta, int> upscaleLength(alphaBeta& crossSectionElement, const Numeric::vector1D& rhoXK,
-            const Numeric::vector1D& dXK, const double sectionLength, std::string& message);
-        void upscaleToLargestBlock(const alphaBeta& smallBlock,
-            const Numeric::vector1D& rhoTSmallBlock, const Numeric::vector1D& blockDurations, const double largestBlockDuration,
-            alphaBeta& largestBlock, Numeric::vector1D& durationsLargestBlock);
-        // TODO: ComputeBetaSection is public for testing
-        std::pair<double, int> ComputeBetaSection(const double betaCrossSection, const double sectionLength,
-            const double rhoZ, const double dz, const double deltaL);
+        int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::vector1D& inRhoT) const;
+        upscalingResult upscaleLength(const alphaBeta& crossSectionElement, const Numeric::vector1D& rhoXK,
+            const Numeric::vector1D& dXK, const double section_length) const;
+        upscalingToLargestBlockResult upscaleToLargestBlock(const upscalingToLargestBlockInput& input) const;
     private:
         const double rhoLimit = 0.99999; // Limit value for the correlation coefficient
-        const double rhoLowLim = 0.001;          // Lower limit of correlation coefficient before Hohenbichler method must be called
+        const double rhoLowLim = 0.001;  // Lower limit of correlation coefficient before Hohenbichler method must be called
         HohenbichlerFORM hhb = HohenbichlerFORM();
-        double upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures);
-        static std::string createMessage(const double deltaL, const double rhoZ, const double dZ);
+        double upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures) const;
     };
 }

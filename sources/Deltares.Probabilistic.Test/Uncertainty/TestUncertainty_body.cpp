@@ -35,25 +35,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void TestUncertainty::allUncertaintyTests() const
-    {
-        testCrudeMonteCarloAddOne();
-        testCrudeMonteCarloLinear();
-        testCrudeMonteCarloLinearNonRepeatable();
-        testCrudeMonteCarloLinearOutput();
-        testCrudeMonteCarloLinearOutputNonRepeatable();
-        testCrudeMonteCarloLinearManySamples();
-        testCrudeMonteCarloLinearAutoSamples();
-
-        testImportanceSamplingAddOne();
-
-        testNumericalIntegration();
-        testDirectionalSampling();
-        testFORM();
-        testFOSM();
-    }
-
-    void TestUncertainty::testCrudeMonteCarloAddOne() const
+    void TestUncertainty::testCrudeMonteCarloAddOne()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getAddOneProject());
 
@@ -71,7 +53,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(2.0, stochast->getProperties()->Maximum, margin);
     }
 
-    void TestUncertainty::testCrudeMonteCarloLinear() const
+    void TestUncertainty::testCrudeMonteCarloLinear()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
@@ -101,7 +83,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.95, evaluation95->Quantile, margin);
     }
 
-    void TestUncertainty::testCrudeMonteCarloLinearNonRepeatable() const
+    void TestUncertainty::testCrudeMonteCarloLinearNonRepeatable()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
@@ -128,8 +110,6 @@ namespace Deltares::Probabilistic::Test
 
         auto result2 = project->getUncertaintyResult();
 
-        const double smallMargin = 1E-10;
-
         ASSERT_NE(result.stochast, result2.stochast);
 
         double m1 = result.stochast->getMean();
@@ -138,19 +118,17 @@ namespace Deltares::Probabilistic::Test
         ASSERT_FALSE(std::abs(m1 - m2) < smallMargin);
     }
 
-    void TestUncertainty::testCrudeMonteCarloLinearOutput() const
+    void TestUncertainty::testCrudeMonteCarloLinearOutput()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearOutputProject());
 
-        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyMethodType::UncertaintyCrudeMonteCarlo;
         project->settings->RandomSettings->IsRepeatableRandom = true;
         project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
         project->run();
 
         ASSERT_EQ(2, project->uncertaintyResults.size());
-
-        const double smallMargin = 1E-10;
 
         ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getMean(), project->uncertaintyResults[1]->stochast->getMean(), smallMargin);
         ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getDeviation(), project->uncertaintyResults[1]->stochast->getDeviation(), smallMargin);
@@ -163,7 +141,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearOutputProject());
 
-        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyMethodType::UncertaintyCrudeMonteCarlo;
         project->settings->RandomSettings->IsRepeatableRandom = false;
         project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
@@ -171,14 +149,12 @@ namespace Deltares::Probabilistic::Test
 
         ASSERT_EQ(2, project->uncertaintyResults.size());
 
-        const double smallMargin = 1E-10;
-
         ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getMean(), project->uncertaintyResults[1]->stochast->getMean(), smallMargin);
         ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getDeviation(), project->uncertaintyResults[1]->stochast->getDeviation(), smallMargin);
         ASSERT_NEAR(project->uncertaintyResults[0]->quantileEvaluations[0]->OutputValues[0], project->uncertaintyResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
     }
 
-    void TestUncertainty::testCrudeMonteCarloLinearManySamples() const
+    void TestUncertainty::testCrudeMonteCarloLinearManySamples()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
@@ -198,7 +174,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(3.8, stochast->getProperties()->Maximum, 10 * margin);
     }
 
-    void TestUncertainty::testCrudeMonteCarloLinearAutoSamples() const
+    void TestUncertainty::testCrudeMonteCarloLinearAutoSamples()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
@@ -214,7 +190,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.82, stochast->getDeviation(), margin);
     }
 
-    void TestUncertainty::testImportanceSamplingAddOne() const
+    void TestUncertainty::testImportanceSamplingAddOne()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getAddOneProject());
 
@@ -239,7 +215,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.50, result.quantileEvaluations[0]->Quantile, margin);
     }
 
-    void TestUncertainty::testNumericalIntegration() const
+    void TestUncertainty::testNumericalIntegration()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
@@ -261,7 +237,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
     }
 
-    void TestUncertainty::testDirectionalSampling() const
+    void TestUncertainty::testDirectionalSampling()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
@@ -282,7 +258,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.90, result.quantileEvaluations[0]->Quantile, margin);
     }
 
-    void TestUncertainty::testFORM() const
+    void TestUncertainty::testFORM()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 
@@ -304,7 +280,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
     }
 
-    void TestUncertainty::testFOSM() const
+    void TestUncertainty::testFOSM()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 

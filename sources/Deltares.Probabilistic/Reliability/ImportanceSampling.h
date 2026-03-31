@@ -46,7 +46,7 @@ namespace Deltares::Reliability
         BreakLoopLambda breakFunction = nullptr;
         std::vector<std::shared_ptr<ImportanceSamplingCluster>> getClusters(Models::ModelRunner& modelRunner, std::shared_ptr<DesignPoint>& startDesignPoint) const;
         bool checkConvergence(Models::ModelRunner& modelRunner, double pf, double minWeight, int samples, int nmaal) const;
-        static std::vector<double> getFactors(StochastSettingsSet& stochastSettings);
+        static std::vector<double> getFactors(const StochastSettingsSet& stochastSettings);
         static double getProbabilityOfFailure(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);
 
         static bool prematureExit(const ImportanceSamplingSettings& settings, int samples, int runs);

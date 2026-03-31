@@ -26,9 +26,9 @@
 
 namespace Deltares::Numeric
 {
-    enum DoubleType { Positive, Negative, Zero, NaN };
-    enum InterpolationType { Linear, Logarithmic, Harmonic };
-    enum CmpResult { Equal, Greater, Smaller };
+    enum class DoubleType { Positive, Negative, Zero, NaN };
+    enum class InterpolationType { Linear, Logarithmic, Harmonic };
+    enum class CmpResult { Equal, Greater, Smaller };
 
     class NumericSupport
     {
@@ -63,8 +63,10 @@ namespace Deltares::Numeric
         static size_t getLocationMaximum(const std::vector<double>& values);
         static double getMinValidValue(std::function<double(double)> function);
         static double getMaxValidValue(std::function<double(double)> function);
-        static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);
-        static double interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
+        static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false,
+            InterpolationType interpolationType = InterpolationType::Linear);
+        static double interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues,
+            bool extrapolate = false, InterpolationType interpolationType = InterpolationType::Linear);
         static double limit(const double x, double minVal, double maxVal);
 
         /**

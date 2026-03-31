@@ -372,14 +372,15 @@ namespace Deltares::Probabilistic::Test
         duration.assign(1.0);                        // individual block durations
         const auto in_rho_t = Numeric::vector1D({ 0.1, 0.3, 0.5, 0.7, 0.9 }); // all rho values
 
-        const auto original_design_point = Reliability::alphaBeta(beta, alpha); // Copy double of the original beta value
-        const auto duration_org = duration;  // Copy of the original durations
-        const double max_duration = duration.maxval();
+        auto input = Reliability::upscalingToLargestBlockInput();
+        input.small_block = Reliability::alphaBeta(beta, alpha); // Copy double of the original beta value
+        input.block_durations = duration;  // Copy of the original durations
+        input.largest_block_duration = duration.maxval();
+        input.rho_t_small_block = in_rho_t;
 
-        Reliability::alphaBeta elm;
-        upscaler.upscaleToLargestBlock(original_design_point, in_rho_t, duration_org, max_duration, elm, duration);
+        auto result = upscaler.upscaleToLargestBlock(input);
 
-        test_utilities.checkAlphaBeta(elm, original_design_point, 0.001);
+        test_utilities.checkAlphaBeta(result.largest_block, input.small_block, 0.001);
     }
 
     // Testing the upscaling of probabilities to the largest block duration.
@@ -395,14 +396,15 @@ namespace Deltares::Probabilistic::Test
         auto in_rho_t = Numeric::vector1D(nr_stochasts); // all rho values
         in_rho_t.assign(1.0);
 
-        const auto original_design_point = Reliability::alphaBeta(beta, alpha); // Copy of the original beta and alpha values
-        const auto duration_org = duration; // Copy of the original durations
-        const auto max_duration = duration.maxval();
+        auto input = Reliability::upscalingToLargestBlockInput();
+        input.small_block = Reliability::alphaBeta(beta, alpha); // Copy double of the original beta value
+        input.block_durations = duration;  // Copy of the original durations
+        input.largest_block_duration = duration.maxval();
+        input.rho_t_small_block = in_rho_t;
 
-        Reliability::alphaBeta elm;
-        upscaler.upscaleToLargestBlock(original_design_point, in_rho_t, duration_org, max_duration, elm, duration);
+        auto result = upscaler.upscaleToLargestBlock(input);
 
-        test_utilities.checkAlphaBeta(elm, original_design_point, 0.001);
+        test_utilities.checkAlphaBeta(result.largest_block, input.small_block, 0.001);
     }
 
     // Testing the upscaling of probabilities to the largest block duration.
@@ -417,18 +419,19 @@ namespace Deltares::Probabilistic::Test
         auto duration = Numeric::vector1D({ 20.0, 2.0, 1.0, 2.0, 10.0 });   // individual block durations
         const auto in_rho_t = Numeric::vector1D(nr_stochasts);               // all rho values set to zero
 
-        const auto original_design_point = Reliability::alphaBeta(beta, alpha); // Copy of the original beta and alpha values
-        const auto duration_org = duration;  // Copy of the original durations
-        const auto max_duration = duration.maxval();
+        auto input = Reliability::upscalingToLargestBlockInput();
+        input.small_block = Reliability::alphaBeta(beta, alpha); // Copy of the original beta and alpha values
+        input.block_durations = duration;  // Copy of the original durations
+        input.largest_block_duration = duration.maxval();
+        input.rho_t_small_block = in_rho_t;
 
         const double p = Statistics::StandardNormal::getPFromU(beta);
         const auto beta2 = Statistics::StandardNormal::getUFromQ(1.0 - pow(p, 10));
-        const auto ref = Reliability::alphaBeta(beta2, original_design_point.getAlpha());
+        const auto ref = Reliability::alphaBeta(beta2, input.small_block.getAlpha());
 
-        Reliability::alphaBeta elm;
-        upscaler.upscaleToLargestBlock(original_design_point, in_rho_t, duration_org, max_duration, elm, duration);
+        auto result = upscaler.upscaleToLargestBlock(input);
 
-        test_utilities.checkAlphaBeta(elm, ref, 0.001);
+        test_utilities.checkAlphaBeta(result.largest_block, ref, 0.001);
     }
 
 }

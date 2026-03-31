@@ -227,7 +227,7 @@ namespace Deltares::Statistics
     StudentTDistribution::StudentTValue StudentTDistribution::GetInterpolatedStudentValue(int degreesOfFreedom, int N) const
     {
         const std::vector xValues = { static_cast<double>(studentValues[N - 1].N), static_cast<double>(studentValues[N].N) };
-        constexpr Numeric::InterpolationType type = Numeric::Harmonic;
+        constexpr Numeric::InterpolationType type = Numeric::InterpolationType::Harmonic;
         auto newStudentValue = StudentTValue(
             degreesOfFreedom,
             NumericSupport::interpolate(degreesOfFreedom, xValues, { studentValues[N - 1].P0_100, studentValues[N].P0_100 }, false, type),

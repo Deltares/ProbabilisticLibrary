@@ -19,16 +19,19 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <unordered_set>
 
-#include "combiner.h"
+#include "Combiner.h"
 
 namespace Deltares::Reliability
 {
-    std::shared_ptr<Reliability::CombinedDesignPointModel> Combiner::getModel(combineAndOr combineMethodType, std::shared_ptr<Reliability::DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
+    std::shared_ptr<CombinedDesignPointModel> Combiner::getModel(combineAndOr combineMethodType,
+        const std::shared_ptr<DesignPoint>& currentDesignPoint,
+        const std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints,
+        const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts,
+        const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix)
     {
         // create the model from design points
-        std::shared_ptr<Reliability::CombinedDesignPointModel> model = std::make_shared<CombinedDesignPointModel>();
+        auto model = std::make_shared<CombinedDesignPointModel>();
         model->combineType = combineMethodType;
 
         if (currentDesignPoint != nullptr)
@@ -36,7 +39,7 @@ namespace Deltares::Reliability
             model->addDesignPointModel(currentDesignPoint, true, true);
         }
 
-        for (std::shared_ptr<DesignPoint> designPoint : previousDesignPoints)
+        for (const std::shared_ptr<DesignPoint>& designPoint : previousDesignPoints)
         {
             model->addDesignPointModel(designPoint);
         }
@@ -47,7 +50,8 @@ namespace Deltares::Reliability
     }
 
 
-    std::shared_ptr<ReliabilityProject> Combiner::getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
+    std::shared_ptr<ReliabilityProject> Combiner::getProject(const std::shared_ptr<CombinedDesignPointModel>& model,
+        const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix)
     {
         // create project
         std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
@@ -60,23 +64,23 @@ namespace Deltares::Reliability
         project->runSettings->MaxChunkSize = 1000;
 
         // register all stochasts in the project
-        for (size_t i = 0; i < model->standardNormalStochasts.size(); i++)
+        for (const auto& standardNormalStochast : model->standardNormalStochasts)
         {
-            project->stochasts.push_back(model->standardNormalStochasts[i]);
+            project->stochasts.push_back(standardNormalStochast);
         }
 
         project->correlation = model->getCorrelationMatrix(selfCorrelationMatrix);
 
-        Models::ZLambda zFunction = [model](std::shared_ptr<Models::ModelSample> sample)
+        Models::ZLambda zFunction = [model](const std::shared_ptr<Models::ModelSample>& sample)
         {
             model->calculate(sample);
         };
 
-        std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zFunction);
+        const auto zModel = std::make_shared<Models::ZModel>(zFunction);
 
         if (model->canCalculateBetaDirection())
         {
-            Models::ZBetaLambda zBetaFunction = [model](std::shared_ptr<Models::ModelSample> sample, double beta)
+            Models::ZBetaLambda zBetaFunction = [model](const std::shared_ptr<Models::ModelSample>& sample)
             {
                 return model->getBetaDirection(sample);
             };

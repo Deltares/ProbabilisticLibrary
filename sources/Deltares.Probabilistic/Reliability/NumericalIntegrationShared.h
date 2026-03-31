@@ -20,24 +20,24 @@
 // All rights reserved.
 //
 #pragma once
-#include <vector>
-#include <memory>
-#include "Combiner.h"
-#include "IndexPair.h"
+
+#include "StochastSettings.h"
 
 namespace Deltares::Reliability
 {
-    class HohenbichlerNumIntCombiner : public Combiner
+    /**
+     * \brief Helper class for NumericalIntegration and NumericalIntegrationS.
+     */
+    class NumericalIntegrationShared
     {
     public:
-        std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::shared_ptr<Models::ProgressIndicator>& progress) override;
 
-    private:
-        static indexPair findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
-            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
+        /**
+         * \brief Get the list with u-values
+         * \param varying_stochast_settings settings with ranges for a certain stochast
+         * \return The u-values
+         */
+        static std::vector<double> buildUpList(const StochastSettings& varying_stochast_settings);
     };
 }
+
