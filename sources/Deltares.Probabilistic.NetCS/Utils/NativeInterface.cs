@@ -176,6 +176,9 @@ public static class NativeInterface
     public static extern void SetModelSampleCallback(int id, string property, ModelSampleCallback cb);
 
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SetMultipleModelSampleCallback(int id, string property, MultipleModelSampleCallback cb);
+
+    [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SetProgressCallBacks(int id, ProgressCallBack progress, DetailedProgressCallBack detailed, TextualProgressCallBack textual);
 
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]

@@ -598,6 +598,7 @@ namespace Deltares::Server
             else if (property_ == "max_weight") return convergence_report->MaxWeight;
             else if (property_ == "relaxation_factor") return convergence_report->RelaxationFactor;
             else if (property_ == "variance_factor") return convergence_report->VarianceFactor;
+            else if (property_ == "z_margin") return convergence_report->ZMargin;
         }
         return std::nan("");
     }
@@ -838,6 +839,7 @@ namespace Deltares::Server
             else if (property_ == "max_weight") convergence_report->MaxWeight = value;
             else if (property_ == "relaxation_factor") convergence_report->RelaxationFactor = value;
             else if (property_ == "variance_factor") convergence_report->VarianceFactor = value;
+            else if (property_ == "z_margin") convergence_report->ZMargin = value;
         }
     }
 
@@ -2627,6 +2629,26 @@ namespace Deltares::Server
                 }
 
                 project->model->setModelSampleCallback(callBack);
+            }
+        }
+    }
+
+    void ProjectHandler::SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack)
+    {
+        ObjectType objectType = types[id];
+
+        if (IsModelProjectType(objectType))
+        {
+            std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+            if (property_ == "model")
+            {
+                if (project->model == nullptr)
+                {
+                    project->model = std::make_shared<Models::ZModel>();
+                }
+
+                project->model->setMultipleModelSampleCallback(callBack);
             }
         }
     }

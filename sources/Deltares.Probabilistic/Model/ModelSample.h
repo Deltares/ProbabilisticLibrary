@@ -71,7 +71,7 @@ namespace Deltares::Models
          */
         void copyFrom(const std::shared_ptr<ModelSample>& source);
 
-        ModelSampleStruct getModelSampleStruct() const;
+        void fillModelSampleStruct(ModelSampleStruct* modelSample) const;
 
         void setModelSampleStruct(ModelSampleStruct* sampleStruct);
 

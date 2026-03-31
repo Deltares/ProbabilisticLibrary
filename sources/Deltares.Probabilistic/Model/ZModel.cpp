@@ -115,11 +115,34 @@ namespace Deltares::Models
     {
         ZLambda calcValuesLambda = [modelSampleLambda, this](std::shared_ptr<ModelSample> sample)
         {
-            ModelSampleStruct modelSampleStruct = sample->getModelSampleStruct();
+            ModelSampleStruct modelSampleStruct;
+            sample->fillModelSampleStruct(&modelSampleStruct);
 
             (*modelSampleLambda)(&modelSampleStruct);
 
             sample->setModelSampleStruct(&modelSampleStruct);
+        };
+
+        return calcValuesLambda;
+    }
+
+    ZMultipleLambda ZModel::getLambdaFromMultipleModelSampleCallBack(MultipleModelSampleCallback modelSampleLambda) const
+    {
+        ZMultipleLambda calcValuesLambda = [modelSampleLambda, this](std::vector<std::shared_ptr<ModelSample>> samples)
+        {
+            ModelSampleStruct* modelSamples = new ModelSampleStruct[samples.size()];
+
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                samples[i]->fillModelSampleStruct(&(modelSamples[i]));
+            }
+
+            (*modelSampleLambda)(modelSamples, static_cast<int>(samples.size()));
+
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                samples[i]->setModelSampleStruct(&modelSamples[i]);
+            }
         };
 
         return calcValuesLambda;
@@ -196,7 +219,7 @@ namespace Deltares::Models
                 invokeLambda(sample);
             }
 
-            if (useSampleRepository && isRepositoryAllowed)
+            if (useSampleRepository && isRepositoryAllowed && !sample->UsedProxy)
             {
                 repository.registerSample(sample);
             }
@@ -227,6 +250,7 @@ namespace Deltares::Models
     {
         if (zMultipleLambda == nullptr)
         {
+            int k = 1;
 #pragma omp parallel for
             for (int i = 0; i < static_cast<int>(samples.size()); i++)
             {
@@ -293,7 +317,10 @@ namespace Deltares::Models
             {
                 for (std::shared_ptr<ModelSample> sample : executeSamples)
                 {
-                    repository.registerSample(sample);
+                    if (!sample->UsedProxy)
+                    {
+                        repository.registerSample(sample);
+                    }
                 }
             }
         }

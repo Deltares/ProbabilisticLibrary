@@ -19,15 +19,19 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using System.Collections.Generic;
-using System.Linq;
+
 using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Deltares.Probabilistic.Model
 {
     public delegate void ZSampleDelegate(ModelSample sample);
+    public delegate void ZMultipleSampleDelegate(IList<ModelSample> samples);
 
     public class ModelProject
     {
@@ -37,6 +41,7 @@ namespace Deltares.Probabilistic.Model
         private CallBackList<ModelParameter> inputParameters = null;
         private CallBackList<ModelParameter> outputParameters = null;
         private ZSampleDelegate zFunction = null;
+        private ZMultipleSampleDelegate zMultipleFunction = null;
         private CorrelationMatrix correlationMatrix = null;
         private TagRepository tagRepository = new TagRepository();
         private ProgressIndicator progressIndicator = null;
@@ -45,6 +50,7 @@ namespace Deltares.Probabilistic.Model
         {
             this.id = Interface.Create("model_project");
             Interface.SetModelSampleCallback(id, "model", ModelCallback);
+            Interface.SetMultipleModelSampleCallback(id, "model", MultipleModelCallback);
         }
 
         internal ModelProject(int id)
@@ -53,6 +59,7 @@ namespace Deltares.Probabilistic.Model
             {
                 this.id = id;
                 Interface.SetModelSampleCallback(id, "model", ModelCallback);
+                Interface.SetMultipleModelSampleCallback(id, "model", MultipleModelCallback);
             }
         }
 
@@ -70,6 +77,7 @@ namespace Deltares.Probabilistic.Model
         {
             this.id = id;
             Interface.SetModelSampleCallback(id, "model", ModelCallback);
+            Interface.SetMultipleModelSampleCallback(id, "model", MultipleModelCallback);
         }
 
         private void ModelCallback(ref ModelSampleStruct sample)
@@ -81,11 +89,52 @@ namespace Deltares.Probabilistic.Model
             modelSample.PrepareForReturn(ref sample, tagRepository);
         }
 
+        private void MultipleModelCallback(IntPtr samplesPtr, int count)
+        {
+            int structSize = Marshal.SizeOf<ModelSampleStruct>();
+
+            ModelSampleStruct[] modelSampleStructs = new ModelSampleStruct[count];
+            ModelSample[] modelSamples = new ModelSample[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                IntPtr current = samplesPtr + i * structSize;
+                modelSampleStructs[i] = Marshal.PtrToStructure<ModelSampleStruct>(current);
+                modelSamples[i] = new ModelSample(modelSampleStructs[i]);
+            }
+
+            if (zMultipleFunction != null)
+            {
+                zMultipleFunction.Invoke(modelSamples);
+            }
+            else
+            {
+                foreach (ModelSample sample in modelSamples)
+                {
+                    zFunction.Invoke(sample);
+                }
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                modelSamples[i].PrepareForReturn(ref modelSampleStructs[i], tagRepository);
+
+                // Write it back to unmanaged memory
+                IntPtr current = samplesPtr + i * structSize;
+                Marshal.StructureToPtr(modelSampleStructs[i], current, false);
+            }
+        }
 
         public ZSampleDelegate ZFunction
         {
             get { return zFunction; }
             set { zFunction = value; }
+        }
+
+        public ZMultipleSampleDelegate ZMultipleFunction
+        {
+            get { return zMultipleFunction; }
+            set { zMultipleFunction = value; }
         }
 
         public ProgressIndicator ProgressIndicator

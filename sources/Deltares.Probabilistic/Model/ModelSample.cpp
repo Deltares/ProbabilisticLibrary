@@ -49,29 +49,25 @@ namespace Deltares::Models
         }
     }
 
-    ModelSampleStruct ModelSample::getModelSampleStruct() const
+    void ModelSample::fillModelSampleStruct(ModelSampleStruct* sampleStruct) const
     {
-        ModelSampleStruct sampleStruct;
+        sampleStruct->Values = Values.data();
+        sampleStruct->ValuesCount = static_cast<int>(Values.size());
 
-        sampleStruct.Values = Values.data();
-        sampleStruct.ValuesCount = static_cast<int>(Values.size());
+        sampleStruct->OutputValues = OutputValues.data();
+        sampleStruct->OutputValuesCount = static_cast<int>(OutputValues.size());
 
-        sampleStruct.OutputValues = OutputValues.data();
-        sampleStruct.OutputValuesCount = static_cast<int>(OutputValues.size());
-
-        sampleStruct.IterationIndex = IterationIndex;
-        sampleStruct.threadId = threadId;
-        sampleStruct.Weight = Weight;
-        sampleStruct.AllowProxy = AllowProxy;
-        sampleStruct.UsedProxy = UsedProxy;
-        sampleStruct.IsRestartRequired = IsRestartRequired;
-        sampleStruct.Beta = Beta;
-        sampleStruct.Z = Z;
-        sampleStruct.ExtendedLogging = ExtendedLogging;
-        sampleStruct.LoggingCounter = LoggingCounter;
-        sampleStruct.Tag = Tag;
-
-        return sampleStruct;
+        sampleStruct->IterationIndex = IterationIndex;
+        sampleStruct->threadId = threadId;
+        sampleStruct->Weight = Weight;
+        sampleStruct->AllowProxy = AllowProxy;
+        sampleStruct->UsedProxy = UsedProxy;
+        sampleStruct->IsRestartRequired = IsRestartRequired;
+        sampleStruct->Beta = Beta;
+        sampleStruct->Z = Z;
+        sampleStruct->ExtendedLogging = ExtendedLogging;
+        sampleStruct->LoggingCounter = LoggingCounter;
+        sampleStruct->Tag = Tag;
     }
 
     void ModelSample::setModelSampleStruct(ModelSampleStruct* sampleStruct)

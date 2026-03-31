@@ -263,6 +263,12 @@ extern "C" DLL_PUBLIC void SetModelSampleCallback(int id, const char* property, 
     ProjectServer::Instance().SetModelSampleCallBack(id, propertyStr, callBack);
 }
 
+extern "C" DLL_PUBLIC void SetMultipleModelSampleCallback(int id, const char* property, Deltares::Models::MultipleModelSampleCallback callBack)
+{
+    std::string propertyStr(property);
+    ProjectServer::Instance().SetMultipleModelSampleCallBack(id, propertyStr, callBack);
+}
+
 extern "C" DLL_PUBLIC void SetProgressCallBacks(int id, Deltares::Models::ProgressCallBack progress, Deltares::Models::DetailedProgressCallBack detailed, Deltares::Models::TextualProgressCallBack textual)
 {
     ProjectServer::Instance().SetProgressCallBacks(id, progress, detailed, textual);

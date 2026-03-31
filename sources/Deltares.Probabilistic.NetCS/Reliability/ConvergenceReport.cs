@@ -98,5 +98,9 @@ public class ConvergenceReport
         set { Interface.SetIntValue(id, "failed_samples", value); }
     }
 
-    public double ZMargin { get; set; }
+    public double ZMargin
+    {
+        get { return Interface.GetValue(id, "z_margin"); }
+        set { Interface.SetValue(id, "z_margin", value); }
+    }
 }

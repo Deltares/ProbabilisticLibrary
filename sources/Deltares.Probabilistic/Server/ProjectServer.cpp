@@ -248,6 +248,11 @@ namespace Deltares::Server
         handlersTable[id]->SetModelSampleCallBack(id, property_, callBack);
     }
 
+    void ProjectServer::SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack)
+    {
+        handlersTable[id]->SetMultipleModelSampleCallBack(id, property_, callBack);
+    }
+
     void ProjectServer::SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
     {
         handlersTable[id]->SetProgressCallBacks(id, progress, detailed, textual);

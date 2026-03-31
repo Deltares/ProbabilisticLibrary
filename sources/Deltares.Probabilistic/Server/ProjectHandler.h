@@ -87,6 +87,7 @@ namespace Deltares::Server
         void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) override;
         void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) override;
         void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack) override;
+        void SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack) override;
         void Execute(int id, std::string method_) override;
 
         int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);

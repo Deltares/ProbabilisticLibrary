@@ -28,6 +28,9 @@ namespace Deltares.Probabilistic.Model;
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 public delegate void ModelSampleCallback(ref ModelSampleStruct sample);
 
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public delegate void MultipleModelSampleCallback(IntPtr samples, int count);
+
 public class ModelSample
 {
     private double[] values = null;

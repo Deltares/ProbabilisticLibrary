@@ -75,6 +75,11 @@ namespace Deltares::Models
             this->zLambda = this->getLambdaFromModelSampleCallBack(modelSampleCallBack);
         }
 
+        void setMultipleModelSampleCallback(Models::MultipleModelSampleCallback modelSampleCallBack)
+        {
+            this->zMultipleLambda = this->getLambdaFromMultipleModelSampleCallBack(modelSampleCallBack);
+        }
+
         /**
          * \brief Name of the model
          */
@@ -195,6 +200,7 @@ namespace Deltares::Models
         ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
 
         ZLambda getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const;
+        ZMultipleLambda getLambdaFromMultipleModelSampleCallBack(MultipleModelSampleCallback modelSampleLambda) const;
 
         /**
          * \brief Calculates a sample

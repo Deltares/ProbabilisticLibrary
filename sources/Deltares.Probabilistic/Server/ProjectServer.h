@@ -90,6 +90,7 @@ namespace Deltares::Server
         void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack);
         void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack);
         void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack);
+        void SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack);
         void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual);
         void Execute(int id, std::string method_);
         void AddHandler(std::shared_ptr<BaseHandler> handler);

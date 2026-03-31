@@ -34,6 +34,7 @@ namespace Deltares.Probabilistic.Utils
         private static MultipleCallback keepMultipleCallBack = null;
         private static EmptyCallback keepEmptyCallBack = null;
         private static ModelSampleCallback keepModelSampleCallback = null;
+        private static MultipleModelSampleCallback keepMultipleModelSampleCallback = null;
         private static ProgressCallBack keepProgressCallBack = null;
         private static DetailedProgressCallBack keepDetailedCallBack = null;
         private static TextualProgressCallBack keepTextualCallBack = null;
@@ -278,6 +279,20 @@ namespace Deltares.Probabilistic.Utils
             {
                 keepModelSampleCallback = modelSampleCallBack;
                 NativeInterface.SetModelSampleCallback(id, property, modelSampleCallBack);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+        }
+
+        public static void SetMultipleModelSampleCallback(int id, string property, MultipleModelSampleCallback multipleModelSampleCallBack)
+        {
+            try
+            {
+                keepMultipleModelSampleCallback = multipleModelSampleCallBack;
+                NativeInterface.SetMultipleModelSampleCallback(id, property, multipleModelSampleCallBack);
             }
             catch (Exception ex)
             {

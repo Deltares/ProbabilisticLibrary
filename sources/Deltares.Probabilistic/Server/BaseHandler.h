@@ -69,6 +69,7 @@ namespace Deltares::Server
         virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
         virtual void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) {}
         virtual void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack) {}
+        virtual void SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack) {}
         virtual void Execute(int id, std::string method_) {}
     };
 }
