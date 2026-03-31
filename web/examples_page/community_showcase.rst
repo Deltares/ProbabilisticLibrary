@@ -10,8 +10,7 @@ Community Showcase
    <p class="psl-page-intro">
      Real applications of the Probabilistic Suite, contributed by engineers,
      researchers, and consultants. These examples reflect how the community
-     uses the library in practice — beyond toy problems and into genuine
-     project work.
+     uses the library in practice.
    </p>
 
 .. note::

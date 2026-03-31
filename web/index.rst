@@ -14,7 +14,7 @@
        <h1 class="psl-hero-title">Probabilistic Suite<br><em>Community Hub</em></h1>
        <p class="psl-hero-sub">
          The central resource for users and developers of the
-         <strong>Deltares Probabilistic Suite</strong> — a framework for
+         <strong>Deltares Probabilistic Suite</strong>: a framework for
          uncertainty, reliability, and risk-based engineering analysis.
        </p>
        <div class="psl-hero-ctas">
@@ -142,7 +142,7 @@ Three tightly integrated components: choose your entry point or use all three to
            <p class="psl-apart-item-title">One library, complete workflow</p>
            <p class="psl-apart-item-desc">
              From uncertainty definition to sensitivity analysis, reliability methods, and
-             system assemblage — the full probabilistic workflow in a single framework,
+             system assemblage: the full probabilistic workflow in a single framework,
              with methods that chain into end-to-end analysis pipelines.
            </p>
          </div>
