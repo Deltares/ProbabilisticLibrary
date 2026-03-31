@@ -176,5 +176,5 @@ Three tightly integrated components: choose your entry point or use all three to
 
    installation
    tutorials/tutorials
-   api_reference/index
    examples_page/examples_index
+   api_reference/index
