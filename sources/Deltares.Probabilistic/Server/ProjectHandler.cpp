@@ -1498,6 +1498,7 @@ namespace Deltares::Server
             else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
             else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
             else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
+            else if (property_ == "allow_repository") return settings->RunSettings->AllowRepository;
         }
 
         if (objectType == ObjectType::ValidationReport)
@@ -1642,6 +1643,7 @@ namespace Deltares::Server
             else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
             else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
             else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
+            else if (property_ == "allow_repository") settings->RunSettings->AllowRepository = value;
             else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
         }
         else if (IsStochast(objectType))

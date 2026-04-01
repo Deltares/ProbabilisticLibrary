@@ -65,6 +65,7 @@ namespace Deltares::Models
         this->uConverter->initializeForRun();
         this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
         this->zModel->setHandleInvalidType(this->Settings->HandleInvalidType);
+        this->zModel->setAllowRepository(this->Settings->AllowRepository);
         this->zModel->resetModelRuns();
 
         this->zModel->initializeForRun();

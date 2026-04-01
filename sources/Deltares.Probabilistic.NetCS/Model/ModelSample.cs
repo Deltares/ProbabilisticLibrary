@@ -43,7 +43,8 @@ public class ModelSample
     public ModelSample(double[] values)
     {
         // copy values
-        this.values = values.Select(p => p).ToArray();
+        this.values = new double[values.Length];
+        Array.Copy(values, this.values, values.Length);
     }
 
     public ModelSample(ModelSampleStruct sample)
@@ -124,7 +125,7 @@ public class ModelSample
 
     public bool AreValuesEqual(ModelSample sample)
     {
-        const double tolerance = 1E10;
+        const double tolerance = 1E-10;
 
         if (sample.Values.Length != Values.Length)
         {
@@ -140,6 +141,22 @@ public class ModelSample
         }
 
         return true;
+    }
+
+    public ModelSample Clone()
+    {
+        return new ModelSample(this.Values)
+        {
+            Iteration = this.Iteration,
+            Beta = this.Beta,
+            Z = this.Z,
+            Weight = this.Weight,
+            AllowProxy = this.AllowProxy,
+            UsedProxy = this.UsedProxy,
+            IsRestartRequired = this.IsRestartRequired,
+            Tag = this.Tag,
+            OutputValues = new double[this.OutputValues.Length],
+        };
     }
 }
 

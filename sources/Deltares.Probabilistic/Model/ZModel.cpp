@@ -250,7 +250,6 @@ namespace Deltares::Models
     {
         if (zMultipleLambda == nullptr)
         {
-            int k = 1;
 #pragma omp parallel for
             for (int i = 0; i < static_cast<int>(samples.size()); i++)
             {

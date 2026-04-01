@@ -112,6 +112,12 @@ public class ReliabilitySettings
         set { Interface.SetBoolValue(id, "reuse_calculations", value); }
     }
 
+    public bool AllowRepository
+    {
+        get { return Interface.GetBoolValue(id, "allow_repository"); }
+        set { Interface.SetBoolValue(id, "allow_repository", value); }
+    }
+
     public DesignPointMethod DesignPointMethod
     {
         get { return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method")); }

@@ -50,6 +50,7 @@ namespace Deltares::Models
         bool SaveConvergence = false;
         bool SaveMessages = false;
         bool ReuseCalculations = true;
+        bool AllowRepository = true;
         bool RunAtDesignPoint = false;
         bool ExtendedLoggingAtDesignPoint = false;
         int MaxMessages = 1000;
