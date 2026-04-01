@@ -10,12 +10,11 @@ Case Studies
    <p class="psl-page-intro">
      End-to-end worked examples on realistic engineering problems, authored and
      validated by the Deltares team. Each case study demonstrates a complete
-     probabilistic workflow — from problem definition and uncertainty
+     probabilistic workflow: from problem definition and uncertainty
      characterisation to reliability results and interpretation.
    </p>
 
-These examples are more detailed than the :doc:`tutorials <../tutorials/tutorials>`
-— they use realistic model parameters, discuss engineering context, and show
+These examples are more detailed than the :doc:`tutorials <../tutorials/tutorials>`. They use realistic model parameters, discuss engineering context, and show
 how to interpret results in a professional setting.
 
 ----
@@ -109,32 +108,60 @@ how to interpret results in a professional setting.
 
          Open example →  *(coming soon)*
 
-   .. grid-item-card:: Connect D-Sheetpiling model (GEOLIB)
+   .. grid-item-card:: Connect D-SheetPiling model (GEOLIB) — FORM analysis
       :class-card: psl-start-card psl-case-card psl-case-card--geo
       :class-header: psl-case-header psl-case-header--geo
 
-      Reliability analysis of a sheet pile wall using D-Sheetpiling as
-      the structural model. Demonstrates how to wrap a commercial geotech
-      solver and run FORM and Monte Carlo through it.
+      Connects a D-SheetPiling cantilever sheet pile model via the D-GEOLib
+      Python library. Wraps the model as a limit state function and runs a FORM
+      analysis with three stochastic soil and hydraulic parameters.
 
       .. raw:: html
 
          <div class="psl-card-meta">
            <div class="psl-tag-row">
-             <span class="psl-tag">D-Sheetpiling</span>
+             <span class="psl-tag">D-SheetPiling</span>
+             <span class="psl-tag">D-GEOLib</span>
              <span class="psl-tag">External model</span>
-             <span class="psl-tag">FORM</span>
            </div>
            <span class="psl-difficulty psl-difficulty--beginner">&#9632;&#9633;&#9633; Beginner</span>
          </div>
 
       +++
-      .. button-link:: d_sheetpiling.html
+      .. button-link:: ../_examples/Case_2_DSheetPiling_Tutorial.html
          :color: primary
          :outline:
          :expand:
 
-         Open example →  *(coming soon)*
+         Open example →
+
+   .. grid-item-card:: Fragility Curve for a Sheet Pile Wall — Corrosion. Time dependent reliability analysis.
+      :class-card: psl-start-card psl-case-card psl-case-card--geo
+      :class-header: psl-case-header psl-case-header--geo
+
+      Builds a fragility curve for a D-SheetPiling wall as a function
+      of a corrosion rate parameter. Integration of time-dependent reliability methods to show how failure 
+      probability evolves over the structure's lifetime.
+
+      .. raw:: html
+
+         <div class="psl-card-meta">
+           <div class="psl-tag-row">
+             <span class="psl-tag">D-SheetPiling</span>
+             <span class="psl-tag">Fragility curves</span>
+             <span class="psl-tag">Corrosion</span>
+             <span class="psl-tag">Time-dependent reliability</span>
+           </div>
+           <span class="psl-difficulty psl-difficulty--intermediate">&#9632;&#9632;&#9633; Intermediate</span>
+         </div>
+
+      +++
+      .. button-link:: ../_examples/Case_3_DSheetPiling_FragilityCurve.html
+         :color: primary
+         :outline:
+         :expand:
+
+         Open example →
 
    .. grid-item-card:: Connect D-Stability model(PTK Wheel)
       :class-card: psl-start-card psl-case-card psl-case-card--geo
