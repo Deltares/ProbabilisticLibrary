@@ -32,7 +32,7 @@ public class SelfCorrelationMatrix
 
     public SelfCorrelationMatrix()
     {
-        this.id = Interface.Create("correlation_matrix");
+        this.id = Interface.Create("self_correlation_matrix");
     }
 
     internal SelfCorrelationMatrix(int id)
