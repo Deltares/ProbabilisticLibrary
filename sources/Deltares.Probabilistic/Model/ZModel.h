@@ -169,6 +169,11 @@ namespace Deltares::Models
             this->isRepositoryAllowed = allowRepository;
         }
 
+        void setUseZFromSample(bool useZFromSample)
+        {
+            this->useZFromSample = useZFromSample;
+        }
+
         void clearRepository()
         {
             this->repository.clear();
@@ -236,6 +241,11 @@ namespace Deltares::Models
          * \brief Indicates whether samples should be saved in repository
          */
         bool useSampleRepository = false;
+
+        /**
+         * \brief Indicates whether the z value from the sample should be used
+         */
+        bool useZFromSample = false;
 
         /**
          * \brief Holds calculated samples

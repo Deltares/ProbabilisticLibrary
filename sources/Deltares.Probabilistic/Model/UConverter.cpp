@@ -111,7 +111,6 @@ namespace Deltares::Models
 
         this->hasQualitiveStochasts = false;
         this->hasVariableStochasts = false;
-        this->sampleValuesChanged = false;
 
         std::set<std::shared_ptr<Statistics::Stochast>> initializedStochasts;
 
@@ -470,33 +469,6 @@ namespace Deltares::Models
         }
 
         return xValues;
-    }
-
-
-
-    void UConverter::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues)
-    {
-        if (this->hasVariableStochasts)
-        {
-            for (size_t i = 0; i < variableStochastList.size(); i++)
-            {
-                const int stochastIndex = variableStochastList[i];
-                const double xStochast = xValues[stochastIndex];
-
-                const int sourceIndex = variableStochastIndex[stochastIndex];
-
-                if (originalValues[sourceIndex] != xValues[sourceIndex])
-                {
-                    const double xOriginalSource = originalValues[sourceIndex];
-                    const double uStochast = stochasts[stochastIndex]->definition->getUFromXAndSource(xOriginalSource, xStochast);
-
-                    const double xSource = xValues[sourceIndex];
-                    xValues[stochastIndex] = stochasts[stochastIndex]->definition->getXFromUAndSource(xSource, uStochast);
-
-                    this->sampleValuesChanged = true;
-                }
-            }
-        }
     }
 
     std::shared_ptr<Sample> UConverter::getQualitativeExcludedSample(std::shared_ptr<Sample> sample)

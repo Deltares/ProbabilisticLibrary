@@ -66,6 +66,7 @@ namespace Deltares::Models
         this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
         this->zModel->setHandleInvalidType(this->Settings->HandleInvalidType);
         this->zModel->setAllowRepository(this->Settings->AllowRepository);
+        this->zModel->setUseZFromSample(this->Settings->UseZFromSample);
         this->zModel->resetModelRuns();
 
         this->zModel->initializeForRun();
@@ -591,11 +592,6 @@ namespace Deltares::Models
     std::vector<double> ModelRunner::getOnlyVaryingValues(std::vector<double> values)
     {
         return this->uConverter->getVaryingValues(values);
-    }
-
-    void ModelRunner::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues)
-    {
-        this->uConverter->updateVariableSample(xValues, originalValues);
     }
 }
 

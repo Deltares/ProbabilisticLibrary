@@ -397,6 +397,7 @@ namespace Deltares::Server
             else if (property_ == "design_value") return stochast->getDesignValue();
             else if (property_ == "ks_test") return stochast->getKSTest(tempValues["data"]);
             else if (property_ == "x_from_u_and_source") return stochast->getXFromUAndSource(tempValues["u_and_x"][1], tempValues["u_and_x"][0]);
+            else if (property_ == "u_from_x_and_source") return stochast->getUFromXAndSource(tempValues["x_and_source"][1], tempValues["x_and_source"][0]);
             else if (property_ == "fixed_value") return std::dynamic_pointer_cast<Reliability::FragilityCurve>(stochast)->fixedValue;
             else return std::nan("");
         }
@@ -508,6 +509,7 @@ namespace Deltares::Server
             else if (property_ == "minimum_u") return settings->MinimumU;
             else if (property_ == "maximum_u") return settings->MaximumU;
             else if (property_ == "step_size") return settings->GradientSettings->StepSize;
+            else if (property_ == "step_size_factor") return settings->StepSizeFactor;
             else if (property_ == "global_step_size") return settings->GlobalStepSize;
         }
         else if (objectType == ObjectType::FragilityCurveSettings)
@@ -748,6 +750,7 @@ namespace Deltares::Server
             else if (property_ == "minimum_u") settings->MinimumU = value;
             else if (property_ == "maximum_u") settings->MaximumU = value;
             else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
+            else if (property_ == "step_size_factor") settings->StepSizeFactor = value;
             else if (property_ == "global_step_size") settings->GlobalStepSize = value;
         }
         else if (objectType == ObjectType::SensitivitySettings)
@@ -1499,6 +1502,7 @@ namespace Deltares::Server
             else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
             else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
             else if (property_ == "allow_repository") return settings->RunSettings->AllowRepository;
+            else if (property_ == "use_z_from_sample") return settings->RunSettings->UseZFromSample;
         }
 
         if (objectType == ObjectType::ValidationReport)
@@ -1644,6 +1648,7 @@ namespace Deltares::Server
             else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
             else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
             else if (property_ == "allow_repository") settings->RunSettings->AllowRepository = value;
+            else if (property_ == "use_z_from_sample") settings->RunSettings->UseZFromSample = value;
             else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
         }
         else if (IsStochast(objectType))
@@ -2019,6 +2024,7 @@ namespace Deltares::Server
             else if (property_ == "data") tempValues["data"] = dataValues;
             else if (property_ == "weights") tempValues["weights"] = dataValues;
             else if (property_ == "u_and_x") tempValues["u_and_x"] = dataValues;
+            else if (property_ == "x_and_source") tempValues["x_and_source"] = dataValues;
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {

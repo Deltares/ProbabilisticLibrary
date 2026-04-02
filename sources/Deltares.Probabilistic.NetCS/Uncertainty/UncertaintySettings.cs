@@ -91,6 +91,12 @@ public class UncertaintySettings
         set { Interface.SetBoolValue(id, "reuse_calculations", value); }
     }
 
+    public bool UseZFromSample
+    {
+        get { return Interface.GetBoolValue(id, "use_z_from_sample"); }
+        set { Interface.SetBoolValue(id, "use_z_from_sample", value); }
+    }
+
     public MessageType LowestMessageType
     {
         get { return MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "lowest_message_type")); }
@@ -143,6 +149,12 @@ public class UncertaintySettings
     {
         get { return Interface.GetValue(id, "step_size"); }
         set { Interface.SetValue(id, "step_size", value); }
+    }
+
+    public double StepSizeFactor
+    {
+        get { return Interface.GetValue(id, "step_size_factor"); }
+        set { Interface.SetValue(id, "step_size_factor", value); }
     }
 
     public double VariationCoefficient

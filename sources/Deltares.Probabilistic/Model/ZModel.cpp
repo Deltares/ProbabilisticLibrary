@@ -229,7 +229,10 @@ namespace Deltares::Models
             sample->copyFrom(alreadyExecutedSample);
         }
 
-        this->zValueConverter->updateZValue(sample);
+        if (!useZFromSample)
+        {
+            this->zValueConverter->updateZValue(sample);
+        }
         this->handleInvalidSample(sample);
 
         this->modelRuns++;
@@ -326,7 +329,11 @@ namespace Deltares::Models
 
         for (size_t i = 0; i < samples.size(); i++)
         {
-            this->zValueConverter->updateZValue(samples[i]);
+            if (!useZFromSample)
+            {
+                this->zValueConverter->updateZValue(samples[i]);
+            }
+
             this->handleInvalidSample(samples[i]);
         }
     }

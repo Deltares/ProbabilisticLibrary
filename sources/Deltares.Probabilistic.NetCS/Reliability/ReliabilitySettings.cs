@@ -118,6 +118,12 @@ public class ReliabilitySettings
         set { Interface.SetBoolValue(id, "allow_repository", value); }
     }
 
+    public bool UseZFromSample
+    {
+        get { return Interface.GetBoolValue(id, "use_z_from_sample"); }
+        set { Interface.SetBoolValue(id, "use_z_from_sample", value); }
+    }
+
     public DesignPointMethod DesignPointMethod
     {
         get { return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method")); }

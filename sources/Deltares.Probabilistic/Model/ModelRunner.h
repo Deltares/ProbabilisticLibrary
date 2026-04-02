@@ -107,7 +107,6 @@ namespace Deltares::Models
         void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
         std::shared_ptr<Sample> getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint) const;
         void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
-        void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
         Evaluation getEvaluationFromType(Statistics::RunValuesType type);
 
         bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }

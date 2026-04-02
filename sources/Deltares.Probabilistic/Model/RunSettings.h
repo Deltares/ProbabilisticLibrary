@@ -51,6 +51,7 @@ namespace Deltares::Models
         bool SaveMessages = false;
         bool ReuseCalculations = true;
         bool AllowRepository = true;
+        bool UseZFromSample = false;
         bool RunAtDesignPoint = false;
         bool ExtendedLoggingAtDesignPoint = false;
         int MaxMessages = 1000;

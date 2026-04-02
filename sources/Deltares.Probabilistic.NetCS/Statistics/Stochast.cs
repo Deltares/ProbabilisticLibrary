@@ -338,6 +338,13 @@ namespace Deltares.Probabilistic.Statistics
             return Interface.GetArgValue(id, "cdf", x);
         }
 
+        public double GetUFromXAndSource(double xSource, double x)
+        {
+            Interface.SetArrayValue(id, "x_and_source", [x, xSource]);
+            Interface.Execute(id, "initialize_conditional_values");
+            return Interface.GetValue(id, "u_from_x_and_source");
+        }
+
         public double GetXFromUAndSource(double u, double x)
         {
             Interface.SetArrayValue(id, "u_and_x", [u, x]);

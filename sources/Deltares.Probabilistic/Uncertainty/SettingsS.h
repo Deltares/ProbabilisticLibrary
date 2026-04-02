@@ -118,6 +118,11 @@ namespace Deltares::Uncertainty
         double GlobalStepSize = 0.5;
 
         /**
+         * \brief Step size in fosm
+         */
+        double StepSizeFactor = 0.01;
+
+        /**
          * \brief Requested quantiles
          */
         std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
