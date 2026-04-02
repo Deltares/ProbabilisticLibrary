@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 import unittest
+import pytest
 import sys
 import os
 
@@ -156,6 +157,7 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(0.175, sens2.values[0].first_order_index, delta=margin)
         self.assertAlmostEqual(0.175, sens2.values[0].total_index, delta=margin)
 
+    @pytest.mark.plotting
     def test_single_variation_plot(self):
         project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
 
@@ -179,6 +181,7 @@ class Test_sensitivity(unittest.TestCase):
         self.assertTrue(os.path.exists(test_file_name))
         os.remove(test_file_name)
 
+    @pytest.mark.plotting
     def test_sobol_plot(self):
         project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
 
