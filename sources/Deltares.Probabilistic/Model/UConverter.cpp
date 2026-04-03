@@ -265,6 +265,7 @@ namespace Deltares::Models
                 stochastSettingsCount[stochast] = 0;
             }
             stochastSettingsMap[stochast].push_back(settings->stochastSettings[i]);
+            settings->stochastSettings[i]->isVarying = false; 
         }
 
         settings->stochastSettings.clear();
@@ -300,6 +301,7 @@ namespace Deltares::Models
                 varyingStochastSettings->StochastIndex = i;
                 varyingStochastSettings->IsQualitative = varyingStochasts[j]->definition->isQualitative();
                 varyingStochastSettings->stochast = varyingStochasts[j]->definition;
+                varyingStochastSettings->isVarying = true;
 
                 varyingStochastSettings->initializeForRun();
 

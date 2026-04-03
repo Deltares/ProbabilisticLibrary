@@ -55,6 +55,38 @@ namespace Deltares::Reliability
 
         this->designPoint = this->reliabilityMethod->getDesignPoint(modelRunner);
 
+        //DirectionReliability directionReliability;
+        //directionReliability.Settings = settings->DirectionSettings;
+
+        //directionReliability.Settings->StochastSet = std::make_shared<StochastSettingsSet>();
+        //for (auto alpha : designPoint->Alphas)
+        //{
+        //    
+        //}
+
+
+        //directionReliability.Settings->StochastSet->setStartPoint(this->designPoint->);
+
+        //this->designPoint = directionReliability.getDesignPoint(modelRunner);
+
+
+        //modelRunner->setStartPoint(this->designPoint);
+
+        //if (this->settings->CalculateLimitStatePoint)
+        //{
+        //    std::shared_ptr<DirectionReliability> directionReliability = this->settings->GetReliabilityMethod(ReliabilityDirectionReliability);
+
+        //    directionReliability->Settings->StochastSet->setStartPoint(this->designPoint);
+        //    directionReliability->Settings->
+
+
+        //    directionReliability->Settings = this->settings
+
+        //    this->settings->ReliabilityMethod = ReliabilityDirectionReliability;
+        //    directionReliability.Settings = this->settings->GetReliabilityMethod();
+        //}
+
+
         if (this->designPoint != nullptr)
         {
             this->modelRuns += this->designPoint->getTotalModelRuns();

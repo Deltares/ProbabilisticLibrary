@@ -32,6 +32,7 @@ namespace Deltares::Reliability
     {
     private:
         void loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
+        std::shared_ptr<Models::Sample> startPoint = nullptr;
     public:
         StochastSettingsSet() {}
         explicit StochastSettingsSet(std::shared_ptr<Models::StochastPoint> stochastPoint)
