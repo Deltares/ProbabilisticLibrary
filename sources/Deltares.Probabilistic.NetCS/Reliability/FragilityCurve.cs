@@ -68,6 +68,6 @@ public class FragilityCurve : Stochast
         Interface.SetValue(id, "design_point_x", x);
         int designPointId = Interface.GetIdValue(id, "design_point_x");
 
-        return new DesignPoint(designPointId);
+        return ObjectFactory.GetObject<DesignPoint>(designPointId);
     }
 }

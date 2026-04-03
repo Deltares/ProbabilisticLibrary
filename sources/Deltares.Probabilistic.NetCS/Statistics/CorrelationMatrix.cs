@@ -86,10 +86,26 @@ public class CorrelationMatrix
         Interface.SetIndexedIndexedValue(id, "correlation", stochast1.GetId(), stochast2.GetId(), value);
     }
 
+    public double GetCorrelation(int index1, int index2)
+    {
+        return Interface.GetIndexedIndexedValue(id, "correlation_index", index1, index2);
+    }
+
+    public void SetCorrelation(int index1, int index2, double value)
+    {
+        Interface.SetIndexedIndexedValue(id, "correlation_index", index1, index2, value);
+    }
+
     public double this[Stochast stochast1, Stochast stochast2]
     {
         get { return GetCorrelation(stochast1, stochast2); }
         set { SetCorrelation(stochast1, stochast2, value); }
+    }
+
+    public double this[int index1, int index2]
+    {
+        get { return GetCorrelation(index1, index2); }
+        set { SetCorrelation(index1, index2, value); }
     }
 
     public void ResolveConflictingCorrelations()
