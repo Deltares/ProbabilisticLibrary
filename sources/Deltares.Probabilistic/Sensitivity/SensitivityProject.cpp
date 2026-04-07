@@ -56,6 +56,8 @@ namespace Deltares::Sensitivity
 
             for (const auto& modelParameter : parameters)
             {
+                model->next();
+
                 parameterSelector->parameter = modelParameter->name;
                 if (modelParameter->isArray)
                 {
@@ -77,6 +79,8 @@ namespace Deltares::Sensitivity
         }
         else
         {
+            model->next();
+
             std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
             this->outputSelector = std::dynamic_pointer_cast<Models::ZValueConverter>(parameterSelector);
 

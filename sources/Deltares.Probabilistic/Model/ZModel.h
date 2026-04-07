@@ -105,6 +105,11 @@ namespace Deltares::Models
             this->runMethod = runMethod;
         }
 
+        void setNextCalculation(EmptyCallBack nextCalculation)
+        {
+            this->nextMethod = nextCalculation;
+        }
+
         /**
          * \brief The index of the underlying model values if the model returns an array or tuple
          */
@@ -191,11 +196,23 @@ namespace Deltares::Models
          */
         bool callbackAssigned = true;
 
+        /**
+         * \brief Informs that the next calculation will be performed
+         */
+        void next() const
+        {
+            if (nextMethod != nullptr)
+            {
+                nextMethod();
+            }
+        }
+
     private:
         ZLambda zLambda = nullptr;
         ZMultipleLambda zMultipleLambda = nullptr;
         ZBetaLambda zBetaLambda = nullptr;
         EmptyCallBack runMethod = nullptr;
+        EmptyCallBack nextMethod = nullptr;
         int maxProcesses = 1;
         int modelRuns = 0;
         int inputParametersCount = 0;

@@ -2602,6 +2602,15 @@ namespace Deltares::Server
 
                 project->model->setRunMethod(callBack);
             }
+            else if (property_ == "next")
+            {
+                if (project->model == nullptr)
+                {
+                    project->model = std::make_shared<Models::ZModel>();
+                }
+
+                project->model->setNextCalculation(callBack);
+            }
         }
     }
 
