@@ -89,7 +89,7 @@ public class SensitivityResult
             {
                 realizations = new List<Evaluation>();
 
-                int[] realizationIds = Interface.GetArrayIdValue(id, "realizations");
+                int[] realizationIds = Interface.GetArrayIdValue(id, "evaluations");
                 foreach (int realizationId in realizationIds)
                 {
                     realizations.Add(new Evaluation(realizationId, tagRepository));
