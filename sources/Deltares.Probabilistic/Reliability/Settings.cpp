@@ -196,6 +196,7 @@ namespace Deltares::Reliability
         importanceSampling->Settings->designPointMethod = this->designPointMethod;
         importanceSampling->Settings->VarianceFactor = this->VarianceFactor;
         importanceSampling->Settings->VariationCoefficient = this->VariationCoefficient;
+        importanceSampling->Settings->startPointSettings = this->StartPointSettings;
         importanceSampling->Settings->runSettings = this->RunSettings;
         importanceSampling->Settings->randomSettings = this->RandomSettings;
         importanceSampling->Settings->StochastSet = this->StochastSet;

@@ -91,6 +91,12 @@ public class UncertaintySettings
         set { Interface.SetBoolValue(id, "reuse_calculations", value); }
     }
 
+    public bool AllowRepository
+    {
+        get { return Interface.GetBoolValue(id, "allow_repository"); }
+        set { Interface.SetBoolValue(id, "allow_repository", value); }
+    }
+
     public bool UseZFromSample
     {
         get { return Interface.GetBoolValue(id, "use_z_from_sample"); }

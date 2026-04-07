@@ -313,6 +313,7 @@ namespace Deltares::Models
         evaluation.Z = sample->Z;
         evaluation.Beta = sample->Beta;
         evaluation.Iteration = sample->IterationIndex;
+        evaluation.Weight = sample->Weight;
         evaluation.usedProxy = sample->UsedProxy;
         evaluation.InputValues = sample->Values;
         evaluation.OutputValues = sample->OutputValues;
