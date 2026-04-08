@@ -119,6 +119,11 @@ namespace Deltares::Reliability
         int MaximumVarianceLoops = 5;
 
         /**
+         * \brief The minimum failed samples in adaptive importance sampling for moving the center point
+         */
+        int MinimumFailedSamples = 0;
+
+        /**
          * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
          */
         double VariationCoefficient = 0.05;
@@ -142,6 +147,27 @@ namespace Deltares::Reliability
          * \brief Indicates whether the maximum samples is set automatically
          */
         bool AutoMaximumSamples = false;
+
+        /**
+         * \brief Indicates whether the start point should be located on the limit state
+         */
+        bool StartPointOnLimitState = false;
+
+        /**
+         * \brief Minimum step size for changing the start point
+         */
+        double StartValueStepSize = 0.1;
+
+        /**
+         * \brief The increment in variance factor in adaptive importance sampling
+         */
+        double LoopVarianceIncrement = 0.5;
+
+        /**
+         * \brief When exceeded, the variance loops are stopped
+         */
+        double MaxBeta = Statistics::StandardNormal::BetaMax;
+
 
         /**
          * \brief Minimum number of iterations in numerical bisection

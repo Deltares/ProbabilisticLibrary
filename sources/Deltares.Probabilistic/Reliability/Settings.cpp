@@ -221,10 +221,15 @@ namespace Deltares::Reliability
 
         adaptiveImportanceSampling->Settings->MinVarianceLoops = this->MinimumVarianceLoops;
         adaptiveImportanceSampling->Settings->MaxVarianceLoops = this->MaximumVarianceLoops;
+        adaptiveImportanceSampling->Settings->MinimumFailedSamples = this->MinimumFailedSamples;
         adaptiveImportanceSampling->Settings->FractionFailed = this->FractionFailed;
         adaptiveImportanceSampling->Settings->EpsWeightSample = this->EpsilonWeightSample;
         adaptiveImportanceSampling->Settings->VarianceFactor = this->VarianceFactor;
         adaptiveImportanceSampling->Settings->AutoMaximumSamples = this->AutoMaximumSamples;
+        adaptiveImportanceSampling->Settings->StartPointOnLimitState = this->StartPointOnLimitState;
+        adaptiveImportanceSampling->Settings->StartValueStepSize = this->StartValueStepSize;
+        adaptiveImportanceSampling->Settings->LoopVarianceIncrement = this->LoopVarianceIncrement;
+        adaptiveImportanceSampling->Settings->MaxBeta = this->MaxBeta;
         adaptiveImportanceSampling->Settings->startPointSettings = this->StartPointSettings;
 
         adaptiveImportanceSampling->Settings->Clustering = this->Clustering;

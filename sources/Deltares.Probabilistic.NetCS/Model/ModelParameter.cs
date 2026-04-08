@@ -26,6 +26,8 @@ namespace Deltares.Probabilistic.Model;
 public class ModelParameter
 {
     private int id = 0;
+    private string name = string.Empty;
+    private bool nameAssigned = false;
 
     public ModelParameter()
     {
@@ -49,8 +51,22 @@ public class ModelParameter
 
     public string Name
     {
-        get { return Interface.GetStringValue(id, "name"); }
-        set { Interface.SetStringValue(id, "name", value); }
+        get
+        {
+            if (!nameAssigned)
+            {
+                name = Interface.GetStringValue(id, "name");
+                nameAssigned = true;
+            }
+
+            return name;
+        }
+        set
+        {
+            Interface.SetStringValue(id, "name", value);
+            name = value;
+            nameAssigned = true;
+        }
     }
 
     public int Index

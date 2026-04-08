@@ -490,6 +490,9 @@ namespace Deltares::Server
             else if (property_ == "subset_fraction") return settings->SubsetFraction;
             else if (property_ == "step_size") return settings->GradientSettings->StepSize;
             else if (property_ == "fragility_curve_step_size") return settings->FragilityCurveStepSize;
+            else if (property_ == "start_value_step_size") return settings->StartValueStepSize;
+            else if (property_ == "loop_variance_increment") return settings->LoopVarianceIncrement;
+            else if (property_ == "max_beta") return settings->MaxBeta;
         }
         else if (objectType == ObjectType::StochastSettings)
         {
@@ -734,6 +737,9 @@ namespace Deltares::Server
             else if (property_ == "subset_fraction") settings->SubsetFraction = value;
             else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
             else if (property_ == "fragility_curve_step_size") settings->FragilityCurveStepSize = value;
+            else if (property_ == "start_value_step_size") settings->StartValueStepSize = value;
+            else if (property_ == "loop_variance_increment") settings->LoopVarianceIncrement = value;
+            else if (property_ == "max_beta") settings->MaxBeta = value;
         }
         else if (objectType == ObjectType::FragilityCurveSettings)
         {
@@ -963,6 +969,7 @@ namespace Deltares::Server
             else if (property_ == "maximum_directions") return settings->MaximumDirections;
             else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
             else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
+            else if (property_ == "minimum_failed_samples") return settings->MinimumFailedSamples;
             else if (property_ == "random_seed") return settings->RandomSettings->Seed;
             else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
             else if (property_ == "max_messages") return settings->RunSettings->MaxMessages;
@@ -1360,6 +1367,7 @@ namespace Deltares::Server
             else if (property_ == "maximum_directions") settings->MaximumDirections = value;
             else if (property_ == "minimum_variance_loops") settings->MinimumVarianceLoops = value;
             else if (property_ == "maximum_variance_loops") settings->MaximumVarianceLoops = value;
+            else if (property_ == "minimum_failed_samples") settings->MinimumFailedSamples = value;
             else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
             else if (property_ == "max_clusters") settings->MaxClusters = value;
             else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
@@ -1612,6 +1620,7 @@ namespace Deltares::Server
             else if (property_ == "clustering") return setting->Clustering;
             else if (property_ == "optimize_number_clusters") return setting->OptimizeNumberOfClusters;
             else if (property_ == "auto_maximum_samples") return setting->AutoMaximumSamples;
+            else if (property_ == "start_point_on_limit_state") return setting->StartPointOnLimitState;
         }
         else if (objectType == ObjectType::CombineProject)
         {
@@ -1719,6 +1728,7 @@ namespace Deltares::Server
             else if (property_ == "clustering") setting->Clustering = value;
             else if (property_ == "optimize_number_clusters") setting->OptimizeNumberOfClusters = value;
             else if (property_ == "auto_maximum_samples") setting->AutoMaximumSamples = value;
+            else if (property_ == "start_point_on_limit_state") setting->StartPointOnLimitState = value;
         }
         else if (objectType == ObjectType::DesignPoint)
         {

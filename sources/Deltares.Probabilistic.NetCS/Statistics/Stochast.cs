@@ -28,6 +28,8 @@ namespace Deltares.Probabilistic.Statistics
     public class Stochast
     {
         private int id = 0;
+        private string name = string.Empty;
+        private bool nameAssigned = false;
 
         private CallBackList<HistogramValue> histogramValues = null;
         private CallBackList<DiscreteValue> discreteValues = null;
@@ -65,8 +67,22 @@ namespace Deltares.Probabilistic.Statistics
 
         public string Name
         {
-            get { return Interface.GetStringValue(id, "name"); }
-            set { Interface.SetStringValue(id, "name", value); }
+            get
+            {
+                if (!nameAssigned)
+                {
+                    name = Interface.GetStringValue(id, "name");
+                    nameAssigned = true;
+                }
+
+                return name;
+            }
+            set
+            {
+                Interface.SetStringValue(id, "name", value);
+                name = value;
+                nameAssigned = true;
+            }
         }
 
         public DistributionType DistributionType

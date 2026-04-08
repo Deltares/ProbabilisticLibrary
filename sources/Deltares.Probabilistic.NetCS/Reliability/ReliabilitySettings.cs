@@ -268,10 +268,40 @@ public class ReliabilitySettings
         set { Interface.SetIntValue(id, "maximum_variance_loops", value); }
     }
 
+    public int MinimumFailedSamples
+    {
+        get { return Interface.GetIntValue(id, "minimum_failed_samples"); }
+        set { Interface.SetIntValue(id, "minimum_failed_samples", value); }
+    }
+
     public bool AutoMaximumSamples
     {
         get { return Interface.GetBoolValue(id, "auto_maximum_samples"); }
         set { Interface.SetBoolValue(id, "auto_maximum_samples", value); }
+    }
+
+    public bool StartPointOnLimitState
+    {
+        get { return Interface.GetBoolValue(id, "start_point_on_limit_state"); }
+        set { Interface.SetBoolValue(id, "start_point_on_limit_state", value); }
+    }
+
+    public double LoopVarianceIncrement
+    {
+        get { return Interface.GetValue(id, "loop_variance_increment"); }
+        set { Interface.SetValue(id, "loop_variance_increment", value); }
+    }
+
+    public double StartValueStepSize
+    {
+        get { return Interface.GetValue(id, "start_value_step_size"); }
+        set { Interface.SetValue(id, "start_value_step_size", value); }
+    }
+
+    public double MaxBeta
+    {
+        get { return Interface.GetValue(id, "max_beta"); }
+        set { Interface.SetValue(id, "max_beta", value); }
     }
 
     public double VariationCoefficient
