@@ -25,44 +25,21 @@ namespace Deltares.Probabilistic.Logging
 {
     public class Message
     {
-        private int id = 0;
-
         public Message()
         {
-            this.id = Interface.Create("message");
         }
 
         internal Message(int id)
         {
-            this.id = id;
-        }
+            Type = MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "type"));
+            Text = Interface.GetStringValue(id, "text");
+            Subject = Interface.GetStringValue(id, "subject");
 
-        ~Message()
-        {
             Interface.Destroy(id);
         }
 
-        internal int GetId()
-        {
-            return id;
-        }
-
-        public MessageType Type
-        {
-            get { return MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "type")); }
-            set { Interface.SetStringValue(id, "type", MessageTypeConverter.ConvertToString(value)); }
-        }
-
-        public string Text
-        {
-            get { return Interface.GetStringValue(id, "text"); }
-            set { Interface.SetStringValue(id, "text", value); }
-        }
-
-        public string Subject
-        {
-            get { return Interface.GetStringValue(id, "subject"); }
-            set { Interface.SetStringValue(id, "subject", value); }
-        }
+        public MessageType Type { get; set; }
+        public string Text { get; set; }
+        public string Subject { get; set; }
     }
 }

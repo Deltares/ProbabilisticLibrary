@@ -88,7 +88,6 @@ namespace Deltares.Probabilistic.Reliability
             }
             set
             {
-                Interface.SetIntValue(id, "realization", value.GetId());
                 realization = value;
             }
         }

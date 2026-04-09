@@ -26,115 +26,31 @@ namespace Deltares.Probabilistic.Logging
 {
     public class Evaluation
     {
-        private int id = 0;
-        private double[] inputValues = null;
-        private double[] outputValues = null;
-        private object tag = null;
-        private TagRepository tagRepository = null;
-
         public Evaluation()
         {
-            this.id = Interface.Create("evaluation");
         }
 
         internal Evaluation(int id, TagRepository tagRepository)
         {
-            this.id = id;
-            this.tagRepository = tagRepository;
-        }
+            this.Iteration = Interface.GetIntValue(id, "iteration");
+            this.Beta = Interface.GetValue(id, "beta");
+            this.Z = Interface.GetValue(id, "z");
+            this.Quantile = Interface.GetValue(id, "quantile");
+            this.Weight = Interface.GetValue(id, "weight");
+            this.InputValues = Interface.GetArrayValue(id, "input_values");
+            this.OutputValues = Interface.GetArrayValue(id, "output_values");
+            this.Tag = tagRepository.RetrieveTag(Interface.GetIntValue(id, "tag"));
 
-        ~Evaluation()
-        {
             Interface.Destroy(id);
         }
 
-        internal int GetId()
-        {
-            return id;
-        }
-
-        public int Iteration
-        {
-            get { return Interface.GetIntValue(id, "iteration"); }
-            set { Interface.SetIntValue(id, "iteration", value); }
-        }
-
-        public double Beta
-        {
-            get { return Interface.GetValue(id, "beta"); }
-            set { Interface.SetValue(id, "beta", value); }
-        }
-
-        public double Z
-        {
-            get { return Interface.GetValue(id, "z"); }
-            set { Interface.SetValue(id, "z", value); }
-        }
-
-        public double Quantile
-        {
-            get { return Interface.GetValue(id, "quantile"); }
-            set { Interface.SetValue(id, "quantile", value); }
-        }
-
-        public double Weight
-        {
-            get { return Interface.GetValue(id, "weight"); }
-            set { Interface.SetValue(id, "weight", value); }
-        }
-
-        public double[] InputValues
-        {
-            get
-            {
-                if (inputValues == null)
-                {
-                    inputValues = Interface.GetArrayValue(id, "input_values");
-                }
-
-                return inputValues;
-            }
-            set
-            {
-                inputValues = value;
-            }
-        }
-
-        public double[] OutputValues
-        {
-            get
-            {
-                if (outputValues == null)
-                {
-                    outputValues = Interface.GetArrayValue(id, "output_values");
-                }
-
-                return outputValues;
-            }
-            set
-            {
-                outputValues = value;
-            }
-        }
-
-        public object Tag
-        {
-            get
-            {
-                if (tagRepository != null)
-                {
-                    int tagId = Interface.GetIntValue(id, "tag");
-                    tag = tagRepository.RetrieveTag(tagId);
-                    tagRepository = null; // no need to keep longer
-                }
-
-                return tag;
-            }
-            set
-            {
-                tag = value;
-                tagRepository = null;
-            }
-        }
+        public int Iteration { get; set; }
+        public double Beta { get; set; }
+        public double Z { get; set; }
+        public double Quantile { get; set; }
+        public double Weight { get; set; }
+        public double[] InputValues { get; private set; }
+        public double[] OutputValues { get; private set; }
+        public object Tag { get; set; }
     }
 }

@@ -25,64 +25,28 @@ namespace Deltares.Probabilistic.Reliability;
 
 public class ReliabilityResult
 {
-    private int id = 0;
-
     public ReliabilityResult()
     {
-        id = Interface.Create("reliability_result");
     }
 
     internal ReliabilityResult(int id)
     {
-        this.id = id;
-    }
+        this.Index = Interface.GetIntValue(id, "index");
+        this.ReliabilityIndex = Interface.GetValue(id, "reliability_index");
+        this.Convergence = Interface.GetValue(id, "convergence");
+        this.Variation = Interface.GetValue(id, "variation");
+        this.Contribution = Interface.GetValue(id, "contribution");
+        this.Samples = Interface.GetIntValue(id, "samples");
 
-    ~ReliabilityResult()
-    {
         Interface.Destroy(id);
     }
 
-    internal int GetId()
-    {
-        return id;
-    }
-
-    public int Index
-    {
-        get { return Interface.GetIntValue(id, "index"); }
-        set { Interface.SetIntValue(id, "index", value); }
-    }
-
-    public double ReliabilityIndex
-    {
-        get { return Interface.GetValue(id, "reliability_index"); }
-        set { Interface.SetValue(id, "reliability_index", value); }
-    }
-
-    public double Convergence
-    {
-        get { return Interface.GetValue(id, "convergence"); }
-        set { Interface.SetValue(id, "convergence", value); }
-    }
-
-    public double Variation
-    {
-        get { return Interface.GetValue(id, "variation"); }
-        set { Interface.SetValue(id, "variation", value); }
-    }
-
-    public double Contribution
-    {
-        get { return Interface.GetValue(id, "contribution"); }
-        set { Interface.SetValue(id, "contribution", value); }
-    }
-
-    public int Samples
-    {
-        get { return Interface.GetIntValue(id, "samples"); }
-        set { Interface.SetIntValue(id, "samples", value); }
-    }
-
+    public int Index { get; set; }
+    public double ReliabilityIndex { get; set; }
+    public double Convergence { get; set; }
+    public double Variation { get; set; }
+    public double Contribution { get; set; }
+    public int Samples { get; set; }
     public double Difference { get; set; }
     public double LowReliability { get; set; }
     public double HighReliability { get; set; }
