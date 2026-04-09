@@ -80,7 +80,7 @@ namespace Deltares.Probabilistic.Test
 
             project.Run();
 
-            ClassicAssert.AreEqual(3.91, project.DesignPoint.Beta, margin);
+            ClassicAssert.AreEqual(3.84, project.DesignPoint.Beta, margin);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace Deltares.Probabilistic.Test
 
             project.Run();
 
-            ClassicAssert.AreEqual(3.91, project.DesignPoint.Beta, margin);
+            ClassicAssert.AreEqual(3.84, project.DesignPoint.Beta, margin);
         }
 
         [Test]

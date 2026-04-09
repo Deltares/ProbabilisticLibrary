@@ -48,7 +48,7 @@ public class StochastPoint
         ObjectFactory.Destroy(id);
     }
 
-    internal int GetId()
+    public int GetId()
     {
         return id;
     }

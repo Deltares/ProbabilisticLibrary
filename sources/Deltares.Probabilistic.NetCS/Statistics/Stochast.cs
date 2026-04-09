@@ -55,7 +55,7 @@ namespace Deltares.Probabilistic.Statistics
             ObjectFactory.Destroy(id);
         }
 
-        internal int GetId()
+        public int GetId()
         {
             return id;
         }
