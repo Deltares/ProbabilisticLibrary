@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 import unittest
+import pytest
 import sys
 import os
 
@@ -855,6 +856,7 @@ def h(a,b,c):
         self.assertAlmostEqual(0.93, alphas[0].x, delta=margin)
         self.assertAlmostEqual(0.94, alphas[1].x, delta=margin)
 
+    @pytest.mark.plotting
     def test_crude_monte_carlo_plot(self):
         project = project_builder.get_linear_project()
 
