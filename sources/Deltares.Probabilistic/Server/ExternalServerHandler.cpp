@@ -166,7 +166,7 @@ namespace Deltares::Server
     {
         this->UpdateAddressInfo();
 
-        bool connected = false;
+        bool connected = CheckConnection();
         int count = 0;
 
         while (!connected && count < 10)

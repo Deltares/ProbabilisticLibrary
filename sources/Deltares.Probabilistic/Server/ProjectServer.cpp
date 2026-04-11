@@ -31,6 +31,7 @@ namespace Deltares::Server
 
     void ProjectServer::AddHandler(std::shared_ptr<BaseHandler> handler)
     {
+        handlers.clear();
         handlers.push_back(handler);
     }
 
@@ -53,6 +54,21 @@ namespace Deltares::Server
                 this->handlers[i]->Create(object_type, counter);
 
                 return counter;
+            }
+        }
+
+        throw probLibException("Object type not supported");
+    }
+
+    int ProjectServer::CreateWithId(std::string object_type, int id)
+    {
+        for (int i = 0; i < this->handlers.size(); i++)
+        {
+            if (this->handlers[i]->CanHandle(object_type))
+            {
+                id_ = id;
+                this->handlers[i]->Create(object_type, id);
+                return id;
             }
         }
 
@@ -204,10 +220,10 @@ namespace Deltares::Server
 
         int newId = id_ + 1;
         int objectId = handlersTable[id]->GetIdValue(id, property_, newId);
-        if (objectId == newId)
+        if (objectId >= newId)
         {
-            handlersTable[newId] = this->handlersTable[id];
-            id_ += 1;
+            handlersTable[objectId] = this->handlersTable[id];
+            id_ = std::max(id_, objectId);
         }
 
         return objectId;
@@ -219,10 +235,10 @@ namespace Deltares::Server
 
         int newId = id_ + 1;
         int objectId = handlersTable[id]->GetIndexedIdValue(id, property_, index, newId);
-        if (objectId == newId)
+        if (objectId >= newId)
         {
-            handlersTable[newId] = this->handlersTable[id];
-            id_ += 1;
+            handlersTable[objectId] = this->handlersTable[id];
+            id_ = std::max(id_, objectId);
         }
 
         return objectId;

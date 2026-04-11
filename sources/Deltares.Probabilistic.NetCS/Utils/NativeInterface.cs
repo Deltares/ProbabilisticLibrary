@@ -79,6 +79,9 @@ public static class NativeInterface
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
     public static extern int Create(byte[] className);
 
+    [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
+    public static extern int CreateWithId(byte[] className, int id);
+
     // Import the native function from your library
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
     public static extern void Destroy(int id);

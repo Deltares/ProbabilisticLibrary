@@ -19,10 +19,11 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+using Deltares.Probabilistic.Model;
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using Deltares.Probabilistic.Model;
 using static Deltares.Probabilistic.Utils.NativeInterface;
 
 namespace Deltares.Probabilistic.Utils
@@ -46,6 +47,19 @@ namespace Deltares.Probabilistic.Utils
             try
             {
                 return NativeInterface.Create(Utf8(className));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                throw;
+            }
+        }
+
+        public static int CreateWithId(string className, int id)
+        {
+            try
+            {
+                return NativeInterface.CreateWithId(Utf8(className), id);
             }
             catch (Exception ex)
             {
@@ -103,6 +117,16 @@ namespace Deltares.Probabilistic.Utils
             NativeInterface.GetStringValue(id, prop, buffer, (UIntPtr)buffer.Length);
 
             return Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+        }
+
+        public static int GetIndexedIntValue(int id, string property, int index)
+        {
+            return NativeInterface.GetIndexedIntValue(id, Utf8(property), index);
+        }
+
+        public static int GetIndexedIdValue(int id, string property, int index, int newId)
+        {
+            return NativeInterface.GetIndexedIdValue(id, Utf8(property), index);
         }
 
         public static string GetIndexedStringValue(int id, string property, int index)

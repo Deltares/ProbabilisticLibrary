@@ -60,6 +60,12 @@ extern "C" DLL_PUBLIC int Create(const char* type)
     return id;
 }
 
+extern "C" DLL_PUBLIC int CreateWithId(const char* type, int id)
+{
+    std::string typeStr = type;
+    return ProjectServer::Instance().CreateWithId(typeStr, id);
+}
+
 extern "C" DLL_PUBLIC void Destroy(int id)
 {
     ProjectServer::Instance().Destroy(id);
@@ -241,37 +247,79 @@ extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, const char* property, i
 
 extern "C" DLL_PUBLIC void SetCallBack(int id, const char* property, Deltares::Models::ZValuesCallBack callBack)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetCallBack(id, propertyStr, callBack);
+    try
+    {
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetMultipleCallBack(int id, const char* property, Deltares::Models::ZValuesMultipleCallBack callBack)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetMultipleCallBack(id, propertyStr, callBack);
+    try
+    {
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetMultipleCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, const char* property, Deltares::Models::EmptyCallBack callBack)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetEmptyCallBack(id, propertyStr, callBack);
+    try
+    {
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetEmptyCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetModelSampleCallback(int id, const char* property, Deltares::Models::ModelSampleCallback callBack)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetModelSampleCallBack(id, propertyStr, callBack);
+    try
+    {
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetModelSampleCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetMultipleModelSampleCallback(int id, const char* property, Deltares::Models::MultipleModelSampleCallback callBack)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetMultipleModelSampleCallBack(id, propertyStr, callBack);
+    try
+    {
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetMultipleModelSampleCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetProgressCallBacks(int id, Deltares::Models::ProgressCallBack progress, Deltares::Models::DetailedProgressCallBack detailed, Deltares::Models::TextualProgressCallBack textual)
 {
-    ProjectServer::Instance().SetProgressCallBacks(id, progress, detailed, textual);
+    try
+    {
+        ProjectServer::Instance().SetProgressCallBacks(id, progress, detailed, textual);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 

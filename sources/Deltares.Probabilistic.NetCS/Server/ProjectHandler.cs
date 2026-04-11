@@ -38,7 +38,7 @@ public class ProjectHandler
 
     public virtual void Create(string type, int id)
     {
-        Interface.Create(type);
+        Interface.CreateWithId(type, id);
     }
 
     public virtual void Destroy(int id)
@@ -98,14 +98,14 @@ public class ProjectHandler
 
     public virtual int GetIndexedIntValue(int id, string property, int index)
     {
-        throw new NotImplementedException("GetIndexedIntValue");
-        //return Interface.GetIndexedIntValue(id, property, index);
+        //throw new NotImplementedException("GetIndexedIntValue");
+        return Interface.GetIndexedIntValue(id, property, index);
     }
 
     public virtual int GetIndexedIdValue(int id, string property, int index, int newId)
     {
-        throw new NotImplementedException("GetIndexedIdValue");
-        //return Interface.GetIndexedIdValue(id, property, index, newId);
+        //throw new NotImplementedException("GetIndexedIdValue");
+        return Interface.GetIndexedIdValue(id, property, index, newId);
     }
 
     public virtual string GetIndexedStringValue(int id, string property, int index)
