@@ -90,20 +90,41 @@ extern "C" DLL_PUBLIC void SetValue(int id, const char* property, double value)
 
 extern "C" DLL_PUBLIC int GetIntValue(int id, const char* property)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIntValue(id, propertyStr);
+    try
+    {
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIntValue(id, propertyStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetIntValue(int id, const char* property, int value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetIntValue(id, propertyStr, value);
+    try
+    {
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetIntValue(id, propertyStr, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC int GetIdValue(int id, const char* property)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIdValue(id, propertyStr);
+    try
+    {
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIdValue(id, propertyStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC double GetIntArgValue(int id1, int id2, const char* property)
@@ -132,24 +153,46 @@ extern "C" DLL_PUBLIC void SetBoolValue(int id, const char* property, bool value
 
 extern "C" DLL_PUBLIC size_t GetStringLength(int id, const char* property)
 {
-    std::string propertyStr(property);
-    std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
-    return result.length();
+    try
+    {
+        std::string propertyStr(property);
+        std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
+        return result.length();
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
+
 }
 
 extern "C" DLL_PUBLIC void GetStringValue(int id, const char* property, char* result_c, size_t size)
 {
-    std::string propertyStr(property);
-    std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
+    try
+    {
+        std::string propertyStr(property);
+        std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
 
-    copyStringToCharPointer(result, result_c, size);
+        copyStringToCharPointer(result, result_c, size);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetStringValue(int id, const char* property, const char* value)
 {
-    std::string propertyStr(property);
-    std::string valueStr(value);
-    ProjectServer::Instance().SetStringValue(id, propertyStr, valueStr);
+    try
+    {
+        std::string propertyStr(property);
+        std::string valueStr(value);
+        ProjectServer::Instance().SetStringValue(id, propertyStr, valueStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void FillArrayValue(int id, const char* property, double* values, int size)
@@ -226,8 +269,15 @@ extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, const char* property, int i
 
 extern "C" DLL_PUBLIC int GetIndexedIdValue(int id, const char* property, int index)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIndexedIdValue(id, propertyStr, index);
+    try
+    {
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIndexedIdValue(id, propertyStr, index);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC size_t GetIndexedStringLength(int id, const char* property, int index)

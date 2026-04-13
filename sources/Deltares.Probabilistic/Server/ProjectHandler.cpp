@@ -130,6 +130,12 @@ namespace Deltares::Server
         else throw probLibException("type not supported: " + object_type);
     }
 
+    int ProjectHandler::GetNewId()
+    {
+        new_id++;
+        return new_id;
+    }
+
     void ProjectHandler::Create(std::string object_type, int id)
     {
         types[id] = GetType(object_type);

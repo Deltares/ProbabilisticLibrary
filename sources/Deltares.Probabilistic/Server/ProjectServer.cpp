@@ -42,6 +42,8 @@ namespace Deltares::Server
         id_ += 1;
         handlersTable[id_] = this->handlers[handlerIndex];
         return id_;
+
+        return this->handlers[handlerIndex]->GetNewId();
     }
 
     int ProjectServer::Create(std::string object_type)
@@ -218,8 +220,15 @@ namespace Deltares::Server
     {
         std::lock_guard<std::mutex> lock(mtx);
 
+        //int newId = GetNewObjectId(0);
         int newId = id_ + 1;
         int objectId = handlersTable[id]->GetIdValue(id, property_, newId);
+
+        if (objectId == 63)
+        {
+            int k = 1;
+        }
+
         if (objectId >= newId)
         {
             handlersTable[objectId] = this->handlersTable[id];
@@ -233,9 +242,16 @@ namespace Deltares::Server
     {
         std::lock_guard<std::mutex> lock(mtx);
 
+        //int newId = GetNewObjectId(0);
         int newId = id_ + 1;
         int objectId = handlersTable[id]->GetIndexedIdValue(id, property_, index, newId);
-        if (objectId >= newId)
+
+        if (objectId == 63)
+        {
+            int k = 1;
+        }
+
+        if (objectId == newId)
         {
             handlersTable[objectId] = this->handlersTable[id];
             id_ = std::max(id_, objectId);

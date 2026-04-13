@@ -32,11 +32,22 @@ public class ModelParameter
     public ModelParameter()
     {
         this.id = Interface.Create("model_parameter");
+
+        if (id == 63)
+        {
+            int k = 1;
+        }
     }
 
     internal ModelParameter(int id)
     {
         this.id = id;
+
+        if (id == 63)
+        {
+            int k = 1;
+        }
+
     }
 
     ~ModelParameter()
@@ -44,7 +55,7 @@ public class ModelParameter
         Interface.Destroy(id);
     }
 
-    internal int GetId()
+    public int GetId()
     {
         return id;
     }

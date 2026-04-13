@@ -56,6 +56,7 @@ namespace Deltares::Server
     {
     public:
         bool CanHandle(std::string object_type) override;
+        int GetNewId() override;
         void Create(std::string object_type, int id) override;
         void Destroy(int id) override;
         bool ShouldClose() override;
@@ -129,6 +130,9 @@ namespace Deltares::Server
             ConvergenceReport
             
         };
+
+        int new_id = 0;
+
         ObjectType GetType(std::string object_type);
         std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 

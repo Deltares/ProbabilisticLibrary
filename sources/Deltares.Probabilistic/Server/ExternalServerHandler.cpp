@@ -265,6 +265,17 @@ namespace Deltares::Server
         return result == "true";
     }
 
+    int ExternalServerHandler::GetNewId()
+    {
+        if (!this->server_started)
+        {
+            StartServer();
+        }
+
+        std::string result = this->Send("get_new_id", true);
+        return std::stoi(result);
+    }
+
     void ExternalServerHandler::Create(std::string objectType, int id)
     {
         if (!this->server_started)

@@ -59,6 +59,7 @@ namespace Deltares::Server
 
 #if __has_include(<windows.h>)
         bool CanHandle(std::string objectType) override;
+        int GetNewId() override;
         void Create(std::string objectType, int id) override;
         void Destroy(int id) override;
         void Exit() override;

@@ -36,6 +36,11 @@ public class ProjectHandler
         return true;
     }
 
+    public virtual int GetNewId()
+    {
+        return -1;
+    }
+
     public virtual void Create(string type, int id)
     {
         Interface.CreateWithId(type, id);
@@ -98,13 +103,11 @@ public class ProjectHandler
 
     public virtual int GetIndexedIntValue(int id, string property, int index)
     {
-        //throw new NotImplementedException("GetIndexedIntValue");
         return Interface.GetIndexedIntValue(id, property, index);
     }
 
     public virtual int GetIndexedIdValue(int id, string property, int index, int newId)
     {
-        //throw new NotImplementedException("GetIndexedIdValue");
         return Interface.GetIndexedIdValue(id, property, index, newId);
     }
 

@@ -31,6 +31,7 @@ namespace Deltares::Server
     {
     public:
         virtual bool CanHandle(std::string object_type) { return false; }
+        virtual int GetNewId() { return -1; }
         virtual void Create(std::string object_type, int id) {}
         virtual void Destroy(int id) {}
         virtual void Exit() {}
