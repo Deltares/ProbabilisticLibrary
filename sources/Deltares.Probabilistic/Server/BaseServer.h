@@ -28,7 +28,7 @@ namespace Deltares::Server
     class BaseServer
     {
     public:
-        virtual int GetNewObjectId(int handlerIndex) { return 0; }
+        virtual int GetNewObjectId() { return 0; }
         std::string last_exception = "";
     };
 }
