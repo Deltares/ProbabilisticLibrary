@@ -1658,7 +1658,7 @@ namespace Deltares::Server
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
-            if (property_ == "callback_assigned") project->model->callbackAssigned = value;
+            if (property_ == "callback_assigned") if (project->model != nullptr) project->model->callbackAssigned = value;
         }
         else if (IsModelSettingsType(objectType))
         {

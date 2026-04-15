@@ -530,6 +530,8 @@ class ModelProject(FrozenObject):
             self._update_model()
         elif isinstance(value, ZModelContainer):
             self._model = value.get_model()
+            if hasattr(value, '_id'):
+                interface.SetIntValue(self._project_id, 'model_callback', value._id)
         else:
             raise ValueError('ZModel container expected')
 
