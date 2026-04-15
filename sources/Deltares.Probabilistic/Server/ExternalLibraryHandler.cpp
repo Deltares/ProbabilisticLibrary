@@ -34,9 +34,9 @@ namespace Deltares::Server
         return this->canHandle(objectType.c_str());
     }
 
-    void ExternalLibraryHandler::Create(std::string objectType, int id)
+    int ExternalLibraryHandler::Create(std::string objectType)
     {
-        this->createMethod(objectType.c_str(), id);
+        return this->createMethod(objectType.c_str());
     }
 
     void ExternalLibraryHandler::Destroy(int id)

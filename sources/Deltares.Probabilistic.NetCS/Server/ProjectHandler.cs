@@ -36,14 +36,14 @@ public class ProjectHandler
         return true;
     }
 
-    public virtual int GetNewId()
+    public int GetNewId()
     {
-        return -1;
+        return Interface.GetNewId();
     }
 
-    public virtual void Create(string type, int id)
+    public virtual int Create(string type)
     {
-        Interface.CreateWithId(type, id);
+        return Interface.Create(type);
     }
 
     public virtual void Destroy(int id)
@@ -106,9 +106,9 @@ public class ProjectHandler
         return Interface.GetIndexedIntValue(id, property, index);
     }
 
-    public virtual int GetIndexedIdValue(int id, string property, int index, int newId)
+    public virtual int GetIndexedIdValue(int id, string property, int index)
     {
-        return Interface.GetIndexedIdValue(id, property, index, newId);
+        return Interface.GetIndexedIdValue(id, property, index);
     }
 
     public virtual string GetIndexedStringValue(int id, string property, int index)
@@ -131,7 +131,7 @@ public class ProjectHandler
         return Interface.GetIndexedValue(id, property, index);
     }
 
-    public virtual int GetIdValue(int id, string property, int newId)
+    public virtual int GetIdValue(int id, string property)
     {
         return Interface.GetIdValue(id, property);
     }

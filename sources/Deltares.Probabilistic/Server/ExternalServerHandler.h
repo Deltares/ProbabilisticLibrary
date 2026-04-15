@@ -58,9 +58,10 @@ namespace Deltares::Server
         }
 
 #if __has_include(<windows.h>)
+        void Start() override;
         bool CanHandle(std::string objectType) override;
         int GetNewId() override;
-        void Create(std::string objectType, int id) override;
+        int Create(std::string objectType) override;
         void Destroy(int id) override;
         void Exit() override;
         double GetValue(int id, std::string property) override;
@@ -79,8 +80,8 @@ namespace Deltares::Server
         void SetArrayValue(int id, std::string property, double* values, int size) override;
         void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
         void GetArgValues(int id, std::string property, double* values, int size, double* outputValues) override;
-        int GetIdValue(int id, std::string property_, int newId) override;
-        int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
+        int GetIdValue(int id, std::string property_) override;
+        int GetIndexedIdValue(int id, std::string property_, int index) override;
         double GetIndexedIndexedValue(int id, std::string property, int index1, int index2) override;
         void SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value) override;
         void SetIndexedIndexedIntValue(int id, const std::string& property, int index1, int index2, int value) override;

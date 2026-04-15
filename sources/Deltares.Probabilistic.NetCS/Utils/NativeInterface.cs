@@ -75,12 +75,11 @@ public static class NativeInterface
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void TextualProgressCallBack(int type, [MarshalAs(UnmanagedType.LPStr)] string text);
 
-    // Import the native function from your library
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
-    public static extern int Create(byte[] className);
+    public static extern int GetNewId();
 
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
-    public static extern int CreateWithId(byte[] className, int id);
+    public static extern int Create(byte[] className);
 
     // Import the native function from your library
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]

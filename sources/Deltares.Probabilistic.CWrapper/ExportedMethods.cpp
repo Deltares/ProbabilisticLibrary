@@ -51,6 +51,15 @@ extern "C" DLL_PUBLIC void AddLibrary(const char* library)
         externalHandler->Initialize();
         ProjectServer::Instance().SetHandler(externalHandler);
     }
+    else
+    {
+        throw Deltares::Reliability::probLibException(libraryStr + " is not supported");
+    }
+}
+
+extern "C" DLL_PUBLIC int GetNewId()
+{
+    return ProjectServer::Instance().GetNewId();
 }
 
 extern "C" DLL_PUBLIC int Create(const char* type)
@@ -58,12 +67,6 @@ extern "C" DLL_PUBLIC int Create(const char* type)
     std::string typeStr = type;
     int id = ProjectServer::Instance().Create(typeStr);
     return id;
-}
-
-extern "C" DLL_PUBLIC int CreateWithId(const char* type, int id)
-{
-    std::string typeStr = type;
-    return ProjectServer::Instance().CreateWithId(typeStr, id);
 }
 
 extern "C" DLL_PUBLIC void Destroy(int id)

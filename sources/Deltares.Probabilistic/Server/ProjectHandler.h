@@ -57,14 +57,14 @@ namespace Deltares::Server
     public:
         bool CanHandle(std::string object_type) override;
         int GetNewId() override;
-        void Create(std::string object_type, int id) override;
+        int Create(std::string object_type) override;
         void Destroy(int id) override;
         bool ShouldClose() override;
         double GetValue(int id, const std::string property_) override;
         void SetValue(int id, const std::string property_, double value) override;
         int GetIntValue(int id, std::string property_) override;
         void SetIntValue(int id, std::string property_, int value) override;
-        int GetIdValue(int id, std::string property_, int newId) override;
+        int GetIdValue(int id, std::string property_) override;
         double GetIntArgValue(int id1, int id2, std::string property_) override;
         void SetIntArgValue(int id1, int id2, std::string property_, double value) override;
         bool GetBoolValue(int id, std::string property_) override;
@@ -82,7 +82,7 @@ namespace Deltares::Server
         void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
         void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value) override;
         int GetIndexedIntValue(int id, std::string property_, int index) override;
-        int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
+        int GetIndexedIdValue(int id, std::string property_, int index) override;
         void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
         void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) override;
         void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) override;
@@ -132,6 +132,7 @@ namespace Deltares::Server
         };
 
         int new_id = 0;
+        std::mutex mtx;
 
         ObjectType GetType(std::string object_type);
         std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;

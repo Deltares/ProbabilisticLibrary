@@ -42,24 +42,16 @@ namespace Deltares.Probabilistic.Utils
 
         private static byte[] Utf8(string s) => Encoding.UTF8.GetBytes(s);
 
+        public static int GetNewId()
+        {
+            return NativeInterface.GetNewId();
+        }
+
         public static int Create(string className)
         {
             try
             {
                 return NativeInterface.Create(Utf8(className));
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Error: {ex.Message}");
-                throw;
-            }
-        }
-
-        public static int CreateWithId(string className, int id)
-        {
-            try
-            {
-                return NativeInterface.CreateWithId(Utf8(className), id);
             }
             catch (Exception ex)
             {
@@ -124,7 +116,7 @@ namespace Deltares.Probabilistic.Utils
             return NativeInterface.GetIndexedIntValue(id, Utf8(property), index);
         }
 
-        public static int GetIndexedIdValue(int id, string property, int index, int newId)
+        public static int GetIndexedIdValue(int id, string property, int index)
         {
             return NativeInterface.GetIndexedIdValue(id, Utf8(property), index);
         }

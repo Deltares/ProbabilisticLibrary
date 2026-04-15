@@ -57,9 +57,8 @@ namespace Deltares::Server
             return instance;
         }
 
-        int GetNewObjectId() override;
+        int GetNewId();
         int Create(std::string object_type);
-        int CreateWithId(std::string object_type, int id);
         void Destroy(int id);
         double GetValue(int id, const std::string property_);
         void SetValue(int id, const std::string property_, double value);
@@ -98,7 +97,6 @@ namespace Deltares::Server
         void Exit();
 
     private:
-        std::mutex mtx;
         std::shared_ptr<BaseHandler> handler;
     };
 }

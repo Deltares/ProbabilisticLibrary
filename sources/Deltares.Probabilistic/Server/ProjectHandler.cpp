@@ -132,12 +132,15 @@ namespace Deltares::Server
 
     int ProjectHandler::GetNewId()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         new_id++;
         return new_id;
     }
 
-    void ProjectHandler::Create(std::string object_type, int id)
+    int ProjectHandler::Create(std::string object_type)
     {
+        int id = this->GetNewId();
+
         types[id] = GetType(object_type);
 
         switch (types[id])
@@ -296,10 +299,14 @@ namespace Deltares::Server
             break;
         default: throw probLibException("object type");
         }
+
+        return id;
     }
 
     void ProjectHandler::Destroy(int id)
     {
+        std::lock_guard<std::mutex> lock(mtx);
+
         if (!types.contains(id))
         {
             // already destroyed or never existed
@@ -1078,9 +1085,11 @@ namespace Deltares::Server
         return 0;
     }
 
-    int ProjectHandler::GetIdValue(int id, std::string property_, int newId)
+    int ProjectHandler::GetIdValue(int id, std::string property_)
     {
         ObjectType objectType = types[id];
+
+        int newId = this->GetNewId();
 
         if (IsModelProjectType(objectType))
         {
@@ -2472,9 +2481,10 @@ namespace Deltares::Server
         return 0;
     }
 
-    int ProjectHandler::GetIndexedIdValue(int id, std::string property_, int index, int newId)
+    int ProjectHandler::GetIndexedIdValue(int id, std::string property_, int index)
     {
         ObjectType objectType = types[id];
+        int newId = this->GetNewId();
 
         if (IsModelProjectType(objectType))
         {

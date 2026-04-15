@@ -38,6 +38,7 @@
 
 #endif
 
+#include <iostream>
 #include <stdexcept>
 
 #define DEFAULT_BUFLEN 512
@@ -164,28 +165,33 @@ namespace Deltares::Server
 
     void ExternalServerHandler::StartServer()
     {
+        if (!std::filesystem::exists(this->serverName))
+        {
+            throw Reliability::probLibException(this->serverName + " does not exist");
+        }
+
         this->UpdateAddressInfo();
 
-        bool connected = CheckConnection();
-        int count = 0;
+        server_started = CheckConnection();
+        int server_count = 0;
 
-        while (!connected && count < 10)
+        while (!server_started && server_count < 10)
         {
-            StartProcess(this->serverName, false);  
+            StartProcess(this->serverName, false);
 
-            this->server_started = true;
-
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-
-            connected = CheckConnection();
-            if (!connected)
+            int connection_count = 0;
+            while (!server_started && connection_count < 10)
             {
                 std::this_thread::sleep_for(std::chrono::seconds(1));
-                count++;
+
+                server_started = CheckConnection();
+                connection_count++;
             }
 
-            SetParentProcess();
+            server_count++;
         }
+
+        SetParentProcess();
     }
 
     void ExternalServerHandler::StartProcess(std::string processName, bool waitForExit)
@@ -229,6 +235,16 @@ namespace Deltares::Server
             // Close process and thread handles. 
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
+        }
+    }
+
+    void ExternalServerHandler::Start()
+    {
+        std::cout << "Start" << std::endl;
+
+        if (!this->server_started)
+        {
+            StartServer();
         }
     }
 
@@ -276,14 +292,16 @@ namespace Deltares::Server
         return std::stoi(result);
     }
 
-    void ExternalServerHandler::Create(std::string objectType, int id)
+    int ExternalServerHandler::Create(std::string objectType)
     {
         if (!this->server_started)
         {
             StartServer();
         }
 
-        this->Send("create:" + objectType + ":" + std::to_string(id), false);
+        std::string result = this->Send("create:" + objectType, true);
+
+        return std::stoi(result);
     }
 
     void ExternalServerHandler::Destroy(int id)
@@ -343,9 +361,9 @@ namespace Deltares::Server
         this->Send("set_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(value), false);
     }
 
-    int ExternalServerHandler::GetIdValue(int id, std::string property, int newId)
+    int ExternalServerHandler::GetIdValue(int id, std::string property)
     {
-        std::string result = this->Send("get_id_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(newId), true);
+        std::string result = this->Send("get_id_value:" + std::to_string(id) + ":" + property, true);
         return std::stoi(result);
     }
 
@@ -371,9 +389,9 @@ namespace Deltares::Server
         return std::stoi(result);
     }
 
-    int ExternalServerHandler::GetIndexedIdValue(int id, std::string property, int index, int newId)
+    int ExternalServerHandler::GetIndexedIdValue(int id, std::string property, int index)
     {
-        std::string result = this->Send("get_indexed_id_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index) + ":" + std::to_string(newId), true);
+        std::string result = this->Send("get_indexed_id_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index), true);
         return std::stoi(result);
     }
 

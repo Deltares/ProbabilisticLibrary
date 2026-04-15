@@ -30,9 +30,10 @@ namespace Deltares::Server
     class BaseHandler
     {
     public:
+        virtual void Start() { }
         virtual bool CanHandle(std::string object_type) { return false; }
         virtual int GetNewId() { return -1; }
-        virtual void Create(std::string object_type, int id) {}
+        virtual int Create(std::string object_type) { return -1; }
         virtual void Destroy(int id) {}
         virtual void Exit() {}
         virtual bool ShouldClose() { return false; }
@@ -63,8 +64,8 @@ namespace Deltares::Server
             // empty; must be implemented within implementing class
         }
         virtual int GetIndexedIntValue(int id, std::string property_, int index) { return 0; }
-        virtual int GetIdValue(int id, std::string property_, int newId) { return GetIntValue(id, property_); }
-        virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }
+        virtual int GetIdValue(int id, std::string property_) { return GetIntValue(id, property_); }
+        virtual int GetIndexedIdValue(int id, std::string property_, int index) { return GetIndexedIntValue(id, property_, index); }
         virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
         virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
         virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}

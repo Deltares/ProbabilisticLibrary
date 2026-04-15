@@ -33,11 +33,11 @@ namespace Deltares::Server
     void ProjectServer::SetHandler(std::shared_ptr<BaseHandler> handler)
     {
         this->handler = handler;
+        this->handler->Start();
     }
 
-    int ProjectServer::GetNewObjectId()
+    int ProjectServer::GetNewId()
     {
-        std::lock_guard<std::mutex> lock(mtx);
         return handler->GetNewId();
     }
 
@@ -45,21 +45,7 @@ namespace Deltares::Server
     {
         if (handler->CanHandle(object_type))
         {
-            int counter = GetNewObjectId();
-            handler->Create(object_type, counter);
-
-            return counter;
-        }
-
-        throw probLibException("Object type not supported");
-    }
-
-    int ProjectServer::CreateWithId(std::string object_type, int id)
-    {
-        if (handler->CanHandle(object_type))
-        {
-            handler->Create(object_type, id);
-            return id;
+            return handler->Create(object_type);
         }
 
         throw probLibException("Object type not supported");
@@ -67,7 +53,6 @@ namespace Deltares::Server
 
     void ProjectServer::Destroy(int id)
     {
-        std::lock_guard<std::mutex> lock(mtx);
         handler->Destroy(id);
     }
 
@@ -198,36 +183,14 @@ namespace Deltares::Server
 
     int ProjectServer::GetIdValue(int id, std::string property_)
     {
-        int newId = GetNewObjectId();
-        int objectId = handler->GetIdValue(id, property_, newId);
-
-        if (objectId == 63)
-        {
-            int k = 1;
-        }
-
-        if (objectId >= newId)
-        {
-            //id_ = std::max(id_, objectId);
-        }
+        int objectId = handler->GetIdValue(id, property_);
 
         return objectId;
     }
 
     int ProjectServer::GetIndexedIdValue(int id, std::string property_, int index)
     {
-        int newId = GetNewObjectId();
-        int objectId = handler->GetIndexedIdValue(id, property_, index, newId);
-
-        if (objectId == 63)
-        {
-            int k = 1;
-        }
-
-        if (objectId == newId)
-        {
-            //id_ = std::max(id_, objectId);
-        }
+        int objectId = handler->GetIndexedIdValue(id, property_, index);
 
         return objectId;
     }
