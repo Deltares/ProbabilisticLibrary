@@ -33,7 +33,6 @@ namespace Deltares::Server
     void ProjectServer::SetHandler(std::shared_ptr<BaseHandler> handler)
     {
         this->handler = handler;
-        this->handler->Start();
     }
 
     int ProjectServer::GetNewId()

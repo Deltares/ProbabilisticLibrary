@@ -58,7 +58,8 @@ namespace Deltares::Server
         }
 
 #if __has_include(<windows.h>)
-        void Start() override;
+        void StartServer();
+
         bool CanHandle(std::string objectType) override;
         int GetNewId() override;
         int Create(std::string objectType) override;
@@ -97,7 +98,6 @@ namespace Deltares::Server
 
         std::string Send(std::string message, bool waitForAnswer);
         SOCKET ConnectSocket();
-        void StartServer();
         bool CheckConnection();
         void SetParentProcess();
 
@@ -105,10 +105,13 @@ namespace Deltares::Server
         static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
         void StartProcess(std::string processName, bool waitForExit);
+        void StopProcess();
         void UpdateAddressInfo();
 
         addrinfo* address = nullptr;
         addrinfo hints;
+        PROCESS_INFORMATION pi{};
+
 #endif
     };
 }

@@ -22,9 +22,22 @@
 #include <gtest/gtest.h>
 #include "TestExceptions.h"
 #include "../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../Deltares.Probabilistic/Server/ExternalServerHandler.h"
 
 namespace Deltares::Probabilistic::Test
 {
+    void TestExceptions::testServer()
+    {
+        std::string exe = "C:\\PTK\\sources\\Toolkit\\Deltares.Probabilistic.Python\\ptk\\bin\\Deltares.Probabilistic.Server.exe";
+        auto server = std::make_shared<Server::ExternalServerHandler>(exe);
+
+        server->StartServer();
+
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+
+        server->Exit();
+    }
+
     void TestExceptions::testProblibExceptions()
     {
         std::string message;

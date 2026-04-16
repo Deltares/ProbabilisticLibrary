@@ -131,7 +131,6 @@ namespace Deltares::Server
             return "";
         }
 
-
         if (waitForAnswer)
         {
             char receiveBuffer[DEFAULT_BUFLEN];
@@ -179,6 +178,8 @@ namespace Deltares::Server
         {
             StartProcess(this->serverName, false);
 
+            this->UpdateAddressInfo();
+
             int connection_count = 0;
             while (!server_started && connection_count < 10)
             {
@@ -197,13 +198,24 @@ namespace Deltares::Server
     void ExternalServerHandler::StartProcess(std::string processName, bool waitForExit)
     {
         STARTUPINFO si;
-        PROCESS_INFORMATION pi;
 
 #ifdef UNICODE
         std::wstring processNameW(processName.begin(), processName.end());
-        LPWSTR processNameL = processNameW.data();
+        LPWSTR cmdLine = processNameW.data();
+
+        // Extract working directory
+        size_t pos = processNameW.find_last_of(L"\\/");
+        std::wstring workDir = (pos != std::wstring::npos)
+            ? processNameW.substr(0, pos)
+            : L".";
 #else
-        LPSTR processNameL = processName.data();
+        LPSTR cmdLine = const_cast<char*>(processName.c_str());
+
+        size_t pos = processName.find_last_of("\\/");
+        std::string workDirA = (pos != std::string::npos)
+            ? processName.substr(0, pos)
+            : ".";
+        LPCSTR workDir = workDirA.c_str();
 #endif
 
         ZeroMemory(&si, sizeof(si));
@@ -211,40 +223,47 @@ namespace Deltares::Server
         ZeroMemory(&pi, sizeof(pi));
 
         // Start the child process. 
-        if (!CreateProcess(nullptr,   // No module name (use command line)
-            processNameL,        // Command line
-            nullptr,           // Process handle not inheritable
-            nullptr,           // Thread handle not inheritable
-            false,          // Set handle inheritance to FALSE
-            0,              // No creation flags
-            nullptr,           // Use parent's environment block
-            nullptr,           // Use parent's starting directory 
-            &si,            // Pointer to STARTUPINFO structure
-            &pi)           // Pointer to PROCESS_INFORMATION structure
-            )
+        bool ok = CreateProcess(
+            nullptr,            // No module name (use command line)
+            cmdLine,            // Command line
+            nullptr,            // Process handle not inheritable
+            nullptr,            // Thread handle not inheritable
+            false,              // Set handle inheritance to FALSE
+            CREATE_NEW_CONSOLE, // No creation flags
+            nullptr,            // Use parent's environment block
+            workDir.c_str(),    // Use parent's starting directory 
+            &si,                // Pointer to STARTUPINFO structure
+            &pi);               // Pointer to PROCESS_INFORMATION structure
+
+        if (!ok)
         {
             printf("CreateProcess failed (%d).\n", GetLastError());
             return;
         }
 
+        server_started = true;
+
         if (waitForExit)
         {
-            // Wait until child process exits.
-            WaitForSingleObject(pi.hProcess, INFINITE);
-
-            // Close process and thread handles. 
+            StopProcess();
+        }
+        else
+        {
+            // IMPORTANT: close our handles so Python can exit normally
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
+            ZeroMemory(&pi, sizeof(pi));
         }
     }
 
-    void ExternalServerHandler::Start()
+    void ExternalServerHandler::StopProcess()
     {
-        std::cout << "Start" << std::endl;
-
-        if (!this->server_started)
+        if (pi.hProcess)
         {
-            StartServer();
+            WaitForSingleObject(pi.hProcess, INFINITE);
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+            ZeroMemory(&pi, sizeof(pi));
         }
     }
 
@@ -254,7 +273,7 @@ namespace Deltares::Server
         {
             std::string message = "poll";
             std::string data = Send(message, true);
-            return true;
+            return data == "alive" || data == "Alive";
         }
         catch (const std::exception&)
         {
@@ -316,8 +335,13 @@ namespace Deltares::Server
     {
         if (this->server_started)
         {
-            this->Send("exit", false);
-            this->server_started = false;
+            std::string result = this->Send("exit", false);
+
+            // delay here to wait until the process has closed
+            //std::this_thread::sleep_for(std::chrono::seconds(1));
+
+            StopProcess();
+            server_started = false;
         }
     }
 

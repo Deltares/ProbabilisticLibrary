@@ -42,22 +42,12 @@ namespace Deltares.Probabilistic.Statistics
         {
             this.id = Interface.Create("stochast");
             ObjectFactory.Register(this, id);
-
-            if (id == 63)
-            {
-                int k = 1;
-            }
         }
 
         public Stochast(int id)
         {
             this.id = id;
             ObjectFactory.Register(this, id);
-
-            if (id == 63)
-            {
-                int k = 1;
-            }
         }
 
         ~Stochast()

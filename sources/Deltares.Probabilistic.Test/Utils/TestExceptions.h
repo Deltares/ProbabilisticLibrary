@@ -26,6 +26,7 @@ namespace Deltares::Probabilistic::Test
     class TestExceptions
     {
     public:
+        static void testServer();
         static void testProblibExceptions();
     };
 }
