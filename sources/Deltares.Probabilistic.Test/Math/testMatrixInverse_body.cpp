@@ -27,14 +27,15 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void matinv_tests::all_matinv_tests() const
+    void matinv_tests::all_matinv_tests()
     {
         matinv_test1();
         matinv_singular_test();
         positive_definite_tests();
+        matinv_small_element_test();
     }
 
-    Numeric::Matrix matinv_tests::get3x3posDefiniteMatrix() const
+    Numeric::Matrix matinv_tests::get3x3posDefiniteMatrix()
     {
         auto m1 = Numeric::Matrix(3, 3);
         m1(0, 0) = 0.2;
@@ -49,7 +50,7 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
-    void matinv_tests::matinv_test1() const
+    void matinv_tests::matinv_test1()
     {
         auto m1 = get3x3posDefiniteMatrix();
         auto m2 = m1.Inverse();
@@ -70,7 +71,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    Numeric::Matrix matinv_tests::get2x2singularMatrix() const
+    Numeric::Matrix matinv_tests::get2x2singularMatrix()
     {
         auto m1 = Numeric::Matrix(2, 2);
         m1(0, 0) = 3.0;
@@ -80,7 +81,7 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
-    void matinv_tests::matinv_singular_test() const
+    void matinv_tests::matinv_singular_test()
     {
         auto m1 = get2x2singularMatrix();
         try
@@ -101,7 +102,28 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(m1(1, 1), 8.0);
     }
 
-    Numeric::Matrix matinv_tests::get2x2symmetrixMatrix() const
+    Numeric::Matrix matinv_tests::get2x2matrixSmallElement()
+    {
+        auto m1 = Numeric::Matrix(2, 2);
+        m1(0, 0) = 3.0e-12;
+        m1(0, 1) = 12.0;
+        m1(1, 0) = 2.0;
+        m1(1, 1) = 8.0;
+        return m1;
+    }
+
+    void matinv_tests::matinv_small_element_test()
+    {
+        auto m1 = get2x2matrixSmallElement();
+        auto m2 = m1.Inverse();
+
+        EXPECT_NEAR(m2(0, 0), -0.333333333333, margin);
+        EXPECT_NEAR(m2(0, 1), 0.5, margin);
+        EXPECT_NEAR(m2(1, 0), 0.0833333333333, margin);
+        EXPECT_NEAR(m2(1, 1), 0.0, margin);
+    }
+
+    Numeric::Matrix matinv_tests::get2x2symmetricMatrix()
     {
         auto m1 = Numeric::Matrix(2, 2);
         m1(0, 0) = 1.0;
@@ -111,7 +133,7 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
-    Numeric::Matrix matinv_tests::get16x16Matrix() const
+    Numeric::Matrix matinv_tests::get16x16Matrix()
     {
         auto matrix =
         {
@@ -136,7 +158,7 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
-    void matinv_tests::positive_definite_tests() const
+    void matinv_tests::positive_definite_tests()
     {
         auto m1 = get3x3posDefiniteMatrix();
         auto m1check = m1.IsPositiveDefinite();
@@ -146,7 +168,7 @@ namespace Deltares::Probabilistic::Test
         auto m2check = m2.IsPositiveDefinite();
         ASSERT_FALSE(m2check);
 
-        auto m3 = get2x2symmetrixMatrix();
+        auto m3 = get2x2symmetricMatrix();
         auto m3check = m3.IsPositiveDefinite();
         ASSERT_TRUE(m3check);
 

@@ -26,8 +26,8 @@
 
 namespace Deltares::Numeric
 {
-    const double SMALL_NUM = 1e-10;
-    const int MAX_INT = 1215752192;
+    constexpr double SMALL_NUM = 1e-10;
+    constexpr int MAX_INT = 1215752192;
 
     size_t MatrixSupport::count_leading_zeros(const Matrix& mat, const size_t n, const size_t row)
     {
@@ -44,14 +44,12 @@ namespace Deltares::Numeric
 
     void MatrixSupport::merge(std::vector<oa_elem_t> & A, int p, int q, int r)
     {
-        int size_r, size_l;
-        int i, j;
-        size_l = q - p + 1;
-        size_r = r - q;
+        int size_l = q - p + 1;
+        int size_r = r - q;
         auto L = std::vector<oa_elem_t>(size_l + 1);
         auto R = std::vector<oa_elem_t>(size_r + 1);
-        i = 0;
-        j = 0;
+        int i = 0;
+        int j = 0;
 
         for (int n = p; n < q + 1; ++n) 
         {
@@ -100,7 +98,7 @@ namespace Deltares::Numeric
         merge_sort(A, 0, size - 1);
     }
 
-    Matrix MatrixSupport::mergesort_mat(Matrix& mat, size_t n, std::vector<double>& order_arr)
+    Matrix MatrixSupport::mergesort_mat(const Matrix& mat, size_t n, const std::vector<double>& order_arr)
     {
         auto order_array = std::vector<oa_elem_t>(n);
 
@@ -126,7 +124,7 @@ namespace Deltares::Numeric
         return ordered_mat;
     }
 
-    void MatrixSupport::sort_mat(std::vector<double>& order_arr, size_t n, Matrix& mat)
+    void MatrixSupport::sort_mat(const std::vector<double>& order_arr, size_t n, Matrix& mat)
     {
         auto mat_ordered = mergesort_mat(mat, n, order_arr);
 
@@ -200,10 +198,12 @@ namespace Deltares::Numeric
         return false;
     }
 
-
     Matrix MatrixSupport::Inverse(const Matrix* src)
     {
-        if (src->getRowCount() != src->getColumnCount()) throw Reliability::probLibException("Matrix inverse: input matrix must be square.");
+        if (src->getRowCount() != src->getColumnCount())
+        {
+            throw Reliability::probLibException("Matrix inverse: input matrix must be square.");
+        }
 
         const size_t n = src->getRowCount();        // Number of stochastic variables
         Matrix source = *src;
