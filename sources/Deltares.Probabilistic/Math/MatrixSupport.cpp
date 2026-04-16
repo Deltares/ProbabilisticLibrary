@@ -21,6 +21,7 @@
 //
 #include "MatrixSupport.h"
 #include <cmath>
+#include <numeric>
 
 // Implementation taken from https://github.com/mndxpnsn/gauss-jordan/blob/master/gauss-jordan/main.cpp
 
@@ -86,7 +87,7 @@ namespace Deltares::Numeric
     {
         if (p < r)
         {
-            int q = (p + r) / 2;
+            const int q = std::midpoint(p, r);
             merge_sort(A, p, q);
             merge_sort(A, q + 1, r);
             merge(A, p, q, r);
