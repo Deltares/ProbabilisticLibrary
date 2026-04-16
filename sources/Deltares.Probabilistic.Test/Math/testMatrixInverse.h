@@ -35,6 +35,7 @@ namespace Deltares::Probabilistic::Test
         static void positive_definite_tests();
 
         static Numeric::Matrix get3x3posDefiniteMatrix();
+        static void isIdentityMatrix(const Numeric::Matrix& m);
         static Numeric::Matrix get2x2singularMatrix();
         static Numeric::Matrix get2x2matrixSmallElement();
         static void matinv_small_element_test();

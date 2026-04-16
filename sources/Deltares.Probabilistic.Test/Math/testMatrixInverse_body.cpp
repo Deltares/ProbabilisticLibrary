@@ -50,25 +50,33 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
+    void matinv_tests::isIdentityMatrix(const Numeric::Matrix& m)
+    {
+        EXPECT_EQ(m.getRowCount(), m.getColumnCount()) << "expects a square matrix";
+
+        for (size_t i = 0; i < m.getRowCount(); i++)
+        {
+            for (size_t j = 0; j < m.getColumnCount(); j++)
+            {
+                if (i == j)
+                {
+                    EXPECT_NEAR(m(i, j), 1.0, margin);
+                }
+                else
+                {
+                    EXPECT_TRUE(fabs(m(i, j)) < margin);
+                }
+            }
+        }
+
+    }
+
     void matinv_tests::matinv_test1()
     {
         auto m1 = get3x3posDefiniteMatrix();
         auto m2 = m1.Inverse();
         auto m3 = m2.matmul(m1);
-        for (size_t i = 0; i < 3; i++)
-        {
-            for (size_t j = 0; j < 3; j++)
-            {
-                if (i == j)
-                {
-                    EXPECT_NEAR(m3(i, j), 1.0, margin);
-                }
-                else
-                {
-                    EXPECT_TRUE(fabs(m3(i, j)) < margin);
-                }
-            }
-        }
+        isIdentityMatrix(m3);
     }
 
     Numeric::Matrix matinv_tests::get2x2singularMatrix()
@@ -119,11 +127,7 @@ namespace Deltares::Probabilistic::Test
 
         // check that m2 * m1 is identity matrix
         const auto m3 = m2.matmul(m1);
-
-        EXPECT_NEAR(m3(0, 0), 1.0, margin);
-        EXPECT_NEAR(m3(0, 1), 0.0, margin);
-        EXPECT_NEAR(m3(1, 0), 0.0, margin);
-        EXPECT_NEAR(m3(1, 1), 1.0, margin);
+        isIdentityMatrix(m3);
     }
 
     Numeric::Matrix matinv_tests::get2x2symmetricMatrix()
