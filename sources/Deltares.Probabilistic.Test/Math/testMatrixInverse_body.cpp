@@ -114,13 +114,16 @@ namespace Deltares::Probabilistic::Test
 
     void matinv_tests::matinv_small_element_test()
     {
-        auto m1 = get2x2matrixSmallElement();
-        auto m2 = m1.Inverse();
+        const auto m1 = get2x2matrixSmallElement();
+        const auto m2 = m1.Inverse();
 
-        EXPECT_NEAR(m2(0, 0), -0.333333333333, margin);
-        EXPECT_NEAR(m2(0, 1), 0.5, margin);
-        EXPECT_NEAR(m2(1, 0), 0.0833333333333, margin);
-        EXPECT_NEAR(m2(1, 1), 0.0, margin);
+        // check that m2 * m1 is identity matrix
+        const auto m3 = m2.matmul(m1);
+
+        EXPECT_NEAR(m3(0, 0), 1.0, margin);
+        EXPECT_NEAR(m3(0, 1), 0.0, margin);
+        EXPECT_NEAR(m3(1, 0), 0.0, margin);
+        EXPECT_NEAR(m3(1, 1), 1.0, margin);
     }
 
     Numeric::Matrix matinv_tests::get2x2symmetricMatrix()
