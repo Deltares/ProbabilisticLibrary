@@ -85,7 +85,9 @@ namespace Deltares::Server
         for (addrinfo* ptr = address; ptr != nullptr; ptr = ptr->ai_next) {
 
             // Create a SOCKET for connecting to server
+
             ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+
             if (ConnectSocket == INVALID_SOCKET)
             {
                 printf("socket failed with error: %ld\n", WSAGetLastError());
@@ -94,7 +96,9 @@ namespace Deltares::Server
             }
 
             // Connect to server.
+
             int iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+
             if (iResult == SOCKET_ERROR)
             {
                 printf("socket connection failed with error: %ld\n", WSAGetLastError());
@@ -123,6 +127,7 @@ namespace Deltares::Server
 
         // Send an initial buffer
         int iResult = send(server_socket, sendbuf, static_cast<int>(message.size()) + 1, 0);
+
         if (iResult == SOCKET_ERROR)
         {
             printf("send failed with error: %d\n", WSAGetLastError());
@@ -130,8 +135,7 @@ namespace Deltares::Server
             WSACleanup();
             return "";
         }
-
-        if (waitForAnswer)
+        else
         {
             char receiveBuffer[DEFAULT_BUFLEN];
 
@@ -156,10 +160,6 @@ namespace Deltares::Server
 
             return answer;
         }
-        else
-        {
-            return "";
-        }
     }
 
     void ExternalServerHandler::StartServer()
@@ -171,7 +171,10 @@ namespace Deltares::Server
 
         this->UpdateAddressInfo();
 
-        server_started = CheckConnection();
+        // Uncomment the next line to start the server manually, useful for debug purposes
+
+        //server_started = CheckConnection();
+
         int server_count = 0;
 
         while (!server_started && server_count < 10)
@@ -198,6 +201,7 @@ namespace Deltares::Server
     void ExternalServerHandler::StartProcess(std::string processName, bool waitForExit)
     {
         STARTUPINFO si;
+        PROCESS_INFORMATION pi;
 
 #ifdef UNICODE
         std::wstring processNameW(processName.begin(), processName.end());
@@ -229,7 +233,7 @@ namespace Deltares::Server
             nullptr,            // Process handle not inheritable
             nullptr,            // Thread handle not inheritable
             false,              // Set handle inheritance to FALSE
-            CREATE_NEW_CONSOLE, // No creation flags
+            CREATE_NO_WINDOW,   // use CREATE_NEW_CONSOLE to debug
             nullptr,            // Use parent's environment block
             workDir.c_str(),    // Use parent's starting directory 
             &si,                // Pointer to STARTUPINFO structure
@@ -245,26 +249,14 @@ namespace Deltares::Server
 
         if (waitForExit)
         {
-            StopProcess();
-        }
-        else
-        {
-            // IMPORTANT: close our handles so Python can exit normally
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-            ZeroMemory(&pi, sizeof(pi));
-        }
-    }
-
-    void ExternalServerHandler::StopProcess()
-    {
-        if (pi.hProcess)
-        {
             WaitForSingleObject(pi.hProcess, INFINITE);
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-            ZeroMemory(&pi, sizeof(pi));
         }
+
+        // IMPORTANT: close our handles so Python can exit normally
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+        ZeroMemory(&pi, sizeof(pi));
+        ZeroMemory(&si, sizeof(si));
     }
 
     bool ExternalServerHandler::CheckConnection()
@@ -333,14 +325,9 @@ namespace Deltares::Server
 
     void ExternalServerHandler::Exit()
     {
-        if (this->server_started)
+        if (server_started)
         {
-            std::string result = this->Send("exit", false);
-
-            // delay here to wait until the process has closed
-            //std::this_thread::sleep_for(std::chrono::seconds(1));
-
-            StopProcess();
+            this->Send("exit", false);
             server_started = false;
         }
     }
@@ -494,7 +481,7 @@ namespace Deltares::Server
 
     void ExternalServerHandler::Execute(int id, std::string method)
     {
-        this->Send("execute:" + std::to_string(id) + ":" + method, false);
+        this->Send("execute:" + std::to_string(id) + ":" + method, true);
     }
 
     std::string ExternalServerHandler::StringJoin(const std::vector<std::string>& strings, const std::string& delim)

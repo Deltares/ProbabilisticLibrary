@@ -47,13 +47,12 @@ namespace Deltares::Server
         ~ExternalServerHandler()
         {
 #if __has_include(<windows.h>)
-            freeaddrinfo(address);
-
             if (this->server_started)
             {
                 this->Send("exit", false);
                 this->server_started = false;
             }
+            freeaddrinfo(address);
 #endif
         }
 
@@ -105,13 +104,10 @@ namespace Deltares::Server
         static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
         void StartProcess(std::string processName, bool waitForExit);
-        void StopProcess();
         void UpdateAddressInfo();
 
         addrinfo* address = nullptr;
         addrinfo hints;
-        PROCESS_INFORMATION pi{};
-
 #endif
     };
 }
