@@ -39,7 +39,7 @@ namespace Deltares::Models
     /// <summary>
     /// Sets the progress to completed
     /// </summary>
-    void ProgressIndicator::complete()
+    void ProgressIndicator::complete() const
     {
         this->doProgress(1);
         this->doTextualProgress(ProgressType::Detailed, "");
@@ -50,8 +50,8 @@ namespace Deltares::Models
         this->progressOffset += progressFactor;
     }
 
-    void ProgressIndicator::setTask(std::string task)
+    void ProgressIndicator::setTask(const std::string& newTask)
     {
-        this->task = task;
+        this->task = newTask;
     }
 }

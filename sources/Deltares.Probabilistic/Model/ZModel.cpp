@@ -48,28 +48,26 @@ namespace Deltares::Models
         this->zMultipleLambda = nullptr;
     }
 
-    ZLambda ZModel::getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda)
+    ZLambda ZModel::getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda) const
     {
         ZLambda calcValuesLambda = [zValuesLambda, this](std::shared_ptr<ModelSample> sample)
         {
             double* inputValues = sample->Values.data();
-            double* outputValues = new double[this->outputParametersCount];
+            auto outputValues = std::vector<double>(outputParametersCount);
 
-            (*zValuesLambda)(inputValues, this->inputParametersCount, outputValues);
+            (*zValuesLambda)(inputValues, this->inputParametersCount, outputValues.data());
 
             sample->OutputValues.clear();
-            for (size_t i = 0; i < this->outputParametersCount; i++)
+            for (int i = 0; i < this->outputParametersCount; i++)
             {
                 sample->OutputValues.push_back(outputValues[i]);
             }
-
-            delete[] outputValues;
         };
 
         return calcValuesLambda;
     }
 
-    ZMultipleLambda ZModel::getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda)
+    ZMultipleLambda ZModel::getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda) const
     {
         ZMultipleLambda calcValuesLambda = [zValuesMultipleLambda, this](std::vector<std::shared_ptr<ModelSample>> samples)
         {
@@ -157,7 +155,7 @@ namespace Deltares::Models
         this->useSampleRepository = false;
         this->measuredCalculationTimes = 0;
 
-        for (std::shared_ptr<ModelInputParameter> parameter : this->inputParameters)
+        for (const std::shared_ptr<ModelInputParameter>& parameter : this->inputParameters)
         {
             parameter->computationalIndex = this->inputParametersCount;
             if (parameter->isArray)
@@ -170,7 +168,7 @@ namespace Deltares::Models
             }
         }
 
-        for (std::shared_ptr<ModelInputParameter> parameter : this->outputParameters)
+        for (const std::shared_ptr<ModelInputParameter>& parameter : this->outputParameters)
         {
             parameter->computationalIndex = this->outputParametersCount;
             if (parameter->isArray)
@@ -201,7 +199,7 @@ namespace Deltares::Models
                 invokeLambda(sample);
                 std::chrono::time_point done = std::chrono::high_resolution_clock::now();
 
-                long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
+                auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
                 if (elapsedTime > minRepoCalculationTime)
                 {
                     measureCalculationTime = false;
@@ -238,7 +236,7 @@ namespace Deltares::Models
         this->modelRuns++;
     }
 
-    void ZModel::invokeLambda(std::shared_ptr<ModelSample> sample)
+    void ZModel::invokeLambda(std::shared_ptr<ModelSample> sample) const
     {
         if (this->zLambda == nullptr)
         {
@@ -249,7 +247,7 @@ namespace Deltares::Models
         this->zLambda(sample);
     }
 
-    void ZModel::invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples)
+    void ZModel::invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples) const
     {
         if (zMultipleLambda == nullptr)
         {
@@ -317,7 +315,7 @@ namespace Deltares::Models
 
             if (useSampleRepository && isRepositoryAllowed)
             {
-                for (std::shared_ptr<ModelSample> sample : executeSamples)
+                for (const std::shared_ptr<ModelSample>& sample : executeSamples)
                 {
                     if (!sample->UsedProxy)
                     {
@@ -338,9 +336,9 @@ namespace Deltares::Models
         }
     }
 
-    double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta)
+    double ZModel::getBeta(std::shared_ptr<ModelSample> sample) const
     {
-        return this->zBetaLambda(sample, beta);
+        return this->zBetaLambda(sample);
     }
 
     void ZModel::handleInvalidSample(const std::shared_ptr<ModelSample>& sample)

@@ -77,7 +77,7 @@ namespace Deltares::Server
         }
     }
 
-    SOCKET ExternalServerHandler::ConnectSocket()
+    SOCKET ExternalServerHandler::ConnectSocket() const
     {
         SOCKET ConnectSocket = INVALID_SOCKET;
 
@@ -90,18 +90,16 @@ namespace Deltares::Server
 
             if (ConnectSocket == INVALID_SOCKET)
             {
-                printf("socket failed with error: %ld\n", WSAGetLastError());
+                printf("socket failed with error: %d\n", WSAGetLastError());
                 WSACleanup();
                 return 1;
             }
 
             // Connect to server.
-
-            int iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-
+            int iResult = connect(ConnectSocket, ptr->ai_addr, static_cast<int>(ptr->ai_addrlen));
             if (iResult == SOCKET_ERROR)
             {
-                printf("socket connection failed with error: %ld\n", WSAGetLastError());
+                printf("socket connection failed with error: %d\n", WSAGetLastError());
 
                 closesocket(ConnectSocket);
                 ConnectSocket = INVALID_SOCKET;
@@ -119,7 +117,7 @@ namespace Deltares::Server
         return ConnectSocket;
     }
 
-    std::string ExternalServerHandler::Send(std::string message)
+    std::string ExternalServerHandler::Send(std::string message) const
     {
         SOCKET server_socket = this->ConnectSocket();
 
@@ -241,7 +239,7 @@ namespace Deltares::Server
 
         if (!ok)
         {
-            printf("CreateProcess failed (%d).\n", GetLastError());
+            printf("CreateProcess failed (%ld).\n", GetLastError());
             return;
         }
 
@@ -259,7 +257,7 @@ namespace Deltares::Server
         ZeroMemory(&si, sizeof(si));
     }
 
-    bool ExternalServerHandler::CheckConnection()
+    bool ExternalServerHandler::CheckConnection() const
     {
         try
         {
@@ -273,7 +271,7 @@ namespace Deltares::Server
         }
     }
 
-    void ExternalServerHandler::SetParentProcess()
+    void ExternalServerHandler::SetParentProcess() const
     {
         DWORD processId = GetCurrentProcessId();
 

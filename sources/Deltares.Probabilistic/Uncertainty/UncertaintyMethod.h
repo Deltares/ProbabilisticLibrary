@@ -67,7 +67,7 @@ namespace Deltares::Uncertainty
     protected:
         virtual void setStopped();
         static std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights);
-        static std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues);
+        static std::shared_ptr<Statistics::Stochast> getStochastFromSamples(const std::vector<Numeric::WeightedValue>& weightedValues);
 
         /**
          * \brief Creates a correlation matrix from all sensitivity runs
@@ -77,7 +77,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Gets the index in a list of samples corresponding with a quantile
          */
-        static int getQuantileIndex(const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile);
+        static int getQuantileIndex(const std::vector<Numeric::WeightedValue>& weightedValues, double quantile);
 
         /**
          * \brief Gets the index in a list of samples corresponding with a quantile

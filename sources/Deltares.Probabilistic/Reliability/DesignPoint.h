@@ -61,15 +61,15 @@ namespace Deltares::Reliability
         std::shared_ptr<DesignPointIds> Ids = nullptr;
 
         std::vector<std::shared_ptr<DesignPoint>> ContributingDesignPoints;
-        std::vector<std::shared_ptr<ReliabilityResult>> ReliabililityResults;
+        std::vector<std::shared_ptr<ReliabilityResult>> ReliabilityResults;
         std::vector<std::shared_ptr<Models::Evaluation>> Evaluations;
         std::vector<std::shared_ptr<Logging::Message>> Messages;
 
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-        double getFailureProbability() { return Statistics::StandardNormal::getQFromU(this->Beta); }
-        double getNonFailureProbability() { return Statistics::StandardNormal::getPFromU(this->Beta); }
-        double getReturnPeriod() { return Statistics::StandardNormal::getTFromU(this->Beta); }
+        double getFailureProbability() const { return Statistics::StandardNormal::getQFromU(this->Beta); }
+        double getNonFailureProbability() const { return Statistics::StandardNormal::getPFromU(this->Beta); }
+        double getReturnPeriod() const { return Statistics::StandardNormal::getTFromU(this->Beta); }
 
         void expandContributions();
 

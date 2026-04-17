@@ -34,7 +34,8 @@
 
 namespace Deltares::Uncertainty
 {
-    enum UncertaintyMethodType { UncertaintyFORM, UncertaintyFOSM, UncertaintyNumericalIntegration, UncertaintyCrudeMonteCarlo, UncertaintyImportanceSampling, UncertaintyDirectionalSampling };
+    enum class UncertaintyMethodType { UncertaintyFORM, UncertaintyFOSM, UncertaintyNumericalIntegration,
+        UncertaintyCrudeMonteCarlo, UncertaintyImportanceSampling, UncertaintyDirectionalSampling };
 
     /**
      * \brief General settings applicable to all sensitivity mechanisms

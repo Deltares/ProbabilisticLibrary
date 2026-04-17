@@ -29,24 +29,26 @@ namespace Deltares::Reliability
         this->reliabilityMethod = this->settings->GetReliabilityMethod();
         this->runSettings = this->settings->RunSettings;
 
-        if (this->settings->ReliabilityResult == Reliability::ResultDesignPoint)
+        if (this->settings->ReliabilityResult == ReliabilityResultType::ResultDesignPoint)
         {
             this->designPoint = this->getDesignPoint();
         }
-        else if (this->settings->ReliabilityResult == Reliability::ResultFragilityCurve)
+        else if (this->settings->ReliabilityResult == ReliabilityResultType::ResultFragilityCurve)
         {
             this->fragilityCurve = this->getFragilityCurve();
         }
     }
-
+    
     void ReliabilityProject::stop()
     {
         this->reliabilityMethod->Stop();
     }
+    
 
-    std::shared_ptr<Reliability::DesignPoint> ReliabilityProject::getDesignPoint()
+    std::shared_ptr<DesignPoint> ReliabilityProject::getDesignPoint()
     {
-        this->model->zValueConverter = this->limitStateFunction;
+        this->model->zValueConverter = this->limitStateFunction    std::shared_ptr<DesignPoint> ReliabilityProject::getDesignPoint()
+;
 
         std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(this->stochasts, this->correlation);
         const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(this->model, uConverter, this->progressIndicator);

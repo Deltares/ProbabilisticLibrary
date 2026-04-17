@@ -94,7 +94,7 @@ namespace Deltares::Server
         WSADATA wsaData;
 
         void StartServer();
-        std::string Send(std::string message);
+        std::string Send(std::string message) const;
         SOCKET ConnectSocket();
         bool CheckConnection();
         void SetParentProcess();
@@ -102,7 +102,7 @@ namespace Deltares::Server
         static std::string StringJoin(const std::vector<std::string>& strings, const std::string& delim);
         static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
-        void StartProcess(std::string processName, bool waitForExit);
+        static void StartProcess(std::string processName, bool waitForExit);
         void UpdateAddressInfo();
 
         addrinfo* address = nullptr;

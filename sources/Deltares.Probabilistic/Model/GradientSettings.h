@@ -26,7 +26,7 @@
 
 namespace Deltares::Models
 {
-    enum GradientType
+    enum class GradientType
     {
         OneDirection,
         TwoDirections
@@ -37,7 +37,7 @@ namespace Deltares::Models
     public:
         GradientSettings() = default;
 
-        GradientType gradientType = OneDirection;
+        GradientType gradientType = GradientType::OneDirection;
         double StepSize = 0.3;
         bool OnlyInitializationAllowed = false;
 

@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 import unittest
+import pytest
 import sys
 import os
 import numpy as np
@@ -210,6 +211,7 @@ class Test_statistics(unittest.TestCase):
 
         self.assertEqual("""Error: abc => scale value -1.5 is less than 0.\n""", printed)
 
+    @pytest.mark.plotting
     def test_plot(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.normal
@@ -226,6 +228,7 @@ class Test_statistics(unittest.TestCase):
         self.assertTrue(os.path.exists(test_file_name))
         os.remove(test_file_name)
 
+    @pytest.mark.plotting
     def test_invalid_plot(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.normal
@@ -266,6 +269,7 @@ class Test_statistics(unittest.TestCase):
 
         self.assertEqual(3, len(stochast2.get_series(xmin = 1, number_of_points=3)))
 
+    @pytest.mark.plotting
     def test_multiple_plot(self):
         stochast1 = Stochast()
         stochast1.name = 'stochast 1'

@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 import unittest
+import pytest
 import sys
 import os
 
@@ -426,9 +427,9 @@ def h(a,b,c):
     def test_form_linear_array(self):
         project = project_builder.get_linear_array_project()
 
-        self.assertEqual(False, project.variables['L'].is_array)
-        self.assertEqual(True, project.variables['a'].is_array)
-        self.assertEqual(True, project.variables['b'].is_array)
+        self.assertFalse(project.variables['L'].is_array)
+        self.assertTrue(project.variables['a'].is_array)
+        self.assertTrue(project.variables['b'].is_array)
 
         project.variables['a'].array_size = 5
         project.variables['b'].array_size = 5
@@ -464,9 +465,9 @@ def h(a,b,c):
     def test_form_linear_varying_array(self):
         project = project_builder.get_linear_array_project()
 
-        self.assertEqual(False, project.variables['L'].is_array)
-        self.assertEqual(True, project.variables['a'].is_array)
-        self.assertEqual(True, project.variables['b'].is_array)
+        self.assertFalse(project.variables['L'].is_array)
+        self.assertTrue(project.variables['a'].is_array)
+        self.assertTrue(project.variables['b'].is_array)
 
         project.variables['a'].distribution = DistributionType.deterministic
         project.variables['b'].distribution = DistributionType.deterministic
@@ -855,6 +856,7 @@ def h(a,b,c):
         self.assertAlmostEqual(0.93, alphas[0].x, delta=margin)
         self.assertAlmostEqual(0.94, alphas[1].x, delta=margin)
 
+    @pytest.mark.plotting
     def test_crude_monte_carlo_plot(self):
         project = project_builder.get_linear_project()
 

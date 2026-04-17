@@ -21,8 +21,8 @@
 //
 #pragma once
 #include "../Utils/testutils.h"
-#include "../../Deltares.Probabilistic/Combine/combineElements.h"
-#include "../../Deltares.Probabilistic/Combine/upscaling.h"
+#include "../../Deltares.Probabilistic/Combine/CombineElements.h"
+#include "../../Deltares.Probabilistic/Combine/UpScaling.h"
 
 namespace Deltares::Probabilistic::Test
 {

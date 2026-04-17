@@ -42,7 +42,7 @@ namespace Deltares::Statistics
          * \brief Constructor accepting quantile
          * \param p Quantile, same as non-exceeding probability
          */
-        ProbabilityValue(double p)
+        explicit ProbabilityValue(double p)
         {
             this->setProbabilityOfNonFailure(p);
         }
@@ -52,7 +52,7 @@ namespace Deltares::Statistics
          */
         double Reliability = std::nan("");
 
-        double getProbabilityOfFailure()
+        double getProbabilityOfFailure() const
         {
             return StandardNormal::getQFromU(this->Reliability);
         }
@@ -62,7 +62,7 @@ namespace Deltares::Statistics
             this->Reliability = StandardNormal::getUFromQ(q);
         }
 
-        double getProbabilityOfNonFailure()
+        double getProbabilityOfNonFailure() const
         {
             return StandardNormal::getPFromU(this->Reliability);
         }
@@ -72,7 +72,7 @@ namespace Deltares::Statistics
             this->Reliability = StandardNormal::getUFromP(p);
         }
 
-        double getReturnPeriod()
+        double getReturnPeriod() const
         {
             return StandardNormal::getTFromU(this->Reliability);
         }

@@ -22,7 +22,7 @@
 #include <string>
 #include <cmath>
 #include <vector>
-#include "combineElements.h"
+#include "CombineElements.h"
 #include "HohenbichlerFORM.h"
 #include "../Utils/probLibException.h"
 #include "../Statistics/StandardNormal.h"
@@ -41,7 +41,6 @@ namespace Deltares::Reliability
     cmbResult combineElements::combineTwoElementsPartialCorrelation(const alphaBeta& element1,
         const alphaBeta& element2, const Numeric::vector1D& rhoP, const combineAndOr combAndOr)
     {
-        const double epsilon = 0.01;
         int failureHohenbichler = 0;
         //
         // Determine vector size
@@ -72,8 +71,7 @@ namespace Deltares::Reliability
         //
         //   Computation of P( Z_2 < 0 | Z_1 < 0)
         //
-        //auto p = progress();
-        auto hh = HohenbichlerFORM();
+        constexpr auto hh = HohenbichlerFORM();
         auto pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
         if (pf2pf1.second != 0) failureHohenbichler++;
         //
@@ -98,94 +96,83 @@ namespace Deltares::Reliability
             {
                 alphaX1(k) = 0.0;
                 alphaX2(k) = 0.0;
+                continue;
             }
-            else
+            constexpr double epsilon = 0.01;
+            //
+            //          Correlated part
+            double beta1Delta = element1.getBeta() - element1.getAlphaI(k) * epsilon;
+            pf1 = StandardNormal::getQFromU(beta1Delta);
+            //
+            double beta2Delta = element2.getBeta() - element2.getAlphaI(k) * epsilon * rhoP(k);
+            pf2 = StandardNormal::getQFromU(beta2Delta);
+            //
+            pb = setLargestBeta(beta1Delta, beta2Delta, pf1, pf2);
+            //
+            // Computation of probability :  Z_2 < - alpha1(k) * epsilon  or Z_1 < -alpha2(k) * epsilon * rhoP(k)
+            //
+            pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
+            if (pf2pf1.second != 0) failureHohenbichler++;
+            //
+            // Computation of combined failure probability (AND/OR)
+            //
+            double pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
+            //
+            double betaxk = StandardNormal::getUFromQ(pfxk);
+            alphaX1(k) = (element3.getBeta() - betaxk) / epsilon;
+            //
+            //           Uncorrelated part
+            if (fabs(rhoP(k)) < 1.0)
             {
                 //
-                //          Correlated part
-                double beta1Delta = element1.getBeta() - element1.getAlphaI(k) * epsilon;
+                beta1Delta = element1.getBeta();
                 pf1 = StandardNormal::getQFromU(beta1Delta);
                 //
-                double beta2Delta = element2.getBeta() - element2.getAlphaI(k) * epsilon * rhoP(k);
+                beta2Delta = element2.getBeta() - element2.getAlphaI(k) * epsilon * sqrt(1.0 - pow(rhoP(k), 2));
                 pf2 = StandardNormal::getQFromU(beta2Delta);
                 //
                 pb = setLargestBeta(beta1Delta, beta2Delta, pf1, pf2);
                 //
-                //           Computation of P( Z_2 < - alpha1(k) * epsilon | Z_1 < -alpha2(k) * epsilon * rhoP(k) )
-                //
+                // Computation of probability  Z_2 < 0 or Z_1 < -alpha2(k) * epsilon * sqrt( 1 - rhoP(k))^2)
                 pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
-                if (pf2pf1.second != 0) failureHohenbichler++;
+                failureHohenbichler += pf2pf1.second;
                 //
-                //           Computation of combined failure probability (AND/OR)
+                // Computation of combined failure probability (AND/OR)
                 //
-                double pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
-                //
-                double betaxk = StandardNormal::getUFromQ(pfxk);
-                alphaX1(k) = (element3.getBeta() - betaxk) / epsilon;
-                //
-                //           Uncorrelated part
-                if (fabs(rhoP(k)) < 1.0)
-                {
-                    //
-                    beta1Delta = element1.getBeta();
-                    pf1 = StandardNormal::getQFromU(beta1Delta);
-                    //
-                    beta2Delta = element2.getBeta() - element2.getAlphaI(k) * epsilon * sqrt(1.0 - pow(rhoP(k), 2));
-                    pf2 = StandardNormal::getQFromU(beta2Delta);
-                    //
-                    pb = setLargestBeta(beta1Delta, beta2Delta, pf1, pf2);
-                    //
-                    // Computation of P( Z_2 < 0 | Z_1 < -alpha2(k) * epsilon * sqrt( 1 - rhoP(k))^2) )
-                    pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
-                    if (pf2pf1.second != 0) failureHohenbichler++;
-                    //
-                    // Computation of combined failure probability (AND/OR)
-                    //
-                    pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
+                pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
 
-                    betaxk = StandardNormal::getUFromQ(pfxk);
-                    alphaX2(k) = (element3.getBeta() - betaxk) / epsilon;
-                }
-                else
-                {
-                    alphaX2(k) = 0.0;
-                }
+                betaxk = StandardNormal::getUFromQ(pfxk);
+                alphaX2(k) = (element3.getBeta() - betaxk) / epsilon;
+            }
+            else
+            {
+                alphaX2(k) = 0.0;
             }
         }
         //
         //   Correct alpha for neglected area of fail domain
         //
+        const double alpha_multiplier = std::max(0.0, 0.1710 + 0.03160 * std::min(element1.getBeta(), element2.getBeta()))
+            * exp(-pow((element1.getBeta() - element2.getBeta()) / 0.40, 2));
         for (size_t k = 0; k < nStochasts; k++)
         {
             if (element1.getAlphaI(k) != 0.0 || element2.getAlphaI(k) != 0.0)
             {
-                double alphaFactor;
-                if (fabs(element1.getAlphaI(k)) >= fabs(element2.getAlphaI(k)))
-                {
-                    alphaFactor = 1.0 - rhoP(k) * fabs((element2.getAlphaI(k) / element1.getAlphaI(k)));
-                }
-                else
-                {
-                    alphaFactor = 1.0 - rhoP(k) * fabs((element1.getAlphaI(k) / element2.getAlphaI(k)));
-                }
-
-                double alphaMultiplier = 1.0 + std::max(0.0, 0.1710 + 0.03160 * std::min(element1.getBeta(), element2.getBeta()))
-                    * exp(-pow((element1.getBeta() - element2.getBeta()) / 0.40, 2)) * alphaFactor;
-
-                alphaX1(k) *= alphaMultiplier;
-                alphaX2(k) *= alphaMultiplier;
+                const double correction_factor = 1.0 + alpha_multiplier *
+                    alphaFactor(element1.getAlphaI(k), element2.getAlphaI(k), rhoP(k));
+                alphaX1(k) *= correction_factor;
+                alphaX2(k) *= correction_factor;
             }
         }
         //
-        //   Determine alpha
-        //   alphaC(k)= (+ or -) sqrt(alpha1(k)^2 + alpha2(k)^2)
+        //   Determine alpha element wise with Pythagoras and sign correction based on largest term:
         for (size_t k = 0; k < nStochasts; k++)
         {
             element3.setAlpha(k, hypot(alphaX1(k), alphaX2(k)));
             if (element3.getAlphaI(k) > 0.0)
             {
                 // Get the sign of the dominant part
-                double alphaSign = fabs(alphaX1(k)) > fabs(alphaX2(k)) ? alphaX1(k) : alphaX2(k);
+                const double alphaSign = fabs(alphaX1(k)) > fabs(alphaX2(k)) ? alphaX1(k) : alphaX2(k);
 
                 element3.setAlpha(k, sign(element3.getAlphaI(k), alphaSign));
             }
@@ -196,6 +183,25 @@ namespace Deltares::Reliability
         element3.normalize();
 
         return { element3, failureHohenbichler };
+    }
+
+    /// <summary>
+    /// alpha factor in correction of alpha for neglected area of fail domain for one stochast
+    /// </summary>
+    /// <param name="alpha1"> one of the alpha values of the first element </param>
+    /// <param name="alpha2"> one of the alpha values of the second element </param>
+    /// <param name="rho"> correlation coefficient </param>
+    /// <returns> the alpha factor </returns>
+    double combineElements::alphaFactor(const double alpha1, const double alpha2, const double rho)
+    {
+        if (fabs(alpha1) >= fabs(alpha2))
+        {
+            return 1.0 - rho * fabs(alpha2 / alpha1);
+        }
+        else
+        {
+            return 1.0 - rho * fabs(alpha1 / alpha2);
+        }
     }
 
     // Auxiliary routine: the arrays should all have the same size
@@ -264,15 +270,14 @@ namespace Deltares::Reliability
             //
             // Continuously combine the two elements with the largest correlation
             //
-            size_t i1 = SIZE_MAX;     // Keep static analyser happy
-            size_t i2 = SIZE_MAX;
+
             for (size_t iElement = nrElements - 1; iElement > 0; iElement--)
             {
                 //
                 // Calculate the combination of two elements which has
                 // together the largest correlation
                 //
-                calculateCombinationWithLargestCorrelation(rho, local, i1, i2);
+                const auto [i1, i2] = calculateCombinationWithLargestCorrelation(rho, local);
                 //
                 // Combine these two elements with partial correlation
                 //
@@ -284,7 +289,7 @@ namespace Deltares::Reliability
                 // The elements i1 and i2 are removed from the vector betaLocal and the combined result is added last
                 // betaLocal(1:i1-1) stays unchanged
                 //
-                for (size_t i = i1; i < i2 - 1; i++)
+                for (long long i = i1; i < i2 - 1; i++)
                 {
                     local[i] = local[i + 1];
                 }
@@ -312,10 +317,9 @@ namespace Deltares::Reliability
     // \param rhoP(nStochasts)  : Auto correlation the random variables between elements
     // \param nElements         : Number of elements to be combined (for instance tidal periods)
     // \param alpha(:,:)        : Alpha vector per element
-    // \param i1max             : Index of first element with the largest correlation
-    // \param i2max             : Index of second element with the largest correlation
-    void combineElements::calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
-        const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max)
+    // \returns i1max, i2max    : Indices of combination of elements with the largest correlation
+    indexPair combineElements::calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
+        const std::vector<alphaBeta>& ab)
     {
         //
         // Two elements can't be computed if there is only one element
@@ -329,8 +333,9 @@ namespace Deltares::Reliability
         // Initialize rhoMax and the indices for the maximum element
         //
         double rhoMax = -1.0;
-        i1max = SIZE_MAX;
-        i2max = SIZE_MAX;
+        indexPair return_value;
+        return_value.i1max = SIZE_MAX;
+        return_value.i2max = SIZE_MAX;
         //
         //   Determine which two elements have the highest correlation
         //
@@ -348,12 +353,13 @@ namespace Deltares::Reliability
                     //
                     // For the first combination the parameters i1max, i2max and rhoMax are set
                     //
-                    i1max = i1;
-                    i2max = i2;
+                    return_value.i1max = i1;
+                    return_value.i2max = i2;
                     rhoMax = rhoT;
                 }
             }
         }
+        return return_value;
     }
 
     // \brief This method calculates the reliability index (beta) and alpha values combining over elements

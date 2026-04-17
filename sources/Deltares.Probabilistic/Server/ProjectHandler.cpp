@@ -1050,7 +1050,7 @@ namespace Deltares::Server
             else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
             else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
             else if (property_ == "evaluations_count") return static_cast<int>(designPoint->Evaluations.size());
-            else if (property_ == "reliability_results_count") return static_cast<int>(designPoint->ReliabililityResults.size());
+            else if (property_ == "reliability_results_count") return static_cast<int>(designPoint->ReliabilityResults.size());
             else if (property_ == "messages_count") return static_cast<int>(designPoint->Messages.size());
         }
         else if (objectType == ObjectType::Evaluation)
@@ -2558,7 +2558,7 @@ namespace Deltares::Server
             if (property_ == "contributing_design_points") return GetDesignPointId(designPoint->ContributingDesignPoints[index], newId);
             else if (property_ == "alphas") return GetAlphaId(designPoint->Alphas[index], newId);
             else if (property_ == "evaluations") return GetEvaluationId(designPoint->Evaluations[index], newId);
-            else if (property_ == "reliability_results") return GetReliabilityResultId(designPoint->ReliabililityResults[index], newId);
+            else if (property_ == "reliability_results") return GetReliabilityResultId(designPoint->ReliabilityResults[index], newId);
             else if (property_ == "messages") return GetMessageId(designPoint->Messages[index], newId);
         }
         else if (objectType == ObjectType::UncertaintySettings)

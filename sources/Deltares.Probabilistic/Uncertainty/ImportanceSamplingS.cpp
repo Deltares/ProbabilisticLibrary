@@ -27,14 +27,14 @@
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "ImportanceSamplingSettingsS.h"
-#include "../Reliability/DesignPointBuilder.h"
 #include "../Reliability/ImportanceSamplingSupport.h"
 
 using namespace Deltares::Models;
+using namespace Deltares::Reliability;
 
 namespace Deltares::Uncertainty
 {
-    UncertaintyResult ImportanceSamplingS::getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+    UncertaintyResult ImportanceSamplingS::getUncertaintyStochast(std::shared_ptr<ModelRunner> modelRunner)
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -50,8 +50,7 @@ namespace Deltares::Uncertainty
         int nParameters = modelRunner->getVaryingStochastCount();
 
         // for convergence, simulate that this is a reliability calculation with failure at given probability
-        Reliability::DesignPointBuilder designPointBuilder = Reliability::DesignPointBuilder(nParameters, Reliability::CenterOfGravity, this->Settings->StochastSet);
-        double normalizedProbabilityForConvergence = std::min(Settings->ProbabilityForConvergence, 1 - Settings->ProbabilityForConvergence);
+        designPointBuilder = DesignPointBuilder(nParameters, DesignPointMethod::CenterOfGravity, Settings->StochastSet);
 
         std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
         std::vector<std::shared_ptr<Sample>> samples;
@@ -64,14 +63,10 @@ namespace Deltares::Uncertainty
         double sumWeights = 0;
         std::vector<std::shared_ptr<Sample>> allSamples;
 
-        bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() &&
-            this->Settings->CalculateCorrelations &&
-            this->Settings->CalculateInputCorrelations;
-
         std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
 
-        std::vector<double> factors = this->getFactors(Settings->StochastSet);
-        double dimensionality = Reliability::ImportanceSamplingSupport::getDimensionality(factors);
+        factors = getFactors(*Settings->StochastSet);
+        dimensionality = ImportanceSamplingSupport::getDimensionality(factors);
 
         bool converged = false;
 
@@ -89,7 +84,7 @@ namespace Deltares::Uncertainty
                 for (int i = 0; i < runs; i++)
                 {
                     std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                    std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
+                    std::shared_ptr<Sample> modifiedSample = getModifiedSample(*sample, *center);
                     samples.push_back(modifiedSample);
                 }
 
@@ -114,18 +109,16 @@ namespace Deltares::Uncertainty
 
             nSamples++;
 
-            updateCumulativeWeights(zValues, weights, cumulativeWeights, sample);
+            updateCumulativeWeights(zValues, weights, cumulativeWeights, *sample);
 
-            if (registerSamplesForCorrelation)
-            {
-                modelRunner->registerSample(this->correlationMatrixBuilder, sample);
-            }
+            registerSample(*modelRunner, sample);
 
             // check whether all added samples in design point builder are supposed to be there
             // the design point builder should contain samples corresponding with a given probability of failure
             for (size_t i = 0; i < cumulativeWeights.size(); i++)
             {
-                bool shouldBeDesignPointSample = cumulativeWeights[i] < sumWeights * normalizedProbabilityForConvergence;
+                const bool shouldBeDesignPointSample = cumulativeWeights[i] <
+                    sumWeights * Settings->normalizedProbabilityForConvergence();
                 if (shouldBeDesignPointSample && !isDesignPointSamples[i])
                 {
                     // register for counting in design point
@@ -140,60 +133,29 @@ namespace Deltares::Uncertainty
                 }
             }
 
-            // check if convergence is reached (or stop criterion)
-            if (sampleIndex >= Settings->MinimumSamples)
-            {
-                std::shared_ptr<Sample> designPoint = designPointBuilder.getSample();
-
-                double designPointWeight = Reliability::ImportanceSamplingSupport::getSampleWeight(designPoint, center, dimensionality, factors);
-
-                double convergence = Reliability::ImportanceSamplingSupport::getConvergence(normalizedProbabilityForConvergence, designPointWeight, nSamples);
-                converged = convergence < this->Settings->VariationCoefficient;
-            }
+            converged = getConverged(sampleIndex, *center, nSamples);
         }
 
-        // adjust for weights not equal to number of samples,
-        // only adjust samples with weight > 1, because they will not be in the tail of the distribution, which is the less interesting part
+        adjustWeights(weights, nSamples - sumWeights);
 
-        double weightDifference = nSamples - sumWeights;
-        double overWeightedSum = 0;
-
-        // calculate over weight frm samples with weight > 1
-        for (size_t i = 0; i < weights.size(); i++)
-        {
-            if (weights[i] > 1)
-            {
-                overWeightedSum += weights[i];
-            }
-        }
-
-        // correct samples with weight > 1 so that sum of weights equals number of samples
-        for (size_t i = 0; i < weights.size(); i++)
-        {
-            if (weights[i] > 1)
-            {
-                weights[i] += weights[i] * weightDifference / overWeightedSum;
-            }
-        }
-
-        std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zValues, weights);
+        std::shared_ptr<Statistics::Stochast> stochast = getStochastFromSamples(zValues, weights);
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        for (const auto& quantile : Settings->RequestedQuantiles)
         {
-            double p = quantile->getProbabilityOfNonFailure();
-            int quantileIndex = this->getQuantileIndex(zValues, weights, p);
+            const double p = quantile->getProbabilityOfNonFailure();
+            const int quantile_index = getQuantileIndex(zValues, weights, p);
 
-            if (quantileIndex >= 0)
+            if (quantile_index >= 0)
             {
                 // perform the sampling again and recalculate
                 randomSampleGenerator.restart();
-                randomSampleGenerator.proceed(quantileIndex);
+                randomSampleGenerator.proceed(quantile_index);
 
                 std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
-                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(modifiedSample));
+                std::shared_ptr<Sample> modifiedSample = getModifiedSample(*sample, *center);
+                auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(modifiedSample));
                 evaluation->Quantile = p;
                 result.quantileEvaluations.push_back(evaluation);
             }
@@ -203,38 +165,111 @@ namespace Deltares::Uncertainty
             }
         }
 
-        if (this->correlationMatrixBuilder != nullptr)
-        {
-            this->correlationMatrixBuilder->registerWeights(weights);
-            this->correlationMatrixBuilder->registerSamples(stochast, zValues);
-        }
+        registerWeights(weights);
+        registerSamples(stochast, zValues);
 
         return result;
-
     }
 
-    std::vector<double> ImportanceSamplingS::getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings)
+    /// <summary>
+    /// adjust for weights not equal to number of samples,
+    /// only adjust samples with weight > 1, because they will not be in the tail of the distribution, which is the less interesting part
+    /// </summary>
+    /// <param name="weights"> the weights to update </param>
+    /// <param name="weight_difference"> difference in weight </param>
+    void ImportanceSamplingS::adjustWeights(std::vector<double>& weights, const double weight_difference)
     {
-        std::vector<double> factors(stochastSettings->getVaryingStochastCount());
+        double over_weighted_sum = 0.0;
+
+        // calculate over weight for samples with weight > 1
+        for (double weight : weights)
+        {
+            if (weight > 1.0)
+            {
+                over_weighted_sum += weight;
+            }
+        }
+
+        // correct samples with weight > 1 so that sum of weights equals number of samples
+        for (double& weight : weights)
+        {
+            if (weight > 1.0)
+            {
+                weight += weight * weight_difference / over_weighted_sum;
+            }
+        }
+    }
+
+    void ImportanceSamplingS::registerSample(const ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const
+    {
+        const bool registerSamplesForCorrelation = correlationMatrixBuilder->isEmpty() &&
+            Settings->CalculateCorrelations &&
+            Settings->CalculateInputCorrelations;
+
+        if (registerSamplesForCorrelation)
+        {
+            modelRunner.registerSample(correlationMatrixBuilder, sample);
+        }
+    }
+
+    // check if convergence is reached (or stop criterion)
+    bool ImportanceSamplingS::getConverged(int sampleIndex, const Sample& center, int nSamples)
+    {
+        bool converged = false;
+
+        if (sampleIndex >= Settings->MinimumSamples)
+        {
+            const auto designPoint = designPointBuilder.getSample();
+
+            const double designPointWeight =
+                ImportanceSamplingSupport::getSampleWeight(*designPoint, center, dimensionality, factors);
+
+            const double convergence = ImportanceSamplingSupport::getConvergence(
+                 Settings->normalizedProbabilityForConvergence(), designPointWeight, nSamples);
+            converged = convergence < Settings->VariationCoefficient;
+        }
+        return converged;
+    }
+
+    void ImportanceSamplingS::registerWeights(const std::vector<double>& weights) const
+    {
+        if (correlationMatrixBuilder != nullptr)
+        {
+            correlationMatrixBuilder->registerWeights(weights);
+        }
+    }
+
+    void ImportanceSamplingS::registerSamples(const std::shared_ptr<Statistics::Stochast>& stochast,
+        const std::vector<double>& zValues) const
+    {
+        if (correlationMatrixBuilder != nullptr)
+        {
+            correlationMatrixBuilder->registerSamples(stochast, zValues);
+        }
+    }
+
+    std::vector<double> ImportanceSamplingS::getFactors(const StochastSettingsSet& stochastSettings)
+    {
+        std::vector<double> factors(stochastSettings.getVaryingStochastCount());
 
         for (size_t k = 0; k < factors.size(); k++)
         {
-            factors[k] = stochastSettings->VaryingStochastSettings[k]->VarianceFactor;
+            factors[k] = stochastSettings.VaryingStochastSettings[k]->VarianceFactor;
         }
 
         return factors;
     }
 
-    std::shared_ptr<Models::Sample> ImportanceSamplingS::getModifiedSample(const std::shared_ptr<Models::Sample> sample, std::vector<double>& factors, std::shared_ptr<Models::Sample> center, double dimensionality)
+    std::shared_ptr<Sample> ImportanceSamplingS::getModifiedSample(const Sample& sample, const Sample& center) const
     {
-        std::shared_ptr<Sample> modifiedSample = sample->clone();
+        std::shared_ptr<Sample> modifiedSample = sample.clone();
 
-        for (int k = 0; k < sample->getSize(); k++)
+        for (int k = 0; k < sample.getSize(); k++)
         {
-            modifiedSample->Values[k] = factors[k] * sample->Values[k] + center->Values[k];
+            modifiedSample->Values[k] = factors[k] * sample.Values[k] + center.Values[k];
         }
 
-        modifiedSample->Weight = Reliability::ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
+        modifiedSample->Weight = ImportanceSamplingSupport::getWeight(*modifiedSample, sample, dimensionality);
 
         return modifiedSample;
     }
@@ -242,15 +277,15 @@ namespace Deltares::Uncertainty
     void ImportanceSamplingS::updateCumulativeWeights(const std::vector<double>& zValues,
                                                       const std::vector<double>& weights,
                                                       std::vector<double>& cumulativeWeights,
-                                                      const std::shared_ptr<Sample>& sample) const
+                                                      const Sample& sample) const
     {
         for (size_t i = 0; i < cumulativeWeights.size() - 1; i++)
         {
             if (this->Settings->ProbabilityForConvergence < 0.5)
             {
-                if (zValues[i] > sample->Z)
+                if (zValues[i] > sample.Z)
                 {
-                    cumulativeWeights[i] += sample->Weight;
+                    cumulativeWeights[i] += sample.Weight;
                 }
                 else
                 {
@@ -259,9 +294,9 @@ namespace Deltares::Uncertainty
             }
             else
             {
-                if (zValues[i] < sample->Z)
+                if (zValues[i] < sample.Z)
                 {
-                    cumulativeWeights[i] += sample->Weight;
+                    cumulativeWeights[i] += sample.Weight;
                 }
                 else
                 {

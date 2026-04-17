@@ -30,23 +30,25 @@
 
 namespace Deltares::Reliability
 {
+    using enum CombinerType;
+
     std::shared_ptr<Combiner> DesignPointCombiner::getCombiner() const
     {
         switch (combinerType)
         {
-        case CombinerType::ImportanceSampling:
+        case ImportanceSamplingCombine:
         {
             auto impSamplingCombiner = std::make_shared<ImportanceSamplingCombiner>();
             return impSamplingCombiner;
         }
-        case CombinerType::Hohenbichler:
+        case Hohenbichler:
             return std::make_shared<HohenbichlerNumIntCombiner>();
-        case CombinerType::DirectionalSampling:
+        case DirectionalSamplingCombine:
         {
             auto directionalSamplingCombiner = std::make_shared<DirectionalSamplingCombiner>();
             return directionalSamplingCombiner;
         }
-        case CombinerType::HohenbichlerForm:
+        case HohenbichlerForm:
         {
             auto hhFormCmb = std::make_shared<HohenbichlerFormCombiner>();
             return hhFormCmb;
@@ -64,7 +66,7 @@ namespace Deltares::Reliability
         const std::shared_ptr<Combiner> combiner = getCombiner();
         std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
 
-        applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint.get());
+        applyCorrelation(designPoints, correlationMatrix, *combinedDesignPoint);
 
         return combinedDesignPoint;
     }
@@ -77,14 +79,14 @@ namespace Deltares::Reliability
         const std::unique_ptr<ExcludingCombiner> combiner = getExcludingCombiner();
         std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineExcludingDesignPoints(scenarios, designPoints);
 
-        applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint.get());
+        applyCorrelation(designPoints, correlationMatrix, *combinedDesignPoint);
 
         return combinedDesignPoint;
     }
 
-    void DesignPointCombiner::applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                                               std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix,
-                                               DesignPoint* combinedDesignPoint)
+    void DesignPointCombiner::applyCorrelation(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                                               const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix,
+                                               DesignPoint& combinedDesignPoint)
     {
         if (correlationMatrix != nullptr && !correlationMatrix->IsIdentity())
         {
@@ -92,13 +94,13 @@ namespace Deltares::Reliability
             Models::UConverter uConverter = Models::UConverter(stochasts, correlationMatrix);
             uConverter.initializeForRun();
 
-            std::shared_ptr<Models::Sample> sample = combinedDesignPoint->getSample();
-            std::shared_ptr<Models::StochastPoint> stochastPoint = uConverter.GetStochastPoint(sample, combinedDesignPoint->Beta);
+            std::shared_ptr<Models::Sample> sample = combinedDesignPoint.getSample();
+            std::shared_ptr<Models::StochastPoint> stochastPoint = uConverter.GetStochastPoint(sample, combinedDesignPoint.Beta);
 
-            for (size_t i = 0; i < combinedDesignPoint->Alphas.size(); i++)
+            for (size_t i = 0; i < combinedDesignPoint.Alphas.size(); i++)
             {
-                combinedDesignPoint->Alphas[i]->AlphaCorrelated = stochastPoint->Alphas[i]->AlphaCorrelated;
-                combinedDesignPoint->Alphas[i]->X = stochastPoint->Alphas[i]->X;
+                combinedDesignPoint.Alphas[i]->AlphaCorrelated = stochastPoint->Alphas[i]->AlphaCorrelated;
+                combinedDesignPoint.Alphas[i]->X = stochastPoint->Alphas[i]->X;
             }
         }
     }
@@ -134,20 +136,20 @@ namespace Deltares::Reliability
     {
         switch (type)
         {
-        case CombinerType::Hohenbichler: return "hohenbichler";
-        case CombinerType::ImportanceSampling: return "importance_sampling";
-        case CombinerType::DirectionalSampling: return "directional_sampling";
-        case CombinerType::HohenbichlerForm: return "hohenbichler_form";
+        case Hohenbichler: return "hohenbichler";
+        case ImportanceSamplingCombine: return "importance_sampling";
+        case DirectionalSamplingCombine: return "directional_sampling";
+        case HohenbichlerForm: return "hohenbichler_form";
         default: throw probLibException("Combiner method");
         }
     }
 
     CombinerType DesignPointCombiner::getCombinerMethod(const std::string& method)
     {
-        if (method == "hohenbichler") return CombinerType::Hohenbichler;
-        else if (method == "importance_sampling") return CombinerType::ImportanceSampling;
-        else if (method == "directional_sampling") return CombinerType::DirectionalSampling;
-        else if (method == "hohenbichler_form") return CombinerType::HohenbichlerForm;
+        if (method == "hohenbichler") return Hohenbichler;
+        else if (method == "importance_sampling") return ImportanceSamplingCombine;
+        else if (method == "directional_sampling") return DirectionalSamplingCombine;
+        else if (method == "hohenbichler_form") return HohenbichlerForm;
         else throw probLibException("Combiner method type");
     }
 

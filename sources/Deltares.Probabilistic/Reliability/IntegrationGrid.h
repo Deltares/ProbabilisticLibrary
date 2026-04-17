@@ -81,7 +81,7 @@ namespace Deltares::Reliability
         void split();
         void split(const std::vector<double>& origin);
         void update();
-        Numeric::DoubleType Result = Numeric::NaN;
+        Numeric::DoubleType Result = Numeric::DoubleType::NaN;
         std::vector<std::shared_ptr<IntegrationPoint>> CornerPoints;
         std::shared_ptr<IntegrationPoint> getCenterPoint() const;
     private:

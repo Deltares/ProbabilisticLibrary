@@ -36,7 +36,7 @@ namespace Deltares::Sensitivity
          * \brief Constructor
          * \param size Size of the sequence to be provided
          */
-        SobolSequenceProvider(int size)
+        explicit SobolSequenceProvider(int size)
         {
             std::vector<SobolDirection> directions = SobolDirectionLoader::getDirections(size);
 

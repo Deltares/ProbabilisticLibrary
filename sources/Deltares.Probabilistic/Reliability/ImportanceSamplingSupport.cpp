@@ -21,7 +21,6 @@
 //
 #include <vector>
 #include <cmath>
-#include <memory>
 
 #include "ImportanceSamplingSupport.h"
 #include "../Math/NumericSupport.h"
@@ -31,41 +30,41 @@ using namespace Deltares::Models;
 
 namespace Deltares::Reliability
 {
-    double ImportanceSamplingSupport::getWeight(const std::shared_ptr<Sample>& modifiedSample, const std::shared_ptr<Sample>& sample, double dimensionality)
+    double ImportanceSamplingSupport::getWeight(const Sample& modifiedSample, const Sample& sample, double dimensionality)
     {
-        double sumSquared = Numeric::NumericSupport::GetSquaredSum(modifiedSample->Values);
-        double sumSquaredOrg = Numeric::NumericSupport::GetSquaredSum(sample->Values);
+        double sumSquared = Numeric::NumericSupport::GetSquaredSum(modifiedSample.Values);
+        double sumSquaredOrg = Numeric::NumericSupport::GetSquaredSum(sample.Values);
         double ratioPdf = std::exp(0.5 * (sumSquaredOrg - sumSquared));
         return dimensionality * ratioPdf;
     }
 
     double ImportanceSamplingSupport::getDimensionality(const std::vector<double>& factors)
     {
-        double dimensionality = 1; // correction for the dimensionality effect
+        double dimensionality = 1.0; // correction for the dimensionality effect
 
-        for (size_t k = 0; k < factors.size(); k++)
+        for (double factor : factors)
         {
-            dimensionality *= factors[k];
+            dimensionality *= factor;
         }
 
         return dimensionality;
     }
 
-    std::shared_ptr<Sample> ImportanceSamplingSupport::getOriginalSample(const std::shared_ptr<Sample>& sample, const std::shared_ptr<Sample>& center, const std::vector<double>& factors)
+    Sample ImportanceSamplingSupport::getOriginalSample(const Sample& sample, const Sample& center, const std::vector<double>& factors)
     {
-        std::shared_ptr<Sample> original = std::make_shared<Sample>(sample->Values.size());
+        auto original = Sample(static_cast<int>(sample.Values.size()));
 
-        for (size_t k = 0; k < sample->Values.size(); k++)
+        for (size_t k = 0; k < sample.Values.size(); k++)
         {
-            original->Values[k] = (sample->Values[k] - center->Values[k]) / factors[k];
+            original.Values[k] = (sample.Values[k] - center.Values[k]) / factors[k];
         }
 
         return original;
     }
 
-    double ImportanceSamplingSupport::getSampleWeight(const std::shared_ptr<Sample>& sample, const std::shared_ptr<Sample>& center, double dimensionality, const std::vector<double>& factors)
+    double ImportanceSamplingSupport::getSampleWeight(const Sample& sample, const Sample& center, double dimensionality, const std::vector<double>& factors)
     {
-        std::shared_ptr<Sample> originalSample = getOriginalSample(sample, center, factors);
+        Sample originalSample = getOriginalSample(sample, center, factors);
         return getWeight(sample, originalSample, dimensionality);
     }
 

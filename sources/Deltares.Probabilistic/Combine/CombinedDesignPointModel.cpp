@@ -23,6 +23,7 @@
 #include "../Statistics/StandardNormal.h"
 #include "../Statistics/Stochast.h"
 #include "../Math/NumericSupport.h"
+#include "../Statistics/CorrelationMatrix.h"
 
 #include <cmath>
 
@@ -121,9 +122,9 @@ namespace Deltares::Reliability
         return false;
     }
 
-    std::shared_ptr<CorrelationMatrix> CombinedDesignPointModel::getCorrelationMatrix(std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix)
+    std::shared_ptr<BaseCorrelation> CombinedDesignPointModel::getCorrelationMatrix(const std::shared_ptr<SelfCorrelationMatrix>& selfCorrelationMatrix)
     {
-        std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>(false);
+        std::shared_ptr<BaseCorrelation> correlationMatrix = std::make_shared<CorrelationMatrix>(false);
 
         // initialize the correlation matrix
         correlationMatrix->Init(this->standardNormalStochasts);

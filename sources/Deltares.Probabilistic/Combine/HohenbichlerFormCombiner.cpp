@@ -20,14 +20,15 @@
 // All rights reserved.
 //
 #include "HohenbichlerFormCombiner.h"
-#include "combineElements.h"
-#include "alphaBeta.h"
+#include "CombineElements.h"
+#include "AlphaBeta.h"
 
 namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> HohenbichlerFormCombiner::combineDesignPoints(combineAndOr combineMethodType,
         std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-        std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<Models::ProgressIndicator> progress)
+        const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+        const std::shared_ptr<Models::ProgressIndicator>& progress)
     {
         elements elm;
         const auto stochasts = DesignPoint::getUniqueStochasts(designPoints);
@@ -45,14 +46,13 @@ namespace Deltares::Reliability
             elm.push_back(dp);
         }
 
-        auto cmb = combineElements();
         auto rho = Numeric::vector1D(nStochasts);
         for (size_t i = 0; i < nStochasts; i++)
         {
             rho(i) = selfCorrelationMatrix->getSelfCorrelation(stochasts[i]);
         }
 
-        const auto [ab, nFail] = cmb.combineMultipleElements(elm, rho, combineMethodType);
+        const auto [ab, nFail] = combineElements::combineMultipleElements(elm, rho, combineMethodType);
         nonConvergedForm += nFail;
 
         auto dp = std::make_shared<DesignPoint>();

@@ -22,6 +22,7 @@
 #pragma once
 #include "ImportanceSamplingSettingsS.h"
 #include "UncertaintyMethod.h"
+#include "../Reliability/DesignPointBuilder.h"
 
 namespace Deltares::Uncertainty
 {
@@ -44,13 +45,17 @@ namespace Deltares::Uncertainty
          */
         UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
     private:
-        std::vector<double> getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings);
-        std::shared_ptr<Models::Sample> getModifiedSample(const std::shared_ptr<Models::Sample> sample,
-                                                          std::vector<double>& factors,
-                                                          std::shared_ptr<Models::Sample> center,
-                                                          double dimensionality);
+        static std::vector<double> getFactors(const Reliability::StochastSettingsSet& stochastSettings);
+        std::shared_ptr<Models::Sample> getModifiedSample(const Models::Sample& sample, const Models::Sample& center) const;
         void updateCumulativeWeights(const std::vector<double>& zValues, const std::vector<double>& weights,
-                                     std::vector<double>& cumulativeWeights,
-                                     const std::shared_ptr<Models::Sample>& sample) const;
+            std::vector<double>& cumulativeWeights, const Models::Sample& sample) const;
+        static void adjustWeights(std::vector<double>& weights, const double weight_difference);
+        void registerSample(const Models::ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& sample) const;
+        void registerWeights(const std::vector<double>& weights) const;
+        void registerSamples(const std::shared_ptr<Statistics::Stochast>& stochast, const std::vector<double>& zValues) const;
+        bool getConverged(int sampleIndex, const Models::Sample& center, int nSamples);
+        Reliability::DesignPointBuilder designPointBuilder;
+        double dimensionality = 0.0;
+        std::vector<double> factors;
     };
 }

@@ -100,43 +100,6 @@ namespace Deltares::Numeric
         return sum;
     }
 
-    double* NumericSupport::getArray(double initialValue, int count)
-    {
-        double* newValues = new double[count];
-
-        for (int i = 0; i < count; i++)
-        {
-            newValues[i] = initialValue;
-        }
-
-        return newValues;
-    }
-
-    double* NumericSupport::getCopy(double* values, int count)
-    {
-        double* newValues = new double[count];
-
-        for (int i = 0; i < count; i++)
-        {
-            newValues[i] = values[i];
-        }
-
-        return newValues;
-    }
-
-    double* NumericSupport::getCopy(const std::vector<double>& values)
-    {
-        auto count = values.size();
-        double* newValues = new double[count];
-
-        for (size_t i = 0; i < count; i++)
-        {
-            newValues[i] = values[i];
-        }
-
-        return newValues;
-    }
-
     double NumericSupport::Divide(int counter, int denominator)
     {
         return static_cast<double>(counter) / static_cast<double>(denominator);

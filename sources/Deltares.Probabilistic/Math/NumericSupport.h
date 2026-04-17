@@ -26,13 +26,12 @@
 
 namespace Deltares::Numeric
 {
-    enum DoubleType { Positive, Negative, Zero, NaN };
-    enum InterpolationType { Linear, Logarithmic, Harmonic };
-    enum CmpResult { Equal, Greater, Smaller };
+    enum class DoubleType { Positive, Negative, Zero, NaN };
+    enum class InterpolationType { Linear, Logarithmic, Harmonic };
+    enum class CmpResult { Equal, Greater, Smaller };
 
     class NumericSupport
     {
-    private:
     public:
         static double GetSign(double value);
         static double GetPrevailingSign(std::vector<double> values);
@@ -50,11 +49,8 @@ namespace Deltares::Numeric
         static bool isBetween(double xLow, double x, double xHigh, double tolerance);
         static CmpResult compareDouble(const double x1, const double x2, const double tol = 1e-14);
         static bool doublesAreEqual(const std::vector<double>& p1, const std::vector<double>& p2, const double tol = 1e-14);
-        static double* getCopy(double* values, int count);
-        static double* getCopy(const std::vector<double>& values);
-        static double* getArray(double initialValue, int count);
         static DoubleType getDoubleType(double value);
-        static double getSign(DoubleType value);
+        static double getSign(DoubleType doubleType);
         static double getFraction(double value, double fraction);
         static bool isValidValue(double x);
         static double getMinimum(const std::vector<double>& values);
@@ -63,8 +59,10 @@ namespace Deltares::Numeric
         static size_t getLocationMaximum(const std::vector<double>& values);
         static double getMinValidValue(std::function<double(double)> function);
         static double getMaxValidValue(std::function<double(double)> function);
-        static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);
-        static double interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
+        static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false,
+            InterpolationType interpolationType = InterpolationType::Linear);
+        static double interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues,
+            bool extrapolate = false, InterpolationType interpolationType = InterpolationType::Linear);
         static double limit(const double x, double minVal, double maxVal);
 
         /**

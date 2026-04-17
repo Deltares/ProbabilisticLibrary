@@ -22,7 +22,8 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "combiner.h"
+#include "Combiner.h"
+#include "IndexPair.h"
 
 namespace Deltares::Reliability
 {
@@ -31,13 +32,12 @@ namespace Deltares::Reliability
     public:
         std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            std::shared_ptr<Statistics::SelfCorrelationMatrix>
-            selfCorrelationMatrix = nullptr,
-            std::shared_ptr<Models::ProgressIndicator> progress =
-            nullptr) override;
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::shared_ptr<Models::ProgressIndicator>& progress) override;
 
     private:
-        static void findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
-            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, long long& i1max, long long& i2max);
+        static indexPair findMaxCorrelatedDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+            const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
     };
 }

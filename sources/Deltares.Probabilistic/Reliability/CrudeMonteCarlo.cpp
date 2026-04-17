@@ -222,7 +222,7 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    void CrudeMonteCarlo::applyLimits(std::shared_ptr<Sample> sample)
+    void CrudeMonteCarlo::applyLimits(const std::shared_ptr<Sample>& sample) const
     {
         for (int i = 0; i < sample->getSize(); i++)
         {
@@ -236,7 +236,7 @@ namespace Deltares::Reliability
         }
     }
 
-    bool CrudeMonteCarlo::checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, int samples, int nmaal)
+    bool CrudeMonteCarlo::checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nmaal) const
     {
         std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
         report->Step = nmaal;

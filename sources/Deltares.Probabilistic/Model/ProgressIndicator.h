@@ -25,7 +25,7 @@
 
 namespace Deltares::Models
 {
-    enum ProgressType { Global, Detailed };
+    enum class ProgressType { Global, Detailed };
 
 #ifdef _WIN32
     typedef void(__stdcall* ProgressDelegate) (double);
@@ -38,42 +38,44 @@ namespace Deltares::Models
 
     class ProgressIndicator
     {
-    private:
-        ProgressLambda progressLambda;
-        DetailedProgressLambda detailedProgressLambda;
-        TextualProgressLambda textualProgressLambda;
+        const ProgressLambda& progressLambda;
+        const DetailedProgressLambda& detailedProgressLambda;
+        const TextualProgressLambda& textualProgressLambda;
 
-        double progressOffset = 0;
-        double progressFactor = 1;
-        std::string task = "";
+        double progressOffset = 0.0;
+        double progressFactor = 1.0;
+        std::string task;
 
     public:
-        ProgressIndicator(ProgressLambda progressLambda, DetailedProgressLambda detailedProgressLambda = nullptr, TextualProgressLambda textualProgressLambda = nullptr, std::string task = "")
+        explicit ProgressIndicator(const ProgressLambda& progress_lambda,
+            const DetailedProgressLambda& detailed_progress_lambda = nullptr,
+            const TextualProgressLambda& textual_progress_lambda = nullptr,
+            std::string _task = "") :
+        progressLambda(progress_lambda), detailedProgressLambda(detailed_progress_lambda),
+        textualProgressLambda(textual_progress_lambda), task(std::move(_task))
         {
-            this->progressLambda = progressLambda;
-            this->detailedProgressLambda = detailedProgressLambda;
-            this->textualProgressLambda = textualProgressLambda;
-            this->task = task;
         }
 
-        void doProgress(double progress)
+        void doProgress(double progress) const
         {
             if (progressLambda != nullptr) progressLambda(progressOffset + progressFactor * progress);
         }
-        void doDetailedProgress(int step, int loop, double reliability, double convergence)
+
+        void doDetailedProgress(int step, int loop, double reliability, double convergence) const
         {
             if (detailedProgressLambda != nullptr) detailedProgressLambda(step, loop, reliability, convergence);
         }
-        void doTextualProgress(ProgressType progressType, std::string text)
+
+        void doTextualProgress(ProgressType progressType, const std::string& text) const
         {
             if (textualProgressLambda != nullptr) textualProgressLambda(progressType, text.c_str());
         }
 
         void reset();
         void initialize(double factor, double offset);
-        void complete();
+        void complete() const;
         void increaseOffset();
-        void setTask(std::string task);
+        void setTask(const std::string& newTask);
     };
 }
 

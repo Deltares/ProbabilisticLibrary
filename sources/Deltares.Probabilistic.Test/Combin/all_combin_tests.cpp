@@ -25,3 +25,4 @@
 #include "combiner_tests.cpp"
 #include "intEqualElements_tests.cpp"
 #include "UpscaleTests.cpp"
+#include "ComputeBetaSectionTests.cpp"

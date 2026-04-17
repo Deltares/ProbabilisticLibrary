@@ -26,24 +26,23 @@ namespace Deltares::Probabilistic::Test
     class TestUncertainty
     {
     public:
-        void allUncertaintyTests() const;
-    private:
-        void testCrudeMonteCarloAddOne() const;
-        void testCrudeMonteCarloLinear() const;
-        void testCrudeMonteCarloLinearNonRepeatable() const;
-        void testCrudeMonteCarloLinearOutput() const;
+        static void testCrudeMonteCarloAddOne();
+        static void testCrudeMonteCarloLinear();
+        static void testCrudeMonteCarloLinearNonRepeatable();
+        static void testCrudeMonteCarloLinearOutput();
         static void testCrudeMonteCarloLinearOutputNonRepeatable();
-        void testCrudeMonteCarloLinearManySamples() const;
-        void testCrudeMonteCarloLinearAutoSamples() const;
+        static void testCrudeMonteCarloLinearManySamples();
+        static void testCrudeMonteCarloLinearAutoSamples();
 
-        void testImportanceSamplingAddOne() const;
+        static void testImportanceSamplingAddOne();
 
-        void testNumericalIntegration() const;
-        void testDirectionalSampling() const;
-        void testFORM() const;
-        void testFOSM() const;
-
-        const double margin = 0.02;
+        static void testNumericalIntegration();
+        static void testDirectionalSampling();
+        static void testFORM();
+        static void testFOSM();
+    private:
+        static constexpr double margin = 0.02;
+        static constexpr double smallMargin = 1E-10;
     };
 };
 

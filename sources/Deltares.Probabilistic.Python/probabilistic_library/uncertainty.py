@@ -75,7 +75,7 @@ class UncertaintySettings(FrozenObject):
         return ['max_parallel_processes',
                 'save_realizations',
                 'save_messages',
-                'reuse_calculations'
+                'reuse_calculations',
                 'uncertainty_method',
                 'is_repeatable_random',
                 'random_seed',
