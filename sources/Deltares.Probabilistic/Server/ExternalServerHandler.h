@@ -95,14 +95,14 @@ namespace Deltares::Server
 
         void StartServer();
         std::string Send(std::string message) const;
-        SOCKET ConnectSocket();
-        bool CheckConnection();
-        void SetParentProcess();
+        SOCKET ConnectSocket() const;
+        bool CheckConnection() const;
+        void SetParentProcess() const;
 
         static std::string StringJoin(const std::vector<std::string>& strings, const std::string& delim);
         static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
-        static void StartProcess(std::string processName, bool waitForExit);
+        void StartProcess(std::string processName, bool waitForExit);
         void UpdateAddressInfo();
 
         addrinfo* address = nullptr;
