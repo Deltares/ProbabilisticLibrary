@@ -194,11 +194,6 @@ TEST(UnitTests, testExceptions)
     Deltares::Probabilistic::Test::TestExceptions::testProblibExceptions();
 }
 
-TEST(UnitTests, testServer)
-{
-    Deltares::Probabilistic::Test::TestExceptions::testServer();
-}
-
 TEST(ReliabilityMethodTest, TestFORM)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testFORM();

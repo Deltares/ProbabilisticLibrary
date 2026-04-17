@@ -47,18 +47,16 @@ namespace Deltares::Server
         ~ExternalServerHandler()
         {
 #if __has_include(<windows.h>)
-            if (this->server_started)
+            if (server_started)
             {
-                this->Send("exit", false);
-                this->server_started = false;
+                Send("exit");
+                server_started = false;
             }
             freeaddrinfo(address);
 #endif
         }
 
 #if __has_include(<windows.h>)
-        void StartServer();
-
         bool CanHandle(std::string objectType) override;
         int GetNewId() override;
         int Create(std::string objectType) override;
@@ -95,7 +93,8 @@ namespace Deltares::Server
 #if __has_include(<windows.h>)
         WSADATA wsaData;
 
-        std::string Send(std::string message, bool waitForAnswer);
+        void StartServer();
+        std::string Send(std::string message);
         SOCKET ConnectSocket();
         bool CheckConnection();
         void SetParentProcess();
