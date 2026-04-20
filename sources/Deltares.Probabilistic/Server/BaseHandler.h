@@ -58,10 +58,7 @@ namespace Deltares::Server
         virtual void SetIndexedValue(int id, std::string property_, int index, double value) {}
         virtual double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) { return 0; }
         virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) {}
-        virtual void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
-        {
-            // empty; must be implemented within implementing class
-        }
+        virtual void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value) {}
         virtual int GetIndexedIntValue(int id, std::string property_, int index) { return 0; }
         virtual int GetIdValue(int id, std::string property_) { return GetIntValue(id, property_); }
         virtual int GetIndexedIdValue(int id, std::string property_, int index) { return GetIndexedIntValue(id, property_, index); }

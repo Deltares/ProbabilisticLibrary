@@ -48,7 +48,6 @@ extern "C" DLL_PUBLIC void AddLibrary(const char* library)
     else if (libraryStr.ends_with(".dll"))
     {
         std::shared_ptr<ExternalLibraryHandler> externalHandler = std::make_shared<ExternalLibraryHandler>(libraryStr);
-        externalHandler->Initialize();
         ProjectServer::Instance().SetHandler(externalHandler);
     }
     else

@@ -24,11 +24,6 @@
 namespace Deltares::Server
 {
 #if __has_include(<windows.h>)
-    void ExternalLibraryHandler::Initialize()
-    {
-        this->initialize();
-    }
-
     bool ExternalLibraryHandler::CanHandle(std::string objectType)
     {
         return this->canHandle(objectType.c_str());
@@ -98,22 +93,6 @@ namespace Deltares::Server
     {
         this->setArrayIntMethod(id, property_.c_str(), values, size);
     }
-#else
-    void ExternalLibraryHandler::Initialize() {}
-    bool ExternalLibraryHandler::CanHandle(std::string objectType) { return false; }
-    void ExternalLibraryHandler::Create(std::string objectType, int id) {}
-    void ExternalLibraryHandler::Destroy(int id) {}
-    double ExternalLibraryHandler::GetValue(int id, std::string property) { return std::nan(""); }
-    void ExternalLibraryHandler::SetValue(int id, std::string property, double value) {}
-    bool ExternalLibraryHandler::GetBoolValue(int id, std::string property) { return false; }
-    void ExternalLibraryHandler::SetBoolValue(int id, std::string property, bool value) {}
-    int ExternalLibraryHandler::GetIntValue(int id, std::string property) { return -1; }
-    void ExternalLibraryHandler::SetIntValue(int id, std::string property, int value) {}
-    std::string ExternalLibraryHandler::GetStringValue(int id, std::string property) { return ""; }
-    void ExternalLibraryHandler::SetStringValue(int id, std::string property, std::string value) {}
-    int ExternalLibraryHandler::GetIndexedIntValue(int id, std::string property_, int index) { return -1; }
-    std::string ExternalLibraryHandler::GetIndexedStringValue(int id, std::string property_, int index) { return ""; }
-    void ExternalLibraryHandler::SetArrayIntValue(int id, std::string property_, int* values, int size) {}
 #endif
 }
 
