@@ -70,7 +70,6 @@ namespace Deltares::Uncertainty
         this->stochastValues[stochast].push_back(u);
     }
 
-
     double CorrelationMatrixBuilder::getCorrelationValue(std::shared_ptr<Statistics::Stochast> x, std::shared_ptr<Statistics::Stochast> y)
     {
         double sumCross = 0;

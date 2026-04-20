@@ -23,7 +23,11 @@
 
 namespace Deltares::Server
 {
-#if __has_include(<windows.h>)
+    void ExternalLibraryHandler::Initialize()
+    {
+        this->initialize();
+    }
+
     bool ExternalLibraryHandler::CanHandle(std::string objectType)
     {
         return this->canHandle(objectType.c_str());
@@ -93,6 +97,5 @@ namespace Deltares::Server
     {
         this->setArrayIntMethod(id, property_.c_str(), values, size);
     }
-#endif
 }
 

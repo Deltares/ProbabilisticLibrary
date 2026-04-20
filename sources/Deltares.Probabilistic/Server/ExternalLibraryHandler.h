@@ -64,12 +64,10 @@ namespace Deltares::Server
             this->getIndexedIntMethod = (f_get_indexed_int_value)GetProcAddress(libInstance, "GetIndexedIntValue");
             this->getIndexedStringMethod = (f_get_indexed_string_value)GetProcAddress(libInstance, "GetIndexedStringValue");
             this->setArrayIntMethod = (f_set_array_int_value)GetProcAddress(libInstance, "SetArrayIntValue");
-
-            this->initialize();
 #endif
         }
 
-#if __has_include(<windows.h>)
+        void Initialize();
         bool CanHandle(std::string objectType) override;
         int Create(std::string objectType) override;
         void Destroy(int id) override;
@@ -117,7 +115,6 @@ namespace Deltares::Server
         f_get_indexed_int_value getIndexedIntMethod = nullptr;
         f_get_indexed_string_value getIndexedStringMethod = nullptr;
         f_set_array_int_value setArrayIntMethod = nullptr;
-#endif
     };
 
 }
