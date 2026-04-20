@@ -38,18 +38,18 @@ namespace Deltares::Models
 
     class ProgressIndicator
     {
-        const ProgressLambda& progressLambda;
-        const DetailedProgressLambda& detailedProgressLambda;
-        const TextualProgressLambda& textualProgressLambda;
+        const ProgressLambda progressLambda;
+        const DetailedProgressLambda detailedProgressLambda;
+        const TextualProgressLambda textualProgressLambda;
 
         double progressOffset = 0.0;
         double progressFactor = 1.0;
         std::string task;
 
     public:
-        explicit ProgressIndicator(const ProgressLambda& progress_lambda,
-            const DetailedProgressLambda& detailed_progress_lambda = nullptr,
-            const TextualProgressLambda& textual_progress_lambda = nullptr,
+        explicit ProgressIndicator(ProgressLambda progress_lambda,
+            DetailedProgressLambda detailed_progress_lambda = nullptr,
+            TextualProgressLambda textual_progress_lambda = nullptr,
             std::string _task = "") :
         progressLambda(progress_lambda), detailedProgressLambda(detailed_progress_lambda),
         textualProgressLambda(textual_progress_lambda), task(std::move(_task))
