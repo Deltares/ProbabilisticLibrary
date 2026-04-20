@@ -207,9 +207,11 @@ namespace Deltares::Server
 
         // Extract working directory
         size_t pos = processNameW.find_last_of(L"\\/");
-        std::wstring workDir = (pos != std::wstring::npos)
+        std::wstring workingDirW = (pos != std::wstring::npos)
             ? processNameW.substr(0, pos)
             : L".";
+
+        LPWSTR workingDir = workingDirW.data();
 #else
         LPSTR cmdLine = const_cast<char*>(processName.c_str());
 
@@ -217,7 +219,7 @@ namespace Deltares::Server
         std::string workDirA = (pos != std::string::npos)
             ? processName.substr(0, pos)
             : ".";
-        LPCSTR workDir = workDirA.c_str();
+        LPSTR workingDir = const_cast<char*>(workDirA.c_str());;
 #endif
 
         ZeroMemory(&si, sizeof(si));
@@ -233,7 +235,7 @@ namespace Deltares::Server
             false,              // Set handle inheritance to FALSE
             CREATE_NO_WINDOW,   // use CREATE_NEW_CONSOLE to debug
             nullptr,            // Use parent's environment block
-            workDir.c_str(),    // Use parent's starting directory 
+            workingDir,         // Use file location starting directory 
             &si,                // Pointer to STARTUPINFO structure
             &pi);               // Pointer to PROCESS_INFORMATION structure
 
