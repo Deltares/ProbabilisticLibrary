@@ -1812,7 +1812,7 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
             if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
-            else if (property_ == "handle_invalid_type") return Models::RunSettings::getHandleInvalidTypeString(settings->RunSettings->HandleInvalidType);
+            else if (property_ == "handle_invalid_type") return Models::RunSettings::getHandleInvalidTypeString(settings->RunSettings->handleInvalidType);
             else if (property_ == "reliability_result") return Settings::getReliabilityResultTypeString(settings->ReliabilityResult);
             else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
             else if (property_ == "fragility_curve_design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->fragilityCurveDesignPointMethod);
@@ -1967,7 +1967,7 @@ namespace Deltares::Server
 
             if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
             else if (property_ == "reliability_result") settings->ReliabilityResult = Settings::getReliabilityResultType(value);
-            else if (property_ == "handle_invalid_type") settings->RunSettings->HandleInvalidType = Models::RunSettings::getHandleInvalidType(value);
+            else if (property_ == "handle_invalid_type") settings->RunSettings->handleInvalidType = Models::RunSettings::getHandleInvalidType(value);
             else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
             else if (property_ == "fragility_curve_design_point_method") settings->fragilityCurveDesignPointMethod = DesignPointBuilder::getDesignPointMethod(value);
             else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);

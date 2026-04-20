@@ -55,7 +55,7 @@ namespace Deltares::Models
         bool RunAtDesignPoint = false;
         bool ExtendedLoggingAtDesignPoint = false;
         int MaxMessages = 1000;
-        HandleInvalidType HandleInvalidType = HandleInvalidType::Ignore;
+        HandleInvalidType handleInvalidType = HandleInvalidType::Ignore;
         Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
         bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
