@@ -64,9 +64,17 @@ extern "C" DLL_PUBLIC int GetNewId()
 
 extern "C" DLL_PUBLIC int Create(const char* type)
 {
-    std::string typeStr = type;
-    int id = ProjectServer::Instance().Create(typeStr);
-    return id;
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string typeStr = type;
+        int id = ProjectServer::Instance().Create(typeStr);
+        return id;
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void Destroy(int id)
