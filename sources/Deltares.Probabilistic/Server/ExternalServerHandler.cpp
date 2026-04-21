@@ -128,10 +128,9 @@ namespace Deltares::Server
 
         if (iResult == SOCKET_ERROR)
         {
-            printf("send failed with error: %d\n", WSAGetLastError());
             closesocket(server_socket);
             WSACleanup();
-            return "";
+            throw Reliability::probLibException ("Send \"" + message + "\" failed with error: " + std::to_string(WSAGetLastError()));
         }
         else
         {
@@ -140,7 +139,7 @@ namespace Deltares::Server
             int received = recv(server_socket, receiveBuffer, sizeof(receiveBuffer), 0);
             if (received < 0)
             {
-                throw std::runtime_error("Receive failed");
+                throw Reliability::probLibException("Receive failed");
             }
 
             std::string answer = std::string(receiveBuffer, received);
@@ -155,6 +154,14 @@ namespace Deltares::Server
             }
 
             closesocket(server_socket);
+
+            std::string exception_prefix = "exception:";
+            if (answer.starts_with(exception_prefix))
+            {
+                // Get everything after the prefix length
+                std::string exception_message = answer.substr(exception_prefix.length());
+                throw Reliability::probLibException(exception_message);
+            }
 
             return answer;
         }
