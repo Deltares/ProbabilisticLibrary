@@ -38,8 +38,8 @@
 
 #endif
 
-#include <iostream>
 #include <stdexcept>
+#include <tlhelp32.h>
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "11178"
@@ -160,6 +160,23 @@ namespace Deltares::Server
         }
     }
 
+    bool ExternalServerHandler::IsServerRunning(std::string processName)
+    {
+#ifdef UNICODE
+        std::wstring processNameW(processName.begin(), processName.end());
+
+        size_t pos = processNameW.find_last_of(L"\\/");
+        std::wstring processFileNameW = (pos != std::wstring::npos)
+            ? processNameW.substr(pos)
+            : processNameW;
+
+        DWORD pid = GetPidByName(processNameW);
+        return pid != 0;
+#else
+        return false;
+#endif
+    }
+
     void ExternalServerHandler::StartServer()
     {
         if (!std::filesystem::exists(this->serverName))
@@ -171,7 +188,7 @@ namespace Deltares::Server
 
         // Uncomment the next line to start the server manually, useful for debug purposes
 
-        //server_started = CheckConnection();
+        server_started = IsServerRunning(this->serverName);
 
         int server_count = 0;
 
@@ -512,6 +529,37 @@ namespace Deltares::Server
 
         return tokens;
     }
+
+    DWORD ExternalServerHandler::GetPidByName(const std::wstring& processName)
+    {
+        DWORD pid = 0;
+
+        // Take a snapshot of all processes in the system
+        HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+        if (hSnapshot == INVALID_HANDLE_VALUE) return 0;
+
+        PROCESSENTRY32W pe;
+        pe.dwSize = sizeof(PROCESSENTRY32W);
+
+        // Retrieve information about the first process
+        if (Process32FirstW(hSnapshot, &pe))
+        {
+            do
+            {
+                // Compare process name (case-insensitive usually)
+                if (processName == pe.szExeFile)
+                {
+                    pid = pe.th32ProcessID;
+                    break;
+                }
+            }
+            while (Process32NextW(hSnapshot, &pe));
+        }
+
+        CloseHandle(hSnapshot);
+        return pid;
+    }
+
 #endif
 
 }

@@ -104,6 +104,8 @@ namespace Deltares::Server
 
         void StartProcess(std::string processName, bool waitForExit);
         void UpdateAddressInfo();
+        bool IsServerRunning(std::string processName);
+        DWORD GetPidByName(const std::wstring& processName);
 
         addrinfo* address = nullptr;
         addrinfo hints;
