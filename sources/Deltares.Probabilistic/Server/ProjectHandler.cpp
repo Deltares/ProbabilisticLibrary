@@ -139,6 +139,9 @@ namespace Deltares::Server
 
     int ProjectHandler::Create(std::string object_type)
     {
+        // remove all destroyed objects
+        DestroyObjects();
+
         int id = this->GetNewId();
 
         types[id] = GetType(object_type);
@@ -307,62 +310,72 @@ namespace Deltares::Server
     {
         std::lock_guard<std::mutex> lock(mtx);
 
-        if (!types.contains(id))
+        // register objects to be destroyed, they will be removed with the next create invocation
+        destroyObjects.push_back(id);
+    }
+
+    void ProjectHandler::DestroyObjects()
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+
+        for (auto id : destroyObjects)
         {
-            // already destroyed or never existed
-            return;
+            if (types.contains(id))
+            {
+                switch (types[id])
+                {
+                case ObjectType::StandardNormal: break;
+                case ObjectType::ProbabilityValue: probabilityValueIds.erase(probabilityValues[id]); probabilityValues.erase(id); break;
+                case ObjectType::Message: messageIds.erase(messages[id]); messages.erase(id); break;
+                case ObjectType::ValidationReport: validationReports.erase(id); break;
+                case ObjectType::Project: projects.erase(id); break;
+                case ObjectType::ModelParameter: modelParameterIds.erase(modelParameters[id]); modelParameters.erase(id); break;
+                case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
+                case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
+                case ObjectType::ProbabilityLimitStateFunction: probabilityLimitStateFunctions.erase(id); break;
+                case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
+                case ObjectType::DiscreteValue: discreteValueIds.erase(discreteValues[id]); discreteValues.erase(id); break;
+                case ObjectType::HistogramValue: histogramValueIds.erase(histogramValues[id]); histogramValues.erase(id); break;
+                case ObjectType::FragilityValue: fragilityCurveIds.erase(fragilityCurves[id]); fragilityValues.erase(id); break;
+                case ObjectType::ContributingStochast: contributingStochastIds.erase(contributingStochasts[id]); contributingStochasts.erase(id); break;
+                case ObjectType::ConditionalValue: conditionalValueIds.erase(conditionalValues[id]);  conditionalValues.erase(id); break;
+                case ObjectType::CorrelationMatrix:
+                case ObjectType::CopulaCorrelation:
+                    correlationIds.erase(correlations[id]); correlations.erase(id); break;
+                case ObjectType::Scenario: scenarios.erase(id); break;
+                case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
+                case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
+                case ObjectType::StochastPoint: stochastPoints.erase(id); break;
+                case ObjectType::DesignPoint: designPointIds.erase(designPoints[id]); designPoints.erase(id); break;
+                case ObjectType::Alpha: alphaIds.erase(alphas[id]); alphas.erase(id); break;
+                case ObjectType::FragilityCurve:  fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
+                case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
+                case ObjectType::FragilityCurveSettings: fragilityCurveSettings.erase(id); break;
+                case ObjectType::Evaluation: evaluationIds.erase(evaluations[id]); evaluations.erase(id); break;
+                case ObjectType::ReliabilityResult: reliabilityResultIds.erase(reliabilityResults[id]); reliabilityResults.erase(id); break;
+                case ObjectType::CombineProject: combineProjects.erase(id); break;
+                case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
+                case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
+                case ObjectType::ExcludingCombineSettings: excludingCombineSettings.erase(id); break;
+                case ObjectType::SelfCorrelationMatrix: selfCorrelationIds.erase(selfCorrelationMatrices[id]); selfCorrelationMatrices.erase(id); break;
+                case ObjectType::RunProject: runProjects.erase(id); break;
+                case ObjectType::RunProjectSettings: runProjectSettings.erase(id); break;
+                case ObjectType::UncertaintyProject: uncertaintyProjects.erase(id); break;
+                case ObjectType::UncertaintySettings: uncertaintySettingsValues.erase(id); break;
+                case ObjectType::UncertaintyResult: uncertaintyResultsIds.erase(uncertaintyResults[id]); uncertaintyResults.erase(id); break;
+                case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
+                case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
+                case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
+                case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
+                case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
+                case ObjectType::ConvergenceReport: convergenceReportIds.erase(convergenceReports[id]); convergenceReports.erase(id); break;
+                default: throw probLibException("object type");
+                }
+                types.erase(id);
+            }
         }
 
-        switch (types[id])
-        {
-        case ObjectType::StandardNormal: break;
-        case ObjectType::ProbabilityValue: probabilityValueIds.erase(probabilityValues[id]); probabilityValues.erase(id); break;
-        case ObjectType::Message: messageIds.erase(messages[id]); messages.erase(id); break;
-        case ObjectType::ValidationReport: validationReports.erase(id); break;
-        case ObjectType::Project: projects.erase(id); break;
-        case ObjectType::ModelParameter: modelParameterIds.erase(modelParameters[id]); modelParameters.erase(id); break;
-        case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
-        case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
-        case ObjectType::ProbabilityLimitStateFunction: probabilityLimitStateFunctions.erase(id); break;
-        case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
-        case ObjectType::DiscreteValue: discreteValueIds.erase(discreteValues[id]); discreteValues.erase(id); break;
-        case ObjectType::HistogramValue: histogramValueIds.erase(histogramValues[id]); histogramValues.erase(id); break;
-        case ObjectType::FragilityValue: fragilityCurveIds.erase(fragilityCurves[id]); fragilityValues.erase(id); break;
-        case ObjectType::ContributingStochast: contributingStochastIds.erase(contributingStochasts[id]); contributingStochasts.erase(id); break;
-        case ObjectType::ConditionalValue: conditionalValueIds.erase(conditionalValues[id]);  conditionalValues.erase(id); break;
-        case ObjectType::CorrelationMatrix:
-        case ObjectType::CopulaCorrelation:
-            correlationIds.erase(correlations[id]); correlations.erase(id); break;
-        case ObjectType::Scenario: scenarios.erase(id); break;
-        case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
-        case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
-        case ObjectType::StochastPoint: stochastPoints.erase(id); break;
-        case ObjectType::DesignPoint: designPointIds.erase(designPoints[id]); designPoints.erase(id); break;
-        case ObjectType::Alpha: alphaIds.erase(alphas[id]); alphas.erase(id); break;
-        case ObjectType::FragilityCurve:  fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
-        case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
-        case ObjectType::FragilityCurveSettings: fragilityCurveSettings.erase(id); break;
-        case ObjectType::Evaluation: evaluationIds.erase(evaluations[id]); evaluations.erase(id); break;
-        case ObjectType::ReliabilityResult: reliabilityResultIds.erase(reliabilityResults[id]); reliabilityResults.erase(id); break;
-        case ObjectType::CombineProject: combineProjects.erase(id); break;
-        case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
-        case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
-        case ObjectType::ExcludingCombineSettings: excludingCombineSettings.erase(id); break;
-        case ObjectType::SelfCorrelationMatrix: selfCorrelationIds.erase(selfCorrelationMatrices[id]); selfCorrelationMatrices.erase(id); break;
-        case ObjectType::RunProject: runProjects.erase(id); break;
-        case ObjectType::RunProjectSettings: runProjectSettings.erase(id); break;
-        case ObjectType::UncertaintyProject: uncertaintyProjects.erase(id); break;
-        case ObjectType::UncertaintySettings: uncertaintySettingsValues.erase(id); break;
-        case ObjectType::UncertaintyResult: uncertaintyResultsIds.erase(uncertaintyResults[id]); uncertaintyResults.erase(id); break;
-        case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
-        case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
-        case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
-        case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
-        case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
-        case ObjectType::ConvergenceReport: convergenceReportIds.erase(convergenceReports[id]); convergenceReports.erase(id); break;
-        default: throw probLibException("object type");
-        }
-        types.erase(id);
+        destroyObjects.clear();
     }
 
     bool ProjectHandler::ShouldClose()
