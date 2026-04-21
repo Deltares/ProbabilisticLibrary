@@ -95,6 +95,7 @@ extern "C" DLL_PUBLIC int GetIntValue(int id, const char* property)
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         return ProjectServer::Instance().GetIntValue(id, propertyStr);
     }
@@ -108,6 +109,7 @@ extern "C" DLL_PUBLIC void SetIntValue(int id, const char* property, int value)
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         ProjectServer::Instance().SetIntValue(id, propertyStr, value);
     }
@@ -121,6 +123,7 @@ extern "C" DLL_PUBLIC int GetIdValue(int id, const char* property)
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         return ProjectServer::Instance().GetIdValue(id, propertyStr);
     }
@@ -158,6 +161,7 @@ extern "C" DLL_PUBLIC size_t GetStringLength(int id, const char* property)
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
         return result.length();
@@ -173,6 +177,7 @@ extern "C" DLL_PUBLIC void GetStringValue(int id, const char* property, char* re
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
 
@@ -188,6 +193,7 @@ extern "C" DLL_PUBLIC void SetStringValue(int id, const char* property, const ch
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         std::string valueStr(value);
         ProjectServer::Instance().SetStringValue(id, propertyStr, valueStr);
@@ -274,6 +280,7 @@ extern "C" DLL_PUBLIC int GetIndexedIdValue(int id, const char* property, int in
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         return ProjectServer::Instance().GetIndexedIdValue(id, propertyStr, index);
     }
@@ -302,6 +309,7 @@ extern "C" DLL_PUBLIC void SetCallBack(int id, const char* property, Deltares::M
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         ProjectServer::Instance().SetCallBack(id, propertyStr, callBack);
     }
@@ -315,6 +323,7 @@ extern "C" DLL_PUBLIC void SetMultipleCallBack(int id, const char* property, Del
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         ProjectServer::Instance().SetMultipleCallBack(id, propertyStr, callBack);
     }
@@ -328,6 +337,7 @@ extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, const char* property, Deltar
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         ProjectServer::Instance().SetEmptyCallBack(id, propertyStr, callBack);
     }
@@ -341,6 +351,7 @@ extern "C" DLL_PUBLIC void SetModelSampleCallback(int id, const char* property, 
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         ProjectServer::Instance().SetModelSampleCallBack(id, propertyStr, callBack);
     }
@@ -354,6 +365,7 @@ extern "C" DLL_PUBLIC void SetMultipleModelSampleCallback(int id, const char* pr
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         std::string propertyStr(property);
         ProjectServer::Instance().SetMultipleModelSampleCallBack(id, propertyStr, callBack);
     }
@@ -367,6 +379,7 @@ extern "C" DLL_PUBLIC void SetProgressCallBacks(int id, Deltares::Models::Progre
 {
     try
     {
+        ProjectServer::Instance().last_exception = "";
         ProjectServer::Instance().SetProgressCallBacks(id, progress, detailed, textual);
     }
     catch (const std::exception& e)
@@ -398,6 +411,7 @@ extern "C" DLL_PUBLIC size_t GetExceptionLength()
 extern "C" DLL_PUBLIC void GetException(char* result_c, size_t size)
 {
     copyStringToCharPointer(ProjectServer::Instance().last_exception, result_c, size);
+    ProjectServer::Instance().last_exception = "";
 }
 
 
