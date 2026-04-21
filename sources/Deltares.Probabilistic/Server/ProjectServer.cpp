@@ -47,7 +47,7 @@ namespace Deltares::Server
             return handler->Create(object_type);
         }
 
-        throw probLibException("Object type not supported");
+        throw probLibException("Object type \"" + object_type + "\" not supported");
     }
 
     void ProjectServer::Destroy(int id)

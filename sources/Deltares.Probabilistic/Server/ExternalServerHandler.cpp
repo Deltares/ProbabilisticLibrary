@@ -317,7 +317,15 @@ namespace Deltares::Server
         }
 
         std::string result = Send("get_new_id");
-        return std::stoi(result);
+
+        try
+        {
+            return std::stoi(result);
+        }
+        catch (const std::exception& e)
+        {
+            throw Reliability::probLibException("Expected int value: \"" + result + "\"");
+        }
     }
 
     int ExternalServerHandler::Create(std::string objectType)
@@ -329,7 +337,14 @@ namespace Deltares::Server
 
         std::string result = Send("create:" + objectType);
 
-        return std::stoi(result);
+        try
+        {
+            return std::stoi(result);
+        }
+        catch (const std::exception& e)
+        {
+            throw Reliability::probLibException("Expected int value: \"" + result + "\" with command ");
+        }
     }
 
     void ExternalServerHandler::Destroy(int id)
@@ -392,7 +407,15 @@ namespace Deltares::Server
     int ExternalServerHandler::GetIdValue(int id, std::string property)
     {
         std::string result = Send("get_id_value:" + std::to_string(id) + ":" + property);
-        return std::stoi(result);
+
+        try
+        {
+            return std::stoi(result);
+        }
+        catch (const std::exception& e)
+        {
+            throw Reliability::probLibException("Expected int value: \"" + result + "\"");
+        }
     }
 
     std::string ExternalServerHandler::GetStringValue(int id, std::string property)

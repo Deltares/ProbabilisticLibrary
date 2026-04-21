@@ -22,6 +22,7 @@
 
 #include <string>
 #include <memory>
+#include <filesystem>
 
 #include "../Deltares.Probabilistic/Server/ProjectServer.h"
 #include "../Deltares.Probabilistic/Server/ExternalServerHandler.h"
@@ -39,6 +40,12 @@ using namespace Deltares::Server;
 extern "C" DLL_PUBLIC void AddLibrary(const char* library)
 {
     std::string libraryStr(library);
+
+    std::filesystem::path path(libraryStr);
+    if (!std::filesystem::exists(path))
+    {
+        throw Deltares::Reliability::probLibException(libraryStr + " does not exist");
+    }
 
     if (libraryStr.ends_with(".exe"))
     {
