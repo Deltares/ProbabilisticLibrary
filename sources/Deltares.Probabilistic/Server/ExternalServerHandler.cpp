@@ -56,8 +56,7 @@ namespace Deltares::Server
         int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
         if (iResult != 0)
         {
-            printf("WSAStartup failed with error: %d\n", iResult);
-            return;
+            throw Reliability::probLibException("Socket startup failed with error: " + std::to_string(iResult));
         }
 
         ZeroMemory(&hints, sizeof(hints));
@@ -72,8 +71,8 @@ namespace Deltares::Server
         iResult = getaddrinfo(hostname.data(), DEFAULT_PORT, &hints, &address);
         if (iResult != 0)
         {
-            printf("getaddrinfo failed with error: %d\n", iResult);
             WSACleanup();
+            throw Reliability::probLibException("Get address info failed with error: " + std::to_string(iResult));
         }
     }
 
@@ -82,36 +81,36 @@ namespace Deltares::Server
         SOCKET ConnectSocket = INVALID_SOCKET;
 
         // Attempt to connect to an address until one succeeds
+
         for (addrinfo* ptr = address; ptr != nullptr; ptr = ptr->ai_next) {
 
             // Create a SOCKET for connecting to server
 
-            ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-
-            if (ConnectSocket == INVALID_SOCKET)
+            int count = 0;
+            while (ConnectSocket == INVALID_SOCKET && count++ < 10)
             {
-                printf("socket failed with error: %d\n", WSAGetLastError());
-                WSACleanup();
-                return 1;
+                ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+
+                // Connect to server.
+                int iResult = connect(ConnectSocket, ptr->ai_addr, static_cast<int>(ptr->ai_addrlen));
+                if (iResult == SOCKET_ERROR)
+                {
+                    closesocket(ConnectSocket);
+                    ConnectSocket = INVALID_SOCKET;
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                }
             }
 
-            // Connect to server.
-            int iResult = connect(ConnectSocket, ptr->ai_addr, static_cast<int>(ptr->ai_addrlen));
-            if (iResult == SOCKET_ERROR)
+            if (ConnectSocket != INVALID_SOCKET)
             {
-                printf("socket connection failed with error: %d\n", WSAGetLastError());
-
-                closesocket(ConnectSocket);
-                ConnectSocket = INVALID_SOCKET;
-                continue;
+                break;
             }
-            break;
         }
 
-        if (ConnectSocket == INVALID_SOCKET) {
-            printf("Unable to connect to server!\n");
+        if (ConnectSocket == INVALID_SOCKET)
+        {
             WSACleanup();
-            return 1;
+            throw Reliability::probLibException("Invalid socket");
         }
 
         return ConnectSocket;
