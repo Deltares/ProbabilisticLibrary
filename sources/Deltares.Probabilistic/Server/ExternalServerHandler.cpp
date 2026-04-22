@@ -39,7 +39,6 @@
 #endif
 
 #include <stdexcept>
-#include <tlhelp32.h>
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "11178"
