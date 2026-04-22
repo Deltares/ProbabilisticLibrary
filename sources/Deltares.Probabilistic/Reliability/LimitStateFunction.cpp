@@ -40,7 +40,7 @@ namespace Deltares::Reliability
         else
         {
             this->useSampleZValue = false;
-            this->criticalParameterIndex = -1;
+            this->criticalParameterIndex = 0;
 
             int indexInput = FindParameterIndex(inputParameters, this->criticalParameter);
             if (indexInput >= 0)
@@ -52,7 +52,7 @@ namespace Deltares::Reliability
             int indexOutput = FindParameterIndex(outputParameters, this->criticalParameter);
             if (indexOutput >= 0)
             {
-                this->criticalParameterIndex = indexInput;
+                this->criticalParameterIndex = indexOutput;
                 this->criticalParameterIndexFromInput = false;
             }
         }

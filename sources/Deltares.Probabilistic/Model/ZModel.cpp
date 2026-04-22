@@ -141,8 +141,6 @@ namespace Deltares::Models
             {
                 samples[i]->setModelSampleStruct(&modelSamples[i]);
             }
-
-            delete[] modelSamples;
         };
 
         return calcValuesLambda;
