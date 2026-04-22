@@ -25,7 +25,6 @@
 #include <unordered_map>
 
 #include "ModelSample.h"
-#include "ModelSample.h"
 #include "../Utils/Locker.h"
 
 namespace Deltares::Models
@@ -66,6 +65,12 @@ namespace Deltares::Models
          * \remarks The key is not unique 
          */
         double getKey(std::shared_ptr<ModelSample> sample);
+
+        /**
+         * \brief Indicates whether the sample us useful to be registered in the repository
+         * \return Indication
+         */
+        bool shouldRegisterSample(std::shared_ptr<ModelSample> sample);
 
         /**
          * \brief Supporting utility for multi threading

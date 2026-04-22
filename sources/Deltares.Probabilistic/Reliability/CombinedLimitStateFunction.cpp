@@ -25,20 +25,17 @@ namespace Deltares::Reliability
 {
     void CombinedLimitStateFunction::updateZValue(std::shared_ptr<Models::ModelSample> sample)
     {
-        double result = combineType == combineAndOr::combOr ? std::numeric_limits<double>::max() : - std::numeric_limits<double>::max();
+        double result = combineType == combineAndOr::combOr ? std::numeric_limits<double>::max() : -std::numeric_limits<double>::max();
 
         for (auto limitStateFunction : limitStateFunctions)
         {
             limitStateFunction->updateZValue(sample);
             double z = sample->Z;
 
-            if (limitStateFunction->normalize)
+            if (limitStateFunction->normalize && z > 0)
             {
-                if (z > 0)
-                {
-                    sample->Z = std::nan("");
-                    return;
-                }
+                sample->Z = std::nan("");
+                return;
             }
 
             if (std::isnan(z))

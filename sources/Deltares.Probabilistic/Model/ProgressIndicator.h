@@ -25,7 +25,7 @@
 
 namespace Deltares::Models
 {
-    enum ProgressType { Global, Detailed };
+    enum ProgressType { Global = 0, Detailed = 1 };
 
 #ifdef _WIN32
     typedef void(__stdcall* ProgressDelegate) (double);

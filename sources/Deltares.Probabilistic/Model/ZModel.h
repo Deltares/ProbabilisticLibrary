@@ -235,6 +235,11 @@ namespace Deltares::Models
         void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples) const;
 
         /**
+         * \brief Handles the calculation time
+         */
+        void RegisterCalculationTime(long long elapsedTime, int samples = 1);
+
+        /**
          * \brief Indicates whether calculation time should be measured
          */
         bool measureCalculationTime = true;
@@ -273,7 +278,7 @@ namespace Deltares::Models
          * \brief Handles an invalid sample
          * \param sample The sample which can be invalid
          */
-        void handleInvalidSample(const std::shared_ptr<ModelSample>& sample);
+        void handleInvalidSample(const std::shared_ptr<ModelSample>& sample) const;
     };
 }
 

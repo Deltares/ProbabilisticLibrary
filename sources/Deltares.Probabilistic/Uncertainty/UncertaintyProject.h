@@ -38,11 +38,6 @@ namespace Deltares::Uncertainty
     {
     public:
         /**
-         * \brief Method which performs a uncertainty calculation
-         */
-        std::shared_ptr<UncertaintyMethod> uncertaintyMethod = nullptr;
-
-        /**
          * \brief Output parameter for which the uncertainty is calculated, blank for all parameters
          */
         std::string parameter = "";
@@ -121,6 +116,11 @@ namespace Deltares::Uncertainty
 
     private:
         std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
+
+        /**
+         * \brief Method which performs a uncertainty calculation
+         */
+        std::shared_ptr<UncertaintyMethod> uncertaintyMethod = nullptr;
     };
 }
 

@@ -70,7 +70,7 @@ namespace Deltares::Models
         sampleStruct->Tag = Tag;
     }
 
-    void ModelSample::setModelSampleStruct(ModelSampleStruct* sampleStruct)
+    void ModelSample::setModelSampleStruct(const ModelSampleStruct* sampleStruct)
     {
         Values.resize(sampleStruct->ValuesCount);
         for (int i = 0; i < sampleStruct->ValuesCount; i++)

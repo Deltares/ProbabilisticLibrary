@@ -45,7 +45,7 @@ namespace Deltares::Models
         /**
          * \brief Stop method ignored
          */
-        void stop() override {}
+        void stop() override { /* nothing to do */ }
 
         /**
          * \brief Sets the settings

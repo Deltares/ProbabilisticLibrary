@@ -45,7 +45,7 @@ namespace Deltares::Reliability
         /**
          * \brief Transforms a stochast point to a design point
          */
-        DesignPoint(Models::StochastPoint& stochastPoint)
+        explicit DesignPoint(const Models::StochastPoint& stochastPoint)
         {
             for (auto alpha : stochastPoint.Alphas)
             {

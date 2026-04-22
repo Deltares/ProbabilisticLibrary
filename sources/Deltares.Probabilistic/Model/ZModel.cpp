@@ -111,7 +111,7 @@ namespace Deltares::Models
 
     ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const
     {
-        ZLambda calcValuesLambda = [modelSampleLambda, this](std::shared_ptr<ModelSample> sample)
+        ZLambda calcValuesLambda = [modelSampleLambda](std::shared_ptr<ModelSample> sample)
         {
             ModelSampleStruct modelSampleStruct;
             sample->fillModelSampleStruct(&modelSampleStruct);
@@ -126,13 +126,13 @@ namespace Deltares::Models
 
     ZMultipleLambda ZModel::getLambdaFromMultipleModelSampleCallBack(MultipleModelSampleCallback modelSampleLambda) const
     {
-        ZMultipleLambda calcValuesLambda = [modelSampleLambda, this](std::vector<std::shared_ptr<ModelSample>> samples)
+        ZMultipleLambda calcValuesLambda = [modelSampleLambda](std::vector<std::shared_ptr<ModelSample>> samples)
         {
             ModelSampleStruct* modelSamples = new ModelSampleStruct[samples.size()];
 
             for (size_t i = 0; i < samples.size(); i++)
             {
-                samples[i]->fillModelSampleStruct(&(modelSamples[i]));
+                samples[i]->fillModelSampleStruct(&modelSamples[i]);
             }
 
             (*modelSampleLambda)(modelSamples, static_cast<int>(samples.size()));
@@ -141,6 +141,8 @@ namespace Deltares::Models
             {
                 samples[i]->setModelSampleStruct(&modelSamples[i]);
             }
+
+            delete[] modelSamples;
         };
 
         return calcValuesLambda;
@@ -184,6 +186,24 @@ namespace Deltares::Models
         this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
     }
 
+    void ZModel::RegisterCalculationTime(long long elapsedTime, int samples)
+    {
+        // minimum calculation time to be registered
+        constexpr long long minRepoCalculationTime = 1;
+
+        if (elapsedTime > minRepoCalculationTime * samples)
+        {
+            measureCalculationTime = false;
+            useSampleRepository = true;
+        }
+
+        this->measuredCalculationTimes += samples;
+        if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
+        {
+            measureCalculationTime = false;
+        }
+    }
+
     void ZModel::invoke(const std::shared_ptr<ModelSample>& sample)
     {
         std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
@@ -192,25 +212,14 @@ namespace Deltares::Models
         {
             if (measureCalculationTime && isRepositoryAllowed)
             {
-                // minimum calculation time to be registered
-                constexpr long long minRepoCalculationTime = 1;
 
-                std::chrono::time_point started = std::chrono::high_resolution_clock::now();
+                std::chrono::time_point start = std::chrono::high_resolution_clock::now();
                 invokeLambda(sample);
-                std::chrono::time_point done = std::chrono::high_resolution_clock::now();
+                std::chrono::time_point end = std::chrono::high_resolution_clock::now();
 
-                auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
-                if (elapsedTime > minRepoCalculationTime)
-                {
-                    measureCalculationTime = false;
-                    useSampleRepository = true;
-                }
+                auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-                this->measuredCalculationTimes++;
-                if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
-                {
-                    measureCalculationTime = false;
-                }
+                RegisterCalculationTime(elapsedTime);
             }
             else
             {
@@ -294,17 +303,7 @@ namespace Deltares::Models
 
                 long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
 
-                if (elapsedTime >= static_cast<long long>(minRepoCalculationTime * executeSamples.size()))
-                {
-                    useSampleRepository = true;
-                    measureCalculationTime = false;
-                }
-
-                this->measuredCalculationTimes += static_cast<int>(executeSamples.size());
-                if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
-                {
-                    measureCalculationTime = false;
-                }
+                RegisterCalculationTime(elapsedTime, static_cast<int>(executeSamples.size()));
             }
             else
             {
@@ -317,10 +316,7 @@ namespace Deltares::Models
             {
                 for (const std::shared_ptr<ModelSample>& sample : executeSamples)
                 {
-                    if (!sample->UsedProxy)
-                    {
-                        repository.registerSample(sample);
-                    }
+                    repository.registerSample(sample);
                 }
             }
         }
@@ -341,16 +337,18 @@ namespace Deltares::Models
         return this->zBetaLambda(sample);
     }
 
-    void ZModel::handleInvalidSample(const std::shared_ptr<ModelSample>& sample)
+    void ZModel::handleInvalidSample(const std::shared_ptr<ModelSample>& sample) const
     {
         if (std::isnan(sample->Z))
         {
             switch (handleInvalidType)
             {
-            case HandleInvalidType::Ignore: break; // nothing to do
-            case HandleInvalidType::Fail: sample->Z = -std::numeric_limits<double>::max();  break; 
-            case HandleInvalidType::NoFail: sample->Z = std::numeric_limits<double>::max();  break;
-            default: throw Reliability::probLibException("invalid handle type not known");
+                using enum HandleInvalidType;
+
+                case Ignore: break; // nothing to do
+                case Fail: sample->Z = -std::numeric_limits<double>::max();  break;
+                case NoFail: sample->Z = std::numeric_limits<double>::max();  break;
+                default: throw Reliability::probLibException("invalid handle type not known");
             }
         }
     }

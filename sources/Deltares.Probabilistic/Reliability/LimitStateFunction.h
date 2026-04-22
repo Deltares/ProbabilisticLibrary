@@ -52,6 +52,8 @@ namespace Deltares::Reliability
         bool criticalParameterIndexFromInput = false;
         bool compareParameterIndexFromInput = false;
         bool useSampleZValue = false;
+
+        int FindParameterIndex(std::vector<std::shared_ptr<Models::ModelInputParameter>>& parameters, const std::string search_parameter);
     };
 }
 

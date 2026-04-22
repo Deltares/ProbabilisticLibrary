@@ -43,20 +43,22 @@ namespace Deltares::Reliability
         return sectionsCount;
     }
 
+    using enum ModelVaryingType;
+
     std::string DirectionReliabilitySettings::getModelVaryingTypeString(ModelVaryingType type)
     {
         switch (type)
         {
-        case ModelVaryingType::Monotone: return "monotone";
-        case ModelVaryingType::Varying: return "varying";
+        case Monotone: return "monotone";
+        case Varying: return "varying";
         default: throw Reliability::probLibException("Model varying type");
         }
     }
 
-    ModelVaryingType DirectionReliabilitySettings::getModelVaryingType(std::string type)
+    ModelVaryingType DirectionReliabilitySettings::getModelVaryingType(const std::string& type)
     {
-        if (type == "monotone") return ModelVaryingType::Monotone;
-        else if (type == "varying") return ModelVaryingType::Varying;
+        if (type == "monotone") return Monotone;
+        else if (type == "varying") return Varying;
         else throw Reliability::probLibException("Model varying type");
     }
 

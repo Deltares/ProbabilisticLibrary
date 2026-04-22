@@ -117,6 +117,7 @@ extern "C" DLL_PUBLIC int GetIntValue(int id, const char* property)
     catch (const std::exception& e)
     {
         ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
     }
 }
 
@@ -145,6 +146,7 @@ extern "C" DLL_PUBLIC int GetIdValue(int id, const char* property)
     catch (const std::exception& e)
     {
         ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
     }
 }
 
@@ -184,6 +186,7 @@ extern "C" DLL_PUBLIC size_t GetStringLength(int id, const char* property)
     catch (const std::exception& e)
     {
         ProjectServer::Instance().last_exception = std::string(e.what());
+        return 0;
     }
 
 }
@@ -302,6 +305,7 @@ extern "C" DLL_PUBLIC int GetIndexedIdValue(int id, const char* property, int in
     catch (const std::exception& e)
     {
         ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
     }
 }
 

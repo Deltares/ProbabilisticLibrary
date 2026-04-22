@@ -46,9 +46,9 @@
 
 namespace Deltares::Reliability
 {
-    enum ReliabilityResultType { ResultDesignPoint, ResultFragilityCurve };
+    enum class ReliabilityResultType { ResultDesignPoint, ResultFragilityCurve };
 
-    enum ReliabilityMethodType {
+    enum class ReliabilityMethodType {
         ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
         ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilityDirectionReliability,
         ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
@@ -178,11 +178,6 @@ namespace Deltares::Reliability
          * \brief Maximum number of guessed design points in one FORM loop
          */
         int MaximumIterations = 50;
-
-        /**
-         * \brief Default number of intervals in numerical integration
-         */
-        //int Intervals = 200;
 
         /**
          * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration

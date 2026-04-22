@@ -1,0 +1,47 @@
+Metadata-Version: 2.4
+Name: probabilistic_library
+Version: 26.1.1
+Summary: Package which provides probabilistic methods
+Author: Deltares
+Author-email: Deltares <d-prob-support@deltares.nl>
+License: LGPL-3.0
+Project-URL: Homepage, https://deltares.github.io/ProbabilisticLibrary/
+Project-URL: Documentation, https://github.com/Deltares/ProbabilisticLibrary/tree/master/docs
+Project-URL: Repository, https://github.com/Deltares/ProbabilisticLibrary
+Project-URL: issues, https://github.com/Deltares/ProbabilisticLibrary/issues
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Dynamic: author
+Dynamic: requires-python
+
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/downloads/release/python-31110/) 
+[![C++][c++-image]][c++standard]
+[![docs2](https://github.com/Deltares/ProbabilisticLibrary/actions/workflows/docs.yml/badge.svg)](https://github.com/Deltares/ProbabilisticLibrary/actions/workflows/docs.yml)
+
+[c++-image]: https://img.shields.io/badge/C++-20-blue.svg?style=flat&logo=c%2B%2B
+[c++standard]: https://isocpp.org/std/the-standard
+
+# Probabilistic Library
+
+This is the Probabilistic Library of Deltares.
+The library provides a set of routines that enable reliability, uncertainty, and sensitivity analyses.
+
+## Scientific background
+
+The scientific background of the library can be found here:
+[scientific_background.pdf](https://github.com/Deltares/ProbabilisticLibrary/releases/download/26.1.1/scientific_background.pdf)
+
+## Python wrapper
+
+A description of the Python classes is given here:
+[API documentation](https://deltares.github.io/ProbabilisticLibrary/api_reference/index.html)
+
+## Tutorials
+
+See the [Tutorials](https://deltares.github.io/ProbabilisticLibrary/tutorials/tutorials.html) for several demonstrations and instructions on how to use the Probabilistic Library.

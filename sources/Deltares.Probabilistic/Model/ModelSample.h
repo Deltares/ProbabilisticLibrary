@@ -73,7 +73,7 @@ namespace Deltares::Models
 
         void fillModelSampleStruct(ModelSampleStruct* modelSample) const;
 
-        void setModelSampleStruct(ModelSampleStruct* sampleStruct);
+        void setModelSampleStruct(const ModelSampleStruct* sampleStruct);
 
         /**
          * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples

@@ -35,13 +35,6 @@ namespace Deltares::Sensitivity
     class SensitivityProject : public Models::ModelProject
     {
     public:
-        // TODO: Make sensitivityMethod private when C++/CLI code has been phased out
-
-        /**
-         * \brief Method which performs a uncertainty calculation
-         */
-        std::shared_ptr<SensitivityMethod> sensitivityMethod = nullptr;
-
         /**
          * \brief Output parameters for which the sensitivity will be calculated, empty for all parameters
          */
@@ -119,6 +112,11 @@ namespace Deltares::Sensitivity
 
     private:
         std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
+
+        /**
+         * \brief Method which performs the sensitivity calculation
+         */
+        std::shared_ptr<SensitivityMethod> sensitivityMethod = nullptr;
     };
 }
 
