@@ -134,7 +134,14 @@ namespace Deltares::Server
         {
             char receiveBuffer[DEFAULT_BUFLEN];
 
-            int received = recv(server_socket, receiveBuffer, sizeof(receiveBuffer), 0);
+            int received = -1;
+            int counter = 0;
+
+            while (received < 0 && counter++ < 10)
+            {
+                received = recv(server_socket, receiveBuffer, sizeof(receiveBuffer), 0);
+            }
+
             if (received < 0)
             {
                 throw Reliability::probLibException("Receive failed");
