@@ -28,13 +28,13 @@ namespace Deltares::Numeric
     class MatrixSupport
     {
     public:
-        static Matrix Inverse(const Matrix* source);
+        static Matrix Inverse(const Matrix* src);
     private:
-        typedef struct order_array_elem
+        struct oa_elem_t
         {
             int old_row;
             double val;
-        } oa_elem_t;
+        };
 
         static size_t count_leading_zeros(const Matrix& mat, const size_t n, const size_t row);
         static void merge(std::vector<oa_elem_t>& A, int p, int q, int r);
