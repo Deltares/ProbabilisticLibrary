@@ -139,10 +139,12 @@ namespace Deltares::Server
 
     int ProjectHandler::Create(std::string object_type)
     {
+        int id = this->GetNewId();
+
+        std::lock_guard<std::mutex> lock(mtx);
+
         // remove all destroyed objects
         DestroyObjects();
-
-        int id = this->GetNewId();
 
         types[id] = GetType(object_type);
 
@@ -316,8 +318,6 @@ namespace Deltares::Server
 
     void ProjectHandler::DestroyObjects()
     {
-        std::lock_guard<std::mutex> lock(mtx);
-
         for (auto id : destroyObjects)
         {
             if (types.contains(id))
