@@ -159,11 +159,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\ProbabilityLimitStateFunction.h" />
     <ClInclude Include="Combine\ExcludingCombineSettings.h" />
     <ClInclude Include="Combine\ExcludingCombineProject.h" />
     <ClInclude Include="Combine\ExcludingCombiner.h" />
     <ClInclude Include="Combine\WeightedSumCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
+    <ClInclude Include="Reliability\CombinedLimitStateFunction.h" />
+    <ClInclude Include="Model\ModelSample.h" />
+    <ClInclude Include="Model\ModelSampleStruct.h" />
     <ClInclude Include="Proxies\ProxyCoefficients.h" />
     <ClInclude Include="Model\Validatable.h" />
     <ClInclude Include="Proxies\ProxySettings.h" />
@@ -311,7 +315,6 @@
     <ClInclude Include="Combine\UpScaling.h" />
     <ClInclude Include="Combine\ComputeBetaSection.h" />
     <ClInclude Include="Combine\LengthEffect.h" />
-    <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Reliability\SphereTasks.h" />
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
     <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
@@ -412,11 +415,13 @@
     <ClInclude Include="Model\DefaultValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />
     <ClCompile Include="Combine\ExcludingCombineSettings.cpp" />
     <ClCompile Include="Combine\ExcludingCombineProject.cpp" />
     <ClCompile Include="Combine\ExcludingCombiner.cpp" />
     <ClCompile Include="Combine\WeightedSumCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
+    <ClCompile Include="Reliability\CombinedLimitStateFunction.cpp" />
     <ClCompile Include="Proxies\ProxyCoefficients.cpp" />
     <ClCompile Include="Model\Validatable.cpp" />
     <ClCompile Include="Proxies\ProxySettings.cpp" />
@@ -428,6 +433,7 @@
     <ClCompile Include="Proxies\ProxyCoefficient.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSupport.cpp" />
     <ClCompile Include="Logging\ValidationSupport.cpp" />
+    <ClCompile Include="Model\ModelSample.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
     <ClCompile Include="Model\ModelProject.cpp" />
     <ClCompile Include="Reliability\FragilityCurveProject.cpp" />

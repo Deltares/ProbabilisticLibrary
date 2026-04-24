@@ -35,10 +35,32 @@ namespace Deltares::Uncertainty
         uncertaintyMethod = settings->GetUncertaintyMethod();
         runSettings = settings->RunSettings;
 
-        if (parameter.empty())
+        if (model->outputParameters.empty())
         {
-            for (const auto& modelParameter : model->outputParameters)
+            this->outputSelector = std::make_shared<Models::ZValueConverter>();
+
+            auto result = std::make_shared<UncertaintyResult>(getUncertaintyResult());
+            uncertaintyResults.push_back(result);
+        }
+        else if (parameter.empty())
+        {
+            std::vector<std::shared_ptr<Models::ModelInputParameter>> parameters;
+            if (uncertaintyParameters.empty())
             {
+                parameters = model->outputParameters;
+            }
+            else
+            {
+                parameters = uncertaintyParameters;
+            }
+
+            std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+            this->outputSelector = std::dynamic_pointer_cast<Models::ZValueConverter>(parameterSelector);
+
+            for (const auto& modelParameter : parameters)
+            {
+                model->next();
+
                 parameterSelector->parameter = modelParameter->name;
                 if (modelParameter->isArray)
                 {
@@ -60,6 +82,11 @@ namespace Deltares::Uncertainty
         }
         else
         {
+            model->next();
+
+            std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+            this->outputSelector = std::dynamic_pointer_cast<Models::ZValueConverter>(parameterSelector);
+
             parameterSelector->parameter = parameter;
             parameterSelector->arrayIndex = arrayIndex;
 
@@ -84,9 +111,14 @@ namespace Deltares::Uncertainty
         }
     }
 
+    void UncertaintyProject::stop()
+    {
+        uncertaintyMethod->Stop();
+    }
+
     UncertaintyResult UncertaintyProject::getUncertaintyResult()
     {
-        model->zValueConverter = parameterSelector;
+        model->zValueConverter = outputSelector;
 
         std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, correlation);
         const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(model, uConverter, progressIndicator);
@@ -94,7 +126,7 @@ namespace Deltares::Uncertainty
         modelRunner->initializeForRun();
 
         auto result = uncertaintyMethod->getUncertaintyStochast(modelRunner);
-        result.stochast->name = parameterSelector->parameter;
+        result.stochast->name = outputSelector->getIdentifier();
 
         modelRuns += model->getModelRuns();
 

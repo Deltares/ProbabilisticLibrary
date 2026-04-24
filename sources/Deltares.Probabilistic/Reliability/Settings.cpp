@@ -23,6 +23,9 @@
 
 #include <memory>
 
+#include "DirectionReliability.h"
+#include "FragilityCurveIntegration.h"
+
 namespace Deltares::Reliability
 {
     std::shared_ptr<ReliabilityMethod> Settings::GetReliabilityMethod()
@@ -35,12 +38,14 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityImportanceSampling: return this->GetImportanceSamplingMethod();
         case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return this->GetAdaptiveImportanceSamplingMethod();
         case ReliabilityMethodType::ReliabilityDirectionalSampling: return this->GetDirectionalSamplingMethod();
+        case ReliabilityMethodType::ReliabilityDirectionReliability: return this->GetDirectionReliabilityMethod();
         case ReliabilityMethodType::ReliabilitySubsetSimulation: return this->GetSubsetSimulationMethod();
         case ReliabilityMethodType::ReliabilityNumericalBisection: return this->GetNumericalBisectionMethod();
         case ReliabilityMethodType::ReliabilityLatinHyperCube: return this->GetLatinHypercubeMethod();
         case ReliabilityMethodType::ReliabilityCobyla: return this->GetCobylaReliabilityMethod();
         case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling: return this->GetFormThenDsReliabilityMethod();
         case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM: return this->GetDsThenFormReliabilityMethod();
+        case ReliabilityMethodType::ReliabilityFragilityCurveIntegration: return this->GetFragilityCurveIntegrationMethod();
 
         default: throw probLibException("Reliability method");
         }
@@ -106,9 +111,9 @@ namespace Deltares::Reliability
         auto cobyla_reliability = std::make_shared<CobylaReliability>();
 
         cobyla_reliability->Settings->designPointMethod = this->designPointMethod;
-        cobyla_reliability->Settings->StochastSet = this->StochastSet;
         cobyla_reliability->Settings->EpsilonBeta = this->EpsilonBeta;
-        cobyla_reliability->Settings->MaximumIterations = this->MaximumIterations;
+        cobyla_reliability->Settings->MaximumIterations = this->MaximumSamples;
+        cobyla_reliability->Settings->StochastSet = this->StochastSet;
 
         return cobyla_reliability;
     }
@@ -189,7 +194,9 @@ namespace Deltares::Reliability
         importanceSampling->Settings->MinimumSamples = this->MinimumSamples;
         importanceSampling->Settings->MaximumSamples = this->MaximumSamples;
         importanceSampling->Settings->designPointMethod = this->designPointMethod;
+        importanceSampling->Settings->VarianceFactor = this->VarianceFactor;
         importanceSampling->Settings->VariationCoefficient = this->VariationCoefficient;
+        importanceSampling->Settings->startPointSettings = this->StartPointSettings;
         importanceSampling->Settings->runSettings = this->RunSettings;
         importanceSampling->Settings->randomSettings = this->RandomSettings;
         importanceSampling->Settings->StochastSet = this->StochastSet;
@@ -203,15 +210,31 @@ namespace Deltares::Reliability
 
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->MinimumSamples = this->MinimumSamples;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamples = this->MaximumSamples;
+        adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamplesNoResult = this->MaximumSamplesNoResult;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->designPointMethod = this->designPointMethod;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->VariationCoefficient = this->VariationCoefficient;
+        adaptiveImportanceSampling->Settings->importanceSamplingSettings->VarianceFactor = this->VarianceFactor;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->runSettings = this->RunSettings;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->randomSettings = this->RandomSettings;
+        adaptiveImportanceSampling->Settings->importanceSamplingSettings->startPointSettings = this->StartPointSettings;
         adaptiveImportanceSampling->Settings->importanceSamplingSettings->StochastSet = this->StochastSet;
 
         adaptiveImportanceSampling->Settings->MinVarianceLoops = this->MinimumVarianceLoops;
         adaptiveImportanceSampling->Settings->MaxVarianceLoops = this->MaximumVarianceLoops;
+        adaptiveImportanceSampling->Settings->MinimumFailedSamples = this->MinimumFailedSamples;
         adaptiveImportanceSampling->Settings->FractionFailed = this->FractionFailed;
+        adaptiveImportanceSampling->Settings->EpsWeightSample = this->EpsilonWeightSample;
+        adaptiveImportanceSampling->Settings->VarianceFactor = this->VarianceFactor;
+        adaptiveImportanceSampling->Settings->AutoMaximumSamples = this->AutoMaximumSamples;
+        adaptiveImportanceSampling->Settings->StartPointOnLimitState = this->StartPointOnLimitState;
+        adaptiveImportanceSampling->Settings->StartValueStepSize = this->StartValueStepSize;
+        adaptiveImportanceSampling->Settings->LoopVarianceIncrement = this->LoopVarianceIncrement;
+        adaptiveImportanceSampling->Settings->MaxBeta = this->MaxBeta;
+        adaptiveImportanceSampling->Settings->startPointSettings = this->StartPointSettings;
+
+        adaptiveImportanceSampling->Settings->Clustering = this->Clustering;
+        adaptiveImportanceSampling->Settings->clusterSettings->MaxClusters = this->MaxClusters;
+        adaptiveImportanceSampling->Settings->clusterSettings->OptimizeNumberOfClusters = this->OptimizeNumberOfClusters;
 
         return adaptiveImportanceSampling;
     }
@@ -226,9 +249,20 @@ namespace Deltares::Reliability
         directionalSampling->Settings->VariationCoefficient = this->VariationCoefficient;
         directionalSampling->Settings->runSettings = this->RunSettings;
         directionalSampling->Settings->randomSettings = this->RandomSettings;
+        directionalSampling->Settings->DirectionSettings = this->DirectionSettings;
         directionalSampling->Settings->StochastSet = this->StochastSet;
 
         return directionalSampling;
+    }
+
+    std::shared_ptr<DirectionReliability> Settings::GetDirectionReliabilityMethod() const
+    {
+        std::shared_ptr<DirectionReliability> directionReliability = std::make_shared<DirectionReliability>();
+
+        directionReliability->Settings = this->DirectionSettings;
+        directionReliability->Settings->StochastSet = this->StochastSet;
+
+        return directionReliability;
     }
 
     std::shared_ptr<SubsetSimulation> Settings::GetSubsetSimulationMethod() const
@@ -240,12 +274,26 @@ namespace Deltares::Reliability
         subsetSimulation->Settings->designPointMethod = this->designPointMethod;
         subsetSimulation->Settings->SampleMethod = this->sampleMethod;
         subsetSimulation->Settings->VariationCoefficient = this->VariationCoefficient;
+        subsetSimulation->Settings->MarkovChainDeviation = this->MarkovChainDeviation;
         subsetSimulation->Settings->RunSettings = this->RunSettings;
         subsetSimulation->Settings->randomSettings = this->RandomSettings;
         subsetSimulation->Settings->StochastSet = this->StochastSet;
 
         return subsetSimulation;
     }
+
+    std::shared_ptr<FragilityCurveIntegration> Settings::GetFragilityCurveIntegrationMethod() const
+    {
+        auto fragilityCurveIntegration = std::make_shared<FragilityCurveIntegration>();
+
+        fragilityCurveIntegration->Settings->designPointMethod = this->fragilityCurveDesignPointMethod;
+        fragilityCurveIntegration->Settings->StepSize = this->FragilityCurveStepSize;
+        fragilityCurveIntegration->Settings->StochastSet = this->StochastSet;
+
+        return fragilityCurveIntegration;
+    }
+
+
 
     void Settings::validate(Logging::ValidationReport& report) const
     {
@@ -257,6 +305,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: GetAdaptiveImportanceSamplingMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;
+        case ReliabilityMethodType::ReliabilityDirectionReliability: GetDirectionReliabilityMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityNumericalBisection: GetNumericalBisectionMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityLatinHyperCube: GetLatinHypercubeMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilitySubsetSimulation: GetSubsetSimulationMethod()->Settings->validate(report); break;
@@ -289,12 +338,14 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityImportanceSampling: return "importance_sampling";
         case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return "adaptive_importance_sampling";
         case ReliabilityMethodType::ReliabilityDirectionalSampling: return "directional_sampling";
+        case ReliabilityMethodType::ReliabilityDirectionReliability: return "direction_reliability";
         case ReliabilityMethodType::ReliabilitySubsetSimulation: return "subset_simulation";
         case ReliabilityMethodType::ReliabilityNumericalBisection: return "numerical_bisection";
         case ReliabilityMethodType::ReliabilityLatinHyperCube: return "latin_hypercube";
         case ReliabilityMethodType::ReliabilityCobyla: return "cobyla_reliability";
         case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling: return "form_then_directional_sampling";
         case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM: return "directional_sampling_then_form";
+        case ReliabilityMethodType::ReliabilityFragilityCurveIntegration: return "fragility_curve_integration";
         default: throw probLibException("Reliability method");
         }
     }
@@ -307,12 +358,14 @@ namespace Deltares::Reliability
         else if (method == "importance_sampling") return ReliabilityMethodType::ReliabilityImportanceSampling;
         else if (method == "adaptive_importance_sampling") return ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling;
         else if (method == "directional_sampling") return ReliabilityMethodType::ReliabilityDirectionalSampling;
+        else if (method == "direction_reliability") return ReliabilityMethodType::ReliabilityDirectionReliability;
         else if (method == "subset_simulation") return ReliabilityMethodType::ReliabilitySubsetSimulation;
         else if (method == "numerical_bisection") return ReliabilityMethodType::ReliabilityNumericalBisection;
         else if (method == "latin_hypercube") return ReliabilityMethodType::ReliabilityLatinHyperCube;
         else if (method == "cobyla_reliability") return ReliabilityMethodType::ReliabilityCobyla;
         else if (method == "form_then_directional_sampling") return ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling;
         else if (method == "directional_sampling_then_form") return ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM;
+        else if (method == "fragility_curve_integration") return ReliabilityMethodType::ReliabilityFragilityCurveIntegration;
         else throw probLibException("Reliability method");
     }
 
@@ -333,4 +386,5 @@ namespace Deltares::Reliability
         else throw probLibException("Reliability result");
     }
 }
+
 

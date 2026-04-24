@@ -82,7 +82,7 @@ namespace Deltares::Statistics
         double u = StandardNormal::getUFromP(quantile);
         return distribution->getXFromU(*properties, u);
     }
-
+    
     double Stochast::getXFromU(double u)
     {
         return distribution->getXFromU(*properties, u);
@@ -91,6 +91,18 @@ namespace Deltares::Statistics
     double Stochast::getUFromX(double x)
     {
         return distribution->getUFromX(*properties, x);
+    }
+
+    double Stochast::getXFromP(double p)
+    {
+        double u = StandardNormal::getUFromP(p);
+        return getXFromU(u);
+    }
+
+    double Stochast::getPFromX(double x)
+    {
+        double u = getUFromX(x);
+        return StandardNormal::getPFromU(u);
     }
 
     double Stochast::getXFromUAndSource(double xSource, double u)

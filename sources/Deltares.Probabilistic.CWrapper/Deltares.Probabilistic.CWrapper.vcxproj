@@ -137,8 +137,7 @@
       </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>mkdir -p "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin"
-copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin\$(TargetName).dll"</Command>
+      <Command>copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin\$(TargetName).dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

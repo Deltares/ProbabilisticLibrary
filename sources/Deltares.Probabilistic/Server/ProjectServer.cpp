@@ -21,6 +21,7 @@
 //
 #include "ProjectServer.h"
 
+#include <iostream>
 #include <string>
 #include <memory>
 
@@ -29,211 +30,203 @@ namespace Deltares::Server
     using namespace Deltares::Statistics;
     using namespace Deltares::Reliability;
 
-    void ProjectServer::AddHandler(std::shared_ptr<BaseHandler> handler)
+    void ProjectServer::SetHandler(std::shared_ptr<BaseHandler> handler)
     {
-        handlers.push_back(handler);
+        this->handler = handler;
     }
 
-    int ProjectServer::GetNewObjectId(int handlerIndex)
+    int ProjectServer::GetNewId()
     {
-        id_ += 1;
-        handlersTable[id_] = this->handlers[handlerIndex];
-        return id_;
+        return handler->GetNewId();
     }
 
     int ProjectServer::Create(std::string object_type)
     {
-        for (int i = 0; i < this->handlers.size(); i++)
+        if (handler->CanHandle(object_type))
         {
-            if (this->handlers[i]->CanHandle(object_type))
-            {
-                int counter = GetNewObjectId(i);
-                this->handlers[i]->Create(object_type, counter);
-
-                return counter;
-            }
+            return handler->Create(object_type);
         }
 
-        throw probLibException("Object type not supported");
+        throw probLibException("Object type \"" + object_type + "\" not supported");
     }
 
     void ProjectServer::Destroy(int id)
     {
-        handlersTable[id]->Destroy(id);
+        handler->Destroy(id);
     }
 
     void ProjectServer::Exit()
     {
-        for (std::shared_ptr<BaseHandler> handler : handlers)
-        {
-            handler->Exit();
-        }
+        handler->Exit();
     }
 
     double ProjectServer::GetValue(int id, std::string property_)
     {
-        return handlersTable[id]->GetValue(id, property_);
+        return handler->GetValue(id, property_);
     }
 
     void ProjectServer::SetValue(int id, std::string property_, double value)
     {
-        handlersTable[id]->SetValue(id, property_, value);
+        handler->SetValue(id, property_, value);
     }
 
     int ProjectServer::GetIntValue(int id, std::string property_)
     {
-        return handlersTable[id]->GetIntValue(id, property_);
+        return handler->GetIntValue(id, property_);
     }
 
     void ProjectServer::SetIntValue(int id, std::string property_, int value)
     {
-        handlersTable[id]->SetIntValue(id, property_, value);
+        handler->SetIntValue(id, property_, value);
     }
 
     double ProjectServer::GetIntArgValue(int id1, int id2, std::string property_)
     {
-        return handlersTable[id1]->GetIntArgValue(id1, id2, property_);
+        return handler->GetIntArgValue(id1, id2, property_);
     }
 
     void ProjectServer::SetIntArgValue(int id1, int id2, std::string property_, double value)
     {
-        handlersTable[id1]->SetIntArgValue(id1, id2, property_, value);
+        handler->SetIntArgValue(id1, id2, property_, value);
     }
 
     bool ProjectServer::GetBoolValue(int id, std::string property_)
     {
-        return handlersTable[id]->GetBoolValue(id, property_);
+        return handler->GetBoolValue(id, property_);
     }
 
     void ProjectServer::SetBoolValue(int id, std::string property_, bool value)
     {
-        handlersTable[id]->SetBoolValue(id, property_, value);
+        handler->SetBoolValue(id, property_, value);
     }
 
     std::string ProjectServer::GetStringValue(int id, std::string property_)
     {
-        return handlersTable[id]->GetStringValue(id, property_);
+        return handler->GetStringValue(id, property_);
     }
 
     void ProjectServer::SetStringValue(int id, std::string property_, std::string value)
     {
-        handlersTable[id]->SetStringValue(id, property_, value);
+        handler->SetStringValue(id, property_, value);
     }
 
     std::string ProjectServer::GetIndexedStringValue(int id, const std::string property_, int index)
     {
-        return handlersTable[id]->GetIndexedStringValue(id, property_, index);
+        return handler->GetIndexedStringValue(id, property_, index);
     }
 
     void ProjectServer::GetArrayValue(int id, std::string property_, double* values, int size)
     {
-        return handlersTable[id]->GetArrayValue(id, property_, values, size);
+        return handler->GetArrayValue(id, property_, values, size);
     }
 
     void ProjectServer::SetArrayValue(int id, std::string property_, double* values, int size)
     {
-        handlersTable[id]->SetArrayValue(id, property_, values, size);
+        handler->SetArrayValue(id, property_, values, size);
     }
 
     std::vector<int> ProjectServer::GetArrayIntValue(int id, std::string property_)
     {
-        return handlersTable[id]->GetArrayIntValue(id, property_);
+        return handler->GetArrayIntValue(id, property_);
     }
 
     void ProjectServer::SetArrayIntValue(int id, std::string property_, int* values, int size)
     {
-        handlersTable[id]->SetArrayIntValue(id, property_, values, size);
+        handler->SetArrayIntValue(id, property_, values, size);
     }
 
     double ProjectServer::GetArgValue(int id, std::string property_, double argument)
     {
-        return handlersTable[id]->GetArgValue(id, property_, argument);
+        return handler->GetArgValue(id, property_, argument);
     }
 
     void ProjectServer::SetArgValue(int id, std::string property_, double argument, double value)
     {
-        handlersTable[id]->SetArgValue(id, property_, argument, value);
+        handler->SetArgValue(id, property_, argument, value);
     }
 
     void ProjectServer::GetArgValues(int id, std::string property_, double* values, int size, double* outputValues)
     {
-        return handlersTable[id]->GetArgValues(id, property_, values, size, outputValues);
+        return handler->GetArgValues(id, property_, values, size, outputValues);
     }
 
     double ProjectServer::GetIndexedValue(int id, std::string property_, int index)
     {
-        return handlersTable[id]->GetIndexedValue(id, property_, index);
+        return handler->GetIndexedValue(id, property_, index);
     }
 
     void ProjectServer::SetIndexedValue(int id, std::string property_, int index, double value)
     {
-        handlersTable[id]->SetIndexedValue(id, property_, index, value);
+        handler->SetIndexedValue(id, property_, index, value);
     }
 
     double ProjectServer::GetIndexedIndexedValue(int id, std::string property_, int index1, int index2)
     {
-        return handlersTable[id]->GetIndexedIndexedValue(id, property_, index1, index2);
+        return handler->GetIndexedIndexedValue(id, property_, index1, index2);
     }
 
     void ProjectServer::SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value)
     {
-        handlersTable[id]->SetIndexedIndexedValue(id, property_, index1, index2, value);
+        handler->SetIndexedIndexedValue(id, property_, index1, index2, value);
     }
 
     void ProjectServer::SetIndexedIndexedIntValue(int id, std::string property_, int index1, int index2, int value)
     {
-        handlersTable[id]->SetIndexedIndexedIntValue(id, property_, index1, index2, value);
+        handler->SetIndexedIndexedIntValue(id, property_, index1, index2, value);
     }
 
     int ProjectServer::GetIndexedIntValue(int id, std::string property_, int index)
     {
-        return handlersTable[id]->GetIndexedIntValue(id, property_, index);
+        return handler->GetIndexedIntValue(id, property_, index);
     }
 
     int ProjectServer::GetIdValue(int id, std::string property_)
     {
-        int newId = id_ + 1;
-        int objectId = handlersTable[id]->GetIdValue(id, property_, newId);
-        if (objectId == newId)
-        {
-            handlersTable[newId] = this->handlersTable[id];
-            id_ += 1;
-        }
+        int objectId = handler->GetIdValue(id, property_);
 
         return objectId;
     }
 
     int ProjectServer::GetIndexedIdValue(int id, std::string property_, int index)
     {
-        int newId = id_ + 1;
-        int objectId = handlersTable[id]->GetIndexedIdValue(id, property_, index, newId);
-        if (objectId == newId)
-        {
-            handlersTable[newId] = this->handlersTable[id];
-            id_ += 1;
-        }
+        int objectId = handler->GetIndexedIdValue(id, property_, index);
 
         return objectId;
     }
 
     void ProjectServer::SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack)
     {
-        handlersTable[id]->SetCallBack(id, property_, callBack);
+        handler->SetCallBack(id, property_, callBack);
     }
 
     void ProjectServer::SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack)
     {
-        handlersTable[id]->SetMultipleCallBack(id, property_, callBack);
+        handler->SetMultipleCallBack(id, property_, callBack);
     }
 
     void ProjectServer::SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack)
     {
-        handlersTable[id]->SetEmptyCallBack(id, property_, callBack);
+        handler->SetEmptyCallBack(id, property_, callBack);
+    }
+
+    void ProjectServer::SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack)
+    {
+        handler->SetModelSampleCallBack(id, property_, callBack);
+    }
+
+    void ProjectServer::SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack)
+    {
+        handler->SetMultipleModelSampleCallBack(id, property_, callBack);
+    }
+
+    void ProjectServer::SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
+    {
+        handler->SetProgressCallBacks(id, progress, detailed, textual);
     }
 
     void ProjectServer::Execute(int id, std::string method_)
     {
-        handlersTable[id]->Execute(id, method_);
+        handler->Execute(id, method_);
     }
 }
 

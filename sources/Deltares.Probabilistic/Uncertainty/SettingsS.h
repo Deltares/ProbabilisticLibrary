@@ -103,6 +103,11 @@ namespace Deltares::Uncertainty
          */
         bool DeriveSamplesFromVariationCoefficient = false;
 
+        int getRequiredSamples()
+        {
+            return CrudeMonteCarloSettingsS::getRequiredSamples(ProbabilityForConvergence, VariationCoefficient);
+        }
+
         /**
          * \brief Maximum number of guessed design points in one FORM loop
          */
@@ -112,6 +117,11 @@ namespace Deltares::Uncertainty
          * \brief Step size in form calculation
          */
         double GlobalStepSize = 0.5;
+
+        /**
+         * \brief Step size in fosm
+         */
+        double StepSizeFactor = 0.01;
 
         /**
          * \brief Requested quantiles

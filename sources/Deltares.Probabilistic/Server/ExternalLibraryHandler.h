@@ -69,7 +69,7 @@ namespace Deltares::Server
 
         void Initialize();
         bool CanHandle(std::string objectType) override;
-        void Create(std::string objectType, int id) override;
+        int Create(std::string objectType) override;
         void Destroy(int id) override;
         double GetValue(int id, std::string property) override;
         void SetValue(int id, std::string property, double value) override;
@@ -85,7 +85,7 @@ namespace Deltares::Server
     private:
         typedef void(*f_initialize)();
         typedef bool(*f_can_handle)(const char*);
-        typedef void(*f_create)(const char*, int);
+        typedef int(*f_create)(const char*);
         typedef void(* f_destroy)(int);
         typedef double(* f_get_value)(int, const char*);
         typedef void(* f_set_value)(int, const char*, double);

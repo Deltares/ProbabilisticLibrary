@@ -19,13 +19,13 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Models.Wrappers;
-using Deltares.Reliability.Wrappers;
-using Deltares.Statistics.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
+using Deltares.Probabilistic.Statistics;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestConditional
@@ -42,19 +42,19 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             ClassicAssert.AreEqual(1.0, stochast.GetXFromU(1.0), margin);
 
-            stochast.IsVariableStochast = true;
+            stochast.IsConditional = true;
 
-            VariableStochastValue conditional1 = new VariableStochastValue();
+            ConditionalValue conditional1 = new ConditionalValue();
             conditional1.X = 0;
             conditional1.Location = 0;
             conditional1.Scale = 1;
-            stochast.ValueSet.StochastValues.Add(conditional1);
+            stochast.ConditionalValues.Add(conditional1);
 
-            VariableStochastValue conditional2 = new VariableStochastValue();
+            ConditionalValue conditional2 = new ConditionalValue();
             conditional2.X = 1;
             conditional2.Location = 1;
             conditional2.Scale = 2;
-            stochast.ValueSet.StochastValues.Add(conditional2);
+            stochast.ConditionalValues.Add(conditional2);
 
             ClassicAssert.AreEqual(2.0, stochast.GetXFromUAndSource(1.0, 0.5), margin);
         }

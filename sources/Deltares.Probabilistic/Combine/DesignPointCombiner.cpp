@@ -157,7 +157,7 @@ namespace Deltares::Reliability
     {
         switch (type)
         {
-        case ExcludingCombinerType::HohenbichlerExcluding: return "hohenbichler";
+        case ExcludingCombinerType::HohenbichlerExcluding: return "hohenbichler_excluding";
         case ExcludingCombinerType::WeightedSum: return "weighted_sum";
         default: throw probLibException("Excluding combiner method");
         }

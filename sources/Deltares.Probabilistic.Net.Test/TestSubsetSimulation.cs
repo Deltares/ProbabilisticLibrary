@@ -19,11 +19,12 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-﻿using Deltares.Reliability.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestSubsetSimulation
@@ -35,13 +36,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            SubsetSimulation subsetSimulation = new SubsetSimulation();
-            subsetSimulation.Settings.MarkovChainDeviation = 0.5;
-            subsetSimulation.Settings.VariationCoefficientFailure = 0;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.SubsetSimulation;
+            project.Settings.MarkovChainDeviation = 0.5;
+            project.Settings.VariationCoefficient = 0;
 
-            project.ReliabilityMethod = subsetSimulation;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
             ClassicAssert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
@@ -59,14 +60,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            SubsetSimulation subsetSimulation = new SubsetSimulation();
-            subsetSimulation.Settings.MarkovChainDeviation = 0.5;
-            subsetSimulation.Settings.VariationCoefficientFailure = 0;
-            subsetSimulation.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.SubsetSimulation;
+            project.Settings.MarkovChainDeviation = 0.5;
+            project.Settings.VariationCoefficient = 0;
+            project.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
 
-            project.ReliabilityMethod = subsetSimulation;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
             ClassicAssert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
@@ -84,13 +85,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            SubsetSimulation subsetSimulation = new SubsetSimulation();
-            subsetSimulation.Settings.MarkovChainDeviation = 0.5;
-            subsetSimulation.Settings.VariationCoefficientFailure = 0;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.SubsetSimulation;
+            project.Settings.MarkovChainDeviation = 0.5;
+            project.Settings.VariationCoefficient = 0;
 
-            project.ReliabilityMethod = subsetSimulation;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(-2.57, designPoint.Beta, margin);
 
@@ -106,18 +107,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearSmallProject();
 
-            SubsetSimulation subsetSimulation = new SubsetSimulation();
-            subsetSimulation.Settings.MinimumSamples = 500;
-            subsetSimulation.Settings.MaximumSamples = 5000;
-            subsetSimulation.Settings.VariationCoefficientFailure = 0;
-            subsetSimulation.Settings.MarkovChainDeviation = 0.5;
-            subsetSimulation.Settings.SampleMethod = SampleMethod.MarkovChain;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.SubsetSimulation;
+            project.Settings.MarkovChainDeviation = 0.5;
+            project.Settings.VariationCoefficient = 0;
+            project.Settings.MinimumSamples = 500;
+            project.Settings.MaximumSamples = 5000;
+            project.Settings.SampleMethod = SampleMethod.MarkovChain;
 
-            project.ReliabilityMethod = subsetSimulation;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
-
-            ClassicAssert.AreEqual(3.80, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(3.80, project.DesignPoint.Beta, margin);
         }
 
         [Test]
@@ -125,17 +124,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearSmallProject();
 
-            SubsetSimulation subsetSimulation = new SubsetSimulation();
-            subsetSimulation.Settings.MinimumSamples = 500;
-            subsetSimulation.Settings.MaximumSamples = 5000;
-            subsetSimulation.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.SubsetSimulation;
+            project.Settings.MinimumSamples = 500;
+            project.Settings.MaximumSamples = 5000;
+            project.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
 
-            project.ReliabilityMethod = subsetSimulation;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
-
-            ClassicAssert.AreEqual(3.88, designPoint.Beta, margin);
-
+            ClassicAssert.AreEqual(3.88, project.DesignPoint.Beta, margin);
         }
 
         [Test]
@@ -143,15 +139,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetManyVarsProject();
 
-            SubsetSimulation subsetSimulation = new SubsetSimulation();
-            subsetSimulation.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
-            subsetSimulation.Settings.MarkovChainDeviation = 0.5;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.SubsetSimulation;
+            project.Settings.MarkovChainDeviation = 0.5;
+            project.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
 
-            project.ReliabilityMethod = subsetSimulation;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
-
-            ClassicAssert.AreEqual(3.13, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(3.13, project.DesignPoint.Beta, margin);
         }
 
         [Test]
@@ -159,11 +153,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetNonLinearProject();
 
-            project.ReliabilityMethod = new SubsetSimulation();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.SubsetSimulation;
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Run();
 
-            ClassicAssert.AreEqual(3.41, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(3.41, project.DesignPoint.Beta, margin);
         }
     }
 }

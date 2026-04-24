@@ -37,6 +37,7 @@ namespace Deltares::Reliability
 
         double VarianceFactor = 1.5;
         bool IsVarianceAllowed = true;
+        bool isVarying = false;  // will be updated by uConverter
 
         int Intervals = 200;
         bool IsInitializationAllowed = true;

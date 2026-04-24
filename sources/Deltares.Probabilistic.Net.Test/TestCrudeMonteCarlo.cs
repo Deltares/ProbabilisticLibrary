@@ -21,12 +21,13 @@
 //
 ﻿using System;
 using System.Threading;
+using Deltares.Probabilistic.Logging;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Models.Wrappers;
-using Deltares.Reliability.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestCrudeMonteCarlo
@@ -37,10 +38,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public void TestLinear()
         {
             var project = ProjectBuilder.GetLinearProject();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.58, designPoint.Beta, margin);
             ClassicAssert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
@@ -53,17 +54,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(0.92, designPoint.Alphas[0].X, margin);
             ClassicAssert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
 
-            DirectionReliability direction = new DirectionReliability();
-            direction.Settings.SetStartPoint(designPoint);
-            project.ReliabilityMethod = direction;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.DirectionReliability;
+            project.Settings.SetStartPoint(designPoint);
+            project.Run();
 
-            DesignPoint limitStatePoint = project.GetDesignPoint();
+            DesignPoint limitStatePoint = project.DesignPoint;
 
             ModelSample sample = limitStatePoint.GetModelSample();
             project.ZFunction.Invoke(sample);
             ClassicAssert.AreEqual(0, sample.Z, margin);
 
-            ClassicAssert.AreEqual(0.89, limitStatePoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.90, limitStatePoint.Alphas[0].X, margin);
             ClassicAssert.AreEqual(0.91, limitStatePoint.Alphas[1].X, margin);
         }
 
@@ -72,12 +73,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.58, designPoint.Beta, margin);
 
-            DesignPoint designPoint2 = project.GetDesignPoint();
+            project.Run();
+            DesignPoint designPoint2 = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.58, designPoint2.Beta, margin);
 
@@ -91,8 +95,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(-2.58, designPoint.Beta, margin);
 
@@ -102,17 +108,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(0.93, designPoint.Alphas[0].X, margin);
             ClassicAssert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
 
-            DirectionReliability direction = new DirectionReliability();
-            direction.Settings.SetStartPoint(designPoint);
-            project.ReliabilityMethod = direction;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.DirectionReliability;
+            project.Settings.SetStartPoint(designPoint);
+            project.Run();
 
-            DesignPoint limitStatePoint = project.GetDesignPoint();
+            DesignPoint limitStatePoint = project.DesignPoint;
 
             ModelSample sample = limitStatePoint.GetModelSample();
             project.ZFunction.Invoke(sample);
             ClassicAssert.AreEqual(0, sample.Z, margin);
 
-            ClassicAssert.AreEqual(0.89, limitStatePoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.90, limitStatePoint.Alphas[0].X, margin);
             ClassicAssert.AreEqual(0.91, limitStatePoint.Alphas[1].X, margin);
         }
 
@@ -123,14 +129,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.Settings.MaxParallelProcesses = 4;
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.58, designPoint.Beta, margin);
 
             ClassicAssert.AreEqual(0, designPoint.ReliabilityResults.Count);
-            ClassicAssert.AreEqual(0, designPoint.Evaluations.Count);
+            ClassicAssert.AreEqual(0, designPoint.Realizations.Count);
         }
 
         [Test]
@@ -138,12 +145,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.Settings.SaveEvaluations = true;
+            project.Settings.SaveRealizations = true;
             project.Settings.SaveConvergence = true;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             // call garbage collector, subsequent tests test whether tag is not freed 
             GC.Collect();
@@ -152,7 +159,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(2.58, designPoint.Beta, margin);
 
             ClassicAssert.AreEqual(1412, designPoint.ReliabilityResults.Count);
-            ClassicAssert.AreEqual(10001, designPoint.Evaluations.Count);
+            ClassicAssert.AreEqual(10001, designPoint.Realizations.Count);
         }
 
         [Test]
@@ -163,8 +170,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ProgressHolder progressHolder = new ProgressHolder();
             project.ProgressIndicator = new ProgressIndicator(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.58, designPoint.Beta, margin);
 
@@ -178,16 +187,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            CrudeMonteCarlo crudeMonteCarlo = new CrudeMonteCarlo();
-            crudeMonteCarlo.Settings.MaximumSamples = 1000;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Settings.MaximumSamples = 1000;
+
             for (int i = 0; i < project.Stochasts.Count; i++)
             {
-                crudeMonteCarlo.Settings.StochastSettings.Add(new StochastSettings { UMin = 1, Stochast = project.Stochasts[i] });
+                project.Settings.StochastSettings.Add(new StochastSettings { MinValue = 1, Stochast = project.Stochasts[i] });
             }
 
-            project.ReliabilityMethod = crudeMonteCarlo;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.59, designPoint.Beta, margin);
         }
@@ -198,16 +208,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetLinearProject();
 
             project.Settings.SaveConvergence = false;
-            project.Settings.SaveEvaluations = false;
+            project.Settings.SaveRealizations = false;
             project.Settings.SaveMessages = false;
+            project.Settings.MinimumSamples = 100000;
+            project.Settings.MaximumSamples = project.Settings.MinimumSamples;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
 
-            CrudeMonteCarlo monteCarlo = new CrudeMonteCarlo();
-            monteCarlo.Settings.MinimumSamples = 100000;
-            monteCarlo.Settings.MaximumSamples = monteCarlo.Settings.MinimumSamples;
+            project.Run();
 
-            project.ReliabilityMethod = monteCarlo;
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
 
@@ -215,11 +224,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ZFunction.Invoke(sample);
             ClassicAssert.AreEqual(-0.06, sample.Z, margin);
 
-            DirectionReliability direction = new DirectionReliability();
-            direction.Settings.SetStartPoint(designPoint);
-            project.ReliabilityMethod = direction;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.DirectionReliability;
+            project.Settings.SetStartPoint(designPoint);
+            project.Run();
 
-            DesignPoint limitStatePoint = project.GetDesignPoint();
+            DesignPoint limitStatePoint = project.DesignPoint;
 
             ModelSample directionSample = limitStatePoint.GetModelSample();
             project.ZFunction.Invoke(directionSample);
@@ -231,8 +240,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearFullyCorrelatedProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.62, designPoint.Beta, margin);
 
@@ -258,8 +269,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearNegativeFullyCorrelatedProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.00, designPoint.Beta, margin);
 
@@ -285,8 +298,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearPartialCorrelatedProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.82, designPoint.Beta, margin);
 
@@ -312,9 +327,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetDoubleLinearProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.17, designPoint.Beta, margin);
         }
@@ -324,16 +340,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetNonLinearProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(3.54, designPoint.Beta, margin);
 
-            DirectionReliability direction = new DirectionReliability();
-            direction.Settings.SetStartPoint(designPoint);
-            project.ReliabilityMethod = direction;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.DirectionReliability;
+            project.Settings.SetStartPoint(designPoint);
+            project.Run();
 
-            DesignPoint limitStatePoint = project.GetDesignPoint();
+            DesignPoint limitStatePoint = project.DesignPoint;
 
             ModelSample sample = limitStatePoint.GetModelSample();
             project.ZFunction.Invoke(sample);
@@ -345,8 +363,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetBlighProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.61, designPoint.Beta, margin);
             ClassicAssert.AreEqual(project.Stochasts.Count, designPoint.Alphas.Count, margin);
@@ -357,8 +377,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLoadStrengthProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.41, designPoint.Beta, margin);
         }
@@ -368,8 +390,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLoadStrengthSurvivedProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.83, designPoint.Beta, margin);
         }
@@ -379,8 +403,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetConvexProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.67, designPoint.Beta, margin);
         }
@@ -390,9 +416,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ReliabilityProject project = ProjectBuilder.GetManyVarsProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.99, designPoint.Beta, margin);
         }
@@ -402,9 +429,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetNoisyProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.50, designPoint.Beta, margin);
         }
@@ -414,12 +442,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetSeriesProject();
 
-            CrudeMonteCarlo crudeMonteCarlo = new CrudeMonteCarlo();
-            crudeMonteCarlo.Settings.MaximumSamples = 100000;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Settings.MaximumSamples = 100000;
+            project.Run();
 
-            project.ReliabilityMethod = crudeMonteCarlo;
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.85, designPoint.Beta, margin);
         }
@@ -429,12 +456,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetDiscreteProject();
 
-            CrudeMonteCarlo crudeMonteCarlo = new CrudeMonteCarlo();
-            crudeMonteCarlo.Settings.MinimumSamples = 10000;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Settings.MinimumSamples = 10000;
+            project.Run();
 
-            project.ReliabilityMethod = crudeMonteCarlo;
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.40, designPoint.Beta, margin);
 
@@ -452,12 +478,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetQualitativeProject();
 
-            CrudeMonteCarlo crudeMonteCarlo = new CrudeMonteCarlo();
-            crudeMonteCarlo.Settings.MinimumSamples = 10000;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Settings.MinimumSamples = 10000;
+            project.Run();
 
-            project.ReliabilityMethod = crudeMonteCarlo;
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.40, designPoint.Beta, margin);
 
@@ -475,9 +500,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetVariableProject();
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.68, designPoint.Beta, margin);
 
@@ -495,17 +521,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetNoisyProject();
 
-            CrudeMonteCarlo crudeMonteCarlo = new CrudeMonteCarlo();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
 
             for (int i = 0; i < project.Stochasts.Count; i++)
             {
-                crudeMonteCarlo.Settings.StochastSettings.Add(new StochastSettings { Stochast = project.Stochasts[i] });
+                project.Settings.StochastSettings.Add(new StochastSettings { Stochast = project.Stochasts[i] });
             }
 
-            project.ReliabilityMethod = crudeMonteCarlo;
+            project.Run();
 
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.50, designPoint.Beta, margin);
         }
@@ -518,9 +543,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ProgressIndication progress = new ProgressIndication();
             project.ProgressIndicator = new ProgressIndicator(progress.DoProgress, null, progress.DoTextualProgress);
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.50, designPoint.Beta, margin);
 
@@ -534,11 +560,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetNoisyProject();
 
             project.Settings.SaveConvergence = true;
-            project.Settings.SaveEvaluations = true;
+            project.Settings.SaveRealizations = true;
 
-            project.ReliabilityMethod = new CrudeMonteCarlo();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             // call garbage collector, subsequent tests test whether tag is not freed 
             GC.Collect();
@@ -547,9 +574,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(2.50, designPoint.Beta, margin);
 
             ClassicAssert.AreEqual(1485, designPoint.ReliabilityResults.Count);
-            ClassicAssert.AreEqual(10001, designPoint.Evaluations.Count);
+            ClassicAssert.AreEqual(10001, designPoint.Realizations.Count);
 
-            ClassicAssert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
+            ClassicAssert.IsTrue(designPoint.Realizations[0].Tag is ZFunctionOutput);
         }
 
         private class ProgressIndication

@@ -21,6 +21,7 @@
 //
 #pragma once
 #include "DesignPoint.h"
+#include "LimitStateFunction.h"
 #include "../Model/ModelRunner.h"
 
 namespace Deltares::Reliability

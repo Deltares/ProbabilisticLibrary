@@ -38,6 +38,11 @@ namespace Deltares::Reliability
             this->fragilityCurve = this->getFragilityCurve();
         }
     }
+    
+    void ReliabilityProject::stop()
+    {
+        this->reliabilityMethod->Stop();
+    }
 
     std::shared_ptr<DesignPoint> ReliabilityProject::getDesignPoint()
     {

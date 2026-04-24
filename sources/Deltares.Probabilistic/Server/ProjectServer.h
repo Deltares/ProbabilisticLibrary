@@ -33,12 +33,12 @@ namespace Deltares::Server
         ProjectServer()
         {
             std::shared_ptr<BaseHandler> defaultHandler = std::make_shared<ProjectHandler>();
-            this->AddHandler(defaultHandler);
+            this->SetHandler(defaultHandler);
         }
 
         ProjectServer(std::shared_ptr<BaseHandler> handler) : ProjectServer()
         {
-            this->AddHandler(handler);
+            this->SetHandler(handler);
         }
 
         ProjectServer(std::shared_ptr<BaseHandler> handler, bool useDefaultServer)
@@ -46,9 +46,9 @@ namespace Deltares::Server
             if (useDefaultServer)
             {
                 std::shared_ptr<BaseHandler> defaultHandler = std::make_shared<ProjectHandler>();
-                this->AddHandler(defaultHandler);
+                this->SetHandler(defaultHandler);
             }
-            this->AddHandler(handler);
+            this->SetHandler(handler);
         }
 
         static ProjectServer& Instance()
@@ -57,7 +57,7 @@ namespace Deltares::Server
             return instance;
         }
 
-        int GetNewObjectId(int handlerIndex) override;
+        int GetNewId();
         int Create(std::string object_type);
         void Destroy(int id);
         double GetValue(int id, const std::string property_);
@@ -89,13 +89,14 @@ namespace Deltares::Server
         void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack);
         void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack);
         void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack);
+        void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack);
+        void SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack);
+        void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual);
         void Execute(int id, std::string method_);
-        void AddHandler(std::shared_ptr<BaseHandler> handler);
+        void SetHandler(std::shared_ptr<BaseHandler> handler);
         void Exit();
 
     private:
-        int id_ = 0;
-        std::vector<std::shared_ptr<BaseHandler>> handlers;
-        std::unordered_map<int, std::shared_ptr<BaseHandler>> handlersTable;
+        std::shared_ptr<BaseHandler> handler;
     };
 }

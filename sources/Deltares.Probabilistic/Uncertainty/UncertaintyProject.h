@@ -38,14 +38,14 @@ namespace Deltares::Uncertainty
     {
     public:
         /**
-         * \brief Method which performs a uncertainty calculation
-         */
-        std::shared_ptr<UncertaintyMethod> uncertaintyMethod = nullptr;
-
-        /**
          * \brief Output parameter for which the uncertainty is calculated, blank for all parameters
          */
         std::string parameter = "";
+
+        /**
+         * \brief Output parameters for which the uncertainty will be calculated, empty for all parameters
+         */
+        std::vector<std::shared_ptr<Models::ModelInputParameter>> uncertaintyParameters;
 
         /**
          * \brief Array index of the output parameter if the parameter is an array
@@ -89,6 +89,7 @@ namespace Deltares::Uncertainty
          */
         void validate(Logging::ValidationReport& report) override;
 
+        // TODO: make private when C++/CLI has been phased out
         /**
          * \brief Performs the sensitivity calculation
          * \return Sensitivity result
@@ -96,9 +97,14 @@ namespace Deltares::Uncertainty
         UncertaintyResult getUncertaintyResult();
 
         /**
-         * \brief Runs the reliability calculation
+         * \brief Runs the uncertainty calculation
          */
         void run() override;
+
+        /**
+         * \brief Runs the uncertainty calculation
+         */
+        void stop() override;
 
         /**
          * \brief Sets the settings
@@ -109,7 +115,12 @@ namespace Deltares::Uncertainty
         }
 
     private:
-        std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+        std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
+
+        /**
+         * \brief Method which performs a uncertainty calculation
+         */
+        std::shared_ptr<UncertaintyMethod> uncertaintyMethod = nullptr;
     };
 }
 

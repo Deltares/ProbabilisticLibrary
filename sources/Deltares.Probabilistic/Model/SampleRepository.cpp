@@ -55,20 +55,31 @@ namespace Deltares::Models
         return sum;
     }
 
+    bool SampleRepository::shouldRegisterSample(std::shared_ptr<ModelSample> sample)
+    {
+        return !(sample->UsedProxy);
+    }
+
     void SampleRepository::registerSample(std::shared_ptr<ModelSample> sample)
     {
-        double key = this->getKey(sample);
-
-        locker->lock();
-
-        if (!this->sampleCollections.contains(key))
+        if (shouldRegisterSample(sample))
         {
-            sampleCollections[key] = std::make_unique<SampleCollection>();
+            double key = this->getKey(sample);
+
+            if (!std::isnan(key) && !std::isinf(key))
+            {
+                locker->lock();
+
+                if (!this->sampleCollections.contains(key))
+                {
+                    sampleCollections[key] = std::make_unique<SampleCollection>();
+                }
+
+                locker->unlock();
+
+                sampleCollections[key]->registerSample(sample);
+            }
         }
-
-        locker->unlock();
-
-        sampleCollections[key]->registerSample(sample);
     }
 
     std::shared_ptr<ModelSample> SampleRepository::retrieveSample(std::shared_ptr<ModelSample> sample)

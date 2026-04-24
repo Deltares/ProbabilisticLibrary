@@ -74,14 +74,11 @@ def AddLibrary(add_lib_full_path):
 
 
 def Create(object_type):
-    try:
-        object_type_b = bytes(object_type, 'utf-8')
-        lib.Create.restype = ctypes.c_int
-        return lib.Create(object_type_b)
-    except:
-        message = sys.exc_info()[0]
-        _print_error(message)
-        raise
+    object_type_b = bytes(object_type, 'utf-8')
+    lib.Create.restype = ctypes.c_int
+    object_id = lib.Create(object_type_b)
+    _check_exception()
+    return object_id
 
 def Destroy(id_):
     lib.Destroy(ctypes.c_int(id_))
@@ -98,14 +95,18 @@ def SetValue(id_, property_, value_):
 
 def GetIntValue(id_, property_):
     lib.GetIntValue.restype = ctypes.c_int
-    return lib.GetIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    int_value = lib.GetIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    _check_exception()
+    return int_value
 
 def SetIntValue(id_, property_, value_):
     lib.SetIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(value_))
 
 def GetIdValue(id_, property_):
     lib.GetIdValue.restype = ctypes.c_int
-    return lib.GetIdValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    id_value = lib.GetIdValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    _check_exception()
+    return id_value
 
 def GetIntArgValue(id_, arg_, property_):
     lib.GetIntArgValue.restype = ctypes.c_double
@@ -125,10 +126,13 @@ def GetStringValue(id_, property_):
 
     lib.GetStringLength.restype = ctypes.c_int
     size = lib.GetStringLength(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    _check_exception()
 
     result = ctypes.create_string_buffer(size+1)
     lib.GetStringValue.restype = ctypes.c_void_p
     lib.GetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), result, ctypes.c_size_t(ctypes.sizeof(result)))
+    _check_exception()
+
     result_str = result.value.decode()
     return result_str
 
@@ -145,6 +149,7 @@ def GetIndexedStringValue(id_, property_, index_):
 
 def SetStringValue(id_, property_, value_):
     lib.SetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), bytes(value_, 'utf-8'))
+    _check_exception()
 
 def FillArrayValue(id_, property_, values_, size):
     lib.FillArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), values_, ctypes.c_uint(size))
@@ -182,6 +187,7 @@ def GetArrayIntValue(id_, property_):
     values = []
     for i in range(count):
         value = lib.GetIndexedIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
+        _check_exception()
         values.append(value)
 
     return values
@@ -196,6 +202,7 @@ def GetArrayIdValue(id_, property_):
     values = []
     for i in range(count):
         value = lib.GetIndexedIdValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
+        _check_exception()
         values.append(value)
 
     return values

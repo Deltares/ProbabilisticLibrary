@@ -79,7 +79,9 @@ namespace Deltares::Reliability
             }
             else
             {
-                importanceSampling->Settings->MaximumSamples = Settings->importanceSamplingSettings->MaximumSamplesNoResult;
+                importanceSampling->Settings->MaximumSamples = std::min(
+                    Settings->importanceSamplingSettings->MaximumSamplesNoResult,
+                    Settings->importanceSamplingSettings->MaximumSamples);
                 importanceSampling->Settings->MaximumSamplesNoResult = Settings->importanceSamplingSettings->MaximumSamplesNoResult;
             }
 
@@ -330,8 +332,8 @@ namespace Deltares::Reliability
         else
         {
             std::shared_ptr<Sample> newSample = designPoint->convergenceReport->FailedSamples > 0
-                                                    ? modelRunner->getSampleFromStochastPoint(designPoint)
-                                                    : designPoint->convergenceReport->NearestSample;
+                ? modelRunner->getSampleFromStochastPoint(designPoint)
+                : designPoint->convergenceReport->NearestSample;
 
             if (Settings->StartPointOnLimitState)
             {

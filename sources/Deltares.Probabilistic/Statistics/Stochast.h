@@ -153,6 +153,20 @@ namespace Deltares::Statistics
         double getUFromX(double x) override;
 
         /**
+         * \brief Gets the x-value corresponding to a given p-value
+         * \param p Given p-value
+         * \return x-value
+         */
+        double getXFromP(double p);
+
+        /**
+         * \brief Gets the p-value corresponding to a given x-value
+         * \param x Given x-value
+         * \return p-value
+         */
+        double getPFromX(double x);
+
+        /**
          * \brief Gets the x-value for a given u-value for variable stochasts, i.e. stochasts where the stochastic parameters depend on the value of another stochast
          * \param xSource Other stochast
          * \param u Given u-value

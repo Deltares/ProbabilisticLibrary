@@ -24,7 +24,9 @@
 #include "../Reliability/ReliabilityProject.h"
 #include "../Reliability/FragilityCurve.h"
 #include "../Reliability/FragilityCurveProject.h"
+#include "../Reliability/FragilityCurveIntegrationSettings.h"
 #include "../Reliability/LimitStateFunction.h"
+#include "../Reliability/CombinedLimitStateFunction.h"
 #include "../Reliability/Settings.h"
 #include "../Model/Evaluation.h"
 #include "../Model/RunProject.h"
@@ -43,20 +45,26 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/DiscreteValue.h"
 
+namespace Deltares::Reliability
+{
+    class ProbabilityLimitStateFunction;
+}
+
 namespace Deltares::Server
 {
     class ProjectHandler : public BaseHandler
     {
     public:
         bool CanHandle(std::string object_type) override;
-        void Create(std::string object_type, int id) override;
+        int GetNewId() override;
+        int Create(std::string object_type) override;
         void Destroy(int id) override;
         bool ShouldClose() override;
         double GetValue(int id, const std::string property_) override;
         void SetValue(int id, const std::string property_, double value) override;
         int GetIntValue(int id, std::string property_) override;
         void SetIntValue(int id, std::string property_, int value) override;
-        int GetIdValue(int id, std::string property_, int newId) override;
+        int GetIdValue(int id, std::string property_) override;
         double GetIntArgValue(int id1, int id2, std::string property_) override;
         void SetIntArgValue(int id1, int id2, std::string property_, double value) override;
         bool GetBoolValue(int id, std::string property_) override;
@@ -74,20 +82,25 @@ namespace Deltares::Server
         void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
         void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value) override;
         int GetIndexedIntValue(int id, std::string property_, int index) override;
-        int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
+        int GetIndexedIdValue(int id, std::string property_, int index) override;
         void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
         void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) override;
         void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) override;
+        void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) override;
+        void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack) override;
+        void SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack) override;
         void Execute(int id, std::string method_) override;
 
         int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);
         int GetValidationReportId(std::shared_ptr<Logging::ValidationReport> validationReport, int newId);
         int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
+        int GetModelParameterId(std::shared_ptr<Models::ModelInputParameter> modelParameter, int newId);
         int GetFragilityCurveId(std::shared_ptr<Reliability::FragilityCurve> fragilityCurve, int newId);
-        int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newid);
+        int GetCorrelationMatrixId(std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix, int newid);
         int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newid);
         int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId);
         int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId);
+        int GetConvergenceReportId(std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, int newId);
         int GetUncertaintyResultId(std::shared_ptr<Uncertainty::UncertaintyResult> result, int newId);
         int GetSensitivityResultId(std::shared_ptr<Sensitivity::SensitivityResult> result, int newId);
         int GetSensitivityValueId(std::shared_ptr<Sensitivity::SensitivityValue> result, int newId);
@@ -99,6 +112,7 @@ namespace Deltares::Server
         int GetEvaluationId(std::shared_ptr<Models::Evaluation> evaluation, int newId);
         int GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId);
         int GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId);
+        int GetSelfCorrelationMatrixId(std::shared_ptr<Statistics::SelfCorrelationMatrix> correlationMatrix, int newId);
 
         std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
         {
@@ -107,10 +121,19 @@ namespace Deltares::Server
     protected:
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
-        enum ObjectType {StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
-            ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
-            CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult,
-            SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation};
+        enum ObjectType {
+            StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, CombinedLimitStateFunction, ProbabilityLimitStateFunction,
+            Stochast, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings,
+            StochastPoint, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, FragilityCurveSettings, Evaluation, CombineProject, CombineSettings,
+            ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult, SensitivityProject,
+            SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation,
+            ConvergenceReport
+            
+        };
+
+        int new_id = 0;
+        std::mutex mtx;
+
         ObjectType GetType(std::string object_type);
         std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -121,6 +144,8 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
         std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
         std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;
+        std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
+        std::unordered_map<int, std::shared_ptr<Reliability::ProbabilityLimitStateFunction>> probabilityLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
         std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
         std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
@@ -130,10 +155,12 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
         std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
+        std::unordered_map<int, std::shared_ptr<Models::StochastPoint>> stochastPoints;
         std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
         std::unordered_map<int, std::shared_ptr<Models::StochastPointAlpha>> alphas;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
+        std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveIntegrationSettings>> fragilityCurveSettings;
         std::unordered_map<int, std::shared_ptr<Models::Evaluation>> evaluations;
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
         std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
@@ -151,8 +178,10 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
         std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyResult>> uncertaintyResults;
+        std::unordered_map<int, std::shared_ptr<Reliability::ConvergenceReport>> convergenceReports;
 
         std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
+        std::unordered_map<std::shared_ptr<Reliability::CombinedLimitStateFunction>, int> combinedLimitStateFunctionIds;
         std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
         std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
         std::unordered_map<std::shared_ptr<Uncertainty::UncertaintyResult>, int> uncertaintyResultsIds;
@@ -161,8 +190,10 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Models::StochastPointAlpha>, int> alphaIds;
         std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
         std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
+        std::unordered_map<std::shared_ptr<Models::ModelInputParameter>, int> modelParameterIds;
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, int> probabilityValueIds;
         std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
+        std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;
         std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
         std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
         std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
@@ -171,14 +202,24 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Models::Evaluation>, int> evaluationIds;
         std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
         std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
+        std::unordered_map<std::shared_ptr<Reliability::ConvergenceReport>, int> convergenceReportIds;
 
         std::unordered_map <std::string, std::vector<double>> tempValues;
+
         double argValue = nan("");
         int tempIntValue = 0;
-        
+
         std::shared_ptr<Models::ModelProject> GetProject(int id);
         std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
+        std::shared_ptr<Statistics::Stochast> GetStochast(int id);
+        std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
         static bool IsModelProjectType(ObjectType objectType);
         static bool IsModelSettingsType(ObjectType objectType);
+        static bool IsStochast(ObjectType objectType);
+
+        // List of object id which must be destroyed
+        std::vector<int> destroyObjects;
+
+        void DestroyObjects();
     };
 }

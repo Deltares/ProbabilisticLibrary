@@ -31,7 +31,8 @@ namespace Deltares::Server
     {
     public:
         virtual bool CanHandle(std::string object_type) { return false; }
-        virtual void Create(std::string object_type, int id) { }
+        virtual int GetNewId() { return -1; }
+        virtual int Create(std::string object_type) { return -1; }
         virtual void Destroy(int id) {}
         virtual void Exit() {}
         virtual bool ShouldClose() { return false; }
@@ -57,16 +58,16 @@ namespace Deltares::Server
         virtual void SetIndexedValue(int id, std::string property_, int index, double value) {}
         virtual double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) { return 0; }
         virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) {}
-        virtual void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
-        {
-            // empty; must be implemented within implementing class
-        }
+        virtual void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value) {}
         virtual int GetIndexedIntValue(int id, std::string property_, int index) { return 0; }
-        virtual int GetIdValue(int id, std::string property_, int newId) { return GetIntValue(id, property_); }
-        virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }
+        virtual int GetIdValue(int id, std::string property_) { return GetIntValue(id, property_); }
+        virtual int GetIndexedIdValue(int id, std::string property_, int index) { return GetIndexedIntValue(id, property_, index); }
         virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
         virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
         virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
+        virtual void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) {}
+        virtual void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack) {}
+        virtual void SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack) {}
         virtual void Execute(int id, std::string method_) {}
     };
 }

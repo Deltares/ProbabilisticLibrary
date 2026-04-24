@@ -273,7 +273,8 @@ namespace Deltares::Probabilistic::Test
             z -= value;
         }
 
-        sample->OutputValues.push_back(z);
+        sample->OutputValues.resize(1);
+        sample->OutputValues[0] = z;
     }
 
     void projectBuilder::linearMultiple(std::shared_ptr<Models::ModelSample> sample)
@@ -285,8 +286,9 @@ namespace Deltares::Probabilistic::Test
         }
 
         // register twice in output values
-        sample->OutputValues.push_back(sample->Z);
-        sample->OutputValues.push_back(sample->Z);
+        sample->OutputValues.resize(2);
+        sample->OutputValues[0] = sample->Z;
+        sample->OutputValues[1] = sample->Z;
     }
 
     void projectBuilder::quadratic(std::shared_ptr<Models::ModelSample> sample)

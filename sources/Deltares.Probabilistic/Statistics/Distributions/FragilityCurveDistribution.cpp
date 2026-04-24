@@ -27,11 +27,20 @@
 #include "DistributionSupport.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
+#include "../../Model/StochastPoint.h"
 
 namespace Deltares::Statistics
 {
     void FragilityCurveDistribution::initializeForRun(StochastProperties& stochast)
     {
+        for (auto fragilityValue : stochast.FragilityValues)
+        {
+            if (std::isnan(fragilityValue->Reliability) && fragilityValue->designPoint != nullptr)
+            {
+                fragilityValue->Reliability = fragilityValue->designPoint->Beta;
+            }
+        }
+
         std::sort(stochast.FragilityValues.begin(), stochast.FragilityValues.end(),
             [](const std::shared_ptr<FragilityValue>& val1, const std::shared_ptr<FragilityValue>& val2) {return val1->X < val2->X; });
 

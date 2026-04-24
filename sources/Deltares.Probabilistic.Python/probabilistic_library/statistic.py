@@ -387,7 +387,7 @@ class Stochast(FrozenObject):
 
     @shift.setter
     def shift(self, value : float):
-        interface.SetValue(self._id, 'shift', value)
+        interface.SetValue(self._id, 'set_shift', value)
 
     @property
     def shift_b(self) -> float:
