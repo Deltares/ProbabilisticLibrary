@@ -28,16 +28,19 @@ namespace Deltares::Probabilistic::Test
     class matinv_tests
     {
     public:
-        void all_matinv_tests() const;
+        static void all_matinv_tests();
     private:
-        void matinv_test1() const;
-        void matinv_singular_test() const;
-        void positive_definite_tests() const;
+        static void matinv_test1();
+        static void matinv_singular_test();
+        static void positive_definite_tests();
 
-        Deltares::Numeric::Matrix get3x3posDefiniteMatrix() const;
-        Deltares::Numeric::Matrix get2x2singularMatrix() const;
-        Deltares::Numeric::Matrix get2x2symmetrixMatrix() const;
-        Deltares::Numeric::Matrix get16x16Matrix() const;
-        const double margin = 1e-12;
+        static Numeric::Matrix get3x3posDefiniteMatrix();
+        static void isIdentityMatrix(const Numeric::Matrix& m);
+        static Numeric::Matrix get2x2singularMatrix();
+        static Numeric::Matrix get2x2matrixSmallElement();
+        static void matinv_small_element_test();
+        static Numeric::Matrix get2x2symmetricMatrix();
+        static Numeric::Matrix get16x16Matrix();
+        static constexpr double margin = 1e-12;
     };
 }
