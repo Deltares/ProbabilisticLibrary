@@ -58,6 +58,7 @@ namespace Deltares::Server
         }
 
         int GetNewId();
+        bool CanHandle(std::string object_type);
         int Create(std::string object_type);
         void Destroy(int id);
         double GetValue(int id, const std::string property_);

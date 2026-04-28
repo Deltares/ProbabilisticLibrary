@@ -21,21 +21,42 @@
 //
 
 using Deltares.Probabilistic.Utils;
+using Deltares.Probabilistic.Statistics;
 using System;
 
 namespace Deltares.Probabilistic.Server;
 
+/// <summary>
+/// The project handler serves as a base class for communication between python classes and their shadow classes in C++ or C#
+/// </summary>
+/// <remarks>
+/// This class is useful when communication occurs via a socket connection, which is required when some shadow classes are defined in C#. This class
+/// is the base class for handling the .net classes defined in the probabilistic library, such as <see cref="Stochast"/>. Usually it is overridden
+/// by a class handling .net classes as a shadow class.
+/// </remarks>
 public class ProjectHandler
 {
     public ProjectHandler()
     {
     }
 
+    /// <summary>
+    /// Indicates whether the handler can handle a class of a certain type
+    /// </summary>
+    /// <param name="type">The type of interest</param>
+    /// <returns>Indication</returns>
     public virtual bool CanHandle(string type)
     {
-        return true;
+        return Interface.CanHandle(type);
     }
 
+    /// <summary>
+    /// Gets a new id when a new class instance is created.
+    /// </summary>
+    /// <returns>New id</returns>
+    /// <remarks>
+    /// The issuance and registration of ids is centralized in order to prevent confusion when same ids are used for different instances 
+    /// </remarks>
     public int GetNewId()
     {
         return Interface.GetNewId();

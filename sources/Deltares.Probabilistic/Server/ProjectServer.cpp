@@ -40,6 +40,11 @@ namespace Deltares::Server
         return handler->GetNewId();
     }
 
+    bool ProjectServer::CanHandle(std::string object_type)
+    {
+        return handler->CanHandle(object_type);
+    }
+
     int ProjectServer::Create(std::string object_type)
     {
         if (handler->CanHandle(object_type))

@@ -79,6 +79,9 @@ public static class NativeInterface
     public static extern int GetNewId();
 
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
+    public static extern bool CanHandle(byte[] className);
+
+    [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
     public static extern int Create(byte[] className);
 
     // Import the native function from your library
@@ -185,9 +188,6 @@ public static class NativeInterface
 
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SetEmptyCallBack(int id, string property, EmptyCallback cb);
-
-    [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
-    public static extern IntPtr GetCallBack(int id, string property);
 
     [DllImport("CWrapper", CallingConvention = CallingConvention.Cdecl)]
     public static extern void Execute(int id, string method);

@@ -65,13 +65,8 @@ def AddLibrary(add_lib_full_path):
         LoadDefaultLibrary()
         
     if os.path.isfile(add_lib_full_path):
-        try:
-            lib.AddLibrary(bytes(add_lib_full_path, 'utf-8'))
-        except:
-            message = sys.exc_info()[0]
-            _print_error(message)
-            raise
-
+        lib.AddLibrary(bytes(add_lib_full_path, 'utf-8'))
+        _check_exception()
 
 def Create(object_type):
     object_type_b = bytes(object_type, 'utf-8')
@@ -82,16 +77,21 @@ def Create(object_type):
 
 def Destroy(id_):
     lib.Destroy(ctypes.c_int(id_))
+    _check_exception()
 
 def Exit():
     lib.Exit()
+    _check_exception()
 
 def GetValue(id_, property_):
     lib.GetValue.restype = ctypes.c_double
-    return lib.GetValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    value = lib.GetValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    _check_exception()
+    return value
 
 def SetValue(id_, property_, value_):
     lib.SetValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_double(value_))
+    _check_exception()
 
 def GetIntValue(id_, property_):
     lib.GetIntValue.restype = ctypes.c_int
@@ -110,17 +110,23 @@ def GetIdValue(id_, property_):
 
 def GetIntArgValue(id_, arg_, property_):
     lib.GetIntArgValue.restype = ctypes.c_double
-    return lib.GetIntArgValue(ctypes.c_int(id_), ctypes.c_int(arg_), bytes(property_, 'utf-8'))
+    int_value = lib.GetIntArgValue(ctypes.c_int(id_), ctypes.c_int(arg_), bytes(property_, 'utf-8'))
+    _check_exception()
+    return int_value
 
 def SetIntArgValue(id_, arg_, property_, value_):
     lib.SetIntArgValue(ctypes.c_int(id_), ctypes.c_int(arg_), bytes(property_, 'utf-8'), ctypes.c_double(value_))
+    _check_exception()
 
 def GetBoolValue(id_, property_):
     lib.GetBoolValue.restype = ctypes.c_bool
-    return lib.GetBoolValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    bool_value =lib.GetBoolValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+    _check_exception()
+    return bool_value
 
 def SetBoolValue(id_, property_, value_):
     lib.SetBoolValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_bool(value_))
+    _check_exception()
 
 def GetStringValue(id_, property_):
 
@@ -140,10 +146,12 @@ def GetIndexedStringValue(id_, property_, index_):
 
     lib.GetIndexedStringLength.restype = ctypes.c_int
     size = lib.GetIndexedStringLength(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_))
+    _check_exception()
 
     result = ctypes.create_string_buffer(size+1)
     lib.GetIndexedStringValue.restype = ctypes.c_void_p
     lib.GetIndexedStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_), result, ctypes.c_size_t(ctypes.sizeof(result)))
+    _check_exception()
     result_str = result.value.decode()
     return result_str
 
@@ -153,26 +161,31 @@ def SetStringValue(id_, property_, value_):
 
 def FillArrayValue(id_, property_, values_, size):
     lib.FillArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), values_, ctypes.c_uint(size))
+    _check_exception()
 
 def SetArrayValue(id_, property_, values_):
     cvalues = (ctypes.c_double * len(values_))(*values_)
     lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
+    _check_exception()
 
 def GetArgValues(id_, property_, values_, output_values_):
     cvalues = (ctypes.c_double * len(values_))(*values_)
     lib.GetArgValues.restype = ctypes.c_void_p
     lib.GetArgValues(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)), output_values_)
+    _check_exception()
 
 def GetArrayValue(id_, property_):
 
     count_property = property_ + '_count'
     count = GetIntValue(id_, count_property)
+    _check_exception()
 
     lib.GetIndexedValue.restype = ctypes.c_double
 
     values = []
     for i in range(count):
         value = lib.GetIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
+        _check_exception()
         values.append(value)
 
     return values
@@ -181,6 +194,7 @@ def GetArrayIntValue(id_, property_):
 
     count_property = property_ + '_count'
     count = GetIntValue(id_, count_property)
+    _check_exception()
 
     lib.GetIndexedIntValue.restype = ctypes.c_int
 
@@ -196,6 +210,7 @@ def GetArrayIdValue(id_, property_):
 
     count_property = property_ + '_count'
     count = GetIntValue(id_, count_property)
+    _check_exception()
 
     lib.GetIndexedIdValue.restype = ctypes.c_int
 
@@ -211,10 +226,12 @@ def GetArrayStringValue(id_, property_):
 
     count_property = property_ + '_count'
     count = GetIntValue(id_, count_property)
+    _check_exception()
 
     values = []
     for i in range(count):
         value = GetIndexedStringValue(id_, property_, i)
+        _check_exception()
         values.append(value)
 
     return values
@@ -222,62 +239,54 @@ def GetArrayStringValue(id_, property_):
 def SetArrayIntValue(id_, property_, values_):
     cvalues = (ctypes.c_int * len(values_))(*values_)
     lib.SetArrayIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_int)(cvalues), ctypes.c_uint(len(values_)))
+    _check_exception()
 
 def GetArgValue(id_, property_, arg_):
     lib.GetArgValue.restype = ctypes.c_double
-    return lib.GetArgValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_double(arg_))
+    arg_value = lib.GetArgValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_double(arg_))
+    _check_exception()
+    return arg_value
+
 
 def SetArgValue(id_, property_, arg_, value_):
     lib.SetArgValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_double(arg_), ctypes.c_double(value_))
+    _check_exception()
 
 def GetIndexedValue(id_, property_, index_):
     lib.GetIndexedValue.restype = ctypes.c_double
-    return lib.GetIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_))
+    value = lib.GetIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_))
+    _check_exception()
+    return value
 
 def SetIndexedValue(id_, property_, index_, value_):
     lib.SetIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_), ctypes.c_double(value_))
+    _check_exception()
 
 def GetIndexedIndexedValue(id_, property_, index1_, index2_):
     lib.GetIndexedIndexedValue.restype = ctypes.c_double
-    return lib.GetIndexedIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_))
+    value = lib.GetIndexedIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_))
+    _check_exception()
+    return value
 
 def SetIndexedIndexedValue(id_, property_, index1_, index2_, value_):
     lib.SetIndexedIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_), ctypes.c_double(value_))
+    _check_exception()
 
 def SetIndexedIndexedIntValue(id_, property_, index1_, index2_, value_):
     lib.SetIndexedIndexedIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_), ctypes.c_int(value_))
+    _check_exception()
 
 def SetCallBack(id_, property_, callBack_):
-    try:
-        lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
-    except:
-        message = sys.exc_info()[0]
-        _print_error(message)
-        raise
+    lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+    _check_exception()
 
 def SetMultipleCallBack(id_, property_, callBack_):
-    try:
-        lib.SetMultipleCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
-    except:
-        message = sys.exc_info()[0]
-        print('error: ' + str(message), flush = True)
-        raise
+    lib.SetMultipleCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+    _check_exception()
 
 def SetEmptyCallBack(id_, property_, callBack_):
-    try:
-        lib.SetEmptyCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
-    except:
-        message = sys.exc_info()[0]
-        _print_error(message)
-        raise
-
-def GetCallBack(id_, property_):
-    try:
-        return lib.GetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'))
-    except:
-        message = sys.exc_info()[0]
-        _print_error(message)
-        raise
+    lib.SetEmptyCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+    _check_exception()
 
 def Execute(id_, method_):
     lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))

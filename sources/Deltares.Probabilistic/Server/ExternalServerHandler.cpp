@@ -36,6 +36,8 @@
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
 
+#include <tlhelp32.h>
+
 #endif
 
 #include <stdexcept>

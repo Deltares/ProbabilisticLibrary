@@ -33,7 +33,7 @@ namespace Deltares::Statistics
 {
     void FragilityCurveDistribution::initializeForRun(StochastProperties& stochast)
     {
-        for (auto fragilityValue : stochast.FragilityValues)
+        for (const auto& fragilityValue : stochast.FragilityValues)
         {
             if (std::isnan(fragilityValue->Reliability) && fragilityValue->designPoint != nullptr)
             {

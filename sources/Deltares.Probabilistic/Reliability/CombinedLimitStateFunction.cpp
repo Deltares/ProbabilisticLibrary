@@ -27,7 +27,7 @@ namespace Deltares::Reliability
     {
         double result = combineType == combineAndOr::combOr ? std::numeric_limits<double>::max() : -std::numeric_limits<double>::max();
 
-        for (auto limitStateFunction : limitStateFunctions)
+        for (const auto& limitStateFunction : limitStateFunctions)
         {
             limitStateFunction->updateZValue(sample);
             double z = sample->Z;
@@ -58,7 +58,7 @@ namespace Deltares::Reliability
 
     void CombinedLimitStateFunction::initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters)
     {
-        for (auto limitStateFunction : limitStateFunctions)
+        for (const auto& limitStateFunction : limitStateFunctions)
         {
             limitStateFunction->initialize(inputParameters, outputParameters);
         }
