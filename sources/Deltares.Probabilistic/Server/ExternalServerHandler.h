@@ -48,10 +48,19 @@ namespace Deltares::Server
 #if __has_include(<windows.h>)
             if (server_started)
             {
-                Send("exit");
-                server_started = false;
+                try
+                {
+                    // uncaught exceptions not allowed, therefore in try catch block
+                    Send("exit");
+                    server_started = false;
+                    freeaddrinfo(address);
+                }
+                catch (const std::exception& e)
+                {
+                    // print exception but ignore further
+                    printf("Exit failed: %s", e.what()); 
+                }
             }
-            freeaddrinfo(address);
 #endif
         }
 

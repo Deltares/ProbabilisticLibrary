@@ -1124,12 +1124,6 @@ namespace Deltares::Server
             if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction, newId);
             else if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
         }
-        else if (objectType == ObjectType::FragilityCurveProject)
-        {
-            std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
-
-            if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
-        }
         else if (objectType == ObjectType::RunProject)
         {
             std::shared_ptr<Models::RunProject> project = runProjects[id];
@@ -1253,7 +1247,8 @@ namespace Deltares::Server
         {
             std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
 
-            if (property_ == "integrand") return GetStochastId(project->integrand, newId);
+            if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
+            else if (property_ == "integrand") return GetStochastId(project->integrand, newId);
             else if (property_ == "fragility_curve") GetFragilityCurveId(project->fragilityCurve, newId);
             else if (property_ == "fragility_curve_normalized") GetFragilityCurveId(project->fragilityCurveNormalized, newId);
         }
@@ -1441,12 +1436,6 @@ namespace Deltares::Server
             std::shared_ptr<Reliability::ReliabilityProject> reliabilityProject = projects[id];
 
             if (property_ == "limit_state_function") reliabilityProject->limitStateFunction = GetLimitStateFunction(value);
-        }
-        else if (objectType == ObjectType::FragilityCurveProject)
-        {
-            std::shared_ptr<Reliability::FragilityCurveProject> fragilityProject = fragilityCurveProjects[id];
-
-            if (property_ == "settings") fragilityProject->settings = fragilityCurveSettings[value];
         }
         else if (objectType == ObjectType::CombineProject)
         {
