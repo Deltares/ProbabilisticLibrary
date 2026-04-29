@@ -40,6 +40,19 @@ namespace Deltares::Reliability
     class DesignPoint : public Models::StochastPoint
     {
     public:
+        DesignPoint() = default;
+
+        /**
+         * \brief Transforms a stochast point to a design point
+         */
+        explicit DesignPoint(const Models::StochastPoint& stochastPoint)
+        {
+            for (auto alpha : stochastPoint.Alphas)
+            {
+                this->Alphas.push_back(alpha);
+            }
+        }
+
         std::string Identifier;
 
         /**
@@ -56,9 +69,9 @@ namespace Deltares::Reliability
 
         double getFailureProbability() const { return Statistics::StandardNormal::getQFromU(this->Beta); }
         double getNonFailureProbability() const { return Statistics::StandardNormal::getPFromU(this->Beta); }
+        double getReturnPeriod() const { return Statistics::StandardNormal::getTFromU(this->Beta); }
 
         void expandContributions();
-        void correctFragilityCurves() const;
 
         /**
          * \brief Gets the total model runs including contributing design points

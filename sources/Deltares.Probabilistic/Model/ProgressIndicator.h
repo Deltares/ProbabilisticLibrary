@@ -25,7 +25,7 @@
 
 namespace Deltares::Models
 {
-    enum class ProgressType { Global, Detailed };
+    enum ProgressType { Global = 0, Detailed = 1 };
 
 #ifdef _WIN32
     typedef void(__stdcall* ProgressDelegate) (double);
@@ -34,22 +34,22 @@ namespace Deltares::Models
 #endif
     typedef std::function<void(double)> ProgressLambda;
     typedef std::function<void(int, int, double, double)> DetailedProgressLambda;
-    typedef std::function<void(ProgressType, std::string)> TextualProgressLambda;
+    typedef std::function<void(ProgressType, const char* message)> TextualProgressLambda;
 
     class ProgressIndicator
     {
-        const ProgressLambda& progressLambda;
-        const DetailedProgressLambda& detailedProgressLambda;
-        const TextualProgressLambda& textualProgressLambda;
+        const ProgressLambda progressLambda;
+        const DetailedProgressLambda detailedProgressLambda;
+        const TextualProgressLambda textualProgressLambda;
 
         double progressOffset = 0.0;
         double progressFactor = 1.0;
         std::string task;
 
     public:
-        explicit ProgressIndicator(const ProgressLambda& progress_lambda,
-            const DetailedProgressLambda& detailed_progress_lambda = nullptr,
-            const TextualProgressLambda& textual_progress_lambda = nullptr,
+        explicit ProgressIndicator(ProgressLambda progress_lambda,
+            DetailedProgressLambda detailed_progress_lambda = nullptr,
+            TextualProgressLambda textual_progress_lambda = nullptr,
             std::string _task = "") :
         progressLambda(progress_lambda), detailedProgressLambda(detailed_progress_lambda),
         textualProgressLambda(textual_progress_lambda), task(std::move(_task))
@@ -68,7 +68,7 @@ namespace Deltares::Models
 
         void doTextualProgress(ProgressType progressType, const std::string& text) const
         {
-            if (textualProgressLambda != nullptr) textualProgressLambda(progressType, text);
+            if (textualProgressLambda != nullptr) textualProgressLambda(progressType, text.c_str());
         }
 
         void reset();

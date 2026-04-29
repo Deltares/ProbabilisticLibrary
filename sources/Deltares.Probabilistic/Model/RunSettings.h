@@ -34,6 +34,13 @@ namespace Deltares::Models
         dpOutPrintAll = 3,
     };
 
+    enum class HandleInvalidType
+    {
+        Ignore,
+        Fail,
+        NoFail
+    };
+
     class RunSettings
     {
     public:
@@ -43,9 +50,12 @@ namespace Deltares::Models
         bool SaveConvergence = false;
         bool SaveMessages = false;
         bool ReuseCalculations = true;
+        bool AllowRepository = true;
+        bool UseZFromSample = false;
         bool RunAtDesignPoint = false;
         bool ExtendedLoggingAtDesignPoint = false;
         int MaxMessages = 1000;
+        HandleInvalidType handleInvalidType = HandleInvalidType::Ignore;
         Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
         bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
@@ -53,6 +63,9 @@ namespace Deltares::Models
         {
             Logging::ValidationSupport::checkMinimumInt(report, 1, MaxParallelProcesses, "max parallel processes");
         }
+
+        static std::string getHandleInvalidTypeString(Deltares::Models::HandleInvalidType type);
+        static Deltares::Models::HandleInvalidType getHandleInvalidType(const std::string& type);
     };
 }
 

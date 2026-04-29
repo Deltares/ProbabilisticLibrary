@@ -28,6 +28,9 @@
 #include "../Proxies/ProxyModel.h"
 #include <format>
 
+#include "../Reliability/FragilityCurve.h"
+#include "../Reliability/ProbabilityLimitStateFunction.h"
+
 namespace Deltares::Models
 {
     int ModelRunner::getVaryingStochastCount() const
@@ -61,6 +64,9 @@ namespace Deltares::Models
     {
         this->uConverter->initializeForRun();
         this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
+        this->zModel->setHandleInvalidType(this->Settings->handleInvalidType);
+        this->zModel->setAllowRepository(this->Settings->AllowRepository);
+        this->zModel->setUseZFromSample(this->Settings->UseZFromSample);
         this->zModel->resetModelRuns();
 
         this->zModel->initializeForRun();
@@ -136,6 +142,7 @@ namespace Deltares::Models
         xSample->Weight = sample->Weight;
         xSample->IsRestartRequired = sample->IsRestartRequired;
         xSample->Beta = sample->getBeta();
+        xSample->OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
     }
@@ -146,6 +153,7 @@ namespace Deltares::Models
 
         // create a sample with values in x-space
         std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
+        xSample->OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
     }
@@ -269,8 +277,8 @@ namespace Deltares::Models
     }
 
     /**
-     * \brief Sets a callback which calculates the beat in a certain direction
-     * \param zBetaLambda Callback 
+     * \brief Sets a callback which calculates the beta in a certain direction
+     * \param zBetaLambda Callback
      */
     void ModelRunner::setDirectionModel(const ZBetaLambda& zBetaLambda) const
     {
@@ -305,6 +313,7 @@ namespace Deltares::Models
         evaluation.Z = sample->Z;
         evaluation.Beta = sample->Beta;
         evaluation.Iteration = sample->IterationIndex;
+        evaluation.Weight = sample->Weight;
         evaluation.usedProxy = sample->UsedProxy;
         evaluation.InputValues = sample->Values;
         evaluation.OutputValues = sample->OutputValues;
@@ -323,7 +332,7 @@ namespace Deltares::Models
         {
             std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
 
-            if (this->Settings->MaxParallelProcesses > 1) 
+            if (this->Settings->MaxParallelProcesses > 1)
             {
                 locker->lock();
                 this->evaluations.push_back(evaluation);
@@ -452,7 +461,7 @@ namespace Deltares::Models
 
     void ModelRunner::doTextualProgress(ProgressType type, const std::string& text) const
     {
-        if (this->progressIndicator != nullptr) 
+        if (this->progressIndicator != nullptr)
         {
             this->progressIndicator->doTextualProgress(type, text);
         }
@@ -583,10 +592,7 @@ namespace Deltares::Models
     {
         return this->uConverter->getVaryingValues(values);
     }
-
-    void ModelRunner::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues) const
-    {
-        this->uConverter->updateVariableSample(xValues, originalValues);
-    }
 }
+
+
 

@@ -40,24 +40,20 @@ namespace Deltares::Reliability
         else
         {
             this->useSampleZValue = false;
-            this->criticalParameterIndex = -1;
+            this->criticalParameterIndex = 0;
 
-            for (size_t i = 0; i < inputParameters.size(); i++)
+            int indexInput = FindParameterIndex(inputParameters, this->criticalParameter);
+            if (indexInput >= 0)
             {
-                if (inputParameters[i]->name == this->criticalParameter)
-                {
-                    this->criticalParameterIndex = inputParameters[i]->computationalIndex;
-                    this->criticalParameterIndexFromInput = true;
-                }
+                this->criticalParameterIndex = indexInput;
+                this->criticalParameterIndexFromInput = true;
             }
 
-            for (size_t i = 0; i < outputParameters.size(); i++)
+            int indexOutput = FindParameterIndex(outputParameters, this->criticalParameter);
+            if (indexOutput >= 0)
             {
-                if (outputParameters[i]->name == this->criticalParameter)
-                {
-                    this->criticalParameterIndex = outputParameters[i]->computationalIndex;
-                    this->criticalParameterIndexFromInput = false;
-                }
+                this->criticalParameterIndex = indexOutput;
+                this->criticalParameterIndexFromInput = false;
             }
         }
 
@@ -65,24 +61,37 @@ namespace Deltares::Reliability
 
         if (this->useCompareParameter)
         {
-            for (size_t i = 0; i < inputParameters.size(); i++)
+            int indexInput = FindParameterIndex(inputParameters, this->compareParameter);
+            if (indexInput >= 0)
             {
-                if (inputParameters[i]->name == this->compareParameter)
-                {
-                    this->compareParameterIndex = inputParameters[i]->computationalIndex;
-                    this->compareParameterIndexFromInput = true;
-                }
+                this->compareParameterIndex = indexInput;
+                this->compareParameterIndexFromInput = true;
             }
 
-            for (size_t i = 0; i < outputParameters.size(); i++)
+            int indexOutput = FindParameterIndex(outputParameters, this->compareParameter);
+            if (indexOutput >= 0)
             {
-                if (outputParameters[i]->name == this->compareParameter)
-                {
-                    this->compareParameterIndex = outputParameters[i]->computationalIndex;
-                    this->compareParameterIndexFromInput = false;
-                }
+                this->compareParameterIndex = indexOutput;
+                this->compareParameterIndexFromInput = false;
             }
         }
+    }
+
+    int LimitStateFunction::FindParameterIndex(std::vector<std::shared_ptr<Models::ModelInputParameter>>& parameters, const std::string search_parameter)
+    {
+        int index = 0;
+
+        for (size_t i = 0; i < parameters.size(); i++)
+        {
+            if (parameters[i]->name == search_parameter)
+            {
+                return index;
+            }
+
+            index += parameters[i]->isArray ? parameters[i]->arraySize : 1;
+        }
+
+        return -1;
     }
 
     void LimitStateFunction::updateZValue(std::shared_ptr<Models::ModelSample> sample)

@@ -22,6 +22,7 @@
 
 #include <string>
 #include <memory>
+#include <filesystem>
 
 #include "../Deltares.Probabilistic/Server/ProjectServer.h"
 #include "../Deltares.Probabilistic/Server/ExternalServerHandler.h"
@@ -38,224 +39,587 @@ using namespace Deltares::Server;
 
 extern "C" DLL_PUBLIC void AddLibrary(const char* library)
 {
-    std::string libraryStr(library);
+    try
+    {
+        std::string libraryStr(library);
 
-    if (libraryStr.ends_with(".exe"))
-    {
-        std::shared_ptr<ExternalServerHandler> externalHandler = std::make_shared<ExternalServerHandler>(libraryStr);
-        ProjectServer::Instance().AddHandler(externalHandler);
+        std::filesystem::path path(libraryStr);
+        if (!std::filesystem::exists(path))
+        {
+            throw Deltares::Reliability::probLibException(libraryStr + " does not exist");
+        }
+
+        if (libraryStr.ends_with(".exe"))
+        {
+            std::shared_ptr<ExternalServerHandler> externalHandler = std::make_shared<ExternalServerHandler>(libraryStr);
+            ProjectServer::Instance().SetHandler(externalHandler);
+        }
+        else if (libraryStr.ends_with(".dll"))
+        {
+            std::shared_ptr<ExternalLibraryHandler> externalHandler = std::make_shared<ExternalLibraryHandler>(libraryStr);
+            externalHandler->Initialize();
+            ProjectServer::Instance().SetHandler(externalHandler);
+        }
+        else
+        {
+            throw Deltares::Reliability::probLibException(libraryStr + " is not supported");
+        }
     }
-    else if (libraryStr.ends_with(".dll"))
+    catch (const std::exception& e)
     {
-        std::shared_ptr<ExternalLibraryHandler> externalHandler = std::make_shared<ExternalLibraryHandler>(libraryStr);
-        externalHandler->Initialize();
-        ProjectServer::Instance().AddHandler(externalHandler);
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
+}
+
+extern "C" DLL_PUBLIC int GetNewId()
+{
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        return ProjectServer::Instance().GetNewId();
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
+    }
+}
+
+extern "C" DLL_PUBLIC bool CanHandle(const char* type)
+{
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string typeStr = type;
+        return ProjectServer::Instance().CanHandle(typeStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return false;
     }
 }
 
 extern "C" DLL_PUBLIC int Create(const char* type)
 {
-    std::string typeStr = type;
-    int id = ProjectServer::Instance().Create(typeStr);
-    return id;
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string typeStr = type;
+        return ProjectServer::Instance().Create(typeStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
+    }
 }
 
 extern "C" DLL_PUBLIC void Destroy(int id)
 {
-    ProjectServer::Instance().Destroy(id);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        ProjectServer::Instance().Destroy(id);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void Exit()
 {
-    ProjectServer::Instance().Exit();
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        ProjectServer::Instance().Exit();
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC double GetValue(int id, const char* property)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetValue(id, propertyStr);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetValue(id, propertyStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return std::nan("");
+    }
 }
 
 extern "C" DLL_PUBLIC void SetValue(int id, const char* property, double value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetValue(id, propertyStr, value);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetValue(id, propertyStr, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC int GetIntValue(int id, const char* property)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIntValue(id, propertyStr);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIntValue(id, propertyStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
+    }
 }
 
 extern "C" DLL_PUBLIC void SetIntValue(int id, const char* property, int value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetIntValue(id, propertyStr, value);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetIntValue(id, propertyStr, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC int GetIdValue(int id, const char* property)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIdValue(id, propertyStr);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIdValue(id, propertyStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
+    }
 }
 
 extern "C" DLL_PUBLIC double GetIntArgValue(int id1, int id2, const char* property)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIntArgValue(id1, id2, propertyStr);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIntArgValue(id1, id2, propertyStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return std::nan("");
+    }
 }
 
 extern "C" DLL_PUBLIC void SetIntArgValue(int id1, int id2, const char* property, double value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetIntArgValue(id1, id2, propertyStr, value);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetIntArgValue(id1, id2, propertyStr, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC bool GetBoolValue(int id, const char* property)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetBoolValue(id, propertyStr);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetBoolValue(id, propertyStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return false;
+    }
 }
 
 extern "C" DLL_PUBLIC void SetBoolValue(int id, const char* property, bool value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetBoolValue(id, propertyStr, value);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetBoolValue(id, propertyStr, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC size_t GetStringLength(int id, const char* property)
 {
-    std::string propertyStr(property);
-    std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
-    return result.length();
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
+        return result.length();
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
+    }
 }
 
 extern "C" DLL_PUBLIC void GetStringValue(int id, const char* property, char* result_c, size_t size)
 {
-    std::string propertyStr(property);
-    std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        std::string result = ProjectServer::Instance().GetStringValue(id, propertyStr);
 
-    copyStringToCharPointer(result, result_c, size);
+        copyStringToCharPointer(result, result_c, size);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetStringValue(int id, const char* property, const char* value)
 {
-    std::string propertyStr(property);
-    std::string valueStr(value);
-    ProjectServer::Instance().SetStringValue(id, propertyStr, valueStr);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        std::string valueStr(value);
+        ProjectServer::Instance().SetStringValue(id, propertyStr, valueStr);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void FillArrayValue(int id, const char* property, double* values, int size)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().GetArrayValue(id, propertyStr, values, size);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().GetArrayValue(id, propertyStr, values, size);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetArrayValue(int id, const char* property, double* values, int size)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetArrayValue(id, propertyStr, values, size);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetArrayValue(id, propertyStr, values, size);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetArrayIntValue(int id, const char* property, int* values, int size)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetArrayIntValue(id, propertyStr, values, size);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetArrayIntValue(id, propertyStr, values, size);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C"  DLL_PUBLIC double GetArgValue(int id, const char* property, double argument)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetArgValue(id, propertyStr, argument);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetArgValue(id, propertyStr, argument);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return std::nan("");
+    }
 }
 
 extern "C" DLL_PUBLIC void SetArgValue(int id, const char* property, double argument, double value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetArgValue(id, propertyStr, argument, value);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetArgValue(id, propertyStr, argument, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C"  DLL_PUBLIC void GetArgValues(int id, const char* property, double* values, int size, double* outputValues)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().GetArgValues(id, propertyStr, values, size, outputValues);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().GetArgValues(id, propertyStr, values, size, outputValues);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C"  DLL_PUBLIC double GetIndexedValue(int id, const char* property, int index)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIndexedValue(id, propertyStr, index);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIndexedValue(id, propertyStr, index);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return std::nan("");
+    }
 }
 
 extern "C" DLL_PUBLIC void SetIndexedValue(int id, const char* property, int index, double value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetIndexedValue(id, propertyStr, index, value);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetIndexedValue(id, propertyStr, index, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC double GetIndexedIndexedValue(int id, const char* property, int index1, int index2)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIndexedIndexedValue(id, propertyStr, index1, index2);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIndexedIndexedValue(id, propertyStr, index1, index2);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return std::nan("");
+    }
 }
 
 extern "C" DLL_PUBLIC void SetIndexedIndexedValue(int id, const char* property, int index1, int index2, double value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetIndexedIndexedValue(id, propertyStr, index1, index2, value);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetIndexedIndexedValue(id, propertyStr, index1, index2, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetIndexedIndexedIntValue(int id, const char* property, int index1, int index2, int value)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetIndexedIndexedIntValue(id, propertyStr, index1, index2, value);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetIndexedIndexedIntValue(id, propertyStr, index1, index2, value);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, const char* property, int index)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIndexedIntValue(id, propertyStr, index);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIndexedIntValue(id, propertyStr, index);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
+    }
 }
 
 extern "C" DLL_PUBLIC int GetIndexedIdValue(int id, const char* property, int index)
 {
-    std::string propertyStr(property);
-    return ProjectServer::Instance().GetIndexedIdValue(id, propertyStr, index);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        return ProjectServer::Instance().GetIndexedIdValue(id, propertyStr, index);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
+    }
 }
 
 extern "C" DLL_PUBLIC size_t GetIndexedStringLength(int id, const char* property, int index)
 {
-    std::string propertyStr(property);
-    std::string result = ProjectServer::Instance().GetIndexedStringValue(id, propertyStr, index);
-    return result.length();
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        std::string result = ProjectServer::Instance().GetIndexedStringValue(id, propertyStr, index);
+        return result.length();
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+        return -1;
+    }
 }
 
 extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, const char* property, int index, char* result_c, size_t size)
 {
-    std::string propertyStr(property);
-    std::string result = ProjectServer::Instance().GetIndexedStringValue(id, propertyStr, index);
-
-    copyStringToCharPointer(result, result_c, size);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        std::string result = ProjectServer::Instance().GetIndexedStringValue(id, propertyStr, index);
+        copyStringToCharPointer(result, result_c, size);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetCallBack(int id, const char* property, Deltares::Models::ZValuesCallBack callBack)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetCallBack(id, propertyStr, callBack);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetMultipleCallBack(int id, const char* property, Deltares::Models::ZValuesMultipleCallBack callBack)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetMultipleCallBack(id, propertyStr, callBack);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetMultipleCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
 
 extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, const char* property, Deltares::Models::EmptyCallBack callBack)
 {
-    std::string propertyStr(property);
-    ProjectServer::Instance().SetEmptyCallBack(id, propertyStr, callBack);
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetEmptyCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
 }
+
+extern "C" DLL_PUBLIC void SetModelSampleCallback(int id, const char* property, Deltares::Models::ModelSampleCallback callBack)
+{
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetModelSampleCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
+}
+
+extern "C" DLL_PUBLIC void SetMultipleModelSampleCallback(int id, const char* property, Deltares::Models::MultipleModelSampleCallback callBack)
+{
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        std::string propertyStr(property);
+        ProjectServer::Instance().SetMultipleModelSampleCallBack(id, propertyStr, callBack);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
+}
+
+extern "C" DLL_PUBLIC void SetProgressCallBacks(int id, Deltares::Models::ProgressCallBack progress, Deltares::Models::DetailedProgressCallBack detailed, Deltares::Models::TextualProgressCallBack textual)
+{
+    try
+    {
+        ProjectServer::Instance().last_exception = "";
+        ProjectServer::Instance().SetProgressCallBacks(id, progress, detailed, textual);
+    }
+    catch (const std::exception& e)
+    {
+        ProjectServer::Instance().last_exception = std::string(e.what());
+    }
+}
+
 
 extern "C" DLL_PUBLIC void Execute(int id, const char* method)
 {
@@ -279,6 +643,7 @@ extern "C" DLL_PUBLIC size_t GetExceptionLength()
 extern "C" DLL_PUBLIC void GetException(char* result_c, size_t size)
 {
     copyStringToCharPointer(ProjectServer::Instance().last_exception, result_c, size);
+    ProjectServer::Instance().last_exception = "";
 }
 
 

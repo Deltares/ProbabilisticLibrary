@@ -22,14 +22,15 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Deltares.Statistics.Wrappers;
-using Deltares.Models.Wrappers;
-using Deltares.Reliability.Wrappers;
-using Deltares.Sensitivity.Wrappers;
-using Deltares.Uncertainty.Wrappers;
-using Deltares.Utils.Wrappers;
+using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
+using Deltares.Probabilistic.Sensitivity;
+using Deltares.Probabilistic.Statistics;
+using Deltares.Probabilistic.Uncertainty;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+
+namespace Deltares.Probabilistic.Test
 {
     public class ProgressHolder
     {
@@ -72,7 +73,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
     public class ZSampleOutput
     {
         private readonly ZDelegate function;
-        private readonly TagRepository tagRepository = new TagRepository();
 
         public ZSampleOutput(ZDelegate function)
         {
@@ -83,12 +83,24 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ZFunctionOutput output = function.Invoke(sample.Values);
             sample.Z = output.Z;
-            sample.Tag = tagRepository.RegisterTag(output);
+            sample.Tag = output;
+        }
+    }
+
+    public class SampleValuesOutput
+    {
+        private readonly ZDelegate function;
+
+        public SampleValuesOutput(ZDelegate function)
+        {
+            this.function = function;
         }
 
-        public TagRepository GeTagRepository()
+        public void CalculateSample(ModelSample sample)
         {
-            return tagRepository;
+            ZFunctionOutput output = function.Invoke(sample.Values);
+            sample.Z = output.Z;
+            sample.Tag = output;
         }
     }
 
@@ -132,7 +144,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ZSampleOutput zSampleOutput = GetSampleOutput(Linear);
 
             project.ZFunction = zSampleOutput.CalculateSample;
-            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -156,7 +167,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ZSampleOutput zSampleOutput = GetSampleOutput(Sum);
 
             project.ZFunction = zSampleOutput.CalculateSample;
-            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -173,7 +183,21 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ZSampleOutput zSampleOutput = GetSampleOutput(UnbalancedLinear);
 
             project.ZFunction = zSampleOutput.CalculateSample;
-            project.TagRepository = zSampleOutput.GeTagRepository();
+
+            return project;
+        }
+
+        public static ReliabilityProject GetLinearAndUnbalancedProject()
+        {
+            var project = new ReliabilityProject();
+
+            project.Stochasts.Add(GetUniformStochast(-1));
+            project.Stochasts.Add(GetUniformStochast(-1));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
+
+            project.ZFunction = LinearAndUnbalanced;
 
             return project;
         }
@@ -182,10 +206,23 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var uncertaintyProject = new UncertaintyProject();
 
-            uncertaintyProject.Stochasts.AddRange(project.Stochasts);
+            foreach (Stochast stochast in project.Stochasts)
+            {
+                uncertaintyProject.Stochasts.Add(stochast);
+            }
+
+            foreach (ModelParameter inputParameter in project.InputParameters)
+            {
+                uncertaintyProject.InputParameters.Add(inputParameter);
+            }
+
+            foreach (ModelParameter outputParameter in project.OutputParameters)
+            {
+                uncertaintyProject.OutputParameters.Add(outputParameter);
+            }
+
             uncertaintyProject.CorrelationMatrix = project.CorrelationMatrix;
             uncertaintyProject.ZFunction = project.ZFunction;
-            uncertaintyProject.TagRepository = project.TagRepository;
 
             return uncertaintyProject;
         }
@@ -194,12 +231,40 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var sensitivityProject = new SensitivityProject();
 
-            sensitivityProject.Stochasts.AddRange(project.Stochasts);
+            foreach (Stochast stochast in project.Stochasts)
+            {
+                sensitivityProject.Stochasts.Add(stochast);
+            }
+
             sensitivityProject.CorrelationMatrix = project.CorrelationMatrix;
             sensitivityProject.ZFunction = project.ZFunction;
-            sensitivityProject.TagRepository = project.TagRepository;
 
             return sensitivityProject;
+        }
+
+        public static RunProject GetRunProject(ReliabilityProject project)
+        {
+            var runProject = new RunProject();
+
+            foreach (Stochast stochast in project.Stochasts)
+            {
+                runProject.Stochasts.Add(stochast);
+            }
+
+            foreach (ModelParameter inputParameter in project.InputParameters)
+            {
+                runProject.InputParameters.Add(inputParameter);
+            }
+
+            foreach (ModelParameter outputParameter in project.OutputParameters)
+            {
+                runProject.OutputParameters.Add(outputParameter);
+            }
+
+            runProject.CorrelationMatrix = project.CorrelationMatrix;
+            runProject.ZFunction = project.ZFunction;
+
+            return runProject;
         }
 
         public static ReliabilityProject GetInverseLinearProject()
@@ -504,7 +569,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ZSampleOutput zSampleOutput = GetSampleOutput(Noisy);
 
             project.ZFunction = zSampleOutput.CalculateSample;
-            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -682,16 +746,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Stochast a = GetNormalStochast(1.5, 0.5);
             Stochast b = GetNormalStochast(0.5, 1.5);
 
-            c.IsVariableStochast = true;
-            c.VariableSource = a;
-            c.ValueSet.StochastValues.Add(new VariableStochastValue { X = -100, Location = -100, Scale = 0.1 });
-            c.ValueSet.StochastValues.Add(new VariableStochastValue { X = 100, Location = 100, Scale = 0.1 });
+            c.IsConditional = true;
+            c.ConditionalSource = a;
+            c.ConditionalValues.Add(new ConditionalValue { X = -100, Location = -100, Scale = 0.1 });
+            c.ConditionalValues.Add(new ConditionalValue { X = 100, Location = 100, Scale = 0.1 });
 
-            a.IsVariableStochast = true;
-            a.VariableSource = b;
-            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 0, Location = 0, Scale = 0 });
-            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 1, Location = 3, Scale = 1 });
-            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 2, Location = 5, Scale = 3 });
+            a.IsConditional = true;
+            a.ConditionalSource = b;
+            a.ConditionalValues.Add(new ConditionalValue { X = 0, Location = 0, Scale = 0 });
+            a.ConditionalValues.Add(new ConditionalValue { X = 1, Location = 3, Scale = 1 });
+            a.ConditionalValues.Add(new ConditionalValue { X = 2, Location = 5, Scale = 3 });
 
             project.Stochasts.Add(c);
             project.Stochasts.Add(a);
@@ -749,6 +813,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
                 sum += factor * x[i];
             }
             return new ZFunctionOutput(1.8 - sum);
+        }
+
+        private static void LinearAndUnbalanced(ModelSample sample)
+        {
+            double val1 = Linear(sample.Values).Z;
+            double val2 = UnbalancedLinear(sample.Values).Z;
+            sample.OutputValues = [val1, val2];
         }
 
         private static ZFunctionOutput Linear2(double a, double b)

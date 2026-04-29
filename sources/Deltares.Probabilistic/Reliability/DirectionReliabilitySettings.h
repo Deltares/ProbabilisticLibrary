@@ -44,6 +44,9 @@ namespace Deltares::Reliability
 
         void validate(Logging::ValidationReport& report) const override;
         int SectionCount() const;
+
+        static std::string getModelVaryingTypeString(ModelVaryingType type);
+        static ModelVaryingType getModelVaryingType(const std::string& type);
     };
 }
 

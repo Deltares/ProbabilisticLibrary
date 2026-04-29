@@ -325,7 +325,7 @@ namespace Deltares::Probabilistic::Test
         calculator.Settings->importanceSamplingSettings->MaximumSamples = 100;
         auto designPoint = calculator.getDesignPoint(modelRunner);
         ASSERT_EQ(designPoint->Alphas.size(), 4);
-        EXPECT_NEAR(designPoint->Beta, 2.85, 0.01);
+        EXPECT_NEAR(designPoint->Beta, 2.95, 0.01);
     }
 
     void TestReliabilityMethods::testClustersAdpImpSampling()

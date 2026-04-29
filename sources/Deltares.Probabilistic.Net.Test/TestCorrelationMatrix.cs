@@ -20,11 +20,11 @@
 // All rights reserved.
 //
 ﻿using System.Linq;
-using Deltares.Statistics.Wrappers;
+using Deltares.Probabilistic.Statistics;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestCorrelationMatrix

@@ -31,7 +31,7 @@ namespace Deltares::Reliability
         std::unique_ptr<FragilityCurveIntegration> calculator = std::make_unique<FragilityCurveIntegration>();
         calculator->Settings = this->settings;
 
-        this->designPoint = calculator->getDesignPoint(this->integrand, this->fragilityCurve);
+        this->designPoint = calculator->getDesignPoint(this->integrand, this->fragilityCurve, this->fragilityCurveNormalized);
     }
 }
 

@@ -32,14 +32,19 @@ namespace Deltares::Reliability
     {
     public:
         /**
-         * \brief Collection of all design points to be combined
+         * \brief Integrating stochastic variable
          */
         std::shared_ptr<Deltares::Statistics::Stochast> integrand = nullptr;
 
         /**
-         * \brief Collection of all design points to be combined
+         * \brief Fragility curve
          */
-        std::shared_ptr<Deltares::Statistics::Stochast> fragilityCurve = nullptr;
+        std::shared_ptr<Deltares::Reliability::FragilityCurve> fragilityCurve = nullptr;
+
+        /**
+         * \brief Normalizing fragility curve
+         */
+        std::shared_ptr<Deltares::Reliability::FragilityCurve> fragilityCurveNormalized = nullptr;
 
         /**
          * \brief Calculation settings

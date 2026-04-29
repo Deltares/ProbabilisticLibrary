@@ -129,21 +129,6 @@ namespace Deltares::Reliability
         }
     }
 
-    void DesignPoint::correctFragilityCurves() const
-    {
-        if (this->Beta < 0)
-        {
-            for (std::shared_ptr<StochastPointAlpha> stochastRealization : this->Alphas)
-            {
-                std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(stochastRealization->Stochast);
-                if (fragilityCurve != nullptr && fragilityCurve->inverted)
-                {
-                    stochastRealization->invert();
-                }
-            }
-        }
-    }
-
     std::vector<std::shared_ptr<Statistics::Stochast>> DesignPoint::getUniqueStochasts(const std::vector<std::shared_ptr<DesignPoint>>& designPoints)
     {
         std::vector<std::shared_ptr<Statistics::Stochast>> uniqueStochasts;

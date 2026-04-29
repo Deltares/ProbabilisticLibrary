@@ -63,6 +63,8 @@ namespace Deltares::Uncertainty
         double sumWeights = 0;
         std::vector<std::shared_ptr<Sample>> allSamples;
 
+        bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
+
         std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
 
         factors = getFactors(*Settings->StochastSet);
@@ -111,7 +113,10 @@ namespace Deltares::Uncertainty
 
             updateCumulativeWeights(zValues, weights, cumulativeWeights, *sample);
 
-            registerSample(*modelRunner, sample);
+            if (registerSamplesForCorrelation)
+            {
+                modelRunner->registerSample(this->correlationMatrixBuilder, sample);
+            }
 
             // check whether all added samples in design point builder are supposed to be there
             // the design point builder should contain samples corresponding with a given probability of failure
@@ -197,18 +202,6 @@ namespace Deltares::Uncertainty
             {
                 weight += weight * weight_difference / over_weighted_sum;
             }
-        }
-    }
-
-    void ImportanceSamplingS::registerSample(const ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const
-    {
-        const bool registerSamplesForCorrelation = correlationMatrixBuilder->isEmpty() &&
-            Settings->CalculateCorrelations &&
-            Settings->CalculateInputCorrelations;
-
-        if (registerSamplesForCorrelation)
-        {
-            modelRunner.registerSample(correlationMatrixBuilder, sample);
         }
     }
 

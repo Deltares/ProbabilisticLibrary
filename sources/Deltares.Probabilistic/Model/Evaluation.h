@@ -42,7 +42,7 @@ namespace Deltares::Models
         double Quantile = std::nan("");
 
         double Beta = 1;
-        double Weight = 1;
+        double Weight = std::nan("");
         int Iteration = -1;
 
         /**

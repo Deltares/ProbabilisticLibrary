@@ -66,7 +66,7 @@ namespace Deltares::Uncertainty
     {
         std::shared_ptr<FOSM> fosm = std::make_shared<FOSM>();
 
-        fosm->Settings->StepSize = this->GlobalStepSize;
+        fosm->Settings->StepSize = this->StepSizeFactor;
         fosm->Settings->RunSettings = this->RunSettings;
         fosm->Settings->CalculateCorrelations = this->CalculateCorrelations;
         fosm->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;

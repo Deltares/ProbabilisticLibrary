@@ -21,9 +21,10 @@
 //
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Reliability.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestLatinHypercube
@@ -35,8 +36,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new LatinHypercube();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.LatinHypercube;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.652, designPoint.Beta, margin);
         }

@@ -21,9 +21,10 @@
 //
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Sensitivity.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Sensitivity;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestSingleVariationSensitivity
@@ -35,9 +36,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
 
-            project.SensitivityMethod = new SingleVariation();
+            project.Settings.SensitivityMethod = SensitivityMethod.SingleVariation;
+            project.Run();
 
-            SensitivityResult result = project.GetResult();
+            SensitivityResult result = project.Result;
 
             ClassicAssert.AreEqual(2, result.Values.Count);
 
@@ -52,9 +54,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetUnbalancedLinearProject());
 
-            project.SensitivityMethod = new SingleVariation();
+            project.Settings.SensitivityMethod = SensitivityMethod.SingleVariation;
+            project.Run();
 
-            SensitivityResult result = project.GetResult();
+            SensitivityResult result = project.Result;
 
             ClassicAssert.AreEqual(2, result.Values.Count);
 

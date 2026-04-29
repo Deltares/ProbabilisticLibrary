@@ -36,15 +36,15 @@ namespace Deltares::Sensitivity
     {
     public:
         /**
-         * \brief Method which performs a uncertainty calculation
+         * \brief Output parameters for which the sensitivity will be calculated, empty for all parameters
          */
-        std::shared_ptr<SensitivityMethod> sensitivityMethod = nullptr;
+        std::vector<std::shared_ptr<Models::ModelInputParameter>> sensitivityParameters;
 
         /**
-         * \brief Output parameter for which the uncertainty is calculated, blank for all parameters
+         * \brief Output parameter for which the sensitivity is calculated, blank for all parameters
          */
         std::string parameter = "";
-
+        
         /**
          * \brief Array index of the output parameter if the parameter is an array
          */
@@ -83,9 +83,14 @@ namespace Deltares::Sensitivity
         SensitivityResult getSensitivityResult();
 
         /**
-         * \brief Runs the reliability calculation
+         * \brief Runs the sensitivity calculation
          */
         void run() override;
+
+        /**
+         * \brief Stops the sensitivity calculation
+         */
+        void stop() override;
 
         /**
          * \brief Sets the settings
@@ -106,7 +111,12 @@ namespace Deltares::Sensitivity
         std::vector<std::shared_ptr<Logging::Message>> messages;
 
     private:
-        std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
+        std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
+
+        /**
+         * \brief Method which performs the sensitivity calculation
+         */
+        std::shared_ptr<SensitivityMethod> sensitivityMethod = nullptr;
     };
 }
 

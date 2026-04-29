@@ -42,9 +42,9 @@
 #include "../Uncertainty/UncertaintyResult.h"
 #include "../Sensitivity/SensitivityResult.h"
 
-namespace Deltares::Proxies
+namespace Deltares::Reliability
 {
-class ProxyModel;
+    class LimitStateFunction;
 }
 
 namespace Deltares::Models

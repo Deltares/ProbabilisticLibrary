@@ -67,6 +67,12 @@ namespace Deltares::Models
         double getKey(std::shared_ptr<ModelSample> sample);
 
         /**
+         * \brief Indicates whether the sample us useful to be registered in the repository
+         * \return Indication
+         */
+        bool shouldRegisterSample(std::shared_ptr<ModelSample> sample);
+
+        /**
          * \brief Supporting utility for multi threading
          */
         std::unique_ptr<Utils::Locker> locker = std::make_unique<Utils::Locker>();

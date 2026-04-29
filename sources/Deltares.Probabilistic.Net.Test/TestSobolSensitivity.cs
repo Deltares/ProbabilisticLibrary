@@ -21,9 +21,11 @@
 //
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Sensitivity.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Statistics;
+using Deltares.Probabilistic.Sensitivity;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestSobolSensitivity
@@ -35,9 +37,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
 
-            project.SensitivityMethod = new Sobol();
+            project.Settings.SensitivityMethod = SensitivityMethod.Sobol;
+            project.Run();
 
-            SensitivityResult result = project.GetResult();
+            SensitivityResult result = project.Result;
 
             ClassicAssert.AreEqual(2, result.Values.Count);
 
@@ -50,9 +53,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetUnbalancedLinearProject());
 
-            project.SensitivityMethod = new Sobol();
+            project.Settings.SensitivityMethod = SensitivityMethod.Sobol;
+            project.Run();
 
-            SensitivityResult result = project.GetResult();
+            SensitivityResult result = project.Result;
 
             ClassicAssert.AreEqual(2, result.Values.Count);
 

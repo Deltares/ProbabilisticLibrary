@@ -29,12 +29,14 @@
 #include "DesignPointBuilder.h"
 #include "DirectionalSampling.h"
 #include "DirectionalSamplingThenFORM.h"
+#include "DirectionReliability.h"
 #include "FORM.h"
 #include "FORMThenDirectionalSampling.h"
 #include "LatinHyperCube.h"
 #include "NumericalBisection.h"
 #include "NumericalIntegration.h"
 #include "DirectionReliabilitySettings.h"
+#include "FragilityCurveIntegration.h"
 #include "ReliabilityMethod.h"
 #include "SubsetSimulation.h"
 #include "SubsetSimulationSettings.h"
@@ -44,12 +46,15 @@
 
 namespace Deltares::Reliability
 {
-    enum class ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
+    enum class ReliabilityResultType { ResultDesignPoint, ResultFragilityCurve };
 
-    enum class ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
-        ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
+    enum class ReliabilityMethodType {
+        ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
+        ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilityDirectionReliability,
         ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
-        ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM};
+        ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM,
+        ReliabilityFragilityCurveIntegration
+    };
 
     /**
      * \brief General settings applicable to all mechanisms
@@ -74,9 +79,9 @@ namespace Deltares::Reliability
         DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 
         /**
-         * \brief Defines the way new samples are generated
+         * \brief Method type how the design point (alpha values) is calculated for fragility curve integration
          */
-        SampleMethodType SampleMethod = SampleMethodType::MarkovChain;
+        DesignPointMethod fragilityCurveDesignPointMethod = DesignPointMethod::NearestToMean;
 
         /**
          * \brief The minimum samples to be examined
@@ -114,14 +119,55 @@ namespace Deltares::Reliability
         int MaximumVarianceLoops = 5;
 
         /**
+         * \brief The minimum failed samples in adaptive importance sampling for moving the center point
+         */
+        int MinimumFailedSamples = 0;
+
+        /**
          * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
          */
         double VariationCoefficient = 0.05;
 
         /**
+         * \brief The default variance factor in importance sampling
+         */
+        double VarianceFactor = 1.5;
+
+        /**
          * \brief The calls to importance sampling will be stopped until the fraction of failed samples (Z < 0) is between this value and 1 - this value
          */
         double FractionFailed = 0.1;
+
+        /**
+         * \brief Criterion for automatic break in adaptive importance sampling
+         */
+        double EpsilonWeightSample = 0.1;
+
+        /**
+         * \brief Indicates whether the maximum samples is set automatically
+         */
+        bool AutoMaximumSamples = false;
+
+        /**
+         * \brief Indicates whether the start point should be located on the limit state
+         */
+        bool StartPointOnLimitState = false;
+
+        /**
+         * \brief Minimum step size for changing the start point
+         */
+        double StartValueStepSize = 0.1;
+
+        /**
+         * \brief The increment in variance factor in adaptive importance sampling
+         */
+        double LoopVarianceIncrement = 0.5;
+
+        /**
+         * \brief When exceeded, the variance loops are stopped
+         */
+        double MaxBeta = Statistics::StandardNormal::BetaMax;
+
 
         /**
          * \brief Minimum number of iterations in numerical bisection
@@ -132,11 +178,6 @@ namespace Deltares::Reliability
          * \brief Maximum number of guessed design points in one FORM loop
          */
         int MaximumIterations = 50;
-
-        /**
-         * \brief Default number of intervals in numerical integration
-         */
-        int Intervals = 200;
 
         /**
          * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration
@@ -177,6 +218,26 @@ namespace Deltares::Reliability
          * \brief Fraction of the samples which will be used in the next iteration
          */
         double SubsetFraction = 0.1;
+
+        /**
+         * \brief Indicates whether adaptive sampling is based on (true) clustering or (false) moving the center point based on the last importance sampling design point
+         */
+        bool Clustering = false;
+
+        /**
+         * \brief Maximum number of clusters when OptimizeNumberOfClusters is true or number of clusters to be generated when OptimizeNumberOfClusters is false
+         */
+        int MaxClusters = 100;
+
+        /**
+         * \brief Indicates whether number of clusters is fixed (false) or determined by the <see cref="IClusterMethod"/> algorithm
+         */
+        bool OptimizeNumberOfClusters = false;
+
+        /**
+         * \brief Step size in fragility curve integration
+         */
+        double FragilityCurveStepSize = 0.001;
 
         /**
          * \brief Settings for generating random values
@@ -227,11 +288,12 @@ namespace Deltares::Reliability
         std::shared_ptr<DirectionalSampling> GetDirectionalSamplingMethod() const;
         std::shared_ptr<NumericalBisection> GetNumericalBisectionMethod() const;
         std::shared_ptr<LatinHyperCube> GetLatinHypercubeMethod() const;
+        std::shared_ptr<DirectionReliability> GetDirectionReliabilityMethod() const;
         std::shared_ptr<SubsetSimulation> GetSubsetSimulationMethod() const;
         std::shared_ptr<CobylaReliability> GetCobylaReliabilityMethod() const;
         std::shared_ptr<FORMThenDirectionalSampling> GetFormThenDsReliabilityMethod() const;
         std::shared_ptr<DirectionalSamplingThenFORM> GetDsThenFormReliabilityMethod() const;
-
+        std::shared_ptr<FragilityCurveIntegration> GetFragilityCurveIntegrationMethod() const;
     };
 }
 

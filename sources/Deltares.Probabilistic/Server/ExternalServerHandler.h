@@ -29,7 +29,6 @@
 
 #if __has_include(<windows.h>)
 #include <windows.h>
-#include <winsock.h>
 #include <ws2tcpip.h>
 #include <filesystem>
 #endif
@@ -47,20 +46,19 @@ namespace Deltares::Server
         ~ExternalServerHandler()
         {
 #if __has_include(<windows.h>)
-            freeaddrinfo(address);
-
             if (server_started)
             {
-                std::string message;
                 try
                 {
-                    message = Send("exit", false);
+                    // uncaught exceptions not allowed, therefore in try catch block
+                    Send("exit");
                     server_started = false;
+                    freeaddrinfo(address);
                 }
                 catch (const std::exception& e)
                 {
-                    printf("Error while closing: %s\n", e.what());
-                    printf("exit message = %s\n" , message.c_str());
+                    // print exception but ignore further
+                    printf("Exit failed: %s", e.what()); 
                 }
             }
 #endif
@@ -68,7 +66,8 @@ namespace Deltares::Server
 
 #if __has_include(<windows.h>)
         bool CanHandle(std::string objectType) override;
-        void Create(std::string objectType, int id) override;
+        int GetNewId() override;
+        int Create(std::string objectType) override;
         void Destroy(int id) override;
         void Exit() override;
         double GetValue(int id, std::string property) override;
@@ -87,8 +86,8 @@ namespace Deltares::Server
         void SetArrayValue(int id, std::string property, double* values, int size) override;
         void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
         void GetArgValues(int id, std::string property, double* values, int size, double* outputValues) override;
-        int GetIdValue(int id, std::string property_, int newId) override;
-        int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
+        int GetIdValue(int id, std::string property_) override;
+        int GetIndexedIdValue(int id, std::string property_, int index) override;
         double GetIndexedIndexedValue(int id, std::string property, int index1, int index2) override;
         void SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value) override;
         void SetIndexedIndexedIntValue(int id, const std::string& property, int index1, int index2, int value) override;
@@ -102,17 +101,19 @@ namespace Deltares::Server
 #if __has_include(<windows.h>)
         WSADATA wsaData;
 
-        std::string Send(const std::string& message, bool waitForAnswer) const;
-        SOCKET ConnectSocket() const;
         void StartServer();
+        std::string Send(std::string message) const;
+        SOCKET ConnectSocket() const;
         bool CheckConnection() const;
         void SetParentProcess() const;
 
         static std::string StringJoin(const std::vector<std::string>& strings, const std::string& delim);
         static std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
 
-        static void StartProcess(std::string processName, bool waitForExit);
+        void StartProcess(std::string processName, bool waitForExit);
         void UpdateAddressInfo();
+        bool IsServerRunning(std::string processName);
+        DWORD GetPidByName(const std::wstring& processName);
 
         addrinfo* address = nullptr;
         addrinfo hints;

@@ -77,6 +77,11 @@ namespace Deltares::Reliability
          * \brief Executes the combination
          */
         void run();
+
+        /**
+         * \brief Callback for progress during the calculation
+         */
+        std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
     };
 }
 

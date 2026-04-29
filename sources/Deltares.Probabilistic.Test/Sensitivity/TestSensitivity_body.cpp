@@ -122,7 +122,7 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
         project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
-        project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
+        project->run();
 
         Sensitivity::SensitivityResult result = project->getSensitivityResult();
 
@@ -139,8 +139,8 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
         project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
-        project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
         project->settings->RunSettings->SaveEvaluations = true;
+        project->run();
 
         Sensitivity::SensitivityResult result = project->getSensitivityResult();
 
@@ -153,7 +153,6 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
         project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
-        project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
 
         project->run();
 
@@ -177,17 +176,17 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
-        project->sensitivityMethod = std::make_shared<Sensitivity::Sobol>();
+        project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySobol;
+        project->run();
 
-        auto result = project->getSensitivityResult();
+        //auto result = project->getSensitivityResult();
 
-        ASSERT_EQ(project->stochasts.size(), result.values.size());
+        ASSERT_EQ(project->stochasts.size(), project->sensitivityResult->values.size());
 
-        ASSERT_NEAR(0.504, result.values[0]->totalIndex, margin);
-        ASSERT_NEAR(0.501, result.values[0]->firstOrderIndex, margin);
-        ASSERT_NEAR(0.504, result.values[1]->totalIndex, margin);
-        ASSERT_NEAR(0.506, result.values[1]->firstOrderIndex, margin);
+        ASSERT_NEAR(0.504, project->sensitivityResult->values[0]->totalIndex, margin);
+        ASSERT_NEAR(0.501, project->sensitivityResult->values[0]->firstOrderIndex, margin);
+        ASSERT_NEAR(0.504, project->sensitivityResult->values[1]->totalIndex, margin);
+        ASSERT_NEAR(0.506, project->sensitivityResult->values[1]->firstOrderIndex, margin);
     }
 
     void TestSensitivity::testLinearOutputSobol() const
@@ -195,7 +194,6 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
         project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySobol;
-
         project->run();
 
         ASSERT_EQ(project->model->outputParameters.size(), project->sensitivityResults.size());

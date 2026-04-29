@@ -25,6 +25,8 @@
 
 #include <cmath>
 
+#include "ProbabilityLimitStateFunction.h"
+
 namespace Deltares::Reliability
 {
     using namespace Deltares::Numeric;
@@ -115,6 +117,15 @@ namespace Deltares::Reliability
                 std::shared_ptr<Models::StochastPointAlpha> alphaCurve = std::make_shared<Models::StochastPointAlpha>();
                 alphaCurve->Stochast = fCurve;
                 alphaCurve->U = designPointSample->Values[1];
+
+                // correct for negative beta and fragility curve
+                // if beta is negative, the design point is the most likely point which succeeds. Therefore the succeeding probability should have been used
+                // instead of the failing probability of the fragility curve. To correct this, the negative u-value is used.
+                if (designPoint->Beta < 0)
+                {
+                    alphaCurve->U = -alphaCurve->U;
+                }
+
                 alphaCurve->X = fCurve->getXFromU(alphaCurve->U);
                 alphaCurve->Alpha = -alphaCurve->U / designPoint->Beta;
                 alphaCurve->AlphaCorrelated = alphaCurve->Alpha;
@@ -122,7 +133,6 @@ namespace Deltares::Reliability
             }
         }
 
-        designPoint->correctFragilityCurves();
         designPoint->expandContributions();
 
         designPoint->convergenceReport->Convergence = 0;
@@ -189,6 +199,14 @@ namespace Deltares::Reliability
 
         double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
+        // correct for negative beta and fragility curve
+        // if beta is negative, the design point is the most likely point which succeeds. Therefore the succeeding probability should have been used
+        // instead of the failing probability of the fragility curve. To correct this, the negative u-value is used.
+        if (beta < 0)
+        {
+            designPointSample->Values[1] = -designPointSample->Values[1];
+        }
+
         if (modelRunner->getVaryingStochastCount() == 1)
         {
             double alphaFragilityCurve = - designPointSample->Values[1] / beta; // u = - beta * alpha
@@ -198,7 +216,6 @@ namespace Deltares::Reliability
 
         std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(designPointSample, beta, std::make_shared<ConvergenceReport>());
 
-        designPoint->correctFragilityCurves();
         designPoint->expandContributions();
 
         designPoint->convergenceReport->Convergence = 0;

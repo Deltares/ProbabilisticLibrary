@@ -50,7 +50,6 @@ namespace Deltares::Uncertainty
         void updateCumulativeWeights(const std::vector<double>& zValues, const std::vector<double>& weights,
             std::vector<double>& cumulativeWeights, const Models::Sample& sample) const;
         static void adjustWeights(std::vector<double>& weights, const double weight_difference);
-        void registerSample(const Models::ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& sample) const;
         void registerWeights(const std::vector<double>& weights) const;
         void registerSamples(const std::shared_ptr<Statistics::Stochast>& stochast, const std::vector<double>& zValues) const;
         bool getConverged(int sampleIndex, const Models::Sample& center, int nSamples);

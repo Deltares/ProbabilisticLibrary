@@ -25,8 +25,10 @@
 #include <omp.h>
 
 #include "ModelSample.h"
+#include "ModelSampleStruct.h"
 #include "../Logging/ValidationSupport.h"
 #include "../Utils/probLibException.h"
+
 
 namespace Deltares::Models
 {
@@ -107,6 +109,43 @@ namespace Deltares::Models
         return calcValuesLambda;
     }
 
+    ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const
+    {
+        ZLambda calcValuesLambda = [modelSampleLambda](std::shared_ptr<ModelSample> sample)
+        {
+            ModelSampleStruct modelSampleStruct;
+            sample->fillModelSampleStruct(&modelSampleStruct);
+
+            (*modelSampleLambda)(&modelSampleStruct);
+
+            sample->setModelSampleStruct(&modelSampleStruct);
+        };
+
+        return calcValuesLambda;
+    }
+
+    ZMultipleLambda ZModel::getLambdaFromMultipleModelSampleCallBack(MultipleModelSampleCallback modelSampleLambda) const
+    {
+        ZMultipleLambda calcValuesLambda = [modelSampleLambda](std::vector<std::shared_ptr<ModelSample>> samples)
+        {
+            ModelSampleStruct* modelSamples = new ModelSampleStruct[samples.size()];
+
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                samples[i]->fillModelSampleStruct(&modelSamples[i]);
+            }
+
+            (*modelSampleLambda)(modelSamples, static_cast<int>(samples.size()));
+
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                samples[i]->setModelSampleStruct(&modelSamples[i]);
+            }
+        };
+
+        return calcValuesLambda;
+    }
+
     void ZModel::initializeForRun()
     {
         this->inputParametersCount = 0;
@@ -145,6 +184,24 @@ namespace Deltares::Models
         this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
     }
 
+    void ZModel::RegisterCalculationTime(long long elapsedTime, int samples)
+    {
+        // minimum calculation time to be registered
+        constexpr long long minRepoCalculationTime = 1;
+
+        if (elapsedTime > minRepoCalculationTime * samples)
+        {
+            measureCalculationTime = false;
+            useSampleRepository = true;
+        }
+
+        this->measuredCalculationTimes += samples;
+        if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
+        {
+            measureCalculationTime = false;
+        }
+    }
+
     void ZModel::invoke(const std::shared_ptr<ModelSample>& sample)
     {
         std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
@@ -153,32 +210,21 @@ namespace Deltares::Models
         {
             if (measureCalculationTime && isRepositoryAllowed)
             {
-                // minimum calculation time to be registered
-                constexpr long long minRepoCalculationTime = 1;
 
-                std::chrono::time_point started = std::chrono::high_resolution_clock::now();
+                std::chrono::time_point start = std::chrono::high_resolution_clock::now();
                 invokeLambda(sample);
-                std::chrono::time_point done = std::chrono::high_resolution_clock::now();
+                std::chrono::time_point end = std::chrono::high_resolution_clock::now();
 
-                auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
-                if (elapsedTime > minRepoCalculationTime)
-                {
-                    measureCalculationTime = false;
-                    useSampleRepository = true;
-                }
+                auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-                this->measuredCalculationTimes++;
-                if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
-                {
-                    measureCalculationTime = false;
-                }
+                RegisterCalculationTime(elapsedTime);
             }
             else
             {
                 invokeLambda(sample);
             }
 
-            if (useSampleRepository && isRepositoryAllowed)
+            if (useSampleRepository && isRepositoryAllowed && !sample->UsedProxy)
             {
                 repository.registerSample(sample);
             }
@@ -188,7 +234,11 @@ namespace Deltares::Models
             sample->copyFrom(alreadyExecutedSample);
         }
 
-        this->zValueConverter->updateZValue(sample);
+        if (!useZFromSample)
+        {
+            this->zValueConverter->updateZValue(sample);
+        }
+        this->handleInvalidSample(sample);
 
         this->modelRuns++;
     }
@@ -251,17 +301,7 @@ namespace Deltares::Models
 
                 long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
 
-                if (elapsedTime >= static_cast<long long>(minRepoCalculationTime * executeSamples.size()))
-                {
-                    useSampleRepository = true;
-                    measureCalculationTime = false;
-                }
-
-                this->measuredCalculationTimes += static_cast<int>(executeSamples.size());
-                if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
-                {
-                    measureCalculationTime = false;
-                }
+                RegisterCalculationTime(elapsedTime, static_cast<int>(executeSamples.size()));
             }
             else
             {
@@ -281,7 +321,12 @@ namespace Deltares::Models
 
         for (size_t i = 0; i < samples.size(); i++)
         {
-            this->zValueConverter->updateZValue(samples[i]);
+            if (!useZFromSample)
+            {
+                this->zValueConverter->updateZValue(samples[i]);
+            }
+
+            this->handleInvalidSample(samples[i]);
         }
     }
 
@@ -290,9 +335,28 @@ namespace Deltares::Models
         return this->zBetaLambda(sample);
     }
 
+    void ZModel::handleInvalidSample(const std::shared_ptr<ModelSample>& sample) const
+    {
+        if (std::isnan(sample->Z))
+        {
+            switch (handleInvalidType)
+            {
+                using enum HandleInvalidType;
+
+                case Ignore: break; // nothing to do
+                case Fail: sample->Z = -std::numeric_limits<double>::max();  break;
+                case NoFail: sample->Z = std::numeric_limits<double>::max();  break;
+                default: throw Reliability::probLibException("invalid handle type not known");
+            }
+        }
+    }
+
+
     void ZModel::validate(Logging::ValidationReport& report, const std::string& subject) const
     {
         Logging::ValidationSupport::checkNotNull(report, !callbackAssigned, "model", subject);
     }
 }
+
+
 

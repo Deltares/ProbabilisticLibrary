@@ -21,9 +21,10 @@
 //
 ﻿using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Reliability.Wrappers;
+using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
 
-namespace Deltares.Probabilistic.Wrapper.Test
+namespace Deltares.Probabilistic.Test
 {
     [TestFixture]
     public class TestNumericalIntegration
@@ -35,8 +36,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.NumericalIntegration;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
             ClassicAssert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
@@ -55,8 +58,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.NumericalIntegration;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(-2.57, designPoint.Beta, margin);
 
@@ -72,16 +77,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
+            project.Settings.ReliabilityMethod = ReliabilityMethod.NumericalIntegration;
             project.Settings.MaxParallelProcesses = 4;
+            project.Run();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
 
             ClassicAssert.AreEqual(0, designPoint.ReliabilityResults.Count);
-            ClassicAssert.AreEqual(0, designPoint.Evaluations.Count);
+            ClassicAssert.AreEqual(0, designPoint.Realizations.Count);
         }
 
         [Test]
@@ -89,16 +94,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            var numericalIntegration = new NumericalIntegration();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.NumericalIntegration;
 
             for (int i = 0; i < project.Stochasts.Count; i++)
             {
-                numericalIntegration.Settings.StochastSettings.Add(new StochastSettings { UMin = 1, Stochast = project.Stochasts[i] });
+                project.Settings.StochastSettings.Add(new StochastSettings { MinValue = 1, Stochast = project.Stochasts[i] });
             }
 
-            project.ReliabilityMethod = numericalIntegration;
+            project.Run();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
         }
@@ -108,8 +113,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLoadStrengthProject();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.NumericalIntegration;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.43, designPoint.Beta, margin);
         }
@@ -119,8 +126,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLoadStrengthSurvivedProject();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-            DesignPoint designPoint = project.GetDesignPoint();
+            project.Settings.ReliabilityMethod = ReliabilityMethod.NumericalIntegration;
+            project.Run();
+
+            DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(1.87, designPoint.Beta, margin);
         }

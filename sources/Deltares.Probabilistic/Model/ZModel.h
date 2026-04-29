@@ -39,6 +39,10 @@ namespace Deltares::Models
     using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
     using EmptyCallBack = void(*)();
 
+    using ProgressCallBack = void(*)(double progress);
+    using DetailedProgressCallBack = void(*)(int step, int loop, double reliability, double convergence);
+    using TextualProgressCallBack = void(*)(int progressIndicator, const char* text);
+
     class ZModel
     {
     public:
@@ -66,6 +70,16 @@ namespace Deltares::Models
             this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(multipleCallBack);
         }
 
+        void setModelSampleCallback(Models::ModelSampleCallback modelSampleCallBack)
+        {
+            this->zLambda = this->getLambdaFromModelSampleCallBack(modelSampleCallBack);
+        }
+
+        void setMultipleModelSampleCallback(Models::MultipleModelSampleCallback modelSampleCallBack)
+        {
+            this->zMultipleLambda = this->getLambdaFromMultipleModelSampleCallBack(modelSampleCallBack);
+        }
+
         /**
          * \brief Name of the model
          */
@@ -91,6 +105,11 @@ namespace Deltares::Models
             this->runMethod = runMethod;
         }
 
+        void setNextCalculation(EmptyCallBack nextCalculation)
+        {
+            this->nextMethod = nextCalculation;
+        }
+
         /**
          * \brief The index of the underlying model values if the model returns an array or tuple
          */
@@ -101,7 +120,7 @@ namespace Deltares::Models
          */
         std::shared_ptr<ZValueConverter> zValueConverter = std::make_shared<ZValueConverter>();
 
-        void setBetaLambda(ZBetaLambda zBetaLambda)
+        void setBetaLambda(const ZBetaLambda& zBetaLambda)
         {
             this->zBetaLambda = zBetaLambda;
         }
@@ -113,6 +132,15 @@ namespace Deltares::Models
          * \param maxProcesses Maximum number of parallel processes or threads
          */
         void setMaxProcesses(int maxProcesses);
+
+        /**
+         * \brief Sets how to handle an invalid result
+         * \param handleInvalidType The way of handling
+         */
+        void setHandleInvalidType(HandleInvalidType handleInvalidType)
+        {
+            this->handleInvalidType = handleInvalidType;
+        }
 
         /**
          * \brief Calculates a sample
@@ -146,6 +174,11 @@ namespace Deltares::Models
             this->isRepositoryAllowed = allowRepository;
         }
 
+        void setUseZFromSample(bool useZFromSample)
+        {
+            this->useZFromSample = useZFromSample;
+        }
+
         void clearRepository()
         {
             this->repository.clear();
@@ -163,17 +196,33 @@ namespace Deltares::Models
          */
         bool callbackAssigned = true;
 
+        /**
+         * \brief Informs that the next calculation will be performed
+         */
+        void next() const
+        {
+            if (nextMethod != nullptr)
+            {
+                nextMethod();
+            }
+        }
+
     private:
         ZLambda zLambda = nullptr;
         ZMultipleLambda zMultipleLambda = nullptr;
         ZBetaLambda zBetaLambda = nullptr;
         EmptyCallBack runMethod = nullptr;
+        EmptyCallBack nextMethod = nullptr;
         int maxProcesses = 1;
         int modelRuns = 0;
         int inputParametersCount = 0;
         int outputParametersCount = 0;
         ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda) const;
         ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda) const;
+        HandleInvalidType handleInvalidType = HandleInvalidType::Ignore;
+
+        ZLambda getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const;
+        ZMultipleLambda getLambdaFromMultipleModelSampleCallBack(MultipleModelSampleCallback modelSampleLambda) const;
 
         /**
          * \brief Calculates a sample
@@ -184,6 +233,11 @@ namespace Deltares::Models
          * \brief Calculates a number of samples
          */
         void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples) const;
+
+        /**
+         * \brief Handles the calculation time
+         */
+        void RegisterCalculationTime(long long elapsedTime, int samples = 1);
 
         /**
          * \brief Indicates whether calculation time should be measured
@@ -211,9 +265,20 @@ namespace Deltares::Models
         bool useSampleRepository = false;
 
         /**
+         * \brief Indicates whether the z value from the sample should be used
+         */
+        bool useZFromSample = false;
+
+        /**
          * \brief Holds calculated samples
          */
         SampleRepository repository = SampleRepository();
+
+        /**
+         * \brief Handles an invalid sample
+         * \param sample The sample which can be invalid
+         */
+        void handleInvalidSample(const std::shared_ptr<ModelSample>& sample) const;
     };
 }
 
