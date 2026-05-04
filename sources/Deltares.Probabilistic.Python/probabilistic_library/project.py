@@ -22,17 +22,15 @@
 
 
 from __future__ import annotations
-import sys
-from multiprocessing import Pool, cpu_count
-from typing import FrozenSet
+from multiprocessing import Pool
 from types import FunctionType, MethodType
 from enum import Enum
 
-from .statistic import Stochast, DistributionType, CorrelationMatrix, CopulaCorrelation, SelfCorrelationMatrix, Scenario, CorrelationType
-from .reliability import DesignPoint, ReliabilityMethod, Settings, CombineSettings, ExcludingCombineSettings, LimitStateFunction
-from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings, SensitivityMethod
-from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
-from .logging import Evaluation, Message, ValidationReport
+from .statistic import Stochast, CorrelationMatrix, CopulaCorrelation, SelfCorrelationMatrix, Scenario, CorrelationType
+from .reliability import DesignPoint, Settings, CombineSettings, ExcludingCombineSettings, LimitStateFunction
+from .sensitivity import SensitivityResult, SensitivitySettings
+from .uncertainty import UncertaintyResult, UncertaintySettings
+from .logging import Evaluation, ValidationReport
 from .utils import FrozenObject, FrozenList, CallbackList
 from . import interface
 
@@ -282,6 +280,7 @@ class ZModel(FrozenObject):
         else:
             sample.output_values[0] = z
 
+    @staticmethod
     def _run_callback(sample_input):
         return ZModel._callback(*sample_input)
 

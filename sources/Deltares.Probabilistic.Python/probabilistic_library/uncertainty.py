@@ -21,8 +21,6 @@
 #
 
 
-import sys
-from math import isnan
 from enum import Enum
 import matplotlib.pyplot as plt
 
