@@ -45,13 +45,13 @@ class Test_utils(unittest.TestCase):
 
         self.assertEqual(2, fl[1].value)
         self.assertEqual(3, fl['c'].value)
-        self.assertEqual(None, fl['f'])
+        self.assertIsNone(fl['f'])
 
         slc = fl[2:4]
         self.assertEqual(2, len(slc))
         self.assertEqual(3, slc[0].value)
         self.assertEqual(4, slc['d'].value)
-        self.assertEqual(None, slc['e'])
+        self.assertIsNone(slc['e'])
 
     def test_frozen_list_index(self):
         t1 = test_object('a', 1)
