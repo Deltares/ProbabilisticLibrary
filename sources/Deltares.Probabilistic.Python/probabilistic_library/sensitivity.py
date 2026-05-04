@@ -21,15 +21,14 @@
 #
 
 
-import sys
 from math import isnan
 from enum import Enum
 import matplotlib.pyplot as plt
 import numpy as np
 
 from .utils import FrozenObject, FrozenList, PrintUtils
-from .statistic import Stochast, ProbabilityValue
-from .reliability import StochastSettings, GradientType
+from .statistic import Stochast
+from .reliability import StochastSettings
 from .logging import Evaluation, Message, ValidationReport
 from . import interface
 
