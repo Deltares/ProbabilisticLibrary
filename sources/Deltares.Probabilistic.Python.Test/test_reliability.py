@@ -87,7 +87,7 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
 
         self.assertEqual(len(project.variables), len(project.design_point.alphas))
-        self.assertTrue(project.design_point.alphas[0].variable in project.variables)
+        self.assertIn(project.design_point.alphas[0].variable, project.variables)
         self.assertEqual('a', project.design_point.alphas[0].variable.name)
 
         self.assertEqual(0, len(dp.messages))
@@ -788,7 +788,7 @@ def h(a,b,c):
         self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
 
         self.assertEqual(len(project.variables), len(project.design_point.alphas))
-        self.assertTrue(project.design_point.alphas[0].variable in project.variables)
+        self.assertIn(project.design_point.alphas[0].variable, project.variables)
 
         project.correlation_matrix[(project.variables[0], project.variables[1])] = 0.5
         project.run();
@@ -1343,9 +1343,9 @@ Alpha values:
     def test_validation_conditional_array(self):
         project = project_builder.get_linear_array_project()
 
-        self.assertEqual(False, project.variables['L'].is_array)
-        self.assertEqual(True, project.variables['a'].is_array)
-        self.assertEqual(True, project.variables['b'].is_array)
+        self.assertFalse(project.variables['L'].is_array)
+        self.assertTrue(project.variables['a'].is_array)
+        self.assertTrue(project.variables['b'].is_array)
 
         project.variables['a'].array_size = 5
         project.variables['b'].array_size = 5
@@ -1373,9 +1373,9 @@ Alpha values:
     def test_validation_conditional_array_filled(self):
         project = project_builder.get_linear_array_project()
 
-        self.assertEqual(False, project.variables['L'].is_array)
-        self.assertEqual(True, project.variables['a'].is_array)
-        self.assertEqual(True, project.variables['b'].is_array)
+        self.assertFalse(project.variables['L'].is_array)
+        self.assertTrue(project.variables['a'].is_array)
+        self.assertTrue(project.variables['b'].is_array)
 
         project.variables['a'].array_size = 5
         project.variables['b'].array_size = 5
