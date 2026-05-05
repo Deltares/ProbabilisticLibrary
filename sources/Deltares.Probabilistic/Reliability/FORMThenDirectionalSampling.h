@@ -33,13 +33,13 @@ namespace Deltares::Reliability
     public:
         FORMThenDirectionalSampling() = default;
         explicit FORMThenDirectionalSampling(const double threshold) : thresholdBeta(threshold) {}
-        std::shared_ptr<FORMSettings> formSettings = std::make_shared<FORMSettings>();
-        std::shared_ptr<DirectionalSamplingSettings> DsSettings = std::make_shared<DirectionalSamplingSettings>();
+        FORMSettings formSettings = FORMSettings();
+        DirectionalSamplingSettings DsSettings = DirectionalSamplingSettings();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 
         bool isValid() override
         {
-            return formSettings->isValid() && DsSettings->isValid();
+            return formSettings.isValid() && DsSettings.isValid();
         }
 
     private:

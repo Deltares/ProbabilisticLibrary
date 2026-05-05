@@ -28,7 +28,7 @@ namespace Deltares::Reliability
     std::shared_ptr<DesignPoint> DirectionalSamplingThenFORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
         auto ds = DirectionalSampling();
-        ds.Settings = DsSettings;
+        *ds.Settings = DsSettings;
         auto dsDesignPoint = ds.getDesignPoint(modelRunner);
 
         auto nStoch = dsDesignPoint->Alphas.size();
@@ -45,7 +45,7 @@ namespace Deltares::Reliability
         }
 
         auto form = FORM();
-        form.Settings = formSettings;
+        *form.Settings = formSettings;
         form.Settings->StartPointSettings->StartMethod = StartMethodType::FixedValue;
         form.Settings->StartPointSettings->startVector = startVector;
 

@@ -82,14 +82,14 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return form; }
     case (ProbMethod::FDIR): {
         auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
-        fillDsSettings(*fdir->DsSettings, bs);
-        fillFormSettings(*fdir->formSettings, bs, number_of_stochasts);
+        fillDsSettings(fdir->DsSettings, bs);
+        fillFormSettings(fdir->formSettings, bs, number_of_stochasts);
         return fdir; }
     case (ProbMethod::DSFIHR):
     case (ProbMethod::DSFI): {
         auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
-        fillDsSettings(*dsfi->DsSettings, bs);
-        fillFormSettings(*dsfi->formSettings, bs, number_of_stochasts);
+        fillDsSettings(dsfi->DsSettings, bs);
+        fillFormSettings(dsfi->formSettings, bs, number_of_stochasts);
         return dsfi; }
     case (ProbMethod::IM): {
         auto impSampling = std::make_shared<ImportanceSampling>();

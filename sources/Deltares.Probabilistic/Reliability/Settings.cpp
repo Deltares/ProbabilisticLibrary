@@ -122,25 +122,25 @@ namespace Deltares::Reliability
     {
         auto fdir = std::make_shared<FORMThenDirectionalSampling>();
 
-        fdir->DsSettings->designPointMethod = this->designPointMethod;
-        fdir->formSettings->StochastSet = this->StochastSet;
-        fdir->formSettings->EpsilonBeta = this->EpsilonBeta;
-        fdir->formSettings->MaximumIterations = this->MaximumIterations;
-        fdir->formSettings->FilterAtNonConvergence = this->FilterAtNonConvergence;
-        fdir->formSettings->MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
-        fdir->formSettings->MaximumIterations = this->MaximumIterations;
-        fdir->formSettings->RelaxationFactor = this->RelaxationFactor;
-        fdir->formSettings->RelaxationLoops = this->RelaxationLoops;
-        fdir->formSettings->GradientSettings = this->GradientSettings;
-        fdir->formSettings->RunSettings = this->RunSettings;
-        fdir->formSettings->StartPointSettings = this->StartPointSettings;
-        fdir->DsSettings->MinimumDirections = this->MinimumDirections;
-        fdir->DsSettings->MaximumDirections = this->MaximumDirections;
-        fdir->DsSettings->designPointMethod = this->designPointMethod;
-        fdir->DsSettings->VariationCoefficient = this->VariationCoefficient;
-        fdir->DsSettings->runSettings = this->RunSettings;
-        fdir->DsSettings->randomSettings = this->RandomSettings;
-        fdir->DsSettings->StochastSet = this->StochastSet;
+        fdir->DsSettings.designPointMethod = this->designPointMethod;
+        fdir->formSettings.StochastSet = this->StochastSet;
+        fdir->formSettings.EpsilonBeta = this->EpsilonBeta;
+        fdir->formSettings.MaximumIterations = this->MaximumIterations;
+        fdir->formSettings.FilterAtNonConvergence = this->FilterAtNonConvergence;
+        fdir->formSettings.MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
+        fdir->formSettings.MaximumIterations = this->MaximumIterations;
+        fdir->formSettings.RelaxationFactor = this->RelaxationFactor;
+        fdir->formSettings.RelaxationLoops = this->RelaxationLoops;
+        fdir->formSettings.GradientSettings = this->GradientSettings;
+        fdir->formSettings.RunSettings = this->RunSettings;
+        fdir->formSettings.StartPointSettings = this->StartPointSettings;
+        fdir->DsSettings.MinimumDirections = this->MinimumDirections;
+        fdir->DsSettings.MaximumDirections = this->MaximumDirections;
+        fdir->DsSettings.designPointMethod = this->designPointMethod;
+        fdir->DsSettings.VariationCoefficient = this->VariationCoefficient;
+        fdir->DsSettings.runSettings = this->RunSettings;
+        fdir->DsSettings.randomSettings = this->RandomSettings;
+        fdir->DsSettings.StochastSet = this->StochastSet;
 
         return fdir;
     }
@@ -149,25 +149,25 @@ namespace Deltares::Reliability
     {
         auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
 
-        dsfi->DsSettings->designPointMethod = this->designPointMethod;
-        dsfi->formSettings->StochastSet = this->StochastSet;
-        dsfi->formSettings->EpsilonBeta = this->EpsilonBeta;
-        dsfi->formSettings->MaximumIterations = this->MaximumIterations;
-        dsfi->formSettings->FilterAtNonConvergence = this->FilterAtNonConvergence;
-        dsfi->formSettings->MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
-        dsfi->formSettings->MaximumIterations = this->MaximumIterations;
-        dsfi->formSettings->RelaxationFactor = this->RelaxationFactor;
-        dsfi->formSettings->RelaxationLoops = this->RelaxationLoops;
-        dsfi->formSettings->GradientSettings = this->GradientSettings;
-        dsfi->formSettings->RunSettings = this->RunSettings;
-        dsfi->formSettings->StartPointSettings = this->StartPointSettings;
-        dsfi->DsSettings->MinimumDirections = this->MinimumDirections;
-        dsfi->DsSettings->MaximumDirections = this->MaximumDirections;
-        dsfi->DsSettings->designPointMethod = this->designPointMethod;
-        dsfi->DsSettings->VariationCoefficient = this->VariationCoefficient;
-        dsfi->DsSettings->runSettings = this->RunSettings;
-        dsfi->DsSettings->randomSettings = this->RandomSettings;
-        dsfi->DsSettings->StochastSet = this->StochastSet;
+        dsfi->DsSettings.designPointMethod = this->designPointMethod;
+        dsfi->formSettings.StochastSet = this->StochastSet;
+        dsfi->formSettings.EpsilonBeta = this->EpsilonBeta;
+        dsfi->formSettings.MaximumIterations = this->MaximumIterations;
+        dsfi->formSettings.FilterAtNonConvergence = this->FilterAtNonConvergence;
+        dsfi->formSettings.MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
+        dsfi->formSettings.MaximumIterations = this->MaximumIterations;
+        dsfi->formSettings.RelaxationFactor = this->RelaxationFactor;
+        dsfi->formSettings.RelaxationLoops = this->RelaxationLoops;
+        dsfi->formSettings.GradientSettings = this->GradientSettings;
+        dsfi->formSettings.RunSettings = this->RunSettings;
+        dsfi->formSettings.StartPointSettings = this->StartPointSettings;
+        dsfi->DsSettings.MinimumDirections = this->MinimumDirections;
+        dsfi->DsSettings.MaximumDirections = this->MaximumDirections;
+        dsfi->DsSettings.designPointMethod = this->designPointMethod;
+        dsfi->DsSettings.VariationCoefficient = this->VariationCoefficient;
+        dsfi->DsSettings.runSettings = this->RunSettings;
+        dsfi->DsSettings.randomSettings = this->RandomSettings;
+        dsfi->DsSettings.StochastSet = this->StochastSet;
 
         return dsfi;
     }
@@ -313,15 +313,15 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling:
         {
             auto fdir = GetFormThenDsReliabilityMethod();
-            fdir->formSettings->validate(report);
-            fdir->DsSettings->validate(report);
+            fdir->formSettings.validate(report);
+            fdir->DsSettings.validate(report);
             break;
         }
         case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM:
         {
             auto dsfi = GetDsThenFormReliabilityMethod();
-            dsfi->formSettings->validate(report);
-            dsfi->DsSettings->validate(report);
+            dsfi->formSettings.validate(report);
+            dsfi->DsSettings.validate(report);
             break;
         }
         default: throw probLibException("Reliability method");
