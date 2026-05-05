@@ -195,8 +195,8 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testSubSetSimulationReliabilityNearestToMean()
     {
         auto calculator = SubsetSimulation();
-        calculator.Settings->SampleMethod = AdaptiveConditional;
-        calculator.Settings->designPointMethod = DesignPointMethod::NearestToMean;
+        calculator.Settings.SampleMethod = AdaptiveConditional;
+        calculator.Settings.designPointMethod = DesignPointMethod::NearestToMean;
 
         auto modelRunner = projectBuilder().BuildProject();
 
@@ -212,8 +212,8 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testSubSetSimulationReliabilityCenterOfGravity()
     {
         auto calculator = SubsetSimulation();
-        calculator.Settings->SampleMethod = AdaptiveConditional;
-        calculator.Settings->designPointMethod = DesignPointMethod::CenterOfGravity;
+        calculator.Settings.SampleMethod = AdaptiveConditional;
+        calculator.Settings.designPointMethod = DesignPointMethod::CenterOfGravity;
 
         auto modelRunner = projectBuilder().BuildProject();
 

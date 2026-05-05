@@ -124,15 +124,15 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return cobyla_reliability; }
     case (ProbMethod::SubSetSimulation): {
         auto subSetSimulation = std::make_shared<SubsetSimulation>();
-        subSetSimulation->Settings->VariationCoefficient = bs.sub_set_simulation_reliability_settings.VariationCoefficient;
-        subSetSimulation->Settings->MarkovChainDeviation = bs.sub_set_simulation_reliability_settings.MarkovChainDeviation;
-        subSetSimulation->Settings->MinimumSamples = bs.sub_set_simulation_reliability_settings.MinimumIterations;
-        subSetSimulation->Settings->MaximumSamples = bs.sub_set_simulation_reliability_settings.MaximumIterations;
-        subSetSimulation->Settings->SampleMethod = static_cast<SampleMethodType>(bs.sub_set_simulation_reliability_settings.SampleMethod);
-        subSetSimulation->Settings->randomSettings = std::make_shared<RandomSettings>(getRnd(bs));
-        subSetSimulation->Settings->RunSettings->MaxChunkSize = bs.chunkSize;
-        subSetSimulation->Settings->RunSettings->MaxParallelProcesses = bs.numThreads;
-        subSetSimulation->Settings->designPointMethod = convertDp(bs.designPointOptions);
+        subSetSimulation->Settings.VariationCoefficient = bs.sub_set_simulation_reliability_settings.VariationCoefficient;
+        subSetSimulation->Settings.MarkovChainDeviation = bs.sub_set_simulation_reliability_settings.MarkovChainDeviation;
+        subSetSimulation->Settings.MinimumSamples = bs.sub_set_simulation_reliability_settings.MinimumIterations;
+        subSetSimulation->Settings.MaximumSamples = bs.sub_set_simulation_reliability_settings.MaximumIterations;
+        subSetSimulation->Settings.SampleMethod = static_cast<SampleMethodType>(bs.sub_set_simulation_reliability_settings.SampleMethod);
+        subSetSimulation->Settings.randomSettings = getRnd(bs);
+        subSetSimulation->Settings.RunSettings.MaxChunkSize = bs.chunkSize;
+        subSetSimulation->Settings.RunSettings.MaxParallelProcesses = bs.numThreads;
+        subSetSimulation->Settings.designPointMethod = convertDp(bs.designPointOptions);
         return subSetSimulation; }
     default:
         throw probLibException("method not implemented yet: ", static_cast<int>(bs.methodId));

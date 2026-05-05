@@ -269,15 +269,15 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<SubsetSimulation> subsetSimulation = std::make_shared<SubsetSimulation>();
 
-        subsetSimulation->Settings->MinimumSamples = this->MinimumSamples;
-        subsetSimulation->Settings->MaximumSamples = this->MaximumSamples;
-        subsetSimulation->Settings->designPointMethod = this->designPointMethod;
-        subsetSimulation->Settings->SampleMethod = this->sampleMethod;
-        subsetSimulation->Settings->VariationCoefficient = this->VariationCoefficient;
-        subsetSimulation->Settings->MarkovChainDeviation = this->MarkovChainDeviation;
-        subsetSimulation->Settings->RunSettings = this->RunSettings;
-        subsetSimulation->Settings->randomSettings = this->RandomSettings;
-        subsetSimulation->Settings->StochastSet = this->StochastSet;
+        subsetSimulation->Settings.MinimumSamples = this->MinimumSamples;
+        subsetSimulation->Settings.MaximumSamples = this->MaximumSamples;
+        subsetSimulation->Settings.designPointMethod = this->designPointMethod;
+        subsetSimulation->Settings.SampleMethod = this->sampleMethod;
+        subsetSimulation->Settings.VariationCoefficient = this->VariationCoefficient;
+        subsetSimulation->Settings.MarkovChainDeviation = this->MarkovChainDeviation;
+        subsetSimulation->Settings.RunSettings = *this->RunSettings;
+        subsetSimulation->Settings.randomSettings = *this->RandomSettings;
+        subsetSimulation->Settings.StochastSet = *this->StochastSet;
 
         return subsetSimulation;
     }
@@ -306,7 +306,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityDirectionReliability: GetDirectionReliabilityMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityNumericalBisection: GetNumericalBisectionMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityLatinHyperCube: GetLatinHypercubeMethod()->Settings->validate(report); break;
-        case ReliabilityMethodType::ReliabilitySubsetSimulation: GetSubsetSimulationMethod()->Settings->validate(report); break;
+        case ReliabilityMethodType::ReliabilitySubsetSimulation: GetSubsetSimulationMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityCobyla: GetCobylaReliabilityMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling:
         {
