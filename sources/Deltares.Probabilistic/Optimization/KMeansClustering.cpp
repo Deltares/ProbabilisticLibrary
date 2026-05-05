@@ -72,7 +72,7 @@ namespace Deltares::Optimization
         return centers;
     }
 
-    std::vector<std::shared_ptr<Models::Sample>> KMeansClustering::getClusterCenters(std::vector<std::shared_ptr<Models::Sample>> samples)
+    std::vector<std::shared_ptr<Models::Sample>> KMeansClustering::getClusterCenters(std::vector<std::shared_ptr<Models::Sample>> samples) const
     {
         if (Settings.OptimizeNumberOfClusters)
         {
@@ -143,7 +143,7 @@ namespace Deltares::Optimization
         }
     }
 
-    std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::FixedCluster(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options)
+    std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::FixedCluster(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options) const
     {
         std::vector<std::shared_ptr<Cluster>> clusters;
         double sumSquared = std::numeric_limits<double>::max(); // smaller is better
@@ -211,7 +211,7 @@ namespace Deltares::Optimization
         }
     }
 
-    std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, Numeric::RandomValueGenerator& randomGenerator, bool sampleHasWeighting)
+    std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitPlusPlus(int numberClusters, const std::vector<std::shared_ptr<Models::Sample>>& samples, Numeric::RandomValueGenerator& randomGenerator, bool sampleHasWeighting)
     {
         std::vector<std::shared_ptr<Cluster>> clusters;
 
@@ -260,7 +260,7 @@ namespace Deltares::Optimization
         return clusters;
     }
 
-    int KMeansClustering::ProporSelect(std::vector<double>& values, Numeric::RandomValueGenerator& randomGenerator)
+    int KMeansClustering::ProporSelect(const std::vector<double>& values, Numeric::RandomValueGenerator& randomGenerator)
     {
         // on the fly technique
         // values[] can't be all 0.0s
