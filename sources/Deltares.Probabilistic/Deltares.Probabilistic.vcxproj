@@ -269,6 +269,7 @@
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
+    <ClInclude Include="Reliability\ZGetter.h" />
     <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Reliability\CobylaReliability.h" />
     <ClInclude Include="Reliability\CobylaReliabilitySettings.h" />
@@ -512,6 +513,7 @@
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
+    <ClCompile Include="Reliability\ZGetter.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
     <ClCompile Include="Reliability\CobylaReliability.cpp" />
     <ClCompile Include="Reliability\CobylaReliabilitySettings.cpp" />
