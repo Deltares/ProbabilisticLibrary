@@ -98,18 +98,18 @@ namespace Deltares::Reliability
         /**
          * \brief Settings for the clustering algorithm
          */
-        std::shared_ptr<Optimization::ClusterSettings> clusterSettings = std::make_shared<Optimization::ClusterSettings>();
+        Optimization::ClusterSettings clusterSettings = Optimization::ClusterSettings();
 
         /**
          * \brief Settings how to derive the first center
          */
-        std::shared_ptr<StartPointCalculatorSettings> startPointSettings = std::make_shared<StartPointCalculatorSettings>();
+        StartPointCalculatorSettings startPointSettings = StartPointCalculatorSettings();
 
         /**
          * \brief Settings of the underlying importance sampling algorithm
          * \remark These settings will not be changed by adaptive importance sampling. A copy is made to apply modifications.
          */
-        std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = std::make_shared<Deltares::Reliability::ImportanceSamplingSettings>();
+        ImportanceSamplingSettings importanceSamplingSettings = ImportanceSamplingSettings();
 
         /**
          * \brief Reports whether the settings have valid values
@@ -125,9 +125,9 @@ namespace Deltares::Reliability
             Logging::ValidationSupport::checkMinimum(report, 0.0001, EpsWeightSample, "epsilon weight sample");
             Logging::ValidationSupport::checkMaximum(report, 1, EpsWeightSample, "epsilon weight sample");
 
-            startPointSettings->validate(report);
-            clusterSettings->validate(report);
-            importanceSamplingSettings->validate(report);
+            startPointSettings.validate(report);
+            clusterSettings.validate(report);
+            importanceSamplingSettings.validate(report);
         }
     };
 }

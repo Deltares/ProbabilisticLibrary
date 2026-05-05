@@ -42,22 +42,22 @@ namespace Deltares::Optimization
 
     void KMeansClustering::Cluster::updateMean()
     {
-        if (this->Samples.empty())
+        if (Samples.empty())
         {
             throw Reliability::probLibException("Cluster must have at least one sample");
         }
 
-        this->Center = std::make_shared<Models::Sample>(this->Samples[0]->Values.size());
+        Center = std::make_shared<Models::Sample>(Samples[0]->Values.size());
 
-        for (int i = 0; i < this->Center->Values.size(); i++)
+        for (size_t i = 0; i < Center->Values.size(); i++)
         {
             double sumValues = 0;
-            for (std::shared_ptr<Models::Sample> sample : this->Samples)
+            for (const std::shared_ptr<Models::Sample>& sample : Samples)
             {
                 sumValues += sample->Values[i];
             }
 
-            this->Center->Values[i] = sumValues / this->Samples.size();
+            Center->Values[i] = sumValues / static_cast<double>(Samples.size());
         }
     }
 
@@ -74,7 +74,7 @@ namespace Deltares::Optimization
 
     std::vector<std::shared_ptr<Models::Sample>> KMeansClustering::getClusterCenters(std::vector<std::shared_ptr<Models::Sample>> samples)
     {
-        if (this->Settings->OptimizeNumberOfClusters)
+        if (Settings.OptimizeNumberOfClusters)
         {
             std::vector<std::shared_ptr<Cluster>> clusters;
 
@@ -82,14 +82,14 @@ namespace Deltares::Optimization
             double score1 = std::numeric_limits<double>::lowest();
             double bestScore = std::numeric_limits<double>::lowest();
 
-            for (int k = 2; k <= this->Settings->MaxClusters; k++)
+            for (int k = 2; k <= Settings.MaxClusters; k++)
             {
                 auto fixedClusterOptions = ClusterSettings();
 
                 fixedClusterOptions.NumberClusters = k;
-                fixedClusterOptions.clusterInitializationMethod = this->Settings->clusterInitializationMethod;
-                fixedClusterOptions.MaxIterations = this->Settings->MaxIterations;
-                fixedClusterOptions.Trials = this->Settings->MaxIterations;
+                fixedClusterOptions.clusterInitializationMethod = Settings.clusterInitializationMethod;
+                fixedClusterOptions.MaxIterations = Settings.MaxIterations;
+                fixedClusterOptions.Trials = Settings.MaxIterations;
                 fixedClusterOptions.SampleHasWeighting = true;
 
                 std::vector<std::shared_ptr<Cluster>> newClusters = FixedCluster(samples, fixedClusterOptions);
@@ -116,9 +116,9 @@ namespace Deltares::Optimization
                 auto fixedClusterOptions = ClusterSettings();
 
                 fixedClusterOptions.NumberClusters = 1;
-                fixedClusterOptions.clusterInitializationMethod = this->Settings->clusterInitializationMethod;
-                fixedClusterOptions.MaxIterations = this->Settings->MaxIterations;
-                fixedClusterOptions.Trials = this->Settings->MaxIterations;
+                fixedClusterOptions.clusterInitializationMethod = Settings.clusterInitializationMethod;
+                fixedClusterOptions.MaxIterations = Settings.MaxIterations;
+                fixedClusterOptions.Trials = Settings.MaxIterations;
                 fixedClusterOptions.SampleHasWeighting = true;
 
                 std::vector<std::shared_ptr<Cluster>> newClusters = FixedCluster(samples, fixedClusterOptions);
@@ -132,9 +132,9 @@ namespace Deltares::Optimization
         {
             auto fixedClusterOptions = ClusterSettings();
 
-            fixedClusterOptions.NumberClusters = this->Settings->MaxClusters;
-            fixedClusterOptions.clusterInitializationMethod = this->Settings->clusterInitializationMethod;
-            fixedClusterOptions.MaxIterations = this->Settings->MaxIterations;
+            fixedClusterOptions.NumberClusters = Settings.MaxClusters;
+            fixedClusterOptions.clusterInitializationMethod = Settings.clusterInitializationMethod;
+            fixedClusterOptions.MaxIterations = Settings.MaxIterations;
             fixedClusterOptions.SampleHasWeighting = true;
 
             std::vector<std::shared_ptr<Cluster>> clusters = FixedCluster(samples, fixedClusterOptions);

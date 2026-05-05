@@ -38,7 +38,7 @@ namespace Deltares::Optimization
         /**
          * \brief Settings for k-Means clustering algorithm
          */
-        std::shared_ptr<ClusterSettings> Settings = std::make_shared<ClusterSettings>();
+        ClusterSettings Settings = ClusterSettings();
 
         /**
          * \brief Generates clusters

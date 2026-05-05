@@ -43,7 +43,7 @@ namespace Deltares::Reliability
     std::shared_ptr<DesignPoint> AdaptiveImportanceSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
         this->importanceSampling = std::make_shared<ImportanceSampling>();
-        importanceSampling->Settings = this->Settings->importanceSamplingSettings->clone();
+        importanceSampling->Settings = Settings.importanceSamplingSettings.clone();
         importanceSampling->Settings->startPointSettings->StartMethod = StartMethodType::FixedValue;
 
         modelRunner->updateStochastSettings(*importanceSampling->Settings->StochastSet);
@@ -52,13 +52,13 @@ namespace Deltares::Reliability
 
         // initialize
         auto startPointCalculator = StartPointCalculator();
-        startPointCalculator.Settings = *Settings->startPointSettings;
+        startPointCalculator.Settings = Settings.startPointSettings;
         startPointCalculator.Settings.StochastSet = *importanceSampling->Settings->StochastSet;
 
         const std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
         this->lastStartPoint = startPoint;
 
-        if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
+        if (Settings.startPointSettings.StartMethod != StartMethodType::FixedValue)
         {
             const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
             startDesignPoint->Identifier = "Start point";
@@ -68,21 +68,21 @@ namespace Deltares::Reliability
 
         modelRunner->doTextualProgress(ProgressType::Global, "Calculating design point.");
 
-        if (Settings->MaxVarianceLoops > 1)
+        if (Settings.MaxVarianceLoops > 1)
         {
             modelRunner->clear();
 
-            if (Settings->AutoMaximumSamples)
+            if (Settings.AutoMaximumSamples)
             {
-                importanceSampling->Settings->MaximumSamples = Settings->importanceSamplingSettings->MaximumSamples;
-                importanceSampling->Settings->MaximumSamplesNoResult = Settings->importanceSamplingSettings->MaximumSamples;
+                importanceSampling->Settings->MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
+                importanceSampling->Settings->MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamples;
             }
             else
             {
                 importanceSampling->Settings->MaximumSamples = std::min(
-                    Settings->importanceSamplingSettings->MaximumSamplesNoResult,
-                    Settings->importanceSamplingSettings->MaximumSamples);
-                importanceSampling->Settings->MaximumSamplesNoResult = Settings->importanceSamplingSettings->MaximumSamplesNoResult;
+                    Settings.importanceSamplingSettings.MaximumSamplesNoResult,
+                    Settings.importanceSamplingSettings.MaximumSamples);
+                importanceSampling->Settings->MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamplesNoResult;
             }
 
             int loopCounter = 1;
@@ -91,9 +91,9 @@ namespace Deltares::Reliability
 
             std::shared_ptr<DesignPoint> designPoint = importanceSampling->getDesignPoint(modelRunner);
 
-            designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
+            designPoint->convergenceReport->VarianceFactor = Settings.VarianceFactor;
 
-            bool fullExecuted = importanceSampling->Settings->MaximumSamples == this->Settings->importanceSamplingSettings->MaximumSamples;
+            bool fullExecuted = importanceSampling->Settings->MaximumSamples == Settings.importanceSamplingSettings.MaximumSamples;
             bool hasChanged = true;
 
             while (!isStopped() && hasChanged && isNextLoopAllowed(loopCounter, *designPoint->convergenceReport, *designPoint))
@@ -107,21 +107,21 @@ namespace Deltares::Reliability
 
                 setCallbacks(loopCounter);
 
-                if (this->Settings->Clustering)
+                if (Settings.Clustering)
                 {
-                    hasChanged = this->updateClusters(loopCounter);
+                    hasChanged = updateClusters(loopCounter);
                 }
                 else
                 {
-                    hasChanged = this->updateStartPoint(designPoint, modelRunner, loopCounter);
+                    hasChanged = updateStartPoint(designPoint, modelRunner, loopCounter);
                 }
 
                 if (hasChanged)
                 {
-                    if (loopCounter == Settings->MaxVarianceLoops)
+                    if (loopCounter == Settings.MaxVarianceLoops)
                     {
-                        importanceSampling->Settings->MaximumSamples = Settings->importanceSamplingSettings->MaximumSamples;
-                        importanceSampling->Settings->MaximumSamplesNoResult = Settings->importanceSamplingSettings->MaximumSamplesNoResult;
+                        importanceSampling->Settings->MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
+                        importanceSampling->Settings->MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamplesNoResult;
                     }
 
                     std::string identifier = std::format("Variance loop {0:}", loopCounter - 1);
@@ -136,9 +136,9 @@ namespace Deltares::Reliability
 
                     designPoint = importanceSampling->getDesignPoint(modelRunner);
 
-                    designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
+                    designPoint->convergenceReport->VarianceFactor = Settings.VarianceFactor;
 
-                    fullExecuted = importanceSampling->Settings->MaximumSamples == Settings->importanceSamplingSettings->MaximumSamples;
+                    fullExecuted = importanceSampling->Settings->MaximumSamples == Settings.importanceSamplingSettings.MaximumSamples;
                 }
             }
 
@@ -151,12 +151,12 @@ namespace Deltares::Reliability
 
                 setCallbacks(loopCounter);
 
-                setFactor(*importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
+                setFactor(*importanceSampling->Settings->StochastSet, Settings.VarianceFactor);
 
-                importanceSampling->Settings->MaximumSamples = Settings->importanceSamplingSettings->MaximumSamples;
+                importanceSampling->Settings->MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
 
                 designPoint = importanceSampling->getDesignPoint(modelRunner);
-                designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
+                designPoint->convergenceReport->VarianceFactor = Settings.VarianceFactor;
             }
 
             for (size_t i = 0; i < previousDesignPoints.size(); i++)
@@ -187,31 +187,31 @@ namespace Deltares::Reliability
         {
             return false;
         }
-        else if (counter < Settings->MinVarianceLoops)
+        else if (counter < Settings.MinVarianceLoops)
         {
             return true;
         }
         else
         {
-            return counter < Settings->MaxVarianceLoops && !this->isConverged(convergenceReport) && this->nextLoopsAllowed(designPoint.Beta);
+            return counter < Settings.MaxVarianceLoops && !isConverged(convergenceReport) && nextLoopsAllowed(designPoint.Beta);
         }
     }
 
     bool AdaptiveImportanceSampling::isConverged(const ConvergenceReport& convergenceReport) const
     {
-        if (Settings->AutoMaximumSamples)
+        if (Settings.AutoMaximumSamples)
         {
-            return convergenceReport.MaxWeight / convergenceReport.FailWeight < Settings->EpsWeightSample;
+            return convergenceReport.MaxWeight / convergenceReport.FailWeight < Settings.EpsWeightSample;
         }
         else
         {
-            return std::min(convergenceReport.FailFraction, 1 - convergenceReport.FailFraction) >= Settings->FractionFailed;
+            return std::min(convergenceReport.FailFraction, 1 - convergenceReport.FailFraction) >= Settings.FractionFailed;
         }
     }
 
     bool AdaptiveImportanceSampling::nextLoopsAllowed(double beta) const
     {
-        return beta <= Settings->MaxBeta && beta >= -Settings->MaxBeta;
+        return beta <= Settings.MaxBeta && beta >= -Settings.MaxBeta;
     }
 
     void AdaptiveImportanceSampling::setStopped()
@@ -242,9 +242,9 @@ namespace Deltares::Reliability
 
     bool AdaptiveImportanceSampling::updateClusters(int loopCounter) const
     {
-        if (loopCounter < Settings->MaxVarianceLoops && this->clusterSamples.size() < Settings->MinimumFailedSamples && Settings->LoopVarianceIncrement > 0)
+        if (loopCounter < Settings.MaxVarianceLoops && clusterSamples.size() < Settings.MinimumFailedSamples && Settings.LoopVarianceIncrement > 0)
         {
-            this->addFactor(*importanceSampling->Settings->StochastSet, Settings->LoopVarianceIncrement);
+            this->addFactor(*importanceSampling->Settings->StochastSet, Settings.LoopVarianceIncrement);
             return true;
         }
         else
@@ -273,7 +273,7 @@ namespace Deltares::Reliability
                     this->importanceSampling->Settings->Clusters.push_back(center);
                 }
 
-                this->setFactor(*importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
+                this->setFactor(*importanceSampling->Settings->StochastSet, Settings.VarianceFactor);
             }
 
             return hasChanged;
@@ -287,9 +287,9 @@ namespace Deltares::Reliability
 
         LoopMeasureType loopMeasureType = CopyDesignPoint;
 
-        if (loopCounter < Settings->MaxVarianceLoops &&
-            Settings->LoopVarianceIncrement > 0 &&
-            designPoint->convergenceReport->FailedSamples < Settings->MinimumFailedSamples)
+        if (loopCounter < Settings.MaxVarianceLoops &&
+            Settings.LoopVarianceIncrement > 0 &&
+            designPoint->convergenceReport->FailedSamples < Settings.MinimumFailedSamples)
         {
             loopMeasureType = IncreaseVariance;
         }
@@ -297,7 +297,7 @@ namespace Deltares::Reliability
         switch (loopMeasureType)
         {
         case IncreaseVariance:
-            this->addFactor(*importanceSampling->Settings->StochastSet, Settings->LoopVarianceIncrement);
+            this->addFactor(*importanceSampling->Settings->StochastSet, Settings.LoopVarianceIncrement);
             return true;
         case CopyDesignPoint:
         {
@@ -307,7 +307,7 @@ namespace Deltares::Reliability
             {
                 this->lastStartPoint = newStartPoint;
                 importanceSampling->Settings->StochastSet->setStartPoint(newStartPoint);
-                this->setFactor(*importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
+                this->setFactor(*importanceSampling->Settings->StochastSet, Settings.VarianceFactor);
 
                 return true;
             }
@@ -335,7 +335,7 @@ namespace Deltares::Reliability
                 ? modelRunner->getSampleFromStochastPoint(designPoint)
                 : designPoint->convergenceReport->NearestSample;
 
-            if (Settings->StartPointOnLimitState)
+            if (Settings.StartPointOnLimitState)
             {
                 const std::shared_ptr<DirectionReliability> direction = std::make_shared<DirectionReliability>();
                 modelRunner->updateStochastSettings(direction->Settings->StochastSet);
@@ -345,14 +345,14 @@ namespace Deltares::Reliability
 
                 newSample = modelRunner->getSampleFromStochastPoint(directionDesignPoint);
             }
-            else if (Settings->StartValueStepSize > 0 && this->lastStartPoint != nullptr)
+            else if (Settings.StartValueStepSize > 0 && this->lastStartPoint != nullptr)
             {
                 // avoid a new start point very close to the old start point
                 for (size_t i = 0; i < newSample->Values.size(); i++)
                 {
                     const double diff = newSample->Values[i] - this->lastStartPoint->Values[i];
-                    const double steps = std::round(diff / Settings->StartValueStepSize);
-                    newSample->Values[i] = this->lastStartPoint->Values[i] + steps * Settings->StartValueStepSize;
+                    const double steps = std::round(diff / Settings.StartValueStepSize);
+                    newSample->Values[i] = this->lastStartPoint->Values[i] + steps * Settings.StartValueStepSize;
                 }
             }
 
@@ -370,10 +370,10 @@ namespace Deltares::Reliability
         else
         {
             // Get Multiple Design Points using K-Means
-            std::shared_ptr<Optimization::KMeansClustering> clusterMethod = std::make_shared<Optimization::KMeansClustering>();
-            clusterMethod->Settings = this->Settings->clusterSettings;
+            auto clusterMethod = Optimization::KMeansClustering();
+            clusterMethod.Settings = Settings.clusterSettings;
 
-            return clusterMethod->getClusterCenters(samples);
+            return clusterMethod.getClusterCenters(samples);
         }
     }
 
@@ -390,11 +390,11 @@ namespace Deltares::Reliability
 
     void AdaptiveImportanceSampling::setCallbacks(int loopCounter)
     {
-        if (this->Settings->Clustering)
+        if (Settings.Clustering)
         {
             importanceSampling->setSampleLambda([this](std::shared_ptr<Sample> sample)
             {
-                if (this->clusterSamples.size() < this->Settings->clusterSettings->MaxSamples)
+                if (this->clusterSamples.size() < Settings.clusterSettings.MaxSamples)
                 {
                     this->clusterSamples.push_back(sample);
                 }
@@ -404,10 +404,10 @@ namespace Deltares::Reliability
         {
             importanceSampling->setBreakLoopLambda([this, loopCounter](std::shared_ptr<ImportanceSamplingCluster> results)
             {
-                if (this->Settings->AutoMaximumSamples && this->Settings->MaxVarianceLoops > 1 && loopCounter < this->Settings->MaxVarianceLoops)
+                if (Settings.AutoMaximumSamples && Settings.MaxVarianceLoops > 1 && loopCounter < Settings.MaxVarianceLoops)
                 {
-                    double nAdditionEstimate = results->TotalCount * ((results->MaxFailWeight / results->FailWeight / this->Settings->EpsWeightSample) - 1.0);
-                    double nRequiredIdealEstimate = 2 * (Statistics::StandardNormal::getUFromQ(results->ProbFailure) + 1) / this->Settings->EpsWeightSample;
+                    double nAdditionEstimate = results->TotalCount * ((results->MaxFailWeight / results->FailWeight / Settings.EpsWeightSample) - 1.0);
+                    double nRequiredIdealEstimate = 2 * (Statistics::StandardNormal::getUFromQ(results->ProbFailure) + 1) / Settings.EpsWeightSample;
 
                     if (nAdditionEstimate > nRequiredIdealEstimate)
                     {

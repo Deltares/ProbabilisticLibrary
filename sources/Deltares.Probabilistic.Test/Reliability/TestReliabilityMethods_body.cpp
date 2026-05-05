@@ -321,8 +321,8 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = AdaptiveImportanceSampling();
         auto modelRunner = projectBuilder().BuildProjectWithPolynome();
-        calculator.Settings->importanceSamplingSettings->MinimumSamples = 100;
-        calculator.Settings->importanceSamplingSettings->MaximumSamples = 100;
+        calculator.Settings.importanceSamplingSettings.MinimumSamples = 100;
+        calculator.Settings.importanceSamplingSettings.MaximumSamples = 100;
         auto designPoint = calculator.getDesignPoint(modelRunner);
         ASSERT_EQ(designPoint->Alphas.size(), 4);
         EXPECT_NEAR(designPoint->Beta, 2.95, 0.01);
@@ -342,15 +342,15 @@ namespace Deltares::Probabilistic::Test
         {
             auto calculator = AdaptiveImportanceSampling();
             auto modelRunner = projectBuilder::BuildQuadraticProject();
-            calculator.Settings->importanceSamplingSettings->MinimumSamples = 5000;
-            calculator.Settings->importanceSamplingSettings->MaximumSamples = 10000;
-            calculator.Settings->MinVarianceLoops = 2;
-            calculator.Settings->MaxVarianceLoops = 8;
-            calculator.Settings->importanceSamplingSettings->randomSettings->Seed = seed;
-            calculator.Settings->importanceSamplingSettings->runSettings->MaxParallelProcesses = 1;
-            calculator.Settings->Clustering = true;
-            calculator.Settings->clusterSettings->MaxClusters = 4;
-            calculator.Settings->clusterSettings->clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus;
+            calculator.Settings.importanceSamplingSettings.MinimumSamples = 5000;
+            calculator.Settings.importanceSamplingSettings.MaximumSamples = 10000;
+            calculator.Settings.MinVarianceLoops = 2;
+            calculator.Settings.MaxVarianceLoops = 8;
+            calculator.Settings.importanceSamplingSettings.randomSettings->Seed = seed;
+            calculator.Settings.importanceSamplingSettings.runSettings->MaxParallelProcesses = 1;
+            calculator.Settings.Clustering = true;
+            calculator.Settings.clusterSettings.MaxClusters = 4;
+            calculator.Settings.clusterSettings.clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus;
             auto designPoint = calculator.getDesignPoint(modelRunner);
             auto ii = 0;
 

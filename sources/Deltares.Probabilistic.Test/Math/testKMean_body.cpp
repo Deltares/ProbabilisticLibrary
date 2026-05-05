@@ -64,8 +64,8 @@ namespace Deltares::Probabilistic::Test
             samples.push_back(s);
         }
         auto kmean = Optimization::KMeansClustering();
-        kmean.Settings->MaxClusters = 3;
-        kmean.Settings->OptimizeNumberOfClusters = true;
+        kmean.Settings.MaxClusters = 3;
+        kmean.Settings.OptimizeNumberOfClusters = true;
         auto result = kmean.getClusterCenters(samples);
         EXPECT_NEAR(result[0]->Values[0], 0.748, margin);
         EXPECT_NEAR(result[0]->Values[1], 0.170, margin);

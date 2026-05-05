@@ -208,33 +208,33 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<AdaptiveImportanceSampling> adaptiveImportanceSampling = std::make_shared<AdaptiveImportanceSampling>();
 
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->MinimumSamples = this->MinimumSamples;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamples = this->MaximumSamples;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamplesNoResult = this->MaximumSamplesNoResult;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->designPointMethod = this->designPointMethod;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->VariationCoefficient = this->VariationCoefficient;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->VarianceFactor = this->VarianceFactor;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->runSettings = this->RunSettings;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->randomSettings = this->RandomSettings;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->startPointSettings = this->StartPointSettings;
-        adaptiveImportanceSampling->Settings->importanceSamplingSettings->StochastSet = this->StochastSet;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.MinimumSamples = this->MinimumSamples;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.MaximumSamples = this->MaximumSamples;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.MaximumSamplesNoResult = this->MaximumSamplesNoResult;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.designPointMethod = this->designPointMethod;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.VariationCoefficient = this->VariationCoefficient;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.VarianceFactor = this->VarianceFactor;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.runSettings = this->RunSettings;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.randomSettings = this->RandomSettings;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.startPointSettings = this->StartPointSettings;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.StochastSet = this->StochastSet;
 
-        adaptiveImportanceSampling->Settings->MinVarianceLoops = this->MinimumVarianceLoops;
-        adaptiveImportanceSampling->Settings->MaxVarianceLoops = this->MaximumVarianceLoops;
-        adaptiveImportanceSampling->Settings->MinimumFailedSamples = this->MinimumFailedSamples;
-        adaptiveImportanceSampling->Settings->FractionFailed = this->FractionFailed;
-        adaptiveImportanceSampling->Settings->EpsWeightSample = this->EpsilonWeightSample;
-        adaptiveImportanceSampling->Settings->VarianceFactor = this->VarianceFactor;
-        adaptiveImportanceSampling->Settings->AutoMaximumSamples = this->AutoMaximumSamples;
-        adaptiveImportanceSampling->Settings->StartPointOnLimitState = this->StartPointOnLimitState;
-        adaptiveImportanceSampling->Settings->StartValueStepSize = this->StartValueStepSize;
-        adaptiveImportanceSampling->Settings->LoopVarianceIncrement = this->LoopVarianceIncrement;
-        adaptiveImportanceSampling->Settings->MaxBeta = this->MaxBeta;
-        adaptiveImportanceSampling->Settings->startPointSettings = this->StartPointSettings;
+        adaptiveImportanceSampling->Settings.MinVarianceLoops = this->MinimumVarianceLoops;
+        adaptiveImportanceSampling->Settings.MaxVarianceLoops = this->MaximumVarianceLoops;
+        adaptiveImportanceSampling->Settings.MinimumFailedSamples = this->MinimumFailedSamples;
+        adaptiveImportanceSampling->Settings.FractionFailed = this->FractionFailed;
+        adaptiveImportanceSampling->Settings.EpsWeightSample = this->EpsilonWeightSample;
+        adaptiveImportanceSampling->Settings.VarianceFactor = this->VarianceFactor;
+        adaptiveImportanceSampling->Settings.AutoMaximumSamples = this->AutoMaximumSamples;
+        adaptiveImportanceSampling->Settings.StartPointOnLimitState = this->StartPointOnLimitState;
+        adaptiveImportanceSampling->Settings.StartValueStepSize = this->StartValueStepSize;
+        adaptiveImportanceSampling->Settings.LoopVarianceIncrement = this->LoopVarianceIncrement;
+        adaptiveImportanceSampling->Settings.MaxBeta = this->MaxBeta;
+        adaptiveImportanceSampling->Settings.startPointSettings = *this->StartPointSettings;
 
-        adaptiveImportanceSampling->Settings->Clustering = this->Clustering;
-        adaptiveImportanceSampling->Settings->clusterSettings->MaxClusters = this->MaxClusters;
-        adaptiveImportanceSampling->Settings->clusterSettings->OptimizeNumberOfClusters = this->OptimizeNumberOfClusters;
+        adaptiveImportanceSampling->Settings.Clustering = this->Clustering;
+        adaptiveImportanceSampling->Settings.clusterSettings.MaxClusters = this->MaxClusters;
+        adaptiveImportanceSampling->Settings.clusterSettings.OptimizeNumberOfClusters = this->OptimizeNumberOfClusters;
 
         return adaptiveImportanceSampling;
     }
@@ -301,7 +301,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityNumericalIntegration: GetNumericalIntegrationMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
-        case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: GetAdaptiveImportanceSamplingMethod()->Settings->validate(report); break;
+        case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: GetAdaptiveImportanceSamplingMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityDirectionalSampling: GetDirectionalSamplingMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityDirectionReliability: GetDirectionReliabilityMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityNumericalBisection: GetNumericalBisectionMethod()->Settings->validate(report); break;

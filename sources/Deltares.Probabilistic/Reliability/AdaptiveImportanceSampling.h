@@ -40,7 +40,7 @@ namespace Deltares::Reliability
         /**
          * \brief Settings for adaptive importance sampling
          */
-        std::shared_ptr<AdaptiveImportanceSamplingSettings> Settings = std::make_shared<AdaptiveImportanceSamplingSettings>();
+        AdaptiveImportanceSamplingSettings Settings = AdaptiveImportanceSamplingSettings();
 
         /**
          * \brief Executes the adaptive importance sampling
@@ -51,7 +51,7 @@ namespace Deltares::Reliability
 
         bool isValid() override
         {
-            return this->Settings->isValid();
+            return Settings.isValid();
         }
 
     protected:

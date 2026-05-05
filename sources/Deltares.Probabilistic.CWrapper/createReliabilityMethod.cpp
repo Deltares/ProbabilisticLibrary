@@ -96,12 +96,12 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return impSampling; }
     case (ProbMethod::AdaptiveIM): {
         auto AdaptImpSampling = std::make_shared<AdaptiveImportanceSampling>();
-        fillImportanceSamplingSettings(*AdaptImpSampling->Settings->importanceSamplingSettings, bs, stochasts);
-        AdaptImpSampling->Settings->MaxVarianceLoops = bs.trialLoops;
-        AdaptImpSampling->Settings->LoopVarianceIncrement = bs.numExtraReal2;
-        AdaptImpSampling->Settings->AutoMaximumSamples = bs.numExtraInt != 0;
-        AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
-        fillStartVector(*AdaptImpSampling->Settings->startPointSettings, bs, number_of_stochasts);
+        fillImportanceSamplingSettings(AdaptImpSampling->Settings.importanceSamplingSettings, bs, stochasts);
+        AdaptImpSampling->Settings.MaxVarianceLoops = bs.trialLoops;
+        AdaptImpSampling->Settings.LoopVarianceIncrement = bs.numExtraReal2;
+        AdaptImpSampling->Settings.AutoMaximumSamples = bs.numExtraInt != 0;
+        AdaptImpSampling->Settings.MinimumFailedSamples = bs.numExtraInt2;
+        fillStartVector(AdaptImpSampling->Settings.startPointSettings, bs, number_of_stochasts);
         return AdaptImpSampling; }
     case (ProbMethod::LatinHyperCube):
         {
