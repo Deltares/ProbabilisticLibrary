@@ -55,17 +55,17 @@ namespace Deltares::Reliability
         /**
          * \brief Settings for generating random values
          */
-        std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
+        Models::RandomSettings randomSettings = Models::RandomSettings();
 
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings RunSettings = Models::RunSettings();
 
         /**
          * \brief Settings for individual stochastic variables, such as the start value
          */
-        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+        StochastSettingsSet StochastSet = StochastSettingsSet();
 
         /**
          * \brief Reports whether the settings have valid values
@@ -78,7 +78,7 @@ namespace Deltares::Reliability
             Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");
             Logging::ValidationSupport::checkMinimum(report, 0, VariationCoefficient, "variation coefficient");
 
-            RunSettings->validate(report);
+            RunSettings.validate(report);
         }
     };
 }

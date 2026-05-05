@@ -30,16 +30,16 @@ namespace Deltares::Models
     class RandomSampleGenerator
     {
     public:
-        RandomSampleGenerator() {}
+        RandomSampleGenerator() = default;
 
-        RandomSampleGenerator(std::shared_ptr<RandomSettings> settings, std::shared_ptr<Reliability::StochastSettingsSet> stochastSet)
+        RandomSampleGenerator(const RandomSettings& settings, const Reliability::StochastSettingsSet& stochastSet)
         {
             this->Settings = settings;
-            this->Settings->StochastSet = stochastSet;
+            this->Settings.StochastSet = stochastSet;
             this->initialize();
         }
 
-        std::shared_ptr<RandomSettings> Settings = std::make_shared<RandomSettings>();
+        RandomSettings Settings = RandomSettings();
         std::shared_ptr<SampleProvider> sampleProvider = nullptr;
         Numeric::RandomValueGenerator random;
 

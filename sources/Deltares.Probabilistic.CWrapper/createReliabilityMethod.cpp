@@ -38,11 +38,11 @@ using namespace Deltares::Models;
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 
-std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSettings& bs)
+RandomSettings createReliabilityMethod::getRnd(const basicSettings& bs)
 {
-    auto rnd = std::make_shared<RandomSettings>();
-    rnd->Seed = bs.seed;
-    rnd->IsRepeatableRandom = bs.isRepeatableRandom != 0;
+    auto rnd = RandomSettings();
+    rnd.Seed = bs.seed;
+    rnd.IsRepeatableRandom = bs.isRepeatableRandom != 0;
     return rnd;
 }
 
@@ -66,11 +66,10 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return ni; }
     case (ProbMethod::CM): {
         auto cm = std::make_shared<CrudeMonteCarlo>();
-        std::shared_ptr<RandomSettings> r(getRnd(bs));
-        cm->Settings->randomSettings.swap(r);
-        cm->Settings->VariationCoefficient = bs.tolB;
-        cm->Settings->MinimumSamples = bs.minSamples;
-        cm->Settings->MaximumSamples = bs.maxSamples;
+        cm->Settings.randomSettings = getRnd(bs);
+        cm->Settings.VariationCoefficient = bs.tolB;
+        cm->Settings.MinimumSamples = bs.minSamples;
+        cm->Settings.MaximumSamples = bs.maxSamples;
         return cm; }
     case (ProbMethod::DS): {
         auto ds = std::make_shared<DirectionalSampling>();
@@ -130,7 +129,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         subSetSimulation->Settings->MinimumSamples = bs.sub_set_simulation_reliability_settings.MinimumIterations;
         subSetSimulation->Settings->MaximumSamples = bs.sub_set_simulation_reliability_settings.MaximumIterations;
         subSetSimulation->Settings->SampleMethod = static_cast<SampleMethodType>(bs.sub_set_simulation_reliability_settings.SampleMethod);
-        subSetSimulation->Settings->randomSettings = getRnd(bs);
+        subSetSimulation->Settings->randomSettings = std::make_shared<RandomSettings>(getRnd(bs));
         subSetSimulation->Settings->RunSettings->MaxChunkSize = bs.chunkSize;
         subSetSimulation->Settings->RunSettings->MaxParallelProcesses = bs.numThreads;
         subSetSimulation->Settings->designPointMethod = convertDp(bs.designPointOptions);
@@ -224,8 +223,7 @@ std::vector<double> createReliabilityMethod::copyStartVector(const double startV
 
 void createReliabilityMethod::fillDsSettings(DirectionalSamplingSettings& DsSettings, const basicSettings& bs)
 {
-    std::shared_ptr<RandomSettings> r(getRnd(bs));
-    DsSettings.randomSettings.swap(r);
+    DsSettings.randomSettings = std::make_shared<RandomSettings>(getRnd(bs));
     DsSettings.VariationCoefficient = bs.tolB;
     DsSettings.MinimumDirections = bs.minSamples;
     DsSettings.MaximumDirections = bs.maxSamples;
@@ -246,8 +244,7 @@ void createReliabilityMethod::fillImportanceSamplingSettings(ImportanceSamplingS
                                                              const basicSettings& bs,
                                                              std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
-    auto r = getRnd(bs);
-    settings.randomSettings.swap(r);
+    settings.randomSettings = std::make_shared<RandomSettings>(getRnd(bs));
     settings.VariationCoefficient = bs.tolB;
     settings.MinimumSamples = bs.minSamples;
     settings.MaximumSamples = bs.maxSamples;

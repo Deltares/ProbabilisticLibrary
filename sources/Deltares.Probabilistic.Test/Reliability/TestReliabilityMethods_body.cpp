@@ -299,8 +299,8 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = CrudeMonteCarlo();
         auto modelRunner = projectBuilder().BuildProjectWithDeterminist(0.0);
-        calculator.Settings->MinimumSamples = 10000;
-        calculator.Settings->MaximumSamples = 100000;
+        calculator.Settings.MinimumSamples = 10000;
+        calculator.Settings.MaximumSamples = 100000;
         auto designPoint = calculator.getDesignPoint(modelRunner);
         ASSERT_EQ(designPoint->Alphas.size(), 3);
         EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
@@ -310,8 +310,8 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = CrudeMonteCarlo();
         auto modelRunner = projectBuilder().BuildProjectWithDeterministAndCopula(0.0);
-        calculator.Settings->MinimumSamples = 10000;
-        calculator.Settings->MaximumSamples = 100000;
+        calculator.Settings.MinimumSamples = 10000;
+        calculator.Settings.MaximumSamples = 100000;
         auto designPoint = calculator.getDesignPoint(modelRunner);
         ASSERT_EQ(designPoint->Alphas.size(), 3);
         EXPECT_NEAR(designPoint->Beta, -0.0147896, 1e-5);

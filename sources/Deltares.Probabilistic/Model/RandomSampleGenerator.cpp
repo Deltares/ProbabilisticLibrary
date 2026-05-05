@@ -32,11 +32,11 @@ namespace Deltares::Models
      */
     void RandomSampleGenerator::initialize()
     {
-        random.initialize(this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->getTimeStamp());
+        random.initialize(Settings.IsRepeatableRandom, Settings.Seed, Settings.getTimeStamp());
 
         if (sampleProvider == nullptr)
         {
-            sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
+            sampleProvider = std::make_shared<SampleProvider>(Settings.StochastSet);
         }
     }
 
@@ -66,9 +66,9 @@ namespace Deltares::Models
 
         std::shared_ptr<Sample> sample = sampleProvider->getSample();
 
-        for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
+        for (int i = 0; i < Settings.StochastSet.getVaryingStochastCount(); i++)
         {
-            const int variableIndex = this->Settings->SkipUnvaryingParameters ? this->Settings->StochastSet->VaryingStochastSettings[i]->StochastIndex : i;
+            const int variableIndex = Settings.SkipUnvaryingParameters ? Settings.StochastSet.VaryingStochastSettings[i]->StochastIndex : i;
             const double x = randomValues[variableIndex];
             sample->Values[i] = Deltares::Statistics::StandardNormal::getUFromQ(x);
         }
@@ -90,8 +90,8 @@ namespace Deltares::Models
 
     int RandomSampleGenerator::getSampleSize() const
     {
-        return this->Settings->SkipUnvaryingParameters
-            ? this->Settings->StochastSet->getStochastCount()
-            : this->Settings->StochastSet->getVaryingStochastCount();
+        return Settings.SkipUnvaryingParameters
+            ? Settings.StochastSet.getStochastCount()
+            : Settings.StochastSet.getVaryingStochastCount();
     }
 }

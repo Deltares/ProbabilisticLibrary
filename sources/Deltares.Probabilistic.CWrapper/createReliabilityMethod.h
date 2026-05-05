@@ -35,7 +35,7 @@ public:
         const size_t number_of_stochasts, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
 
 private:
-    static std::shared_ptr<Deltares::Models::RandomSettings> getRnd(const Deltares::ProbLibCore::basicSettings& bs);
+    static Deltares::Models::RandomSettings getRnd(const Deltares::ProbLibCore::basicSettings& bs);
     static std::vector<double> copyStartVector(const double startVector[], const size_t nStoch);
     static void fillFormSettings(Deltares::Reliability::FORMSettings& Settings, const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
     static void fillDsSettings(Deltares::Reliability::DirectionalSamplingSettings& Settings, const Deltares::ProbLibCore::basicSettings& bs);

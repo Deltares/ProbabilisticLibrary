@@ -61,8 +61,8 @@ namespace Deltares::Reliability
         modelRunner->setSampleProvider(sampleProvider);
 
         auto sampleCreator = RandomSampleGenerator();
-        sampleCreator.Settings = this->Settings->randomSettings;
-        sampleCreator.Settings->StochastSet = this->Settings->StochastSet;
+        sampleCreator.Settings = *Settings->randomSettings;
+        sampleCreator.Settings.StochastSet = *Settings->StochastSet;
         sampleCreator.sampleProvider = sampleProvider;
         sampleCreator.initialize();
 

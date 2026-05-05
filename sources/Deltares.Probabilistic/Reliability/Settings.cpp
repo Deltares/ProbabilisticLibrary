@@ -176,13 +176,13 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<CrudeMonteCarlo> crudeMonteCarlo = std::make_shared<CrudeMonteCarlo>();
 
-        crudeMonteCarlo->Settings->MinimumSamples = this->MinimumSamples;
-        crudeMonteCarlo->Settings->MaximumSamples = this->MaximumSamples;
-        crudeMonteCarlo->Settings->designPointMethod = this->designPointMethod;
-        crudeMonteCarlo->Settings->VariationCoefficient = this->VariationCoefficient;
-        crudeMonteCarlo->Settings->RunSettings = this->RunSettings;
-        crudeMonteCarlo->Settings->randomSettings = this->RandomSettings;
-        crudeMonteCarlo->Settings->StochastSet = this->StochastSet;
+        crudeMonteCarlo->Settings.MinimumSamples = this->MinimumSamples;
+        crudeMonteCarlo->Settings.MaximumSamples = this->MaximumSamples;
+        crudeMonteCarlo->Settings.designPointMethod = this->designPointMethod;
+        crudeMonteCarlo->Settings.VariationCoefficient = this->VariationCoefficient;
+        crudeMonteCarlo->Settings.RunSettings = *this->RunSettings;
+        crudeMonteCarlo->Settings.randomSettings = *this->RandomSettings;
+        crudeMonteCarlo->Settings.StochastSet = *this->StochastSet;
 
         return crudeMonteCarlo;
     }
@@ -299,7 +299,7 @@ namespace Deltares::Reliability
         {
         case ReliabilityMethodType::ReliabilityFORM: GetFORMMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityNumericalIntegration: GetNumericalIntegrationMethod()->Settings.validate(report); break;
-        case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings->validate(report); break;
+        case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: GetAdaptiveImportanceSamplingMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityDirectionalSampling: GetDirectionalSamplingMethod()->Settings.validate(report); break;

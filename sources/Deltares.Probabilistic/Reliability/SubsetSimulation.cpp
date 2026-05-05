@@ -42,7 +42,7 @@ namespace Deltares::Reliability
         modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         auto designPointBuilder = DesignPointBuilder(nStochasts, Settings->designPointMethod, Settings->StochastSet);
-        randomSampleGenerator = Models::RandomSampleGenerator(this->Settings->randomSettings, this->Settings->StochastSet);
+        randomSampleGenerator = Models::RandomSampleGenerator(*Settings->randomSettings, *Settings->StochastSet);
         randomSampleGenerator.initialize();
 
         // initialize convergence indicator and loops

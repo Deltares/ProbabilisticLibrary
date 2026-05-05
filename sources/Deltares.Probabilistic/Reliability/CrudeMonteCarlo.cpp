@@ -42,9 +42,9 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> CrudeMonteCarlo::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(*Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings.StochastSet);
 
-        std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
+        std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(Settings.StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
 
         double qRange = 1;
@@ -52,12 +52,12 @@ namespace Deltares::Reliability
 
         std::shared_ptr<Sample> remainderSample = sampleProvider->getSample();
 
-        for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
+        for (int i = 0; i < Settings.StochastSet.getVaryingStochastCount(); i++)
         {
-            if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
+            if (!Settings.StochastSet.VaryingStochastSettings[i]->isMinMaxDefault())
             {
-                double probLow = Statistics::StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
-                double probHigh = Statistics::StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
+                double probLow = Statistics::StandardNormal::getPFromU(Settings.StochastSet.VaryingStochastSettings[i]->MinValue);
+                double probHigh = Statistics::StandardNormal::getQFromU(Settings.StochastSet.VaryingStochastSettings[i]->MaxValue);
 
                 double prob = 1 - probLow - probHigh;
 
@@ -65,11 +65,11 @@ namespace Deltares::Reliability
 
                 if (probLow > probHigh)
                 {
-                    remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
+                    remainderSample->Values[i] = Settings.StochastSet.VaryingStochastSettings[i]->MinValue - 0.1;
                 }
                 else
                 {
-                    remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
+                    remainderSample->Values[i] = Settings.StochastSet.VaryingStochastSettings[i]->MaxValue + 0.1;
                 }
             }
         }
@@ -80,20 +80,21 @@ namespace Deltares::Reliability
             zRemainder = modelRunner->getZValue(remainderSample);
         }
 
-        return getReducedDesignPoint(modelRunner, sampleProvider, zRemainder, qRange);
+        return getReducedDesignPoint(*modelRunner, sampleProvider, zRemainder, qRange);
     }
 
-    std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<SampleProvider> sampleProvider, double zRemainder, double qRange)
+    std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(ModelRunner& modelRunner,
+        const std::shared_ptr<Models::SampleProvider>& sampleProvider, double zRemainder, double qRange)
     {
         auto randomSampleGenerator = RandomSampleGenerator();
-        randomSampleGenerator.Settings = this->Settings->randomSettings;
-        randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
+        randomSampleGenerator.Settings = Settings.randomSettings;
+        randomSampleGenerator.Settings.StochastSet = Settings.StochastSet;
         randomSampleGenerator.sampleProvider = sampleProvider;
         randomSampleGenerator.initialize();
 
-        int nParameters = modelRunner->getVaryingStochastCount();
+        int nParameters = modelRunner.getVaryingStochastCount();
         std::vector<double> zValues; // copy of z for all parallel threads as double
-        auto designPointBuilder = DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
+        auto designPointBuilder = DesignPointBuilder(nParameters, Settings.designPointMethod, Settings.StochastSet);
 
         std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
         double rmin = std::numeric_limits<double>::infinity();
@@ -108,7 +109,7 @@ namespace Deltares::Reliability
 
         double qFail = 0;
 
-        for (int sampleIndex = 0; sampleIndex < Settings->MaximumSamples + 1 && !isStopped(); sampleIndex++)
+        for (int sampleIndex = 0; sampleIndex < Settings.MaximumSamples + 1 && !isStopped(); sampleIndex++)
         {
             zIndex++;
 
@@ -116,8 +117,8 @@ namespace Deltares::Reliability
             {
                 samples.clear();
 
-                int chunkSize = modelRunner->Settings->MaxChunkSize;
-                int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
+                int chunkSize = modelRunner.Settings->MaxChunkSize;
+                int runs = std::min(chunkSize, Settings.MaximumSamples + 1 - sampleIndex);
 
                 if (initial)
                 {
@@ -136,7 +137,7 @@ namespace Deltares::Reliability
                     samples.push_back(sample);
                 }
 
-                zValues = modelRunner->getZValues(samples);
+                zValues = modelRunner.getZValues(samples);
 
                 if (initial)
                 {
@@ -145,10 +146,10 @@ namespace Deltares::Reliability
                     designPointBuilder.initialize(z0Fac * Statistics::StandardNormal::BetaMax);
                 }
 
-                if (modelRunner->shouldExitPrematurely(samples))
+                if (modelRunner.shouldExitPrematurely(samples))
                 {
                     // return the result so far
-                    return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+                    return modelRunner.getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
                 }
 
                 zIndex = 0;
@@ -215,7 +216,7 @@ namespace Deltares::Reliability
 
         convergenceReport->Convergence = getConvergence(pf, nSamples);
 
-        std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport);
+        std::shared_ptr<DesignPoint> designPoint = modelRunner.getDesignPoint(uMin, beta, convergenceReport);
 
         samples.clear();
 
@@ -226,7 +227,7 @@ namespace Deltares::Reliability
     {
         for (int i = 0; i < sample->getSize(); i++)
         {
-            std::shared_ptr<StochastSettings> settings = this->Settings->StochastSet->VaryingStochastSettings[i];
+            std::shared_ptr<StochastSettings> settings = Settings.StochastSet.VaryingStochastSettings[i];
             if (!settings->isMinMaxDefault())
             {
                 double q = Statistics::StandardNormal::getPFromU(sample->Values[i]);
@@ -236,24 +237,24 @@ namespace Deltares::Reliability
         }
     }
 
-    bool CrudeMonteCarlo::checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nmaal) const
+    bool CrudeMonteCarlo::checkConvergence(ModelRunner& modelRunner, double pf, int samples, int nmaal) const
     {
         std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
         report->Step = nmaal;
-        report->MaxSteps = Settings->MaximumSamples;
+        report->MaxSteps = Settings.MaximumSamples;
 
         if (pf > 0 && pf < 1)
         {
             double convergence = getConvergence(pf, samples);
             report->Reliability = Statistics::StandardNormal::getUFromQ(pf);
             report->Variation = convergence;
-            modelRunner->reportResult(report);
-            bool enoughSamples = nmaal >= Settings->MinimumSamples;
-            return enoughSamples && convergence < Settings->VariationCoefficient;
+            modelRunner.reportResult(report);
+            bool enoughSamples = nmaal >= Settings.MinimumSamples;
+            return enoughSamples && convergence < Settings.VariationCoefficient;
         }
         else
         {
-            modelRunner->reportResult(report);
+            modelRunner.reportResult(report);
             return false;
         }
     }

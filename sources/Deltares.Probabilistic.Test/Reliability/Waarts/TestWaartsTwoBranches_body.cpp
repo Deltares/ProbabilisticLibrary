@@ -70,8 +70,8 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::CrudeMonteCarlo>();
         auto cm = dynamic_cast<Reliability::CrudeMonteCarlo*>(calculator.get());
-        cm->Settings->MaximumSamples = 10000000;
-        cm->Settings->randomSettings->Seed = 1; // default seed (0), gives beta = 40
+        cm->Settings.MaximumSamples = 10000000;
+        cm->Settings.randomSettings.Seed = 1; // default seed (0), gives beta = 40
         auto expected = expectedValuesCrudeMonteCarlo();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }

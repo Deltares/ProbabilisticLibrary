@@ -80,7 +80,7 @@ namespace Deltares::Models
          */
         bool SkipUnvaryingParameters = true;
 
-        std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
+        Reliability::StochastSettingsSet StochastSet = Reliability::StochastSettingsSet();
 
         /**
          * \brief Gets a copy of these settings

@@ -49,8 +49,8 @@ namespace Deltares::Reliability
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
         auto randomSampleGenerator = Models::RandomSampleGenerator();
-        randomSampleGenerator.Settings = Settings.randomSettings;
-        randomSampleGenerator.Settings->StochastSet = Settings.StochastSet;
+        randomSampleGenerator.Settings = *Settings.randomSettings;
+        randomSampleGenerator.Settings.StochastSet = *Settings.StochastSet;
         randomSampleGenerator.initialize();
 
         std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(nStochasts);

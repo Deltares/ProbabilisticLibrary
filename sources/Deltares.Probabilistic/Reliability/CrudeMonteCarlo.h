@@ -28,17 +28,18 @@ namespace Deltares::Reliability
     class CrudeMonteCarlo : public ReliabilityMethod
     {
     public:
-        std::shared_ptr<CrudeMonteCarloSettings> Settings = std::make_shared<CrudeMonteCarloSettings>();
+        CrudeMonteCarloSettings Settings = CrudeMonteCarloSettings();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 
         bool isValid() override
         {
-            return Settings->isValid();
+            return Settings.isValid();
         }
 
     private:
-        std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::SampleProvider> sampleProvider, double zRemainder, double qRange);
-        bool checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nmaal) const;
+        std::shared_ptr<DesignPoint> getReducedDesignPoint(Models::ModelRunner& modelRunner,
+            const std::shared_ptr<Models::SampleProvider>& sampleProvider, double zRemainder, double qRange);
+        bool checkConvergence(Models::ModelRunner& modelRunner, double pf, int samples, int nmaal) const;
         static double getConvergence(double pf, int samples);
         void applyLimits(const std::shared_ptr<Models::Sample>& sample) const;
     };

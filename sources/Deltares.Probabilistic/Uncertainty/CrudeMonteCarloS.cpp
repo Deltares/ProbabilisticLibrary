@@ -42,8 +42,8 @@ namespace Deltares::Uncertainty
         modelRunner->setSampleProvider(sampleProvider);
 
         RandomSampleGenerator randomSampleGenerator = RandomSampleGenerator();
-        randomSampleGenerator.Settings = this->Settings->randomSettings;
-        randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
+        randomSampleGenerator.Settings = *Settings->randomSettings;
+        randomSampleGenerator.Settings.StochastSet = *Settings->StochastSet;
         randomSampleGenerator.sampleProvider = sampleProvider;
         randomSampleGenerator.initialize();
 
