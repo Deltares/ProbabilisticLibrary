@@ -42,7 +42,7 @@ namespace Deltares::Reliability
         const std::shared_ptr<ReliabilityProject> project = getProject(model, selfCorrelationMatrix);
 
         const std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
-        fillSettings(model, directionalSampling->Settings);
+        fillSettings(*model, directionalSampling->Settings);
 
         project->reliabilityMethod = directionalSampling;
 
@@ -59,25 +59,25 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    void DirectionalSamplingCombiner::fillSettings(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<DirectionalSamplingSettings> settings)
+    void DirectionalSamplingCombiner::fillSettings(const CombinedDesignPointModel& model, DirectionalSamplingSettings& settings)
     {
-        settings->MinimumDirections = 1000;
-        settings->MaximumDirections = 100000;
-        settings->DirectionSettings->MaximumLengthU = 20; // not used
-        settings->DirectionSettings->Dsdu = 0.1;
-        settings->VariationCoefficient = 0.1;
-        settings->DirectionSettings->modelVaryingType = ModelVaryingType::Varying;
-        settings->designPointMethod = DesignPointMethod::CenterOfGravity;
-        settings->runSettings->MaxChunkSize = 400;
-        settings->randomSettings->SkipUnvaryingParameters = false;
+        settings.MinimumDirections = 1000;
+        settings.MaximumDirections = 100000;
+        settings.DirectionSettings->MaximumLengthU = 20; // not used
+        settings.DirectionSettings->Dsdu = 0.1;
+        settings.VariationCoefficient = 0.1;
+        settings.DirectionSettings->modelVaryingType = ModelVaryingType::Varying;
+        settings.designPointMethod = DesignPointMethod::CenterOfGravity;
+        settings.runSettings->MaxChunkSize = 400;
+        settings.randomSettings->SkipUnvaryingParameters = false;
 
-        for (size_t i = 0; i < model->stochasts.size(); i++)
+        for (size_t i = 0; i < model.stochasts.size(); i++)
         {
             std::shared_ptr<StochastSettings> stochastSetting = std::make_shared<StochastSettings>();
-            stochastSetting->stochast = model->standardNormalStochasts[i];
+            stochastSetting->stochast = model.standardNormalStochasts[i];
             stochastSetting->StartValue = 0;
             stochastSetting->VarianceFactor = 1;
-            settings->StochastSet->stochastSettings.push_back(stochastSetting);
+            settings.StochastSet->stochastSettings.push_back(stochastSetting);
         }
     }
 }

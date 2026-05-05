@@ -36,10 +36,10 @@ namespace Deltares::Reliability
         std::unordered_map<int, double> previousResults;
 
     public:
-        std::shared_ptr<DirectionalSamplingSettings> Settings = std::make_shared<DirectionalSamplingSettings>();
+        DirectionalSamplingSettings Settings = DirectionalSamplingSettings();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         size_t preComputedCounter = 0;
-        bool isValid() override { return this->Settings->isValid(); }
+        bool isValid() override { return this->Settings.isValid(); }
     };
 }
 

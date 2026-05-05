@@ -74,7 +74,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return cm; }
     case (ProbMethod::DS): {
         auto ds = std::make_shared<DirectionalSampling>();
-        fillDsSettings(*ds->Settings, bs);
+        fillDsSettings(ds->Settings, bs);
         return ds; }
     case (ProbMethod::FORM): {
         auto form = std::make_shared<FORM>();

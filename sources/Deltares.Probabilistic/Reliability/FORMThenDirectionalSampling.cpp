@@ -50,7 +50,7 @@ namespace Deltares::Reliability
         }
 
         auto ds = DirectionalSampling();
-        *ds.Settings = DsSettings;
+        ds.Settings = DsSettings;
         auto dsDesignPoint = ds.getDesignPoint(modelRunner);
         dsDesignPoint->convergenceReport->TotalIterations = formDesignPoint->convergenceReport->TotalIterations;
         dsDesignPoint->ContributingDesignPoints.push_back(formDesignPoint);

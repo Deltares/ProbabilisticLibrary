@@ -375,13 +375,13 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = DirectionalSampling();
         auto modelRunner = projectBuilder().BuildProjectTwoBranches(useProxy);
-        calculator.Settings->MinimumDirections = 10;
-        calculator.Settings->MaximumDirections = 500;
-        calculator.Settings->VariationCoefficient = 0.1;
-        calculator.Settings->randomSettings->Seed = 0;
-        calculator.Settings->runSettings->MaxParallelProcesses = 1;
-        calculator.Settings->DirectionSettings->modelVaryingType = varyingType;
-        calculator.Settings->DirectionSettings->Dsdu = dsdu;
+        calculator.Settings.MinimumDirections = 10;
+        calculator.Settings.MaximumDirections = 500;
+        calculator.Settings.VariationCoefficient = 0.1;
+        calculator.Settings.randomSettings->Seed = 0;
+        calculator.Settings.runSettings->MaxParallelProcesses = 1;
+        calculator.Settings.DirectionSettings->modelVaryingType = varyingType;
+        calculator.Settings.DirectionSettings->Dsdu = dsdu;
         modelRunner->ProxySettings->IsProxyModel = useProxy;
 
         auto designPoint = calculator.getDesignPoint(modelRunner);

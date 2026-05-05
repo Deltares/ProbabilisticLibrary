@@ -243,14 +243,14 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
 
-        directionalSampling->Settings->MinimumDirections = this->MinimumDirections;
-        directionalSampling->Settings->MaximumDirections = this->MaximumDirections;
-        directionalSampling->Settings->designPointMethod = this->designPointMethod;
-        directionalSampling->Settings->VariationCoefficient = this->VariationCoefficient;
-        directionalSampling->Settings->runSettings = this->RunSettings;
-        directionalSampling->Settings->randomSettings = this->RandomSettings;
-        directionalSampling->Settings->DirectionSettings = this->DirectionSettings;
-        directionalSampling->Settings->StochastSet = this->StochastSet;
+        directionalSampling->Settings.MinimumDirections = this->MinimumDirections;
+        directionalSampling->Settings.MaximumDirections = this->MaximumDirections;
+        directionalSampling->Settings.designPointMethod = this->designPointMethod;
+        directionalSampling->Settings.VariationCoefficient = this->VariationCoefficient;
+        directionalSampling->Settings.runSettings = this->RunSettings;
+        directionalSampling->Settings.randomSettings = this->RandomSettings;
+        directionalSampling->Settings.DirectionSettings = this->DirectionSettings;
+        directionalSampling->Settings.StochastSet = this->StochastSet;
 
         return directionalSampling;
     }
@@ -304,7 +304,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: GetAdaptiveImportanceSamplingMethod()->Settings->validate(report); break;
-        case ReliabilityMethodType::ReliabilityDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;
+        case ReliabilityMethodType::ReliabilityDirectionalSampling: GetDirectionalSamplingMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityDirectionReliability: GetDirectionReliabilityMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityNumericalBisection: GetNumericalBisectionMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityLatinHyperCube: GetLatinHypercubeMethod()->Settings->validate(report); break;

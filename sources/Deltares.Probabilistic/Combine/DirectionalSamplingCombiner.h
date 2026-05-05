@@ -51,7 +51,7 @@ namespace Deltares::Reliability
             const std::shared_ptr<Models::ProgressIndicator>& progress) override;
 
     private:
-        void fillSettings(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<DirectionalSamplingSettings> settings);
+        static void fillSettings(const CombinedDesignPointModel& model, DirectionalSamplingSettings& settings);
     };
 }
 

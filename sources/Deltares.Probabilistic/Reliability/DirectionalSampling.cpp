@@ -38,19 +38,19 @@ namespace Deltares::Reliability
         double pf = 0;
         double qtot = 0;
         double minBetaDirection = 200; // initialize convergence indicator and loops
-        auto designPointBuilder = DesignPointBuilder (nStochasts, Settings->designPointMethod, Settings->StochastSet);
+        auto designPointBuilder = DesignPointBuilder (nStochasts, Settings.designPointMethod, Settings.StochastSet);
         int parSamples = 0;
 
         std::vector<double> betaValues;
         std::vector<std::shared_ptr<Models::Sample>> samples;
 
-        modelRunner->updateStochastSettings(Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings.StochastSet);
 
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
         auto randomSampleGenerator = Models::RandomSampleGenerator();
-        randomSampleGenerator.Settings = Settings->randomSettings;
-        randomSampleGenerator.Settings->StochastSet = Settings->StochastSet;
+        randomSampleGenerator.Settings = Settings.randomSettings;
+        randomSampleGenerator.Settings->StochastSet = Settings.StochastSet;
         randomSampleGenerator.initialize();
 
         std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(nStochasts);
@@ -64,7 +64,7 @@ namespace Deltares::Reliability
 
         if (modelRunner->Settings->MaxParallelProcesses > 0)
         {
-            if (Settings->runSettings->UseOpenMPinReliability)
+            if (Settings.runSettings->UseOpenMPinReliability)
             {
                 omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
             }
@@ -83,7 +83,7 @@ namespace Deltares::Reliability
         }
 
         // loop for all directions
-        for (int directionIndex = 0; directionIndex < Settings->MaximumDirections && !isStopped(); directionIndex++)
+        for (int directionIndex = 0; directionIndex < Settings.MaximumDirections && !isStopped(); directionIndex++)
         {
             if (directionIndex % chunkSize == 0)
             {
@@ -97,7 +97,7 @@ namespace Deltares::Reliability
 
                 samples.clear();
 
-                int runs = std::min(chunkSize, Settings->MaximumDirections - parSamples * chunkSize);
+                int runs = std::min(chunkSize, Settings.MaximumDirections - parSamples * chunkSize);
 
                 // run max par samples times zrfunc in parallel
                 for (int i = 0; i < runs; i++)
@@ -146,7 +146,7 @@ namespace Deltares::Reliability
             minBetaDirection = std::min(betaDirection, minBetaDirection);
 
             // check on convergence criterion
-            bool enoughSamples = directionIndex >= Settings->MinimumDirections;
+            bool enoughSamples = directionIndex >= Settings.MinimumDirections;
             convergenceReport->TotalDirections = directionIndex+1;
 
             sumWeights += uSurface->Weight;
@@ -168,7 +168,7 @@ namespace Deltares::Reliability
 
                 modelRunner->reportResult(report);
 
-                if (enoughSamples && convergence <= Settings->VariationCoefficient)
+                if (enoughSamples && convergence <= Settings.VariationCoefficient)
                 {
                     break;
                 }
@@ -184,7 +184,7 @@ namespace Deltares::Reliability
         }
 
         convergenceReport->Convergence = getConvergence(pf, sumWeights, sumWeights2, validSamples);
-        convergenceReport->IsConverged = (convergenceReport->Convergence <= Settings->VariationCoefficient);
+        convergenceReport->IsConverged = (convergenceReport->Convergence <= Settings.VariationCoefficient);
 
         auto uDesign = designPointBuilder.getSample();
 
@@ -219,7 +219,7 @@ namespace Deltares::Reliability
         std::vector<DirectionReliabilityDS> directions;
         for (auto& sample : samples)
         {
-            directions.emplace_back(threshold, z0, *Settings->DirectionSettings, *sample);
+            directions.emplace_back(threshold, z0, *Settings.DirectionSettings, *sample);
         }
 
         if ( ! modelRunner.canCalculateBeta())
@@ -234,7 +234,7 @@ namespace Deltares::Reliability
                 }
             }
 
-            auto preComputeDirs = PrecomputeDirections(*Settings->DirectionSettings, z0);
+            auto preComputeDirs = PrecomputeDirections(*Settings.DirectionSettings, z0);
             preComputeDirs.precompute(modelRunner, directions, shouldCompute);
             preComputedCounter += preComputeDirs.GetCounter();
         }
