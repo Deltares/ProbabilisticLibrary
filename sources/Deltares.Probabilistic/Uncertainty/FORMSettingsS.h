@@ -61,7 +61,7 @@ namespace Deltares::Uncertainty
         /**
           * \brief Settings for calculating the gradient at a stochast point
           */
-        std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();
+        Models::GradientSettings GradientSettings = Models::GradientSettings();
 
         /**
          * \brief Quantiles which should be calculated
@@ -71,7 +71,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings RunSettings = Models::RunSettings();
 
         /**
          * \brief Reports whether the settings have valid values
@@ -79,8 +79,8 @@ namespace Deltares::Uncertainty
          */
         void validate(Logging::ValidationReport& report) const
         {
-            GradientSettings->validate(report);
-            RunSettings->validate(report);
+            GradientSettings.validate(report);
+            RunSettings.validate(report);
         }
     };
 }

@@ -50,14 +50,14 @@ namespace Deltares::Uncertainty
     {
         std::shared_ptr<FORMS> form = std::make_shared<FORMS>();
 
-        form->Settings->Minimum = this->MinimumU;
-        form->Settings->Maximum = this->MaximumU;
-        form->Settings->StepSize = this->GlobalStepSize;
-        form->Settings->GradientSettings = this->GradientSettings;
-        form->Settings->RunSettings = this->RunSettings;
-        form->Settings->CalculateCorrelations = this->CalculateCorrelations;
-        form->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
-        form->Settings->RequestedQuantiles = this->RequestedQuantiles;
+        form->Settings.Minimum = this->MinimumU;
+        form->Settings.Maximum = this->MaximumU;
+        form->Settings.StepSize = this->GlobalStepSize;
+        form->Settings.GradientSettings = *this->GradientSettings;
+        form->Settings.RunSettings = *this->RunSettings;
+        form->Settings.CalculateCorrelations = this->CalculateCorrelations;
+        form->Settings.CalculateInputCorrelations = this->CalculateInputCorrelations;
+        form->Settings.RequestedQuantiles = this->RequestedQuantiles;
 
         return form;
     }
@@ -154,7 +154,7 @@ namespace Deltares::Uncertainty
         case UncertaintyMethodType::UncertaintyImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
         case UncertaintyMethodType::UncertaintyNumericalIntegration: GetNumericalIntegrationMethod()->Settings->validate(report); break;
         case UncertaintyMethodType::UncertaintyDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;
-        case UncertaintyMethodType::UncertaintyFORM: GetFORMMethod()->Settings->validate(report); break;
+        case UncertaintyMethodType::UncertaintyFORM: GetFORMMethod()->Settings.validate(report); break;
         case UncertaintyMethodType::UncertaintyFOSM: GetFOSMMethod()->Settings->validate(report); break;
         default: throw Reliability::probLibException("Uncertainty method");
         }

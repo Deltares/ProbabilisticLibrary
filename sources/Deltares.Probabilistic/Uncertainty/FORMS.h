@@ -34,7 +34,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Settings for this algorithm
          */
-        std::shared_ptr<FORMSettingsS> Settings = std::make_shared<FORMSettingsS>();
+        FORMSettingsS Settings = FORMSettingsS();
 
         /**
          * \brief Gets the sensitivity
@@ -43,13 +43,13 @@ namespace Deltares::Uncertainty
          */
         UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
     private:
-        bool isZValid(std::shared_ptr<Models::ModelRunner> modelRunner, double z);
-        bool isMonotone(std::shared_ptr<Models::ModelRunner> modelRunner, double z, double zPrevious, bool ascending);
-        bool isGradientValid(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<double>& gradient);
-        bool isBetaValid(std::shared_ptr<Models::ModelRunner> modelRunner, double beta, double betaPrevious, double requiredBetaIncrement);
-        void repairResults(std::vector<double>& values);
-        bool areResultsValid(std::vector<double>& values);
-        void checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor);
+        static bool isZValid(Models::ModelRunner& modelRunner, double z);
+        static bool isMonotone(Models::ModelRunner& modelRunner, double z, double zPrevious, bool ascending);
+        static bool isGradientValid(Models::ModelRunner& modelRunner, std::vector<double>& gradient);
+        static bool isBetaValid(Models::ModelRunner& modelRunner, double beta, double betaPrevious, double requiredBetaIncrement);
+        static void repairResults(std::vector<double>& values);
+        static bool areResultsValid(const std::vector<double>& values);
+        void checkQuantiles(const Models::ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor);
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, std::shared_ptr<Models::Evaluation>> evaluations;
     };
 }

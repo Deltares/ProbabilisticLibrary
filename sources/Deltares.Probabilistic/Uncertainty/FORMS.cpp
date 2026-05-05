@@ -46,16 +46,16 @@ namespace Deltares::Uncertainty
         int nStochasts = modelRunner->getVaryingStochastCount();
 
         auto gradientCalculator = GradientCalculator();
-        gradientCalculator.Settings = *Settings->GradientSettings;
+        gradientCalculator.Settings = Settings.GradientSettings;
 
         int iteration = 0;
         double zPrevious = std::nan("");
         bool ascending = true;
         double factorBeta = 1;
 
-        double requiredBetaIncrement = Settings->StepSize / 5;
+        double requiredBetaIncrement = Settings.StepSize / 5;
 
-        int maxIterations = static_cast<int>((this->Settings->Maximum - this->Settings->Minimum) / this->Settings->StepSize) + 1;
+        int maxIterations = static_cast<int>((Settings.Maximum - Settings.Minimum) / Settings.StepSize) + 1;
         int performedIterations = 0;
 
         // holds results
@@ -74,14 +74,14 @@ namespace Deltares::Uncertainty
         zeroValue->Reliability = 0;
         cdfCurve->getProperties()->FragilityValues.push_back(zeroValue);
 
-        bool valid = isZValid(modelRunner, z0) && isGradientValid(modelRunner, gradient0);
+        bool valid = isZValid(*modelRunner, z0) && isGradientValid(*modelRunner, gradient0);
 
         modelRunner->reportProgress(++performedIterations, maxIterations);
 
         // ascending part
-        if (valid && Settings->Maximum > 0)
+        if (valid && Settings.Maximum > 0)
         {
-            while (startPoint->getBeta() <= Settings->Maximum)
+            while (startPoint->getBeta() <= Settings.Maximum)
             {
                 std::vector<double> gradient = gradient0;
 
@@ -95,11 +95,11 @@ namespace Deltares::Uncertainty
 
                     modelRunner->reportProgress(++performedIterations, maxIterations);
 
-                    if (!isZValid(modelRunner, z))
+                    if (!isZValid(*modelRunner, z))
                     {
                         break;
                     }
-                    if (!isGradientValid(modelRunner, gradient))
+                    if (!isGradientValid(*modelRunner, gradient))
                     {
                         break;
                     }
@@ -111,13 +111,13 @@ namespace Deltares::Uncertainty
                     }
                     else
                     {
-                        if (!isMonotone(modelRunner, z, zPrevious, ascending))
+                        if (!isMonotone(*modelRunner, z, zPrevious, ascending))
                         {
                             break;
                         }
                     }
 
-                    checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
+                    checkQuantiles(*modelRunner, startPoint, previousPoint, factorBeta);
                 }
 
                 zPrevious = z;
@@ -131,10 +131,10 @@ namespace Deltares::Uncertainty
                     cdfCurve->getProperties()->FragilityValues.push_back(fragilityValue);
                 }
 
-                double stepSize = Settings->StepSize;
+                double stepSize = Settings.StepSize;
                 if (iteration == 0)
                 {
-                    stepSize = std::max(stepSize, Settings->Minimum);
+                    stepSize = std::max(stepSize, Settings.Minimum);
                 }
 
                 double factor = stepSize / Numeric::NumericSupport::GetLength(gradient);
@@ -144,7 +144,7 @@ namespace Deltares::Uncertainty
                 previousPoint = startPoint;
                 startPoint = std::make_shared<Sample>(nextU);
 
-                if (!isBetaValid(modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
+                if (!isBetaValid(*modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
                 {
                     break;
                 }
@@ -152,12 +152,12 @@ namespace Deltares::Uncertainty
                 iteration++;
             }
 
-            const double tolerance = 1E-6;
-            valid &= Numeric::NumericSupport::isGreater(startPoint->getBeta(), Settings->Maximum, tolerance);
+            constexpr double tolerance = 1E-6;
+            valid &= Numeric::NumericSupport::isGreater(startPoint->getBeta(), Settings.Maximum, tolerance);
         }
 
 
-        if (valid && Settings->Minimum < 0)
+        if (valid && Settings.Minimum < 0)
         {
             // reset start point
             iteration = 0;
@@ -167,7 +167,7 @@ namespace Deltares::Uncertainty
 
             startPoint = std::make_shared<Sample>(nStochasts);
 
-            while (startPoint->getBeta() <= std::abs(Settings->Minimum))
+            while (startPoint->getBeta() <= std::abs(Settings.Minimum))
             {
                 std::vector<double> gradient = gradient0;
                 double z = z0;
@@ -178,19 +178,19 @@ namespace Deltares::Uncertainty
                     gradient = gradientCalculator.getGradient(*modelRunner, startPoint);
                     z = startPoint->Z;
 
-                    checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
+                    checkQuantiles(*modelRunner, startPoint, previousPoint, factorBeta);
 
                     modelRunner->reportProgress(++performedIterations, maxIterations);
 
-                    if (!isZValid(modelRunner, z))
+                    if (!isZValid(*modelRunner, z))
                     {
                         break;
                     }
-                    if (!isGradientValid(modelRunner, gradient))
+                    if (!isGradientValid(*modelRunner, gradient))
                     {
                         break;
                     }
-                    if (!isMonotone(modelRunner, z, zPrevious, ascending))
+                    if (!isMonotone(*modelRunner, z, zPrevious, ascending))
                     {
                         break;
                     }
@@ -207,10 +207,10 @@ namespace Deltares::Uncertainty
                     cdfCurve->getProperties()->FragilityValues.push_back(fragilityValue);
                 }
 
-                double stepSize = Settings->StepSize;
+                double stepSize = Settings.StepSize;
                 if (iteration == 0)
                 {
-                    stepSize = std::max(stepSize, -Settings->Maximum);
+                    stepSize = std::max(stepSize, -Settings.Maximum);
                 }
 
                 double factor = stepSize / Numeric::NumericSupport::GetLength(gradient);
@@ -220,7 +220,7 @@ namespace Deltares::Uncertainty
                 std::vector<double> nextU = Numeric::NumericSupport::zip(startPoint->Values, gradient, [factor](double p, double q) { return p - q * factor; });
                 startPoint = std::make_shared<Sample>(nextU);
 
-                if (!isBetaValid(modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
+                if (!isBetaValid(*modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
                 {
                     break;
                 }
@@ -231,13 +231,13 @@ namespace Deltares::Uncertainty
 
         if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
         {
-            std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
-            Uncertainty::UncertaintyResult result = modelRunner->getUncertaintyResult(stochast);
-            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
-            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
+            auto stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
+            UncertaintyResult result = modelRunner->getUncertaintyResult(stochast);
+            auto zeroSample = std::make_shared<Sample>(nStochasts);
+            auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(zeroSample));
             evaluation->Quantile = 0.5;
 
-            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            for (auto& quantile : Settings.RequestedQuantiles)
             {
                 result.quantileEvaluations.push_back(evaluation);
             }
@@ -251,7 +251,7 @@ namespace Deltares::Uncertainty
 
             auto result = modelRunner->getUncertaintyResult(cdfCurve);
 
-            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            for (auto& quantile : Settings.RequestedQuantiles)
             {
                 if (this->evaluations.contains(quantile))
                 {
@@ -268,33 +268,33 @@ namespace Deltares::Uncertainty
         }
     }
 
-    bool FORMS::isZValid(std::shared_ptr<ModelRunner> modelRunner, double z)
+    bool FORMS::isZValid(ModelRunner& modelRunner, double z)
     {
         if (std::isnan(z))
         {
-            modelRunner->reportMessage(Logging::MessageType::Error, "Model result is not valid");
+            modelRunner.reportMessage(Logging::MessageType::Error, "Model result is not valid");
             return false;
         }
 
         return true;
     }
 
-    bool FORMS::isMonotone(std::shared_ptr<ModelRunner> modelRunner, double z, double zPrevious, bool ascending)
+    bool FORMS::isMonotone(ModelRunner& modelRunner, double z, double zPrevious, bool ascending)
     {
         if (z - zPrevious >= 0 != ascending)
         {
-            modelRunner->reportMessage(Logging::MessageType::Error, "Model is not monotone");
+            modelRunner.reportMessage(Logging::MessageType::Error, "Model is not monotone");
             return false;
         }
 
         return true;
     }
 
-    bool FORMS::isGradientValid(std::shared_ptr<ModelRunner> modelRunner, std::vector<double>& gradient)
+    bool FORMS::isGradientValid(ModelRunner& modelRunner, std::vector<double>& gradient)
     {
         if (!areResultsValid(gradient))
         {
-            modelRunner->reportMessage(Logging::MessageType::Error, "Model did not return valid results");
+            modelRunner.reportMessage(Logging::MessageType::Error, "Model did not return valid results");
             return false;
         }
 
@@ -303,23 +303,23 @@ namespace Deltares::Uncertainty
         double gradientLength = Numeric::NumericSupport::GetLength(gradient);
         if (gradientLength < 1E-6)
         {
-            modelRunner->reportMessage(Logging::MessageType::Error, "Model has no gradient");
+            modelRunner.reportMessage(Logging::MessageType::Error, "Model has no gradient");
             return false;
         }
 
         return true;
     }
 
-    bool FORMS::isBetaValid(std::shared_ptr<ModelRunner> modelRunner, double beta, double betaPrevious, double requiredBetaIncrement)
+    bool FORMS::isBetaValid(ModelRunner& modelRunner, double beta, double betaPrevious, double requiredBetaIncrement)
     {
         if (beta < betaPrevious)
         {
-            modelRunner->reportMessage(Logging::MessageType::Error, "Beta decreases with next step");
+            modelRunner.reportMessage(Logging::MessageType::Error, "Beta decreases with next step");
             return false;
         }
         else if (beta < betaPrevious + requiredBetaIncrement)
         {
-            modelRunner->reportMessage(Logging::MessageType::Error, "Beta does not increase enough with step");
+            modelRunner.reportMessage(Logging::MessageType::Error, "Beta does not increase enough with step");
             return false;
         }
 
@@ -337,9 +337,9 @@ namespace Deltares::Uncertainty
         }
     }
 
-    bool FORMS::areResultsValid(std::vector<double>& values)
+    bool FORMS::areResultsValid(const std::vector<double>& values)
     {
-        for (auto& value : values)
+        for (const auto& value : values)
         {
             if (!std::isnan(value))
             {
@@ -350,22 +350,22 @@ namespace Deltares::Uncertainty
         return false;
     }
 
-    void FORMS::checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor)
+    void FORMS::checkQuantiles(const ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor)
     {
-        const double margin = 0.001;
+        constexpr double margin = 0.001;
 
-        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        for (std::shared_ptr<ProbabilityValue>& quantile : Settings.RequestedQuantiles)
         {
             if (!this->evaluations.contains(quantile))
             {
                 if (Numeric::NumericSupport::areEqual(factor * startPoint->getBeta(), quantile->Reliability, margin))
                 {
-                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(startPoint));
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner.getEvaluation(startPoint));
                     this->evaluations[quantile] = evaluation;
                 }
                 else if (Numeric::NumericSupport::areEqual(factor * previousPoint->getBeta(), quantile->Reliability, margin))
                 {
-                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(previousPoint));
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner.getEvaluation(previousPoint));
                     this->evaluations[quantile] = evaluation;
                 }
                 else if (Numeric::NumericSupport::isBetween(factor * previousPoint->getBeta(), quantile->Reliability, factor * startPoint->getBeta(), margin))
@@ -382,7 +382,7 @@ namespace Deltares::Uncertainty
                     }
 
                     std::shared_ptr<Sample> betweenSample = std::make_shared<Sample>(u);
-                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(betweenSample));
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner.getEvaluation(betweenSample));
                     this->evaluations[quantile] = evaluation;
                 }
             }
