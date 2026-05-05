@@ -346,8 +346,8 @@ namespace Deltares::Probabilistic::Test
             calculator.Settings.importanceSamplingSettings.MaximumSamples = 10000;
             calculator.Settings.MinVarianceLoops = 2;
             calculator.Settings.MaxVarianceLoops = 8;
-            calculator.Settings.importanceSamplingSettings.randomSettings->Seed = seed;
-            calculator.Settings.importanceSamplingSettings.runSettings->MaxParallelProcesses = 1;
+            calculator.Settings.importanceSamplingSettings.randomSettings.Seed = seed;
+            calculator.Settings.importanceSamplingSettings.runSettings.MaxParallelProcesses = 1;
             calculator.Settings.Clustering = true;
             calculator.Settings.clusterSettings.MaxClusters = 4;
             calculator.Settings.clusterSettings.clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus;

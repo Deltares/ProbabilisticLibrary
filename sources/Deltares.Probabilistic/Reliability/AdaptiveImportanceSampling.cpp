@@ -44,16 +44,16 @@ namespace Deltares::Reliability
     {
         this->importanceSampling = std::make_shared<ImportanceSampling>();
         importanceSampling->Settings = Settings.importanceSamplingSettings.clone();
-        importanceSampling->Settings->startPointSettings->StartMethod = StartMethodType::FixedValue;
+        importanceSampling->Settings.startPointSettings.StartMethod = StartMethodType::FixedValue;
 
-        modelRunner->updateStochastSettings(*importanceSampling->Settings->StochastSet);
+        modelRunner->updateStochastSettings(importanceSampling->Settings.StochastSet);
 
         std::vector<std::shared_ptr<DesignPoint>> previousDesignPoints = std::vector<std::shared_ptr<DesignPoint>>();
 
         // initialize
         auto startPointCalculator = StartPointCalculator();
         startPointCalculator.Settings = Settings.startPointSettings;
-        startPointCalculator.Settings.StochastSet = *importanceSampling->Settings->StochastSet;
+        startPointCalculator.Settings.StochastSet = importanceSampling->Settings.StochastSet;
 
         const std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
         this->lastStartPoint = startPoint;
@@ -64,7 +64,7 @@ namespace Deltares::Reliability
             startDesignPoint->Identifier = "Start point";
             previousDesignPoints.push_back(startDesignPoint);
         }
-        importanceSampling->Settings->StochastSet->setStartPoint(startPoint);
+        importanceSampling->Settings.StochastSet.setStartPoint(startPoint);
 
         modelRunner->doTextualProgress(ProgressType::Global, "Calculating design point.");
 
@@ -74,15 +74,15 @@ namespace Deltares::Reliability
 
             if (Settings.AutoMaximumSamples)
             {
-                importanceSampling->Settings->MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
-                importanceSampling->Settings->MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamples;
+                importanceSampling->Settings.MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
+                importanceSampling->Settings.MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamples;
             }
             else
             {
-                importanceSampling->Settings->MaximumSamples = std::min(
+                importanceSampling->Settings.MaximumSamples = std::min(
                     Settings.importanceSamplingSettings.MaximumSamplesNoResult,
                     Settings.importanceSamplingSettings.MaximumSamples);
-                importanceSampling->Settings->MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamplesNoResult;
+                importanceSampling->Settings.MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamplesNoResult;
             }
 
             int loopCounter = 1;
@@ -93,14 +93,14 @@ namespace Deltares::Reliability
 
             designPoint->convergenceReport->VarianceFactor = Settings.VarianceFactor;
 
-            bool fullExecuted = importanceSampling->Settings->MaximumSamples == Settings.importanceSamplingSettings.MaximumSamples;
+            bool fullExecuted = importanceSampling->Settings.MaximumSamples == Settings.importanceSamplingSettings.MaximumSamples;
             bool hasChanged = true;
 
             while (!isStopped() && hasChanged && isNextLoopAllowed(loopCounter, *designPoint->convergenceReport, *designPoint))
             {
                 loopCounter++;
 
-                const std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = importanceSampling->Settings;
+                const ImportanceSamplingSettings importanceSamplingSettings = importanceSampling->Settings;
 
                 importanceSampling = std::make_shared<ImportanceSampling>();
                 importanceSampling->Settings = importanceSamplingSettings;
@@ -120,8 +120,8 @@ namespace Deltares::Reliability
                 {
                     if (loopCounter == Settings.MaxVarianceLoops)
                     {
-                        importanceSampling->Settings->MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
-                        importanceSampling->Settings->MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamplesNoResult;
+                        importanceSampling->Settings.MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
+                        importanceSampling->Settings.MaximumSamplesNoResult = Settings.importanceSamplingSettings.MaximumSamplesNoResult;
                     }
 
                     std::string identifier = std::format("Variance loop {0:}", loopCounter - 1);
@@ -138,22 +138,22 @@ namespace Deltares::Reliability
 
                     designPoint->convergenceReport->VarianceFactor = Settings.VarianceFactor;
 
-                    fullExecuted = importanceSampling->Settings->MaximumSamples == Settings.importanceSamplingSettings.MaximumSamples;
+                    fullExecuted = importanceSampling->Settings.MaximumSamples == Settings.importanceSamplingSettings.MaximumSamples;
                 }
             }
 
             if (!fullExecuted)
             {
-                const std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = importanceSampling->Settings;
+                const ImportanceSamplingSettings importanceSamplingSettings = importanceSampling->Settings;
 
                 importanceSampling = std::make_shared<ImportanceSampling>();
                 importanceSampling->Settings = importanceSamplingSettings;
 
                 setCallbacks(loopCounter);
 
-                setFactor(*importanceSampling->Settings->StochastSet, Settings.VarianceFactor);
+                setFactor(importanceSampling->Settings.StochastSet, Settings.VarianceFactor);
 
-                importanceSampling->Settings->MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
+                importanceSampling->Settings.MaximumSamples = Settings.importanceSamplingSettings.MaximumSamples;
 
                 designPoint = importanceSampling->getDesignPoint(modelRunner);
                 designPoint->convergenceReport->VarianceFactor = Settings.VarianceFactor;
@@ -244,7 +244,7 @@ namespace Deltares::Reliability
     {
         if (loopCounter < Settings.MaxVarianceLoops && clusterSamples.size() < Settings.MinimumFailedSamples && Settings.LoopVarianceIncrement > 0)
         {
-            this->addFactor(*importanceSampling->Settings->StochastSet, Settings.LoopVarianceIncrement);
+            this->addFactor(importanceSampling->Settings.StochastSet, Settings.LoopVarianceIncrement);
             return true;
         }
         else
@@ -253,12 +253,12 @@ namespace Deltares::Reliability
             std::vector<std::shared_ptr<Sample>> newClusterCenters = this->getClusterCenters(this->clusterSamples);
 
             // check whether there is a change
-            bool hasChanged = newClusterCenters.size() != this->importanceSampling->Settings->Clusters.size();
+            bool hasChanged = newClusterCenters.size() != this->importanceSampling->Settings.Clusters.size();
             if (!hasChanged)
             {
                 for (size_t i = 0; i < newClusterCenters.size(); i++)
                 {
-                    hasChanged |= !newClusterCenters[i]->areValuesEqual(this->importanceSampling->Settings->Clusters[i]);
+                    hasChanged |= !newClusterCenters[i]->areValuesEqual(this->importanceSampling->Settings.Clusters[i]);
                 }
             }
 
@@ -266,14 +266,14 @@ namespace Deltares::Reliability
 
             if (hasChanged)
             {
-                this->importanceSampling->Settings->Clusters.clear();
+                this->importanceSampling->Settings.Clusters.clear();
 
                 for (std::shared_ptr<Sample> center : this->getClusterCenters(this->clusterSamples))
                 {
-                    this->importanceSampling->Settings->Clusters.push_back(center);
+                    this->importanceSampling->Settings.Clusters.push_back(center);
                 }
 
-                this->setFactor(*importanceSampling->Settings->StochastSet, Settings.VarianceFactor);
+                this->setFactor(importanceSampling->Settings.StochastSet, Settings.VarianceFactor);
             }
 
             return hasChanged;
@@ -297,7 +297,7 @@ namespace Deltares::Reliability
         switch (loopMeasureType)
         {
         case IncreaseVariance:
-            this->addFactor(*importanceSampling->Settings->StochastSet, Settings.LoopVarianceIncrement);
+            this->addFactor(importanceSampling->Settings.StochastSet, Settings.LoopVarianceIncrement);
             return true;
         case CopyDesignPoint:
         {
@@ -306,8 +306,8 @@ namespace Deltares::Reliability
             if (this->lastStartPoint != nullptr && !this->lastStartPoint->areValuesEqual(newStartPoint))
             {
                 this->lastStartPoint = newStartPoint;
-                importanceSampling->Settings->StochastSet->setStartPoint(newStartPoint);
-                this->setFactor(*importanceSampling->Settings->StochastSet, Settings.VarianceFactor);
+                importanceSampling->Settings.StochastSet.setStartPoint(newStartPoint);
+                this->setFactor(importanceSampling->Settings.StochastSet, Settings.VarianceFactor);
 
                 return true;
             }
@@ -379,7 +379,7 @@ namespace Deltares::Reliability
 
     void AdaptiveImportanceSampling::reportVarianceLoop(ModelRunner& modelRunner, const int loopCounter) const
     {
-        for (const std::shared_ptr<Sample>& center : importanceSampling->Settings->Clusters)
+        for (const std::shared_ptr<Sample>& center : importanceSampling->Settings.Clusters)
         {
             modelRunner.reportMessage(Logging::MessageType::Info,
                 "Cluster = (" + Numeric::NumericSupport::ConvertToString(center->Values, ", ") + ")");

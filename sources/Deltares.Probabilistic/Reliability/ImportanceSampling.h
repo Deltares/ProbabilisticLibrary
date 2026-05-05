@@ -32,13 +32,13 @@ namespace Deltares::Reliability
     class ImportanceSampling : public ReliabilityMethod
     {
     public:
-        std::shared_ptr<ImportanceSamplingSettings> Settings = std::make_shared<ImportanceSamplingSettings>();
+        ImportanceSamplingSettings Settings = ImportanceSamplingSettings();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         void setSampleLambda(RegisterSampleLambda sampleFunction);
         void setBreakLoopLambda(BreakLoopLambda breakFunction);
         bool isValid() override
         {
-            return this->Settings->isValid();
+            return this->Settings.isValid();
         }
 
     private:

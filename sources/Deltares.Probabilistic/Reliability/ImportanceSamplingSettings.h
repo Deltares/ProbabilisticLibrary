@@ -63,28 +63,28 @@ namespace Deltares::Reliability
         /**
          * \brief Settings how to derive the first center
          */
-        std::shared_ptr<StartPointCalculatorSettings> startPointSettings = std::make_shared<StartPointCalculatorSettings>();
+        StartPointCalculatorSettings startPointSettings = StartPointCalculatorSettings();
 
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings runSettings = Models::RunSettings();
 
         /**
          * \brief Settings per stochastic variable, contains (among others) the center value and multiplication factor used to shift samples in the importance sampling algorithm
          */
-        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+        StochastSettingsSet StochastSet = StochastSettingsSet();
 
-        std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
+        Models::RandomSettings randomSettings = Models::RandomSettings();
 
         bool Clustering = false;
         std::vector<std::shared_ptr<Models::Sample>> Clusters;
 
         void validateStochastSettings(Logging::ValidationReport& report) const
         {
-            for (int i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
+            for (int i = 0; i < StochastSet.getVaryingStochastCount(); i++)
             {
-                std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
+                std::shared_ptr<StochastSettings> stochastSettings = StochastSet.VaryingStochastSettings[i];
 
                 Logging::ValidationSupport::checkMinimum(report, 0.01, stochastSettings->VarianceFactor, "variance factor");
                 Logging::ValidationSupport::checkMinimum(report, -Statistics::StandardNormal::UMax, stochastSettings->StartValue, "start value");
@@ -106,36 +106,36 @@ namespace Deltares::Reliability
 
             validateStochastSettings(report);
 
-            runSettings->validate(report);
+            runSettings.validate(report);
         }
 
         /**
          * \brief Makes a copy of these settings (deep copy of stochast settings)
          * \return Copy
          */
-        std::shared_ptr<ImportanceSamplingSettings> clone()
+        ImportanceSamplingSettings clone() const
         {
-            std::shared_ptr<ImportanceSamplingSettings> clone = std::make_shared<ImportanceSamplingSettings>();
+            ImportanceSamplingSettings clone = ImportanceSamplingSettings();
 
-            clone->MaximumSamples = this->MaximumSamples;
-            clone->MaximumSamplesNoResult = this->MaximumSamplesNoResult;
-            clone->MinimumSamples = this->MinimumSamples;
-            clone->VarianceFactor = this->VarianceFactor;
-            clone->VariationCoefficient = this->VariationCoefficient;
-            clone->designPointMethod = this->designPointMethod;
+            clone.MaximumSamples = this->MaximumSamples;
+            clone.MaximumSamplesNoResult = this->MaximumSamplesNoResult;
+            clone.MinimumSamples = this->MinimumSamples;
+            clone.VarianceFactor = this->VarianceFactor;
+            clone.VariationCoefficient = this->VariationCoefficient;
+            clone.designPointMethod = this->designPointMethod;
 
             // move to adaptive importance sampling settings
-            clone->Clustering = this->Clustering;
+            clone.Clustering = this->Clustering;
 
-            clone->StochastSet->AreStartValuesCorrelated = this->StochastSet->AreStartValuesCorrelated;
+            clone.StochastSet.AreStartValuesCorrelated = StochastSet.AreStartValuesCorrelated;
 
-            clone->runSettings = this->runSettings;
-            clone->randomSettings = this->randomSettings;
-            clone->startPointSettings = this->startPointSettings->clone();
+            clone.runSettings = this->runSettings;
+            clone.randomSettings = this->randomSettings;
+            clone.startPointSettings = this->startPointSettings.clone();
 
-            for (size_t i = 0; i < this->StochastSet->getStochastCount(); i++)
+            for (int i = 0; i < StochastSet.getStochastCount(); i++)
             {
-                clone->StochastSet->stochastSettings.push_back(this->StochastSet->stochastSettings[i]->clone());
+                clone.StochastSet.stochastSettings.push_back(StochastSet.stochastSettings[i]->clone());
             }
 
             return clone;

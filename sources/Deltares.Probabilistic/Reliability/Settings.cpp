@@ -191,15 +191,15 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
 
-        importanceSampling->Settings->MinimumSamples = this->MinimumSamples;
-        importanceSampling->Settings->MaximumSamples = this->MaximumSamples;
-        importanceSampling->Settings->designPointMethod = this->designPointMethod;
-        importanceSampling->Settings->VarianceFactor = this->VarianceFactor;
-        importanceSampling->Settings->VariationCoefficient = this->VariationCoefficient;
-        importanceSampling->Settings->startPointSettings = this->StartPointSettings;
-        importanceSampling->Settings->runSettings = this->RunSettings;
-        importanceSampling->Settings->randomSettings = this->RandomSettings;
-        importanceSampling->Settings->StochastSet = this->StochastSet;
+        importanceSampling->Settings.MinimumSamples = this->MinimumSamples;
+        importanceSampling->Settings.MaximumSamples = this->MaximumSamples;
+        importanceSampling->Settings.designPointMethod = this->designPointMethod;
+        importanceSampling->Settings.VarianceFactor = this->VarianceFactor;
+        importanceSampling->Settings.VariationCoefficient = this->VariationCoefficient;
+        importanceSampling->Settings.startPointSettings = *this->StartPointSettings;
+        importanceSampling->Settings.runSettings = *this->RunSettings;
+        importanceSampling->Settings.randomSettings = *this->RandomSettings;
+        importanceSampling->Settings.StochastSet = *this->StochastSet;
 
         return importanceSampling;
     }
@@ -214,10 +214,10 @@ namespace Deltares::Reliability
         adaptiveImportanceSampling->Settings.importanceSamplingSettings.designPointMethod = this->designPointMethod;
         adaptiveImportanceSampling->Settings.importanceSamplingSettings.VariationCoefficient = this->VariationCoefficient;
         adaptiveImportanceSampling->Settings.importanceSamplingSettings.VarianceFactor = this->VarianceFactor;
-        adaptiveImportanceSampling->Settings.importanceSamplingSettings.runSettings = this->RunSettings;
-        adaptiveImportanceSampling->Settings.importanceSamplingSettings.randomSettings = this->RandomSettings;
-        adaptiveImportanceSampling->Settings.importanceSamplingSettings.startPointSettings = this->StartPointSettings;
-        adaptiveImportanceSampling->Settings.importanceSamplingSettings.StochastSet = this->StochastSet;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.runSettings = *this->RunSettings;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.randomSettings = *this->RandomSettings;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.startPointSettings = *this->StartPointSettings;
+        adaptiveImportanceSampling->Settings.importanceSamplingSettings.StochastSet = *this->StochastSet;
 
         adaptiveImportanceSampling->Settings.MinVarianceLoops = this->MinimumVarianceLoops;
         adaptiveImportanceSampling->Settings.MaxVarianceLoops = this->MaximumVarianceLoops;
@@ -295,12 +295,12 @@ namespace Deltares::Reliability
 
     void Settings::validate(Logging::ValidationReport& report) const
     {
-        switch (this->ReliabilityMethod)
+        switch (ReliabilityMethod)
         {
         case ReliabilityMethodType::ReliabilityFORM: GetFORMMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityNumericalIntegration: GetNumericalIntegrationMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings.validate(report); break;
-        case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
+        case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: GetAdaptiveImportanceSamplingMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityDirectionalSampling: GetDirectionalSamplingMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityDirectionReliability: GetDirectionReliabilityMethod()->Settings->validate(report); break;

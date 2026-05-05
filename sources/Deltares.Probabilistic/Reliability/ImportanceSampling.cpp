@@ -55,14 +55,14 @@ namespace Deltares::Reliability
 
     std::shared_ptr<DesignPoint> ImportanceSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(*Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings.StochastSet);
 
-        std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
+        std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(Settings.StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
 
         auto sampleCreator = RandomSampleGenerator();
-        sampleCreator.Settings = *Settings->randomSettings;
-        sampleCreator.Settings.StochastSet = *Settings->StochastSet;
+        sampleCreator.Settings = Settings.randomSettings;
+        sampleCreator.Settings.StochastSet = Settings.StochastSet;
         sampleCreator.sampleProvider = sampleProvider;
         sampleCreator.initialize();
 
@@ -85,9 +85,9 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters;
 
         std::shared_ptr<ImportanceSamplingCluster> combinedCluster = std::make_shared<ImportanceSamplingCluster>();
-        combinedCluster->Center = Settings->StochastSet->getStartPoint();
+        combinedCluster->Center = Settings.StochastSet.getStartPoint();
 
-        std::vector<double> factors = getFactors(*Settings->StochastSet);
+        std::vector<double> factors = getFactors(Settings.StochastSet);
 
         double dimensionality = ImportanceSamplingSupport::getDimensionality(factors);
 
@@ -99,7 +99,7 @@ namespace Deltares::Reliability
         auto breakLoop = false;
 
         // loop over the samples
-        for (auto sampleIndex = 0; sampleIndex < Settings->MaximumSamples + 1 && !isStopped() && !breakLoop; sampleIndex++)
+        for (auto sampleIndex = 0; sampleIndex < Settings.MaximumSamples + 1 && !isStopped() && !breakLoop; sampleIndex++)
         {
             breakLoop = false;
 
@@ -112,7 +112,7 @@ namespace Deltares::Reliability
 
                 int chunkSize = modelRunner->Settings->MaxChunkSize;
 
-                int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
+                int runs = std::min(chunkSize, Settings.MaximumSamples + 1 - sampleIndex);
 
                 if (initial)
                 {
@@ -157,11 +157,11 @@ namespace Deltares::Reliability
                     z0Fac = getZFactor(zValues[0]);
                     z0Ignore = std::isnan(zValues[0]);
 
-                    combinedCluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
+                    combinedCluster->initialize(nStochasts, z0Fac, z0Ignore, Settings.designPointMethod, Settings.StochastSet);
 
                     for (const std::shared_ptr<ImportanceSamplingCluster>& cluster : clusterResults)
                     {
-                        cluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
+                        cluster->initialize(nStochasts, z0Fac, z0Ignore, Settings.designPointMethod, Settings.StochastSet);
                     }
                 }
 
@@ -191,11 +191,11 @@ namespace Deltares::Reliability
                 z0Fac = getZFactor(z);
                 z0Ignore = std::isnan(z);
 
-                combinedCluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
+                combinedCluster->initialize(nStochasts, z0Fac, z0Ignore, Settings.designPointMethod, Settings.StochastSet);
 
                 for (const std::shared_ptr<ImportanceSamplingCluster>& cluster : clusterResults)
                 {
-                    cluster->initialize(nStochasts, z0Fac, z0Ignore, this->Settings->designPointMethod, this->Settings->StochastSet);
+                    cluster->initialize(nStochasts, z0Fac, z0Ignore, Settings.designPointMethod, Settings.StochastSet);
                 }
 
                 initial = false;
@@ -204,7 +204,7 @@ namespace Deltares::Reliability
 
             if (std::isnan(z))
             {
-                if (prematureExit(*Settings, sampleCluster->TotalCount, sampleIndex))
+                if (prematureExit(Settings, sampleCluster->TotalCount, sampleIndex))
                 {
                     this->report(*modelRunner, sampleIndex);
 
@@ -235,7 +235,7 @@ namespace Deltares::Reliability
             convergenceReport->FailFraction = combinedCluster->FailFraction;
 
             // check if convergence is reached (or stop criterion)
-            bool enoughSamples = sampleIndex >= Settings->MinimumSamples;
+            bool enoughSamples = sampleIndex >= Settings.MinimumSamples;
             double probFailure = getProbabilityOfFailure(clusterResults);
 
             // if there is at least one failure and at least one non-failure observed
@@ -255,7 +255,7 @@ namespace Deltares::Reliability
             else
             {
                 // TODO: 
-                breakLoop = breakLoopWithNoFailureObs(*modelRunner, *Settings, sampleIndex, reported);
+                breakLoop = breakLoopWithNoFailureObs(*modelRunner, Settings, sampleIndex, reported);
             }
         }
 
@@ -310,7 +310,7 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
         report->Step = nmaal;
-        report->MaxSteps = Settings->MaximumSamples;
+        report->MaxSteps = Settings.MaximumSamples;
 
         if (pf > 0 && pf < 1)
         {
@@ -319,9 +319,9 @@ namespace Deltares::Reliability
             report->Variation = convergence;
 
             modelRunner.reportResult(report);
-            bool enoughSamples = nmaal >= Settings->MinimumSamples;
+            bool enoughSamples = nmaal >= Settings.MinimumSamples;
 
-            return enoughSamples && convergence < Settings->VariationCoefficient;
+            return enoughSamples && convergence < Settings.VariationCoefficient;
         }
         else
         {
@@ -378,7 +378,7 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
         report->Index = sampleIndex;
-        report->MaxSteps = Settings->MaximumSamples;
+        report->MaxSteps = Settings.MaximumSamples;
 
         modelRunner.reportResult(report);
     }
@@ -422,13 +422,13 @@ namespace Deltares::Reliability
 
         std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters;
 
-        if ( ! Settings->Clusters.empty())
+        if ( ! Settings.Clusters.empty())
         {
-            for (size_t i = 0; i < this->Settings->Clusters.size(); i++)
+            for (size_t i = 0; i < Settings.Clusters.size(); i++)
             {
                 std::shared_ptr<ImportanceSamplingCluster> cluster = std::make_shared<ImportanceSamplingCluster>();
-                cluster->Center = this->Settings->Clusters[i];
-                cluster->designPointBuilder = DesignPointBuilder(this->Settings->StochastSet->getVaryingStochastCount(), this->Settings->designPointMethod, this->Settings->StochastSet);
+                cluster->Center = Settings.Clusters[i];
+                cluster->designPointBuilder = DesignPointBuilder(Settings.StochastSet.getVaryingStochastCount(), Settings.designPointMethod, Settings.StochastSet);
 
                 clusters.push_back(cluster);
             }
@@ -436,12 +436,12 @@ namespace Deltares::Reliability
         else
         {
             auto startPointCalculator = StartPointCalculator();
-            startPointCalculator.Settings = *Settings->startPointSettings;
-            startPointCalculator.Settings.StochastSet = *Settings->StochastSet;
+            startPointCalculator.Settings = Settings.startPointSettings;
+            startPointCalculator.Settings.StochastSet = Settings.StochastSet;
 
             std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(modelRunner);
 
-            if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
+            if (Settings.startPointSettings.StartMethod != StartMethodType::FixedValue)
             {
                 startDesignPoint = modelRunner.getDesignPoint(startPoint, startPoint->getBeta());
                 startDesignPoint->Identifier = "Start point";
@@ -449,7 +449,7 @@ namespace Deltares::Reliability
 
             std::shared_ptr<ImportanceSamplingCluster> cluster = std::make_shared<ImportanceSamplingCluster>();
             cluster->Center = startPoint;
-            cluster->designPointBuilder = DesignPointBuilder(this->Settings->StochastSet->getVaryingStochastCount(), this->Settings->designPointMethod, this->Settings->StochastSet);
+            cluster->designPointBuilder = DesignPointBuilder(Settings.StochastSet.getVaryingStochastCount(), Settings.designPointMethod, Settings.StochastSet);
 
             clusters.push_back(cluster);
         }

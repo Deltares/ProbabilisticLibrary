@@ -48,18 +48,18 @@ namespace Deltares::Reliability
         else throw probLibException("Start point method");
     }
 
-    std::shared_ptr<StartPointCalculatorSettings> StartPointCalculatorSettings::clone() const
+    StartPointCalculatorSettings StartPointCalculatorSettings::clone() const
     {
-        auto copy = std::make_shared<StartPointCalculatorSettings>();
+        auto copy = StartPointCalculatorSettings();
 
-        copy->GradientStepSize = this->GradientStepSize;
-        copy->MaximumLengthStartPoint = this->MaximumLengthStartPoint;
-        copy->RadiusSphereSearch = this->RadiusSphereSearch;
-        copy->StartMethod = this->StartMethod;
-        copy->allQuadrants = this->allQuadrants;
-        copy->maxStepsSphereSearch = this->maxStepsSphereSearch;
+        copy.GradientStepSize = this->GradientStepSize;
+        copy.MaximumLengthStartPoint = this->MaximumLengthStartPoint;
+        copy.RadiusSphereSearch = this->RadiusSphereSearch;
+        copy.StartMethod = this->StartMethod;
+        copy.allQuadrants = this->allQuadrants;
+        copy.maxStepsSphereSearch = this->maxStepsSphereSearch;
 
-        copy->StochastSet = this->StochastSet;
+        copy.StochastSet = this->StochastSet;
 
         return copy;
     }

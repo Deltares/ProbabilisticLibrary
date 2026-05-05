@@ -92,7 +92,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return dsfi; }
     case (ProbMethod::IM): {
         auto impSampling = std::make_shared<ImportanceSampling>();
-        fillImportanceSamplingSettings(*impSampling->Settings, bs, stochasts);
+        fillImportanceSamplingSettings(impSampling->Settings, bs, stochasts);
         return impSampling; }
     case (ProbMethod::AdaptiveIM): {
         auto AdaptImpSampling = std::make_shared<AdaptiveImportanceSampling>();
@@ -244,7 +244,7 @@ void createReliabilityMethod::fillImportanceSamplingSettings(ImportanceSamplingS
                                                              const basicSettings& bs,
                                                              std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
-    settings.randomSettings = std::make_shared<RandomSettings>(getRnd(bs));
+    settings.randomSettings = getRnd(bs);
     settings.VariationCoefficient = bs.tolB;
     settings.MinimumSamples = bs.minSamples;
     settings.MaximumSamples = bs.maxSamples;
@@ -258,6 +258,6 @@ void createReliabilityMethod::fillImportanceSamplingSettings(ImportanceSamplingS
         auto s = std::make_shared<StochastSettings>();
         s->stochast = stochasts[i];
         s->VarianceFactor = bs.varianceFactor;
-        settings.StochastSet->stochastSettings.push_back(s);
+        settings.StochastSet.stochastSettings.push_back(s);
     }
 }

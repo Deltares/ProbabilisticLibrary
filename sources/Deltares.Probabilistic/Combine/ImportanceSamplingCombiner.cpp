@@ -258,18 +258,18 @@ namespace Deltares::Reliability
     }
 
     void ImportanceSamplingCombiner::fillSettingsSeries(const std::shared_ptr<DesignPoint>& startPoint, const
-                                                        std::shared_ptr<CombinedDesignPointModel>& model, const
-                                                        std::shared_ptr<ImportanceSamplingSettings>& settings)
+                                                        std::shared_ptr<CombinedDesignPointModel>& model,
+                                                        ImportanceSamplingSettings& settings)
     {
-        settings->MinimumSamples = 2000;
-        settings->MaximumSamples = 10000;
-        settings->VariationCoefficient = 0.1;
-        settings->designPointMethod = DesignPointMethod::NearestToMean; // result will be ignored, fastest option
-        settings->randomSettings->SkipUnvaryingParameters = false;
+        settings.MinimumSamples = 2000;
+        settings.MaximumSamples = 10000;
+        settings.VariationCoefficient = 0.1;
+        settings.designPointMethod = DesignPointMethod::NearestToMean; // result will be ignored, fastest option
+        settings.randomSettings.SkipUnvaryingParameters = false;
 
         for (size_t i = 0; i < model->stochasts.size(); i++)
         {
-            std::shared_ptr<StochastSettings> stochastSetting = std::make_shared<StochastSettings>();
+            auto stochastSetting = std::make_shared<StochastSettings>();
             stochastSetting->stochast = model->standardNormalStochasts[i];
             stochastSetting->VarianceFactor = 1;
             stochastSetting->StartValue = 0;
@@ -280,7 +280,7 @@ namespace Deltares::Reliability
                 stochastSetting->StartValue = alpha->U;
             }
 
-            settings->StochastSet->stochastSettings.push_back(stochastSetting);
+            settings.StochastSet.stochastSettings.push_back(stochastSetting);
         }
     }
 
@@ -378,14 +378,14 @@ namespace Deltares::Reliability
         return bestDesignPoint;
     }
 
-    void ImportanceSamplingCombiner::fillSettingsParallel(const std::shared_ptr<CombinedDesignPointModel>& model, const
-                                                          std::shared_ptr<ImportanceSamplingSettings>& settings, double factor)
+    void ImportanceSamplingCombiner::fillSettingsParallel(const std::shared_ptr<CombinedDesignPointModel>& model,
+                                                          ImportanceSamplingSettings& settings, double factor)
     {
-        settings->MinimumSamples = 20000;
-        settings->MaximumSamples = 100000;
-        settings->VariationCoefficient = 0.1;
-        settings->designPointMethod = DesignPointMethod::CenterOfGravity; // result will be ignored, fastest option
-        settings->randomSettings->SkipUnvaryingParameters = false;
+        settings.MinimumSamples = 20000;
+        settings.MaximumSamples = 100000;
+        settings.VariationCoefficient = 0.1;
+        settings.designPointMethod = DesignPointMethod::CenterOfGravity; // result will be ignored, fastest option
+        settings.randomSettings.SkipUnvaryingParameters = false;
 
         for (size_t i = 0; i < model->stochasts.size(); i++)
         {
@@ -394,7 +394,7 @@ namespace Deltares::Reliability
             stochastSetting->VarianceFactor = 1;
             stochastSetting->StartValue = factor * model->getStartValue(model->stochasts[i]);
 
-            settings->StochastSet->stochastSettings.push_back(stochastSetting);
+            settings.StochastSet.stochastSettings.push_back(stochastSetting);
         }
     }
 }

@@ -25,7 +25,7 @@
 
 namespace Deltares::Reliability
 {
-    void ImportanceSamplingCluster::initialize(int nStochasts, double z0Fac, bool z0Ignore, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet)
+    void ImportanceSamplingCluster::initialize(int nStochasts, double z0Fac, bool z0Ignore, DesignPointMethod method, const StochastSettingsSet& stochastSet)
     {
         this->z0Fac = z0Fac;
         this->z0Ignore = z0Ignore;

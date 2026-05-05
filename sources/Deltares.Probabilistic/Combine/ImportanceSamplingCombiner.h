@@ -110,7 +110,7 @@ namespace Deltares::Reliability
          * \param settings Settings to be filled
          */
         static void fillSettingsSeries(const std::shared_ptr<DesignPoint>& startPoint, const std::shared_ptr<CombinedDesignPointModel>&
-                                       model, const std::shared_ptr<ImportanceSamplingSettings>& settings);
+                                       model, ImportanceSamplingSettings& settings);
 
         /**
          * \brief Fills the settings for parallel algorithm
@@ -118,8 +118,8 @@ namespace Deltares::Reliability
          * \param settings Settings to be filled
          * \param factor multiplication factor for settings
          */
-        static void fillSettingsParallel(const std::shared_ptr<CombinedDesignPointModel>& model, const std::shared_ptr<ImportanceSamplingSettings>&
-                                         settings, double factor);
+        static void fillSettingsParallel(const std::shared_ptr<CombinedDesignPointModel>& model,
+            ImportanceSamplingSettings& settings, double factor);
 
     };
 }

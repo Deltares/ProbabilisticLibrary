@@ -46,7 +46,7 @@ namespace Deltares::Reliability
         bool allQuadrants = false;
         int maxStepsSphereSearch = 5;
 
-        std::shared_ptr<StartPointCalculatorSettings> clone() const;
+        StartPointCalculatorSettings clone() const;
 
         void validate(Logging::ValidationReport& report) const;
 
