@@ -55,16 +55,16 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<FORM> form = std::make_shared<FORM>();
 
-        form->Settings->EpsilonBeta = this->EpsilonBeta;
-        form->Settings->FilterAtNonConvergence = this->FilterAtNonConvergence;
-        form->Settings->MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
-        form->Settings->MaximumIterations = this->MaximumIterations;
-        form->Settings->RelaxationFactor = this->RelaxationFactor;
-        form->Settings->RelaxationLoops = this->RelaxationLoops;
-        form->Settings->GradientSettings = this->GradientSettings;
-        form->Settings->RunSettings = this->RunSettings;
-        form->Settings->StartPointSettings = this->StartPointSettings;
-        form->Settings->StochastSet = this->StochastSet;
+        form->Settings.EpsilonBeta = this->EpsilonBeta;
+        form->Settings.FilterAtNonConvergence = this->FilterAtNonConvergence;
+        form->Settings.MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
+        form->Settings.MaximumIterations = this->MaximumIterations;
+        form->Settings.RelaxationFactor = this->RelaxationFactor;
+        form->Settings.RelaxationLoops = this->RelaxationLoops;
+        form->Settings.GradientSettings = this->GradientSettings;
+        form->Settings.RunSettings = this->RunSettings;
+        form->Settings.StartPointSettings = this->StartPointSettings;
+        form->Settings.StochastSet = this->StochastSet;
 
         return form;
     }
@@ -299,7 +299,7 @@ namespace Deltares::Reliability
     {
         switch (this->ReliabilityMethod)
         {
-        case ReliabilityMethodType::ReliabilityFORM: GetFORMMethod()->Settings->validate(report); break;
+        case ReliabilityMethodType::ReliabilityFORM: GetFORMMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityNumericalIntegration: GetNumericalIntegrationMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;

@@ -78,7 +78,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return ds; }
     case (ProbMethod::FORM): {
         auto form = std::make_shared<FORM>();
-        fillFormSettings(*form->Settings, bs, number_of_stochasts);
+        fillFormSettings(form->Settings, bs, number_of_stochasts);
         return form; }
     case (ProbMethod::FDIR): {
         auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);

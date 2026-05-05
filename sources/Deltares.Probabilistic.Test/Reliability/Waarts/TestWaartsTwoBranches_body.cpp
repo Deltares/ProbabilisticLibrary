@@ -60,7 +60,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = WaartsModel();
         std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::FORM>();
         auto form = dynamic_cast<Reliability::FORM*>(calculator.get());
-        form->Settings->FilterAtNonConvergence = true;
+        form->Settings.FilterAtNonConvergence = true;
         auto expected = expectedValuesFORM();
         RunSingleWaartsTest(modelRunner, *calculator, expected);
     }

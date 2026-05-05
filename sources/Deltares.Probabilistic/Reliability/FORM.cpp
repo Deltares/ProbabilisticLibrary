@@ -34,18 +34,18 @@ namespace Deltares::Reliability
 
     std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings.StochastSet);
 
         std::vector<std::shared_ptr<DesignPoint>> previousDesignPoints;
 
         // initialize
         auto startPointCalculator = StartPointCalculator();
-        startPointCalculator.Settings = this->Settings->StartPointSettings;
-        startPointCalculator.Settings->StochastSet = this->Settings->StochastSet;
+        startPointCalculator.Settings = Settings.StartPointSettings;
+        startPointCalculator.Settings->StochastSet = Settings.StochastSet;
 
         const std::shared_ptr<Models::Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
 
-        if (Settings->StartPointSettings->StartMethod != StartMethodType::FixedValue)
+        if (Settings.StartPointSettings->StartMethod != StartMethodType::FixedValue)
         {
             const std::shared_ptr<DesignPoint> startDesignPoint =
                 modelRunner->getDesignPoint(startPoint, startPoint->getBeta(), std::make_shared<ConvergenceReport>());
@@ -55,10 +55,10 @@ namespace Deltares::Reliability
 
         std::shared_ptr<DesignPoint> designPoint = nullptr;
 
-        double relaxationFactor = this->Settings->RelaxationFactor;
+        double relaxationFactor = Settings.RelaxationFactor;
 
         // perform iterations
-        for (int relaxationIndex = 0; relaxationIndex < Settings->RelaxationLoops; relaxationIndex++)
+        for (int relaxationIndex = 0; relaxationIndex < Settings.RelaxationLoops; relaxationIndex++)
         {
             modelRunner->clearLists();
 
@@ -71,11 +71,11 @@ namespace Deltares::Reliability
             else
             {
                 relaxationFactor /= 2;
-                Settings->MaximumIterations *= Settings->MaxIterationsGrowthFactor;
+                Settings.MaximumIterations *= Settings.MaxIterationsGrowthFactor;
 
                 int modifiedRelaxationIndex = relaxationIndex + 1;
 
-                if (modifiedRelaxationIndex < Settings->RelaxationLoops)
+                if (modifiedRelaxationIndex < Settings.RelaxationLoops)
                 {
                     designPoint->Identifier = std::format("Relaxation loop {0:}", modifiedRelaxationIndex);
                     previousDesignPoints.push_back(designPoint);
@@ -103,8 +103,8 @@ namespace Deltares::Reliability
         // initialization
         const std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-        bool isLastRelaxation = (relaxationIndex + 1 == Settings->RelaxationLoops);
-        if (this->Settings->RelaxationLoops > 1)
+        bool isLastRelaxation = (relaxationIndex + 1 == Settings.RelaxationLoops);
+        if (Settings.RelaxationLoops > 1)
         {
             convergenceReport->RelaxationFactor = relaxationFactor;
         }
@@ -116,12 +116,12 @@ namespace Deltares::Reliability
         std::shared_ptr<Models::Sample> resultSample = startPoint->clone();
 
         auto gradientCalculator = Models::GradientCalculator();
-        gradientCalculator.Settings = this->Settings->GradientSettings;
+        gradientCalculator.Settings = Settings.GradientSettings;
 
         auto lastBetas = std::vector<double>();
         auto lastSamples = std::vector<std::shared_ptr<Models::Sample>>();
 
-        while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
+        while (!convergenceReport->IsConverged && iteration < Settings.MaximumIterations && !isStopped())
         {
             sample->IterationIndex = iteration;
             zGradient = gradientCalculator.getGradient(*modelRunner, sample);
@@ -174,7 +174,7 @@ namespace Deltares::Reliability
                 beta = z0 / zGradientLength;
             }
 
-            if (isLastRelaxation && Settings->FilterAtNonConvergence)
+            if (isLastRelaxation && Settings.FilterAtNonConvergence)
             {
                 if (iteration < histU)
                 {
@@ -196,7 +196,7 @@ namespace Deltares::Reliability
                 const std::shared_ptr<ReliabilityReport> reportTooHigh = std::make_shared<ReliabilityReport>();
 
                 reportTooHigh->Step = iteration;
-                reportTooHigh->MaxSteps = this->Settings->MaximumIterations;
+                reportTooHigh->MaxSteps = Settings.MaximumIterations;
                 reportTooHigh->Reliability = beta;
                 reportTooHigh->ReportMatchesEvaluation = false;
 
@@ -206,7 +206,7 @@ namespace Deltares::Reliability
             }
 
             convergenceReport->IsConverged = isConverged(*modelRunner, *sample, *convergenceReport, beta, zGradientLength);
-            convergenceReport->ZMargin = zGradientLength * this->Settings->EpsilonBeta;
+            convergenceReport->ZMargin = zGradientLength * Settings.EpsilonBeta;
             convergenceReport->TotalIterations = iteration + 1;
 
             // no convergence, next iteration
@@ -235,7 +235,7 @@ namespace Deltares::Reliability
             iteration++;
         }
 
-        if (isLastRelaxation && Settings->FilterAtNonConvergence && !convergenceReport->IsConverged)
+        if (isLastRelaxation && Settings.FilterAtNonConvergence && !convergenceReport->IsConverged)
         {
             std::tie(beta, resultSample) = estimateBetaNonConv(lastBetas, lastSamples);
         }
@@ -257,7 +257,7 @@ namespace Deltares::Reliability
         const double betaDiff = std::max(fromZeroDiff, localDiff);
 
         convergenceReport.Convergence = betaDiff;
-        convergenceReport.IsConverged = betaDiff <= this->Settings->EpsilonBeta;
+        convergenceReport.IsConverged = betaDiff <= Settings.EpsilonBeta;
 
         std::shared_ptr<ReliabilityReport> report = getReport(sample.IterationIndex, beta);
         report->ConvBeta = betaDiff;
@@ -275,7 +275,7 @@ namespace Deltares::Reliability
         report->Step = iteration;
         report->Reliability = reliability;
 
-        report->MaxSteps = this->Settings->MaximumIterations;
+        report->MaxSteps = Settings.MaximumIterations;
         report->ReportMatchesEvaluation = false;
 
         return report;
@@ -285,7 +285,7 @@ namespace Deltares::Reliability
     {
         const size_t nStochasts = last10u[0]->getSize();
         const size_t nIter = last10u.size();
-        double rNIter = 1.0 / (double)nIter;
+        const double rNIter = 1.0 / static_cast<double>(nIter);
         double sumUk = 0.0;
         auto uk = std::vector<double>(nStochasts);
         for (size_t k = 0; k < nStochasts; k++)

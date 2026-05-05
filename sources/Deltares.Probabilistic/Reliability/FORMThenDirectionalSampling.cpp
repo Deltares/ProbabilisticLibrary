@@ -28,7 +28,7 @@ namespace Deltares::Reliability
     std::shared_ptr<DesignPoint> FORMThenDirectionalSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
         auto form = FORM();
-        *form.Settings = formSettings;
+        form.Settings = formSettings;
 
         auto formDesignPoint = form.getDesignPoint(modelRunner);
 

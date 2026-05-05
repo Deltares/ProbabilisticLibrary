@@ -45,9 +45,9 @@ namespace Deltares::Reliability
         }
 
         auto form = FORM();
-        *form.Settings = formSettings;
-        form.Settings->StartPointSettings->StartMethod = StartMethodType::FixedValue;
-        form.Settings->StartPointSettings->startVector = startVector;
+        form.Settings = formSettings;
+        form.Settings.StartPointSettings->StartMethod = StartMethodType::FixedValue;
+        form.Settings.StartPointSettings->startVector = startVector;
 
         auto formDesignPoint = form.getDesignPoint(modelRunner);
 

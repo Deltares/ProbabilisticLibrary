@@ -29,12 +29,12 @@ namespace Deltares::Reliability
     class FORM : public ReliabilityMethod
     {
     public:
-        std::shared_ptr<FORMSettings> Settings = std::make_shared<FORMSettings>();
+        FORMSettings Settings = FORMSettings();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 
         bool isValid() override
         {
-            return Settings->isValid();
+            return Settings.isValid();
         }
 
     private:
