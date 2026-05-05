@@ -35,7 +35,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Settings for this algorithm
          */
-        std::shared_ptr<CrudeMonteCarloSettingsS> Settings = std::make_shared<CrudeMonteCarloSettingsS>();
+        CrudeMonteCarloSettingsS Settings = CrudeMonteCarloSettingsS();
 
         /**
          * \brief Gets the sensitivity

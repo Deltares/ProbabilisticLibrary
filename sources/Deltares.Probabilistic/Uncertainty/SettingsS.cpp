@@ -92,17 +92,20 @@ namespace Deltares::Uncertainty
     {
         std::shared_ptr<CrudeMonteCarloS> crudeMonteCarlo = std::make_shared<CrudeMonteCarloS>();
 
-        crudeMonteCarlo->Settings->MinimumSamples = this->MinimumSamples;
-        crudeMonteCarlo->Settings->MaximumSamples = this->MaximumSamples;
-        crudeMonteCarlo->Settings->VariationCoefficient = this->VariationCoefficient;
-        crudeMonteCarlo->Settings->ProbabilityForConvergence = this->ProbabilityForConvergence;
-        crudeMonteCarlo->Settings->DeriveSamplesFromVariationCoefficient = this->DeriveSamplesFromVariationCoefficient;
-        crudeMonteCarlo->Settings->RunSettings = this->RunSettings;
-        crudeMonteCarlo->Settings->randomSettings = this->RandomSettings;
-        crudeMonteCarlo->Settings->RequestedQuantiles = this->RequestedQuantiles;
-        crudeMonteCarlo->Settings->StochastSet = this->StochastSet;
-        crudeMonteCarlo->Settings->CalculateCorrelations = this->CalculateCorrelations;
-        crudeMonteCarlo->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
+        crudeMonteCarlo->Settings.MinimumSamples = this->MinimumSamples;
+        crudeMonteCarlo->Settings.MaximumSamples = this->MaximumSamples;
+        crudeMonteCarlo->Settings.VariationCoefficient = this->VariationCoefficient;
+        crudeMonteCarlo->Settings.ProbabilityForConvergence = this->ProbabilityForConvergence;
+        crudeMonteCarlo->Settings.DeriveSamplesFromVariationCoefficient = this->DeriveSamplesFromVariationCoefficient;
+        crudeMonteCarlo->Settings.RunSettings = *this->RunSettings;
+        crudeMonteCarlo->Settings.randomSettings = *this->RandomSettings;
+        for (const auto& req: this->RequestedQuantiles)
+        {
+            crudeMonteCarlo->Settings.RequestedQuantiles.push_back(*req);
+        }
+        crudeMonteCarlo->Settings.StochastSet = *this->StochastSet;
+        crudeMonteCarlo->Settings.CalculateCorrelations = this->CalculateCorrelations;
+        crudeMonteCarlo->Settings.CalculateInputCorrelations = this->CalculateInputCorrelations;
 
         return crudeMonteCarlo;
     }
@@ -147,7 +150,7 @@ namespace Deltares::Uncertainty
     {
         switch (this->UncertaintyMethod)
         {
-        case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings->validate(report); break;
+        case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings.validate(report); break;
         case UncertaintyMethodType::UncertaintyImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
         case UncertaintyMethodType::UncertaintyNumericalIntegration: GetNumericalIntegrationMethod()->Settings->validate(report); break;
         case UncertaintyMethodType::UncertaintyDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;

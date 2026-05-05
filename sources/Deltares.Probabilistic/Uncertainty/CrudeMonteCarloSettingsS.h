@@ -83,22 +83,22 @@ namespace Deltares::Uncertainty
         /**
          * \brief Settings for generating random values
          */
-        std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
+        Models::RandomSettings randomSettings = Models::RandomSettings();
 
         /**
          * \brief Quantiles which should be calculated
          */
-        std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
+        std::vector<Statistics::ProbabilityValue> RequestedQuantiles;
 
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings RunSettings = Models::RunSettings();
 
         /**
          * \brief Settings for individual stochastic variables, such as the start value
          */
-        std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
+        Reliability::StochastSettingsSet StochastSet = Reliability::StochastSettingsSet();
 
         /**
          * \brief Reports whether the settings have valid values
@@ -112,7 +112,7 @@ namespace Deltares::Uncertainty
             Logging::ValidationSupport::checkMinimum(report, 0, ProbabilityForConvergence, "probability for convergence");
             Logging::ValidationSupport::checkMaximum(report, 1, ProbabilityForConvergence, "probability for convergence");
 
-            RunSettings->validate(report);
+            RunSettings.validate(report);
         }
     };
 }

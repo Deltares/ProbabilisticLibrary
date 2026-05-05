@@ -23,6 +23,7 @@
 #include <vector>
 #include <cmath>
 #include <memory>
+#include <algorithm>
 
 #include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
@@ -36,14 +37,14 @@ namespace Deltares::Uncertainty
 {
     UncertaintyResult CrudeMonteCarloS::getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(*Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings.StochastSet);
 
-        std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
+        std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(Settings.StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
 
         RandomSampleGenerator randomSampleGenerator = RandomSampleGenerator();
-        randomSampleGenerator.Settings = *Settings->randomSettings;
-        randomSampleGenerator.Settings.StochastSet = *Settings->StochastSet;
+        randomSampleGenerator.Settings = Settings.randomSettings;
+        randomSampleGenerator.Settings.StochastSet = Settings.StochastSet;
         randomSampleGenerator.sampleProvider = sampleProvider;
         randomSampleGenerator.initialize();
 
@@ -54,11 +55,9 @@ namespace Deltares::Uncertainty
         size_t zIndex = 0;
         int nSamples = 0;
 
-        bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
+        bool registerSamplesForCorrelation = correlationMatrixBuilder->isEmpty() && Settings.CalculateCorrelations && Settings.CalculateInputCorrelations;
 
-        int requiredSamples = this->Settings->getRequiredSamples();
-        requiredSamples = std::min(requiredSamples, this->Settings->MaximumSamples);
-        requiredSamples = std::max(requiredSamples, this->Settings->MinimumSamples);
+        const int requiredSamples = std::clamp(Settings.getRequiredSamples(), Settings.MinimumSamples, Settings.MaximumSamples);
 
         for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
         {
@@ -69,7 +68,7 @@ namespace Deltares::Uncertainty
                 samples.clear();
 
                 int chunkSize = modelRunner->Settings->MaxChunkSize;
-                int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
+                int runs = std::min(chunkSize, Settings.MaximumSamples - sampleIndex);
 
                 for (int i = 0; i < runs; i++)
                 {
@@ -105,9 +104,9 @@ namespace Deltares::Uncertainty
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
+        for (const Statistics::ProbabilityValue& quantile : Settings.RequestedQuantiles)
         {
-            double p = quantile->getProbabilityOfNonFailure();
+            double p = quantile.getProbabilityOfNonFailure();
             int quantileIndex = getQuantileIndex(zSamples, zWeights, p);
 
             if (quantileIndex >= 0)
@@ -127,7 +126,7 @@ namespace Deltares::Uncertainty
             }
         }
 
-        if (this->Settings->CalculateCorrelations)
+        if (this->Settings.CalculateCorrelations)
         {
             this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
         }
