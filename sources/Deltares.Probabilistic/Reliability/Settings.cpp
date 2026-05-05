@@ -110,10 +110,10 @@ namespace Deltares::Reliability
     {
         auto cobyla_reliability = std::make_shared<CobylaReliability>();
 
-        cobyla_reliability->Settings->designPointMethod = this->designPointMethod;
-        cobyla_reliability->Settings->EpsilonBeta = this->EpsilonBeta;
-        cobyla_reliability->Settings->MaximumIterations = this->MaximumSamples;
-        cobyla_reliability->Settings->StochastSet = this->StochastSet;
+        cobyla_reliability->Settings.designPointMethod = this->designPointMethod;
+        cobyla_reliability->Settings.EpsilonBeta = this->EpsilonBeta;
+        cobyla_reliability->Settings.MaximumIterations = this->MaximumSamples;
+        cobyla_reliability->Settings.StochastSet = *this->StochastSet;
 
         return cobyla_reliability;
     }
@@ -293,8 +293,6 @@ namespace Deltares::Reliability
         return fragilityCurveIntegration;
     }
 
-
-
     void Settings::validate(Logging::ValidationReport& report) const
     {
         switch (this->ReliabilityMethod)
@@ -309,7 +307,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityNumericalBisection: GetNumericalBisectionMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilityLatinHyperCube: GetLatinHypercubeMethod()->Settings->validate(report); break;
         case ReliabilityMethodType::ReliabilitySubsetSimulation: GetSubsetSimulationMethod()->Settings->validate(report); break;
-        case ReliabilityMethodType::ReliabilityCobyla: GetCobylaReliabilityMethod()->Settings->validate(report); break;
+        case ReliabilityMethodType::ReliabilityCobyla: GetCobylaReliabilityMethod()->Settings.validate(report); break;
         case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling:
         {
             auto fdir = GetFormThenDsReliabilityMethod();

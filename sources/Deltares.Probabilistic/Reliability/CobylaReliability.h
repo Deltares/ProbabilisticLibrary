@@ -30,26 +30,26 @@ namespace Deltares::Reliability
     class wrappedOptimizationModel : public Optimization::optimizationModel
     {
     public:
-        wrappedOptimizationModel(std::shared_ptr<Models::ModelRunner> model_runner, double z0fac) :
+        wrappedOptimizationModel(Models::ModelRunner& model_runner, double z0fac) :
             modelRunner(model_runner), z0Fac(z0fac) {}
         double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
         double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) override;
         unsigned GetNumberOfConstraints() const override { return 1; }
         DesignPointBuilder uMean = DesignPointBuilder();
     private:
-        std::shared_ptr<Models::ModelRunner> modelRunner;
+        Models::ModelRunner& modelRunner;
         const double z0Fac;
     };
 
     class CobylaReliability : public ReliabilityMethod
     {
     public:
-        std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
+        CobylaReliabilitySettings Settings = CobylaReliabilitySettings();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 
         bool isValid() override
         {
-            return Settings->isValid();
+            return Settings.isValid();
         }
     };
 }

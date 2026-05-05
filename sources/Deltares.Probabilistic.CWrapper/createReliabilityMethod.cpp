@@ -120,8 +120,8 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         }
     case (ProbMethod::CobylaReliability): {
         auto cobyla_reliability = std::make_shared<CobylaReliability>();
-        cobyla_reliability->Settings->EpsilonBeta = bs.cobyla_reliability_settings.EpsilonBeta;
-        cobyla_reliability->Settings->MaximumIterations = bs.cobyla_reliability_settings.MaximumIterations;
+        cobyla_reliability->Settings.EpsilonBeta = bs.cobyla_reliability_settings.EpsilonBeta;
+        cobyla_reliability->Settings.MaximumIterations = bs.cobyla_reliability_settings.MaximumIterations;
         return cobyla_reliability; }
     case (ProbMethod::SubSetSimulation): {
         auto subSetSimulation = std::make_shared<SubsetSimulation>();

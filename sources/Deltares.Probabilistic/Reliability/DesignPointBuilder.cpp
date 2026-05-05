@@ -97,6 +97,22 @@ namespace Deltares::Reliability
         this->qualitativeCount = this->qualitativeIndices.size();
     }
 
+    DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, const StochastSettingsSet& stochastSet)
+    {
+        initializeSamples(count, method);
+
+        for (int i = 0; i < stochastSet.getVaryingStochastCount(); i++)
+        {
+            if (stochastSet.VaryingStochastSettings[i]->IsQualitative)
+            {
+                qualitativeIndices.push_back(i);
+                modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet.VaryingStochastSettings[i]->stochast));
+            }
+        }
+
+        qualitativeCount = static_cast<int>(qualitativeIndices.size());
+    }
+
     DesignPointBuilder::DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
     {
         initializeSamples(stochasts.size(), method);

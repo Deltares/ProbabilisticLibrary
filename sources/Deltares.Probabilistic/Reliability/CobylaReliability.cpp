@@ -29,28 +29,28 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint>CobylaReliability::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(*Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings.StochastSet);
 
         const int nStochasts = modelRunner->getVaryingStochastCount();
 
-        auto sampleProvider = SampleProvider(*Settings->StochastSet);
+        auto sampleProvider = SampleProvider(Settings.StochastSet);
         auto initialSample = sampleProvider.getSample();
         double z0Fac = getZFactor(modelRunner->getZValue(initialSample));
 
-        auto optModel = wrappedOptimizationModel(modelRunner, z0Fac);
-        optModel.uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
+        auto optModel = wrappedOptimizationModel(*modelRunner, z0Fac);
+        optModel.uMean = DesignPointBuilder(nStochasts, Settings.designPointMethod, Settings.StochastSet);
 
         auto optimizer = CobylaOptimization();
-        optimizer.settings.EpsilonBeta = Settings->EpsilonBeta;
-        optimizer.settings.MaxIterations = Settings->MaximumIterations;
+        optimizer.settings.EpsilonBeta = Settings.EpsilonBeta;
+        optimizer.settings.MaxIterations = Settings.MaximumIterations;
 
         auto searchArea = SearchArea();
         searchArea.Dimensions = std::vector<SearchDimension>(nStochasts);
-        std::shared_ptr<Sample> startPoint = Settings->StochastSet->getStartPoint();
+        std::shared_ptr<Sample> startPoint = Settings.StochastSet.getStartPoint();
         for( int i = 0; i < nStochasts; i++)
         {
-            searchArea.Dimensions[i].LowerBound = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
-            searchArea.Dimensions[i].UpperBound = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
+            searchArea.Dimensions[i].LowerBound = Settings.StochastSet.VaryingStochastSettings[i]->MinValue;
+            searchArea.Dimensions[i].UpperBound = Settings.StochastSet.VaryingStochastSettings[i]->MaxValue;
             searchArea.Dimensions[i].StartValue = startPoint->Values[i];
         }
 
@@ -72,7 +72,7 @@ namespace Deltares::Reliability
 
     double wrappedOptimizationModel::GetConstraintValue(const std::shared_ptr<Sample> sample)
     {
-        auto z = modelRunner->getZValue(sample);
+        auto z = modelRunner.getZValue(sample);
 
         if (z * z0Fac < 0.0)
         {

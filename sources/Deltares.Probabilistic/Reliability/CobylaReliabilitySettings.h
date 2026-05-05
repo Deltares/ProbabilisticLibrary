@@ -53,12 +53,12 @@ namespace Deltares::Reliability
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings RunSettings = Models::RunSettings();
 
         /**
          * \brief Settings for individual stochastic variable, such as the start value
          */
-        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+        StochastSettingsSet StochastSet = StochastSettingsSet();
 
         /**
          * \brief Reports whether the settings have valid values
@@ -69,7 +69,7 @@ namespace Deltares::Reliability
             Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
             Logging::ValidationSupport::checkMinimumNonInclusive(report, 1e-6, EpsilonBeta, "epsilon beta");
 
-            RunSettings->validate(report);
+            RunSettings.validate(report);
         }
     };
 }
