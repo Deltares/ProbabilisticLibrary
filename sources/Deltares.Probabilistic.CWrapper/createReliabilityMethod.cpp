@@ -206,10 +206,10 @@ void createReliabilityMethod::fillStartVector(StartPointCalculatorSettings& star
 void createReliabilityMethod::fillFormSettings(FORMSettings& Settings, const basicSettings& bs, const size_t nStoch)
 {
     Settings.MaximumIterations = bs.numExtraInt;
-    Settings.GradientSettings->gradientType = GradientType::TwoDirections;
+    Settings.GradientSettings.gradientType = GradientType::TwoDirections;
     Settings.FilterAtNonConvergence = true;
     Settings.RelaxationFactor = bs.relaxationFactor;
-    fillStartVector(*Settings.StartPointSettings, bs, nStoch);
+    fillStartVector(Settings.StartPointSettings, bs, nStoch);
 }
 
 std::vector<double> createReliabilityMethod::copyStartVector(const double startValues[], const size_t nStoch)

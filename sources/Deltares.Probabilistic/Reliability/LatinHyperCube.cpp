@@ -34,7 +34,7 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> LatinHyperCube::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         auto sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
         modelRunner->setSampleProvider(sampleProvider);

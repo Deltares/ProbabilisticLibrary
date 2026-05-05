@@ -30,7 +30,7 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<Models::Sample> StartPointCalculator::getStartPoint(Models::ModelRunner& modelRunner) const
     {
-        switch (this->Settings->StartMethod)
+        switch (Settings.StartMethod)
         {
         case StartMethodType::FixedValue:
             return getNoneStartPoint();
@@ -41,18 +41,18 @@ namespace Deltares::Reliability
         case StartMethodType::SphereSearch:
             return getSphereStartPoint(modelRunner);
         default:
-            throw probLibException("Start method not supported: ", (int)this->Settings->StartMethod);
+            throw probLibException("Start method not supported: ", static_cast<int>(Settings.StartMethod));
         }
     }
 
     std::shared_ptr<Models::Sample> StartPointCalculator::getNoneStartPoint() const
     {
-        std::shared_ptr<Models::Sample> startPoint = Settings->StochastSet->getStartPoint();
-        if ( ! Settings->startVector.empty())
+        std::shared_ptr<Models::Sample> startPoint = Settings.StochastSet.getStartPoint();
+        if ( ! Settings.startVector.empty())
         {
             for (int i = 0; i < startPoint->getSize(); i++)
             {
-                startPoint->Values[i] = Settings->startVector[i];
+                startPoint->Values[i] = Settings.startVector[i];
             }
         }
         return startPoint;
@@ -63,7 +63,7 @@ namespace Deltares::Reliability
         bool isDefaultStartValues = true;
         for (int i = 0; i < startPoint.getSize(); i++)
         {
-            if (this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
+            if (Settings.StochastSet.VaryingStochastSettings[i]->IsInitializationAllowed)
             {
                 isDefaultStartValues &= startPoint.Values[i] == 0.0;
             }
@@ -80,13 +80,13 @@ namespace Deltares::Reliability
 
     std::shared_ptr<Models::Sample> StartPointCalculator::getRayStartPoint(Models::ModelRunner& modelRunner) const
     {
-        std::shared_ptr<Models::Sample> startPoint = this->Settings->StochastSet->getStartPoint();
+        std::shared_ptr<Models::Sample> startPoint = Settings.StochastSet.getStartPoint();
 
-        if ( ! Settings->startVector.empty())
+        if ( ! Settings.startVector.empty())
         {
             for (int i = 0; i < startPoint->getSize(); i++)
             {
-                startPoint->Values[i] = this->Settings->startVector[i];
+                startPoint->Values[i] = Settings.startVector[i];
             }
         }
         else
@@ -105,33 +105,32 @@ namespace Deltares::Reliability
 
         for (int i = 0; i < nStochasts; i++)
         {
-            if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed || 
-                this->Settings->StochastSet->VaryingStochastSettings[i]->IsQualitative)
+            if (!Settings.StochastSet.VaryingStochastSettings[i]->IsInitializationAllowed || 
+                Settings.StochastSet.VaryingStochastSettings[i]->IsQualitative)
             {
                 startPoint.Values[i] = 0;
             }
         }
 
         auto directionReliability = DirectionReliability();
-        directionReliability.Settings->StochastSet = this->Settings->StochastSet;
-        directionReliability.Settings->MaximumLengthU = this->Settings->MaximumLengthStartPoint;
-        directionReliability.Settings->StochastSet = this->Settings->StochastSet;
+        directionReliability.Settings->StochastSet = Settings.StochastSet;
+        directionReliability.Settings->MaximumLengthU = Settings.MaximumLengthStartPoint;
         directionReliability.Settings->FindMinimalValue = true;
         directionReliability.Settings->UseInitialValues = true;
         directionReliability.Settings->modelVaryingType = ModelVaryingType::Varying;
-        directionReliability.Settings->Dsdu = this->Settings->dsdu;
+        directionReliability.Settings->Dsdu = Settings.dsdu;
 
         double beta = directionReliability.getBeta(modelRunner, startPoint, 1);
 
         std::shared_ptr<Models::Sample> directionPoint = std::make_shared<Models::Sample>(startPoint.Values);
 
-        directionPoint = directionPoint->getSampleAtBeta(std::min(beta, this->Settings->MaximumLengthStartPoint));
+        directionPoint = directionPoint->getSampleAtBeta(std::min(beta, Settings.MaximumLengthStartPoint));
 
         for (int i = 0; i < nStochasts; i++)
         {
-            if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
+            if (!Settings.StochastSet.VaryingStochastSettings[i]->IsInitializationAllowed)
             {
-                directionPoint->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->StartValue;
+                directionPoint->Values[i] = Settings.StochastSet.VaryingStochastSettings[i]->StartValue;
             }
         }
 
@@ -205,30 +204,30 @@ namespace Deltares::Reliability
     std::shared_ptr<Models::Sample> StartPointCalculator::getSphereStartPoint(Models::ModelRunner& modelRunner) const
     {
         constexpr int nRadiusFactors = 20;
-        auto maxSteps = Settings->maxStepsSphereSearch;
+        const auto maxSteps = Settings.maxStepsSphereSearch;
 
         std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(modelRunner.getVaryingStochastCount());
         double z0 = modelRunner.getZValue(zeroSample);
 
         double z0Fac = z0 < 0 ? -1 : 1;
 
-        std::shared_ptr<Models::Sample> startPoint = this->Settings->StochastSet->getStartPoint();
+        std::shared_ptr<Models::Sample> startPoint = Settings.StochastSet.getStartPoint();
 
         correctDefaultValues(*startPoint);
 
-        double radiusFactor = this->Settings->RadiusSphereSearch / startPoint->getBeta();
+        double radiusFactor = Settings.RadiusSphereSearch / startPoint->getBeta();
 
         std::shared_ptr<Models::Sample> uSphere = startPoint->getMultipliedSample(radiusFactor);
 
-        if ( ! Settings->startVector.empty())
+        if ( ! Settings.startVector.empty())
         {
-            for (size_t i = 0; i < this->Settings->startVector.size(); i++)
+            for (size_t i = 0; i < Settings.startVector.size(); i++)
             {
-                uSphere->Values[i] = this->Settings->startVector[i];
+                uSphere->Values[i] = Settings.startVector[i];
             }
         }
 
-        auto st = sphereTasks(maxSteps, Settings->allQuadrants);
+        auto st = sphereTasks(maxSteps, Settings.allQuadrants);
         auto uSphereValues = Numeric::vector1D(uSphere->Values.size());
         for (size_t i = 0; i < uSphere->Values.size(); i++)
         {
@@ -246,7 +245,7 @@ namespace Deltares::Reliability
             std::vector<std::shared_ptr<Models::Sample>> samples;
             for (const auto& task : tasks)
             {
-                std::shared_ptr<Models::Sample> uRay = this->Settings->StochastSet->getStartPoint();
+                std::shared_ptr<Models::Sample> uRay = Settings.StochastSet.getStartPoint();
                 for (size_t k = 0; k < uSphere->Values.size(); k++)
                 {
                     uRay->Values[k] = task(k);

@@ -38,7 +38,7 @@ namespace Deltares::Models
         /**
          * \brief Settings of the gradient calculation
          */
-        std::shared_ptr<GradientSettings> Settings = std::make_shared<GradientSettings>();
+        GradientSettings Settings = GradientSettings();
 
         /**
          * \brief Calculates the gradient

@@ -39,7 +39,7 @@ namespace Deltares::Reliability
     {
         int nStochasts = modelRunner->getVaryingStochastCount();
 
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         auto designPointBuilder = DesignPointBuilder(nStochasts, Settings->designPointMethod, Settings->StochastSet);
         randomSampleGenerator = Models::RandomSampleGenerator(this->Settings->randomSettings, this->Settings->StochastSet);

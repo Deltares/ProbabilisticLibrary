@@ -41,11 +41,11 @@ namespace Deltares::Reliability
         // initialize
         auto startPointCalculator = StartPointCalculator();
         startPointCalculator.Settings = Settings.StartPointSettings;
-        startPointCalculator.Settings->StochastSet = Settings.StochastSet;
+        startPointCalculator.Settings.StochastSet = Settings.StochastSet;
 
         const std::shared_ptr<Models::Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
 
-        if (Settings.StartPointSettings->StartMethod != StartMethodType::FixedValue)
+        if (Settings.StartPointSettings.StartMethod != StartMethodType::FixedValue)
         {
             const std::shared_ptr<DesignPoint> startDesignPoint =
                 modelRunner->getDesignPoint(startPoint, startPoint->getBeta(), std::make_shared<ConvergenceReport>());
@@ -115,7 +115,7 @@ namespace Deltares::Reliability
         std::shared_ptr<Models::Sample> sample = startPoint->clone();
         std::shared_ptr<Models::Sample> resultSample = startPoint->clone();
 
-        auto gradientCalculator = Models::GradientCalculator();
+        Models::GradientCalculator gradientCalculator;
         gradientCalculator.Settings = Settings.GradientSettings;
 
         auto lastBetas = std::vector<double>();

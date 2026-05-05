@@ -32,13 +32,13 @@ namespace Deltares::Reliability
 
     std::shared_ptr<DesignPoint> DirectionReliability::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings->StochastSet);
 
         std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(modelRunner->getVaryingStochastCount());
         double z = modelRunner->getZValue(zeroSample);
         double z0 = getZFactor(z);
 
-        std::shared_ptr<Models::Sample> directionSample = this->Settings->StochastSet->getStartPoint();
+        std::shared_ptr<Models::Sample> directionSample = this->Settings->StochastSet.getStartPoint();
 
         double beta = getBeta(*modelRunner, *directionSample, z0);
 

@@ -44,9 +44,9 @@ namespace Deltares::Models
         // first sample is the sample itself
         samples.push_back(sample);
 
-        if (Settings->gradientType == OneDirection)
+        if (Settings.gradientType == OneDirection)
         {
-            double du = Settings->StepSize * 0.5;
+            double du = Settings.StepSize * 0.5;
             for (int k = 0; k < nStochasts; k++)
             {
                 std::shared_ptr<Sample> uNew = sample->clone();
@@ -64,16 +64,16 @@ namespace Deltares::Models
                 gradient[k] = (zp - z) / du;
             }
         }
-        else if (Settings->gradientType == TwoDirections)
+        else if (Settings.gradientType == TwoDirections)
         {
             for (int k = 0; k < nStochasts; k++)
             {
                 std::shared_ptr<Sample> u1 = sample->clone();
-                u1->Values[k] -= Settings->StepSize * 0.5;
+                u1->Values[k] -= Settings.StepSize * 0.5;
                 samples.push_back(u1);
 
                 std::shared_ptr<Sample> u2 = sample->clone();
-                u2->Values[k] += Settings->StepSize * 0.5;
+                u2->Values[k] += Settings.StepSize * 0.5;
                 samples.push_back(u2);
             }
 
@@ -84,7 +84,7 @@ namespace Deltares::Models
                 const double zLow = zValues[2 * k + 1];
                 const double zHigh = zValues[2 * k + 2];
 
-                gradient[k] = (zHigh - zLow) / Settings->StepSize;
+                gradient[k] = (zHigh - zLow) / Settings.StepSize;
             }
         }
         else

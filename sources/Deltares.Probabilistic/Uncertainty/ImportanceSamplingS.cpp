@@ -36,7 +36,7 @@ namespace Deltares::Uncertainty
 {
     UncertaintyResult ImportanceSamplingS::getUncertaintyStochast(std::shared_ptr<ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
         modelRunner->setSampleProvider(sampleProvider);

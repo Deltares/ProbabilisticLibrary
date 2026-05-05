@@ -144,7 +144,7 @@ namespace Deltares::Reliability
 
     std::shared_ptr<DesignPoint> FragilityCurveIntegration::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         double stepSize = Settings->StepSize;
         double uMin = - Statistics::StandardNormal::UMax - stepSize / 2;

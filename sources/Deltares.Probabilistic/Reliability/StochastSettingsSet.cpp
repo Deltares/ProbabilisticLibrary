@@ -42,7 +42,7 @@ namespace Deltares::Reliability
         this->AreStartValuesCorrelated = false;
     }
 
-    std::shared_ptr<Models::Sample> StochastSettingsSet::getStartPoint()
+    std::shared_ptr<Models::Sample> StochastSettingsSet::getStartPoint() const
     {
         std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(this->getVaryingStochastCount());
 

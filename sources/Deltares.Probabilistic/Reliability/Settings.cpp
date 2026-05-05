@@ -61,10 +61,10 @@ namespace Deltares::Reliability
         form->Settings.MaximumIterations = this->MaximumIterations;
         form->Settings.RelaxationFactor = this->RelaxationFactor;
         form->Settings.RelaxationLoops = this->RelaxationLoops;
-        form->Settings.GradientSettings = this->GradientSettings;
-        form->Settings.RunSettings = this->RunSettings;
-        form->Settings.StartPointSettings = this->StartPointSettings;
-        form->Settings.StochastSet = this->StochastSet;
+        form->Settings.GradientSettings = *this->GradientSettings;
+        form->Settings.RunSettings = *this->RunSettings;
+        form->Settings.StartPointSettings = *this->StartPointSettings;
+        form->Settings.StochastSet = *this->StochastSet;
 
         return form;
     }
@@ -123,7 +123,7 @@ namespace Deltares::Reliability
         auto fdir = std::make_shared<FORMThenDirectionalSampling>();
 
         fdir->DsSettings.designPointMethod = this->designPointMethod;
-        fdir->formSettings.StochastSet = this->StochastSet;
+        fdir->formSettings.StochastSet = *this->StochastSet;
         fdir->formSettings.EpsilonBeta = this->EpsilonBeta;
         fdir->formSettings.MaximumIterations = this->MaximumIterations;
         fdir->formSettings.FilterAtNonConvergence = this->FilterAtNonConvergence;
@@ -131,9 +131,9 @@ namespace Deltares::Reliability
         fdir->formSettings.MaximumIterations = this->MaximumIterations;
         fdir->formSettings.RelaxationFactor = this->RelaxationFactor;
         fdir->formSettings.RelaxationLoops = this->RelaxationLoops;
-        fdir->formSettings.GradientSettings = this->GradientSettings;
-        fdir->formSettings.RunSettings = this->RunSettings;
-        fdir->formSettings.StartPointSettings = this->StartPointSettings;
+        fdir->formSettings.GradientSettings = *this->GradientSettings;
+        fdir->formSettings.RunSettings = *this->RunSettings;
+        fdir->formSettings.StartPointSettings = *this->StartPointSettings;
         fdir->DsSettings.MinimumDirections = this->MinimumDirections;
         fdir->DsSettings.MaximumDirections = this->MaximumDirections;
         fdir->DsSettings.designPointMethod = this->designPointMethod;
@@ -150,7 +150,7 @@ namespace Deltares::Reliability
         auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
 
         dsfi->DsSettings.designPointMethod = this->designPointMethod;
-        dsfi->formSettings.StochastSet = this->StochastSet;
+        dsfi->formSettings.StochastSet = *this->StochastSet;
         dsfi->formSettings.EpsilonBeta = this->EpsilonBeta;
         dsfi->formSettings.MaximumIterations = this->MaximumIterations;
         dsfi->formSettings.FilterAtNonConvergence = this->FilterAtNonConvergence;
@@ -158,9 +158,9 @@ namespace Deltares::Reliability
         dsfi->formSettings.MaximumIterations = this->MaximumIterations;
         dsfi->formSettings.RelaxationFactor = this->RelaxationFactor;
         dsfi->formSettings.RelaxationLoops = this->RelaxationLoops;
-        dsfi->formSettings.GradientSettings = this->GradientSettings;
-        dsfi->formSettings.RunSettings = this->RunSettings;
-        dsfi->formSettings.StartPointSettings = this->StartPointSettings;
+        dsfi->formSettings.GradientSettings = *this->GradientSettings;
+        dsfi->formSettings.RunSettings = *this->RunSettings;
+        dsfi->formSettings.StartPointSettings = *this->StartPointSettings;
         dsfi->DsSettings.MinimumDirections = this->MinimumDirections;
         dsfi->DsSettings.MaximumDirections = this->MaximumDirections;
         dsfi->DsSettings.designPointMethod = this->designPointMethod;
@@ -260,7 +260,7 @@ namespace Deltares::Reliability
         std::shared_ptr<DirectionReliability> directionReliability = std::make_shared<DirectionReliability>();
 
         directionReliability->Settings = this->DirectionSettings;
-        directionReliability->Settings->StochastSet = this->StochastSet;
+        directionReliability->Settings->StochastSet = *this->StochastSet;
 
         return directionReliability;
     }

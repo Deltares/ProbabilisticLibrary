@@ -44,7 +44,7 @@ namespace Deltares::Reliability
         std::vector<double> betaValues;
         std::vector<std::shared_ptr<Models::Sample>> samples;
 
-        modelRunner->updateStochastSettings(Settings.StochastSet);
+        modelRunner->updateStochastSettings(*Settings.StochastSet);
 
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 

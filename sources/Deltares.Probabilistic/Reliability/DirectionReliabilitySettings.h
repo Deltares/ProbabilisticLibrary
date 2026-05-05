@@ -40,7 +40,7 @@ namespace Deltares::Reliability
         bool FindMinimalValue = false;
         bool UseInitialValues = false;
 
-        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+        StochastSettingsSet StochastSet = StochastSettingsSet();
 
         void validate(Logging::ValidationReport& report) const override;
         int SectionCount() const;

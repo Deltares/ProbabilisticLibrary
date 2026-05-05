@@ -117,8 +117,8 @@ namespace Deltares::Reliability
         relMethod.Settings.RelaxationFactor = 0.4;
         relMethod.Settings.RelaxationLoops = maxTrialLoops;
         relMethod.Settings.EpsilonBeta = 0.01;
-        relMethod.Settings.GradientSettings->StepSize = 0.1;
-        relMethod.Settings.GradientSettings->gradientType = Models::GradientType::TwoDirections;
+        relMethod.Settings.GradientSettings.StepSize = 0.1;
+        relMethod.Settings.GradientSettings.gradientType = Models::GradientType::TwoDirections;
         relMethod.Settings.MaxIterationsGrowthFactor = 2;
         auto newResult = relMethod.getDesignPoint(modelRunner);
         auto converged = (newResult->convergenceReport->IsConverged ? 0 : 1);

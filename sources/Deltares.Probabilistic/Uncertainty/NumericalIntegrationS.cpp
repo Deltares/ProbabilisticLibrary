@@ -38,7 +38,7 @@ namespace Deltares::Uncertainty
     {
         this->calculatedSamples.clear();
 
-        modelRunner->updateStochastSettings(Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         int nStochasts = modelRunner->getVaryingStochastCount();
 

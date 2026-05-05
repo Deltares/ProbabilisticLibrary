@@ -46,14 +46,14 @@ namespace Deltares::Reliability
         importanceSampling->Settings = this->Settings->importanceSamplingSettings->clone();
         importanceSampling->Settings->startPointSettings->StartMethod = StartMethodType::FixedValue;
 
-        modelRunner->updateStochastSettings(importanceSampling->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*importanceSampling->Settings->StochastSet);
 
         std::vector<std::shared_ptr<DesignPoint>> previousDesignPoints = std::vector<std::shared_ptr<DesignPoint>>();
 
         // initialize
         auto startPointCalculator = StartPointCalculator();
-        startPointCalculator.Settings = this->Settings->startPointSettings;
-        startPointCalculator.Settings->StochastSet = importanceSampling->Settings->StochastSet;
+        startPointCalculator.Settings = *Settings->startPointSettings;
+        startPointCalculator.Settings.StochastSet = *importanceSampling->Settings->StochastSet;
 
         const std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
         this->lastStartPoint = startPoint;
@@ -339,7 +339,7 @@ namespace Deltares::Reliability
             {
                 const std::shared_ptr<DirectionReliability> direction = std::make_shared<DirectionReliability>();
                 modelRunner->updateStochastSettings(direction->Settings->StochastSet);
-                direction->Settings->StochastSet->setStartPoint(newSample);
+                direction->Settings->StochastSet.setStartPoint(newSample);
 
                 const std::shared_ptr<DesignPoint> directionDesignPoint = direction->getDesignPoint(modelRunner);
 

@@ -68,22 +68,22 @@ namespace Deltares::Reliability
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings RunSettings = Models::RunSettings();
 
         /**
          * \brief Settings for calculating the gradient at a stochast point
          */
-        std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();
+        Models::GradientSettings GradientSettings = Models::GradientSettings();
 
         /**
          * \brief Settings for calculating the initial guessed design point
          */
-        std::shared_ptr<StartPointCalculatorSettings> StartPointSettings = std::make_shared<StartPointCalculatorSettings>();
+        StartPointCalculatorSettings StartPointSettings = StartPointCalculatorSettings();
 
         /**
          * \brief Settings for individual stochastic variable, such as the start value
          */
-        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+        StochastSettingsSet StochastSet = StochastSettingsSet();
 
         void validate(Logging::ValidationReport& report) const override
         {
@@ -93,9 +93,9 @@ namespace Deltares::Reliability
             Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
             Logging::ValidationSupport::checkMinimum(report, 0.01, EpsilonBeta, "epsilon beta");
 
-            GradientSettings->validate(report);
-            StartPointSettings->validate(report);
-            RunSettings->validate(report);
+            GradientSettings.validate(report);
+            StartPointSettings.validate(report);
+            RunSettings.validate(report);
         }
     };
 }

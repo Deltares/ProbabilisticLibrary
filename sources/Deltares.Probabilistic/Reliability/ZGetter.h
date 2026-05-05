@@ -42,9 +42,9 @@ namespace Deltares::Reliability
             {
                 for (size_t i = 0; i < u->Values.size(); i++)
                 {
-                    if (!settings.StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
+                    if (!settings.StochastSet.VaryingStochastSettings[i]->IsInitializationAllowed)
                     {
-                        u->Values[i] = settings.StochastSet->VaryingStochastSettings[i]->StartValue;
+                        u->Values[i] = settings.StochastSet.VaryingStochastSettings[i]->StartValue;
                     }
                 }
             }

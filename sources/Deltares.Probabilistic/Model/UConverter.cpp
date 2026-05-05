@@ -249,27 +249,27 @@ namespace Deltares::Models
         return this->varyingStochasts.size();
     }
 
-    void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings)
+    void UConverter::updateStochastSettings(Reliability::StochastSettingsSet& settings)
     {
         std::map<std::shared_ptr<Statistics::Stochast>, std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>>> stochastSettingsMap;
         std::map<std::shared_ptr<Statistics::Stochast>, size_t> stochastSettingsCount;
 
         // stochasts are not unique, therefore register all settings and use them one by one
-        for (size_t i = 0; i < settings->stochastSettings.size(); i++)
+        for (size_t i = 0; i < settings.stochastSettings.size(); i++)
         {
-            std::shared_ptr<Statistics::Stochast> stochast = settings->stochastSettings[i]->stochast;
+            std::shared_ptr<Statistics::Stochast> stochast = settings.stochastSettings[i]->stochast;
 
             if (!stochastSettingsMap.contains(stochast))
             {
                 stochastSettingsMap[stochast] = std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>>();
                 stochastSettingsCount[stochast] = 0;
             }
-            stochastSettingsMap[stochast].push_back(settings->stochastSettings[i]);
-            settings->stochastSettings[i]->isVarying = false; 
+            stochastSettingsMap[stochast].push_back(settings.stochastSettings[i]);
+            settings.stochastSettings[i]->isVarying = false; 
         }
 
-        settings->stochastSettings.clear();
-        settings->VaryingStochastSettings.clear();
+        settings.stochastSettings.clear();
+        settings.VaryingStochastSettings.clear();
         int j = 0; // varying stochast counter
 
         std::vector<double> startValues;
@@ -281,7 +281,7 @@ namespace Deltares::Models
             if (stochastSettingsMap.contains(stochast))
             {
                 std::shared_ptr<Deltares::Reliability::StochastSettings> stochastSettings = stochastSettingsMap[stochast][stochastSettingsCount[stochast]];
-                settings->stochastSettings.push_back(stochastSettings->clone());
+                settings.stochastSettings.push_back(stochastSettings->clone());
 
                 if (stochastSettingsCount[stochast] < stochastSettingsMap[stochast].size() - 1)
                 {
@@ -291,12 +291,12 @@ namespace Deltares::Models
             else
             {
                 std::shared_ptr<Deltares::Reliability::StochastSettings> newStochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
-                settings->stochastSettings.push_back(newStochastSettings);
+                settings.stochastSettings.push_back(newStochastSettings);
             }
 
             if (stochasts[i]->definition->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
             {
-                std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->stochastSettings.back();
+                std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings.stochastSettings.back();
 
                 varyingStochastSettings->StochastIndex = i;
                 varyingStochastSettings->IsQualitative = varyingStochasts[j]->definition->isQualitative();
@@ -305,7 +305,7 @@ namespace Deltares::Models
 
                 varyingStochastSettings->initializeForRun();
 
-                settings->VaryingStochastSettings.push_back(varyingStochastSettings);
+                settings.VaryingStochastSettings.push_back(varyingStochastSettings);
 
                 startValues.push_back(varyingStochastSettings->StartValue);
 
@@ -314,20 +314,20 @@ namespace Deltares::Models
         }
 
         auto correlation = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
-        if (settings->AreStartValuesCorrelated && correlation != nullptr)
+        if (settings.AreStartValuesCorrelated && correlation != nullptr)
         {
             const std::vector<double> uncorrelatedStartValues = correlation->InverseCholesky(startValues);
 
-            for (size_t i = 0; i < settings->VaryingStochastSettings.size(); i++)
+            for (size_t i = 0; i < settings.VaryingStochastSettings.size(); i++)
             {
-                settings->VaryingStochastSettings[i]->UncorrelatedStartValue = uncorrelatedStartValues[i];
+                settings.VaryingStochastSettings[i]->UncorrelatedStartValue = uncorrelatedStartValues[i];
             }
         }
         else
         {
-            for (size_t i = 0; i < settings->VaryingStochastSettings.size(); i++)
+            for (size_t i = 0; i < settings.VaryingStochastSettings.size(); i++)
             {
-                settings->VaryingStochastSettings[i]->UncorrelatedStartValue = settings->VaryingStochastSettings[i]->StartValue;
+                settings.VaryingStochastSettings[i]->UncorrelatedStartValue = settings.VaryingStochastSettings[i]->StartValue;
             }
         }
     }

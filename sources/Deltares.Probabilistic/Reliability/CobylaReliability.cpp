@@ -29,7 +29,7 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint>CobylaReliability::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         const int nStochasts = modelRunner->getVaryingStochastCount();
 

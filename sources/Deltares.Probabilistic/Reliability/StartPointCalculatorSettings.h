@@ -50,7 +50,7 @@ namespace Deltares::Reliability
 
         void validate(Logging::ValidationReport& report) const;
 
-        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+        StochastSettingsSet StochastSet = StochastSettingsSet();
         std::vector<double> startVector;
 
         static std::string getStartPointMethodString(StartMethodType method);

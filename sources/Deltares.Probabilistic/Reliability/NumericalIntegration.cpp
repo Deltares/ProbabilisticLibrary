@@ -34,7 +34,7 @@ namespace Deltares::Reliability
     std::shared_ptr<DesignPoint> NumericalIntegration::getDesignPoint(std::shared_ptr<Models::ModelRunner> runner)
     {
         modelRunner = runner;
-        modelRunner->updateStochastSettings(Settings.StochastSet);
+        modelRunner->updateStochastSettings(*Settings.StochastSet);
 
         int nStochasts = modelRunner->getVaryingStochastCount();
 

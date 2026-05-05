@@ -55,7 +55,7 @@ namespace Deltares::Reliability
 
     std::shared_ptr<DesignPoint> ImportanceSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
@@ -436,8 +436,8 @@ namespace Deltares::Reliability
         else
         {
             auto startPointCalculator = StartPointCalculator();
-            startPointCalculator.Settings = this->Settings->startPointSettings;
-            startPointCalculator.Settings->StochastSet = this->Settings->StochastSet;
+            startPointCalculator.Settings = *Settings->startPointSettings;
+            startPointCalculator.Settings.StochastSet = *Settings->StochastSet;
 
             std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(modelRunner);
 

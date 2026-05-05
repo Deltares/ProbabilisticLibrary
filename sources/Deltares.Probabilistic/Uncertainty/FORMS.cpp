@@ -46,7 +46,7 @@ namespace Deltares::Uncertainty
         int nStochasts = modelRunner->getVaryingStochastCount();
 
         auto gradientCalculator = GradientCalculator();
-        gradientCalculator.Settings = Settings->GradientSettings;
+        gradientCalculator.Settings = *Settings->GradientSettings;
 
         int iteration = 0;
         double zPrevious = std::nan("");

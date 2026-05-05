@@ -33,7 +33,7 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> NumericalBisection::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         int nStochasts = modelRunner->getVaryingStochastCount();
 

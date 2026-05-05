@@ -29,7 +29,7 @@ namespace Deltares::Reliability
     class StartPointCalculator
     {
     public:
-        std::shared_ptr<StartPointCalculatorSettings> Settings = std::make_shared<StartPointCalculatorSettings>();
+        StartPointCalculatorSettings Settings = StartPointCalculatorSettings();
         std::shared_ptr<Models::Sample> getStartPoint(Models::ModelRunner& modelRunner) const;
     private:
         std::shared_ptr<Models::Sample> getNoneStartPoint() const;

@@ -76,7 +76,7 @@ namespace Deltares::Models
         void clearLists();
         void releaseCallBacks() const;
         void useProxy(bool useProxy);
-        void updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings);
+        void updateStochastSettings(Reliability::StochastSettingsSet& settings);
         void setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider);
         double getZValue(const std::shared_ptr<Sample>& sample);
         std::vector<double> getZValues(const std::vector<std::shared_ptr<Sample>>& samples);

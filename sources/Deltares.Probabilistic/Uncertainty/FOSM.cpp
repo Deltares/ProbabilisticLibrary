@@ -38,8 +38,8 @@ namespace Deltares::Uncertainty
         int nStochasts = modelRunner->getVaryingStochastCount();
 
         auto gradientCalculator = GradientCalculator();
-        gradientCalculator.Settings->StepSize = Settings->StepSize;
-        gradientCalculator.Settings->gradientType = GradientType::OneDirection;
+        gradientCalculator.Settings.StepSize = Settings->StepSize;
+        gradientCalculator.Settings.gradientType = GradientType::OneDirection;
 
         std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
 

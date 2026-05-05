@@ -41,9 +41,9 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = projectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
 
-        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = Reliability::StartMethodType::FixedValue;
-        calculator.Settings->startVector = { 1.0, 1.0 };
+        modelRunner->updateStochastSettings(calculator.Settings.StochastSet);
+        calculator.Settings.StartMethod = Reliability::StartMethodType::FixedValue;
+        calculator.Settings.startVector = { 1.0, 1.0 };
 
         auto r = calculator.getStartPoint(*modelRunner);
 
@@ -57,10 +57,10 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = projectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
 
-        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = Reliability::StartMethodType::RaySearch;
-        calculator.Settings->MaximumLengthStartPoint = 20.0;
-        calculator.Settings->dsdu = 3.0;
+        modelRunner->updateStochastSettings(calculator.Settings.StochastSet);
+        calculator.Settings.StartMethod = Reliability::StartMethodType::RaySearch;
+        calculator.Settings.MaximumLengthStartPoint = 20.0;
+        calculator.Settings.dsdu = 3.0;
 
         auto r = calculator.getStartPoint(*modelRunner);
 
@@ -74,8 +74,8 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = projectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
 
-        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
+        modelRunner->updateStochastSettings(calculator.Settings.StochastSet);
+        calculator.Settings.StartMethod = Reliability::StartMethodType::SphereSearch;
 
         auto r = calculator.getStartPoint(*modelRunner);
 
@@ -91,10 +91,10 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = projectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
 
-        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
-        calculator.Settings->allQuadrants = true;
-        calculator.Settings->maxStepsSphereSearch = 16;
+        modelRunner->updateStochastSettings(calculator.Settings.StochastSet);
+        calculator.Settings.StartMethod = Reliability::StartMethodType::SphereSearch;
+        calculator.Settings.allQuadrants = true;
+        calculator.Settings.maxStepsSphereSearch = 16;
 
         auto r = calculator.getStartPoint(*modelRunner);
 
@@ -110,8 +110,8 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = projectBuilder().BuildProjectWithDeterminist(3.0);
         auto calculator = Reliability::StartPointCalculator();
 
-        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
+        modelRunner->updateStochastSettings(calculator.Settings.StochastSet);
+        calculator.Settings.StartMethod = Reliability::StartMethodType::SphereSearch;
 
         auto r = calculator.getStartPoint(*modelRunner);
 

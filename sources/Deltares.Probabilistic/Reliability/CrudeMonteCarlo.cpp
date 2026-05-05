@@ -42,7 +42,7 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> CrudeMonteCarlo::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
         modelRunner->setSampleProvider(sampleProvider);

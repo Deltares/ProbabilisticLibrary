@@ -48,10 +48,10 @@ namespace Deltares::Models
         return this->uConverter->isVaryingStochast(index);
     }
 
-    void ModelRunner::updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings)
+    void ModelRunner::updateStochastSettings(Reliability::StochastSettingsSet& settings)
     {
         uConverter->updateStochastSettings(settings);
-        sampleProvider = std::make_shared<SampleProvider>(*settings);
+        sampleProvider = std::make_shared<SampleProvider>(settings);
     }
 
     void ModelRunner::setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider)

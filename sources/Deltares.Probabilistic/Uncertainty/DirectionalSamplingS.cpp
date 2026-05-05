@@ -43,7 +43,7 @@ namespace Deltares::Uncertainty
     {
         //Step 0: Initialize the algorithm
 
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(*Settings->StochastSet);
 
         int nStochasts = modelRunner->getVaryingStochastCount();
 
