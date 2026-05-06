@@ -236,18 +236,13 @@ namespace Deltares::Uncertainty
             auto zeroSample = std::make_shared<Sample>(nStochasts);
             auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(zeroSample));
             evaluation->Quantile = 0.5;
-
-            for (auto& quantile : Settings.RequestedQuantiles)
-            {
-                result.quantileEvaluations.push_back(evaluation);
-            }
-
+            result.quantileEvaluations = std::vector(Settings.RequestedQuantiles.size(), evaluation);
             return result;
         }
         else
         {
             std::sort(cdfCurve->getProperties()->FragilityValues.begin(), cdfCurve->getProperties()->FragilityValues.end(),
-                [](std::shared_ptr<FragilityValue> p, std::shared_ptr<FragilityValue> q) {return p->X < q->X; });
+                [](const std::shared_ptr<FragilityValue>& p, const std::shared_ptr<FragilityValue>& q) {return p->X < q->X; });
 
             auto result = modelRunner->getUncertaintyResult(cdfCurve);
 

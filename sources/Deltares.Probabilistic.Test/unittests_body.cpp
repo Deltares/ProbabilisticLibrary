@@ -655,6 +655,11 @@ TEST(UnitTests, testUncFORM)
     Deltares::Probabilistic::Test::TestUncertainty::testFORM();
 }
 
+TEST(UnitTests, testUncFORMonlyZero)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testFORMonlyZero();
+}
+
 TEST(UnitTests, testUncFOSM)
 {
     Deltares::Probabilistic::Test::TestUncertainty::testFOSM();
