@@ -210,6 +210,7 @@
     <ClInclude Include="Statistics\Scenario.h" />
     <ClInclude Include="Statistics\ProbabilityIterator.h" />
     <ClInclude Include="Statistics\ProbabilityValue.h" />
+    <ClInclude Include="Uncertainty\Direction.h" />
     <ClInclude Include="Uncertainty\DirectionalSamplingS.h" />
     <ClInclude Include="Uncertainty\DirectionalSamplingSettingsS.h" />
     <ClInclude Include="Uncertainty\NumericalIntegrationS.h" />
@@ -458,6 +459,7 @@
     <ClCompile Include="Statistics\Scenario.cpp" />
     <ClCompile Include="Uncertainty\DirectionalSamplingSettingsS.cpp" />
     <ClCompile Include="Statistics\ProbabilityValue.cpp" />
+    <ClCompile Include="Uncertainty\Direction.cpp" />
     <ClCompile Include="Uncertainty\DirectionalSamplingS.cpp" />
     <ClCompile Include="Uncertainty\NumericalIntegrationS.cpp" />
     <ClCompile Include="Uncertainty\FORMS.cpp" />
