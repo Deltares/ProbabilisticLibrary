@@ -74,7 +74,7 @@ namespace Deltares::Uncertainty
              * \param function Operation on a sample
              * \return Resulting numeric values
              */
-            static std::vector<double> select(std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function);
+            static std::vector<double> select(const std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function);
             static std::vector<std::shared_ptr<Direction>> where(std::vector<std::shared_ptr<Direction>>& directions, std::function<bool(std::shared_ptr<Direction>)> function);
 
         private:
@@ -82,10 +82,9 @@ namespace Deltares::Uncertainty
             std::shared_ptr<Models::Sample> sample;
             std::vector<double> distances = std::vector<double>();
             std::vector<double> zValues = std::vector<double>();
-            std::shared_ptr<Models::Sample> newSample = nullptr;
         };
 
-        double getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Statistics::ProbabilityValue> quantile, int nStochasts, double Z0);
+        double getZForRequiredQ(Models::ModelRunner& modelRunner, std::shared_ptr<Statistics::ProbabilityValue>& quantile, int nStochasts, double Z0);
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, std::shared_ptr<Models::Evaluation>> evaluations;
 
         static double predict(double predZi, const std::vector<std::shared_ptr<Direction>>& directions, double probability0, int nStochasts);

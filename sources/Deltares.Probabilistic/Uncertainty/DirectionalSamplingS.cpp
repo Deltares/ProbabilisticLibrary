@@ -60,12 +60,12 @@ namespace Deltares::Uncertainty
 
         std::set<double> handledReliabilities;
 
-        for (const auto& quantile : Settings.RequestedQuantiles)
+        for (auto& quantile : Settings.RequestedQuantiles)
         {
             if (!handledReliabilities.contains(quantile->Reliability))
             {
                 auto fragilityValue = std::make_shared<Statistics::FragilityValue>();
-                fragilityValue->X = getZForRequiredQ(modelRunner, quantile, nStochasts, Z0);
+                fragilityValue->X = getZForRequiredQ(*modelRunner, quantile, nStochasts, Z0);
                 fragilityValue->Reliability = quantile->Reliability;
                 stochast->getProperties()->FragilityValues.push_back(fragilityValue);
 
@@ -93,14 +93,14 @@ namespace Deltares::Uncertainty
         return result;
     }
 
-    double DirectionalSamplingS::getZForRequiredQ(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<Statistics::ProbabilityValue> quantile, int nStochasts, double Z0)
+    double DirectionalSamplingS::getZForRequiredQ(ModelRunner& modelRunner, std::shared_ptr<Statistics::ProbabilityValue>& quantile, int nStochasts, double Z0)
     {
         int performedIterations = 0;
 
         // Step 3: Calculate n samples in random directions, all at the same distance d of the origin
 
         auto sampleProvider = std::make_shared<SampleProvider>(Settings.StochastSet);
-        modelRunner->setSampleProvider(sampleProvider);
+        modelRunner.setSampleProvider(sampleProvider);
 
         auto randomSampleGenerator = RandomSampleGenerator();
         randomSampleGenerator.Settings = Settings.randomSettings;
@@ -110,7 +110,7 @@ namespace Deltares::Uncertainty
 
         std::vector<std::shared_ptr<Sample>> samples;
 
-        int nDirections = Settings.getRequiredSamples(modelRunner->getVaryingStochastCount());
+        int nDirections = Settings.getRequiredSamples(modelRunner.getVaryingStochastCount());
         nDirections = std::min(nDirections, Settings.NumberDirections);
 
         for (int i = 0; i < nDirections; i++)
@@ -131,9 +131,9 @@ namespace Deltares::Uncertainty
             samples[i]->IterationIndex = static_cast<int>(i);
         }
 
-        std::vector<double> zValues = modelRunner->getZValues(samples);
+        std::vector<double> zValues = modelRunner.getZValues(samples);
 
-        modelRunner->reportProgress(++performedIterations, Settings.MaximumIterations + 1);
+        modelRunner.reportProgress(++performedIterations, Settings.MaximumIterations + 1);
 
         int nZValuesGreaterZero = 0;
         for (const double z : zValues)
@@ -195,7 +195,7 @@ namespace Deltares::Uncertainty
                 }
             }
 
-            modelRunner->getZValues(calculateSamples);
+            modelRunner.getZValues(calculateSamples);
 
             std::vector<double> newZValues = Sample::select(newSamples, [](std::shared_ptr<Sample> p) {return p->Z; });
 
@@ -236,12 +236,12 @@ namespace Deltares::Uncertainty
                 }
             }
 
-            modelRunner->reportProgress(++performedIterations, Settings.MaximumIterations + 1);
+            modelRunner.reportProgress(++performedIterations, Settings.MaximumIterations + 1);
         }
 
         if (lowestSample != nullptr)
         {
-            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(lowestSample));
+            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner.getEvaluation(lowestSample));
             this->evaluations[quantile] = evaluation;
         }
 
@@ -337,18 +337,18 @@ namespace Deltares::Uncertainty
         lastWeight = Statistics::StandardNormal::getQFromU(std::abs(distance));
 
         // Create a list of Result objects
-        std::vector<std::shared_ptr<Result>> results;
+        std::vector<Result> results;
         for (size_t i = 0; i < distances.size(); i++)
         {
-            std::shared_ptr<Result> tempVar = std::make_shared<Result>();
-            tempVar->Distance = distances[i];
-            tempVar->ZValue = zValues[i];
+            Result tempVar = Result();
+            tempVar.Distance = distances[i];
+            tempVar.ZValue = zValues[i];
             results.push_back(tempVar);
         }
 
         // Sort the results based on the Distance property
         std::sort(results.begin(), results.end(),
-            [](const std::shared_ptr<Result>& p, const std::shared_ptr<Result>& q) {return p->Distance < q->Distance; });
+            [](const Result& p, const Result& q) {return p.Distance < q.Distance; });
 
         // Clear the original lists and repopulate them with the sorted values
         distances.clear();
@@ -356,8 +356,8 @@ namespace Deltares::Uncertainty
 
         for (const auto& result : results)
         {
-            distances.push_back(result->Distance);
-            zValues.push_back(result->ZValue);
+            distances.push_back(result.Distance);
+            zValues.push_back(result.ZValue);
         }
     }
 
@@ -393,7 +393,7 @@ namespace Deltares::Uncertainty
         }
     }
 
-    std::vector<double> DirectionalSamplingS::Direction::select(std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function)
+    std::vector<double> DirectionalSamplingS::Direction::select(const std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function)
     {
         std::vector<double> result(directions.size());
         for (size_t i = 0; i < directions.size(); i++)
@@ -406,7 +406,7 @@ namespace Deltares::Uncertainty
     std::vector<std::shared_ptr<DirectionalSamplingS::Direction>> DirectionalSamplingS::Direction::where(std::vector<std::shared_ptr<Direction>>& directions, std::function<bool(std::shared_ptr<Direction>)> function)
     {
         std::vector< std::shared_ptr<DirectionalSamplingS::Direction>> results;
-        for (std::shared_ptr<Direction> direction : directions)
+        for (std::shared_ptr<Direction>& direction : directions)
         {
             if (function(direction))
             {
