@@ -20,9 +20,7 @@
 // All rights reserved.
 //
 #include "DirectionalSamplingS.h"
-#include <vector>
 #include <cmath>
-#include <memory>
 #include <algorithm>
 #include <set>
 

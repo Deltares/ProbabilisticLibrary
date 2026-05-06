@@ -101,7 +101,8 @@ namespace Deltares::Uncertainty
         }
     }
 
-    std::vector<double> Direction::select(const std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function)
+    std::vector<double> Direction::select(const std::vector<std::shared_ptr<Direction>>& directions,
+        const std::function<double(const std::shared_ptr<Direction>&)>& function)
     {
         std::vector<double> result(directions.size());
         for (size_t i = 0; i < directions.size(); i++)
@@ -111,7 +112,8 @@ namespace Deltares::Uncertainty
         return result;
     }
 
-    std::vector<std::shared_ptr<Direction>> Direction::where(std::vector<std::shared_ptr<Direction>>& directions, std::function<bool(std::shared_ptr<Direction>)> function)
+    std::vector<std::shared_ptr<Direction>> Direction::where(std::vector<std::shared_ptr<Direction>>& directions,
+        const std::function<bool(const std::shared_ptr<Direction>&)>& function)
     {
         std::vector< std::shared_ptr<Direction>> results;
         for (std::shared_ptr<Direction>& direction : directions)

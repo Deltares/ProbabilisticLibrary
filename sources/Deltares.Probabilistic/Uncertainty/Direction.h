@@ -59,8 +59,10 @@ namespace Deltares::Uncertainty
          * \param function Operation on a sample
          * \return Resulting numeric values
          */
-        static std::vector<double> select(const std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function);
-        static std::vector<std::shared_ptr<Direction>> where(std::vector<std::shared_ptr<Direction>>& directions, std::function<bool(std::shared_ptr<Direction>)> function);
+        static std::vector<double> select(const std::vector<std::shared_ptr<Direction>>& directions,
+            const std::function<double(const std::shared_ptr<Direction>&)>& function);
+        static std::vector<std::shared_ptr<Direction>> where(std::vector<std::shared_ptr<Direction>>& directions,
+            const std::function<bool(const std::shared_ptr<Direction>&)>& function);
 
     private:
         int index = 0;
