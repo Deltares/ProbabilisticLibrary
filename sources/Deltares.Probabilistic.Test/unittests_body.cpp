@@ -42,6 +42,7 @@
 #include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
 #include "Statistics/TestXfromU.h"
+#include "Statistics/TestStochast.h"
 #include "Math/testMatrix.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
@@ -563,6 +564,11 @@ TEST(UnitTests, testStandardNormal)
 {
     auto tstStdNormal = Deltares::Probabilistic::Test::TestStandardNormal();
     tstStdNormal.allStandardNormalTests();
+}
+
+TEST(UnitTests, testSortStochast)
+{
+    Deltares::Probabilistic::Test::TestStochast::testSortFragilityCurves();
 }
 
 TEST(CopulasTest, testClayton)
