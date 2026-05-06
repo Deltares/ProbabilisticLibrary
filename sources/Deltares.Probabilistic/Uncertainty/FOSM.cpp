@@ -38,10 +38,10 @@ namespace Deltares::Uncertainty
         int nStochasts = modelRunner->getVaryingStochastCount();
 
         auto gradientCalculator = GradientCalculator();
-        gradientCalculator.Settings.StepSize = Settings->StepSize;
+        gradientCalculator.Settings.StepSize = Settings.StepSize;
         gradientCalculator.Settings.gradientType = GradientType::OneDirection;
 
-        std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
+        auto zeroSample = std::make_shared<Sample>(nStochasts);
 
         std::vector<double> gradient = gradientCalculator.getGradient(*modelRunner, zeroSample);
         double length = Numeric::NumericSupport::GetLength(gradient);
@@ -54,16 +54,16 @@ namespace Deltares::Uncertainty
             gradient = gradientCalculator.getGradient(*modelRunner, disturbedSample);
         }
 
-        std::shared_ptr<Sample> nextSample = std::make_shared<Sample>(gradient);
+        auto nextSample = std::make_shared<Sample>(gradient);
         nextSample = nextSample->getNormalizedSample();
         double z1 = modelRunner->getZValue(nextSample);
 
-        if (this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations)
+        if (correlationMatrixBuilder->isEmpty() && Settings.CalculateCorrelations && Settings.CalculateInputCorrelations)
         {
-            modelRunner->registerSample(this->correlationMatrixBuilder, nextSample);
+            modelRunner->registerSample(correlationMatrixBuilder, nextSample);
         }
 
-        std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Statistics::Stochast>();
+        auto stochast = std::make_shared<Statistics::Stochast>();
 
         double deviation = std::abs(z1 - z0);
         Statistics::DistributionType distributionType = deviation > 0.0
@@ -75,17 +75,17 @@ namespace Deltares::Uncertainty
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
+        for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : Settings.RequestedQuantiles)
         {
             std::shared_ptr<Sample> quantileSample = nextSample->getSampleAtBeta(quantile->Reliability);
-            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(quantileSample));
+            auto evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(quantileSample));
             evaluation->Quantile = quantile->getProbabilityOfNonFailure();
             result.quantileEvaluations.push_back(evaluation);
         }
 
-        if (this->Settings->CalculateCorrelations)
+        if (Settings.CalculateCorrelations)
         {
-            this->correlationMatrixBuilder->registerSamples(stochast, std::vector<double> {z1});
+            correlationMatrixBuilder->registerSamples(stochast, std::vector<double> {z1});
         }
 
         return result;

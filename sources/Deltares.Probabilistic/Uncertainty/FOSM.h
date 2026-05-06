@@ -34,7 +34,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Settings for this algorithm
          */
-        std::shared_ptr<FOSMSettings> Settings = std::make_shared<FOSMSettings>();
+        FOSMSettings Settings = FOSMSettings();
 
         /**
          * \brief Gets the sensitivity

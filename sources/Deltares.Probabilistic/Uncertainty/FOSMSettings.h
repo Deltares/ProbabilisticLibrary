@@ -54,7 +54,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings RunSettings = Models::RunSettings();
 
         /**
          * \brief Reports whether the settings have valid values

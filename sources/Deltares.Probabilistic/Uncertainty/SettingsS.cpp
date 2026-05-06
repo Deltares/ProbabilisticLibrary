@@ -66,11 +66,11 @@ namespace Deltares::Uncertainty
     {
         std::shared_ptr<FOSM> fosm = std::make_shared<FOSM>();
 
-        fosm->Settings->StepSize = this->StepSizeFactor;
-        fosm->Settings->RunSettings = this->RunSettings;
-        fosm->Settings->CalculateCorrelations = this->CalculateCorrelations;
-        fosm->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
-        fosm->Settings->RequestedQuantiles = this->RequestedQuantiles;
+        fosm->Settings.StepSize = this->StepSizeFactor;
+        fosm->Settings.RunSettings = *this->RunSettings;
+        fosm->Settings.CalculateCorrelations = this->CalculateCorrelations;
+        fosm->Settings.CalculateInputCorrelations = this->CalculateInputCorrelations;
+        fosm->Settings.RequestedQuantiles = this->RequestedQuantiles;
 
         return fosm;
     }
@@ -155,7 +155,7 @@ namespace Deltares::Uncertainty
         case UncertaintyMethodType::UncertaintyNumericalIntegration: GetNumericalIntegrationMethod()->Settings->validate(report); break;
         case UncertaintyMethodType::UncertaintyDirectionalSampling: GetDirectionalSamplingMethod()->Settings.validate(report); break;
         case UncertaintyMethodType::UncertaintyFORM: GetFORMMethod()->Settings.validate(report); break;
-        case UncertaintyMethodType::UncertaintyFOSM: GetFOSMMethod()->Settings->validate(report); break;
+        case UncertaintyMethodType::UncertaintyFOSM: GetFOSMMethod()->Settings.validate(report); break;
         default: throw Reliability::probLibException("Uncertainty method");
         }
     }
