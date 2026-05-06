@@ -44,13 +44,13 @@ namespace Deltares::Reliability
         std::vector<double> betaValues;
         std::vector<std::shared_ptr<Models::Sample>> samples;
 
-        modelRunner->updateStochastSettings(*Settings.StochastSet);
+        modelRunner->updateStochastSettings(Settings.StochastSet);
 
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
         auto randomSampleGenerator = Models::RandomSampleGenerator();
-        randomSampleGenerator.Settings = *Settings.randomSettings;
-        randomSampleGenerator.Settings.StochastSet = *Settings.StochastSet;
+        randomSampleGenerator.Settings = Settings.randomSettings;
+        randomSampleGenerator.Settings.StochastSet = Settings.StochastSet;
         randomSampleGenerator.initialize();
 
         std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(nStochasts);
@@ -64,7 +64,7 @@ namespace Deltares::Reliability
 
         if (modelRunner->Settings->MaxParallelProcesses > 0)
         {
-            if (Settings.runSettings->UseOpenMPinReliability)
+            if (Settings.runSettings.UseOpenMPinReliability)
             {
                 omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
             }
@@ -219,7 +219,7 @@ namespace Deltares::Reliability
         std::vector<DirectionReliabilityDS> directions;
         for (auto& sample : samples)
         {
-            directions.emplace_back(threshold, z0, *Settings.DirectionSettings, *sample);
+            directions.emplace_back(threshold, z0, Settings.DirectionSettings, *sample);
         }
 
         if ( ! modelRunner.canCalculateBeta())
@@ -234,7 +234,7 @@ namespace Deltares::Reliability
                 }
             }
 
-            auto preComputeDirs = PrecomputeDirections(*Settings.DirectionSettings, z0);
+            auto preComputeDirs = PrecomputeDirections(Settings.DirectionSettings, z0);
             preComputeDirs.precompute(modelRunner, directions, shouldCompute);
             preComputedCounter += preComputeDirs.GetCounter();
         }

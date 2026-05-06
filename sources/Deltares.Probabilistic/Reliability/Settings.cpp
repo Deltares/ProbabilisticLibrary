@@ -138,9 +138,9 @@ namespace Deltares::Reliability
         fdir->DsSettings.MaximumDirections = this->MaximumDirections;
         fdir->DsSettings.designPointMethod = this->designPointMethod;
         fdir->DsSettings.VariationCoefficient = this->VariationCoefficient;
-        fdir->DsSettings.runSettings = this->RunSettings;
-        fdir->DsSettings.randomSettings = this->RandomSettings;
-        fdir->DsSettings.StochastSet = this->StochastSet;
+        fdir->DsSettings.runSettings = *this->RunSettings;
+        fdir->DsSettings.randomSettings = *this->RandomSettings;
+        fdir->DsSettings.StochastSet = *this->StochastSet;
 
         return fdir;
     }
@@ -165,9 +165,9 @@ namespace Deltares::Reliability
         dsfi->DsSettings.MaximumDirections = this->MaximumDirections;
         dsfi->DsSettings.designPointMethod = this->designPointMethod;
         dsfi->DsSettings.VariationCoefficient = this->VariationCoefficient;
-        dsfi->DsSettings.runSettings = this->RunSettings;
-        dsfi->DsSettings.randomSettings = this->RandomSettings;
-        dsfi->DsSettings.StochastSet = this->StochastSet;
+        dsfi->DsSettings.runSettings = *this->RunSettings;
+        dsfi->DsSettings.randomSettings = *this->RandomSettings;
+        dsfi->DsSettings.StochastSet = *this->StochastSet;
 
         return dsfi;
     }
@@ -247,10 +247,10 @@ namespace Deltares::Reliability
         directionalSampling->Settings.MaximumDirections = this->MaximumDirections;
         directionalSampling->Settings.designPointMethod = this->designPointMethod;
         directionalSampling->Settings.VariationCoefficient = this->VariationCoefficient;
-        directionalSampling->Settings.runSettings = this->RunSettings;
-        directionalSampling->Settings.randomSettings = this->RandomSettings;
-        directionalSampling->Settings.DirectionSettings = this->DirectionSettings;
-        directionalSampling->Settings.StochastSet = this->StochastSet;
+        directionalSampling->Settings.runSettings = *this->RunSettings;
+        directionalSampling->Settings.randomSettings = *this->RandomSettings;
+        directionalSampling->Settings.DirectionSettings = *this->DirectionSettings;
+        directionalSampling->Settings.StochastSet = *this->StochastSet;
 
         return directionalSampling;
     }

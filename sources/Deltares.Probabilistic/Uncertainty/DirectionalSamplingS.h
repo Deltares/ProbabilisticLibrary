@@ -34,7 +34,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Settings for this algorithm
          */
-        std::shared_ptr<DirectionalSamplingSettingsS> Settings = std::make_shared<DirectionalSamplingSettingsS>();
+        DirectionalSamplingSettingsS Settings = DirectionalSamplingSettingsS();
 
         /**
          * \brief Gets the sensitivity

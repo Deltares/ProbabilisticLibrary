@@ -43,7 +43,7 @@ namespace Deltares::Uncertainty
     {
         //Step 0: Initialize the algorithm
 
-        modelRunner->updateStochastSettings(*Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings.StochastSet);
 
         int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -60,7 +60,7 @@ namespace Deltares::Uncertainty
 
         std::set<double> handledReliabilities;
 
-        for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
+        for (const auto& quantile : Settings.RequestedQuantiles)
         {
             if (!handledReliabilities.contains(quantile->Reliability))
             {
@@ -77,7 +77,7 @@ namespace Deltares::Uncertainty
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (const std::shared_ptr<Statistics::ProbabilityValue> &quantile : this->Settings->RequestedQuantiles)
+        for (const auto& quantile : Settings.RequestedQuantiles)
         {
             if (this->evaluations.contains(quantile))
             {
@@ -99,19 +99,19 @@ namespace Deltares::Uncertainty
 
         // Step 3: Calculate n samples in random directions, all at the same distance d of the origin
 
-        auto sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
+        auto sampleProvider = std::make_shared<SampleProvider>(Settings.StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
 
         auto randomSampleGenerator = RandomSampleGenerator();
-        randomSampleGenerator.Settings = *Settings->randomSettings;
-        randomSampleGenerator.Settings.StochastSet = *Settings->StochastSet;
+        randomSampleGenerator.Settings = Settings.randomSettings;
+        randomSampleGenerator.Settings.StochastSet = Settings.StochastSet;
         randomSampleGenerator.sampleProvider = sampleProvider;
         randomSampleGenerator.initialize();
 
         std::vector<std::shared_ptr<Sample>> samples;
 
-        int nDirections = this->Settings->getRequiredSamples(modelRunner->getVaryingStochastCount());
-        nDirections = std::min(nDirections, this->Settings->NumberDirections);
+        int nDirections = Settings.getRequiredSamples(modelRunner->getVaryingStochastCount());
+        nDirections = std::min(nDirections, Settings.NumberDirections);
 
         for (int i = 0; i < nDirections; i++)
         {
@@ -121,7 +121,7 @@ namespace Deltares::Uncertainty
 
         // Calculate the corresponding distance d of the origin using the length of the samples list
 
-        double initialDistance = getBetaDistance(std::abs(quantile->Reliability), nStochasts, this->Settings->modelType);
+        double initialDistance = getBetaDistance(std::abs(quantile->Reliability), nStochasts, Settings.modelType);
         initialDistance = std::max(0.1, initialDistance);
 
         // Normalize the value of Samples via d
@@ -133,7 +133,7 @@ namespace Deltares::Uncertainty
 
         std::vector<double> zValues = modelRunner->getZValues(samples);
 
-        modelRunner->reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
+        modelRunner->reportProgress(++performedIterations, Settings.MaximumIterations + 1);
 
         int nZValuesGreaterZero = 0;
         for (const double z : zValues)
@@ -171,7 +171,7 @@ namespace Deltares::Uncertainty
         std::shared_ptr<Sample> lowestSample = nullptr;
 
         int j = 0; //iteration over N
-        while (j < this->Settings->MaximumIterations && error > this->Settings->VariationCoefficientFailure)
+        while (j < Settings.MaximumIterations && error > Settings.VariationCoefficientFailure)
         {
             double zMin = Z0;
             double zMax = quantile->Reliability > beta0 ? NumericSupport::getMaximum(zValues) : NumericSupport::getMinimum(zValues);
@@ -236,7 +236,7 @@ namespace Deltares::Uncertainty
                 }
             }
 
-            modelRunner->reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
+            modelRunner->reportProgress(++performedIterations, Settings.MaximumIterations + 1);
         }
 
         if (lowestSample != nullptr)

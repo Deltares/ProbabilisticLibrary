@@ -23,7 +23,6 @@
 
 #include "../Model/RunSettings.h"
 #include "../Model/RandomSettings.h"
-#include <memory>
 
 namespace Deltares::Uncertainty
 {
@@ -90,17 +89,17 @@ namespace Deltares::Uncertainty
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RandomSettings> randomSettings = std::make_shared<Models::RandomSettings>();
+        Models::RandomSettings randomSettings = Models::RandomSettings();
 
         /**
          * \brief Settings for individual stochastic variables, such as the start value
          */
-        std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
+        Reliability::StochastSettingsSet StochastSet = Reliability::StochastSettingsSet();
 
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings RunSettings = Models::RunSettings();
 
         /**
          * \brief Reports whether the settings have valid values
@@ -110,7 +109,7 @@ namespace Deltares::Uncertainty
         {
             Logging::ValidationSupport::checkNotEmpty(report, this->RequestedQuantiles.size(), "requested quantiles");
 
-            RunSettings->validate(report);
+            RunSettings.validate(report);
         }
 
     private:

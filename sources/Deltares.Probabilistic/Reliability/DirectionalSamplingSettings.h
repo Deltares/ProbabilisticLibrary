@@ -58,22 +58,22 @@ namespace Deltares::Reliability
         /**
          * \brief Settings for calculating one direction
          */
-        std::shared_ptr<DirectionReliabilitySettings> DirectionSettings = std::make_shared<DirectionReliabilitySettings>();
+        DirectionReliabilitySettings DirectionSettings = DirectionReliabilitySettings();
 
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings runSettings = Models::RunSettings();
 
         /**
          * \brief Settings for generating random values
          */
-        std::shared_ptr<Models::RandomSettings> randomSettings = std::make_shared<Models::RandomSettings>();
+        Models::RandomSettings randomSettings = Models::RandomSettings();
 
         /**
          * \brief Settings for individual stochastic variables
          */
-        std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+        StochastSettingsSet StochastSet = StochastSettingsSet();
 
         /**
          * \brief Reports whether the settings have valid values
@@ -85,7 +85,7 @@ namespace Deltares::Reliability
             Logging::ValidationSupport::checkMinimumInt(report, MinimumDirections, MaximumDirections, "maximum directions");
             Logging::ValidationSupport::checkMinimum(report, 0, VariationCoefficient, "variation coefficient");
 
-            runSettings->validate(report);
+            runSettings.validate(report);
         }
     };
 }

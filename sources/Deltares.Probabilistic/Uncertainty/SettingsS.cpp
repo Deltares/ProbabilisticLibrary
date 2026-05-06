@@ -133,15 +133,15 @@ namespace Deltares::Uncertainty
     {
         std::shared_ptr<DirectionalSamplingS> directionalSampling = std::make_shared<DirectionalSamplingS>();
 
-        directionalSampling->Settings->NumberDirections = this->MaximumDirections;
-        directionalSampling->Settings->MaximumIterations = this->MaximumIterations;
-        directionalSampling->Settings->VariationCoefficientFailure = this->VariationCoefficient;
-        directionalSampling->Settings->RequestedQuantiles = this->RequestedQuantiles;
-        directionalSampling->Settings->RunSettings = this->RunSettings;
-        directionalSampling->Settings->randomSettings = this->RandomSettings;
-        directionalSampling->Settings->StochastSet = this->StochastSet;
-        directionalSampling->Settings->CalculateCorrelations = this->CalculateCorrelations;
-        directionalSampling->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
+        directionalSampling->Settings.NumberDirections = this->MaximumDirections;
+        directionalSampling->Settings.MaximumIterations = this->MaximumIterations;
+        directionalSampling->Settings.VariationCoefficientFailure = this->VariationCoefficient;
+        directionalSampling->Settings.RequestedQuantiles = this->RequestedQuantiles;
+        directionalSampling->Settings.RunSettings = *this->RunSettings;
+        directionalSampling->Settings.randomSettings = *this->RandomSettings;
+        directionalSampling->Settings.StochastSet = *this->StochastSet;
+        directionalSampling->Settings.CalculateCorrelations = this->CalculateCorrelations;
+        directionalSampling->Settings.CalculateInputCorrelations = this->CalculateInputCorrelations;
 
         return directionalSampling;
     }
@@ -153,7 +153,7 @@ namespace Deltares::Uncertainty
         case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings.validate(report); break;
         case UncertaintyMethodType::UncertaintyImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
         case UncertaintyMethodType::UncertaintyNumericalIntegration: GetNumericalIntegrationMethod()->Settings->validate(report); break;
-        case UncertaintyMethodType::UncertaintyDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;
+        case UncertaintyMethodType::UncertaintyDirectionalSampling: GetDirectionalSamplingMethod()->Settings.validate(report); break;
         case UncertaintyMethodType::UncertaintyFORM: GetFORMMethod()->Settings.validate(report); break;
         case UncertaintyMethodType::UncertaintyFOSM: GetFOSMMethod()->Settings->validate(report); break;
         default: throw Reliability::probLibException("Uncertainty method");
