@@ -73,9 +73,7 @@ namespace Deltares::Uncertainty
             }
         }
 
-        std::sort(stochast->getProperties()->FragilityValues.begin(), stochast->getProperties()->FragilityValues.end(),
-            [](const std::shared_ptr<Statistics::FragilityValue>& val1, const std::shared_ptr<Statistics::FragilityValue>& val2)
-        {return val1->Reliability < val2->Reliability; });
+        stochast->getProperties()->sortFragilityValuesOnReliability();
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 

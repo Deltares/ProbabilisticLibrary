@@ -240,7 +240,7 @@ namespace Deltares::Uncertainty
         }
         else
         {
-            cdfCurve->getProperties()->sortFragilityValues();
+            cdfCurve->getProperties()->sortFragilityValuesOnX();
 
             auto result = modelRunner->getUncertaintyResult(cdfCurve);
 

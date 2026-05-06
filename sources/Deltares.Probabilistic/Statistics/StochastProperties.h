@@ -133,8 +133,13 @@ namespace Deltares::Statistics
         void setDirty();
 
         /**
-         * \brief Sorts the fragility values
+         * \brief Sorts the fragility values on the X value
          */
-        void sortFragilityValues();
+        void sortFragilityValuesOnX();
+
+        /**
+         * \brief Sorts the fragility values on the reliability
+         */
+        void sortFragilityValuesOnReliability();
     };
 }

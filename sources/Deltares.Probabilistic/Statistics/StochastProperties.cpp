@@ -119,7 +119,7 @@ namespace Deltares::Statistics
         }
     }
 
-    void StochastProperties::sortFragilityValues()
+    void StochastProperties::sortFragilityValuesOnX()
     {
         std::sort(FragilityValues.begin(), FragilityValues.end(),
             [](const std::shared_ptr<FragilityValue>& p, const std::shared_ptr<FragilityValue>& q)
@@ -128,4 +128,12 @@ namespace Deltares::Statistics
             });
     }
 
+    void StochastProperties::sortFragilityValuesOnReliability()
+    {
+        std::sort(FragilityValues.begin(), FragilityValues.end(),
+            [](const std::shared_ptr<FragilityValue>& p, const std::shared_ptr<FragilityValue>& q)
+            {
+                return p->Reliability < q->Reliability;
+            });
+    }
 }
