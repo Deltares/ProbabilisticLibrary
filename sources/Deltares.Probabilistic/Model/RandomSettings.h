@@ -82,21 +82,6 @@ namespace Deltares::Models
 
         Reliability::StochastSettingsSet StochastSet = Reliability::StochastSettingsSet();
 
-        /**
-         * \brief Gets a copy of these settings
-         * \return Copy
-         */
-        std::shared_ptr<RandomSettings> clone()
-        {
-            std::shared_ptr<RandomSettings> copy = std::make_shared<RandomSettings>();
-
-            copy->IsRepeatableRandom = this->IsRepeatableRandom;
-            copy->IsStochastRepeatableRandom = this->IsStochastRepeatableRandom;
-            copy->Seed = this->Seed;
-            copy->StochastSet = this->StochastSet;
-
-            return copy;
-        }
     private:
         /**
          * \brief The last non-zero generated time stamp
