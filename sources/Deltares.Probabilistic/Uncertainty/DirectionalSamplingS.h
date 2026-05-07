@@ -22,6 +22,7 @@
 #pragma once
 #include "DirectionalSamplingSettingsS.h"
 #include "UncertaintyMethod.h"
+#include "Direction.h"
 
 namespace Deltares::Uncertainty
 {
@@ -43,48 +44,6 @@ namespace Deltares::Uncertainty
          */
         UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
     private:
-        class Result
-        {
-        public:
-            double Distance;
-            double ZValue;
-        };
-
-        class Direction
-        {
-        public:
-            Direction(std::shared_ptr<Models::Sample> sample, int index)
-            {
-                this->sample = sample;
-                this->sample->IterationIndex = index;
-                this->index = index;
-            }
-
-            void AddResult(double distance, double z);
-            double GetDistanceAtZ(double z) const;
-            std::shared_ptr<Models::Sample> CreateNewSampleAt(double z, double maxBeta);
-            bool Valid = true;
-            double lastWeight = 0;
-            double lastDifference = 0;
-            double lastDistance = 0;
-
-            /**
-             * \brief Performs an operation on a direction resulting in a numeric value for a collection of directions
-             * \param directions Collection of samples
-             * \param function Operation on a sample
-             * \return Resulting numeric values
-             */
-            static std::vector<double> select(std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function);
-            static std::vector<std::shared_ptr<Direction>> where(std::vector<std::shared_ptr<Direction>>& directions, std::function<bool(std::shared_ptr<Direction>)> function);
-
-        private:
-            int index = 0;
-            std::shared_ptr<Models::Sample> sample;
-            std::vector<double> distances = std::vector<double>();
-            std::vector<double> zValues = std::vector<double>();
-            std::shared_ptr<Models::Sample> newSample = nullptr;
-        };
-
         double getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Statistics::ProbabilityValue> quantile, int nStochasts, double Z0);
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, std::shared_ptr<Models::Evaluation>> evaluations;
 
