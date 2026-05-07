@@ -152,7 +152,7 @@ namespace Deltares::Uncertainty
                 iteration++;
             }
 
-            const double tolerance = 1E-6;
+            constexpr double tolerance = 1e-6;
             valid &= Numeric::NumericSupport::isGreater(startPoint->getBeta(), Settings->Maximum, tolerance);
         }
 
@@ -231,17 +231,12 @@ namespace Deltares::Uncertainty
 
         if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
         {
-            std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
-            Uncertainty::UncertaintyResult result = modelRunner->getUncertaintyResult(stochast);
-            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
-            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
+            auto stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
+            UncertaintyResult result = modelRunner->getUncertaintyResult(stochast);
+            auto zeroSample = std::make_shared<Sample>(nStochasts);
+            auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(zeroSample));
             evaluation->Quantile = 0.5;
-
-            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
-            {
-                result.quantileEvaluations.push_back(evaluation);
-            }
-
+            result.quantileEvaluations = std::vector(Settings->RequestedQuantiles.size(), evaluation);
             return result;
         }
         else
