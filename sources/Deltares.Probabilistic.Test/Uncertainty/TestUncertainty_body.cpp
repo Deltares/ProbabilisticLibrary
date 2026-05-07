@@ -279,6 +279,30 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.05, result->quantileEvaluations[0]->Quantile, margin);
     }
 
+    void TestUncertainty::testFORMonlyZero()
+    {
+        std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
+
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyMethodType::UncertaintyFORM;
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->settings->MinimumU = 10.0;
+        project->settings->MaximumU = -10.0;
+        project->run();
+
+        auto result = project->uncertaintyResult;
+
+        ASSERT_NEAR(result->stochast->getMean(), 1.8, margin);
+        ASSERT_NEAR(result->stochast->getDeviation(), 0.0, margin);
+
+        ASSERT_NEAR(1.80, result->quantileEvaluations[0]->Z, margin);
+        ASSERT_NEAR(1.80, result->quantileEvaluations[1]->Z, margin);
+        ASSERT_NEAR(1.80, result->quantileEvaluations[2]->Z, margin);
+
+        ASSERT_NEAR(0.5, result->quantileEvaluations[0]->Quantile, margin);
+    }
+
     void TestUncertainty::testFOSM()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
