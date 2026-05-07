@@ -34,7 +34,6 @@ using namespace Deltares::Numeric;
 
 namespace Deltares::Uncertainty
 {
-
     void Direction::AddResult(double distance, double z)
     {
         distances.push_back(distance);

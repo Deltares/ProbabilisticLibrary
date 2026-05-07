@@ -21,7 +21,6 @@
 //
 #pragma once
 #include "DirectionalSamplingSettingsS.h"
-#include "UncertaintyMethod.h"
 
 namespace Deltares::Uncertainty
 {
@@ -38,11 +37,10 @@ namespace Deltares::Uncertainty
     class Direction
     {
     public:
-        Direction(std::shared_ptr<Models::Sample> sample, int index)
+        Direction(const std::shared_ptr<Models::Sample>& sample, int index)
+            : index(index), sample(sample)
         {
-            this->sample = sample;
-            this->sample->IterationIndex = index;
-            this->index = index;
+            sample->IterationIndex = index;
         }
 
         void AddResult(double distance, double z);
