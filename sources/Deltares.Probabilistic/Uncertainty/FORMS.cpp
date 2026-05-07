@@ -21,10 +21,7 @@
 //
 #include "FORMS.h"
 
-#include <algorithm>
-#include <vector>
 #include <cmath>
-#include <memory>
 
 #include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
@@ -241,8 +238,7 @@ namespace Deltares::Uncertainty
         }
         else
         {
-            std::sort(cdfCurve->getProperties()->FragilityValues.begin(), cdfCurve->getProperties()->FragilityValues.end(),
-                [](std::shared_ptr<FragilityValue> p, std::shared_ptr<FragilityValue> q) {return p->X < q->X; });
+            cdfCurve->getProperties()->sortFragilityValuesOnX();
 
             auto result = modelRunner->getUncertaintyResult(cdfCurve);
 
