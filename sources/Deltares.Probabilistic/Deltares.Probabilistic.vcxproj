@@ -480,6 +480,7 @@
     <ClCompile Include="Statistics\BaseStochastPoint.cpp" />
     <ClCompile Include="Statistics\Distributions\CompositeDistribution.cpp" />
     <ClCompile Include="Statistics\BaseStochast.cpp" />
+    <ClCompile Include="Statistics\StochastProperties.cpp" />
     <ClCompile Include="Statistics\ContributingStochast.cpp" />
     <ClCompile Include="Statistics\Distributions\StudentTDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\PoissonDistribution.cpp" />
