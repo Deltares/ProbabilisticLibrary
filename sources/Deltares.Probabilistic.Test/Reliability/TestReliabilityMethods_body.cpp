@@ -317,6 +317,23 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Beta, -0.0147896, 1e-5);
     }
 
+    void TestReliabilityMethods::testCrudeMonteCarloWithQualitativeProject()
+    {
+        auto calculator = CrudeMonteCarlo();
+        auto modelRunner = projectBuilder::getQualitativeProject();
+        calculator.Settings->MinimumSamples = 10000;
+        calculator.Settings->MaximumSamples = 10000;
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+        ASSERT_EQ(designPoint->Alphas.size(), 3);
+        EXPECT_NEAR(designPoint->Beta, 1.4, 1e-2);
+        EXPECT_NEAR(designPoint->Alphas[0]->Alpha, 0.71, 1e-2);
+        EXPECT_NEAR(designPoint->Alphas[0]->X, 0.16, 1e-2);
+        EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.70, 1e-2);
+        EXPECT_NEAR(designPoint->Alphas[1]->X, 0.16, 1e-2);
+        EXPECT_NEAR(designPoint->Alphas[2]->Alpha, 0.0, 1e-2);
+        EXPECT_NEAR(designPoint->Alphas[2]->X, 7.0, 1e-2);
+    }
+
     void TestReliabilityMethods::testAdaptiveImportanceSampling()
     {
         auto calculator = AdaptiveImportanceSampling();
