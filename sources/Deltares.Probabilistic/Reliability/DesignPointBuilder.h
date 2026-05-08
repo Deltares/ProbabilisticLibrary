@@ -61,8 +61,8 @@ namespace Deltares::Reliability
 
     public:
         DesignPointBuilder() = default;
-        DesignPointBuilder(int count, DesignPointMethod method, const std::shared_ptr<StochastSettingsSet>& stochastSet = nullptr);
-        DesignPointBuilder(DesignPointMethod method, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
+        explicit DesignPointBuilder(int count, DesignPointMethod method, const std::shared_ptr<StochastSettingsSet>& stochastSet = nullptr);
+        explicit DesignPointBuilder(DesignPointMethod method, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
 
         void initialize(double beta) const;
         void addSample(const std::shared_ptr<Models::Sample>& sample);

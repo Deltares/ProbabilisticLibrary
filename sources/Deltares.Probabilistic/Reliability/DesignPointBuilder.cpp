@@ -63,12 +63,12 @@ namespace Deltares::Reliability
             double mode = 0;
             double max = -1;
 
-            for (auto& value : values)
+            for (const auto& [fst, snd] : values)
             {
-                if (value.second > max)
+                if (snd > max)
                 {
-                    mode = value.first;
-                    max = value.second;
+                    mode = fst;
+                    max = snd;
                 }
             }
 
