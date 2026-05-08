@@ -22,6 +22,7 @@
 #include "ZModel.h"
 
 #include <chrono>
+#include <iostream>
 #include <omp.h>
 
 #include "ModelSample.h"
@@ -54,8 +55,9 @@ namespace Deltares::Models
         {
             double* inputValues = sample->Values.data();
             auto outputValues = std::vector<double>(outputParametersCount);
-
+            std::cout << "starting Z-func loc-1" << std::endl;
             (*zValuesLambda)(inputValues, this->inputParametersCount, outputValues.data());
+            std::cout << "back from Z-func loc-1" << std::endl;
 
             sample->OutputValues.clear();
             for (int i = 0; i < this->outputParametersCount; i++)
@@ -85,11 +87,13 @@ namespace Deltares::Models
 
             try
             {
+                std::cout << "starting Z-func loc-2" << std::endl;
                 (*zValuesMultipleLambda)(static_cast<int>(samples.size()), inputValues, this->inputParametersCount, outputValues);
+                std::cout << "back from Z-func loc-2" << std::endl;
             }
             catch (const std::exception&)
             {
-                // empty on purpose
+                std::cout << "exception in Z-func loc-2" << std::endl;
             }
 
             for (size_t i = 0; i < samples.size(); i++)
@@ -111,6 +115,7 @@ namespace Deltares::Models
 
     ZLambda ZModel::getLambdaFromModelSampleCallBack(ModelSampleCallback modelSampleLambda) const
     {
+        std::cout << "starting Z-func loc-3" << std::endl;
         ZLambda calcValuesLambda = [modelSampleLambda](std::shared_ptr<ModelSample> sample)
         {
             ModelSampleStruct modelSampleStruct;
@@ -121,6 +126,7 @@ namespace Deltares::Models
             sample->setModelSampleStruct(&modelSampleStruct);
         };
 
+        std::cout << "back from Z-func loc-3" << std::endl;
         return calcValuesLambda;
     }
 
