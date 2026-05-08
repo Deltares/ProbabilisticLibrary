@@ -20,12 +20,13 @@
 // All rights reserved.
 //
 #pragma once
-#include "DirectionalSamplingSettingsS.h"
+
+#include "../Model/Sample.h"
 
 namespace Deltares::Uncertainty
 {
     /**
-     * \brief Calculates the sensitivity using the Directional Sampling algorithm
+     * \brief Helper struct for class Direction
      */
     class Result
     {
@@ -34,6 +35,9 @@ namespace Deltares::Uncertainty
         double ZValue;
     };
 
+    /**
+     * \brief Helper class for the sensitivity using the Directional Sampling algorithm
+     */
     class Direction
     {
     public:
