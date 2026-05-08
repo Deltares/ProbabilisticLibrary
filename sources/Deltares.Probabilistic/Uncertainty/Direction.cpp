@@ -111,11 +111,11 @@ namespace Deltares::Uncertainty
         return result;
     }
 
-    std::vector<std::shared_ptr<Direction>> Direction::where(std::vector<std::shared_ptr<Direction>>& directions,
+    std::vector<std::shared_ptr<Direction>> Direction::where(const std::vector<std::shared_ptr<Direction>>& directions,
         const std::function<bool(const std::shared_ptr<Direction>&)>& function)
     {
         std::vector< std::shared_ptr<Direction>> results;
-        for (std::shared_ptr<Direction>& direction : directions)
+        for (const std::shared_ptr<Direction>& direction : directions)
         {
             if (function(direction))
             {

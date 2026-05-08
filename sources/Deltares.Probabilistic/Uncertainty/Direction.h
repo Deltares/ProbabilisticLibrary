@@ -59,7 +59,7 @@ namespace Deltares::Uncertainty
          */
         static std::vector<double> select(const std::vector<std::shared_ptr<Direction>>& directions,
             const std::function<double(const std::shared_ptr<Direction>&)>& function);
-        static std::vector<std::shared_ptr<Direction>> where(std::vector<std::shared_ptr<Direction>>& directions,
+        static std::vector<std::shared_ptr<Direction>> where(const std::vector<std::shared_ptr<Direction>>& directions,
             const std::function<bool(const std::shared_ptr<Direction>&)>& function);
 
     private:
