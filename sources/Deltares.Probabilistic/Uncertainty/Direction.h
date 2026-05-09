@@ -56,15 +56,25 @@ namespace Deltares::Uncertainty
         double lastDistance = 0;
 
         /**
-         * \brief Performs an operation on a direction resulting in a numeric value for a collection of directions
-         * \param directions Collection of samples
-         * \param function Operation on a sample
+         * \brief Selects the field lastDifference of all members in the list
+         * \param directions Collection of directions
          * \return Resulting numeric values
          */
-        static std::vector<double> select(const std::vector<std::shared_ptr<Direction>>& directions,
-            const std::function<double(const std::shared_ptr<Direction>&)>& function);
-        static std::vector<std::shared_ptr<Direction>> where(const std::vector<std::shared_ptr<Direction>>& directions,
-            const std::function<bool(const std::shared_ptr<Direction>&)>& function);
+        static std::vector<double> selectLastDifferences(const std::vector<std::shared_ptr<Direction>>& directions);
+
+        /**
+         * \brief Selects the field lastWeight of all members in the list
+         * \param directions Collection of directions
+         * \return Resulting numeric values
+         */
+        static std::vector<double> selectLastWeight(const std::vector<std::shared_ptr<Direction>>& directions);
+
+        /**
+         * \brief Selects all valid members in the list
+         * \param directions Collection of directions
+         * \return All valid directions
+         */
+        static std::vector<std::shared_ptr<Direction>> getValidDirections(const std::vector<std::shared_ptr<Direction>>& directions);
 
     private:
         int index = 0;
