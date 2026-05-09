@@ -132,7 +132,8 @@ namespace Deltares::Uncertainty
 
         std::vector<double> zValues = modelRunner.getZValues(samples);
 
-        modelRunner.reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
+        performedIterations++;
+        modelRunner.reportProgress(performedIterations, Settings->MaximumIterations + 1);
 
         int nZValuesGreaterZero = 0;
         for (const double z : zValues)
@@ -234,7 +235,8 @@ namespace Deltares::Uncertainty
                 }
             }
 
-            modelRunner.reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
+            performedIterations++;
+            modelRunner.reportProgress(performedIterations, Settings->MaximumIterations + 1);
         }
 
         if (lowestSample != nullptr)

@@ -73,7 +73,8 @@ namespace Deltares::Uncertainty
 
         bool valid = isZValid(modelRunner, z0) && isGradientValid(modelRunner, gradient0);
 
-        modelRunner->reportProgress(++performedIterations, maxIterations);
+        performedIterations++;
+        modelRunner->reportProgress(performedIterations, maxIterations);
 
         // ascending part
         if (valid && Settings->Maximum > 0)
@@ -90,7 +91,8 @@ namespace Deltares::Uncertainty
                     gradient = gradientCalculator.getGradient(*modelRunner, startPoint);
                     z = startPoint->Z;
 
-                    modelRunner->reportProgress(++performedIterations, maxIterations);
+                    performedIterations++;
+                    modelRunner->reportProgress(performedIterations, maxIterations);
 
                     if (!isZValid(modelRunner, z))
                     {
@@ -177,7 +179,8 @@ namespace Deltares::Uncertainty
 
                     checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
 
-                    modelRunner->reportProgress(++performedIterations, maxIterations);
+                    performedIterations++;
+                    modelRunner->reportProgress(performedIterations, maxIterations);
 
                     if (!isZValid(modelRunner, z))
                     {

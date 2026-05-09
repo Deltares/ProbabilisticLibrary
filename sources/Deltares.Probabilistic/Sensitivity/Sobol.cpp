@@ -70,7 +70,8 @@ namespace Deltares::Sensitivity
         modelRunner->reportProgress(0, nIterations * nSamples);
 
         std::vector<double> zA = modelRunner->getZValues(samplesA);
-        modelRunner->reportProgress(++iteration * nSamples, nIterations * nSamples);
+        iteration++;
+        modelRunner->reportProgress(iteration * nSamples, nIterations * nSamples);
 
         if (isStopped())
         {
@@ -78,7 +79,8 @@ namespace Deltares::Sensitivity
         }
 
         std::vector<double> zB = modelRunner->getZValues(samplesB);
-        modelRunner->reportProgress(++iteration * nSamples, nIterations * nSamples);
+        iteration++;
+        modelRunner->reportProgress(iteration * nSamples, nIterations * nSamples);
 
         if (isStopped())
         {
@@ -100,7 +102,8 @@ namespace Deltares::Sensitivity
             std::vector< std::shared_ptr<Sample>> samplesBA = getMixedSamples(index, samplesB, samplesA, nSamples);
 
             std::vector<double> zABi = modelRunner->getZValues(samplesAB);
-            modelRunner->reportProgress(++iteration * nSamples, nIterations * nSamples);
+            iteration++;
+            modelRunner->reportProgress(iteration * nSamples, nIterations * nSamples);
 
             if (isStopped())
             {
@@ -108,7 +111,8 @@ namespace Deltares::Sensitivity
             }
 
             std::vector<double> zBAi = modelRunner->getZValues(samplesBA);
-            modelRunner->reportProgress(++iteration * nSamples, nIterations * nSamples);
+            iteration++;
+            modelRunner->reportProgress(iteration * nSamples, nIterations * nSamples);
 
             if (isStopped())
             {
