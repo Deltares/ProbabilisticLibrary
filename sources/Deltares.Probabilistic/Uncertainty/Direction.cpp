@@ -101,6 +101,7 @@ namespace Deltares::Uncertainty
     std::vector<double> Direction::selectValidLastDifferences(const std::vector<std::shared_ptr<Direction>>& directions)
     {
         std::vector<double> result;
+        result.reserve(directions.size());
         for (const auto& direction : directions)
         {
             if (direction->Valid)
@@ -114,6 +115,7 @@ namespace Deltares::Uncertainty
     std::vector<double> Direction::selectValidLastWeight(const std::vector<std::shared_ptr<Direction>>& directions)
     {
         std::vector<double> result;
+        result.reserve(directions.size());
         for (const auto& direction : directions)
         {
             if (direction->Valid)

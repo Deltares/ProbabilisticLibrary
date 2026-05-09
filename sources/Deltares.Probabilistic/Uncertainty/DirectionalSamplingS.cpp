@@ -151,10 +151,11 @@ namespace Deltares::Uncertainty
         std::vector<std::shared_ptr<Direction>> directions;
         for (size_t i = 0; i < samples.size(); i++)
         {
-            std::shared_ptr<Direction> direction = std::make_shared<Direction>(samples[i], i);
+            const bool isValid = quantile->Reliability > beta0 ? zValues[i] > Z0 : zValues[i] < Z0;
+            // If the direction is invalid, the direction will not be used in the calculation
+            std::shared_ptr<Direction> direction = std::make_shared<Direction>(samples[i], i, isValid);
             direction->AddResult(0, Z0);
             direction->AddResult(initialDistance, zValues[i]);
-            direction->Valid = quantile->Reliability > beta0 ? zValues[i] > Z0 : zValues[i] < Z0; // If the direction is invalid, the direction will not be used in the calculation
             directions.push_back(direction);
         }
 
@@ -188,7 +189,7 @@ namespace Deltares::Uncertainty
             {
                 std::shared_ptr<Sample> newSample = directions[i]->CreateNewSampleAt(zPredicted, maxBetaDirection);
                 newSamples.push_back(newSample);
-                if (directions[i]->Valid)
+                if (directions[i]->IsValid())
                 {
                     newSample->IterationIndex = static_cast<int>(i);
                     calculateSamples.push_back(newSample); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
@@ -202,7 +203,7 @@ namespace Deltares::Uncertainty
             //add the newZvalues to the list of zValues
             for (size_t i = 0; i < directions.size(); i++)
             {
-                if (directions[i]->Valid)
+                if (directions[i]->IsValid())
                 {
                     directions[i]->AddResult(directions[i]->GetDistanceAtZ(zPredicted), newSamples[i]->Z);
                 }

@@ -41,8 +41,8 @@ namespace Deltares::Uncertainty
     class Direction
     {
     public:
-        Direction(const std::shared_ptr<Models::Sample>& sample, int index)
-            : index(index), sample(sample)
+        Direction(const std::shared_ptr<Models::Sample>& sample, int index, bool Valid)
+            : Valid(Valid), index(index), sample(sample)
         {
             sample->IterationIndex = index;
         }
@@ -50,10 +50,7 @@ namespace Deltares::Uncertainty
         void AddResult(double distance, double z);
         double GetDistanceAtZ(double z) const;
         std::shared_ptr<Models::Sample> CreateNewSampleAt(double z, double maxBeta);
-        bool Valid = true;
-        double lastWeight = 0;
-        double lastDifference = 0;
-        double lastDistance = 0;
+        bool IsValid() const { return Valid; }
 
         /**
          * \brief Selects the field lastDifference of all valid members in the list
@@ -70,6 +67,10 @@ namespace Deltares::Uncertainty
         static std::vector<double> selectValidLastWeight(const std::vector<std::shared_ptr<Direction>>& directions);
 
     private:
+        bool Valid = true;
+        double lastWeight = 0;
+        double lastDifference = 0;
+        double lastDistance = 0;
         int index = 0;
         std::shared_ptr<Models::Sample> sample;
         std::vector<double> distances = std::vector<double>();
