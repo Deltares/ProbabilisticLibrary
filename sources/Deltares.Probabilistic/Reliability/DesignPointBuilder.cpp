@@ -37,7 +37,7 @@ namespace Deltares::Reliability
         std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 
     public:
-        ModeFinder(const std::shared_ptr<Statistics::Stochast>& stochast) : stochast(stochast)
+        explicit ModeFinder(const std::shared_ptr<Statistics::Stochast>& stochast) : stochast(stochast)
         {
         }
 
