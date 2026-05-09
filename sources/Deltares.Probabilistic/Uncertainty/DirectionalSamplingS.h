@@ -46,6 +46,8 @@ namespace Deltares::Uncertainty
     private:
         double getZForRequiredQ(Models::ModelRunner& modelRunner,
             const std::shared_ptr<Statistics::ProbabilityValue>& quantile, int nStochasts, double Z0);
+        static std::shared_ptr<Models::Sample> selectSampleWithLowestBeta(
+            const std::vector<std::shared_ptr<Models::Sample>>& calculate_samples);
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, std::shared_ptr<Models::Evaluation>> evaluations;
 
         static double predict(double predZi, const std::vector<std::shared_ptr<Direction>>& directions, double probability0, int nStochasts);

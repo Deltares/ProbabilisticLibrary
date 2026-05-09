@@ -220,21 +220,7 @@ namespace Deltares::Uncertainty
             j++;
             zValues = newZValues;
 
-            // select the sample with the lowest beta as representative
-            if (!calculateSamples.empty())
-            {
-                lowestSample = calculateSamples[0];
-                double lowestBeta = lowestSample->getBeta();
-                for (size_t i = 0; i < calculateSamples.size(); i++)
-                {
-                    double calcBeta = calculateSamples[i]->getBeta();
-                    if (calcBeta < lowestBeta)
-                    {
-                        lowestSample = calculateSamples[i];
-                        lowestBeta = calcBeta;
-                    }
-                }
-            }
+            lowestSample = selectSampleWithLowestBeta(calculateSamples);
 
             performedIterations++;
             modelRunner.reportProgress(performedIterations, Settings->MaximumIterations + 1);
@@ -242,11 +228,32 @@ namespace Deltares::Uncertainty
 
         if (lowestSample != nullptr)
         {
-            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner.getEvaluation(lowestSample));
+            auto evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluation(lowestSample));
             this->evaluations[quantile] = evaluation;
         }
 
         return zPredicted;
+    }
+
+    // select the sample with the lowest beta as representative
+    std::shared_ptr<Sample> DirectionalSamplingS::selectSampleWithLowestBeta(const std::vector<std::shared_ptr<Sample>>& calculate_samples)
+    {
+        std::shared_ptr<Sample> lowest_sample = nullptr;
+        if (!calculate_samples.empty())
+        {
+            lowest_sample = calculate_samples[0];
+            double lowest_beta = lowest_sample->getBeta();
+            for (const auto& calculateSample : calculate_samples)
+            {
+                const double calc_beta = calculateSample->getBeta();
+                if (calc_beta < lowest_beta)
+                {
+                    lowest_sample = calculateSample;
+                    lowest_beta = calc_beta;
+                }
+            }
+        }
+        return lowest_sample;
     }
 
     double DirectionalSamplingS::predict(double predZi, const std::vector<std::shared_ptr<Direction>>& directions, double probability0, int nStochasts)
