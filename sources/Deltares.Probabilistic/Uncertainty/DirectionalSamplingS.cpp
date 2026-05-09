@@ -209,9 +209,8 @@ namespace Deltares::Uncertainty
 
             Statistics::Stochast stochast = Statistics::Stochast(Statistics::DistributionType::Normal, std::vector{ 0.0, 1.0 });
 
-            std::vector<std::shared_ptr<Direction>> validDirections = Direction::getValidDirections(directions);
-            std::vector<double> diff = Direction::selectLastDifferences(validDirections);
-            std::vector<double> weights = Direction::selectLastWeight(validDirections);
+            std::vector<double> diff = Direction::selectValidLastDifferences(directions);
+            std::vector<double> weights = Direction::selectValidLastWeight(directions);
             stochast.fitWeighted(diff, weights);
 
             error = std::abs(stochast.getXFromU(quantile95));

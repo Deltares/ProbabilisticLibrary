@@ -56,25 +56,18 @@ namespace Deltares::Uncertainty
         double lastDistance = 0;
 
         /**
-         * \brief Selects the field lastDifference of all members in the list
+         * \brief Selects the field lastDifference of all valid members in the list
          * \param directions Collection of directions
          * \return Resulting numeric values
          */
-        static std::vector<double> selectLastDifferences(const std::vector<std::shared_ptr<Direction>>& directions);
+        static std::vector<double> selectValidLastDifferences(const std::vector<std::shared_ptr<Direction>>& directions);
 
         /**
-         * \brief Selects the field lastWeight of all members in the list
+         * \brief Selects the field lastWeight of all valid members in the list
          * \param directions Collection of directions
          * \return Resulting numeric values
          */
-        static std::vector<double> selectLastWeight(const std::vector<std::shared_ptr<Direction>>& directions);
-
-        /**
-         * \brief Selects all valid members in the list
-         * \param directions Collection of directions
-         * \return All valid directions
-         */
-        static std::vector<std::shared_ptr<Direction>> getValidDirections(const std::vector<std::shared_ptr<Direction>>& directions);
+        static std::vector<double> selectValidLastWeight(const std::vector<std::shared_ptr<Direction>>& directions);
 
     private:
         int index = 0;

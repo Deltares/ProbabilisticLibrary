@@ -98,38 +98,32 @@ namespace Deltares::Uncertainty
         }
     }
 
-    std::vector<double> Direction::selectLastDifferences(const std::vector<std::shared_ptr<Direction>>& directions)
+    std::vector<double> Direction::selectValidLastDifferences(const std::vector<std::shared_ptr<Direction>>& directions)
     {
-        std::vector<double> result(directions.size());
-        for (size_t i = 0; i < directions.size(); i++)
-        {
-            result[i] = directions[i]->lastDifference;
-        }
-        return result;
-    }
-
-    std::vector<double> Direction::selectLastWeight(const std::vector<std::shared_ptr<Direction>>& directions)
-    {
-        std::vector<double> result(directions.size());
-        for (size_t i = 0; i < directions.size(); i++)
-        {
-            result[i] = directions[i]->lastWeight;
-        }
-        return result;
-    }
-
-    std::vector<std::shared_ptr<Direction>> Direction::getValidDirections(const std::vector<std::shared_ptr<Direction>>& directions)
-    {
-        std::vector< std::shared_ptr<Direction>> results;
-        for (const std::shared_ptr<Direction>& direction : directions)
+        std::vector<double> result;
+        for (const auto& direction : directions)
         {
             if (direction->Valid)
             {
-                results.push_back(direction);
+                result.push_back(direction->lastDifference);
             }
         }
-        return results;
+        return result;
     }
+
+    std::vector<double> Direction::selectValidLastWeight(const std::vector<std::shared_ptr<Direction>>& directions)
+    {
+        std::vector<double> result;
+        for (const auto& direction : directions)
+        {
+            if (direction->Valid)
+            {
+                result.push_back(direction->lastWeight);
+            }
+        }
+        return result;
+    }
+
 }
 
 
