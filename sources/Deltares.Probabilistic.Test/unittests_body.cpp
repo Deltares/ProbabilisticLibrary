@@ -1359,3 +1359,8 @@ TEST(UnitTests, testProjectHandlerGetSetMessage)
     Deltares::Probabilistic::Test::TestProjectHandler::TestSetAndGetMessage();
 }
 
+TEST(UnitTests, testProjectHandlerStandardNormal)
+{
+    Deltares::Probabilistic::Test::TestProjectHandler::TestStandardNormal();
+}
+
