@@ -63,6 +63,7 @@
 #include "Reliability/Waarts/TestWaartsSeriesSystem.h"
 #include "Reliability/Waarts/TestWaartsParallelSystem.h"
 #include "Reliability/Waarts/TestWaartsResistance25QuadraticTermsSparse.h"
+#include "Server/TestProjectHandler.h"
 
 int main(int argc, char** argv)
 {
@@ -1351,5 +1352,10 @@ TEST(WaartsTests, testResistance25QuadraticTermsSparseDSFI)
 {
     auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsDSFI();
+}
+
+TEST(UnitTests, testProjectHandlerGetSetMessage)
+{
+    Deltares::Probabilistic::Test::TestProjectHandler::TestSetAndGetMessage();
 }
 
