@@ -67,5 +67,23 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id);
     }
 
+    void TestProjectHandler::TestProbabilityValue()
+    {
+        auto handler = Server::ProjectHandler();
+        const auto id = handler.Create("probability_value");
+
+        auto random = Numeric::RandomValueGenerator();
+        random.initialize(true, 1234);
+
+        const double t = 5000.0 * (1.0 + random.next());
+        handler.SetValue(id, "return_period", t);
+        const auto beta_through_server = handler.GetValue(id, "reliability_index");
+        const auto beta_expected = Statistics::StandardNormal::getUFromT(t);
+
+        EXPECT_EQ(beta_through_server, beta_expected);
+
+        handler.Destroy(id);
+    }
+
 }
 

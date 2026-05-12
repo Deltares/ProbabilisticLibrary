@@ -1364,3 +1364,8 @@ TEST(UnitTests, testProjectHandlerStandardNormal)
     Deltares::Probabilistic::Test::TestProjectHandler::TestStandardNormal();
 }
 
+TEST(UnitTests, testProjectHandlerProbabilityValue)
+{
+    Deltares::Probabilistic::Test::TestProjectHandler::TestProbabilityValue();
+}
+
