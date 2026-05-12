@@ -64,7 +64,7 @@ namespace Deltares::Uncertainty
          * \param directions Collection of directions
          * \return Resulting numeric values
          */
-        static std::vector<double> selectValidLastWeight(const std::vector<std::shared_ptr<Direction>>& directions);
+        static std::vector<double> selectValidLastWeights(const std::vector<std::shared_ptr<Direction>>& directions);
 
     private:
         bool Valid = true;

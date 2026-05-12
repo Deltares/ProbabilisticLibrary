@@ -279,7 +279,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.05, result->quantileEvaluations[0]->Quantile, margin);
     }
 
-    void TestUncertainty::testFORMonlyZero()
+    void TestUncertainty::testFORMoneFragilityValueAsResult()
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getUncertaintyProject(projectBuilder::getLinearProject());
 

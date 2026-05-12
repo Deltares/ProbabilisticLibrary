@@ -666,9 +666,9 @@ TEST(UnitTests, testUncFORM)
     Deltares::Probabilistic::Test::TestUncertainty::testFORM();
 }
 
-TEST(UnitTests, testUncFORMonlyZero)
+TEST(UnitTests, testUncFORMoneFragilityValueAsResult)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testFORMonlyZero();
+    Deltares::Probabilistic::Test::TestUncertainty::testFORMoneFragilityValueAsResult();
 }
 
 TEST(UnitTests, testUncFOSM)

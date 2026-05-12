@@ -100,30 +100,30 @@ namespace Deltares::Uncertainty
 
     std::vector<double> Direction::selectValidLastDifferences(const std::vector<std::shared_ptr<Direction>>& directions)
     {
-        std::vector<double> result;
-        result.reserve(directions.size());
+        std::vector<double> valid_last_differences;
+        valid_last_differences.reserve(directions.size());
         for (const auto& direction : directions)
         {
             if (direction->Valid)
             {
-                result.push_back(direction->lastDifference);
+                valid_last_differences.push_back(direction->lastDifference);
             }
         }
-        return result;
+        return valid_last_differences;
     }
 
-    std::vector<double> Direction::selectValidLastWeight(const std::vector<std::shared_ptr<Direction>>& directions)
+    std::vector<double> Direction::selectValidLastWeights(const std::vector<std::shared_ptr<Direction>>& directions)
     {
-        std::vector<double> result;
-        result.reserve(directions.size());
+        std::vector<double> valid_last_weights;
+        valid_last_weights.reserve(directions.size());
         for (const auto& direction : directions)
         {
             if (direction->Valid)
             {
-                result.push_back(direction->lastWeight);
+                valid_last_weights.push_back(direction->lastWeight);
             }
         }
-        return result;
+        return valid_last_weights;
     }
 
 }

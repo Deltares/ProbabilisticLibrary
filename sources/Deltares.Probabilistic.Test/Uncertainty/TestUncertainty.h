@@ -39,7 +39,7 @@ namespace Deltares::Probabilistic::Test
         static void testNumericalIntegration();
         static void testDirectionalSampling();
         static void testFORM();
-        static void testFORMonlyZero();
+        static void testFORMoneFragilityValueAsResult();
         static void testFOSM();
     private:
         static constexpr double margin = 0.02;
