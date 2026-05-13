@@ -1369,3 +1369,8 @@ TEST(UnitTests, testProjectHandlerProbabilityValue)
     Deltares::Probabilistic::Test::TestProjectHandler::TestProbabilityValue();
 }
 
+TEST(UnitTests, testProjectHandlerStochast)
+{
+    Deltares::Probabilistic::Test::TestProjectHandler::TestStochast();
+}
+

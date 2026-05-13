@@ -29,6 +29,7 @@ namespace Deltares::Probabilistic::Test
         static void TestSetAndGetMessage();
         static void TestStandardNormal();
         static void TestProbabilityValue();
+        static void TestStochast();
     };
 }
 

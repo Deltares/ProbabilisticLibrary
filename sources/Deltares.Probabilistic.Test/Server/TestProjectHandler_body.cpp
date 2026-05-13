@@ -56,12 +56,12 @@ namespace Deltares::Probabilistic::Test
 
         const double q = random.next();
         const double u_expected = Statistics::StandardNormal::getUFromQ(q);
-        const auto u_through_server = handler.GetArgValue(id, "u_from_q", q);
+        const double u_through_server = handler.GetArgValue(id, "u_from_q", q);
         EXPECT_EQ(u_through_server, u_expected);
 
         const double u = random.next();
         const double q_expected = Statistics::StandardNormal::getQFromU(u);
-        const auto q_through_server = handler.GetArgValue(id, "q_from_u", u);
+        const double q_through_server = handler.GetArgValue(id, "q_from_u", u);
         EXPECT_EQ(q_through_server, q_expected);
 
         handler.Destroy(id);
@@ -77,10 +77,32 @@ namespace Deltares::Probabilistic::Test
 
         const double t = 5000.0 * (1.0 + random.next());
         handler.SetValue(id, "return_period", t);
-        const auto beta_through_server = handler.GetValue(id, "reliability_index");
-        const auto beta_expected = Statistics::StandardNormal::getUFromT(t);
+        const double beta_through_server = handler.GetValue(id, "reliability_index");
+        const double beta_expected = Statistics::StandardNormal::getUFromT(t);
 
         EXPECT_EQ(beta_through_server, beta_expected);
+
+        handler.Destroy(id);
+    }
+
+    void TestProjectHandler::TestStochast()
+    {
+        auto handler = Server::ProjectHandler();
+        const auto id = handler.Create("stochast");
+
+        auto random = Numeric::RandomValueGenerator();
+        random.initialize(true, 1234);
+
+        const double mean = random.next();
+        const double deviation = random.next();
+        const double u = random.next();
+
+        handler.SetStringValue(id, "distribution", "normal");
+        handler.SetValue(id, "mean", mean);
+        handler.SetValue(id, "deviation", deviation);
+        const double x_from_server = handler.GetArgValue(id, "x_from_u", u);
+        const double x_expected = mean + deviation * u;
+        EXPECT_NEAR(x_from_server, x_expected, 1e-12);
 
         handler.Destroy(id);
     }
