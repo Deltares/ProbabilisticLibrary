@@ -22,9 +22,8 @@
 #include "CrudeMonteCarloS.h"
 #include <vector>
 #include <cmath>
-#include <memory>
+#include <algorithm>
 
-#include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "CrudeMonteCarloSettingsS.h"
@@ -34,7 +33,7 @@ using namespace Deltares::Models;
 
 namespace Deltares::Uncertainty
 {
-    UncertaintyResult CrudeMonteCarloS::getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+    UncertaintyResult CrudeMonteCarloS::getUncertaintyStochast(std::shared_ptr<ModelRunner> modelRunner)
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -56,9 +55,7 @@ namespace Deltares::Uncertainty
 
         bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
 
-        int requiredSamples = this->Settings->getRequiredSamples();
-        requiredSamples = std::min(requiredSamples, this->Settings->MaximumSamples);
-        requiredSamples = std::max(requiredSamples, this->Settings->MinimumSamples);
+        const int requiredSamples = std::clamp(Settings->getRequiredSamples(), Settings->MinimumSamples, Settings->MaximumSamples);
 
         for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
         {
@@ -99,7 +96,7 @@ namespace Deltares::Uncertainty
             nSamples++;
         }
 
-        std::vector<double> zWeights = Numeric::NumericSupport::select(zSamples, [](double x) {return 1.0; });
+        auto zWeights = std::vector(zSamples.size(), 1.0);
 
         std::shared_ptr<Statistics::Stochast> stochast = getStochastFromSamples(zSamples, zWeights);
 
@@ -117,7 +114,7 @@ namespace Deltares::Uncertainty
                 randomSampleGenerator.proceed(quantileIndex);
 
                 std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(sample));
+                auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(sample));
                 evaluation->Quantile = p;
                 result.quantileEvaluations.push_back(evaluation);
             }

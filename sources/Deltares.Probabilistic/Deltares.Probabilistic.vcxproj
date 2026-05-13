@@ -210,6 +210,7 @@
     <ClInclude Include="Statistics\Scenario.h" />
     <ClInclude Include="Statistics\ProbabilityIterator.h" />
     <ClInclude Include="Statistics\ProbabilityValue.h" />
+    <ClInclude Include="Uncertainty\Direction.h" />
     <ClInclude Include="Uncertainty\DirectionalSamplingS.h" />
     <ClInclude Include="Uncertainty\DirectionalSamplingSettingsS.h" />
     <ClInclude Include="Uncertainty\NumericalIntegrationS.h" />
@@ -269,6 +270,7 @@
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
+    <ClInclude Include="Reliability\ZGetter.h" />
     <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Reliability\CobylaReliability.h" />
     <ClInclude Include="Reliability\CobylaReliabilitySettings.h" />
@@ -457,6 +459,7 @@
     <ClCompile Include="Statistics\Scenario.cpp" />
     <ClCompile Include="Uncertainty\DirectionalSamplingSettingsS.cpp" />
     <ClCompile Include="Statistics\ProbabilityValue.cpp" />
+    <ClCompile Include="Uncertainty\Direction.cpp" />
     <ClCompile Include="Uncertainty\DirectionalSamplingS.cpp" />
     <ClCompile Include="Uncertainty\NumericalIntegrationS.cpp" />
     <ClCompile Include="Uncertainty\FORMS.cpp" />
@@ -477,6 +480,7 @@
     <ClCompile Include="Statistics\BaseStochastPoint.cpp" />
     <ClCompile Include="Statistics\Distributions\CompositeDistribution.cpp" />
     <ClCompile Include="Statistics\BaseStochast.cpp" />
+    <ClCompile Include="Statistics\StochastProperties.cpp" />
     <ClCompile Include="Statistics\ContributingStochast.cpp" />
     <ClCompile Include="Statistics\Distributions\StudentTDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\PoissonDistribution.cpp" />
@@ -512,6 +516,7 @@
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
+    <ClCompile Include="Reliability\ZGetter.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
     <ClCompile Include="Reliability\CobylaReliability.cpp" />
     <ClCompile Include="Reliability\CobylaReliabilitySettings.cpp" />

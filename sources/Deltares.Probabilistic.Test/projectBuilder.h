@@ -41,6 +41,7 @@ namespace Deltares::Probabilistic::Test
         static std::shared_ptr<Models::ModelRunner> BuildLinearArrayProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearVaryingArrayProject();
         static std::shared_ptr<Models::ModelRunner> BuildQuadraticProject();
+        static std::shared_ptr<Models::ModelRunner> getQualitativeProject();
         std::shared_ptr<Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist) const;
         std::shared_ptr<Models::ModelRunner> BuildProjectWithDeterministAndCopula(double valueDeterminist) const;
         std::shared_ptr<Models::ModelRunner> BuildProjectWithPolynome() const;
@@ -66,6 +67,7 @@ namespace Deltares::Probabilistic::Test
         void zfuncTwoBranches(std::shared_ptr<Models::ModelSample> sample) const;
         void zfuncTwoBranchesProxy(std::shared_ptr<Models::ModelSample> sample) const;
         void zfuncPolynome(std::shared_ptr<Models::ModelSample> sample) const;
+        static void zfuncDiscrete(std::shared_ptr<Models::ModelSample> sample);
 
         static void sum(std::shared_ptr<Models::ModelSample> sample);
         static void linear(std::shared_ptr<Models::ModelSample> sample);

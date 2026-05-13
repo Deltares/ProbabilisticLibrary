@@ -19,13 +19,10 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
-from ast import Pass
 import ctypes
 import sys
 import os
-import time
 
-from pathlib import Path
 from ctypes import cdll
 
 CALLBACK = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.POINTER(ctypes.c_double), ctypes.c_int, ctypes.POINTER(ctypes.c_double))

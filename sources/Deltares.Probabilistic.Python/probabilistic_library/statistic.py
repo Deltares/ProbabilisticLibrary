@@ -26,8 +26,8 @@ from ctypes import ArgumentError
 from enum import Enum
 from math import isnan, nan, isclose
 
-from .utils import FrozenObject, FrozenList, PrintUtils, NumericUtils, CallbackList
-from .logging import Evaluation, Message, ValidationReport
+from .utils import FrozenObject, FrozenList, NumericUtils, CallbackList
+from .logging import ValidationReport
 from . import interface
 import matplotlib.pyplot as plt
 

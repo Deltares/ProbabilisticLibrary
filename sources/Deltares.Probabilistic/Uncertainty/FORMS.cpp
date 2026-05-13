@@ -21,10 +21,7 @@
 //
 #include "FORMS.h"
 
-#include <algorithm>
-#include <vector>
 #include <cmath>
-#include <memory>
 
 #include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
@@ -76,7 +73,8 @@ namespace Deltares::Uncertainty
 
         bool valid = isZValid(modelRunner, z0) && isGradientValid(modelRunner, gradient0);
 
-        modelRunner->reportProgress(++performedIterations, maxIterations);
+        performedIterations++;
+        modelRunner->reportProgress(performedIterations, maxIterations);
 
         // ascending part
         if (valid && Settings->Maximum > 0)
@@ -93,7 +91,8 @@ namespace Deltares::Uncertainty
                     gradient = gradientCalculator.getGradient(*modelRunner, startPoint);
                     z = startPoint->Z;
 
-                    modelRunner->reportProgress(++performedIterations, maxIterations);
+                    performedIterations++;
+                    modelRunner->reportProgress(performedIterations, maxIterations);
 
                     if (!isZValid(modelRunner, z))
                     {
@@ -152,7 +151,7 @@ namespace Deltares::Uncertainty
                 iteration++;
             }
 
-            const double tolerance = 1E-6;
+            constexpr double tolerance = 1e-6;
             valid &= Numeric::NumericSupport::isGreater(startPoint->getBeta(), Settings->Maximum, tolerance);
         }
 
@@ -180,7 +179,8 @@ namespace Deltares::Uncertainty
 
                     checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
 
-                    modelRunner->reportProgress(++performedIterations, maxIterations);
+                    performedIterations++;
+                    modelRunner->reportProgress(performedIterations, maxIterations);
 
                     if (!isZValid(modelRunner, z))
                     {
@@ -231,23 +231,17 @@ namespace Deltares::Uncertainty
 
         if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
         {
-            std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
-            Uncertainty::UncertaintyResult result = modelRunner->getUncertaintyResult(stochast);
-            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
-            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
+            auto stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
+            UncertaintyResult result = modelRunner->getUncertaintyResult(stochast);
+            auto zeroSample = std::make_shared<Sample>(nStochasts);
+            auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(zeroSample));
             evaluation->Quantile = 0.5;
-
-            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
-            {
-                result.quantileEvaluations.push_back(evaluation);
-            }
-
+            result.quantileEvaluations = std::vector(Settings->RequestedQuantiles.size(), evaluation);
             return result;
         }
         else
         {
-            std::sort(cdfCurve->getProperties()->FragilityValues.begin(), cdfCurve->getProperties()->FragilityValues.end(),
-                [](std::shared_ptr<FragilityValue> p, std::shared_ptr<FragilityValue> q) {return p->X < q->X; });
+            cdfCurve->getProperties()->sortFragilityValuesOnX();
 
             auto result = modelRunner->getUncertaintyResult(cdfCurve);
 

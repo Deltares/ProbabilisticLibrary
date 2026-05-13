@@ -57,13 +57,12 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
         void handleSample(const std::shared_ptr<Models::Sample>& sample, double weight);
-        void initializeSamples(int count, DesignPointMethod method);
         void initializeTotals();
 
     public:
         DesignPointBuilder() = default;
-        DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet = nullptr);
-        DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
+        explicit DesignPointBuilder(int count, DesignPointMethod method, const std::shared_ptr<StochastSettingsSet>& stochastSet = nullptr);
+        explicit DesignPointBuilder(DesignPointMethod method, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
 
         void initialize(double beta) const;
         void addSample(const std::shared_ptr<Models::Sample>& sample);
@@ -71,7 +70,7 @@ namespace Deltares::Reliability
         std::shared_ptr<Models::Sample> getSample();
 
         static std::string getDesignPointMethodString(DesignPointMethod method);
-        static DesignPointMethod getDesignPointMethod(std::string method);
+        static DesignPointMethod getDesignPointMethod(const std::string& method);
     };
 }
 

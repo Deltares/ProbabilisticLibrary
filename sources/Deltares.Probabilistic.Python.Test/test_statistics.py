@@ -237,7 +237,7 @@ class Test_statistics(unittest.TestCase):
 
         pl = stochast.get_plot()
 
-        self.assertEqual(pl, None)
+        self.assertIsNone(pl)
 
     def test_series(self):
         stochast1 = Stochast()
