@@ -91,28 +91,28 @@ namespace Deltares::Server
         void SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack) override;
         void Execute(int id, std::string method_) override;
 
-        int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);
-        int GetValidationReportId(std::shared_ptr<Logging::ValidationReport> validationReport, int newId);
-        int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
-        int GetModelParameterId(std::shared_ptr<Models::ModelInputParameter> modelParameter, int newId);
-        int GetFragilityCurveId(std::shared_ptr<Reliability::FragilityCurve> fragilityCurve, int newId);
-        int GetCorrelationMatrixId(std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix, int newid);
-        int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newid);
-        int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId);
-        int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId);
-        int GetConvergenceReportId(std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, int newId);
-        int GetUncertaintyResultId(std::shared_ptr<Uncertainty::UncertaintyResult> result, int newId);
-        int GetSensitivityResultId(std::shared_ptr<Sensitivity::SensitivityResult> result, int newId);
-        int GetSensitivityValueId(std::shared_ptr<Sensitivity::SensitivityValue> result, int newId);
-        int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue, int newId);
-        int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue, int newId);
-        int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue, int newId);
-        int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast, int newId);
-        int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId);
-        int GetEvaluationId(std::shared_ptr<Models::Evaluation> evaluation, int newId);
-        int GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId);
-        int GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId);
-        int GetSelfCorrelationMatrixId(std::shared_ptr<Statistics::SelfCorrelationMatrix> correlationMatrix, int newId);
+        int GetProbabilityValueId(const std::shared_ptr<Statistics::ProbabilityValue>& probability, int newId);
+        int GetValidationReportId(const std::shared_ptr<Logging::ValidationReport>& validationReport, int newId);
+        int GetStochastId(const std::shared_ptr<Statistics::Stochast>& stochast, int newId);
+        int GetModelParameterId(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, int newId);
+        int GetFragilityCurveId(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, int newId);
+        int GetCorrelationMatrixId(const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix, int newid);
+        int GetLimitStateFunctionId(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, int newid);
+        int GetDesignPointId(const std::shared_ptr<Reliability::DesignPoint>& designPoint, int newId);
+        int GetAlphaId(const std::shared_ptr<Models::StochastPointAlpha>& alpha, int newId);
+        int GetConvergenceReportId(const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport, int newId);
+        int GetUncertaintyResultId(const std::shared_ptr<Uncertainty::UncertaintyResult>& result, int newId);
+        int GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId);
+        int GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId);
+        int GetHistogramValueId(const std::shared_ptr<Statistics::HistogramValue>& histogramValue, int newId);
+        int GetDiscreteValueId(const std::shared_ptr<Statistics::DiscreteValue>& discreteValue, int newId);
+        int GetFragilityValueId(const std::shared_ptr<Statistics::FragilityValue>& fragilityValue, int newId);
+        int GetContributingStochastId(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, int newId);
+        int GetConditionalValueId(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, int newId);
+        int GetEvaluationId(const std::shared_ptr<Models::Evaluation>& evaluation, int newId);
+        int GetReliabilityResultId(const std::shared_ptr<Deltares::Reliability::ReliabilityResult>& result, int newId);
+        int GetMessageId(const std::shared_ptr<Deltares::Logging::Message>& message, int newId);
+        int GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId);
 
         std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
         {
@@ -134,7 +134,7 @@ namespace Deltares::Server
         int new_id = 0;
         std::mutex mtx;
 
-        ObjectType GetType(std::string object_type);
+        ObjectType GetType(const std::string& object_type);
         std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
         std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;

@@ -81,7 +81,7 @@ namespace Deltares::Server
                 object_type == "length_effect_project");
     }
 
-    ProjectHandler::ObjectType ProjectHandler::GetType(std::string object_type)
+    ProjectHandler::ObjectType ProjectHandler::GetType(const std::string& object_type)
     {
         if (object_type == "standard_normal") return ObjectType::StandardNormal;
         else if (object_type == "probability_value") return ObjectType::ProbabilityValue;
@@ -2778,7 +2778,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId)
+    int ProjectHandler::GetProbabilityValueId(const std::shared_ptr<Statistics::ProbabilityValue>& probability, int newId)
     {
         if (probability == nullptr)
         {
@@ -2797,7 +2797,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetValidationReportId(std::shared_ptr<Logging::ValidationReport> validationReport, int newId)
+    int ProjectHandler::GetValidationReportId(const std::shared_ptr<Logging::ValidationReport>& validationReport, int newId)
     {
         if (validationReport == nullptr)
         {
@@ -2812,7 +2812,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId)
+    int ProjectHandler::GetStochastId(const std::shared_ptr<Statistics::Stochast>& stochast, int newId)
     {
         if (stochast == nullptr)
         {
@@ -2831,7 +2831,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetModelParameterId(std::shared_ptr<Models::ModelInputParameter> modelParameter, int newId)
+    int ProjectHandler::GetModelParameterId(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, int newId)
     {
         if (modelParameter == nullptr)
         {
@@ -2850,7 +2850,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetFragilityCurveId(std::shared_ptr<Reliability::FragilityCurve> fragilityCurve, int newId)
+    int ProjectHandler::GetFragilityCurveId(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, int newId)
     {
         if (fragilityCurve == nullptr)
         {
@@ -2869,7 +2869,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetCorrelationMatrixId(std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix, int newId)
+    int ProjectHandler::GetCorrelationMatrixId(const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix, int newId)
     {
         if (correlationMatrix == nullptr)
         {
@@ -2888,7 +2888,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetSelfCorrelationMatrixId(std::shared_ptr<Statistics::SelfCorrelationMatrix> correlationMatrix, int newId)
+    int ProjectHandler::GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId)
     {
         if (correlationMatrix == nullptr)
         {
@@ -2907,7 +2907,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newId)
+    int ProjectHandler::GetLimitStateFunctionId(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, int newId)
     {
         if (limitStateFunction == nullptr)
         {
@@ -2926,7 +2926,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId)
+    int ProjectHandler::GetDesignPointId(const std::shared_ptr<Reliability::DesignPoint>& designPoint, int newId)
     {
         if (designPoint == nullptr)
         {
@@ -2945,7 +2945,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId)
+    int ProjectHandler::GetAlphaId(const std::shared_ptr<Models::StochastPointAlpha>& alpha, int newId)
     {
         if (!alphaIds.contains(alpha))
         {
@@ -2957,7 +2957,7 @@ namespace Deltares::Server
         return alphaIds[alpha];
     }
 
-    int ProjectHandler::GetConvergenceReportId(std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, int newId)
+    int ProjectHandler::GetConvergenceReportId(const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport, int newId)
     {
         if (convergenceReport == nullptr)
         {
@@ -2976,7 +2976,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetUncertaintyResultId(std::shared_ptr<Uncertainty::UncertaintyResult> result, int newId)
+    int ProjectHandler::GetUncertaintyResultId(const std::shared_ptr<Uncertainty::UncertaintyResult>& result, int newId)
     {
         if (result == nullptr)
         {
@@ -2995,7 +2995,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetSensitivityResultId(std::shared_ptr<Sensitivity::SensitivityResult> result, int newId)
+    int ProjectHandler::GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId)
     {
         if (result == nullptr)
         {
@@ -3014,7 +3014,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetSensitivityValueId(std::shared_ptr<Sensitivity::SensitivityValue> result, int newId)
+    int ProjectHandler::GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId)
     {
         if (result == nullptr)
         {
@@ -3033,7 +3033,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue, int newId)
+    int ProjectHandler::GetHistogramValueId(const std::shared_ptr<Statistics::HistogramValue>& histogramValue, int newId)
     {
         if (!histogramValueIds.contains(histogramValue))
         {
@@ -3045,7 +3045,7 @@ namespace Deltares::Server
         return histogramValueIds[histogramValue];
     }
 
-    int ProjectHandler::GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue, int newId)
+    int ProjectHandler::GetDiscreteValueId(const std::shared_ptr<Statistics::DiscreteValue>& discreteValue, int newId)
     {
         if (!discreteValueIds.contains(discreteValue))
         {
@@ -3057,7 +3057,7 @@ namespace Deltares::Server
         return discreteValueIds[discreteValue];
     }
 
-    int ProjectHandler::GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue, int newId)
+    int ProjectHandler::GetFragilityValueId(const std::shared_ptr<Statistics::FragilityValue>& fragilityValue, int newId)
     {
         if (!fragilityValueIds.contains(fragilityValue))
         {
@@ -3069,7 +3069,7 @@ namespace Deltares::Server
         return fragilityValueIds[fragilityValue];
     }
 
-    int ProjectHandler::GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast, int newId)
+    int ProjectHandler::GetContributingStochastId(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, int newId)
     {
         if (!contributingStochastIds.contains(contributingStochast))
         {
@@ -3081,7 +3081,7 @@ namespace Deltares::Server
         return contributingStochastIds[contributingStochast];
     }
 
-    int ProjectHandler::GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId)
+    int ProjectHandler::GetConditionalValueId(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, int newId)
     {
         if (!conditionalValueIds.contains(conditionalValue))
         {
@@ -3093,7 +3093,7 @@ namespace Deltares::Server
         return conditionalValueIds[conditionalValue];
     }
 
-    int ProjectHandler::GetEvaluationId(std::shared_ptr<Models::Evaluation> evaluation, int newId)
+    int ProjectHandler::GetEvaluationId(const std::shared_ptr<Models::Evaluation>& evaluation, int newId)
     {
         if (evaluation == nullptr)
         {
@@ -3112,7 +3112,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId)
+    int ProjectHandler::GetReliabilityResultId(const std::shared_ptr<Deltares::Reliability::ReliabilityResult>& result, int newId)
     {
         if (!reliabilityResultIds.contains(result))
         {
@@ -3124,7 +3124,7 @@ namespace Deltares::Server
         return reliabilityResultIds[result];
     }
 
-    int ProjectHandler::GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId)
+    int ProjectHandler::GetMessageId(const std::shared_ptr<Deltares::Logging::Message>& message, int newId)
     {
         if (!messageIds.contains(message))
         {

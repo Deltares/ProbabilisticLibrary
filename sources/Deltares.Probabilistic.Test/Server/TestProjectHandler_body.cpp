@@ -100,9 +100,9 @@ namespace Deltares::Probabilistic::Test
         handler.SetStringValue(id, "distribution", "normal");
         handler.SetValue(id, "mean", mean);
         handler.SetValue(id, "deviation", deviation);
-        const double x_from_server = handler.GetArgValue(id, "x_from_u", u);
+        const double x_through_server = handler.GetArgValue(id, "x_from_u", u);
         const double x_expected = mean + deviation * u;
-        EXPECT_NEAR(x_from_server, x_expected, 1e-12);
+        EXPECT_NEAR(x_through_server, x_expected, 1e-12);
 
         handler.Destroy(id);
     }
