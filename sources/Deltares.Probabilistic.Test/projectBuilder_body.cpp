@@ -155,6 +155,29 @@ namespace Deltares::Probabilistic::Test
         return m;
     }
 
+    std::shared_ptr<Models::ModelRunner> projectBuilder::getQualitativeProject()
+    {
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return zfuncDiscrete(v); });
+        std::shared_ptr<Reliability::ReliabilityProject> project = std::make_shared<Reliability::ReliabilityProject>();
+
+        project->stochasts.push_back(getUniformStochast());
+        project->stochasts.push_back(getUniformStochast());
+
+        std::vector<double> values = { };
+        auto qualitativeStochast = std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Qualitative, values);
+        auto props = qualitativeStochast->getProperties();
+        props->DiscreteValues.push_back(std::make_shared<Statistics::DiscreteValue>(5, 0.35));
+        props->DiscreteValues.push_back(std::make_shared<Statistics::DiscreteValue>(6, 0.2));
+        props->DiscreteValues.push_back(std::make_shared<Statistics::DiscreteValue>(7, 0.45));
+        project->stochasts.push_back(qualitativeStochast);
+
+        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(project->stochasts, corr);
+        uConverter->initializeForRun();
+        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
+        return m;
+    }
+
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist) const
     {
         auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
@@ -348,6 +371,27 @@ namespace Deltares::Probabilistic::Test
             z += coeff[i + 1] * x + coeff[i + 4] * pow(x, 2);
         }
         sample->Z = z;
+    }
+
+    void projectBuilder::zfuncDiscrete(std::shared_ptr<Models::ModelSample> sample)
+    {
+        double a = sample->Values[0];
+        double b = sample->Values[1];
+        double scen = sample->Values[2];
+        double z;
+        if (scen == 1.0)
+        {
+            z = a + b;
+        }
+        else if (scen == 2.0)
+        {
+            z = 2.5 * a - 0.5 * b;
+        }
+        else
+        {
+            z = 2.2 - (a + b);
+        }
+        sample->Z = 1.8 - z;
     }
 
     std::shared_ptr<Uncertainty::UncertaintyProject> projectBuilder::getUncertaintyProject(std::shared_ptr<Reliability::ReliabilityProject> project)

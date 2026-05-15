@@ -42,6 +42,7 @@
 #include "Statistics/TestCopula.h"
 #include "Distributions/testDistributions.h"
 #include "Statistics/TestXfromU.h"
+#include "Statistics/TestStochast.h"
 #include "Math/testMatrix.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
@@ -306,6 +307,11 @@ TEST(ReliabilityMethodTest, testCrudeMCwithCopula)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
 }
 
+TEST(ReliabilityMethodTest, testCrudeMCwithQualitativeProject)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloWithQualitativeProject();
+}
+
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSampling)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSampling();
@@ -566,6 +572,11 @@ TEST(UnitTests, testStandardNormal)
     tstStdNormal.allStandardNormalTests();
 }
 
+TEST(UnitTests, testSortStochast)
+{
+    Deltares::Probabilistic::Test::TestStochast::testSortFragilityCurves();
+}
+
 TEST(CopulasTest, testClayton)
 {
     Deltares::Probabilistic::Test::TestCopula::testClayton();
@@ -654,6 +665,11 @@ TEST(UnitTests, testUncDirectionalSampling)
 TEST(UnitTests, testUncFORM)
 {
     Deltares::Probabilistic::Test::TestUncertainty::testFORM();
+}
+
+TEST(UnitTests, testUncFORMoneFragilityValueAsResult)
+{
+    Deltares::Probabilistic::Test::TestUncertainty::testFORMoneFragilityValueAsResult();
 }
 
 TEST(UnitTests, testUncFOSM)

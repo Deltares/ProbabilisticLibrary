@@ -24,7 +24,6 @@
 #include "../Model/ModelRunner.h"
 #include "DesignPointBuilder.h"
 
-#include <vector>
 #include <cmath>
 #include <map>
 #include <stdexcept>
@@ -38,9 +37,8 @@ namespace Deltares::Reliability
         std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 
     public:
-        ModeFinder(std::shared_ptr<Statistics::Stochast> stochast)
+        explicit ModeFinder(const std::shared_ptr<Statistics::Stochast>& stochast) : stochast(stochast)
         {
-            this->stochast = stochast;
         }
 
         void add(double u, double weight)
@@ -60,17 +58,17 @@ namespace Deltares::Reliability
             values.clear();
         }
 
-        double getMode()
+        double getMode() const
         {
             double mode = 0;
             double max = -1;
 
-            for (auto it = values.begin(); it != values.end(); ++it)
+            for (const auto& [u, weight] : values)
             {
-                if (it->second > max)
+                if (weight > max)
                 {
-                    mode = it->first;
-                    max = it->second;
+                    mode = u;
+                    max = weight;
                 }
             }
 
@@ -78,9 +76,11 @@ namespace Deltares::Reliability
         }
     };
 
-    DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet)
+    DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method,
+        const std::shared_ptr<StochastSettingsSet>& stochastSet)
+        : count(count), method(method)
     {
-        initializeSamples(count, method);
+        initializeTotals();
 
         if (stochastSet != nullptr)
         {
@@ -88,40 +88,31 @@ namespace Deltares::Reliability
             {
                 if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
                 {
-                    this->qualitativeIndices.push_back(i);
-                    this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]->stochast));
+                    qualitativeIndices.push_back(i);
+                    modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]->stochast));
                 }
             }
         }
 
-        this->qualitativeCount = this->qualitativeIndices.size();
+        qualitativeCount = static_cast<int>(qualitativeIndices.size());
     }
 
-    DesignPointBuilder::DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
+    DesignPointBuilder::DesignPointBuilder(DesignPointMethod method,
+        const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts)
+        : count(static_cast<int>(stochasts.size())), method(method)
     {
-        initializeSamples(stochasts.size(), method);
+        initializeTotals();
 
-        for (int i = 0; i < stochasts.size(); i++)
+        for (int i = 0; i < count; i++)
         {
             if (stochasts[i]->isQualitative())
             {
-                this->qualitativeIndices.push_back(i);
-                this->modeFinders.push_back(std::make_shared<ModeFinder>(stochasts[i]));
+                qualitativeIndices.push_back(i);
+                modeFinders.push_back(std::make_shared<ModeFinder>(stochasts[i]));
             }
         }
 
-        this->qualitativeCount = this->qualitativeIndices.size();
-    }
-
-    void DesignPointBuilder::initializeSamples(int count, DesignPointMethod method)
-    {
-        this->count = count;
-        this->method = method;
-
-        this->qualitativeIndices.clear();
-        this->modeFinders.clear();
-
-        this->initializeTotals();
+        qualitativeCount = static_cast<int>(qualitativeIndices.size());
     }
 
     void DesignPointBuilder::initializeTotals()
@@ -131,7 +122,7 @@ namespace Deltares::Reliability
         sinSample = std::make_shared<Models::Sample>(count);
         cosSample = std::make_shared<Models::Sample>(count);
 
-        for (const auto& modeFinder : this->modeFinders)
+        for (const auto& modeFinder : modeFinders)
         {
             modeFinder->clear();
         }
@@ -340,7 +331,7 @@ namespace Deltares::Reliability
         }
     }
 
-    DesignPointMethod DesignPointBuilder::getDesignPointMethod(std::string method)
+    DesignPointMethod DesignPointBuilder::getDesignPointMethod(const std::string& method)
     {
         if (method == "nearest_to_mean") return DesignPointMethod::NearestToMean;
         else if (method == "center_of_gravity") return DesignPointMethod::CenterOfGravity;

@@ -23,7 +23,6 @@
 from __future__ import annotations
 from math import isnan
 import matplotlib.pyplot as plt
-import sys
 from enum import Enum
 
 from .utils import FrozenObject, FrozenList, PrintUtils, CallbackList

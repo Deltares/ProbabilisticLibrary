@@ -19,31 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-
-namespace Deltares::Probabilistic::Test
-{
-    class TestUncertainty
-    {
-    public:
-        static void testCrudeMonteCarloAddOne();
-        static void testCrudeMonteCarloLinear();
-        static void testCrudeMonteCarloLinearNonRepeatable();
-        static void testCrudeMonteCarloLinearOutput();
-        static void testCrudeMonteCarloLinearOutputNonRepeatable();
-        static void testCrudeMonteCarloLinearManySamples();
-        static void testCrudeMonteCarloLinearAutoSamples();
-
-        static void testImportanceSamplingAddOne();
-
-        static void testNumericalIntegration();
-        static void testDirectionalSampling();
-        static void testFORM();
-        static void testFORMoneFragilityValueAsResult();
-        static void testFOSM();
-    private:
-        static constexpr double margin = 0.02;
-        static constexpr double smallMargin = 1E-10;
-    };
-};
+#include "pch.h"
+#include "TestStochast_body.cpp"
 

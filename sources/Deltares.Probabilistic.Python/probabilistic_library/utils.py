@@ -157,6 +157,7 @@ class FrozenObject:
 
 class PrintUtils:
     """Utilities for printing"""
+    @staticmethod
     def get_space_from_indent(indent : int) -> str:
         """Converts indentation level to spaces"""
         indent_str = ''
@@ -166,6 +167,7 @@ class PrintUtils:
 
 class NumericUtils:
     """Numeric utilities"""
+    @staticmethod
     def order (value1 : float, value2 : float) -> tuple[float, float]:
         """Returns floats ordered"""
         if value1 > value2:
@@ -173,6 +175,7 @@ class NumericUtils:
         else:
             return value1, value2
 
+    @staticmethod
     def make_different(value1 : float, value2 : float) -> tuple[float, float]:
         """Guarantees that values are different"""
         if value1 == value2:
