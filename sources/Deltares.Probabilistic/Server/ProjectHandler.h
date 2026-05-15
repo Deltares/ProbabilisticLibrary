@@ -216,10 +216,5 @@ namespace Deltares::Server
         static bool IsModelProjectType(ObjectType objectType);
         static bool IsModelSettingsType(ObjectType objectType);
         static bool IsStochast(ObjectType objectType);
-
-        // List of object id which must be destroyed
-        std::vector<int> destroyObjects;
-
-        void DestroyObjects();
     };
 }
