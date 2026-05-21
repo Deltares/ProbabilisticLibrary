@@ -150,153 +150,153 @@ namespace Deltares::Server
         case ObjectType::StandardNormal:
             break; // nothing to do
         case ObjectType::ProbabilityValue:
-            probabilityValues[id] = std::make_shared<Deltares::Statistics::ProbabilityValue>();
+            probabilityValues[id] = std::make_shared<ProbabilityValue>();
             probabilityValueIds[probabilityValues[id]] = id;
             break;
         case ObjectType::Message:
-            messages[id] = std::make_shared<Deltares::Logging::Message>();
+            messages[id] = std::make_shared<Logging::Message>();
             messageIds[messages[id]] = id;
             break;
         case ObjectType::Project:
-            projects[id] = std::make_shared<Deltares::Reliability::ReliabilityProject>();
+            projects[id] = std::make_shared<ReliabilityProject>();
             break;
         case ObjectType::ModelParameter:
-            modelParameters[id] = std::make_shared<Deltares::Models::ModelInputParameter>();
+            modelParameters[id] = std::make_shared<Models::ModelInputParameter>();
             modelParameterIds[modelParameters[id]] = id;
             break;
         case ObjectType::LimitStateFunction:
-            limitStateFunctions[id] = std::make_shared<Deltares::Reliability::LimitStateFunction>();
+            limitStateFunctions[id] = std::make_shared<LimitStateFunction>();
             limitStateFunctionIds[limitStateFunctions[id]] = id;
             break;
         case ObjectType::CombinedLimitStateFunction:
-            combinedLimitStateFunctions[id] = std::make_shared<Deltares::Reliability::CombinedLimitStateFunction>();
+            combinedLimitStateFunctions[id] = std::make_shared<CombinedLimitStateFunction>();
             combinedLimitStateFunctionIds[combinedLimitStateFunctions[id]] = id;
             break;
         case ObjectType::ProbabilityLimitStateFunction:
-            probabilityLimitStateFunctions[id] = std::make_shared<Deltares::Reliability::ProbabilityLimitStateFunction>();
+            probabilityLimitStateFunctions[id] = std::make_shared<ProbabilityLimitStateFunction>();
             break;
         case ObjectType::Stochast:
-            stochasts[id] = std::make_shared<Deltares::Statistics::Stochast>();
+            stochasts[id] = std::make_shared<Stochast>();
             stochastIds[stochasts[id]] = id;
             break;
         case ObjectType::DiscreteValue:
-            discreteValues[id] = std::make_shared<Deltares::Statistics::DiscreteValue>();
+            discreteValues[id] = std::make_shared<DiscreteValue>();
             discreteValueIds[discreteValues[id]] = id;
             break;
         case ObjectType::HistogramValue:
-            histogramValues[id] = std::make_shared<Deltares::Statistics::HistogramValue>();
+            histogramValues[id] = std::make_shared<HistogramValue>();
             histogramValueIds[histogramValues[id]] = id;
             break;
         case ObjectType::FragilityValue:
-            fragilityValues[id] = std::make_shared<Deltares::Statistics::FragilityValue>();
+            fragilityValues[id] = std::make_shared<FragilityValue>();
             fragilityValueIds[fragilityValues[id]] = id;
             break;
         case ObjectType::ContributingStochast:
-            contributingStochasts[id] = std::make_shared<Deltares::Statistics::ContributingStochast>();
+            contributingStochasts[id] = std::make_shared<ContributingStochast>();
             contributingStochastIds[contributingStochasts[id]] = id;
             break;
         case ObjectType::ConditionalValue:
-            conditionalValues[id] = std::make_shared<Deltares::Statistics::VariableStochastValue>();
+            conditionalValues[id] = std::make_shared<VariableStochastValue>();
             conditionalValueIds[conditionalValues[id]] = id;
             break;
         case ObjectType::CorrelationMatrix:
-            correlations[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>(true);
+            correlations[id] = std::make_shared<CorrelationMatrix>(true);
             correlationIds[correlations[id]] = id;
             break;
         case ObjectType::CopulaCorrelation:
-            correlations[id] = std::make_shared<Deltares::Statistics::CopulaCorrelation>();
+            correlations[id] = std::make_shared<CopulaCorrelation>();
             correlationIds[correlations[id]] = id;
             break;
         case ObjectType::Scenario:
-            scenarios[id] = std::make_shared<Deltares::Statistics::Scenario>();
+            scenarios[id] = std::make_shared<Scenario>();
             break;
         case ObjectType::Settings:
-            settingsValues[id] = std::make_shared<Deltares::Reliability::Settings>();
+            settingsValues[id] = std::make_shared<Settings>();
             settingsValuesIds[settingsValues[id]] = id;
             break;
         case ObjectType::StochastSettings:
-            stochastSettingsValues[id] = std::make_shared<Deltares::Reliability::StochastSettings>();
+            stochastSettingsValues[id] = std::make_shared<StochastSettings>();
             break;
         case ObjectType::StochastPoint:
             stochastPoints[id] = std::make_shared<Models::StochastPoint>();
             break;
         case ObjectType::DesignPoint:
-            designPoints[id] = std::make_shared<Deltares::Reliability::DesignPoint>();
+            designPoints[id] = std::make_shared<DesignPoint>();
             designPointIds[designPoints[id]] = id;
             break;
         case ObjectType::Alpha:
-            alphas[id] = std::make_shared<Deltares::Models::StochastPointAlpha>();
+            alphas[id] = std::make_shared<Models::StochastPointAlpha>();
             alphaIds[alphas[id]] = id;
             break;
         case ObjectType::FragilityCurve:
-            fragilityCurves[id] = std::make_shared<Deltares::Reliability::FragilityCurve>();
+            fragilityCurves[id] = std::make_shared<FragilityCurve>();
             fragilityCurveIds[fragilityCurves[id]] = id;
             break;
         case ObjectType::FragilityCurveProject:
-            fragilityCurveProjects[id] = std::make_shared<Deltares::Reliability::FragilityCurveProject>();
+            fragilityCurveProjects[id] = std::make_shared<FragilityCurveProject>();
             break;
         case ObjectType::FragilityCurveSettings:
-            fragilityCurveSettings[id] = std::make_shared<Deltares::Reliability::FragilityCurveIntegrationSettings>();
+            fragilityCurveSettings[id] = std::make_shared<FragilityCurveIntegrationSettings>();
             break;
         case ObjectType::Evaluation:
-            evaluations[id] = std::make_shared<Deltares::Models::Evaluation>();
+            evaluations[id] = std::make_shared<Models::Evaluation>();
             evaluationIds[evaluations[id]] = id;
             break;
         case ObjectType::ReliabilityResult:
-            reliabilityResults[id] = std::make_shared<Deltares::Reliability::ReliabilityResult>();
+            reliabilityResults[id] = std::make_shared<ReliabilityResult>();
             reliabilityResultIds[reliabilityResults[id]] = id;
             break;
         case ObjectType::CombineProject:
-            combineProjects[id] = std::make_shared<Deltares::Reliability::CombineProject>();
+            combineProjects[id] = std::make_shared<CombineProject>();
             break;
         case ObjectType::CombineSettings:
-            combineSettingsValues[id] = std::make_shared<Deltares::Reliability::CombineSettings>();
+            combineSettingsValues[id] = std::make_shared<CombineSettings>();
             break;
         case ObjectType::ExcludingCombineProject:
-            excludingCombineProjects[id] = std::make_shared<Deltares::Reliability::ExcludingCombineProject>();
+            excludingCombineProjects[id] = std::make_shared<ExcludingCombineProject>();
             break;
         case ObjectType::ExcludingCombineSettings:
-            excludingCombineSettings[id] = std::make_shared<Deltares::Reliability::ExcludingCombineSettings>();
+            excludingCombineSettings[id] = std::make_shared<ExcludingCombineSettings>();
             break;
         case ObjectType::SelfCorrelationMatrix:
-            selfCorrelationMatrices[id] = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
+            selfCorrelationMatrices[id] = std::make_shared<SelfCorrelationMatrix>();
             selfCorrelationIds[selfCorrelationMatrices[id]] = id;
             break;
         case ObjectType::RunProject:
-            runProjects[id] = std::make_shared<Deltares::Models::RunProject>();
+            runProjects[id] = std::make_shared<Models::RunProject>();
             break;
         case ObjectType::RunProjectSettings:
-            runProjectSettings[id] = std::make_shared<Deltares::Models::RunProjectSettings>();
+            runProjectSettings[id] = std::make_shared<Models::RunProjectSettings>();
             break;
         case ObjectType::UncertaintyProject:
-            uncertaintyProjects[id] = std::make_shared<Deltares::Uncertainty::UncertaintyProject>();
+            uncertaintyProjects[id] = std::make_shared<Uncertainty::UncertaintyProject>();
             break;
         case ObjectType::UncertaintySettings:
-            uncertaintySettingsValues[id] = std::make_shared<Deltares::Uncertainty::SettingsS>();
+            uncertaintySettingsValues[id] = std::make_shared<Uncertainty::SettingsS>();
             break;
         case ObjectType::UncertaintyResult:
-            uncertaintyResults[id] = std::make_shared<Deltares::Uncertainty::UncertaintyResult>();
+            uncertaintyResults[id] = std::make_shared<Uncertainty::UncertaintyResult>();
             uncertaintyResultsIds[uncertaintyResults[id]] = id;
             break;
         case ObjectType::SensitivityProject:
-            sensitivityProjects[id] = std::make_shared<Deltares::Sensitivity::SensitivityProject>();
+            sensitivityProjects[id] = std::make_shared<Sensitivity::SensitivityProject>();
             break;
         case ObjectType::SensitivitySettings:
-            sensitivitySettingsValues[id] = std::make_shared<Deltares::Sensitivity::SensitivitySettings>();
+            sensitivitySettingsValues[id] = std::make_shared<Sensitivity::SensitivitySettings>();
             break;
         case ObjectType::SensitivityResult:
-            sensitivityResults[id] = std::make_shared<Deltares::Sensitivity::SensitivityResult>();
+            sensitivityResults[id] = std::make_shared<Sensitivity::SensitivityResult>();
             sensitivityResultsIds[sensitivityResults[id]] = id;
             break;
         case ObjectType::SensitivityValue:
-            sensitivityValues[id] = std::make_shared<Deltares::Sensitivity::SensitivityValue>();
+            sensitivityValues[id] = std::make_shared<Sensitivity::SensitivityValue>();
             sensitivityValuesIds[sensitivityValues[id]] = id;
             break;
         case ObjectType::LengthEffectProject:
-            lengthEffectProjects[id] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
+            lengthEffectProjects[id] = std::make_shared<LengthEffectProject>();
             break;
         case ObjectType::ConvergenceReport:
-            convergenceReports[id] = std::make_shared<Deltares::Reliability::ConvergenceReport>();
+            convergenceReports[id] = std::make_shared<ConvergenceReport>();
             convergenceReportIds[convergenceReports[id]] = id;
             break;
         default: throw probLibException("object type");
@@ -375,14 +375,14 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::StandardNormal)
         {
-            std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = probabilityValues[id];
+            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
 
-            if (property_ == "u_max") return Statistics::StandardNormal::UMax;
-            else if (property_ == "beta_max") return Statistics::StandardNormal::BetaMax;
+            if (property_ == "u_max") return StandardNormal::UMax;
+            else if (property_ == "beta_max") return StandardNormal::BetaMax;
         }
         else if (objectType == ObjectType::ProbabilityValue)
         {
-            std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = probabilityValues[id];
+            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
 
             if (property_ == "reliability_index") return probabilityValue->Reliability;
             else if (property_ == "probability_of_failure") return probabilityValue->getProbabilityOfFailure();
@@ -391,7 +391,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "location") return stochast->getProperties()->Location;
             else if (property_ == "scale") return stochast->getProperties()->Scale;
@@ -415,7 +415,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::DiscreteValue)
         {
-            std::shared_ptr<Statistics::DiscreteValue> discreteValue = discreteValues[id];
+            std::shared_ptr<DiscreteValue> discreteValue = discreteValues[id];
 
             if (property_ == "x") return discreteValue->X;
             else if (property_ == "amount") return discreteValue->Amount;
@@ -424,7 +424,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::HistogramValue)
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = histogramValues[id];
+            std::shared_ptr<HistogramValue> histogramValue = histogramValues[id];
 
             if (property_ == "lower_bound") return histogramValue->LowerBound;
             else if (property_ == "upper_bound") return histogramValue->UpperBound;
@@ -432,7 +432,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::FragilityValue)
         {
-            std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
+            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
 
             if (property_ == "x") return fragilityValue->X;
             else if (property_ == "reliability_index") return fragilityValue->Reliability;
@@ -442,13 +442,13 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ContributingStochast)
         {
-            std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
 
             if (property_ == "probability") return contributingStochast->Probability;
         }
         else if (objectType == ObjectType::LimitStateFunction)
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
             if (property_ == "critical_value") return limitStateFunction->criticalValue;
         }
@@ -460,7 +460,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ConditionalValue)
         {
-            std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
+            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
 
             if (property_ == "x") return conditionalValue->X;
             else if (property_ == "location") return conditionalValue->Stochast->Location;
@@ -477,14 +477,14 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::Scenario)
         {
-            std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+            std::shared_ptr<Scenario> scenario = scenarios[id];
 
             if (property_ == "probability") return scenario->probability;
             else if (property_ == "physical_value") return scenario->parameterValue;
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
+            std::shared_ptr<Settings> settings = settingsValues[id];
 
             if (property_ == "relaxation_factor") return settings->RelaxationFactor;
             else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
@@ -508,7 +508,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::StochastSettings)
         {
-            std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "min_value") return stochastSettings->MinValue;
             else if (property_ == "max_value") return stochastSettings->MaxValue;
@@ -529,7 +529,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::FragilityCurveSettings)
         {
-            std::shared_ptr<Reliability::FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
+            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
 
             if (property_ == "step_size") return settings->StepSize;
         }
@@ -549,7 +549,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "beta") return designPoint->Beta;
             else if (property_ == "reliability_index") return designPoint->Beta;
@@ -582,7 +582,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ReliabilityResult)
         {
-            std::shared_ptr<Reliability::ReliabilityResult> result = reliabilityResults[id];
+            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
 
             if (property_ == "reliability_index") return result->Reliability;
             else if (property_ == "convergence") return std::isnan(result->ConvBeta) ? result->Variation : result->ConvBeta;
@@ -601,13 +601,13 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
-            std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
+            std::shared_ptr<LengthEffectProject> length_effect = lengthEffectProjects[id];
 
             if (property_ == "length") return length_effect->length;
         }
         else if (objectType == ObjectType::ConvergenceReport)
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
 
             if (property_ == "convergence") return convergence_report->Convergence;
             else if (property_ == "fail_fraction") return convergence_report->FailFraction;
@@ -626,7 +626,7 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::ProbabilityValue)
         {
-            std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = probabilityValues[id];
+            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
 
             if (property_ == "reliability_index") probabilityValue->Reliability = value;
             else if (property_ == "probability_of_failure") probabilityValue->setProbabilityOfFailure(value);
@@ -635,7 +635,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "location") stochast->getProperties()->Location = value;
             else if (property_ == "scale") stochast->getProperties()->Scale = value;
@@ -653,13 +653,13 @@ namespace Deltares::Server
             else if (property_ == "design_factor") stochast->designFactor = value;
             else if (property_ == "design_value") stochast->setDesignValue(value);
             else if (property_ == "shift_for_fit") argValue = value;
-            else if (property_ == "fixed_value") std::dynamic_pointer_cast<Reliability::FragilityCurve>(stochast)->fixedValue = value;
+            else if (property_ == "fixed_value") std::dynamic_pointer_cast<FragilityCurve>(stochast)->fixedValue = value;
             else if (property_ == "design_point_x") argValue = value;
             else if (property_ == "conditional_x") argValue = value;
         }
         else if (objectType == ObjectType::DiscreteValue)
         {
-            std::shared_ptr<Statistics::DiscreteValue> discreteValue = discreteValues[id];
+            std::shared_ptr<DiscreteValue> discreteValue = discreteValues[id];
 
             if (property_ == "x") discreteValue->X = value;
             else if (property_ == "amount") discreteValue->Amount = value;
@@ -668,7 +668,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::HistogramValue)
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = histogramValues[id];
+            std::shared_ptr<HistogramValue> histogramValue = histogramValues[id];
 
             if (property_ == "lower_bound") histogramValue->LowerBound = value;
             else if (property_ == "upper_bound") histogramValue->UpperBound = value;
@@ -678,7 +678,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::FragilityValue)
         {
-            std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
+            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
 
             if (property_ == "x") fragilityValue->X = value;
             else if (property_ == "reliability_index") fragilityValue->Reliability = value;
@@ -690,13 +690,13 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ContributingStochast)
         {
-            std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
 
             if (property_ == "probability") contributingStochast->Probability = value;
         }
         else if (objectType == ObjectType::LimitStateFunction)
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
             if (property_ == "critical_value") limitStateFunction->criticalValue = value;
         }
@@ -708,7 +708,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ConditionalValue)
         {
-            std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
+            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
 
             if (property_ == "x") conditionalValue->X = value;
             else if (property_ == "location") conditionalValue->Stochast->Location = value;
@@ -724,14 +724,14 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::Scenario)
         {
-            std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+            std::shared_ptr<Scenario> scenario = scenarios[id];
 
             if (property_ == "probability") scenario->probability = value;
             else if (property_ == "physical_value") scenario->parameterValue = value;
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
+            std::shared_ptr<Settings> settings = settingsValues[id];
 
             if (property_ == "relaxation_factor") settings->RelaxationFactor = value;
             else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
@@ -755,7 +755,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::FragilityCurveSettings)
         {
-            std::shared_ptr<Reliability::FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
+            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
 
             if (property_ == "step_size") settings->StepSize = value;
         }
@@ -780,7 +780,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::StochastSettings)
         {
-            std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "min_value") stochastSettings->MinValue = value;
             else if (property_ == "max_value") stochastSettings->MaxValue = value;
@@ -796,13 +796,13 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "beta") designPoint->Beta = value;
             else if (property_ == "reliability_index") designPoint->Beta = value;
             else if (property_ == "convergence")
             {
-                if (designPoint->convergenceReport == nullptr) designPoint->convergenceReport = std::make_shared<Reliability::ConvergenceReport>();
+                if (designPoint->convergenceReport == nullptr) designPoint->convergenceReport = std::make_shared<ConvergenceReport>();
                 designPoint->convergenceReport->Convergence = value;
             }
         }
@@ -818,7 +818,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
-            std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
+            std::shared_ptr<LengthEffectProject> length_effect = lengthEffectProjects[id];
 
             if (property_ == "length") length_effect->length = value;
         }
@@ -833,7 +833,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ReliabilityResult)
         {
-            std::shared_ptr<Reliability::ReliabilityResult> result = reliabilityResults[id];
+            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
 
             if (property_ == "reliability_index") result->Reliability = value;
             else if (property_ == "convergence") result->ConvBeta = value;
@@ -852,7 +852,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ConvergenceReport)
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
 
             if (property_ == "convergence") convergence_report->Convergence = value;
             else if (property_ == "fail_fraction") convergence_report->FailFraction = value;
@@ -930,7 +930,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "observations") return stochast->getProperties()->Observations;
             else if (property_ == "array_size") return stochast->modelParameter->arraySize;
@@ -944,32 +944,32 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CorrelationMatrix)
         {
-            std::shared_ptr<Statistics::CorrelationMatrix> matrix = std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(correlations[id]);
+            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
 
             if (property_ == "count_correlations") return matrix->CountCorrelations();
             else if (property_ == "variables_count") return matrix->GetDimension();
         }
         else if (objectType == ObjectType::ConditionalValue)
         {
-            std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
+            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
 
             if (property_ == "observations") return conditionalValue->Stochast->Observations;
         }
         else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
         {
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "variables_count") return correlationMatrix->GetDimension();
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
-            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
             if (property_ == "limit_state_functions_count") return static_cast<int>(limitStateFunction->limitStateFunctions.size());
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
+            std::shared_ptr<Settings> settings = settingsValues[id];
 
             if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
             else if (property_ == "minimum_samples") return settings->MinimumSamples;
@@ -1023,7 +1023,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::StochastSettings)
         {
-            std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "intervals") return stochastSettings->Intervals;
         }
@@ -1035,7 +1035,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (designPoint->convergenceReport != nullptr)
             {
@@ -1063,20 +1063,20 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ReliabilityResult)
         {
-            std::shared_ptr<Reliability::ReliabilityResult> result = reliabilityResults[id];
+            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
 
             if (property_ == "index") return result->Index;
             else if (property_ == "samples") return result->Samples;
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
-            std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
 
             if (property_ == "correlation_lengths_count") return static_cast<int>(project->correlationLengths.size());
         }
         else if (objectType == ObjectType::ConvergenceReport)
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
 
             if (property_ == "failed_samples") return convergence_report->FailedSamples;
         }
@@ -1105,7 +1105,7 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::Project)
         {
-            std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+            std::shared_ptr<ReliabilityProject> project = projects[id];
 
             if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction, newId);
             else if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
@@ -1132,13 +1132,13 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "conditional_source") return GetStochastId(stochast->VariableSource, newId);
             else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(stochast->getValidationReport()), newId);
             else if (property_ == "validate_fit")
             {
-                std::shared_ptr<Statistics::Stochast> prior = tempIntValue > 0 ? stochasts[tempIntValue] : nullptr;
+                std::shared_ptr<Stochast> prior = tempIntValue > 0 ? stochasts[tempIntValue] : nullptr;
                 Logging::ValidationReport report = stochast->getFitValidationReport(tempValues["data"], prior, argValue);
                 if (!report.isValid())
                 {
@@ -1153,7 +1153,7 @@ namespace Deltares::Server
                 double x = argValue;
                 argValue = std::nan("");
 
-                std::shared_ptr<Statistics::Stochast> conditionalStochast = stochast->getVariableStochast(x);
+                std::shared_ptr<Stochast> conditionalStochast = stochast->getVariableStochast(x);
                 return GetStochastId(conditionalStochast, newId);
             }
             else if (property_ == "design_point_x")
@@ -1161,28 +1161,28 @@ namespace Deltares::Server
                 double x = argValue;
                 argValue = std::nan("");
 
-                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+                std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
                 std::shared_ptr<Models::StochastPoint> stochastPoint = fragilityCurve->getDesignPoint(x);
-                std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<Reliability::DesignPoint>(*stochastPoint);
+                std::shared_ptr<DesignPoint> designPoint = std::make_shared<DesignPoint>(*stochastPoint);
 
                 return GetDesignPointId(designPoint, newId);
             }
         }
         else if (objectType == ObjectType::FragilityValue)
         {
-            std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
+            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
 
-            if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<Reliability::DesignPoint>(fragilityValue->designPoint), newId);
+            if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<DesignPoint>(fragilityValue->designPoint), newId);
         }
         else if (objectType == ObjectType::ContributingStochast)
         {
-            std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
 
-            if (property_ == "variable") return GetStochastId(std::static_pointer_cast<Statistics::Stochast>(contributingStochast->Stochast), newId);
+            if (property_ == "variable") return GetStochastId(std::static_pointer_cast<Stochast>(contributingStochast->Stochast), newId);
         }
         else if (objectType == ObjectType::StochastSettings)
         {
-            std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "variable") return GetStochastId(stochastSettings->stochast, newId);
         }
@@ -1200,7 +1200,7 @@ namespace Deltares::Server
                 }
                 else
                 {
-                    std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<Reliability::FragilityCurve>(alpha->Stochast);
+                    std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(alpha->Stochast);
                     return GetFragilityCurveId(fragilityCurve, newId);
                 }
             }
@@ -1213,7 +1213,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ProbabilityLimitStateFunction)
         {
-            std::shared_ptr<Reliability::ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
+            std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
 
             if (property_ == "fragility_curve") return GetFragilityCurveId(probabilityLimitStateFunction->fragilityCurve, newId);
         }
@@ -1225,13 +1225,13 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::Scenario)
         {
-            std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+            std::shared_ptr<Scenario> scenario = scenarios[id];
 
             if (property_ == "parameter") return GetStochastId(scenario->parameter, newId);
         }
         else if (objectType == ObjectType::FragilityCurveProject)
         {
-            std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
 
             if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
             else if (property_ == "integrand") return GetStochastId(project->integrand, newId);
@@ -1240,7 +1240,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CombineProject)
         {
-            std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
+            std::shared_ptr<CombineProject> combineProject = combineProjects[id];
 
             if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
             else if (property_ == "design_point_correlation_matrix") return GetCorrelationMatrixId(combineProject->correlationMatrix, newId);
@@ -1249,20 +1249,20 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ExcludingCombineProject)
         {
-            std::shared_ptr<Reliability::ExcludingCombineProject> combineProject = excludingCombineProjects[id];
+            std::shared_ptr<ExcludingCombineProject> combineProject = excludingCombineProjects[id];
 
             if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
             else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
-            std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
 
             if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "convergence_report") return GetConvergenceReportId(designPoint->convergenceReport, newId);
         }
@@ -1287,7 +1287,7 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::FragilityCurveProject)
         {
-            std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
 
             if (property_ == "integrand") project->integrand = stochasts[value];
             else if (property_ == "fragility_curve") project->fragilityCurve = fragilityCurves[value];
@@ -1296,7 +1296,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ProbabilityLimitStateFunction)
         {
-            std::shared_ptr<Reliability::ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
+            std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
 
             if (property_ == "fragility_curve") probabilityLimitStateFunction->fragilityCurve = fragilityCurves[value];
         }
@@ -1309,7 +1309,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ReliabilityResult)
         {
-            std::shared_ptr<Reliability::ReliabilityResult> result = reliabilityResults[id];
+            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
 
             if (property_ == "index") result->Index = value;
             else if (property_ == "samples") result->Samples = value;
@@ -1323,7 +1323,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "observations") stochast->getProperties()->Observations = value;
             else if (property_ == "array_size") stochast->modelParameter->arraySize = value;
@@ -1336,7 +1336,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::FragilityValue)
         {
-            std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
+            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
 
             if (property_ == "design_point")
             {
@@ -1345,25 +1345,25 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ContributingStochast)
         {
-            std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
 
             if (property_ == "variable") contributingStochast->Stochast = value > 0 ? stochasts[value] : nullptr;
         }
         else if (objectType == ObjectType::ConditionalValue)
         {
-            std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
+            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
 
             if (property_ == "observations") conditionalValue->Stochast->Observations = value;
         }
         else if (objectType == ObjectType::Scenario)
         {
-            std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+            std::shared_ptr<Scenario> scenario = scenarios[id];
 
             if (property_ == "parameter") scenario->parameter = stochasts[value];
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
+            std::shared_ptr<Settings> settings = settingsValues[id];
 
             if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
             else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
@@ -1385,7 +1385,7 @@ namespace Deltares::Server
             else if (property_ == "max_steps_sphere_search") settings->StartPointSettings->maxStepsSphereSearch = value;
             else if (property_ == "start_point")
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = GetDesignPoint(value);
+                std::shared_ptr<DesignPoint> designPoint = GetDesignPoint(value);
                 settings->StochastSet->setStartPoint(designPoint->getSample());
             }
         }
@@ -1412,20 +1412,20 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::StochastSettings)
         {
-            std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "variable") stochastSettings->stochast = value > 0 ? stochasts[value] : nullptr;
             else if (property_ == "intervals") stochastSettings->Intervals = value;
         }
         else if (objectType == ObjectType::Project)
         {
-            std::shared_ptr<Reliability::ReliabilityProject> reliabilityProject = projects[id];
+            std::shared_ptr<ReliabilityProject> reliabilityProject = projects[id];
 
             if (property_ == "limit_state_function") reliabilityProject->limitStateFunction = GetLimitStateFunction(value);
         }
         else if (objectType == ObjectType::CombineProject)
         {
-            std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
+            std::shared_ptr<CombineProject> combineProject = combineProjects[id];
 
             if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
             else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = selfCorrelationMatrices[value];
@@ -1433,13 +1433,13 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ExcludingCombineProject)
         {
-            std::shared_ptr<Reliability::ExcludingCombineProject> combineProject = excludingCombineProjects[id];
+            std::shared_ptr<ExcludingCombineProject> combineProject = excludingCombineProjects[id];
 
             if (property_ == "settings") combineProject->settings = excludingCombineSettings[value];
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "ids") designPoint->Ids = GetDesignPointIds(value);
             else if (property_ == "total_iterations") designPoint->convergenceReport->TotalIterations = value;
@@ -1455,14 +1455,14 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
-            std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
 
             if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
             else if (property_ == "design_point_cross_section") project->designPointCrossSection = designPoints[value];
         }
         else if (objectType == ObjectType::ConvergenceReport)
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
 
             if (property_ == "failed_samples") convergence_report->FailedSamples = value;
         }
@@ -1478,8 +1478,8 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::SelfCorrelationMatrix)
         {
-            std::shared_ptr<Statistics::SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
-            std::shared_ptr<Statistics::Stochast> stochast = stochasts[id2];
+            std::shared_ptr<SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
+            std::shared_ptr<Stochast> stochast = stochasts[id2];
 
             if (property_ == "rho") return correlationMatrix->getSelfCorrelation(stochast);
         }
@@ -1492,8 +1492,8 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::SelfCorrelationMatrix)
         {
-            std::shared_ptr<Statistics::SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
-            std::shared_ptr<Statistics::Stochast> stochast = stochasts[id2];
+            std::shared_ptr<SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
+            std::shared_ptr<Stochast> stochast = stochasts[id2];
 
             if (property_ == "rho") correlationMatrix->setSelfCorrelation(stochast, value);
         }
@@ -1530,7 +1530,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::FragilityCurve)
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+            std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
 
             if (property_ == "inverted") return fragilityCurve->inverted;
             else if (property_ == "fixed") return fragilityCurve->fixed;
@@ -1538,7 +1538,7 @@ namespace Deltares::Server
 
         if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "inverted") return stochast->isInverted();
             else if (property_ == "truncated") return stochast->isTruncated();
@@ -1566,7 +1566,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CorrelationMatrix)
         {
-            std::shared_ptr<Statistics::CorrelationMatrix> matrix = std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(correlations[id]);
+            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
 
             if (property_ == "is_identity") return matrix->IsIdentity();
             else if (property_ == "has_conflicting_correlations") return matrix->HasConflictingCorrelations();
@@ -1580,27 +1580,27 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LimitStateFunction)
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
             if (property_ == "use_compare_parameter") return limitStateFunction->useCompareParameter;
             else if (property_ == "normalize") return limitStateFunction->normalize;
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
-            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
             if (property_ == "normalize") return limitStateFunction->normalize;
         }
         else if (objectType == ObjectType::StochastSettings)
         {
-            std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "is_initialization_allowed") return stochastSettings->IsInitializationAllowed;
             else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "is_converged") return designPoint->convergenceReport != nullptr && designPoint->convergenceReport->IsConverged;
         }
@@ -1615,7 +1615,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
+            std::shared_ptr<Settings> setting = settingsValues[id];
 
             if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
             else if (property_ == "is_repeatable_random") return setting->RandomSettings->IsRepeatableRandom;
@@ -1627,19 +1627,19 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CombineProject)
         {
-            std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
+            std::shared_ptr<CombineProject> project = combineProjects[id];
 
             if (property_ == "is_valid") return project->is_valid();
         }
         else if (objectType == ObjectType::ExcludingCombineProject)
         {
-            std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
+            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
 
             if (property_ == "is_valid") return project->is_valid();
         }
         else if (objectType == ObjectType::ConvergenceReport)
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
 
             if (property_ == "is_converged") return convergence_report->IsConverged;
         }
@@ -1671,7 +1671,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "inverted") stochast->setInverted(value);
             else if (property_ == "truncated") stochast->setTruncated(value);
@@ -1681,7 +1681,7 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::FragilityCurve)
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+            std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
 
             if (property_ == "inverted") fragilityCurve->inverted = value;
             else if (property_ == "fixed") fragilityCurve->fixed = value;
@@ -1694,20 +1694,20 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LimitStateFunction)
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
             if (property_ == "use_compare_parameter") limitStateFunction->useCompareParameter = value;
             else if (property_ == "normalize") limitStateFunction->normalize = value;
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+            std::shared_ptr<LimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
             if (property_ == "normalize") limitStateFunction->normalize = value;
         }
         else if (objectType == ObjectType::StochastSettings)
         {
-            std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "is_initialization_allowed") stochastSettings->IsInitializationAllowed = value;
             else if (property_ == "is_variance_allowed") stochastSettings->IsVarianceAllowed = value;
@@ -1723,7 +1723,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
+            std::shared_ptr<Settings> setting = settingsValues[id];
 
             if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
             else if (property_ == "is_repeatable_random") setting->RandomSettings->IsRepeatableRandom = value;
@@ -1735,13 +1735,13 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "is_converged") designPoint->convergenceReport->IsConverged = value;
         }
         else if (objectType == ObjectType::ConvergenceReport)
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = convergenceReports[id];
+            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
 
             if (property_ == "is_converged") convergence_report->IsConverged = value;
         }
@@ -1768,7 +1768,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "distribution") return Stochast::getDistributionTypeString(stochast->getDistributionType());
             else if (property_ == "constant_parameter") return Stochast::getConstantParameterTypeString(stochast->constantParameterType);
@@ -1777,7 +1777,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LimitStateFunction)
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
             if (property_ == "parameter") return limitStateFunction->criticalParameter;
             else if (property_ == "compare_parameter") return limitStateFunction->compareParameter;
@@ -1785,19 +1785,19 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
-            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
             if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(limitStateFunction->combineType);
         }
         else if (objectType == ObjectType::Scenario)
         {
-            std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+            std::shared_ptr<Scenario> scenario = scenarios[id];
 
             if (property_ == "name") return scenario->name;
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
+            std::shared_ptr<Settings> settings = settingsValues[id];
 
             if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
             else if (property_ == "handle_invalid_type") return Models::RunSettings::getHandleInvalidTypeString(settings->RunSettings->handleInvalidType);
@@ -1807,12 +1807,12 @@ namespace Deltares::Server
             else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
             else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
             else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
-            else if (property_ == "model_varying_type") return Reliability::DirectionReliabilitySettings::getModelVaryingTypeString(settings->DirectionSettings->modelVaryingType);
+            else if (property_ == "model_varying_type") return DirectionReliabilitySettings::getModelVaryingTypeString(settings->DirectionSettings->modelVaryingType);
             else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
         }
         else if (objectType == ObjectType::FragilityCurveSettings)
         {
-            std::shared_ptr<Reliability::FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
+            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
 
             if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
         }
@@ -1852,20 +1852,20 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CombineSettings)
         {
-            std::shared_ptr<Reliability::CombineSettings> settings = combineSettingsValues[id];
+            std::shared_ptr<CombineSettings> settings = combineSettingsValues[id];
 
             if (property_ == "combine_method") return DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
             else if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(settings->combineType);
         }
         else if (objectType == ObjectType::ExcludingCombineSettings)
         {
-            std::shared_ptr<Reliability::ExcludingCombineSettings> settings = excludingCombineSettings[id];
+            std::shared_ptr<ExcludingCombineSettings> settings = excludingCombineSettings[id];
 
             if (property_ == "combiner_method") return DesignPointCombiner::getExcludingCombinerMethodString(settings->combinerMethod);
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "identifier") return designPoint->Identifier;
         }
@@ -1919,7 +1919,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LimitStateFunction)
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
             if (property_ == "parameter") limitStateFunction->criticalParameter = value;
             else if (property_ == "compare_parameter") limitStateFunction->compareParameter = value;
@@ -1927,7 +1927,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
-            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
             if (property_ == "combine_type") limitStateFunction->combineType = DesignPointCombiner::getCombineType(value);
         }
@@ -1951,7 +1951,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
+            std::shared_ptr<Settings> settings = settingsValues[id];
 
             if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
             else if (property_ == "reliability_result") settings->ReliabilityResult = Settings::getReliabilityResultType(value);
@@ -1961,12 +1961,12 @@ namespace Deltares::Server
             else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
             else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
             else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
-            else if (property_ == "model_varying_type") settings->DirectionSettings->modelVaryingType = Reliability::DirectionReliabilitySettings::getModelVaryingType(value);
+            else if (property_ == "model_varying_type") settings->DirectionSettings->modelVaryingType = DirectionReliabilitySettings::getModelVaryingType(value);
             else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
         }
         else if (objectType == ObjectType::FragilityCurveSettings)
         {
-            std::shared_ptr<Reliability::FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
+            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
 
             if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
         }
@@ -1994,14 +1994,14 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CombineSettings)
         {
-            std::shared_ptr<Reliability::CombineSettings> settings = combineSettingsValues[id];
+            std::shared_ptr<CombineSettings> settings = combineSettingsValues[id];
 
             if (property_ == "combine_method") settings->combinerMethod = DesignPointCombiner::getCombinerMethod(value);
             else if (property_ == "combine_type") settings->combineType = DesignPointCombiner::getCombineType(value);
         }
         else if (objectType == ObjectType::ExcludingCombineSettings)
         {
-            std::shared_ptr<Reliability::ExcludingCombineSettings> settings = excludingCombineSettings[id];
+            std::shared_ptr<ExcludingCombineSettings> settings = excludingCombineSettings[id];
 
             if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getExcludingCombinerMethod(value);
         }
@@ -2013,7 +2013,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "identifier") designPoint->Identifier = value;
         }
@@ -2031,7 +2031,7 @@ namespace Deltares::Server
 
         if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             std::vector<double> dataValues(size);
             for (int i = 0; i < size; i++)
@@ -2047,7 +2047,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
-            std::shared_ptr<Reliability::LengthEffectProject> lengthEffect = lengthEffectProjects[id];
+            std::shared_ptr<LengthEffectProject> lengthEffect = lengthEffectProjects[id];
             if (property_ == "correlation_lengths")
             {
                 lengthEffect->correlationLengths.clear();
@@ -2101,7 +2101,7 @@ namespace Deltares::Server
 
         if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "discrete_values")
             {
@@ -2171,7 +2171,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "alphas")
             {
@@ -2184,11 +2184,11 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
         {
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "variables")
             {
-                std::vector<std::shared_ptr<Statistics::Stochast>> correlationMatrixStochasts;
+                std::vector<std::shared_ptr<Stochast>> correlationMatrixStochasts;
                 for (int i = 0; i < size; i++)
                 {
                     correlationMatrixStochasts.push_back(stochasts[values[i]]);
@@ -2199,7 +2199,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
-            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
             if (property_ == "limit_state_functions")
             {
@@ -2240,7 +2240,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::Settings)
         {
-            std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
+            std::shared_ptr<Settings> settings = settingsValues[id];
 
             if (property_ == "stochast_settings")
             {
@@ -2274,7 +2274,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CombineProject)
         {
-            std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
+            std::shared_ptr<CombineProject> project = combineProjects[id];
 
             if (property_ == "design_points")
             {
@@ -2288,7 +2288,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::ExcludingCombineProject)
         {
-            std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
+            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
 
             if (property_ == "design_points")
             {
@@ -2328,7 +2328,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "quantile") return stochast->getQuantile(argument);
             else if (property_ == "x_from_u") return stochast->getXFromU(argument);
@@ -2348,7 +2348,7 @@ namespace Deltares::Server
 
         if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "x_at_u") stochast->setXAtU(value, argument, ConstantParameterType::VariationCoefficient);
         }
@@ -2367,7 +2367,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
-            std::shared_ptr<Reliability::LengthEffectProject> lengthEffect = lengthEffectProjects[id];
+            std::shared_ptr<LengthEffectProject> lengthEffect = lengthEffectProjects[id];
             if (property_ == "correlation_lengths")
             {
                 return lengthEffect->correlationLengths[index];
@@ -2395,14 +2395,14 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
         {
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "correlation") return correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]).value;
             else if (property_ == "correlation_index") return correlationMatrix->GetCorrelation(index1, index2).value;
         }
         else if (objectType == ObjectType::SelfCorrelationMatrix)
         {
-            std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = selfCorrelationMatrices[id];
+            std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix = selfCorrelationMatrices[id];
 
             if (property_ == "correlation")
             {
@@ -2421,14 +2421,14 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::CorrelationMatrix)
         {
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "correlation") correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, CorrelationType::Gaussian);
             else if (property_ == "correlation_index") correlationMatrix->SetCorrelation(index1, index2, value, CorrelationType::Gaussian);
         }
         else if (objectType == ObjectType::CopulaCorrelation)
         {
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "correlation")
             {
@@ -2438,7 +2438,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::SelfCorrelationMatrix)
         {
-            std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = selfCorrelationMatrices[id];
+            std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix = selfCorrelationMatrices[id];
 
             if (property_ == "correlation")
             {
@@ -2455,7 +2455,7 @@ namespace Deltares::Server
 
         if (objectType == ObjectType::CopulaCorrelation)
         {
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "correlation")
             {
@@ -2489,7 +2489,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "histogram_values") return GetHistogramValueId(stochast->getProperties()->HistogramValues[index], newId);
             else if (property_ == "discrete_values") return GetDiscreteValueId(stochast->getProperties()->DiscreteValues[index], newId);
@@ -2500,13 +2500,13 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
         {
-            std::shared_ptr<Statistics::BaseCorrelation> correlationMatrix = correlations[id];
+            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "variables") return GetStochastId(correlationMatrix->GetStochast(index), newId);
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
-            std::shared_ptr<Reliability::CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
             if (property_ == "limit_state_functions") return GetLimitStateFunctionId(limitStateFunction->limitStateFunctions[index], newId);
         }
@@ -2541,7 +2541,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::DesignPoint)
         {
-            std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
             if (property_ == "contributing_design_points") return GetDesignPointId(designPoint->ContributingDesignPoints[index], newId);
             else if (property_ == "alphas") return GetAlphaId(designPoint->Alphas[index], newId);
@@ -2692,7 +2692,7 @@ namespace Deltares::Server
 
         if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (method_ == "initialize_for_run") stochast->initializeForRun();
             else if (method_ == "initialize_conditional_values") stochast->initializeConditionalValues();
@@ -2727,7 +2727,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::CorrelationMatrix)
         {
-            std::shared_ptr<Statistics::CorrelationMatrix> matrix = std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(correlations[id]);
+            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
 
             if (method_ == "resolve_conflicting_correlations") matrix->resolveConflictingCorrelations();
         }
@@ -2740,31 +2740,31 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::FragilityCurveProject)
         {
-            std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
 
             if (method_ == "run") project->run();
         }
         else if (objectType == ObjectType::CombineProject)
         {
-            std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
+            std::shared_ptr<CombineProject> project = combineProjects[id];
 
             if (method_ == "run") project->run();
         }
         else if (objectType == ObjectType::ExcludingCombineProject)
         {
-            std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
+            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
 
             if (method_ == "run") project->run();
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
-            std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
 
             if (method_ == "run") project->run();
         }
     }
 
-    int ProjectHandler::GetProbabilityValueId(const std::shared_ptr<Statistics::ProbabilityValue>& probability, int newId)
+    int ProjectHandler::GetProbabilityValueId(const std::shared_ptr<ProbabilityValue>& probability, int newId)
     {
         if (probability == nullptr)
         {
@@ -2798,7 +2798,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetStochastId(const std::shared_ptr<Statistics::Stochast>& stochast, int newId)
+    int ProjectHandler::GetStochastId(const std::shared_ptr<Stochast>& stochast, int newId)
     {
         if (stochast == nullptr)
         {
@@ -2836,7 +2836,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetFragilityCurveId(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, int newId)
+    int ProjectHandler::GetFragilityCurveId(const std::shared_ptr<FragilityCurve>& fragilityCurve, int newId)
     {
         if (fragilityCurve == nullptr)
         {
@@ -2855,7 +2855,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetCorrelationMatrixId(const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix, int newId)
+    int ProjectHandler::GetCorrelationMatrixId(const std::shared_ptr<BaseCorrelation>& correlationMatrix, int newId)
     {
         if (correlationMatrix == nullptr)
         {
@@ -2874,7 +2874,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId)
+    int ProjectHandler::GetSelfCorrelationMatrixId(const std::shared_ptr<SelfCorrelationMatrix>& correlationMatrix, int newId)
     {
         if (correlationMatrix == nullptr)
         {
@@ -2893,7 +2893,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetLimitStateFunctionId(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, int newId)
+    int ProjectHandler::GetLimitStateFunctionId(const std::shared_ptr<LimitStateFunction>& limitStateFunction, int newId)
     {
         if (limitStateFunction == nullptr)
         {
@@ -2912,7 +2912,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetDesignPointId(const std::shared_ptr<Reliability::DesignPoint>& designPoint, int newId)
+    int ProjectHandler::GetDesignPointId(const std::shared_ptr<DesignPoint>& designPoint, int newId)
     {
         if (designPoint == nullptr)
         {
@@ -2943,7 +2943,7 @@ namespace Deltares::Server
         return alphaIds[alpha];
     }
 
-    int ProjectHandler::GetConvergenceReportId(const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport, int newId)
+    int ProjectHandler::GetConvergenceReportId(const std::shared_ptr<ConvergenceReport>& convergenceReport, int newId)
     {
         if (convergenceReport == nullptr)
         {
@@ -3019,7 +3019,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetHistogramValueId(const std::shared_ptr<Statistics::HistogramValue>& histogramValue, int newId)
+    int ProjectHandler::GetHistogramValueId(const std::shared_ptr<HistogramValue>& histogramValue, int newId)
     {
         if (!histogramValueIds.contains(histogramValue))
         {
@@ -3031,7 +3031,7 @@ namespace Deltares::Server
         return histogramValueIds[histogramValue];
     }
 
-    int ProjectHandler::GetDiscreteValueId(const std::shared_ptr<Statistics::DiscreteValue>& discreteValue, int newId)
+    int ProjectHandler::GetDiscreteValueId(const std::shared_ptr<DiscreteValue>& discreteValue, int newId)
     {
         if (!discreteValueIds.contains(discreteValue))
         {
@@ -3043,7 +3043,7 @@ namespace Deltares::Server
         return discreteValueIds[discreteValue];
     }
 
-    int ProjectHandler::GetFragilityValueId(const std::shared_ptr<Statistics::FragilityValue>& fragilityValue, int newId)
+    int ProjectHandler::GetFragilityValueId(const std::shared_ptr<FragilityValue>& fragilityValue, int newId)
     {
         if (!fragilityValueIds.contains(fragilityValue))
         {
@@ -3055,7 +3055,7 @@ namespace Deltares::Server
         return fragilityValueIds[fragilityValue];
     }
 
-    int ProjectHandler::GetContributingStochastId(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, int newId)
+    int ProjectHandler::GetContributingStochastId(const std::shared_ptr<ContributingStochast>& contributingStochast, int newId)
     {
         if (!contributingStochastIds.contains(contributingStochast))
         {
@@ -3067,7 +3067,7 @@ namespace Deltares::Server
         return contributingStochastIds[contributingStochast];
     }
 
-    int ProjectHandler::GetConditionalValueId(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, int newId)
+    int ProjectHandler::GetConditionalValueId(const std::shared_ptr<VariableStochastValue>& conditionalValue, int newId)
     {
         if (!conditionalValueIds.contains(conditionalValue))
         {
@@ -3098,7 +3098,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetReliabilityResultId(const std::shared_ptr<Deltares::Reliability::ReliabilityResult>& result, int newId)
+    int ProjectHandler::GetReliabilityResultId(const std::shared_ptr<ReliabilityResult>& result, int newId)
     {
         if (!reliabilityResultIds.contains(result))
         {
@@ -3110,7 +3110,7 @@ namespace Deltares::Server
         return reliabilityResultIds[result];
     }
 
-    int ProjectHandler::GetMessageId(const std::shared_ptr<Deltares::Logging::Message>& message, int newId)
+    int ProjectHandler::GetMessageId(const std::shared_ptr<Logging::Message>& message, int newId)
     {
         if (!messageIds.contains(message))
         {
@@ -3122,7 +3122,7 @@ namespace Deltares::Server
         return messageIds[message];
     }
 
-    std::shared_ptr<Reliability::DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
+    std::shared_ptr<DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
     {
         return nullptr;
     }
@@ -3175,7 +3175,7 @@ namespace Deltares::Server
         }
     }
 
-    std::shared_ptr<Statistics::Stochast> ProjectHandler::GetStochast(int id)
+    std::shared_ptr<Stochast> ProjectHandler::GetStochast(int id)
     {
         if (stochasts.contains(id))
         {
@@ -3191,7 +3191,7 @@ namespace Deltares::Server
         }
     }
 
-    std::shared_ptr<Reliability::LimitStateFunction> ProjectHandler::GetLimitStateFunction(int id)
+    std::shared_ptr<LimitStateFunction> ProjectHandler::GetLimitStateFunction(int id)
     {
         if (limitStateFunctions.contains(id))
         {
