@@ -46,7 +46,7 @@ namespace Deltares::Models
             int Tag;
         };
 
-        typedef void(*ModelSampleCallback)(const ModelSampleStruct* sample);
+        typedef void(*ModelSampleCallback)(ModelSampleStruct* sample);
 
         typedef void(*MultipleModelSampleCallback)(const ModelSampleStruct* samples, int sampleCount);
     }

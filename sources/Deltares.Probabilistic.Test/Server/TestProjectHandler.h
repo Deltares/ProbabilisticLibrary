@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #pragma once
+#include "../../Deltares.Probabilistic/Model/ModelSampleStruct.h"
 
 namespace Deltares::Probabilistic::Test
 {
@@ -31,6 +32,9 @@ namespace Deltares::Probabilistic::Test
         static void TestProbabilityValue();
         static void TestStochast();
         static void TestCopula();
+        static void TestRunProject();
+    private:
+        static void LinearZ(Models::ModelSampleStruct* sample);
     };
 }
 

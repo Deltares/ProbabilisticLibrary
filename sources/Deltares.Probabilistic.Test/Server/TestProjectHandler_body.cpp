@@ -129,6 +129,54 @@ namespace Deltares::Probabilistic::Test
         const double correlation_through_server = handler.GetIndexedIndexedValue(id3, "correlation", id1, id2);
         EXPECT_EQ(correlation_value, correlation_through_server);
 
+        const int dimension = handler.GetIntValue(id3, "variables_count");
+        EXPECT_EQ(dimension, 2);
+
+        handler.Destroy(id3);
+        handler.Destroy(id2);
+        handler.Destroy(id1);
+    }
+
+    void TestProjectHandler::LinearZ(Models::ModelSampleStruct* sample)
+    {
+        sample->Z = sample->Values[0] - sample->Values[1];
+    }
+
+    void TestProjectHandler::TestRunProject()
+    {
+        auto handler = Server::ProjectHandler();
+        const auto id1 = handler.Create("run_project");
+        handler.SetModelSampleCallBack(id1, "model", LinearZ);
+
+        const auto id2 = handler.Create("stochast");
+        const auto id3 = handler.Create("stochast");
+
+        auto random = Numeric::RandomValueGenerator();
+        random.initialize(true, 1234);
+        const double determinist1 = random.next();
+        const double determinist2 = random.next();
+
+        handler.SetStringValue(id2, "distribution", "deterministic");
+        handler.SetValue(id2, "mean", determinist1);
+        handler.SetStringValue(id3, "distribution", "deterministic");
+        handler.SetValue(id3, "mean", determinist2);
+
+        const auto id4 = handler.Create("copula_correlation");
+
+        std::vector values = { id2, id3 };
+        handler.SetArrayIntValue(id1, "variables", values.data(), static_cast<int>(values.size()));
+        handler.SetIntValue(id1, "copula_correlation", id4);
+
+        handler.Execute(id1, "run");
+
+        const int id5 = handler.GetIdValue(id1, "realization");
+
+        const double Z_through_server = handler.GetValue(id5, "z");
+        const double Z_expected = determinist1 - determinist2;
+        EXPECT_NEAR(Z_expected, Z_through_server, 1e-12);
+
+        handler.Destroy(id5);
+        handler.Destroy(id4);
         handler.Destroy(id3);
         handler.Destroy(id2);
         handler.Destroy(id1);

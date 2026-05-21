@@ -1394,3 +1394,8 @@ TEST(UnitTests, testProjectHandlerCopula)
 {
     Deltares::Probabilistic::Test::TestProjectHandler::TestCopula();
 }
+
+TEST(UnitTests, testProjectHandlerProject)
+{
+    Deltares::Probabilistic::Test::TestProjectHandler::TestRunProject();
+}

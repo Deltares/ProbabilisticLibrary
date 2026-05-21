@@ -1066,7 +1066,7 @@ namespace Deltares::Server
             std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
 
             if (property_ == "index") return result->Index;
-            else if (property_ == "samples") return result->Samples;
+            else if (property_ == "samples") return static_cast<int>(result->Samples);
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
