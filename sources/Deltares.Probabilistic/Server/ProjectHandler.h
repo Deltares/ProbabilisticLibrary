@@ -55,41 +55,41 @@ namespace Deltares::Server
     class ProjectHandler : public BaseHandler
     {
     public:
-        bool CanHandle(std::string object_type) override;
+        bool CanHandle(const std::string& object_type) override;
         int GetNewId() override;
-        int Create(std::string object_type) override;
+        int Create(const std::string& object_type) override;
         void Destroy(int id) override;
         bool ShouldClose() override;
-        double GetValue(int id, const std::string property_) override;
-        void SetValue(int id, const std::string property_, double value) override;
-        int GetIntValue(int id, std::string property_) override;
-        void SetIntValue(int id, std::string property_, int value) override;
-        int GetIdValue(int id, std::string property_) override;
-        double GetIntArgValue(int id1, int id2, std::string property_) override;
-        void SetIntArgValue(int id1, int id2, std::string property_, double value) override;
-        bool GetBoolValue(int id, std::string property_) override;
-        void SetBoolValue(int id, std::string property_, bool value) override;
-        std::string GetStringValue(int id, std::string property_) override;
-        void SetStringValue(int id, std::string property_, std::string value) override;
-        void SetArrayValue(int id, std::string property_, double* values, int size) override;
-        std::vector<int> GetArrayIntValue(int id, std::string property_) override;
-        void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
-        double GetArgValue(int id, std::string property_, double argument) override;
-        void SetArgValue(int id, std::string property_, double argument, double value) override;
-        double GetIndexedValue(int id, std::string property_, int index) override;
-        void SetIndexedValue(int id, std::string property_, int index, double value) override;
-        double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) override;
-        void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
+        double GetValue(int id, const std::string& property_) override;
+        void SetValue(int id, const std::string& property_, double value) override;
+        int GetIntValue(int id, const std::string& property_) override;
+        void SetIntValue(int id, const std::string& property_, int value) override;
+        int GetIdValue(int id, const std::string& property_) override;
+        double GetIntArgValue(int id1, int id2, const std::string& property_) override;
+        void SetIntArgValue(int id1, int id2, const std::string& property_, double value) override;
+        bool GetBoolValue(int id, const std::string& property_) override;
+        void SetBoolValue(int id, const std::string& property_, bool value) override;
+        std::string GetStringValue(int id, const std::string& property_) override;
+        void SetStringValue(int id, const std::string& property_, const std::string& value) override;
+        void SetArrayValue(int id, const std::string& property_, double* values, int size) override;
+        std::vector<int> GetArrayIntValue(int id, const std::string& property_) override;
+        void SetArrayIntValue(int id, const std::string& property_, int* values, int size) override;
+        double GetArgValue(int id, const std::string& property_, double argument) override;
+        void SetArgValue(int id, const std::string& property_, double argument, double value) override;
+        double GetIndexedValue(int id, const std::string& property_, int index) override;
+        void SetIndexedValue(int id, const std::string& property_, int index, double value) override;
+        double GetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2) override;
+        void SetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2, double value) override;
         void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value) override;
-        int GetIndexedIntValue(int id, std::string property_, int index) override;
-        int GetIndexedIdValue(int id, std::string property_, int index) override;
-        void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
-        void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) override;
-        void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) override;
+        int GetIndexedIntValue(int id, const std::string& property_, int index) override;
+        int GetIndexedIdValue(int id, const std::string& property_, int index) override;
+        void SetCallBack(int id, const std::string& property_, Models::ZValuesCallBack callBack) override;
+        void SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callBack) override;
+        void SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callBack) override;
         void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) override;
-        void SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack) override;
-        void SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack) override;
-        void Execute(int id, std::string method_) override;
+        void SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callBack) override;
+        void SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack) override;
+        void Execute(int id, const std::string& method_) override;
 
         int GetProbabilityValueId(const std::shared_ptr<Statistics::ProbabilityValue>& probability, int newId);
         int GetValidationReportId(const std::shared_ptr<Logging::ValidationReport>& validationReport, int newId);
@@ -121,7 +121,7 @@ namespace Deltares::Server
     protected:
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
-        enum ObjectType {
+        enum class ObjectType {
             StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, CombinedLimitStateFunction, ProbabilityLimitStateFunction,
             Stochast, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings,
             StochastPoint, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, FragilityCurveSettings, Evaluation, CombineProject, CombineSettings,
@@ -134,8 +134,8 @@ namespace Deltares::Server
         int new_id = 0;
         std::mutex mtx;
 
-        ObjectType GetType(const std::string& object_type);
-        std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
+        static ObjectType GetType(const std::string& object_type);
+        std::unordered_map<int, ObjectType> types;
 
         std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
         std::unordered_map<int, std::shared_ptr<Statistics::ProbabilityValue>> probabilityValues;

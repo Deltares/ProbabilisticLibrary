@@ -68,20 +68,20 @@ namespace Deltares::Server
         }
 
         void Initialize();
-        bool CanHandle(std::string objectType) override;
-        int Create(std::string objectType) override;
+        bool CanHandle(const std::string& objectType) override;
+        int Create(const std::string& objectType) override;
         void Destroy(int id) override;
-        double GetValue(int id, std::string property) override;
-        void SetValue(int id, std::string property, double value) override;
-        bool GetBoolValue(int id, std::string property) override;
-        void SetBoolValue(int id, std::string property, bool value) override;
-        int GetIntValue(int id, std::string property) override;
-        void SetIntValue(int id, std::string property, int value) override;
-        std::string GetStringValue(int id, std::string property) override;
-        void SetStringValue(int id, std::string property, std::string value) override;
-        int GetIndexedIntValue(int id, std::string property_, int index) override;
-        std::string GetIndexedStringValue(int id, std::string property_, int index) override;
-        void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
+        double GetValue(int id, const std::string& property) override;
+        void SetValue(int id, const std::string& property, double value) override;
+        bool GetBoolValue(int id, const std::string& property) override;
+        void SetBoolValue(int id, const std::string& property, bool value) override;
+        int GetIntValue(int id, const std::string& property) override;
+        void SetIntValue(int id, const std::string& property, int value) override;
+        std::string GetStringValue(int id, const std::string& property) override;
+        void SetStringValue(int id, const std::string& property, const std::string& value) override;
+        int GetIndexedIntValue(int id, const std::string& property_, int index) override;
+        std::string GetIndexedStringValue(int id, const std::string& property_, int index) override;
+        void SetArrayIntValue(int id, const std::string& property_, int* values, int size) override;
     private:
         typedef void(*f_initialize)();
         typedef bool(*f_can_handle)(const char*);

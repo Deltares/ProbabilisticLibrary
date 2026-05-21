@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-# include "ProjectHandler.h"
+#include "ProjectHandler.h"
 
 #include <string>
 #include <memory>
@@ -32,7 +32,7 @@ namespace Deltares::Server
     using namespace Deltares::Statistics;
     using namespace Deltares::Reliability;
 
-    bool ProjectHandler::CanHandle(std::string object_type)
+    bool ProjectHandler::CanHandle(const std::string& object_type)
     {
         return
             (object_type == "standard_normal" ||
@@ -137,7 +137,7 @@ namespace Deltares::Server
         return new_id;
     }
 
-    int ProjectHandler::Create(std::string object_type)
+    int ProjectHandler::Create(const std::string& object_type)
     {
         int id = this->GetNewId();
 
@@ -369,7 +369,7 @@ namespace Deltares::Server
         return types.empty();
     }
 
-    double ProjectHandler::GetValue(int id, std::string property_)
+    double ProjectHandler::GetValue(int id, const std::string& property_)
     {
         ObjectType objectType = types[id];
 
@@ -620,7 +620,7 @@ namespace Deltares::Server
         return std::nan("");
     }
 
-    void ProjectHandler::SetValue(int id, std::string property_, double value)
+    void ProjectHandler::SetValue(int id, const std::string& property_, double value)
     {
         ObjectType objectType = types[id];
 
@@ -864,7 +864,7 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetIntValue(int id, std::string property_)
+    int ProjectHandler::GetIntValue(int id, const std::string& property_)
     {
         ObjectType objectType = types[id];
 
@@ -1084,7 +1084,7 @@ namespace Deltares::Server
         return 0;
     }
 
-    int ProjectHandler::GetIdValue(int id, std::string property_)
+    int ProjectHandler::GetIdValue(int id, const std::string& property_)
     {
         ObjectType objectType = types[id];
 
@@ -1270,7 +1270,7 @@ namespace Deltares::Server
         return 0;
     }
 
-    void ProjectHandler::SetIntValue(int id, std::string property_, int value)
+    void ProjectHandler::SetIntValue(int id, const std::string& property_, int value)
     {
         ObjectType objectType = types[id];
 
@@ -1472,7 +1472,7 @@ namespace Deltares::Server
         }
     }
 
-    double ProjectHandler::GetIntArgValue(int id1, int id2, std::string property_)
+    double ProjectHandler::GetIntArgValue(int id1, int id2, const std::string& property_)
     {
         ObjectType objectType = types[id1];
 
@@ -1486,7 +1486,7 @@ namespace Deltares::Server
         return std::nan("");
     }
 
-    void ProjectHandler::SetIntArgValue(int id1, int id2, std::string property_, double value)
+    void ProjectHandler::SetIntArgValue(int id1, int id2, const std::string& property_, double value)
     {
         ObjectType objectType = types[id1];
 
@@ -1499,7 +1499,7 @@ namespace Deltares::Server
         }
     }
 
-    bool ProjectHandler::GetBoolValue(int id, std::string property_)
+    bool ProjectHandler::GetBoolValue(int id, const std::string& property_)
     {
         ObjectType objectType = types[id];
 
@@ -1647,7 +1647,7 @@ namespace Deltares::Server
         return false;
     }
 
-    void ProjectHandler::SetBoolValue(int id, std::string property_, bool value)
+    void ProjectHandler::SetBoolValue(int id, const std::string& property_, bool value)
     {
         ObjectType objectType = types[id];
 
@@ -1747,7 +1747,7 @@ namespace Deltares::Server
         }
     }
 
-    std::string ProjectHandler::GetStringValue(int id, std::string property_)
+    std::string ProjectHandler::GetStringValue(int id, const std::string& property_)
     {
         ObjectType objectType = types[id];
 
@@ -1891,7 +1891,7 @@ namespace Deltares::Server
         return "";
     }
 
-    void ProjectHandler::SetStringValue(int id, std::string property_, std::string value)
+    void ProjectHandler::SetStringValue(int id, const std::string& property_, const std::string& value)
     {
         ObjectType objectType = types[id];
 
@@ -2025,7 +2025,7 @@ namespace Deltares::Server
         }
     }
 
-    void ProjectHandler::SetArrayValue(int id, std::string property_, double* values, int size)
+    void ProjectHandler::SetArrayValue(int id, const std::string& property_, double* values, int size)
     {
         ObjectType objectType = types[id];
 
@@ -2059,12 +2059,12 @@ namespace Deltares::Server
         }
     }
 
-    std::vector<int> ProjectHandler::GetArrayIntValue(int id, std::string property_)
+    std::vector<int> ProjectHandler::GetArrayIntValue(int id, const std::string& property_)
     {
         return std::vector<int>(0);
     }
 
-    void ProjectHandler::SetArrayIntValue(int id, std::string property_, int* values, int size)
+    void ProjectHandler::SetArrayIntValue(int id, const std::string& property_, int* values, int size)
     {
         ObjectType objectType = types[id];
 
@@ -2311,7 +2311,7 @@ namespace Deltares::Server
         }
     }
 
-    double ProjectHandler::GetArgValue(int id, std::string property_, double argument)
+    double ProjectHandler::GetArgValue(int id, const std::string& property_, double argument)
     {
         ObjectType objectType = types[id];
 
@@ -2342,7 +2342,7 @@ namespace Deltares::Server
         return std::nan("");
     }
 
-    void ProjectHandler::SetArgValue(int id, std::string property_, double argument, double value)
+    void ProjectHandler::SetArgValue(int id, const std::string& property_, double argument, double value)
     {
         ObjectType objectType = types[id];
 
@@ -2354,7 +2354,7 @@ namespace Deltares::Server
         }
     }
 
-    double ProjectHandler::GetIndexedValue(int id, std::string property_, int index)
+    double ProjectHandler::GetIndexedValue(int id, const std::string& property_, int index)
     {
         ObjectType objectType = types[id];
 
@@ -2384,12 +2384,12 @@ namespace Deltares::Server
         return std::nan("");
     }
 
-    void ProjectHandler::SetIndexedValue(int id, std::string property_, int index, double value)
+    void ProjectHandler::SetIndexedValue(int id, const std::string& property_, int index, double value)
     {
         // not needed yet
     }
 
-    double ProjectHandler::GetIndexedIndexedValue(int id, std::string property_, int index1, int index2)
+    double ProjectHandler::GetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2)
     {
         ObjectType objectType = types[id];
 
@@ -2415,7 +2415,7 @@ namespace Deltares::Server
         return std::nan("");
     }
 
-    void ProjectHandler::SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value)
+    void ProjectHandler::SetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2, double value)
     {
         ObjectType objectType = types[id];
 
@@ -2464,12 +2464,12 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetIndexedIntValue(int id, std::string property_, int index)
+    int ProjectHandler::GetIndexedIntValue(int id, const std::string& property_, int index)
     {
         return 0;
     }
 
-    int ProjectHandler::GetIndexedIdValue(int id, std::string property_, int index)
+    int ProjectHandler::GetIndexedIdValue(int id, const std::string& property_, int index)
     {
         ObjectType objectType = types[id];
         int newId = this->GetNewId();
@@ -2567,7 +2567,7 @@ namespace Deltares::Server
         return 0;
     }
 
-    void ProjectHandler::SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack)
+    void ProjectHandler::SetCallBack(int id, const std::string& property_, Models::ZValuesCallBack callBack)
     {
         ObjectType objectType = types[id];
 
@@ -2579,7 +2579,7 @@ namespace Deltares::Server
         }
     }
 
-    void ProjectHandler::SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack)
+    void ProjectHandler::SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callBack)
     {
         ObjectType objectType = types[id];
 
@@ -2599,7 +2599,7 @@ namespace Deltares::Server
         }
     }
 
-    void ProjectHandler::SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack)
+    void ProjectHandler::SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callBack)
     {
         ObjectType objectType = types[id];
 
@@ -2646,7 +2646,7 @@ namespace Deltares::Server
         }
     }
 
-    void ProjectHandler::SetModelSampleCallBack(int id, std::string property_, Models::ModelSampleCallback callBack)
+    void ProjectHandler::SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callBack)
     {
         ObjectType objectType = types[id];
 
@@ -2666,7 +2666,7 @@ namespace Deltares::Server
         }
     }
 
-    void ProjectHandler::SetMultipleModelSampleCallBack(int id, std::string property_, Models::MultipleModelSampleCallback callBack)
+    void ProjectHandler::SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack)
     {
         ObjectType objectType = types[id];
 
@@ -2686,7 +2686,7 @@ namespace Deltares::Server
         }
     }
 
-    void ProjectHandler::Execute(int id, std::string method_)
+    void ProjectHandler::Execute(int id, const std::string& method_)
     {
         ObjectType objectType = types[id];
 
