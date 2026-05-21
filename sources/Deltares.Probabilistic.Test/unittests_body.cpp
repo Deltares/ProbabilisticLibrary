@@ -1390,3 +1390,7 @@ TEST(UnitTests, testProjectHandlerStochast)
     Deltares::Probabilistic::Test::TestProjectHandler::TestStochast();
 }
 
+TEST(UnitTests, testProjectHandlerCopula)
+{
+    Deltares::Probabilistic::Test::TestProjectHandler::TestCopula();
+}

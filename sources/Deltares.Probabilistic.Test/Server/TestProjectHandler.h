@@ -30,6 +30,7 @@ namespace Deltares::Probabilistic::Test
         static void TestStandardNormal();
         static void TestProbabilityValue();
         static void TestStochast();
+        static void TestCopula();
     };
 }
 

@@ -23,6 +23,7 @@
 #include "../../Deltares.Probabilistic/Server/ProjectHandler.h"
 #include "../../Deltares.Probabilistic/Math/RandomValueGenerator.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
+#include "../../Deltares.Probabilistic/Statistics/CorrelationValueAndType.h"
 
 #include <gtest/gtest.h>
 
@@ -105,6 +106,32 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(x_through_server, x_expected, 1e-12);
 
         handler.Destroy(id);
+    }
+
+    void TestProjectHandler::TestCopula()
+    {
+        auto handler = Server::ProjectHandler();
+        const auto id1 = handler.Create("stochast");
+        const auto id2 = handler.Create("stochast");
+        const auto id3 = handler.Create("copula_correlation");
+
+        std::vector values = { id1, id2 };
+        handler.SetArrayIntValue(id3, "variables", values.data(), static_cast<int>(values.size()));
+
+        auto random = Numeric::RandomValueGenerator();
+        random.initialize(true, 1234);
+        // get a random correlation value ; for Frank correlation every number is valid except 0.0
+        const double correlation_value = 10.0 + 10.0 * random.next();
+        constexpr int copula_type = static_cast<int>(CorrelationType::Frank);
+        handler.SetIndexedIndexedIntValue(id3, "correlation", id1, id2, copula_type);
+        handler.SetIndexedIndexedValue(id3, "correlation", id1, id2, correlation_value);
+
+        const double correlation_through_server = handler.GetIndexedIndexedValue(id3, "correlation", id1, id2);
+        EXPECT_EQ(correlation_value, correlation_through_server);
+
+        handler.Destroy(id3);
+        handler.Destroy(id2);
+        handler.Destroy(id1);
     }
 
 }
