@@ -34,100 +34,7 @@ namespace Deltares::Server
 
     bool ProjectHandler::CanHandle(const std::string& object_type)
     {
-        return
-            (object_type == "standard_normal" ||
-                object_type == "probability_value" ||
-                object_type == "message" ||
-                object_type == "project" ||
-                object_type == "validation_report" ||
-                object_type == "reliability_result" ||
-                object_type == "model_parameter" ||
-                object_type == "limit_state_function" ||
-                object_type == "combined_limit_state_function" ||
-                object_type == "probability_limit_state_function" ||
-                object_type == "stochast" ||
-                object_type == "discrete_value" ||
-                object_type == "histogram_value" ||
-                object_type == "fragility_value" ||
-                object_type == "contributing_stochast" ||
-                object_type == "conditional_value" ||
-                object_type == "correlation_matrix" ||
-                object_type == "copula_correlation" ||
-                object_type == "scenario" ||
-                object_type == "settings" ||
-                object_type == "stochast_settings" ||
-                object_type == "stochast_point" ||
-                object_type == "design_point" ||
-                object_type == "alpha" ||
-                object_type == "fragility_curve" ||
-                object_type == "fragility_curve_project" ||
-                object_type == "fragility_curve_settings" ||
-                object_type == "evaluation" ||
-                object_type == "convergence_report" ||
-                object_type == "combine_project" ||
-                object_type == "combine_settings" ||
-                object_type == "excluding_combine_project" ||
-                object_type == "excluding_combine_settings" ||
-                object_type == "self_correlation_matrix" ||
-                object_type == "run_project" ||
-                object_type == "run_project_settings" ||
-                object_type == "sensitivity_project" ||
-                object_type == "sensitivity_settings" ||
-                object_type == "sensitivity_result" ||
-                object_type == "sensitivity_value" ||
-                object_type == "uncertainty_project" ||
-                object_type == "uncertainty_settings" ||
-                object_type == "uncertainty_result" ||
-                object_type == "length_effect_project");
-    }
-
-    ProjectHandler::ObjectType ProjectHandler::GetType(const std::string& object_type)
-    {
-        if (object_type == "standard_normal") return ObjectType::StandardNormal;
-        else if (object_type == "probability_value") return ObjectType::ProbabilityValue;
-        else if (object_type == "message") return ObjectType::Message;
-        else if (object_type == "validation_report") return ObjectType::ValidationReport;
-        else if (object_type == "project") return ObjectType::Project;
-        else if (object_type == "model_parameter") return ObjectType::ModelParameter;
-        else if (object_type == "limit_state_function") return ObjectType::LimitStateFunction;
-        else if (object_type == "combined_limit_state_function") return ObjectType::CombinedLimitStateFunction;
-        else if (object_type == "probability_limit_state_function") return ObjectType::ProbabilityLimitStateFunction;
-        else if (object_type == "stochast") return ObjectType::Stochast;
-        else if (object_type == "discrete_value") return ObjectType::DiscreteValue;
-        else if (object_type == "histogram_value") return ObjectType::HistogramValue;
-        else if (object_type == "fragility_value") return ObjectType::FragilityValue;
-        else if (object_type == "contributing_stochast") return ObjectType::ContributingStochast;
-        else if (object_type == "conditional_value") return ObjectType::ConditionalValue;
-        else if (object_type == "correlation_matrix") return ObjectType::CorrelationMatrix;
-        else if (object_type == "copula_correlation") return ObjectType::CopulaCorrelation;
-        else if (object_type == "scenario") return ObjectType::Scenario;
-        else if (object_type == "settings") return ObjectType::Settings;
-        else if (object_type == "stochast_settings") return  ObjectType::StochastSettings;
-        else if (object_type == "stochast_point") return  ObjectType::StochastPoint;
-        else if (object_type == "design_point") return  ObjectType::DesignPoint;
-        else if (object_type == "alpha") return  ObjectType::Alpha;
-        else if (object_type == "fragility_curve") return  ObjectType::FragilityCurve;
-        else if (object_type == "fragility_curve_project") return ObjectType::FragilityCurveProject;
-        else if (object_type == "fragility_curve_settings") return ObjectType::FragilityCurveSettings;
-        else if (object_type == "evaluation") return  ObjectType::Evaluation;
-        else if (object_type == "reliability_result") return  ObjectType::ReliabilityResult;
-        else if (object_type == "combine_project") return ObjectType::CombineProject;
-        else if (object_type == "combine_settings") return ObjectType::CombineSettings;
-        else if (object_type == "excluding_combine_project") return ObjectType::ExcludingCombineProject;
-        else if (object_type == "excluding_combine_settings") return ObjectType::ExcludingCombineSettings;
-        else if (object_type == "self_correlation_matrix") return ObjectType::SelfCorrelationMatrix;
-        else if (object_type == "run_project") return ObjectType::RunProject;
-        else if (object_type == "run_project_settings") return ObjectType::RunProjectSettings;
-        else if (object_type == "sensitivity_project") return ObjectType::SensitivityProject;
-        else if (object_type == "sensitivity_settings") return ObjectType::SensitivitySettings;
-        else if (object_type == "sensitivity_result") return ObjectType::SensitivityResult;
-        else if (object_type == "sensitivity_value") return ObjectType::SensitivityValue;
-        else if (object_type == "uncertainty_project") return ObjectType::UncertaintyProject;
-        else if (object_type == "uncertainty_settings") return ObjectType::UncertaintySettings;
-        else if (object_type == "uncertainty_result") return ObjectType::UncertaintyResult;
-        else if (object_type == "length_effect_project") return ObjectType::LengthEffectProject;
-        else if (object_type == "convergence_report") return ObjectType::ConvergenceReport;
-        else throw probLibException("type not supported: " + object_type);
+        return ProjectEntries::CanHandle(object_type);
     }
 
     int ProjectHandler::GetNewId()
@@ -143,7 +50,7 @@ namespace Deltares::Server
 
         std::lock_guard<std::mutex> lock(mtx);
 
-        types[id] = GetType(object_type);
+        types[id] = ProjectEntries::GetType(object_type);
 
         switch (types[id])
         {

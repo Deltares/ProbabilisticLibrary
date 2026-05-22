@@ -21,6 +21,7 @@
 //
 #pragma once
 #include "BaseHandler.h"
+#include "ProjectEntries.h"
 #include "../Reliability/ReliabilityProject.h"
 #include "../Reliability/FragilityCurve.h"
 #include "../Reliability/FragilityCurveProject.h"
@@ -121,20 +122,10 @@ namespace Deltares::Server
     protected:
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
-        enum class ObjectType {
-            StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, CombinedLimitStateFunction, ProbabilityLimitStateFunction,
-            Stochast, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings,
-            StochastPoint, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, FragilityCurveSettings, Evaluation, CombineProject, CombineSettings,
-            ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult, SensitivityProject,
-            SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult, CopulaCorrelation,
-            ConvergenceReport
-            
-        };
 
         int new_id = 0;
         std::mutex mtx;
 
-        static ObjectType GetType(const std::string& object_type);
         std::unordered_map<int, ObjectType> types;
 
         std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
