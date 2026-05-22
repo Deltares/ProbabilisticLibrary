@@ -32,6 +32,7 @@ namespace Deltares::Probabilistic::Test
     void TestProjectHandler::TestSetAndGetMessage()
     {
         auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("message"));
         const auto id = handler.Create("message");
 
         handler.SetStringValue(id, "text", "hello world");
@@ -50,6 +51,7 @@ namespace Deltares::Probabilistic::Test
     void TestProjectHandler::TestStandardNormal()
     {
         auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("standard_normal"));
         const auto id = handler.Create("standard_normal");
 
         auto random = Numeric::RandomValueGenerator();
@@ -71,6 +73,7 @@ namespace Deltares::Probabilistic::Test
     void TestProjectHandler::TestProbabilityValue()
     {
         auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("probability_value"));
         const auto id = handler.Create("probability_value");
 
         auto random = Numeric::RandomValueGenerator();
@@ -89,6 +92,7 @@ namespace Deltares::Probabilistic::Test
     void TestProjectHandler::TestStochast()
     {
         auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("stochast"));
         const auto id = handler.Create("stochast");
 
         auto random = Numeric::RandomValueGenerator();
@@ -111,6 +115,8 @@ namespace Deltares::Probabilistic::Test
     void TestProjectHandler::TestCopula()
     {
         auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("stochast"));
+        ASSERT_TRUE(handler.CanHandle("copula_correlation"));
         const auto id1 = handler.Create("stochast");
         const auto id2 = handler.Create("stochast");
         const auto id3 = handler.Create("copula_correlation");
@@ -153,6 +159,9 @@ namespace Deltares::Probabilistic::Test
     void TestProjectHandler::TestRunProject()
     {
         auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("run_project"));
+        ASSERT_TRUE(handler.CanHandle("stochast"));
+        ASSERT_TRUE(handler.CanHandle("copula_correlation"));
         const auto id1 = handler.Create("run_project");
         handler.SetModelSampleCallBack(id1, "model", LinearZ);
         handler.SetMultipleModelSampleCallBack(id1, "model", LinearZmulti);

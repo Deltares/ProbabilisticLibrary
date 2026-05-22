@@ -410,7 +410,7 @@ namespace Deltares::Server
             else if (property_ == "ks_test") return stochast->getKSTest(tempValues["data"]);
             else if (property_ == "x_from_u_and_source") return stochast->getXFromUAndSource(tempValues["u_and_x"][1], tempValues["u_and_x"][0]);
             else if (property_ == "u_from_x_and_source") return stochast->getUFromXAndSource(tempValues["x_and_source"][1], tempValues["x_and_source"][0]);
-            else if (property_ == "fixed_value") return std::dynamic_pointer_cast<Reliability::FragilityCurve>(stochast)->fixedValue;
+            else if (property_ == "fixed_value") return std::dynamic_pointer_cast<FragilityCurve>(stochast)->fixedValue;
             else return std::nan("");
         }
         else if (objectType == ObjectType::DiscreteValue)
