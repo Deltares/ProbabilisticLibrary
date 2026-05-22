@@ -33,6 +33,8 @@ namespace Deltares::Probabilistic::Test
         static void TestStochast();
         static void TestCopula();
         static void TestRunProject();
+        static void TestReliabilityProject();
+
     private:
         static void LinearZ(Models::ModelSampleStruct* sample);
         static void LinearZmulti(Models::ModelSampleStruct* sample, int sampleCount);
