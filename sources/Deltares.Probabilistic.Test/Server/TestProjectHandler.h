@@ -35,6 +35,7 @@ namespace Deltares::Probabilistic::Test
         static void TestRunProject();
     private:
         static void LinearZ(Models::ModelSampleStruct* sample);
+        static void LinearZmulti(Models::ModelSampleStruct* sample, int sampleCount);
     };
 }
 

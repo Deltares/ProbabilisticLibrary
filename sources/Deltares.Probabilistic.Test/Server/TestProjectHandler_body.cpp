@@ -142,11 +142,20 @@ namespace Deltares::Probabilistic::Test
         sample->Z = sample->Values[0] - sample->Values[1];
     }
 
+    void TestProjectHandler::LinearZmulti(Models::ModelSampleStruct* samples, int sampleCount)
+    {
+        for (int i = 0; i < sampleCount; i++)
+        {
+            LinearZ(&samples[i]);
+        }
+    }
+
     void TestProjectHandler::TestRunProject()
     {
         auto handler = Server::ProjectHandler();
         const auto id1 = handler.Create("run_project");
         handler.SetModelSampleCallBack(id1, "model", LinearZ);
+        handler.SetMultipleModelSampleCallBack(id1, "model", LinearZmulti);
 
         const auto id2 = handler.Create("stochast");
         const auto id3 = handler.Create("stochast");
