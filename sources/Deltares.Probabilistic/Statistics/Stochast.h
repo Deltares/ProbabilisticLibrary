@@ -22,6 +22,7 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <map>
 
 #include "BaseStochast.h"
 #include "StochastProperties.h"
@@ -68,7 +69,7 @@ namespace Deltares::Statistics
          */
         void validate(Logging::ValidationReport& report, int arrayIndex);
 
-        static const std::vector<std::pair<const char*, DistributionType>> allDistributions;
+        static const std::map<std::string, DistributionType> allDistributions;
 
     protected:
         std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();

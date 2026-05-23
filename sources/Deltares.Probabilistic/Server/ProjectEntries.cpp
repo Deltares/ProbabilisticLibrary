@@ -26,7 +26,7 @@ namespace Deltares::Server
 {
     using enum ObjectType;
 
-    const std::vector<std::pair<const char*, ObjectType>> ProjectEntries::allEntries = {
+    const std::map<std::string, ObjectType> ProjectEntries::all_entries = {
         {"standard_normal", StandardNormal},
         {"probability_value", ProbabilityValue},
         {"message", Message},
@@ -75,26 +75,17 @@ namespace Deltares::Server
 
     ObjectType ProjectEntries::GetType(const std::string& object_type)
     {
-        for (const auto& [name, type] : allEntries)
+        const auto it = all_entries.find(object_type);
+        if (it != all_entries.end())
         {
-            if (name == object_type)
-            {
-                return type;
-            }
+            return it->second;
         }
         throw Reliability::probLibException("type not supported: " + object_type);
     }
 
     bool ProjectEntries::CanHandle(const std::string& object_type)
     {
-        for (const auto& [name, type] : allEntries)
-        {
-            if (name == object_type)
-            {
-                return true;
-            }
-        }
-        return false;
+        return all_entries.contains(object_type);
     }
 
 }

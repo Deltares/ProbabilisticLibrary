@@ -22,8 +22,8 @@
 
 #pragma once
 
+#include <map>
 #include <string>
-#include <vector>
 
 namespace Deltares::Server
 {
@@ -74,12 +74,27 @@ namespace Deltares::Server
         ConvergenceReport,
     };
 
+    /// <summary>
+    /// Helper class for ProjectHandler
+    /// </summary>
     class ProjectEntries
     {
     public:
+        /// <summary>
+        /// Checks whether the object_type is available
+        /// </summary>
+        /// <param name="object_type"> string in lower case with object name </param>
+        /// <returns> true if available </returns>
         static bool CanHandle(const std::string& object_type);
+
+        /// <summary>
+        /// convert string to enum ObjectType
+        /// </summary>
+        /// <param name="object_type"> string in lower case with object name </param>
+        /// <returns> enum corresponding with name </returns>
+        /// <exception cref="probLibException"> object name not available </exception>
         static ObjectType GetType(const std::string& object_type);
     private:
-        static const std::vector<std::pair<const char*, ObjectType>> allEntries;
+        static const std::map<std::string, ObjectType> all_entries;
     };
 }
