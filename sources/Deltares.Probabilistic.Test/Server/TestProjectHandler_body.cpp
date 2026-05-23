@@ -252,5 +252,30 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id1);
     }
 
+    void TestProjectHandler::TestProjectEntries()
+    {
+        using namespace Server;
+        using enum ObjectType;
+
+        bool found_entry = ProjectEntries::CanHandle("message");
+        EXPECT_TRUE(found_entry);
+        bool missing_entry = ProjectEntries::CanHandle("MESSAGE");
+        EXPECT_FALSE(missing_entry);
+
+        ObjectType type = ProjectEntries::GetType("stochast");
+        EXPECT_EQ(type, Stochast);
+
+        std::string error_message;
+        try
+        {
+            ProjectEntries::GetType("STOCHAST");
+        }
+        catch (const Reliability::probLibException& e)
+        {
+            error_message = e.what();
+        }
+        EXPECT_EQ(error_message, "type not supported: STOCHAST");
+    }
+
 }
 

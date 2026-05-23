@@ -1404,3 +1404,8 @@ TEST(UnitTests, testProjectHandlerReliabilityProject)
 {
     Deltares::Probabilistic::Test::TestProjectHandler::TestReliabilityProject();
 }
+
+TEST(UnitTests, testProjectEntries)
+{
+    Deltares::Probabilistic::Test::TestProjectHandler::TestProjectEntries();
+}
