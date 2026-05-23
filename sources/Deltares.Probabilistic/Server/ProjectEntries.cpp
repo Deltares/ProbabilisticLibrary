@@ -26,7 +26,7 @@ namespace Deltares::Server
 {
     using enum ObjectType;
 
-    const std::map<std::string, ObjectType> ProjectEntries::all_entries = {
+    const std::map<std::string, ObjectType,std::less<>> ProjectEntries::all_entries = {
         {"standard_normal", StandardNormal},
         {"probability_value", ProbabilityValue},
         {"message", Message},

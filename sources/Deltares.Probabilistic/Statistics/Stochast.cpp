@@ -766,7 +766,7 @@ namespace Deltares::Statistics
         }
     }
 
-    const std::map<std::string, DistributionType> Stochast::allDistributions = {
+    const std::map<std::string, DistributionType,std::less<>> Stochast::all_distributions = {
             {"deterministic", Deterministic},
             {"normal", Normal },
             {"log_normal", LogNormal },
@@ -798,8 +798,8 @@ namespace Deltares::Statistics
 
     DistributionType Stochast::getDistributionType(const std::string& distributionType)
     {
-        const auto it = allDistributions.find(distributionType);
-        if (it != allDistributions.end())
+        const auto it = all_distributions.find(distributionType);
+        if (it != all_distributions.end())
         {
             return it->second;
         }
@@ -808,7 +808,7 @@ namespace Deltares::Statistics
 
     std::string Stochast::getDistributionTypeString(DistributionType distributionType)
     {
-        for (const auto& [name, type] : allDistributions)
+        for (const auto& [name, type] : all_distributions)
         {
             if (type == distributionType)
             {

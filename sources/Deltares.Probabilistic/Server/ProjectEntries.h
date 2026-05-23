@@ -95,6 +95,6 @@ namespace Deltares::Server
         /// <exception cref="probLibException"> object name not available </exception>
         static ObjectType GetType(const std::string& object_type);
     private:
-        static const std::map<std::string, ObjectType> all_entries;
+        static const std::map<std::string, ObjectType, std::less<>> all_entries;
     };
 }

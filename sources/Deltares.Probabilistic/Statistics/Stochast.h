@@ -69,7 +69,7 @@ namespace Deltares::Statistics
          */
         void validate(Logging::ValidationReport& report, int arrayIndex);
 
-        static const std::map<std::string, DistributionType> allDistributions;
+        static const std::map<std::string, DistributionType,std::less<>> all_distributions;
 
     protected:
         std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
