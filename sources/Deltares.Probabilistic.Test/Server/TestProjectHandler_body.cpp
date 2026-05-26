@@ -202,6 +202,9 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id1);
     }
 
+    /// <summary>
+    /// Test reliability project with default settings
+    /// </summary>
     void TestProjectHandler::TestReliabilityProject()
     {
         auto handler = Server::ProjectHandler();
@@ -243,6 +246,69 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(x1_through_server, 2.0, 1e-4);
         EXPECT_NEAR(x2_through_server, 2.0, 1e-4);
 
+        handler.Destroy(id7);
+        handler.Destroy(id6);
+        handler.Destroy(id5);
+        handler.Destroy(id4);
+        handler.Destroy(id3);
+        handler.Destroy(id2);
+        handler.Destroy(id1);
+    }
+
+    /// <summary>
+    /// Test reliability project with default settings, except for the reliability method: now Crude Monte Carlo
+    /// </summary>
+    void TestProjectHandler::TestReliabilityProjectCM()
+    {
+        auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("project"));
+        ASSERT_TRUE(handler.CanHandle("stochast"));
+        ASSERT_TRUE(handler.CanHandle("copula_correlation"));
+        ASSERT_TRUE(handler.CanHandle("settings"));
+        const auto id1 = handler.Create("project");
+        handler.SetModelSampleCallBack(id1, "model", LinearZ);
+        handler.SetMultipleModelSampleCallBack(id1, "model", LinearZmulti);
+
+        const auto id2 = handler.Create("stochast");
+        const auto id3 = handler.Create("stochast");
+
+        handler.SetStringValue(id2, "distribution", "normal");
+        handler.SetValue(id2, "mean", 3.0);
+        handler.SetValue(id2, "deviation", 1.0);
+        handler.SetStringValue(id3, "distribution", "normal");
+        handler.SetValue(id3, "mean", 1.0);
+        handler.SetValue(id3, "deviation", 1.0);
+
+        const auto id4 = handler.Create("copula_correlation");
+
+        std::vector values = { id2, id3 };
+        handler.SetArrayIntValue(id1, "variables", values.data(), static_cast<int>(values.size()));
+        handler.SetIntValue(id1, "copula_correlation", id4);
+
+        const auto id5 = handler.Create("settings");
+        std::string default_method = handler.GetStringValue(id5, "reliability_method");
+        EXPECT_EQ(default_method, "form");
+        handler.SetStringValue(id5, "reliability_method", "crude_monte_carlo");
+        std::string current_method = handler.GetStringValue(id5, "reliability_method");
+        EXPECT_EQ(current_method, "crude_monte_carlo");
+        handler.SetIntValue(id1, "settings", id5);
+
+        handler.Execute(id1, "run");
+
+        const int id6 = handler.GetIdValue(id1, "design_point");
+        const int id7 = handler.GetIndexedIdValue(id6, "alphas", 0);
+        const int id8 = handler.GetIndexedIdValue(id6, "alphas", 1);
+
+        const double beta_through_server = handler.GetValue(id6, "beta");
+        constexpr double beta_expected = 1.456;
+        EXPECT_NEAR(beta_expected, beta_through_server, 1e-3);
+
+        const double x1_through_server = handler.GetValue(id7, "x");
+        const double x2_through_server = handler.GetValue(id8, "x");
+        EXPECT_NEAR(x1_through_server, 2.00, 1e-2);
+        EXPECT_NEAR(x2_through_server, 2.06, 1e-2);
+
+        handler.Destroy(id8);
         handler.Destroy(id7);
         handler.Destroy(id6);
         handler.Destroy(id5);

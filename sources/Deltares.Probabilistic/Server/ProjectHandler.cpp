@@ -1809,7 +1809,7 @@ namespace Deltares::Server
         }
         else if (IsStochast(objectType))
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetStochast(id);
+            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "distribution") stochast->setDistributionType(Stochast::getDistributionType(value));
             else if (property_ == "constant_parameter") stochast->constantParameterType = Stochast::getConstantParameterType(value);
