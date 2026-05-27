@@ -10,7 +10,7 @@ Examples
      <div class="psl-hero-badge">Examples &amp; Community</div>
      <p class="psl-section-title">Real-World Applications</p>
      <p class="psl-section-sub">
-       Go beyond tutorials. Explore end-to-end case studies from the Deltares team
+       Go beyond tutorials. Explore case studies from the Deltares team
        and see how the community is applying the suite to real engineering problems.
      </p>
    </div>
