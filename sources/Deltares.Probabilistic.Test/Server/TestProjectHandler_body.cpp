@@ -318,6 +318,65 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id1);
     }
 
+    /// <summary>
+    /// Test reliability project with default settings, except for the reliability method: now Crude Monte Carlo
+    /// </summary>
+    void TestProjectHandler::TestSensitivityProject()
+    {
+        auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("sensitivity_project"));
+        ASSERT_TRUE(handler.CanHandle("stochast"));
+        ASSERT_TRUE(handler.CanHandle("copula_correlation"));
+        ASSERT_TRUE(handler.CanHandle("settings"));
+        const auto id1 = handler.Create("sensitivity_project");
+        handler.SetModelSampleCallBack(id1, "model", LinearZ);
+        handler.SetMultipleModelSampleCallBack(id1, "model", LinearZmulti);
+
+        const auto id2 = handler.Create("stochast");
+        const auto id3 = handler.Create("stochast");
+
+        handler.SetStringValue(id2, "distribution", "normal");
+        handler.SetValue(id2, "mean", 3.0);
+        handler.SetValue(id2, "deviation", 1.0);
+        handler.SetStringValue(id3, "distribution", "normal");
+        handler.SetValue(id3, "mean", 1.0);
+        handler.SetValue(id3, "deviation", 1.0);
+
+        const auto id4 = handler.Create("copula_correlation");
+
+        std::vector values = { id2, id3 };
+        handler.SetArrayIntValue(id1, "variables", values.data(), static_cast<int>(values.size()));
+        handler.SetIntValue(id1, "copula_correlation", id4);
+
+        const auto id5 = handler.Create("sensitivity_settings");
+        handler.SetStringValue(id5, "sensitivity_method", "single_variation");
+        handler.SetValue(id5, "low_value", 0.02);
+        handler.SetValue(id5, "high_value", 0.98);
+        handler.SetIntValue(id1, "settings", id5);
+
+        handler.Execute(id1, "run");
+
+        const int id6 = handler.GetIdValue(id1, "result");
+        const int id7 = handler.GetIndexedIdValue(id6, "values", 0);
+        const int id8 = handler.GetIndexedIdValue(id6, "values", 1);
+
+        const double low1_through_server = handler.GetValue(id7, "low");
+        const double medium2_through_server = handler.GetValue(id8, "medium");
+        const double high2_through_server = handler.GetValue(id8, "high");
+        EXPECT_NEAR(low1_through_server, -0.0537, 1e-4);
+        EXPECT_NEAR(medium2_through_server, 2.0, 1e-2);
+        EXPECT_NEAR(high2_through_server, -0.0537, 1e-4);
+
+        handler.Destroy(id8);
+        handler.Destroy(id7);
+        handler.Destroy(id6);
+        handler.Destroy(id5);
+        handler.Destroy(id4);
+        handler.Destroy(id3);
+        handler.Destroy(id2);
+        handler.Destroy(id1);
+    }
+
     void TestProjectHandler::TestProjectEntries()
     {
         using namespace Server;
