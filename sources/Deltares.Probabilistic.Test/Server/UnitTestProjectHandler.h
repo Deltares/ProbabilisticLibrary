@@ -31,6 +31,7 @@ namespace Deltares::Probabilistic::Test
         static void TestProbabilityValue();
         static void TestStochast();
         static void TestCopula();
+        static void TestSettings();
         static void TestProjectEntries();
     };
 }

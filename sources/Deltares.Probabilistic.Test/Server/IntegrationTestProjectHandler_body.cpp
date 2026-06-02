@@ -23,8 +23,6 @@
 #include "IntegrationTestProjectHandler.h"
 #include "../../Deltares.Probabilistic/Server/ProjectHandler.h"
 #include "../../Deltares.Probabilistic/Math/RandomValueGenerator.h"
-#include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
-#include "../../Deltares.Probabilistic/Statistics/CorrelationValueAndType.h"
 
 #include <numbers>
 #include <gtest/gtest.h>
@@ -172,11 +170,7 @@ namespace Deltares::Probabilistic::Test
         handler.SetIntValue(id1, "copula_correlation", id4);
 
         const auto id5 = handler.Create("settings");
-        std::string default_method = handler.GetStringValue(id5, "reliability_method");
-        EXPECT_EQ(default_method, "form");
         handler.SetStringValue(id5, "reliability_method", "crude_monte_carlo");
-        std::string current_method = handler.GetStringValue(id5, "reliability_method");
-        EXPECT_EQ(current_method, "crude_monte_carlo");
         handler.SetIntValue(id1, "settings", id5);
 
         handler.Execute(id1, "run");

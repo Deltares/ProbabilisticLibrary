@@ -145,6 +145,19 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id1);
     }
 
+    void UnitTestProjectHandler::TestSettings()
+    {
+        auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("settings"));
+        const auto id1 = handler.Create("settings");
+        std::string default_method = handler.GetStringValue(id1, "reliability_method");
+        EXPECT_EQ(default_method, "form");
+        handler.SetStringValue(id1, "reliability_method", "crude_monte_carlo");
+        std::string current_method = handler.GetStringValue(id1, "reliability_method");
+        EXPECT_EQ(current_method, "crude_monte_carlo");
+        handler.Destroy(id1);
+    }
+
     void UnitTestProjectHandler::TestProjectEntries()
     {
         using namespace Server;
