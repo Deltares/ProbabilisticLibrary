@@ -64,7 +64,8 @@
 #include "Reliability/Waarts/TestWaartsSeriesSystem.h"
 #include "Reliability/Waarts/TestWaartsParallelSystem.h"
 #include "Reliability/Waarts/TestWaartsResistance25QuadraticTermsSparse.h"
-#include "Server/TestProjectHandler.h"
+#include "Server/UnitTestProjectHandler.h"
+#include "Server/IntegrationTestProjectHandler.h"
 
 int main(int argc, char** argv)
 {
@@ -1372,50 +1373,50 @@ TEST(WaartsTests, testResistance25QuadraticTermsSparseDSFI)
 
 TEST(UnitTests, testProjectHandlerGetSetMessage)
 {
-    Deltares::Probabilistic::Test::TestProjectHandler::TestSetAndGetMessage();
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestSetAndGetMessage();
 }
 
 TEST(UnitTests, testProjectHandlerStandardNormal)
 {
-    Deltares::Probabilistic::Test::TestProjectHandler::TestStandardNormal();
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestStandardNormal();
 }
 
 TEST(UnitTests, testProjectHandlerProbabilityValue)
 {
-    Deltares::Probabilistic::Test::TestProjectHandler::TestProbabilityValue();
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProbabilityValue();
 }
 
 TEST(UnitTests, testProjectHandlerStochast)
 {
-    Deltares::Probabilistic::Test::TestProjectHandler::TestStochast();
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestStochast();
 }
 
 TEST(UnitTests, testProjectHandlerCopula)
 {
-    Deltares::Probabilistic::Test::TestProjectHandler::TestCopula();
-}
-
-TEST(UnitTests, testProjectHandlerRunProject)
-{
-    Deltares::Probabilistic::Test::TestProjectHandler::TestRunProject();
-}
-
-TEST(UnitTests, testProjectHandlerReliabilityProject)
-{
-    Deltares::Probabilistic::Test::TestProjectHandler::TestReliabilityProject();
-}
-
-TEST(UnitTests, testProjectHandlerReliabilityProjectCM)
-{
-    Deltares::Probabilistic::Test::TestProjectHandler::TestReliabilityProjectCM();
-}
-
-TEST(UnitTests, testProjectHandlerSensitivityProject)
-{
-    Deltares::Probabilistic::Test::TestProjectHandler::TestSensitivityProject();
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestCopula();
 }
 
 TEST(UnitTests, testProjectEntries)
 {
-    Deltares::Probabilistic::Test::TestProjectHandler::TestProjectEntries();
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();
+}
+
+TEST(IntegrationTests, testProjectHandlerRunProject)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProject();
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityProject)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProject();
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectCM)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProjectCM();
+}
+
+TEST(IntegrationTests, testProjectHandlerSensitivityProject)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestSensitivityProject();
 }

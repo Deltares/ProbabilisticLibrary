@@ -19,27 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "../../Deltares.Probabilistic/Model/ModelSampleStruct.h"
-
-namespace Deltares::Probabilistic::Test
-{
-    class TestProjectHandler
-    {
-    public:
-        static void TestSetAndGetMessage();
-        static void TestStandardNormal();
-        static void TestProbabilityValue();
-        static void TestStochast();
-        static void TestCopula();
-        static void TestRunProject();
-        static void TestReliabilityProject();
-        static void TestReliabilityProjectCM();
-        static void TestSensitivityProject();
-        static void TestProjectEntries();
-    private:
-        static void LinearZ(Models::ModelSampleStruct* sample);
-        static void LinearZmulti(Models::ModelSampleStruct* sample, int sampleCount);
-    };
-}
+#include "pch.h"
+#include "IntegrationTestProjectHandler_body.cpp"
 
