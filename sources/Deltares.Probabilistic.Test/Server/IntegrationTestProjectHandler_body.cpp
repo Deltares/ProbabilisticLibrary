@@ -199,7 +199,7 @@ namespace Deltares::Probabilistic::Test
     }
 
     /// <summary>
-    /// Test reliability project with default settings, except for the reliability method: now Crude Monte Carlo
+    /// Test sensitivity project with default settings
     /// </summary>
     void IntegrationTestProjectHandler::TestSensitivityProject()
     {
@@ -257,5 +257,52 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id1);
     }
 
+    /// <summary>
+    /// Test uncertainty project with FORM
+    /// </summary>
+    void IntegrationTestProjectHandler::TestUncertaintyProject()
+    {
+        auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("uncertainty_project"));
+        ASSERT_TRUE(handler.CanHandle("stochast"));
+        ASSERT_TRUE(handler.CanHandle("copula_correlation"));
+        ASSERT_TRUE(handler.CanHandle("uncertainty_settings"));
+        const auto id1 = handler.Create("uncertainty_project");
+        handler.SetModelSampleCallBack(id1, "model", LinearZ);
+        handler.SetMultipleModelSampleCallBack(id1, "model", LinearZmulti);
+
+        const auto id2 = handler.Create("stochast");
+        const auto id3 = handler.Create("stochast");
+
+        handler.SetStringValue(id2, "distribution", "normal");
+        handler.SetValue(id2, "mean", 3.0);
+        handler.SetValue(id2, "deviation", 1.0);
+        handler.SetStringValue(id3, "distribution", "normal");
+        handler.SetValue(id3, "mean", 1.0);
+        handler.SetValue(id3, "deviation", 1.0);
+
+        const auto id4 = handler.Create("copula_correlation");
+
+        std::vector values = { id2, id3 };
+        handler.SetArrayIntValue(id1, "variables", values.data(), static_cast<int>(values.size()));
+        handler.SetIntValue(id1, "copula_correlation", id4);
+
+        const auto id5 = handler.Create("uncertainty_settings");
+        handler.SetStringValue(id5, "uncertainty_method", "form");
+        handler.SetIntValue(id1, "settings", id5);
+
+        handler.Execute(id1, "run");
+
+        const int id6 = handler.GetIndexedIdValue(id1, "uncertainty_stochasts", 0);
+        const auto distribution_name = handler.GetStringValue(id6, "distribution");
+        EXPECT_EQ("cdf_curve", distribution_name);
+
+        handler.Destroy(id6);
+        handler.Destroy(id5);
+        handler.Destroy(id4);
+        handler.Destroy(id3);
+        handler.Destroy(id2);
+        handler.Destroy(id1);
+    }
 }
 

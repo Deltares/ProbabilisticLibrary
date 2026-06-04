@@ -1425,3 +1425,8 @@ TEST(IntegrationTests, testProjectHandlerSensitivityProject)
 {
     Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestSensitivityProject();
 }
+
+TEST(IntegrationTests, testProjectHandlerUncertaintyProject)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestUncertaintyProject();
+}
