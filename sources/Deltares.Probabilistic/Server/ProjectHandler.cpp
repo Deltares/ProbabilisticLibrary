@@ -293,7 +293,7 @@ namespace Deltares::Server
             else if (property_ == "probability_of_non_failure") return probabilityValue->getProbabilityOfNonFailure();
             else if (property_ == "return_period") return probabilityValue->getReturnPeriod();
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -537,7 +537,7 @@ namespace Deltares::Server
             else if (property_ == "probability_of_non_failure") probabilityValue->setProbabilityOfNonFailure(value);
             else if (property_ == "return_period") probabilityValue->setReturnPeriod(value);
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -772,7 +772,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -832,7 +832,7 @@ namespace Deltares::Server
             else if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
             else if (property_ == "messages_count") return static_cast<int>(result->messages.size());
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -994,13 +994,13 @@ namespace Deltares::Server
 
         int newId = this->GetNewId();
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
             if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
         }
-        else if (IsModelSettingsType(objectType))
+        else if (ProjectEntries::IsModelSettingsType(objectType))
         {
             std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
 
@@ -1034,7 +1034,7 @@ namespace Deltares::Server
 
             if (property_ == "result") return GetSensitivityResultId(project->sensitivityResult, newId);
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -1178,7 +1178,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -1225,7 +1225,7 @@ namespace Deltares::Server
             if (property_ == "index") parameter->index = value;
             else if (property_ == "array_size") parameter->arraySize = value;
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -1407,13 +1407,13 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
             if (property_ == "is_valid") return project->isValid();
         }
-        else if (IsModelSettingsType(objectType))
+        else if (ProjectEntries::IsModelSettingsType(objectType))
         {
             std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
 
@@ -1440,7 +1440,7 @@ namespace Deltares::Server
             else if (property_ == "fixed") return fragilityCurve->fixed;
         }
 
-        if (IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -1555,13 +1555,13 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
             if (property_ == "callback_assigned") if (project->model != nullptr) project->model->callbackAssigned = value;
         }
-        else if (IsModelSettingsType(objectType))
+        else if (ProjectEntries::IsModelSettingsType(objectType))
         {
             std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
 
@@ -1573,7 +1573,7 @@ namespace Deltares::Server
             else if (property_ == "use_z_from_sample") settings->RunSettings->UseZFromSample = value;
             else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -1670,7 +1670,7 @@ namespace Deltares::Server
 
             if (property_ == "name") return parameter->name;
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -1807,7 +1807,7 @@ namespace Deltares::Server
             else if (property_ == "text") message->Text = value;
             else if (property_ == "subject") message->Subject = value;
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -1921,7 +1921,7 @@ namespace Deltares::Server
 
             if (property_ == "identifier") designPoint->Identifier = value;
         }
-        else if (IsModelProjectType(objectType))
+        else if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -1933,7 +1933,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -1972,7 +1972,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -2003,7 +2003,7 @@ namespace Deltares::Server
             }
         }
 
-        if (IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -2230,7 +2230,7 @@ namespace Deltares::Server
             else if (property_ == "t_from_u") return StandardNormal::getTFromU(argument);
             else if (property_ == "u_from_t") return StandardNormal::getUFromT(argument);
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -2250,7 +2250,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -2262,7 +2262,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             if (property_ == "special_values")
             {
@@ -2378,7 +2378,7 @@ namespace Deltares::Server
         ObjectType objectType = types[id];
         int newId = this->GetNewId();
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -2391,7 +2391,7 @@ namespace Deltares::Server
 
             if (property_ == "messages") return GetMessageId(validationReport->messages[index], newId);
         }
-        else if (IsStochast(objectType))
+        else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -2475,7 +2475,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -2487,7 +2487,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -2507,7 +2507,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -2536,7 +2536,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -2554,7 +2554,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -2574,7 +2574,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -2594,7 +2594,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = types[id];
 
-        if (IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -2635,7 +2635,7 @@ namespace Deltares::Server
 
             if (method_ == "resolve_conflicting_correlations") matrix->resolveConflictingCorrelations();
         }
-        else if (IsModelProjectType(objectType))
+        else if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -3115,27 +3115,5 @@ namespace Deltares::Server
         }
     }
 
-
-    bool ProjectHandler::IsModelProjectType(ObjectType objectType)
-    {
-        return objectType == ObjectType::Project ||
-            objectType == ObjectType::RunProject ||
-            objectType == ObjectType::UncertaintyProject ||
-            objectType == ObjectType::SensitivityProject;
-    }
-
-    bool ProjectHandler::IsModelSettingsType(ObjectType objectType)
-    {
-        return objectType == ObjectType::Settings ||
-            objectType == ObjectType::RunProjectSettings ||
-            objectType == ObjectType::UncertaintySettings ||
-            objectType == ObjectType::SensitivitySettings;
-    }
-
-    bool ProjectHandler::IsStochast(ObjectType objectType)
-    {
-        return objectType == ObjectType::Stochast ||
-            objectType == ObjectType::FragilityCurve;
-    }
 }
 

@@ -94,6 +94,9 @@ namespace Deltares::Server
         /// <returns> enum corresponding with name </returns>
         /// <exception cref="probLibException"> object name not available </exception>
         static ObjectType GetType(const std::string& object_type);
+        static bool IsModelProjectType(ObjectType objectType);
+        static bool IsModelSettingsType(ObjectType objectType);
+        static bool IsStochast(ObjectType objectType);
     private:
         static const std::map<std::string, ObjectType, std::less<>> all_entries;
     };
