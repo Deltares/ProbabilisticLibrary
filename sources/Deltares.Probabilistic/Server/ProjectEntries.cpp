@@ -88,26 +88,26 @@ namespace Deltares::Server
         return all_entries.contains(object_type);
     }
 
-    bool ProjectEntries::IsModelProjectType(ObjectType objectType)
+    bool ProjectEntries::IsModelProjectType(ObjectType object_type)
     {
-        return objectType == Project ||
-            objectType == RunProject ||
-            objectType == UncertaintyProject ||
-            objectType == SensitivityProject;
+        return object_type == Project ||
+            object_type == RunProject ||
+            object_type == UncertaintyProject ||
+            object_type == SensitivityProject;
     }
 
-    bool ProjectEntries::IsModelSettingsType(ObjectType objectType)
+    bool ProjectEntries::IsModelSettingsType(ObjectType object_type)
     {
-        return objectType == Settings ||
-            objectType == RunProjectSettings ||
-            objectType == UncertaintySettings ||
-            objectType == SensitivitySettings;
+        return object_type == Settings ||
+            object_type == RunProjectSettings ||
+            object_type == UncertaintySettings ||
+            object_type == SensitivitySettings;
     }
 
-    bool ProjectEntries::IsStochast(ObjectType objectType)
+    bool ProjectEntries::IsStochast(ObjectType object_type)
     {
-        return objectType == Stochast ||
-            objectType == FragilityCurve;
+        return object_type == Stochast ||
+            object_type == FragilityCurve;
     }
 
 }

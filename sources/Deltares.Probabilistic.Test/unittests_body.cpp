@@ -1406,6 +1406,21 @@ TEST(UnitTests, testProjectEntries)
     Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();
 }
 
+TEST(UnitTests, testProjectEntriesIsModelProject)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsStochast();
+}
+
+TEST(UnitTests, testProjectEntriesIsModelSettingsType)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();
+}
+
+TEST(UnitTests, testProjectEntriesIsStochast)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsStochast();
+}
+
 TEST(IntegrationTests, testProjectHandlerRunProject)
 {
     Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProject();
