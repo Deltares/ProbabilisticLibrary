@@ -42,6 +42,16 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
+    void IntegrationTestProjectHandler::Zvalues(double* data, int size, double* outputValues)
+    {
+        outputValues[0] = data[0];
+        outputValues[1] = data[1];
+        outputValues[2] = data[0] - data[1];
+    }
+
+    /// <summary>
+    /// Test run project
+    /// </summary>
     void IntegrationTestProjectHandler::TestRunProject()
     {
         auto handler = Server::ProjectHandler();
@@ -304,5 +314,66 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id2);
         handler.Destroy(id1);
     }
+
+    /// <summary>
+    /// Test run project with multiple output
+    /// </summary>
+    void IntegrationTestProjectHandler::TestRunProjectMultipleOutput()
+    {
+        auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("run_project"));
+        ASSERT_TRUE(handler.CanHandle("stochast"));
+        ASSERT_TRUE(handler.CanHandle("model_parameter"));
+        const auto id1 = handler.Create("run_project");
+        handler.SetCallBack(id1, "model", Zvalues);
+
+        const auto id2 = handler.Create("stochast");
+        const auto id3 = handler.Create("stochast");
+
+        auto random = Numeric::RandomValueGenerator();
+        random.initialize(true, 1234);
+        const double determinist1 = random.next();
+        const double determinist2 = random.next();
+
+        handler.SetStringValue(id2, "distribution", "deterministic");
+        handler.SetValue(id2, "mean", determinist1);
+        handler.SetStringValue(id3, "distribution", "deterministic");
+        handler.SetValue(id3, "mean", determinist2);
+
+        const auto id4 = handler.Create("copula_correlation");
+
+        std::vector values = { id2, id3 };
+        handler.SetArrayIntValue(id1, "variables", values.data(), static_cast<int>(values.size()));
+        handler.SetIntValue(id1, "copula_correlation", id4);
+
+        const auto id5 = handler.Create("model_parameter");
+        const auto id6 = handler.Create("model_parameter");
+        const auto id7 = handler.Create("model_parameter");
+        std::vector params = { id5, id6, id7 };
+        handler.SetArrayIntValue(id1, "output_parameters", params.data(), static_cast<int>(params.size()));
+
+        handler.Execute(id1, "run");
+
+        const int id8 = handler.GetIdValue(id1, "realization");
+
+        const double out0 = handler.GetIndexedValue(id8, "output_values", 0);
+        const double out1 = handler.GetIndexedValue(id8, "output_values", 1);
+        const double out2 = handler.GetIndexedValue(id8, "output_values", 2);
+
+        const double out2_expected = determinist1 - determinist2;
+        EXPECT_NEAR(out2_expected, out2, 1e-12);
+        EXPECT_EQ(out0, determinist1);
+        EXPECT_EQ(out1, determinist2);
+
+        handler.Destroy(id8);
+        handler.Destroy(id7);
+        handler.Destroy(id6);
+        handler.Destroy(id5);
+        handler.Destroy(id4);
+        handler.Destroy(id3);
+        handler.Destroy(id2);
+        handler.Destroy(id1);
+    }
+
 }
 

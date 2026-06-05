@@ -1445,3 +1445,8 @@ TEST(IntegrationTests, testProjectHandlerUncertaintyProject)
 {
     Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestUncertaintyProject();
 }
+
+TEST(IntegrationTests, testProjectHandlerRunProjectMultipleOutput)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProjectMultipleOutput();
+}
