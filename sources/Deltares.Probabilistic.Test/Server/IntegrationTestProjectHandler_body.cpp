@@ -375,5 +375,84 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id1);
     }
 
+    /// <summary>
+    /// Test combine project with default settings
+    /// design points are a result of two reliability projects
+    /// </summary>
+    void IntegrationTestProjectHandler::TestCombineProject()
+    {
+        auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("combine_project"));
+        ASSERT_TRUE(handler.CanHandle("project"));
+        ASSERT_TRUE(handler.CanHandle("stochast"));
+        ASSERT_TRUE(handler.CanHandle("copula_correlation"));
+
+        const auto id1 = handler.Create("combine_project");
+        const auto id2 = handler.Create("project");
+        const auto id3 = handler.Create("project");
+        handler.SetModelSampleCallBack(id2, "model", LinearZ);
+        handler.SetMultipleModelSampleCallBack(id2, "model", LinearZmulti);
+        handler.SetModelSampleCallBack(id3, "model", LinearZ);
+        handler.SetMultipleModelSampleCallBack(id3, "model", LinearZmulti);
+
+        const auto id4 = handler.Create("stochast"); // for reliability project ids 2 and 3
+        const auto id5 = handler.Create("stochast"); // for reliability project id 2
+        const auto id6 = handler.Create("stochast"); // for reliability project id 3
+
+        handler.SetStringValue(id4, "distribution", "normal");
+        handler.SetValue(id4, "mean", 3.0);
+        handler.SetValue(id4, "deviation", 1.0);
+        handler.SetStringValue(id5, "distribution", "normal");
+        handler.SetValue(id5, "mean", 1.0);
+        handler.SetValue(id5, "deviation", 1.0);
+        handler.SetStringValue(id6, "distribution", "normal");
+        handler.SetValue(id6, "mean", 1.0);
+        handler.SetValue(id6, "deviation", 1.0);
+
+        const auto id7 = handler.Create("copula_correlation");
+        const auto id8 = handler.Create("copula_correlation");
+
+        std::vector values2 = { id4, id5 };
+        handler.SetArrayIntValue(id2, "variables", values2.data(), static_cast<int>(values2.size()));
+        handler.SetIntValue(id2, "copula_correlation", id7);
+
+        std::vector values3 = { id4, id6 };
+        handler.SetArrayIntValue(id3, "variables", values3.data(), static_cast<int>(values3.size()));
+        handler.SetIntValue(id3, "copula_correlation", id8);
+
+        handler.Execute(id2, "run");
+        handler.Execute(id3, "run");
+
+        const int id9 = handler.GetIdValue(id2, "design_point");
+        const int id10 = handler.GetIdValue(id3, "design_point");
+
+        std::vector values1 = { id9, id10 };
+        handler.SetArrayIntValue(id1, "design_points", values1.data(), static_cast<int>(values1.size()));
+        handler.Execute(id1, "run");
+        const int id11 = handler.GetIdValue(id1, "design_point");
+        const double beta_through_server = handler.GetValue(id11, "beta");
+        EXPECT_NEAR(beta_through_server, 1.1066, 1e-4);
+        std::vector ref_alpha = { 0.815495, -0.40925, -0.40925 };
+        for (int i = 0; i < 3; i++)
+        {
+            const int id = handler.GetIndexedIdValue(id11, "alphas", i);
+            const double alpha_through_server = handler.GetValue(id, "alpha");
+            EXPECT_NEAR(alpha_through_server, ref_alpha[i], 1e-4);
+            handler.Destroy(id);
+        }
+
+        handler.Destroy(id11);
+        handler.Destroy(id10);
+        handler.Destroy(id9);
+        handler.Destroy(id8);
+        handler.Destroy(id7);
+        handler.Destroy(id6);
+        handler.Destroy(id5);
+        handler.Destroy(id4);
+        handler.Destroy(id3);
+        handler.Destroy(id2);
+        handler.Destroy(id1);
+    }
+
 }
 

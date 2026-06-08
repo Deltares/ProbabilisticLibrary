@@ -1450,3 +1450,8 @@ TEST(IntegrationTests, testProjectHandlerRunProjectMultipleOutput)
 {
     Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProjectMultipleOutput();
 }
+
+TEST(IntegrationTests, testProjectHandlerCombine)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestCombineProject();
+}
