@@ -111,8 +111,8 @@ namespace Deltares::Server
         int GetContributingStochastId(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, int newId);
         int GetConditionalValueId(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, int newId);
         int GetEvaluationId(const std::shared_ptr<Models::Evaluation>& evaluation, int newId);
-        int GetReliabilityResultId(const std::shared_ptr<Deltares::Reliability::ReliabilityResult>& result, int newId);
-        int GetMessageId(const std::shared_ptr<Deltares::Logging::Message>& message, int newId);
+        int GetReliabilityResultId(const std::shared_ptr<Reliability::ReliabilityResult>& result, int newId);
+        int GetMessageId(const std::shared_ptr<Logging::Message>& message, int newId);
         int GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId);
 
         std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
