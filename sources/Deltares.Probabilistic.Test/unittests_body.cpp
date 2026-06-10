@@ -1455,3 +1455,8 @@ TEST(IntegrationTests, testProjectHandlerCombine)
 {
     Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestCombineProject();
 }
+
+TEST(IntegrationTests, testProjectHandlerReliabilityZValues)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProjectZValues();
+}

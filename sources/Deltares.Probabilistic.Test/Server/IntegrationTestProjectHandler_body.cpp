@@ -49,6 +49,14 @@ namespace Deltares::Probabilistic::Test
         outputValues[2] = data[0] - data[1];
     }
 
+    void IntegrationTestProjectHandler::ZvaluesMulti(int arraySize, double** data, int inputSize, double** outputValues)
+    {
+        for (int i = 0; i < arraySize; i++)
+        {
+            Zvalues(data[i], inputSize, outputValues[i]);
+        }
+    }
+
     /// <summary>
     /// Test run project
     /// </summary>
@@ -453,6 +461,77 @@ namespace Deltares::Probabilistic::Test
         handler.Destroy(id2);
         handler.Destroy(id1);
     }
+
+    /// <summary>
+    /// Test reliability project with limit state function with multiple output values
+    /// </summary>
+    void IntegrationTestProjectHandler::TestReliabilityProjectZValues()
+    {
+        auto handler = Server::ProjectHandler();
+        ASSERT_TRUE(handler.CanHandle("project"));
+        ASSERT_TRUE(handler.CanHandle("stochast"));
+        ASSERT_TRUE(handler.CanHandle("copula_correlation"));
+        const auto id1 = handler.Create("project");
+        handler.SetCallBack(id1, "model", Zvalues);
+        handler.SetMultipleCallBack(id1, "model", ZvaluesMulti);
+
+        const auto id2 = handler.Create("stochast");
+        const auto id3 = handler.Create("stochast");
+
+        handler.SetStringValue(id2, "distribution", "normal");
+        handler.SetValue(id2, "mean", 3.0);
+        handler.SetValue(id2, "deviation", 1.0);
+        handler.SetStringValue(id3, "distribution", "normal");
+        handler.SetValue(id3, "mean", 1.0);
+        handler.SetValue(id3, "deviation", 1.0);
+
+        const auto id4 = handler.Create("copula_correlation");
+
+        std::vector values = { id2, id3 };
+        handler.SetArrayIntValue(id1, "variables", values.data(), static_cast<int>(values.size()));
+        handler.SetIntValue(id1, "copula_correlation", id4);
+
+        const auto id5 = handler.Create("model_parameter");
+        const auto id6 = handler.Create("model_parameter");
+        const auto id7 = handler.Create("model_parameter");
+        handler.SetStringValue(id7, "name", "z-value");
+        std::vector params = { id5, id6, id7 };
+
+        handler.SetArrayIntValue(id1, "output_parameters", params.data(), static_cast<int>(params.size()));
+
+        const auto id11 = handler.Create("limit_state_function");
+        handler.SetStringValue(id11, "parameter", "z-value");
+        handler.SetValue(id11, "critical_value", 0.123);
+        handler.SetIntValue(id1, "limit_state_function", id11);
+
+        handler.Execute(id1, "run");
+
+        const int id8 = handler.GetIdValue(id1, "design_point");
+        const int id9 = handler.GetIndexedIdValue(id8, "alphas", 0);
+        const int id10 = handler.GetIndexedIdValue(id8, "alphas", 1);
+
+        const double beta_through_server = handler.GetValue(id8, "beta");
+        constexpr double beta_expected = 1.327239428;
+        EXPECT_NEAR(beta_expected, beta_through_server, 1e-4);
+
+        const double x1_through_server = handler.GetValue(id9, "x");
+        const double x2_through_server = handler.GetValue(id10, "x");
+        EXPECT_NEAR(x1_through_server, 2.0615, 1e-4);
+        EXPECT_NEAR(x2_through_server, 1.9385, 1e-4);
+
+        handler.Destroy(id11);
+        handler.Destroy(id10);
+        handler.Destroy(id9);
+        handler.Destroy(id8);
+        handler.Destroy(id7);
+        handler.Destroy(id6);
+        handler.Destroy(id5);
+        handler.Destroy(id4);
+        handler.Destroy(id3);
+        handler.Destroy(id2);
+        handler.Destroy(id1);
+    }
+
 
 }
 

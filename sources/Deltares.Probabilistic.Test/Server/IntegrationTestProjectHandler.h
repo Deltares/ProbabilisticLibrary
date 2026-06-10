@@ -34,11 +34,13 @@ namespace Deltares::Probabilistic::Test
         static void TestUncertaintyProject();
         static void TestRunProjectMultipleOutput();
         static void TestCombineProject();
+        static void TestReliabilityProjectZValues();
 
     private:
         static void LinearZ(Models::ModelSampleStruct* sample);
         static void LinearZmulti(Models::ModelSampleStruct* sample, int sampleCount);
         static void Zvalues(double* data, int size, double* outputValues);
+        static void ZvaluesMulti(int arraySize, double** data, int inputSize, double** outputValues);
     };
 }
 
