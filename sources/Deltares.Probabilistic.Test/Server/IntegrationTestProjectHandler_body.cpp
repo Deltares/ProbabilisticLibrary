@@ -42,7 +42,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void IntegrationTestProjectHandler::Zvalues(double* data, int size, double* outputValues)
+    void IntegrationTestProjectHandler::Zvalues(const double* data, int size, double* outputValues)
     {
         outputValues[0] = data[0];
         outputValues[1] = data[1];

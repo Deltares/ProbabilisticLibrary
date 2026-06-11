@@ -39,7 +39,7 @@ namespace Deltares::Probabilistic::Test
     private:
         static void LinearZ(Models::ModelSampleStruct* sample);
         static void LinearZmulti(Models::ModelSampleStruct* sample, int sampleCount);
-        static void Zvalues(double* data, int size, double* outputValues);
+        static void Zvalues(const double* data, int size, double* outputValues);
         static void ZvaluesMulti(int arraySize, double** data, int inputSize, double** outputValues);
     };
 }
