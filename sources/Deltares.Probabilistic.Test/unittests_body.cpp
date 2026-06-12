@@ -1426,9 +1426,22 @@ TEST(IntegrationTests, testProjectHandlerRunProject)
     Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProject();
 }
 
-TEST(IntegrationTests, testProjectHandlerReliabilityProject)
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectSequentialZ)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProject();
+    using namespace Deltares::Probabilistic::Test;
+    IntegrationTestProjectHandler::TestReliabilityProject(defineZFuncs::onlySequential);
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectParallelZ)
+{
+    using namespace Deltares::Probabilistic::Test;
+    IntegrationTestProjectHandler::TestReliabilityProject(defineZFuncs::onlyParallel);
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectBothZfuncs)
+{
+    using namespace Deltares::Probabilistic::Test;
+    IntegrationTestProjectHandler::TestReliabilityProject(defineZFuncs::both);
 }
 
 TEST(IntegrationTests, testProjectHandlerReliabilityProjectCM)

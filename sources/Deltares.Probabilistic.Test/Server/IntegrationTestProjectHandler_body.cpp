@@ -107,15 +107,26 @@ namespace Deltares::Probabilistic::Test
     /// <summary>
     /// Test reliability project with default settings
     /// </summary>
-    void IntegrationTestProjectHandler::TestReliabilityProject()
+    void IntegrationTestProjectHandler::TestReliabilityProject(const defineZFuncs define_z_funcs)
     {
         auto handler = Server::ProjectHandler();
         ASSERT_TRUE(handler.CanHandle("project"));
         ASSERT_TRUE(handler.CanHandle("stochast"));
         ASSERT_TRUE(handler.CanHandle("copula_correlation"));
         const auto id1 = handler.Create("project");
-        handler.SetModelSampleCallBack(id1, "model", LinearZ);
-        handler.SetMultipleModelSampleCallBack(id1, "model", LinearZmulti);
+        switch (define_z_funcs)
+        {
+        case defineZFuncs::onlySequential:
+            handler.SetModelSampleCallBack(id1, "model", LinearZ);
+            break;
+        case defineZFuncs::onlyParallel:
+            handler.SetMultipleModelSampleCallBack(id1, "model", LinearZmulti);
+            break;
+        case defineZFuncs::both:
+            handler.SetModelSampleCallBack(id1, "model", LinearZ);
+            handler.SetMultipleModelSampleCallBack(id1, "model", LinearZmulti);
+            break;
+        }
 
         const auto id2 = handler.Create("stochast");
         const auto id3 = handler.Create("stochast");

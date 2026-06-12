@@ -24,11 +24,18 @@
 
 namespace Deltares::Probabilistic::Test
 {
+    enum class defineZFuncs
+    {
+        onlySequential,
+        onlyParallel,
+        both
+    };
+
     class IntegrationTestProjectHandler
     {
     public:
         static void TestRunProject();
-        static void TestReliabilityProject();
+        static void TestReliabilityProject(const defineZFuncs define_z_funcs);
         static void TestReliabilityProjectCM();
         static void TestSensitivityProject();
         static void TestUncertaintyProject();
