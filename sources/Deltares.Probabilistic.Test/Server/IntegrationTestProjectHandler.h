@@ -1,0 +1,53 @@
+// Copyright (C) Stichting Deltares. All rights reserved.
+//
+// This file is part of the Probabilistic Library.
+//
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+// All names, logos, and references to "Deltares" are registered trademarks of
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
+#pragma once
+#include "../../Deltares.Probabilistic/Model/ModelSampleStruct.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    enum class defineZFuncs
+    {
+        onlySequential,
+        onlyParallel,
+        both
+    };
+
+    class IntegrationTestProjectHandler
+    {
+    public:
+        static void TestRunProject();
+        static void TestReliabilityProject(const defineZFuncs define_z_funcs);
+        static void TestReliabilityProjectCMC();
+        static void TestSensitivityProject();
+        static void TestUncertaintyProject();
+        static void TestRunProjectMultipleOutput();
+        static void TestCombineProject();
+        static void TestReliabilityProjectZValues();
+
+    private:
+        static void LinearZ(Models::ModelSampleStruct* sample);
+        static void LinearZmulti(Models::ModelSampleStruct* sample, int sampleCount);
+        static void Zvalues(const double* data, int size, double* outputValues);
+        static void ZvaluesMulti(int arraySize, double** data, int inputSize, double** outputValues);
+    };
+}
+

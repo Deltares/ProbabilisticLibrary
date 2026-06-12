@@ -28,12 +28,12 @@ namespace Deltares::Server
         this->initialize();
     }
 
-    bool ExternalLibraryHandler::CanHandle(std::string objectType)
+    bool ExternalLibraryHandler::CanHandle(const std::string& objectType)
     {
         return this->canHandle(objectType.c_str());
     }
 
-    int ExternalLibraryHandler::Create(std::string objectType)
+    int ExternalLibraryHandler::Create(const std::string& objectType)
     {
         return this->createMethod(objectType.c_str());
     }
@@ -43,57 +43,57 @@ namespace Deltares::Server
         this->destroyMethod(id);
     }
 
-    double ExternalLibraryHandler::GetValue(int id, std::string property)
+    double ExternalLibraryHandler::GetValue(int id, const std::string& property)
     {
         return this->getValueMethod(id, property.c_str());
     }
 
-    void ExternalLibraryHandler::SetValue(int id, std::string property, double value)
+    void ExternalLibraryHandler::SetValue(int id, const std::string& property, double value)
     {
         this->setValueMethod(id, property.c_str(), value);
     }
 
-    bool ExternalLibraryHandler::GetBoolValue(int id, std::string property)
+    bool ExternalLibraryHandler::GetBoolValue(int id, const std::string& property)
     {
         return this->getBoolValueMethod(id, property.c_str());
     }
 
-    void ExternalLibraryHandler::SetBoolValue(int id, std::string property, bool value)
+    void ExternalLibraryHandler::SetBoolValue(int id, const std::string& property, bool value)
     {
         this->setBoolValueMethod(id, property.c_str(), value);
     }
 
-    int ExternalLibraryHandler::GetIntValue(int id, std::string property)
+    int ExternalLibraryHandler::GetIntValue(int id, const std::string& property)
     {
         return this->getIntValueMethod(id, property.c_str());
     }
 
-    void ExternalLibraryHandler::SetIntValue(int id, std::string property, int value)
+    void ExternalLibraryHandler::SetIntValue(int id, const std::string& property, int value)
     {
         this->setIntValueMethod(id, property.c_str(), value);
     }
 
-    std::string ExternalLibraryHandler::GetStringValue(int id, std::string property)
+    std::string ExternalLibraryHandler::GetStringValue(int id, const std::string& property)
     {
         return this->getStringValueMethod(id, property.c_str());
     }
 
-    void ExternalLibraryHandler::SetStringValue(int id, std::string property, std::string value)
+    void ExternalLibraryHandler::SetStringValue(int id, const std::string& property, const std::string& value)
     {
         this->setStringValueMethod(id, property.c_str(), value.c_str());
     }
 
-    int ExternalLibraryHandler::GetIndexedIntValue(int id, std::string property_, int index)
+    int ExternalLibraryHandler::GetIndexedIntValue(int id, const std::string& property_, int index)
     {
         return this->getIndexedIntMethod(id, property_.c_str(), index);
     }
 
-    std::string ExternalLibraryHandler::GetIndexedStringValue(int id, std::string property_, int index)
+    std::string ExternalLibraryHandler::GetIndexedStringValue(int id, const std::string& property_, int index)
     {
         return this->getIndexedStringMethod(id, property_.c_str(), index);
     }
 
-    void ExternalLibraryHandler::SetArrayIntValue(int id, std::string property_, int* values, int size)
+    void ExternalLibraryHandler::SetArrayIntValue(int id, const std::string& property_, int* values, int size)
     {
         this->setArrayIntMethod(id, property_.c_str(), values, size);
     }

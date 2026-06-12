@@ -35,7 +35,7 @@ namespace Deltares::Models
     using ZMultipleLambda = std::function<void(std::vector<std::shared_ptr<ModelSample>>)>;
     using ZBetaLambda = std::function<double(std::shared_ptr<ModelSample>)>;
 
-    using ZValuesCallBack = void(*)(double* data, int size, double* outputValues);
+    using ZValuesCallBack = void(*)(const double* data, int size, double* outputValues);
     using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
     using EmptyCallBack = void(*)();
 

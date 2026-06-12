@@ -64,6 +64,8 @@
 #include "Reliability/Waarts/TestWaartsSeriesSystem.h"
 #include "Reliability/Waarts/TestWaartsParallelSystem.h"
 #include "Reliability/Waarts/TestWaartsResistance25QuadraticTermsSparse.h"
+#include "Server/UnitTestProjectHandler.h"
+#include "Server/IntegrationTestProjectHandler.h"
 
 int main(int argc, char** argv)
 {
@@ -1369,3 +1371,110 @@ TEST(WaartsTests, testResistance25QuadraticTermsSparseDSFI)
     tester.WaartsDSFI();
 }
 
+TEST(UnitTests, testProjectHandlerGetSetMessage)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestSetAndGetMessage();
+}
+
+TEST(UnitTests, testProjectHandlerStandardNormal)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestStandardNormal();
+}
+
+TEST(UnitTests, testProjectHandlerProbabilityValue)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProbabilityValue();
+}
+
+TEST(UnitTests, testProjectHandlerStochast)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestStochast();
+}
+
+TEST(UnitTests, testProjectHandlerCopula)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestCopula();
+}
+
+TEST(UnitTests, testProjectHandlerSettings)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestSettings();
+}
+
+TEST(UnitTests, testProjectEntries)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();
+}
+
+TEST(UnitTests, testCreateDestroyAllEntries)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestCreateDestroyAllEntries();
+}
+
+TEST(UnitTests, testProjectEntriesIsModelProject)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsStochast();
+}
+
+TEST(UnitTests, testProjectEntriesIsModelSettingsType)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();
+}
+
+TEST(UnitTests, testProjectEntriesIsStochast)
+{
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsStochast();
+}
+
+TEST(IntegrationTests, testProjectHandlerRunProject)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProject();
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectSequentialZ)
+{
+    using namespace Deltares::Probabilistic::Test;
+    IntegrationTestProjectHandler::TestReliabilityProject(defineZFuncs::onlySequential);
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectParallelZ)
+{
+    using namespace Deltares::Probabilistic::Test;
+    IntegrationTestProjectHandler::TestReliabilityProject(defineZFuncs::onlyParallel);
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectBothZfuncs)
+{
+    using namespace Deltares::Probabilistic::Test;
+    IntegrationTestProjectHandler::TestReliabilityProject(defineZFuncs::both);
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectCMC)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProjectCMC();
+}
+
+TEST(IntegrationTests, testProjectHandlerSensitivityProject)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestSensitivityProject();
+}
+
+TEST(IntegrationTests, testProjectHandlerUncertaintyProject)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestUncertaintyProject();
+}
+
+TEST(IntegrationTests, testProjectHandlerRunProjectMultipleOutput)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProjectMultipleOutput();
+}
+
+TEST(IntegrationTests, testProjectHandlerCombine)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestCombineProject();
+}
+
+TEST(IntegrationTests, testProjectHandlerReliabilityZValues)
+{
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProjectZValues();
+}

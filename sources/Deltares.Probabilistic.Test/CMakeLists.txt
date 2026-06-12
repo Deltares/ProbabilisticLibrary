@@ -66,6 +66,8 @@ file(GLOB testfiles
     "Model/*_body.cpp"
     "Sensitivity/*.h"
     "Sensitivity/*_body.cpp"
+    "Server/*.h"
+    "Server/*_body.cpp"
     "Utils/*.h"
     "Utils/*_body.cpp"
 )
