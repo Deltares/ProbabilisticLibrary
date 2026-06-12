@@ -97,11 +97,11 @@ namespace Deltares::Probabilistic::Test
         const double Z_expected = determinist1 - determinist2;
         EXPECT_NEAR(Z_expected, Z_through_server, 1e-12);
 
-        handler.Destroy(id5);
-        handler.Destroy(id4);
-        handler.Destroy(id3);
-        handler.Destroy(id2);
-        handler.Destroy(id1);
+        for (const int id : {id5, id4, id3, id2, id1 })
+        {
+            handler.Destroy(id);
+        }
+        EXPECT_EQ(0, handler.GetStatus("count_entries"));
     }
 
     /// <summary>
@@ -159,13 +159,11 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(x1_through_server, 2.0, 1e-4);
         EXPECT_NEAR(x2_through_server, 2.0, 1e-4);
 
-        handler.Destroy(id7);
-        handler.Destroy(id6);
-        handler.Destroy(id5);
-        handler.Destroy(id4);
-        handler.Destroy(id3);
-        handler.Destroy(id2);
-        handler.Destroy(id1);
+        for (const int id : {id7, id6, id5, id4, id3, id2, id1 })
+        {
+            handler.Destroy(id);
+        }
+        EXPECT_EQ(0, handler.GetStatus("count_entries"));
     }
 
     /// <summary>
@@ -217,14 +215,11 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(x1_through_server, 2.00, 1e-2);
         EXPECT_NEAR(x2_through_server, 2.06, 1e-2);
 
-        handler.Destroy(id8);
-        handler.Destroy(id7);
-        handler.Destroy(id6);
-        handler.Destroy(id5);
-        handler.Destroy(id4);
-        handler.Destroy(id3);
-        handler.Destroy(id2);
-        handler.Destroy(id1);
+        for (const int id : {id8, id7, id6, id5, id4, id3, id2, id1 })
+        {
+            handler.Destroy(id);
+        }
+        EXPECT_EQ(0, handler.GetStatus("count_entries"));
     }
 
     /// <summary>
@@ -276,14 +271,11 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(medium2_through_server, 2.0, 1e-2);
         EXPECT_NEAR(high2_through_server, -0.0537, 1e-4);
 
-        handler.Destroy(id8);
-        handler.Destroy(id7);
-        handler.Destroy(id6);
-        handler.Destroy(id5);
-        handler.Destroy(id4);
-        handler.Destroy(id3);
-        handler.Destroy(id2);
-        handler.Destroy(id1);
+        for (const int id : {id8, id7, id6, id5, id4, id3, id2, id1 })
+        {
+            handler.Destroy(id);
+        }
+        EXPECT_EQ(0, handler.GetStatus("count_entries"));
     }
 
     /// <summary>
@@ -326,12 +318,11 @@ namespace Deltares::Probabilistic::Test
         const auto distribution_name = handler.GetStringValue(id6, "distribution");
         EXPECT_EQ("cdf_curve", distribution_name);
 
-        handler.Destroy(id6);
-        handler.Destroy(id5);
-        handler.Destroy(id4);
-        handler.Destroy(id3);
-        handler.Destroy(id2);
-        handler.Destroy(id1);
+        for (const int id : {id6, id5, id4, id3, id2, id1 })
+        {
+            handler.Destroy(id);
+        }
+        EXPECT_EQ(0, handler.GetStatus("count_entries"));
     }
 
     /// <summary>
@@ -384,14 +375,11 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(out0, determinist1);
         EXPECT_EQ(out1, determinist2);
 
-        handler.Destroy(id8);
-        handler.Destroy(id7);
-        handler.Destroy(id6);
-        handler.Destroy(id5);
-        handler.Destroy(id4);
-        handler.Destroy(id3);
-        handler.Destroy(id2);
-        handler.Destroy(id1);
+        for (const int id : {id8, id7, id6, id5, id4, id3, id2, id1 })
+        {
+            handler.Destroy(id);
+        }
+        EXPECT_EQ(0, handler.GetStatus("count_entries"));
     }
 
     /// <summary>
@@ -460,17 +448,11 @@ namespace Deltares::Probabilistic::Test
             handler.Destroy(id);
         }
 
-        handler.Destroy(id11);
-        handler.Destroy(id10);
-        handler.Destroy(id9);
-        handler.Destroy(id8);
-        handler.Destroy(id7);
-        handler.Destroy(id6);
-        handler.Destroy(id5);
-        handler.Destroy(id4);
-        handler.Destroy(id3);
-        handler.Destroy(id2);
-        handler.Destroy(id1);
+        for (const int id : {id11, id10, id9, id8, id7, id6, id5, id4, id3, id2, id1 })
+        {
+            handler.Destroy(id);
+        }
+        EXPECT_EQ(0, handler.GetStatus("count_entries"));
     }
 
     /// <summary>
@@ -530,19 +512,12 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(x1_through_server, 2.0615, 1e-4);
         EXPECT_NEAR(x2_through_server, 1.9385, 1e-4);
 
-        handler.Destroy(id11);
-        handler.Destroy(id10);
-        handler.Destroy(id9);
-        handler.Destroy(id8);
-        handler.Destroy(id7);
-        handler.Destroy(id6);
-        handler.Destroy(id5);
-        handler.Destroy(id4);
-        handler.Destroy(id3);
-        handler.Destroy(id2);
-        handler.Destroy(id1);
+        for (const int id : {id11, id10, id9, id8, id7, id6, id5, id4, id3, id2, id1 })
+        {
+            handler.Destroy(id);
+        }
+        EXPECT_EQ(0, handler.GetStatus("count_entries"));
     }
-
 
 }
 
