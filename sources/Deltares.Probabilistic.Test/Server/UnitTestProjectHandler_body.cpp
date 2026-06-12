@@ -183,6 +183,23 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(error_message, "type not supported: STOCHAST");
     }
 
+    void UnitTestProjectHandler::TestCreateDestroyAllEntries()
+    {
+        auto handler = Server::ProjectHandler();
+        auto ids = std::vector<int>();
+        for (const auto& [name, type] : Server::ProjectEntries::all_entries)
+        {
+            if (type != Server::ObjectType::ValidationReport)
+            {
+                ids.push_back(handler.Create(name));
+            }
+        }
+        for (const auto& id : ids)
+        {
+            handler.Destroy(id);
+        }
+    }
+
     void UnitTestProjectHandler::TestProjectEntriesIsModelProject()
     {
         using namespace Server;

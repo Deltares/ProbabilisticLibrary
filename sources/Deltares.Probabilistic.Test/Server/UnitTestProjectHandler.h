@@ -33,6 +33,7 @@ namespace Deltares::Probabilistic::Test
         static void TestCopula();
         static void TestSettings();
         static void TestProjectEntries();
+        static void TestCreateDestroyAllEntries();
         static void TestProjectEntriesIsModelProject();
         static void TestProjectEntriesIsModelSettingsType();
         static void TestProjectEntriesIsStochast();

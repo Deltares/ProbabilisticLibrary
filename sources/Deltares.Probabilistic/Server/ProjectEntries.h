@@ -115,7 +115,10 @@ namespace Deltares::Server
         /// <param name="object_type"> enum object type </param>
         /// <returns> true if it is a stochast type </returns>
         static bool IsStochast(ObjectType object_type);
-    private:
+
+        /// <summary>
+        /// map with all entries ; is public for testing purpose
+        /// </summary>
         static const std::map<std::string, ObjectType, std::less<>> all_entries;
     };
 }
