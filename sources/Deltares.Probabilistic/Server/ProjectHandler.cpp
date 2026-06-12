@@ -230,7 +230,7 @@ namespace Deltares::Server
         case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
         case ObjectType::DiscreteValue: discreteValueIds.erase(discreteValues[id]); discreteValues.erase(id); break;
         case ObjectType::HistogramValue: histogramValueIds.erase(histogramValues[id]); histogramValues.erase(id); break;
-        case ObjectType::FragilityValue: fragilityCurveIds.erase(fragilityCurves[id]); fragilityValues.erase(id); break;
+        case ObjectType::FragilityValue: fragilityValueIds.erase(fragilityValues[id]); fragilityValues.erase(id); break;
         case ObjectType::ContributingStochast: contributingStochastIds.erase(contributingStochasts[id]); contributingStochasts.erase(id); break;
         case ObjectType::ConditionalValue: conditionalValueIds.erase(conditionalValues[id]);  conditionalValues.erase(id); break;
         case ObjectType::CorrelationMatrix:
@@ -2795,6 +2795,15 @@ namespace Deltares::Server
 
             return selfCorrelationIds[correlationMatrix];
         }
+    }
+
+    int ProjectHandler::GetStatus(const std::string& command) const
+    {
+        if (command == "count_entries")
+        {
+            return static_cast<int>(types.size());
+        }
+        return -1;
     }
 
     int ProjectHandler::GetLimitStateFunctionId(const std::shared_ptr<LimitStateFunction>& limitStateFunction, int newId)

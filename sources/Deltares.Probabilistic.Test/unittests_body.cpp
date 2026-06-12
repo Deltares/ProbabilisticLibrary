@@ -1449,9 +1449,9 @@ TEST(IntegrationTests, testProjectHandlerReliabilityProjectBothZfuncs)
     IntegrationTestProjectHandler::TestReliabilityProject(defineZFuncs::both);
 }
 
-TEST(IntegrationTests, testProjectHandlerReliabilityProjectCM)
+TEST(IntegrationTests, testProjectHandlerReliabilityProjectCMC)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProjectCM();
+    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProjectCMC();
 }
 
 TEST(IntegrationTests, testProjectHandlerSensitivityProject)

@@ -185,24 +185,28 @@ namespace Deltares::Probabilistic::Test
 
     void UnitTestProjectHandler::TestCreateDestroyAllEntries()
     {
-        auto handler = Server::ProjectHandler();
+        using namespace Deltares::Server;
+
+        auto handler = ProjectHandler();
         auto ids = std::vector<int>();
-        for (const auto& [name, type] : Server::ProjectEntries::all_entries)
+        for (const auto& [name, type] : ProjectEntries::all_entries)
         {
-            if (type != Server::ObjectType::ValidationReport)
+            if (type != ObjectType::ValidationReport)
             {
                 ids.push_back(handler.Create(name));
             }
         }
+        EXPECT_EQ(handler.GetStatus("count_entries"), ProjectEntries::all_entries.size() - 1);
         for (const auto& id : ids)
         {
             handler.Destroy(id);
         }
+        EXPECT_EQ(handler.GetStatus("count_entries"), 0);
     }
 
     void UnitTestProjectHandler::TestProjectEntriesIsModelProject()
     {
-        using namespace Server;
+        using namespace Deltares::Server;
         using enum ObjectType;
 
         EXPECT_FALSE(ProjectEntries::IsModelProjectType(Alpha));
@@ -215,7 +219,7 @@ namespace Deltares::Probabilistic::Test
 
     void UnitTestProjectHandler::TestProjectEntriesIsModelSettingsType()
     {
-        using namespace Server;
+        using namespace Deltares::Server;
         using enum ObjectType;
 
         EXPECT_FALSE(ProjectEntries::IsModelSettingsType(Alpha));
@@ -228,7 +232,7 @@ namespace Deltares::Probabilistic::Test
 
     void UnitTestProjectHandler::TestProjectEntriesIsStochast()
     {
-        using namespace Server;
+        using namespace Deltares::Server;
         using enum ObjectType;
 
         EXPECT_FALSE(ProjectEntries::IsStochast(Alpha));

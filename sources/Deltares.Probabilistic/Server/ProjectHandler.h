@@ -114,6 +114,7 @@ namespace Deltares::Server
         int GetReliabilityResultId(const std::shared_ptr<Reliability::ReliabilityResult>& result, int newId);
         int GetMessageId(const std::shared_ptr<Logging::Message>& message, int newId);
         int GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId);
+        int GetStatus(const std::string& command) const;
 
         std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
         {

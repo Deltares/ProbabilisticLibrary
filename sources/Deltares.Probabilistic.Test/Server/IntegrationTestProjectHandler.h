@@ -36,7 +36,7 @@ namespace Deltares::Probabilistic::Test
     public:
         static void TestRunProject();
         static void TestReliabilityProject(const defineZFuncs define_z_funcs);
-        static void TestReliabilityProjectCM();
+        static void TestReliabilityProjectCMC();
         static void TestSensitivityProject();
         static void TestUncertaintyProject();
         static void TestRunProjectMultipleOutput();

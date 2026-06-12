@@ -171,7 +171,7 @@ namespace Deltares::Probabilistic::Test
     /// <summary>
     /// Test reliability project with default settings, except for the reliability method: now Crude Monte Carlo
     /// </summary>
-    void IntegrationTestProjectHandler::TestReliabilityProjectCM()
+    void IntegrationTestProjectHandler::TestReliabilityProjectCMC()
     {
         auto handler = Server::ProjectHandler();
         ASSERT_TRUE(handler.CanHandle("project"));
