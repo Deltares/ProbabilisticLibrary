@@ -19,37 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-
-namespace Deltares::Models
-{
-    extern "C" {
-
-        struct ModelSampleStruct
-        {
-            const double* Values;
-            int ValuesCount;
-
-            const double* OutputValues;
-            int OutputValuesCount;
-
-            int IterationIndex;
-            int threadId;
-            double Weight;
-            bool AllowProxy;
-            bool UsedProxy;
-            bool IsRestartRequired;
-            double Beta;
-            double Z;
-            bool ExtendedLogging;
-            int LoggingCounter;
-            int Tag;
-        };
-
-        typedef void(*ModelSampleCallback)(ModelSampleStruct* sample);
-
-        typedef void(*MultipleModelSampleCallback)(ModelSampleStruct* samples, int sampleCount);
-    }
-}
-
+#include "pch.h"
+#include "UnitTestProjectHandler_body.cpp"
 

@@ -312,7 +312,7 @@ namespace Deltares::Server
         std::string data = Send(message);
     }
 
-    bool ExternalServerHandler::CanHandle(std::string objectType)
+    bool ExternalServerHandler::CanHandle(const std::string& objectType)
     {
         if (!this->server_started)
         {
@@ -342,7 +342,7 @@ namespace Deltares::Server
         }
     }
 
-    int ExternalServerHandler::Create(std::string objectType)
+    int ExternalServerHandler::Create(const std::string& objectType)
     {
         if (!server_started)
         {
@@ -378,47 +378,47 @@ namespace Deltares::Server
         }
     }
 
-    double ExternalServerHandler::GetValue(int id, std::string property)
+    double ExternalServerHandler::GetValue(int id, const std::string& property)
     {
         std::string result = Send("get_value:" + std::to_string(id) + ":" + property);
         return std::stod(result);
     }
 
-    void ExternalServerHandler::SetValue(int id, std::string property, double value)
+    void ExternalServerHandler::SetValue(int id, const std::string& property, double value)
     {
         Send("set_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(value));
     }
 
-    double ExternalServerHandler::GetArgValue(int id, std::string property, double argument)
+    double ExternalServerHandler::GetArgValue(int id, const std::string& property, double argument)
     {
         std::string result = Send("get_arg_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(argument));
         return std::stod(result);
     }
 
-    bool ExternalServerHandler::GetBoolValue(int id, std::string property)
+    bool ExternalServerHandler::GetBoolValue(int id, const std::string& property)
     {
         std::string result = Send("get_bool_value:" + std::to_string(id) + ":" + property);
         return result == "true";
     }
 
-    void ExternalServerHandler::SetBoolValue(int id, std::string property, bool value)
+    void ExternalServerHandler::SetBoolValue(int id, const std::string& property, bool value)
     {
         std::string bvalue = value ? "true" : "false";
         Send("set_bool_value:" + std::to_string(id) + ":" + property + ":" + bvalue);
     }
 
-    int ExternalServerHandler::GetIntValue(int id, std::string property)
+    int ExternalServerHandler::GetIntValue(int id, const std::string& property)
     {
         std::string result = Send("get_int_value:" + std::to_string(id) + ":" + property);
         return std::stoi(result);
     }
 
-    void ExternalServerHandler::SetIntValue(int id, std::string property, int value)
+    void ExternalServerHandler::SetIntValue(int id, const std::string& property, int value)
     {
         Send("set_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(value));
     }
 
-    int ExternalServerHandler::GetIdValue(int id, std::string property)
+    int ExternalServerHandler::GetIdValue(int id, const std::string& property)
     {
         std::string result = Send("get_id_value:" + std::to_string(id) + ":" + property);
 
@@ -432,40 +432,40 @@ namespace Deltares::Server
         }
     }
 
-    std::string ExternalServerHandler::GetStringValue(int id, std::string property)
+    std::string ExternalServerHandler::GetStringValue(int id, const std::string& property)
     {
         return Send("get_string_value:" + std::to_string(id) + ":" + property);
     }
 
-    void ExternalServerHandler::SetStringValue(int id, std::string property, std::string value)
+    void ExternalServerHandler::SetStringValue(int id, const std::string& property, const std::string& value)
     {
         Send("set_string_value:" + std::to_string(id) + ":" + property + ":" + value);
     }
 
-    double ExternalServerHandler::GetIndexedValue(int id, std::string property, int index)
+    double ExternalServerHandler::GetIndexedValue(int id, const std::string& property, int index)
     {
         std::string result = Send("get_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index));
         return std::stod(result);
     }
 
-    int ExternalServerHandler::GetIndexedIntValue(int id, std::string property, int index)
+    int ExternalServerHandler::GetIndexedIntValue(int id, const std::string& property, int index)
     {
         std::string result = Send("get_indexed_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index));
         return std::stoi(result);
     }
 
-    int ExternalServerHandler::GetIndexedIdValue(int id, std::string property, int index)
+    int ExternalServerHandler::GetIndexedIdValue(int id, const std::string& property, int index)
     {
         std::string result = Send("get_indexed_id_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index));
         return std::stoi(result);
     }
 
-    std::string ExternalServerHandler::GetIndexedStringValue(int id, std::string property, int index)
+    std::string ExternalServerHandler::GetIndexedStringValue(int id, const std::string& property, int index)
     {
         return Send("get_indexed_string_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index));
     }
 
-    void ExternalServerHandler::GetArrayValue(int id, std::string property, double* values, int size)
+    void ExternalServerHandler::GetArrayValue(int id, const std::string& property, double* values, int size)
     {
         std::string result = Send("get_array_value:" + std::to_string(id) + ":" + property);
 
@@ -476,7 +476,7 @@ namespace Deltares::Server
         }
     }
 
-    void ExternalServerHandler::SetArrayValue(int id, std::string property, double* values, int size)
+    void ExternalServerHandler::SetArrayValue(int id, const std::string& property, double* values, int size)
     {
         std::vector<std::string> strings;
         for (int i = 0; i < size; i++)
@@ -487,7 +487,7 @@ namespace Deltares::Server
         Send("set_array_value:" + std::to_string(id) + ":" + property + ":" + StringJoin(strings, ":"));
     }
 
-    void ExternalServerHandler::SetArrayIntValue(int id, std::string property, int* values, int size)
+    void ExternalServerHandler::SetArrayIntValue(int id, const std::string& property, int* values, int size)
     {
         std::vector<std::string> strings;
         for (int i = 0; i < size; i++)
@@ -498,7 +498,7 @@ namespace Deltares::Server
         Send("set_array_int_value:" + std::to_string(id) + ":" + property + ":" + StringJoin(strings, ":"));
     }
 
-    void ExternalServerHandler::GetArgValues(int id, std::string property, double* values, int size, double* outputValues)
+    void ExternalServerHandler::GetArgValues(int id, const std::string& property, double* values, int size, double* outputValues)
     {
         std::vector<std::string> strings;
         for (int i = 0; i < size; i++)
@@ -515,13 +515,13 @@ namespace Deltares::Server
         }
     }
 
-    double ExternalServerHandler::GetIndexedIndexedValue(int id, std::string property, int index1, int index2)
+    double ExternalServerHandler::GetIndexedIndexedValue(int id, const std::string& property, int index1, int index2)
     {
         std::string result = Send("get_indexed_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index1) + ":" + std::to_string(index2));
         return std::stod(result);
     }
 
-    void ExternalServerHandler::SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value)
+    void ExternalServerHandler::SetIndexedIndexedValue(int id, const std::string& property, int index1, int index2, double value)
     {
         Send("set_indexed_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index1) + ":" + std::to_string(index2) + ":" + std::to_string(value));
     }
@@ -533,7 +533,7 @@ namespace Deltares::Server
         Send(message);
     }
 
-    void ExternalServerHandler::Execute(int id, std::string method)
+    void ExternalServerHandler::Execute(int id, const std::string& method)
     {
         Send("execute:" + std::to_string(id) + ":" + method);
     }

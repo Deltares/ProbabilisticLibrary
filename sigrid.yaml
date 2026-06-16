@@ -2,7 +2,7 @@ default_excludes: true
 component_base_dirs:
   - "sources/Deltares.Probabilistic"
   - "sources/Deltares.Probabilistic.CWrapper"
-  - "sources/Deltares.Probabilistic.Wrapper"
+  - "sources/Deltares.Probabilistic.NetCS"
   - ""
 exclude:
   - ".*/ASA/.*"
@@ -20,7 +20,7 @@ languages:
     production:
     test:
        include:
-         - ".*sources/Deltares.Probabilistic.Wrapper.Test/.*[.]cs"
+         - ".*sources/Deltares.Probabilistic.Net.Test/.*[.]cs"
 dependencychecker:
   enabled: true
   blocklist: []

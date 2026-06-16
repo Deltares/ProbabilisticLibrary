@@ -21,11 +21,8 @@
 //
 #include "Stochast.h"
 
-#include <iostream>
-
 #include "StandardNormal.h"
 #include "Distributions/DistributionLibrary.h"
-#include "Distributions/InvertedDistribution.h"
 #include "Distributions/ExternalDistribution.h"
 #include "Distributions/KSCalculator.h"
 #include "../Math/NumericSupport.h"
@@ -769,7 +766,7 @@ namespace Deltares::Statistics
         }
     }
 
-    const std::vector<std::pair<const char*, DistributionType>> Stochast::allDistributions = {
+    const std::map<std::string, DistributionType,std::less<>> Stochast::all_distributions = {
             {"deterministic", Deterministic},
             {"normal", Normal },
             {"log_normal", LogNormal },
@@ -801,26 +798,23 @@ namespace Deltares::Statistics
 
     DistributionType Stochast::getDistributionType(const std::string& distributionType)
     {
-        for (const auto& [name, type] : allDistributions)
+        const auto it = all_distributions.find(distributionType);
+        if (it != all_distributions.end())
         {
-            if (name == distributionType)
-            {
-                return type;
-            }
+            return it->second;
         }
         throw Reliability::probLibException("distribution type");
     }
 
     std::string Stochast::getDistributionTypeString(DistributionType distributionType)
     {
-        for (const auto& [name, type] : allDistributions)
+        for (const auto& [name, type] : all_distributions)
         {
             if (type == distributionType)
             {
                 return name;
             }
         }
-
         throw Reliability::probLibException("distribution type");
     }
 

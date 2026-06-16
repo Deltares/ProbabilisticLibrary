@@ -21,35 +21,22 @@
 //
 #pragma once
 
-namespace Deltares::Models
+namespace Deltares::Probabilistic::Test
 {
-    extern "C" {
-
-        struct ModelSampleStruct
-        {
-            const double* Values;
-            int ValuesCount;
-
-            const double* OutputValues;
-            int OutputValuesCount;
-
-            int IterationIndex;
-            int threadId;
-            double Weight;
-            bool AllowProxy;
-            bool UsedProxy;
-            bool IsRestartRequired;
-            double Beta;
-            double Z;
-            bool ExtendedLogging;
-            int LoggingCounter;
-            int Tag;
-        };
-
-        typedef void(*ModelSampleCallback)(ModelSampleStruct* sample);
-
-        typedef void(*MultipleModelSampleCallback)(ModelSampleStruct* samples, int sampleCount);
-    }
+    class UnitTestProjectHandler
+    {
+    public:
+        static void TestSetAndGetMessage();
+        static void TestStandardNormal();
+        static void TestProbabilityValue();
+        static void TestStochast();
+        static void TestCopula();
+        static void TestSettings();
+        static void TestProjectEntries();
+        static void TestCreateDestroyAllEntries();
+        static void TestProjectEntriesIsModelProject();
+        static void TestProjectEntriesIsModelSettingsType();
+        static void TestProjectEntriesIsStochast();
+    };
 }
-
 
