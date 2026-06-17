@@ -15,12 +15,12 @@ languages:
     production:
     test:
        include:
-         - ".*sources/Deltares.Probabilistic.Test/.*[.].cpp"
+         - ".*/sources/Deltares.Probabilistic.Test/.*[.]cpp"
   - name: "csharp"
     production:
     test:
        include:
-         - ".*sources/Deltares.Probabilistic.Net.Test/.*[.]cs"
+         - ".*/sources/Deltares.Probabilistic.Net.Test/.*[.]cs"
 dependencychecker:
   enabled: true
   blocklist: []
