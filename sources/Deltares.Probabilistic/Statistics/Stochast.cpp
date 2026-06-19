@@ -223,8 +223,7 @@ namespace Deltares::Statistics
             {
                 if (contributingStochast->Probability > 0 && contributingStochast->Stochast->isVariable())
                 {
-                    throw Reliability::probLibException("stop to find test using this block");
-                    std::shared_ptr<Stochast> stochast = std::dynamic_pointer_cast<Stochast>(contributingStochast->Stochast);
+                    auto stochast = std::dynamic_pointer_cast<Stochast>(contributingStochast->Stochast);
                     return stochast->getVariableSource();
                 }
             }
