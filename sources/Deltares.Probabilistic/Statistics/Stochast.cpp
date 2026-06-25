@@ -184,7 +184,7 @@ namespace Deltares::Statistics
         }
     }
 
-    bool Stochast::IsVariableSourceAllowed(int arrayIndex)
+    bool Stochast::IsVariableSourceAllowed(int arrayIndex) const
     {
         if (VariableSource == nullptr)
         {
@@ -217,28 +217,29 @@ namespace Deltares::Statistics
 
     std::shared_ptr<Stochast> Stochast::getVariableSource()
     {
-        if (distributionType == DistributionType::Composite)
-        {
-            for (const auto& contributingStochast : properties->ContributingStochasts)
-            {
-                if (contributingStochast->Probability > 0 && contributingStochast->Stochast->isVariable())
-                {
-                    std::shared_ptr<Stochast> stochast = std::static_pointer_cast<Stochast>(contributingStochast->Stochast);
-                    return stochast->getVariableSource();
-                }
-            }
-
-            return nullptr;
-        }
-        else
+        if (distributionType != Composite)
         {
             return VariableSource;
         }
+
+        for (const auto& contributingStochast : properties->ContributingStochasts)
+        {
+            if (contributingStochast->Probability > 0.0 && contributingStochast->Stochast->isVariable())
+            {
+                const auto stochast = std::dynamic_pointer_cast<Stochast>(contributingStochast->Stochast);
+                if (stochast != nullptr)
+                {
+                    return stochast->getVariableSource();
+                }
+            }
+        }
+
+        return nullptr;
     }
 
     std::shared_ptr<StochastProperties> Stochast::getInterpolatedProperties(double xSource)
     {
-        if (distributionType == DistributionType::Composite)
+        if (distributionType == Composite)
         {
             std::shared_ptr<StochastProperties> compositeProperties = std::make_shared<StochastProperties>();
             for (const auto& compositeStochast : properties->ContributingStochasts)
@@ -341,16 +342,6 @@ namespace Deltares::Statistics
         }
 
         return false;
-    }
-
-    void Stochast::setExternalDistribution(UXLambda externalFunction)
-    {
-        distributionType = DistributionType::External;
-
-        std::shared_ptr<ExternalDistribution> externalDistribution = std::make_shared<ExternalDistribution>();
-        externalDistribution->setExternalFunction(externalFunction);
-
-        distribution = externalDistribution;
     }
 
     DistributionType Stochast::getDistributionType() const
