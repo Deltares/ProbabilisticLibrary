@@ -27,6 +27,7 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         static void testSortFragilityCurves();
+        static void testCopyFrom();
     };
 }
 

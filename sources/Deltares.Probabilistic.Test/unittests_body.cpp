@@ -578,6 +578,11 @@ TEST(UnitTests, testSortStochast)
     Deltares::Probabilistic::Test::TestStochast::testSortFragilityCurves();
 }
 
+TEST(UnitTests, testStochastCopyFrom)
+{
+    Deltares::Probabilistic::Test::TestStochast::testCopyFrom();
+}
+
 TEST(CopulasTest, testClayton)
 {
     Deltares::Probabilistic::Test::TestCopula::testClayton();

@@ -53,5 +53,43 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(stochast.getProperties()->FragilityValues[2]->X, 0.0);
     }
 
+    void TestStochast::testCopyFrom()
+    {
+        constexpr double margin = 1e-9;
+
+        // simple stochast
+
+        auto stochast = std::make_shared<Statistics::Stochast>();
+        stochast->setDistributionType(Statistics::DistributionType::Normal);
+        stochast->getProperties()->Location = 4.5;
+        stochast->getProperties()->Scale = 0.3;
+
+        auto copy = std::make_shared<Statistics::Stochast>();
+        copy->copyFrom(stochast);
+
+        EXPECT_EQ(stochast->getDistributionType(), copy->getDistributionType());
+        EXPECT_NEAR(stochast->getProperties()->Location, copy->getProperties()->Location, margin);
+        EXPECT_NEAR(stochast->getProperties()->Scale, copy->getProperties()->Scale, margin);
+
+        // contributing stochasts
+
+        auto comp_stochast = std::make_shared<Statistics::Stochast>();
+        comp_stochast->setDistributionType(Statistics::DistributionType::Composite);
+        comp_stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.3, std::make_shared<Statistics::Stochast>()));
+        comp_stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.7, std::make_shared<Statistics::Stochast>()));
+
+        auto copy_comp = std::make_shared<Statistics::Stochast>();
+        copy_comp->copyFrom(comp_stochast);
+
+        EXPECT_EQ(comp_stochast->getDistributionType(), copy_comp->getDistributionType());
+        for (size_t i = 0; i < comp_stochast->getProperties()->ContributingStochasts.size(); i++)
+        {
+            EXPECT_NEAR(comp_stochast->getProperties()->ContributingStochasts[i]->Probability, copy_comp->getProperties()->ContributingStochasts[i]->Probability, margin);
+        }
+
+    }
+
+
+
 }
 
