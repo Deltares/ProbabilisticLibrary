@@ -583,6 +583,11 @@ TEST(UnitTests, testCompositeGetVariableSourceStochast)
     Deltares::Probabilistic::Test::TestStochast::testCompositeGetVariableSource();
 }
 
+TEST(UnitTests, testStochastCopyFrom)
+{
+    Deltares::Probabilistic::Test::TestStochast::testCopyFrom();
+}
+
 TEST(CopulasTest, testClayton)
 {
     Deltares::Probabilistic::Test::TestCopula::testClayton();

@@ -866,6 +866,75 @@ Definition:
 """
         self.assertEqual(expected, printed)
 
+    def test_copy_from(self):
+
+        # test simple stochast
+        normal_stochast = Stochast()
+        normal_stochast.distribution = DistributionType.normal
+        normal_stochast.mean = 3.5
+        normal_stochast.deviation = 0.5
+
+        copied_normal_stochast = Stochast()
+        copied_normal_stochast.copy_from(normal_stochast)
+        self.assertEqual(normal_stochast.distribution, copied_normal_stochast.distribution)
+        self.assertAlmostEqual(normal_stochast.mean, copied_normal_stochast.mean, delta=margin)
+        self.assertAlmostEqual(normal_stochast.deviation, copied_normal_stochast.deviation, delta=margin)
+
+        # test histogram stochast
+        hist_stochast = Stochast()
+        hist_stochast.distribution = DistributionType.histogram
+        hist_stochast.histogram_values.append(HistogramValue())
+        hist_stochast.histogram_values.append(HistogramValue())
+        hist_stochast.histogram_values[0].lower_bound = 0
+        hist_stochast.histogram_values[0].upper_bound = 1
+        hist_stochast.histogram_values[0].amount = 2.5
+        hist_stochast.histogram_values[1].lower_bound = 1
+        hist_stochast.histogram_values[1].upper_bound = 2.2
+        hist_stochast.histogram_values[1].amount = 3.8
+
+        copied_hist_stochast = Stochast()
+        copied_hist_stochast.copy_from(hist_stochast)
+
+        for i in range(len(hist_stochast.histogram_values)):
+            self.assertAlmostEqual(hist_stochast.histogram_values[i].lower_bound, copied_hist_stochast.histogram_values[i].lower_bound, delta=margin)
+            self.assertAlmostEqual(hist_stochast.histogram_values[i].upper_bound, copied_hist_stochast.histogram_values[i].upper_bound, delta=margin)
+            self.assertAlmostEqual(hist_stochast.histogram_values[i].amount, copied_hist_stochast.histogram_values[i].amount, delta=margin)
+
+            # change something in original, should not be passed to copy
+            hist_stochast.histogram_values[i].amount += 1.5
+            self.assertNotAlmostEqual(hist_stochast.histogram_values[i].amount, copied_hist_stochast.histogram_values[i].amount, delta=margin)
+
+        # test composite stochast
+        comp_stochast = Stochast()
+        comp_stochast.distribution = DistributionType.composite
+        comp_stochast.contributing_stochasts.append(ContributingStochast())
+        comp_stochast.contributing_stochasts.append(ContributingStochast())
+        comp_stochast.contributing_stochasts[0].probability = 0.3
+        comp_stochast.contributing_stochasts[0].variable = Stochast()
+        comp_stochast.contributing_stochasts[0].variable.distribution = DistributionType.normal
+        comp_stochast.contributing_stochasts[0].variable.mean = 2.5
+        comp_stochast.contributing_stochasts[0].variable.deviation = 0.1
+        comp_stochast.contributing_stochasts[1].probability = 0.7
+        comp_stochast.contributing_stochasts[1].variable = Stochast()
+        comp_stochast.contributing_stochasts[1].variable.distribution = DistributionType.log_normal
+        comp_stochast.contributing_stochasts[1].variable.mean = 3.3
+        comp_stochast.contributing_stochasts[1].variable.deviation = 0.7
+        comp_stochast.contributing_stochasts[1].variable.shift = 0.1
+
+        copied_comp_stochast = Stochast()
+        copied_comp_stochast.copy_from(comp_stochast)
+
+        for i in range(len(comp_stochast.contributing_stochasts)):
+            self.assertAlmostEqual(comp_stochast.contributing_stochasts[i].probability, copied_comp_stochast.contributing_stochasts[i].probability, delta=margin)
+            self.assertEqual(comp_stochast.contributing_stochasts[i].variable.distribution, copied_comp_stochast.contributing_stochasts[i].variable.distribution)
+            self.assertAlmostEqual(comp_stochast.contributing_stochasts[i].variable.mean, copied_comp_stochast.contributing_stochasts[i].variable.mean, delta=margin)
+            self.assertAlmostEqual(comp_stochast.contributing_stochasts[i].variable.deviation, copied_comp_stochast.contributing_stochasts[i].variable.deviation, delta=margin)
+            self.assertAlmostEqual(comp_stochast.contributing_stochasts[i].variable.shift, copied_comp_stochast.contributing_stochasts[i].variable.shift, delta=margin)
+
+            # change something in original, should not be passed to copy
+            comp_stochast.contributing_stochasts[i].variable.mean += 0.6
+            self.assertNotAlmostEqual(comp_stochast.contributing_stochasts[i].variable.mean, copied_comp_stochast.contributing_stochasts[i].variable.mean, delta=margin)
+
     def test_return_time(self):
         for i in range(6):
             beta = float(i)

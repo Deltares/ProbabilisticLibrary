@@ -2973,7 +2973,7 @@ namespace Deltares::Server
         if (!contributingStochastIds.contains(contributingStochast))
         {
             contributingStochasts[newId] = contributingStochast;
-            types[newId] = ObjectType::FragilityValue;
+            types[newId] = ObjectType::ContributingStochast;
             contributingStochastIds[contributingStochast] = newId;
         }
 

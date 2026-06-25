@@ -730,6 +730,16 @@ namespace Deltares::Statistics
         inverted = source->inverted;
         truncated = source->truncated;
 
+        // make copies of the stochast in contributing stochasts
+        // should be done here because Contributing Stochast cannot reference Stochast (only BaseStochast)
+        for (std::shared_ptr<ContributingStochast>& contributingStochast : this->getProperties()->ContributingStochasts)
+        {
+            auto stochast = std::static_pointer_cast<Stochast>(contributingStochast->Stochast);
+            auto copiedStochast = std::make_shared<Stochast>();
+            copiedStochast->copyFrom(stochast);
+            contributingStochast->Stochast = copiedStochast;
+        }
+
         setDistributionType(source->getDistributionType());
 
         IsVariableStochast = source->IsVariableStochast;
