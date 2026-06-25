@@ -61,6 +61,8 @@ namespace Deltares::Probabilistic::Test
             bool isVariable() override {return true;}
         };
 
+        // test 1 : find a variable source in the 2nd sub stochast:
+
         auto stochast = std::make_shared<Statistics::Stochast>();
         stochast->setDistributionType(Statistics::DistributionType::Composite);
 
@@ -70,9 +72,18 @@ namespace Deltares::Probabilistic::Test
         auto subStochast2 = std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, std::vector<double>{5.0, 6.0});
         subStochast2->IsVariableStochast = true;
         stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.6, subStochast2));
+        subStochast2->VariableSource = std::make_shared<Statistics::Stochast>();
 
-        auto z = stochast->getVariableSource();
-        EXPECT_TRUE(z == nullptr);
+        auto src1 = stochast->getVariableSource();
+        EXPECT_TRUE(src1 != nullptr);
+
+        // test 2 : no variable source found
+        stochast->getProperties()->ContributingStochasts.clear();
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.4, subStochast1));
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.6, subStochast1));
+
+        auto src2 = stochast->getVariableSource();
+        EXPECT_TRUE(src2 == nullptr);
     }
 
 }

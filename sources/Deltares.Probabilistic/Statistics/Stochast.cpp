@@ -217,26 +217,24 @@ namespace Deltares::Statistics
 
     std::shared_ptr<Stochast> Stochast::getVariableSource()
     {
-        if (distributionType == Composite)
-        {
-            for (const auto& contributingStochast : properties->ContributingStochasts)
-            {
-                if (contributingStochast->Probability > 0.0 && contributingStochast->Stochast->isVariable())
-                {
-                    const auto stochast = std::dynamic_pointer_cast<Stochast>(contributingStochast->Stochast);
-                    if (stochast != nullptr)
-                    {
-                        return stochast->getVariableSource();
-                    }
-                }
-            }
-
-            return nullptr;
-        }
-        else
+        if (distributionType != Composite)
         {
             return VariableSource;
         }
+
+        for (const auto& contributingStochast : properties->ContributingStochasts)
+        {
+            if (contributingStochast->Probability > 0.0 && contributingStochast->Stochast->isVariable())
+            {
+                const auto stochast = std::dynamic_pointer_cast<Stochast>(contributingStochast->Stochast);
+                if (stochast != nullptr)
+                {
+                    return stochast->getVariableSource();
+                }
+            }
+        }
+
+        return nullptr;
     }
 
     std::shared_ptr<StochastProperties> Stochast::getInterpolatedProperties(double xSource)
