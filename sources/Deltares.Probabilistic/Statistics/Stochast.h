@@ -103,7 +103,7 @@ namespace Deltares::Statistics
         /**
          * \brief identifying string for the user
          */
-        std::string name = "";
+        std::string name;
 
         /**
          * \brief Gets the stochastic properties
@@ -211,12 +211,6 @@ namespace Deltares::Statistics
          * \return Distribution type
          */
         DistributionType getDistributionType() const;
-
-        /**
-         * \brief Sets a function which provides the u->x conversion. Overrules the distribution type
-         * \param externalFunction Function
-         */
-        void setExternalDistribution(UXLambda externalFunction);
 
         /**
          * \brief Indicates whether the distribution can be inverted
@@ -467,7 +461,7 @@ namespace Deltares::Statistics
         /**
          * \brief Indicates whether the variable source is allowed with respect to array definitions
          */
-        bool IsVariableSourceAllowed(int arrayIndex);
+        bool IsVariableSourceAllowed(int arrayIndex) const;
 
         /**
          * \brief In case of a variable stochast, the stochast of which the x-value is used to define the stochastic parameters of this stochast

@@ -53,5 +53,27 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(stochast.getProperties()->FragilityValues[2]->X, 0.0);
     }
 
+    void TestStochast::testCompositeGetVariableSource()
+    {
+        class myStochast : public Statistics::BaseStochast
+        {
+        public:
+            bool isVariable() override {return true;}
+        };
+
+        auto stochast = std::make_shared<Statistics::Stochast>();
+        stochast->setDistributionType(Statistics::DistributionType::Composite);
+
+        auto subStochast1 = std::make_shared<myStochast>();
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.4, subStochast1));
+
+        auto subStochast2 = std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, std::vector<double>{5.0, 6.0});
+        subStochast2->IsVariableStochast = true;
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.6, subStochast2));
+
+        auto z = stochast->getVariableSource();
+        EXPECT_TRUE(z == nullptr);
+    }
+
 }
 
