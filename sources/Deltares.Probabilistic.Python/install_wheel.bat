@@ -1,2 +1,2 @@
-pip install dist/probabilistic_library-26.2.1-py3-none-any.whl --force-reinstall
+pip install dist/probabilistic_library-26.2.1rc2-py3-none-any.whl --force-reinstall
 pause
