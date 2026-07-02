@@ -36,7 +36,7 @@ namespace Deltares::Server
 
     int ProjectHandler::GetNewId()
     {
-        std::lock_guard<std::mutex> lock(mtx);
+        std::lock_guard lock(mtx);
         new_id++;
         return new_id;
     }
@@ -45,7 +45,7 @@ namespace Deltares::Server
     {
         int id = this->GetNewId();
 
-        std::lock_guard<std::mutex> lock(mtx);
+        std::lock_guard lock(mtx);
 
         types[id] = ProjectEntries::GetType(object_type);
 
@@ -211,7 +211,7 @@ namespace Deltares::Server
 
     void ProjectHandler::Destroy(int id)
     {
-        std::lock_guard<std::mutex> lock(mtx);
+        std::lock_guard lock(mtx);
 
         const auto it = types.find(id);
         if (it == types.end()) return;
@@ -2678,6 +2678,8 @@ namespace Deltares::Server
         {
             if (!probabilityValueIds.contains(probability))
             {
+                std::lock_guard lock(mtx);
+
                 probabilityValues[newId] = probability;
                 types[newId] = ObjectType::ProbabilityValue;
                 probabilityValueIds[probability] = newId;
@@ -2695,6 +2697,8 @@ namespace Deltares::Server
         }
         else
         {
+            std::lock_guard lock(mtx);
+
             // assume always a new report is created
             validationReports[newId] = validationReport;
             types[newId] = ObjectType::ValidationReport;
@@ -2712,6 +2716,8 @@ namespace Deltares::Server
         {
             if (!stochastIds.contains(stochast))
             {
+                std::lock_guard lock(mtx);
+
                 stochasts[newId] = stochast;
                 types[newId] = ObjectType::Stochast;
                 stochastIds[stochast] = newId;
@@ -2731,6 +2737,8 @@ namespace Deltares::Server
         {
             if (!modelParameterIds.contains(modelParameter))
             {
+                std::lock_guard lock(mtx);
+
                 modelParameters[newId] = modelParameter;
                 types[newId] = ObjectType::ModelParameter;
                 modelParameterIds[modelParameter] = newId;
@@ -2750,6 +2758,8 @@ namespace Deltares::Server
         {
             if (!fragilityCurveIds.contains(fragilityCurve))
             {
+                std::lock_guard lock(mtx);
+
                 fragilityCurves[newId] = fragilityCurve;
                 types[newId] = ObjectType::FragilityCurve;
                 fragilityCurveIds[fragilityCurve] = newId;
@@ -2769,6 +2779,8 @@ namespace Deltares::Server
         {
             if (!correlationIds.contains(correlationMatrix))
             {
+                std::lock_guard lock(mtx);
+
                 correlations[newId] = correlationMatrix;
                 types[newId] = ObjectType::CorrelationMatrix;
                 correlationIds[correlationMatrix] = newId;
@@ -2788,6 +2800,8 @@ namespace Deltares::Server
         {
             if (!selfCorrelationIds.contains(correlationMatrix))
             {
+                std::lock_guard lock(mtx);
+
                 selfCorrelationMatrices[newId] = correlationMatrix;
                 types[newId] = ObjectType::SelfCorrelationMatrix;
                 selfCorrelationIds[correlationMatrix] = newId;
@@ -2816,6 +2830,8 @@ namespace Deltares::Server
         {
             if (!limitStateFunctionIds.contains(limitStateFunction))
             {
+                std::lock_guard lock(mtx);
+
                 limitStateFunctions[newId] = limitStateFunction;
                 types[newId] = ObjectType::LimitStateFunction;
                 limitStateFunctionIds[limitStateFunction] = newId;
@@ -2835,6 +2851,8 @@ namespace Deltares::Server
         {
             if (!designPointIds.contains(designPoint))
             {
+                std::lock_guard lock(mtx);
+
                 designPoints[newId] = designPoint;
                 types[newId] = ObjectType::DesignPoint;
                 designPointIds[designPoint] = newId;
@@ -2848,6 +2866,8 @@ namespace Deltares::Server
     {
         if (!alphaIds.contains(alpha))
         {
+            std::lock_guard lock(mtx);
+
             alphas[newId] = alpha;
             types[newId] = ObjectType::Alpha;
             alphaIds[alpha] = newId;
@@ -2866,6 +2886,8 @@ namespace Deltares::Server
         {
             if (!convergenceReportIds.contains(convergenceReport))
             {
+                std::lock_guard lock(mtx);
+
                 convergenceReports[newId] = convergenceReport;
                 types[newId] = ObjectType::ConvergenceReport;
                 convergenceReportIds[convergenceReport] = newId;
@@ -2885,6 +2907,8 @@ namespace Deltares::Server
         {
             if (!uncertaintyResultsIds.contains(result))
             {
+                std::lock_guard lock(mtx);
+
                 uncertaintyResults[newId] = result;
                 types[newId] = ObjectType::UncertaintyResult;
                 uncertaintyResultsIds[result] = newId;
@@ -2904,6 +2928,8 @@ namespace Deltares::Server
         {
             if (!sensitivityResultsIds.contains(result))
             {
+                std::lock_guard lock(mtx);
+
                 sensitivityResults[newId] = result;
                 types[newId] = ObjectType::SensitivityResult;
                 sensitivityResultsIds[result] = newId;
@@ -2923,6 +2949,8 @@ namespace Deltares::Server
         {
             if (!sensitivityValuesIds.contains(result))
             {
+                std::lock_guard lock(mtx);
+
                 sensitivityValues[newId] = result;
                 types[newId] = ObjectType::SensitivityValue;
                 sensitivityValuesIds[result] = newId;
@@ -2936,6 +2964,8 @@ namespace Deltares::Server
     {
         if (!histogramValueIds.contains(histogramValue))
         {
+            std::lock_guard lock(mtx);
+
             histogramValues[newId] = histogramValue;
             types[newId] = ObjectType::HistogramValue;
             histogramValueIds[histogramValue] = newId;
@@ -2948,6 +2978,8 @@ namespace Deltares::Server
     {
         if (!discreteValueIds.contains(discreteValue))
         {
+            std::lock_guard lock(mtx);
+
             discreteValues[newId] = discreteValue;
             types[newId] = ObjectType::DiscreteValue;
             discreteValueIds[discreteValue] = newId;
@@ -2960,6 +2992,8 @@ namespace Deltares::Server
     {
         if (!fragilityValueIds.contains(fragilityValue))
         {
+            std::lock_guard lock(mtx);
+
             fragilityValues[newId] = fragilityValue;
             types[newId] = ObjectType::FragilityValue;
             fragilityValueIds[fragilityValue] = newId;
@@ -2972,6 +3006,8 @@ namespace Deltares::Server
     {
         if (!contributingStochastIds.contains(contributingStochast))
         {
+            std::lock_guard lock(mtx);
+
             contributingStochasts[newId] = contributingStochast;
             types[newId] = ObjectType::ContributingStochast;
             contributingStochastIds[contributingStochast] = newId;
@@ -2984,6 +3020,8 @@ namespace Deltares::Server
     {
         if (!conditionalValueIds.contains(conditionalValue))
         {
+            std::lock_guard lock(mtx);
+
             conditionalValues[newId] = conditionalValue;
             types[newId] = ObjectType::ConditionalValue;
             conditionalValueIds[conditionalValue] = newId;
@@ -3002,6 +3040,8 @@ namespace Deltares::Server
         {
             if (!evaluationIds.contains(evaluation))
             {
+                std::lock_guard lock(mtx);
+
                 evaluations[newId] = evaluation;
                 types[newId] = ObjectType::Evaluation;
                 evaluationIds[evaluation] = newId;
@@ -3015,6 +3055,8 @@ namespace Deltares::Server
     {
         if (!reliabilityResultIds.contains(result))
         {
+            std::lock_guard lock(mtx);
+
             reliabilityResults[newId] = result;
             types[newId] = ObjectType::ReliabilityResult;
             reliabilityResultIds[result] = newId;
@@ -3027,6 +3069,8 @@ namespace Deltares::Server
     {
         if (!messageIds.contains(message))
         {
+            std::lock_guard lock(mtx);
+
             messages[newId] = message;
             types[newId] = ObjectType::Message;
             messageIds[message] = newId;
