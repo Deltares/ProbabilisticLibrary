@@ -142,6 +142,11 @@ namespace Deltares::Server
             while (received < 0 && counter++ < 10)
             {
                 received = recv(server_socket, receiveBuffer, sizeof(receiveBuffer), 0);
+                if (received < 0)
+                {
+                    constexpr int sleep_time = 100;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
+                }
             }
 
             if (received < 0)
