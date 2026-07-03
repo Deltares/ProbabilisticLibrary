@@ -24,25 +24,44 @@
 
 namespace Deltares::Models
 {
-    using enum HandleInvalidType;
-
     std::string RunSettings::getHandleInvalidTypeString(HandleInvalidType type)
     {
         switch (type)
         {
-        case Ignore: return "ignore";
-        case Fail: return "fail";
-        case NoFail: return "no_fail";
+        case HandleInvalidType::Ignore: return "ignore";
+        case HandleInvalidType::Fail: return "fail";
+        case HandleInvalidType::NoFail: return "no_fail";
         default: throw Reliability::probLibException("handle invalid type");
         }
     }
 
     HandleInvalidType RunSettings::getHandleInvalidType(const std::string& type)
     {
-        if (type == "ignore")  return  Ignore;
-        else if (type == "fail") return  Fail;
-        else if (type == "no_fail") return  NoFail;
+        if (type == "ignore")  return HandleInvalidType::Ignore;
+        else if (type == "fail") return HandleInvalidType::Fail;
+        else if (type == "no_fail") return HandleInvalidType::NoFail;
         else throw Reliability::probLibException("handle invalid type " + type + " not a known type");
     }
+
+    std::string RunSettings::getModelReturnTypeString(Deltares::Models::ModelReturnType type)
+    {
+        switch (type)
+        {
+        case ModelReturnType::ZValue: return "z_value";
+        case ModelReturnType::ProbabilityFailure: return "probability_failure";
+        case ModelReturnType::ReliabilityIndex: return "reliability_index";
+        default: throw Reliability::probLibException("model return type");
+        }
+
+    }
+
+    Deltares::Models::ModelReturnType RunSettings::getModelReturnType(const std::string& type)
+    {
+        if (type == "z_value")  return ModelReturnType::ZValue;
+        else if (type == "probability_failure") return ModelReturnType::ProbabilityFailure;
+        else if (type == "reliability_index") return ModelReturnType::ReliabilityIndex;
+        else throw Reliability::probLibException("model return type " + type + " not a known type");
+    }
+
 }
 

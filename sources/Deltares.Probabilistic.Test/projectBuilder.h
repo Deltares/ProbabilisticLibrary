@@ -35,7 +35,8 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         std::shared_ptr<Models::ModelRunner> BuildProject() const;
-        static std::shared_ptr<Models::ModelRunner> BuildLinearProject();
+        static std::shared_ptr<Models::ModelRunner> BuildLinearProject(size_t nStochasts);
+        static std::shared_ptr<Models::ModelRunner> BuildLinearProbabilityProject(size_t nStochasts);
         static std::shared_ptr<Models::ModelRunner> BuildLinearOutputOnlyProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearOutputProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearArrayProject();
@@ -71,6 +72,7 @@ namespace Deltares::Probabilistic::Test
 
         static void sum(std::shared_ptr<Models::ModelSample> sample);
         static void linear(std::shared_ptr<Models::ModelSample> sample);
+        static void linearProbability(std::shared_ptr<Models::ModelSample> sample);
         static void linearOutputOnly(std::shared_ptr<Models::ModelSample> sample);
         static void linearMultiple(std::shared_ptr<Models::ModelSample> sample);
         static void quadratic(std::shared_ptr<Models::ModelSample> sample);

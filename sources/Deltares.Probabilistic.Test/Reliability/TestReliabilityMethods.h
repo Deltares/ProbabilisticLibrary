@@ -43,6 +43,7 @@ namespace Deltares::Probabilistic::Test
         static void testFragilityCurveIntegration();
         static void testNumericalIntegrationReliability();
         static void testCrudeMonteCarloReliability();
+        static void testCrudeMonteCarloProbabilityReliability();
         static void testCrudeMonteCarloWithCopulaReliability();
         static void testCrudeMonteCarloWithQualitativeProject();
         static void testAdaptiveImportanceSampling();

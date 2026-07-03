@@ -99,8 +99,8 @@ namespace Deltares::Reliability
         double rmin = std::numeric_limits<double>::infinity();
         double pf = 0.0;
         bool initial = true;
-        double z0Fac = 0;
-        int nFailed = 0;
+        double z0Fac = 0.0;
+        double nFailed = 0.0;
         int nSamples = 0;
         const std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
         std::vector<std::shared_ptr<Sample>> samples;
@@ -140,7 +140,7 @@ namespace Deltares::Reliability
 
                 if (initial)
                 {
-                    z0Fac = getZFactor(zValues[0]);
+                    z0Fac = getZFactor(zValues[0], Settings->RunSettings->modelReturnType);
                     uMin->setInitialValues(z0Fac * Statistics::StandardNormal::BetaMax);
                     designPointBuilder.initialize(z0Fac * Statistics::StandardNormal::BetaMax);
                 }
@@ -156,8 +156,8 @@ namespace Deltares::Reliability
 
             if (initial)
             {
-                z0Fac = getZFactor(zValues[zIndex]);
-                double zRemainderFactor = getZFactor(zRemainder);
+                z0Fac = getZFactor(zValues[zIndex], Settings->RunSettings->modelReturnType);
+                double zRemainderFactor = getZFactor(zRemainder, Settings->RunSettings->modelReturnType);
 
                 if (z0Fac != zRemainderFactor)
                 {
@@ -181,16 +181,22 @@ namespace Deltares::Reliability
             }
 
             nSamples++;
-            if (z < 0)
+
+            double failureAddition = getFailureAddition(z, Settings->RunSettings->modelReturnType);
+            nFailed += failureAddition;
+
+            if (failureAddition > 0)
             {
-                nFailed = nFailed + 1;
+                convergenceReport->FailedSamples += 1;
             }
+            convergenceReport->FailFraction = nFailed / nSamples;
 
-            convergenceReport->FailedSamples = nFailed;
-            convergenceReport->FailFraction = Numeric::NumericSupport::Divide(nFailed, nSamples);
+            double smallestDomainAddition = z0Fac > 0.0 ? failureAddition : 1.0 - failureAddition;
 
-            if (z * z0Fac < 0)
+            if (smallestDomainAddition > 0)
             {
+                u->Weight = smallestDomainAddition;
+
                 designPointBuilder.addSample(u);
                 double rbeta = u->getBeta();
                 if (rbeta < rmin)
@@ -199,7 +205,7 @@ namespace Deltares::Reliability
                     uMin = u;
                 }
             }
-            pf = Numeric::NumericSupport::Divide(nFailed, nSamples);
+            pf = nFailed / nSamples;
             pf = qFail + qRange * pf;
 
             convergenceReport->IsConverged = checkConvergence(modelRunner, pf, nSamples, sampleIndex);

@@ -41,6 +41,13 @@ namespace Deltares::Models
         NoFail
     };
 
+    enum class ModelReturnType
+    {
+        ZValue,
+        ProbabilityFailure,
+        ReliabilityIndex
+    };
+
     class RunSettings
     {
     public:
@@ -55,6 +62,7 @@ namespace Deltares::Models
         bool RunAtDesignPoint = false;
         bool ExtendedLoggingAtDesignPoint = false;
         int MaxMessages = 1000;
+        ModelReturnType modelReturnType = ModelReturnType::ZValue;
         HandleInvalidType handleInvalidType = HandleInvalidType::Ignore;
         Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
         bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
@@ -66,6 +74,9 @@ namespace Deltares::Models
 
         static std::string getHandleInvalidTypeString(Deltares::Models::HandleInvalidType type);
         static Deltares::Models::HandleInvalidType getHandleInvalidType(const std::string& type);
+
+        static std::string getModelReturnTypeString(Deltares::Models::ModelReturnType type);
+        static Deltares::Models::ModelReturnType getModelReturnType(const std::string& type);
     };
 }
 

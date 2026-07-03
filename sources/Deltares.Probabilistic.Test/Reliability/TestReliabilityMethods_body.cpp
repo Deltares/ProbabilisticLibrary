@@ -43,7 +43,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = FORM();
 
-        auto modelRunner = projectBuilder::BuildLinearProject();
+        auto modelRunner = projectBuilder::BuildLinearProject(2);
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -162,7 +162,6 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testNumericalBisectionLinear()
     {
         auto calculator = std::make_shared<NumericalBisection>();
-
         auto project = projectBuilder::getLinearProject();
         project->reliabilityMethod = calculator;
         project->settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityNumericalBisection;
@@ -304,6 +303,18 @@ namespace Deltares::Probabilistic::Test
         auto designPoint = calculator.getDesignPoint(modelRunner);
         ASSERT_EQ(designPoint->Alphas.size(), 3);
         EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
+    }
+
+    void TestReliabilityMethods::testCrudeMonteCarloProbabilityReliability()
+    {
+        auto calculator = CrudeMonteCarlo();
+        auto modelRunner = projectBuilder().BuildLinearProbabilityProject(2);
+        calculator.Settings->MinimumSamples = 10000;
+        calculator.Settings->MaximumSamples = 100000;
+        calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+        ASSERT_EQ(designPoint->Alphas.size(), 2);
+        EXPECT_NEAR(designPoint->Beta, 3.2504, 1e-5);
     }
 
     void TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability()

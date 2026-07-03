@@ -37,6 +37,9 @@ namespace Deltares::Reliability
 
     public:
         static int getZFactor(double z);
+        static int getZFactor(double z, Models::ModelReturnType modelReturnType);
+        static double getFailureAddition(double z, Models::ModelReturnType modelReturnType);
+
         virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
         virtual ~ReliabilityMethod() = default;
 
