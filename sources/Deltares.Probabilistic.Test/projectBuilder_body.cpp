@@ -46,38 +46,20 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProject(size_t nStochasts)
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linear(v); });
-        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        auto dist = Statistics::DistributionType::Uniform;
-        std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
-        for (size_t i = 0; i < nStochasts; i++)
-        {
-            stochasts.push_back(s);
-        }
-        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
-        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, corr);
-        uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return m;
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearAutoStart(v); });
+        return CreateModelRunner(nStochasts, z);
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProbabilityProject(size_t nStochasts)
     {
         auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearProbability(v); });
-        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        auto dist = Statistics::DistributionType::Uniform;
-        std::vector<double> params{ -1.0, 1.0 };
-        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
-        for (size_t i = 0; i < nStochasts; i++)
-        {
-            stochasts.push_back(s);
-        }
-        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
-        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, corr);
-        uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return m;
+        return CreateModelRunner(nStochasts, z);
+    }
+
+    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProbabilityNonFailureProject(size_t nStochasts)
+    {
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearProbabilityNonFailure(v); });
+        return CreateModelRunner(nStochasts, z);
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearOutputOnlyProject()
@@ -85,33 +67,30 @@ namespace Deltares::Probabilistic::Test
         auto zModel = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> sample) { return linearOutputOnly(sample); });
         zModel->zValueConverter = std::make_shared<Deltares::Models::DefaultValueConverter>();
 
-        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, std::vector<double> { -1.0, 1.0 });
-        stochasts.push_back(stochast);
-        stochasts.push_back(stochast);
-
-        std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>(true);
-        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, correlationMatrix);
-        uConverter->initializeForRun();
-
-        std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(zModel, uConverter);
-        return modelRunner;
+        return CreateModelRunner(2, zModel);
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearOutputProject()
     {
         std::shared_ptr<Models::ZModel> z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearMultiple(v); });
-        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        return CreateModelRunner(2, z);
+    }
+
+    std::shared_ptr<Models::ModelRunner> projectBuilder::CreateModelRunner(size_t nStochasts, std::shared_ptr<Models::ZModel> zModel)
+    {
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
         std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
-        stochast.push_back(s);
-        stochast.push_back(s);
+        for (size_t i = 0; i < nStochasts; i++)
+        {
+            stochasts.push_back(s);
+        }
         std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
-        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochast, corr);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, corr);
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> m = std::make_shared<Models::ModelRunner>(z, uConverter);
-        return m;
+        std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(zModel, uConverter);
+        return modelRunner;
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearArrayProject()
@@ -308,6 +287,15 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
+    void projectBuilder::linearAutoStart(std::shared_ptr<Models::ModelSample> sample)
+    {
+        sample->Z = sample->Values.size() * 0.9;
+        for (double value : sample->Values)
+        {
+            sample->Z -= value;
+        }
+    }
+
     void projectBuilder::linearProbability(std::shared_ptr<Models::ModelSample> sample)
     {
         double val = 2.7;
@@ -326,6 +314,12 @@ namespace Deltares::Probabilistic::Test
         {
             sample->Z = 1.0;
         }
+    }
+
+    void projectBuilder::linearProbabilityNonFailure(std::shared_ptr<Models::ModelSample> sample)
+    {
+        linearProbability(sample);
+        sample->Z = 1 - sample->Z;
     }
 
     void projectBuilder::linearOutputOnly(std::shared_ptr<Models::ModelSample> sample)

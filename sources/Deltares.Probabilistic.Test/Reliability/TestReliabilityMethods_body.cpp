@@ -315,6 +315,28 @@ namespace Deltares::Probabilistic::Test
         auto designPoint = calculator.getDesignPoint(modelRunner);
         ASSERT_EQ(designPoint->Alphas.size(), 2);
         EXPECT_NEAR(designPoint->Beta, 3.2504, 1e-5);
+
+        // the result should be equal to 3 stochasts
+        auto modelRunner3 = projectBuilder().BuildLinearProject(3);
+        calculator.Settings->MinimumSamples = 10000;
+        calculator.Settings->MaximumSamples = 100000;
+        calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ZValue;
+        auto designPoint3 = calculator.getDesignPoint(modelRunner3);
+
+        ASSERT_EQ(designPoint3->Alphas.size() - 1, designPoint->Alphas.size());
+        EXPECT_NEAR(designPoint3->Beta, designPoint->Beta, 0.03);
+   }
+
+    void TestReliabilityMethods::testCrudeMonteCarloProbabilityNonFailureReliability()
+    {
+        auto calculator = CrudeMonteCarlo();
+        auto modelRunner = projectBuilder().BuildLinearProbabilityNonFailureProject(2);
+        calculator.Settings->MinimumSamples = 10000;
+        calculator.Settings->MaximumSamples = 100000;
+        calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+        ASSERT_EQ(designPoint->Alphas.size(), 2);
+        EXPECT_NEAR(designPoint->Beta, -3.2504, 1e-5);
     }
 
     void TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability()

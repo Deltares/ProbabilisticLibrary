@@ -308,6 +308,11 @@ TEST(ReliabilityMethodTest, TestCrudeMCProbabilityReliability)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloProbabilityReliability();
 }
 
+TEST(ReliabilityMethodTest, TestCrudeMCProbabilityNonFailureReliability)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloProbabilityNonFailureReliability();
+}
+
 TEST(ReliabilityMethodTest, testCrudeMCwithCopula)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();

@@ -37,6 +37,7 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Models::ModelRunner> BuildProject() const;
         static std::shared_ptr<Models::ModelRunner> BuildLinearProject(size_t nStochasts);
         static std::shared_ptr<Models::ModelRunner> BuildLinearProbabilityProject(size_t nStochasts);
+        static std::shared_ptr<Models::ModelRunner> BuildLinearProbabilityNonFailureProject(size_t nStochasts);
         static std::shared_ptr<Models::ModelRunner> BuildLinearOutputOnlyProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearOutputProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearArrayProject();
@@ -63,6 +64,8 @@ namespace Deltares::Probabilistic::Test
         static std::shared_ptr<Statistics::Stochast>  getNormalStochast(double mean = 0, double stddev = 1);
         static std::shared_ptr<Statistics::Stochast>  getLogNormalStochast(double mean = 0, double stddev = 1, double shift = 0);
     private:
+        static std::shared_ptr<Models::ModelRunner> CreateModelRunner(size_t nStochasts, std::shared_ptr<Models::ZModel> zModel);
+
         void zfunc(std::shared_ptr<Models::ModelSample> sample) const;
         void zfuncWithDeterminist(std::shared_ptr<Models::ModelSample> sample) const;
         void zfuncTwoBranches(std::shared_ptr<Models::ModelSample> sample) const;
@@ -72,7 +75,9 @@ namespace Deltares::Probabilistic::Test
 
         static void sum(std::shared_ptr<Models::ModelSample> sample);
         static void linear(std::shared_ptr<Models::ModelSample> sample);
+        static void linearAutoStart(std::shared_ptr<Models::ModelSample> sample);
         static void linearProbability(std::shared_ptr<Models::ModelSample> sample);
+        static void linearProbabilityNonFailure(std::shared_ptr<Models::ModelSample> sample);
         static void linearOutputOnly(std::shared_ptr<Models::ModelSample> sample);
         static void linearMultiple(std::shared_ptr<Models::ModelSample> sample);
         static void quadratic(std::shared_ptr<Models::ModelSample> sample);
