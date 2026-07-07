@@ -107,6 +107,9 @@ def linear_abc(a, b, c):
 def linear_small_ab(a, b):
     return 1.98 - (a+b)
 
+def edges_ab(a, b):
+    return 0.998 - max(a, b)
+
 def linear_small_abc(a, b, c):
     return 1.98 - (a+b+c)
 
@@ -361,6 +364,15 @@ def get_linear_small_project():
     project = ReliabilityProject()
 
     project.model = linear_small_ab
+    assign_distributions(project, DistributionType.uniform)
+
+    return project
+
+def get_edges_project():
+
+    project = ReliabilityProject()
+
+    project.model = edges_ab
     assign_distributions(project, DistributionType.uniform)
 
     return project

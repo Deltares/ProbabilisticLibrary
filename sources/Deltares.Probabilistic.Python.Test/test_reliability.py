@@ -26,6 +26,7 @@ import os
 
 from io import StringIO
 
+from probabilistic_library import StandardNormal
 from probabilistic_library.utils import FrozenList, FrozenObject
 from probabilistic_library.reliability import (DesignPoint, DesignPointMethod, ReliabilityMethod, CompareType, StartMethod,
                                                FragilityCurve, FragilityValue)
@@ -930,6 +931,57 @@ def h(a,b,c):
         alphas = dp.alphas;
 
         self.assertAlmostEqual(3.91, beta, delta=margin)
+
+    def test_adaptive_importance_sampling_linear_small(self):
+        project = project_builder.get_linear_small_project()
+
+        project.settings.reliability_method = ReliabilityMethod.adaptive_importance_sampling
+        project.settings.minimum_samples = 500
+        project.settings.maximum_samples = 1000
+        project.settings.maximum_variance_loops = 5
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(3.89, beta, delta=margin)
+
+        self.assertEqual(1, len(dp.contributing_design_points))
+        self.assertAlmostEqual(3.71, dp.contributing_design_points[0].reliability_index, delta=margin)
+
+    def test_adaptive_importance_sampling_clusters(self):
+        project = project_builder.get_edges_project()
+
+        project.settings.reliability_method = ReliabilityMethod.adaptive_importance_sampling
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 2000
+        project.settings.maximum_variance_loops = 5
+        project.settings.clustering = True
+        project.settings.max_clusters = 5
+        project.settings.optimize_number_clusters = True
+
+        project.run();
+
+        # theoretical result: 2/1000 - (1/1000)^2
+        beta_expected = StandardNormal.get_u_from_q(0.002 - 0.001**2)
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(beta_expected, beta, delta=margin)
+
+        self.assertEqual(3, len(dp.contributing_design_points))
+
+        self.assertEqual('Cluster 1', dp.contributing_design_points[0].identifier)
+        self.assertEqual('Cluster 2', dp.contributing_design_points[1].identifier)
+        self.assertEqual('Variance loop 1', dp.contributing_design_points[2].identifier)
+
+        self.assertAlmostEqual(3.10, dp.contributing_design_points[0].reliability_index, delta=margin)
+        self.assertAlmostEqual(3.09, dp.contributing_design_points[1].reliability_index, delta=margin)
+        self.assertAlmostEqual(2.93, dp.contributing_design_points[2].reliability_index, delta=margin)
 
     def test_numerical_integration_linear(self):
         project = project_builder.get_linear_project()
