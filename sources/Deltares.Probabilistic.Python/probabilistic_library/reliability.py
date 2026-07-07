@@ -173,6 +173,12 @@ class Settings(FrozenObject):
                 'relaxation_loops',
                 'minimum_variance_loops',
                 'maximum_variance_loops',
+                'auto_maximum_samples',
+                'max_beta',
+                'start_value_step_size',
+                'clustering',
+                'max_clusters',
+                'optimize_number_clusters',
                 'variation_coefficient',
                 'fraction_failed',
                 'stochast_settings',
@@ -421,6 +427,60 @@ class Settings(FrozenObject):
     @minimum_variance_loops.setter
     def minimum_variance_loops(self, value : int):
         interface.SetIntValue(self._id, 'minimum_variance_loops', value)
+
+    @property
+    def auto_maximum_samples(self) -> bool:
+        """Indicates whether the number of samples should be detected automatically in a non final loop of adaptive importance sampling"""
+        return interface.GetBoolValue(self._id, 'auto_maximum_samples')
+
+    @auto_maximum_samples.setter
+    def auto_maximum_samples(self, value : bool):
+        interface.SetBoolValue(self._id, 'auto_maximum_samples', value)
+
+    @property
+    def beta_max(self) -> float:
+        """Maximum beta value where adaptive importance sampling moves on to a next iteration"""
+        return interface.GetValue(self._id, 'beta_max')
+
+    @beta_max.setter
+    def beta_max(self, value : float):
+        interface.SetValue(self._id, 'beta_max', value)
+
+    @property
+    def start_value_step_size(self) -> float:
+        """Minimum required change in start point where adaptive importance sampling moves on to a next iteration"""
+        return interface.GetValue(self._id, 'start_value_step_size')
+
+    @start_value_step_size.setter
+    def start_value_step_size(self, value : float):
+        interface.SetValue(self._id, 'start_value_step_size', value)
+
+    @property
+    def clustering(self) -> bool:
+        """Indicates whether clustering should be applied with adaptive importance sampling"""
+        return interface.GetBoolValue(self._id, 'clustering')
+
+    @clustering.setter
+    def clustering(self, value : bool):
+        interface.SetBoolValue(self._id, 'clustering', value)
+
+    @property
+    def max_clusters(self) -> int:
+        """Maximum number of clusters with adaptive importance sampling"""
+        return interface.GetIntValue(self._id, 'max_clusters')
+
+    @max_clusters.setter
+    def max_clusters(self, value : int):
+        interface.SetValue(self._id, 'max_clusters', value)
+
+    @property
+    def optimize_number_clusters(self) -> bool:
+        """Indicates whether the number of clusters should be determined automatically with adaptive importance sampling"""
+        return interface.GetBoolValue(self._id, 'optimize_number_clusters')
+
+    @optimize_number_clusters.setter
+    def optimize_number_clusters(self, value : bool):
+        interface.SetBoolValue(self._id, 'optimize_number_clusters', value)
 
     @property
     def variation_coefficient(self) -> float:
