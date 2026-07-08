@@ -95,8 +95,8 @@ namespace Deltares::Reliability
         std::vector<double> zValues; // copy of z for all parallel threads as double
         auto designPointBuilder = DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
 
-        std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
-        double rmin = std::numeric_limits<double>::infinity();
+        //std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
+        //double rmin = std::numeric_limits<double>::infinity();
         double pf = 0.0;
         bool initial = true;
         double z0Fac = 0.0;
@@ -141,13 +141,14 @@ namespace Deltares::Reliability
                 if (initial)
                 {
                     z0Fac = getZFactor(zValues[0], Settings->RunSettings->modelReturnType);
-                    uMin->setInitialValues(z0Fac * Statistics::StandardNormal::BetaMax);
+                    //uMin->setInitialValues(z0Fac * Statistics::StandardNormal::BetaMax);
                     designPointBuilder.initialize(z0Fac * Statistics::StandardNormal::BetaMax);
                 }
 
                 if (modelRunner->shouldExitPrematurely(samples))
                 {
                     // return the result so far
+                    auto uMin = designPointBuilder.getSample();
                     return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
                 }
 
@@ -185,7 +186,7 @@ namespace Deltares::Reliability
             double failureAddition = getFailureAddition(z, Settings->RunSettings->modelReturnType);
             nFailed += failureAddition;
 
-            if (failureAddition > 0)
+            if (failureAddition > 0.0)
             {
                 convergenceReport->FailedSamples += 1;
             }
@@ -195,15 +196,14 @@ namespace Deltares::Reliability
 
             if (smallestDomainAddition > 0)
             {
-                u->Weight = smallestDomainAddition;
+                designPointBuilder.addSample(u, smallestDomainAddition);
 
-                designPointBuilder.addSample(u);
-                double rbeta = u->getBeta();
-                if (rbeta < rmin)
-                {
-                    rmin = rbeta;
-                    uMin = u;
-                }
+                //double rbeta = u->getBeta();
+                //if (rbeta < rmin)
+                //{
+                //    rmin = rbeta;
+                //    uMin = u;
+                //}
             }
             pf = nFailed / nSamples;
             pf = qFail + qRange * pf;
@@ -217,7 +217,7 @@ namespace Deltares::Reliability
         }
 
         double beta = Statistics::StandardNormal::getUFromQ(pf);
-        uMin = designPointBuilder.getSample();
+        auto uMin = designPointBuilder.getSample();
 
         convergenceReport->Convergence = getConvergence(pf, nSamples);
 

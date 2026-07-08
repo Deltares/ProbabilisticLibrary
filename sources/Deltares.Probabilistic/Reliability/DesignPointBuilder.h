@@ -57,6 +57,7 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
         void handleSample(const std::shared_ptr<Models::Sample>& sample, double weight);
+        std::shared_ptr<Models::Sample> getSampleWithProbability(std::shared_ptr<Models::Sample>& sample, double probability) const;
         void initializeTotals();
 
     public:
@@ -65,7 +66,7 @@ namespace Deltares::Reliability
         explicit DesignPointBuilder(DesignPointMethod method, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
 
         void initialize(double beta) const;
-        void addSample(const std::shared_ptr<Models::Sample>& sample);
+        void addSample(const std::shared_ptr<Models::Sample>& sample, double probability = 1.0);
         void removeSample(const std::shared_ptr<Models::Sample>& sample);
         std::shared_ptr<Models::Sample> getSample();
 

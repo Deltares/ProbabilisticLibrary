@@ -80,6 +80,7 @@ namespace Deltares::Models
         double Z = nan("");
 
         int getSize() const;
+        void updateSize();
 
         double getBeta() const;
         double getDistance(const std::shared_ptr<Sample>& other) const;

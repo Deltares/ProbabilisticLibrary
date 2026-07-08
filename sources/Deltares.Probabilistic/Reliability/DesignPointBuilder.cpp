@@ -80,6 +80,14 @@ namespace Deltares::Reliability
         const std::shared_ptr<StochastSettingsSet>& stochastSet)
         : count(count), method(method)
     {
+        //shouldAppendProbability =
+        //    modelReturnType == Models::ModelReturnType::ProbabilityFailure || modelReturnType == Models::ModelReturnType::ReliabilityIndex;
+
+        //if (shouldAppendProbability)
+        //{
+        //    this->count += 1;
+        //}
+
         initializeTotals();
 
         if (stochastSet != nullptr)
@@ -140,11 +148,18 @@ namespace Deltares::Reliability
         }
     }
 
-    void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& sample)
+    void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& sample, double probability)
     {
         sampleAdded = true;
 
-        double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
+        //std::shared_ptr<Models::Sample> sample = modelSample;
+        //if (shouldAppendProbability)
+        //{
+        //    sample = getSampleWithProbability(sample, probability);
+        //}
+
+        double weight = std::isnan(sample->Weight) ? 1.0 : sample->Weight;
+        weight *= probability;
 
         if (!weightedSampleAdded && method != DesignPointMethod::NearestToMean)
         {
@@ -202,7 +217,7 @@ namespace Deltares::Reliability
                     }
                 }
             }
-            else 
+            else
             {
                 double beta = sample->getBeta();
 
@@ -318,6 +333,24 @@ namespace Deltares::Reliability
                 throw std::runtime_error("Not supported");
             }
         }
+    }
+
+    std::shared_ptr<Models::Sample> DesignPointBuilder::getSampleWithProbability(std::shared_ptr<Models::Sample>& sample, double probability) const
+    {
+        auto uCopy = sample->clone();
+        uCopy->Values.push_back(Statistics::StandardNormal::getUFromQ(probability));
+        uCopy->updateSize();
+
+        if (std::isnan(uCopy->Weight))
+        {
+            uCopy->Weight = probability;
+        }
+        else
+        {
+            uCopy->Weight *= probability;
+        }
+
+        return uCopy;
     }
 
     std::string DesignPointBuilder::getDesignPointMethodString(DesignPointMethod method)

@@ -135,5 +135,10 @@ namespace Deltares::Models
 
         return clonedSample;
     }
+
+    void Sample::updateSize()
+    {
+        size = static_cast<int>(Values.size());
+    }
 }
 
