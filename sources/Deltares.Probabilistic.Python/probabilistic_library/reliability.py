@@ -174,6 +174,7 @@ class Settings(FrozenObject):
                 'minimum_variance_loops',
                 'maximum_variance_loops',
                 'auto_maximum_samples',
+                'minimum_failed_samples',
                 'max_beta',
                 'start_value_step_size',
                 'clustering',
@@ -438,6 +439,15 @@ class Settings(FrozenObject):
         interface.SetBoolValue(self._id, 'auto_maximum_samples', value)
 
     @property
+    def minimum_failed_samples(self) -> int:
+        """The minimum number of failed samples when adaptive importance sampling can move to a new start point, instead of increasing the variance factor"""
+        return interface.GetIntValue(self._id, 'minimum_failed_samples')
+
+    @minimum_failed_samples.setter
+    def minimum_failed_samples(self, value : int):
+        interface.SetIntValue(self._id, 'minimum_failed_samples', value)
+
+    @property
     def beta_max(self) -> float:
         """Maximum beta value where adaptive importance sampling moves on to a next iteration"""
         return interface.GetValue(self._id, 'beta_max')
@@ -445,6 +455,33 @@ class Settings(FrozenObject):
     @beta_max.setter
     def beta_max(self, value : float):
         interface.SetValue(self._id, 'beta_max', value)
+
+    @property
+    def loop_variance_increment(self) -> float:
+        """The increment in variance factor for adaptive importance sampling"""
+        return interface.GetValue(self._id, 'loop_variance_increment')
+
+    @loop_variance_increment.setter
+    def loop_variance_increment(self, value : float):
+        interface.SetValue(self._id, 'loop_variance_increment', value)
+
+    @property
+    def variance_factor(self) -> float:
+        """The variance factor in subsequent iterations of adaptive importance sampling"""
+        return interface.GetValue(self._id, 'variance_factor')
+
+    @variance_factor.setter
+    def variance_factor(self, value : float):
+        interface.SetValue(self._id, 'variance_factor', value)
+
+    @property
+    def start_point_on_limit_state(self) -> bool:
+        """Indicates whether start points in adaptive importance sampling should be located on the limit state"""
+        return interface.GetBoolValue(self._id, 'start_point_on_limit_state')
+
+    @start_point_on_limit_state.setter
+    def start_point_on_limit_state(self, value : bool):
+        interface.SetBoolValue(self._id, 'start_point_on_limit_state', value)
 
     @property
     def start_value_step_size(self) -> float:
