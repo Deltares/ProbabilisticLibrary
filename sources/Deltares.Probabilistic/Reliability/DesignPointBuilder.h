@@ -42,6 +42,7 @@ namespace Deltares::Reliability
     private:
         int count = 0;
         DesignPointMethod method = DesignPointMethod::NearestToMean;
+        bool addProbability = false;
         double minimumBeta = std::numeric_limits<double>::infinity();
         double sumWeights = 0;
         std::shared_ptr<Models::Sample> defaultSample = nullptr;
@@ -57,12 +58,12 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
         void handleSample(const std::shared_ptr<Models::Sample>& sample, double weight);
-        std::shared_ptr<Models::Sample> getSampleWithProbability(std::shared_ptr<Models::Sample>& sample, double probability) const;
+        static std::shared_ptr<Models::Sample> getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability);
         void initializeTotals();
 
     public:
         DesignPointBuilder() = default;
-        explicit DesignPointBuilder(int count, DesignPointMethod method, const std::shared_ptr<StochastSettingsSet>& stochastSet = nullptr);
+        explicit DesignPointBuilder(int count, DesignPointMethod method, const std::shared_ptr<StochastSettingsSet>& stochastSet = nullptr, bool addProbability = false);
         explicit DesignPointBuilder(DesignPointMethod method, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
 
         void initialize(double beta) const;

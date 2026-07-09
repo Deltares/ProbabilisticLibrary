@@ -77,16 +77,13 @@ namespace Deltares::Reliability
     };
 
     DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method,
-        const std::shared_ptr<StochastSettingsSet>& stochastSet)
-        : count(count), method(method)
+        const std::shared_ptr<StochastSettingsSet>& stochastSet, bool addProbability)
+        : count(count), method(method), addProbability(addProbability)
     {
-        //shouldAppendProbability =
-        //    modelReturnType == Models::ModelReturnType::ProbabilityFailure || modelReturnType == Models::ModelReturnType::ReliabilityIndex;
-
-        //if (shouldAppendProbability)
-        //{
-        //    this->count += 1;
-        //}
+        if (addProbability)
+        {
+            this->count += 1;
+        }
 
         initializeTotals();
 
@@ -125,10 +122,10 @@ namespace Deltares::Reliability
 
     void DesignPointBuilder::initializeTotals()
     {
-        defaultSample = std::make_shared<Models::Sample>(count);
-        meanSample = std::make_shared<Models::Sample>(count);
-        sinSample = std::make_shared<Models::Sample>(count);
-        cosSample = std::make_shared<Models::Sample>(count);
+        defaultSample = std::make_shared<Models::Sample>(count, addProbability);
+        meanSample = std::make_shared<Models::Sample>(count, addProbability);
+        sinSample = std::make_shared<Models::Sample>(count, addProbability);
+        cosSample = std::make_shared<Models::Sample>(count, addProbability);
 
         for (const auto& modeFinder : modeFinders)
         {
@@ -148,18 +145,17 @@ namespace Deltares::Reliability
         }
     }
 
-    void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& sample, double probability)
+    void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& modelSample, double probability)
     {
         sampleAdded = true;
 
-        //std::shared_ptr<Models::Sample> sample = modelSample;
-        //if (shouldAppendProbability)
-        //{
-        //    sample = getSampleWithProbability(sample, probability);
-        //}
+        std::shared_ptr<Models::Sample> sample = modelSample;
+        if (addProbability)
+        {
+            sample = getSampleWithProbability(modelSample, probability);
+        }
 
         double weight = std::isnan(sample->Weight) ? 1.0 : sample->Weight;
-        weight *= probability;
 
         if (!weightedSampleAdded && method != DesignPointMethod::NearestToMean)
         {
@@ -171,9 +167,11 @@ namespace Deltares::Reliability
             }
             else
             {
-                weight = 1;
+                weight = 1.0;
             }
         }
+
+        weight *= probability;
 
         handleSample(sample, weight);
     }
@@ -294,7 +292,7 @@ namespace Deltares::Reliability
             }
             case DesignPointMethod::CenterOfGravity:
             {
-                std::shared_ptr<Models::Sample> gravityPoint = std::make_shared<Models::Sample>(count);
+                std::shared_ptr<Models::Sample> gravityPoint = std::make_shared<Models::Sample>(count, addProbability);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -319,7 +317,7 @@ namespace Deltares::Reliability
                 }
 
                 auto coordinates = Numeric::NumericSupport::GetCartesianCoordinates(angleValues);
-                std::shared_ptr<Models::Sample> anglePoint = std::make_shared<Models::Sample>(coordinates);
+                std::shared_ptr<Models::Sample> anglePoint = std::make_shared<Models::Sample>(coordinates, addProbability);
 
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
@@ -335,11 +333,12 @@ namespace Deltares::Reliability
         }
     }
 
-    std::shared_ptr<Models::Sample> DesignPointBuilder::getSampleWithProbability(std::shared_ptr<Models::Sample>& sample, double probability) const
+    std::shared_ptr<Models::Sample> DesignPointBuilder::getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability)
     {
-        auto uCopy = sample->clone();
-        uCopy->Values.push_back(Statistics::StandardNormal::getUFromQ(probability));
-        uCopy->updateSize();
+        double pAveraged = (1 + (1 - probability)) / 2;
+        double uAveraged = Statistics::StandardNormal::getUFromP(pAveraged);
+
+        auto uCopy = sample->getExtendedSample(uAveraged);
 
         if (std::isnan(uCopy->Weight))
         {

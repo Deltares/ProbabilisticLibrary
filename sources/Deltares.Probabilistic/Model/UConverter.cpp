@@ -563,19 +563,26 @@ namespace Deltares::Models
         return newVariableStochastList;
     }
 
-    std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Sample> sample, double beta)
+    std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Sample> modelSample, double beta)
     {
         std::shared_ptr<StochastPoint> realization = std::make_shared<StochastPoint>();
         realization->Beta = beta;
 
-        std::shared_ptr<Sample> betaSample = sample->getSampleAtBeta(std::fabs(beta));
+        std::shared_ptr<Sample> betaSample = modelSample->getSampleAtBeta(std::fabs(beta));
+        double uProbability = 0.0;
+
+        if (betaSample->IsExtended())
+        {
+            uProbability = betaSample->Values.back();
+            betaSample = betaSample->getReducedSample();
+        }
 
         if (this->hasQualitiveStochasts)
         {
             betaSample = getQualitativeExcludedSample(betaSample);
         }
 
-        int count = sample->getSize();
+        int count = betaSample->getSize();
 
         const double defaultAlpha = -1 / sqrt(count);
 
@@ -589,7 +596,7 @@ namespace Deltares::Models
                 if (beta == 0)
                 {
                     uValues[i] = 0;
-                    alphas[i] = -sample->Values[i];
+                    alphas[i] = -betaSample->Values[i];
                 }
                 else
                 {
@@ -645,7 +652,7 @@ namespace Deltares::Models
                 if (this->hasQualitiveStochasts && this->stochasts[i]->definition->isQualitative())
                 {
                     const int varyingIndex = this->varyingStochastIndex[i];
-                    alpha->X = stochasts[i]->definition->getXFromU(sample->Values[varyingIndex]);
+                    alpha->X = stochasts[i]->definition->getXFromU(betaSample->Values[varyingIndex]);
                 }
                 else if (!this->hasVariableStochasts || !stochasts[i]->definition->isVariable())
                 {
@@ -667,6 +674,21 @@ namespace Deltares::Models
                     realization->Alphas[stochastIndex]->X = stochasts[stochastIndex]->definition->getXFromUAndSource(xSource, uCorrelated[stochastIndex]);
                 }
             }
+        }
+
+        if (modelSample->IsExtended())
+        {
+            auto alphaProbability = std::make_shared<StochastPointAlpha>();
+            alphaProbability->Stochast = getProbabilityStochast();
+            alphaProbability->U = uProbability;
+            if (beta > 0.0)
+            {
+                alphaProbability->Alpha = -uProbability / beta;
+                alphaProbability->AlphaCorrelated = alphaProbability->Alpha;
+            }
+            alphaProbability->X = alphaProbability->Stochast->getXFromU(uProbability);
+
+            realization->Alphas.push_back(alphaProbability);
         }
 
         realization->updateInfluenceFactors();
@@ -724,6 +746,12 @@ namespace Deltares::Models
         {
             correlationMatrixBuilder->registerStochastValue(this->varyingStochasts[i]->definition, uValues[varyingStochastIndex[i]]);
         }
+    }
+
+    std::shared_ptr<Deltares::Statistics::Stochast> UConverter::getProbabilityStochast()
+    {
+        std::vector<double> limits = { 0.0, 1.0 };
+        return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, limits);
     }
 }
 

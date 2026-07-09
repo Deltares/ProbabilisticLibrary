@@ -61,6 +61,8 @@ namespace Deltares::Models
         std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
         std::vector<int> getVariableStochastIndex();
 
+        static std::shared_ptr<Deltares::Statistics::Stochast> getProbabilityStochast();
+
     public:
 
         UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::BaseCorrelation> stochastCorrelationMatrix);

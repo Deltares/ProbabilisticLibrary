@@ -93,10 +93,11 @@ namespace Deltares::Reliability
 
         int nParameters = modelRunner->getVaryingStochastCount();
         std::vector<double> zValues; // copy of z for all parallel threads as double
-        auto designPointBuilder = DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
 
-        //std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
-        //double rmin = std::numeric_limits<double>::infinity();
+        bool addProbability =
+            Settings->RunSettings->modelReturnType == ModelReturnType::ProbabilityFailure || Settings->RunSettings->modelReturnType == ModelReturnType::ReliabilityIndex;
+        auto designPointBuilder = DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet, addProbability);
+
         double pf = 0.0;
         bool initial = true;
         double z0Fac = 0.0;
@@ -197,13 +198,6 @@ namespace Deltares::Reliability
             if (smallestDomainAddition > 0)
             {
                 designPointBuilder.addSample(u, smallestDomainAddition);
-
-                //double rbeta = u->getBeta();
-                //if (rbeta < rmin)
-                //{
-                //    rmin = rbeta;
-                //    uMin = u;
-                //}
             }
             pf = nFailed / nSamples;
             pf = qFail + qRange * pf;
@@ -227,6 +221,26 @@ namespace Deltares::Reliability
 
         return designPoint;
     }
+
+    //void addProbabilityAsAlpha(std::shared_ptr<DesignPoint> designPoint, double probability)
+    //{
+    //    std::shared_ptr<Models::StochastPointAlpha> alphaCurve = std::make_shared<Models::StochastPointAlpha>();
+    //    alphaCurve->Stochast = fCurve;
+    //    alphaCurve->U = Statistics::StandardNormal::getUFromQ(probability);
+
+    //    // correct for negative beta and fragility curve
+    //    // if beta is negative, the design point is the most likely point which succeeds. Therefore the succeeding probability should have been used
+    //    // instead of the failing probability of the fragility curve. To correct this, the negative u-value is used.
+    //    if (designPoint->Beta < 0)
+    //    {
+    //        alphaCurve->U = -alphaCurve->U;
+    //    }
+
+    //    alphaCurve->X = probability;
+    //    alphaCurve->Alpha = -alphaCurve->U / designPoint->Beta;
+    //    alphaCurve->AlphaCorrelated = alphaCurve->Alpha;
+    //    designPoint->Alphas.push_back(alphaCurve);
+    //}
 
     void CrudeMonteCarlo::applyLimits(const std::shared_ptr<Sample>& sample) const
     {

@@ -313,8 +313,14 @@ namespace Deltares::Probabilistic::Test
         calculator.Settings->MaximumSamples = 100000;
         calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
         auto designPoint = calculator.getDesignPoint(modelRunner);
-        ASSERT_EQ(designPoint->Alphas.size(), 2);
+        ASSERT_EQ(designPoint->Alphas.size(), 3);
         EXPECT_NEAR(designPoint->Beta, 3.2504, 1e-5);
+        EXPECT_NEAR(designPoint->Alphas[0]->U, 1.95, 0.02);
+        EXPECT_NEAR(designPoint->Alphas[0]->X, 0.95, 0.02);
+        EXPECT_NEAR(designPoint->Alphas[1]->U, 2.01, 0.02);
+        EXPECT_NEAR(designPoint->Alphas[1]->X, 0.95, 0.02);
+        EXPECT_NEAR(designPoint->Alphas[2]->U, 1.64, 0.02);
+        EXPECT_NEAR(designPoint->Alphas[2]->X, 0.95, 0.02);
 
         // the result should be equal to 3 stochasts
         auto modelRunner3 = projectBuilder().BuildLinearProject(3);
@@ -323,9 +329,15 @@ namespace Deltares::Probabilistic::Test
         calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ZValue;
         auto designPoint3 = calculator.getDesignPoint(modelRunner3);
 
-        ASSERT_EQ(designPoint3->Alphas.size() - 1, designPoint->Alphas.size());
+        ASSERT_EQ(designPoint3->Alphas.size(), designPoint->Alphas.size());
         EXPECT_NEAR(designPoint3->Beta, designPoint->Beta, 0.03);
-   }
+
+        // first 2 stochasts refer to given stochasts, there values in the design point should be close
+        EXPECT_NEAR(designPoint3->Alphas[0]->U, designPoint->Alphas[0]->U, 0.15);
+        EXPECT_NEAR(designPoint3->Alphas[0]->X, designPoint->Alphas[0]->X, 0.05);
+        EXPECT_NEAR(designPoint3->Alphas[1]->U, designPoint->Alphas[1]->U, 0.15);
+        EXPECT_NEAR(designPoint3->Alphas[1]->X, designPoint->Alphas[1]->X, 0.05);
+    }
 
     void TestReliabilityMethods::testCrudeMonteCarloProbabilityNonFailureReliability()
     {
@@ -335,7 +347,7 @@ namespace Deltares::Probabilistic::Test
         calculator.Settings->MaximumSamples = 100000;
         calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
         auto designPoint = calculator.getDesignPoint(modelRunner);
-        ASSERT_EQ(designPoint->Alphas.size(), 2);
+        ASSERT_EQ(designPoint->Alphas.size(), 3);
         EXPECT_NEAR(designPoint->Beta, -3.2504, 1e-5);
     }
 

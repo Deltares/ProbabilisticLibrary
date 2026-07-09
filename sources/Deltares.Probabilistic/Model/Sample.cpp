@@ -126,7 +126,7 @@ namespace Deltares::Models
 
     std::shared_ptr<Sample> Sample::clone() const
     {
-        std::shared_ptr<Sample> clonedSample = std::make_shared<Sample>(this->Values);
+        std::shared_ptr<Sample> clonedSample = std::make_shared<Sample>(this->Values, this->extended);
 
         clonedSample->AllowProxy = this->AllowProxy;
         clonedSample->IterationIndex = this->IterationIndex;
@@ -136,9 +136,26 @@ namespace Deltares::Models
         return clonedSample;
     }
 
-    void Sample::updateSize()
+    std::shared_ptr<Sample> Sample::getExtendedSample(double extendedUValue) const
     {
-        size = static_cast<int>(Values.size());
+        auto uCopy = clone();
+
+        uCopy->Values.push_back(extendedUValue);
+        uCopy->size = static_cast<int>(uCopy->Values.size());
+        uCopy->extended = true;
+
+        return uCopy;
+    }
+
+    std::shared_ptr<Sample> Sample::getReducedSample() const
+    {
+        auto uCopy = clone();
+
+        uCopy->Values.pop_back();
+        uCopy->size = static_cast<int>(uCopy->Values.size());
+        uCopy->extended = false;
+
+        return uCopy;
     }
 }
 
