@@ -50,7 +50,7 @@ namespace Deltares::Reliability
         static double getProbabilityOfFailure(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);
 
         static bool prematureExit(const ImportanceSamplingSettings& settings, int samples, int runs);
-        static double getCorrectionForOverlappingClusters(const Models::Sample& sample, const std::shared_ptr<ImportanceSamplingCluster>& clusterResult,
+        static bool isNearestCluster(const Models::Sample& sample, const std::shared_ptr<ImportanceSamplingCluster>& clusterResult,
             std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusterResults);
         static std::shared_ptr<ImportanceSamplingCluster> getNearestCluster(const Models::Sample& sample, std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);
         static std::shared_ptr<ImportanceSamplingCluster> findMostContributingCluster(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters);

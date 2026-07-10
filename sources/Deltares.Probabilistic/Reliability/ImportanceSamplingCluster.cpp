@@ -35,17 +35,22 @@ namespace Deltares::Reliability
         designPointBuilder.initialize(z0Fac * Statistics::StandardNormal::BetaMax);
     }
 
-    void ImportanceSamplingCluster::addSample(std::shared_ptr<Models::Sample> sample)
+    void ImportanceSamplingCluster::addSample(std::shared_ptr<Models::Sample> sample, double failureAddition)
     {
         TotalCount++;
         TotalWeight += sample->Weight;
 
-        if (sample->Z < 0)
+        if (failureAddition > 0.0)
         {
             FailCount++;
-            FailWeight += sample->Weight;
+            FailWeight += failureAddition * sample->Weight;
             MaxFailWeight = std::max(MaxFailWeight, sample->Weight);
-            designPointBuilder.addSample(sample);
+        }
+
+        double smallestDomainAddition = z0Fac > 0.0 ? failureAddition : 1.0 - failureAddition;
+        if (smallestDomainAddition > 0)
+        {
+            designPointBuilder.addSample(sample, smallestDomainAddition);
         }
 
         if (this->NearestSample == nullptr || std::abs(sample->Z) < std::abs(this->NearestSample->Z))
@@ -63,10 +68,6 @@ namespace Deltares::Reliability
         if (this->FailCount == 0)
         {
             return 0;
-        }
-        else if (this->FailCount == this->TotalCount)
-        {
-            return 1;
         }
         else if (useCount)
         {

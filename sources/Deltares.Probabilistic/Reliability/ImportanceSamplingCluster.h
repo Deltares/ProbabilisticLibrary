@@ -45,7 +45,7 @@ namespace Deltares::Reliability
         double MaxFailWeight = 0.0;
 
         void initialize(int nStochasts, double z0Fac, bool z0Ignore, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet);
-        void addSample(std::shared_ptr<Deltares::Models::Sample> sample);
+        void addSample(std::shared_ptr<Deltares::Models::Sample> sample, double failureAddition);
 
         std::shared_ptr<Models::Sample> NearestSample = nullptr; // result sample which is nearest to the limit state
     private:

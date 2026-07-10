@@ -142,7 +142,6 @@ namespace Deltares::Reliability
                 if (initial)
                 {
                     z0Fac = getZFactor(zValues[0], Settings->RunSettings->modelReturnType);
-                    //uMin->setInitialValues(z0Fac * Statistics::StandardNormal::BetaMax);
                     designPointBuilder.initialize(z0Fac * Statistics::StandardNormal::BetaMax);
                 }
 
