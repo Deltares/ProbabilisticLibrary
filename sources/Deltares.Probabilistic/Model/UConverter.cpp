@@ -596,7 +596,7 @@ namespace Deltares::Models
                 if (beta == 0)
                 {
                     uValues[i] = 0;
-                    alphas[i] = -betaSample->Values[i];
+                    alphas[i] = -sample->Values[i];
                 }
                 else
                 {
