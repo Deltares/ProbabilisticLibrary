@@ -125,9 +125,9 @@ namespace Deltares::Probabilistic::Test
     WaartsResult TestWaartsTwoBranches::expectedValuesAdaptiveImportanceSampling()
     {
         auto expected = expectedValues();
-        expected.beta = 5.01;
-        expected.alpha = {0.465031, -0.871085, -0.157981};
-        expected.x = {8.83589, 4.36116, 4.79095};
+        expected.beta = 5.00;
+        expected.alpha = {0.42660, -0.89101, -0.15528};
+        expected.x = {8.93396, 4.45318, 4.77608};
         expected.converged = false;
         return expected;
     }

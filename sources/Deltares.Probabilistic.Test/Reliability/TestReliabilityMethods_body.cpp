@@ -345,6 +345,26 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Beta, 2.95, 0.01);
     }
 
+    void TestReliabilityMethods::testAdaptiveImportanceSamplingVarianceFactor()
+    {
+        auto calculator = AdaptiveImportanceSampling();
+        auto modelRunner = projectBuilder().BuildProjectWithPolynome2();
+        calculator.Settings->importanceSamplingSettings->MinimumSamples = 1000;
+        calculator.Settings->importanceSamplingSettings->MaximumSamples = 1000;
+        calculator.Settings->VarianceFactor = 0.5;
+
+        modelRunner->updateStochastSettings(calculator.Settings->importanceSamplingSettings->StochastSet);
+        for (auto stochastSettings :calculator.Settings->importanceSamplingSettings->StochastSet->VaryingStochastSettings)
+        {
+            stochastSettings->VarianceFactor = 0.5;
+        }
+
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+        ASSERT_EQ(designPoint->ContributingDesignPoints.size(), 2);
+        ASSERT_EQ(designPoint->Alphas.size(), 4);
+        EXPECT_NEAR(designPoint->Beta, 3.13, 0.01);
+    }
+
     void TestReliabilityMethods::testClustersAdpImpSampling()
     {
         auto expectedBetas = std::vector({ 0.80438, 0.753699, 0.78369, 0.7956208, 0.754192 });

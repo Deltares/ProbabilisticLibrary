@@ -226,6 +226,22 @@ namespace Deltares::Probabilistic::Test
         return m;
     }
 
+    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithPolynome2() const
+    {
+        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+        { return zfuncPolynome(v); });
+        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochast.push_back(getLogNormalStochast(1.0, 0.5));
+        stochast.push_back(getLogNormalStochast(1.0, 0.5));
+        stochast.push_back(getLogNormalStochast(1.0, 0.5));
+        stochast.push_back(getLogNormalStochast(1.0, 0.5));
+        auto corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
+        uConverter->initializeForRun();
+        auto m = std::make_shared<Models::ModelRunner>(z, uConverter);
+        return m;
+    }
+
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectTwoBranches(bool useProxy) const
     {
         std::shared_ptr<Models::ZModel> z;

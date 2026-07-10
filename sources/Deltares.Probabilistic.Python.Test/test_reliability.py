@@ -26,6 +26,7 @@ import os
 
 from io import StringIO
 
+from probabilistic_library import StandardNormal
 from probabilistic_library.utils import FrozenList, FrozenObject
 from probabilistic_library.reliability import (DesignPoint, DesignPointMethod, ReliabilityMethod, CompareType, StartMethod,
                                                FragilityCurve, FragilityValue)
@@ -930,6 +931,95 @@ def h(a,b,c):
         alphas = dp.alphas;
 
         self.assertAlmostEqual(3.91, beta, delta=margin)
+
+    def test_adaptive_importance_sampling_linear_small(self):
+        project = project_builder.get_linear_small_project()
+
+        project.settings.reliability_method = ReliabilityMethod.adaptive_importance_sampling
+        project.settings.minimum_samples = 500
+        project.settings.maximum_samples = 1000
+        project.settings.maximum_variance_loops = 5
+
+        project.run();
+
+        dp = project.design_point
+        beta = dp.reliability_index
+
+        self.assertAlmostEqual(3.89, beta, delta=margin)
+
+        self.assertEqual(1, len(dp.contributing_design_points))
+        self.assertAlmostEqual(3.71, dp.contributing_design_points[0].reliability_index, delta=margin)
+
+    def test_adaptive_importance_sampling_clusters(self):
+        project = project_builder.get_edges_project()
+
+        project.settings.reliability_method = ReliabilityMethod.adaptive_importance_sampling
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 2000
+        project.settings.maximum_variance_loops = 5
+        project.settings.clustering = True
+        project.settings.max_clusters = 5
+        project.settings.optimize_number_clusters = True
+
+        project.run();
+
+        # theoretical result: 2/1000 - (1/1000)^2
+        beta_expected = StandardNormal.get_u_from_q(0.002 - 0.001**2) # = 2.878
+
+        dp = project.design_point
+        beta = dp.reliability_index
+
+        self.assertAlmostEqual(beta_expected, beta, delta=margin)
+
+        self.assertEqual(3, len(dp.contributing_design_points))
+
+        self.assertEqual('Cluster 1', dp.contributing_design_points[0].identifier)
+        self.assertEqual('Cluster 2', dp.contributing_design_points[1].identifier)
+        self.assertEqual('Variance loop 1', dp.contributing_design_points[2].identifier)
+
+        self.assertAlmostEqual(3.10, dp.contributing_design_points[0].reliability_index, delta=margin)
+        self.assertAlmostEqual(3.09, dp.contributing_design_points[1].reliability_index, delta=margin)
+        self.assertAlmostEqual(2.93, dp.contributing_design_points[2].reliability_index, delta=margin)
+
+        # alpha values result more or less equal
+        self.assertAlmostEqual(dp.alphas[0].alpha, dp.alphas[1].alpha, delta=0.05)
+
+        # each contributing stochast focuses on one parameter
+        self.assertAlmostEqual(1, max(abs(dp.contributing_design_points[0].alphas[0].alpha), abs(dp.contributing_design_points[0].alphas[1].alpha)), delta=0.01)
+        self.assertAlmostEqual(1, max(abs(dp.contributing_design_points[1].alphas[0].alpha), abs(dp.contributing_design_points[1].alphas[1].alpha)), delta=0.01)
+        self.assertAlmostEqual(dp.contributing_design_points[0].alphas[0].alpha, dp.contributing_design_points[1].alphas[1].alpha, delta=0.05)
+        self.assertAlmostEqual(dp.contributing_design_points[0].alphas[1].alpha, dp.contributing_design_points[1].alphas[0].alpha, delta=0.05)
+
+    def test_adaptive_importance_sampling_variance_factor(self):
+        project = project_builder.get_poly_project()
+
+        project.settings.reliability_method = ReliabilityMethod.adaptive_importance_sampling
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 1000
+        project.settings.start_value_step_size = 0
+        project.settings.fraction_failed = 0.1
+        project.settings.variance_factor = 0.5
+        project.settings.minimum_failed_samples = 1
+        project.settings.loop_variance_increment = 0.5
+        project.settings.start_point_on_limit_state = False
+        project.settings.reuse_calculations = True
+        project.settings.save_realizations = True
+
+        for setting in project.settings.stochast_settings:
+            setting.variance_factor = 0.5
+
+        project.limit_state_function.parameter = project.model.output_parameters[0]
+        project.limit_state_function.compare_type = CompareType.greater_than
+        project.limit_state_function.critical_value = 24
+
+        project.run()
+
+        dp = project.design_point
+
+        self.assertAlmostEqual(3.13, dp.reliability_index, delta=margin)
+
+        self.assertEqual(2, len(dp.contributing_design_points))
+
 
     def test_numerical_integration_linear(self):
         project = project_builder.get_linear_project()

@@ -45,7 +45,8 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist) const;
         std::shared_ptr<Models::ModelRunner> BuildProjectWithDeterministAndCopula(double valueDeterminist) const;
         std::shared_ptr<Models::ModelRunner> BuildProjectWithPolynome() const;
-            static std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
+        std::shared_ptr<Models::ModelRunner> BuildProjectWithPolynome2() const;
+        static std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
         std::shared_ptr<Models::ModelRunner> BuildProjectTwoBranches(bool useProxy) const;
 
         static std::shared_ptr<Uncertainty::UncertaintyProject> getUncertaintyProject(std::shared_ptr<Reliability::ReliabilityProject> project);
