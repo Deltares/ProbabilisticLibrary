@@ -46,6 +46,7 @@ namespace Deltares::Probabilistic::Test
         static void testCrudeMonteCarloWithCopulaReliability();
         static void testCrudeMonteCarloWithQualitativeProject();
         static void testAdaptiveImportanceSampling();
+        static void testAdaptiveImportanceSamplingVarianceFactor();
         static void testClustersAdpImpSampling();
         static void testDirSamplingProxyModels(const bool useProxy,
             const Reliability::ModelVaryingType varyingType, const double dsdu);

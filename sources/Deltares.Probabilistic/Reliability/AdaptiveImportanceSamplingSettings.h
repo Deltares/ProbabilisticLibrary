@@ -52,7 +52,7 @@ namespace Deltares::Reliability
         /**
          * \brief The minimum number of samples which should have failed (Z < 0) to allow the center point of the next importance sampling call to be based on the design point of the last importance sampling call. If not achieved, the next importance sampling call will have an increased variance factor
          */
-        int MinimumFailedSamples = 0;
+        int MinimumFailedSamples = 1;
 
         /**
          * \brief The initial variance factor to be applied to all stochasts
@@ -119,11 +119,14 @@ namespace Deltares::Reliability
         {
             Logging::ValidationSupport::checkMinimumInt(report, 1, MinVarianceLoops, "minimum variance loops");
             Logging::ValidationSupport::checkMinimumInt(report, MinVarianceLoops, MaxVarianceLoops, "maximum variance loops");
-            Logging::ValidationSupport::checkMinimum(report, 0, StartValueStepSize, "start value step size");
-            Logging::ValidationSupport::checkMinimum(report, 0, FractionFailed, "fraction failed");
+            Logging::ValidationSupport::checkMinimum(report, 0.0, StartValueStepSize, "start value step size");
+            Logging::ValidationSupport::checkMinimum(report, 0.0, FractionFailed, "fraction failed");
             Logging::ValidationSupport::checkMaximum(report, 0.5, FractionFailed, "fraction failed");
             Logging::ValidationSupport::checkMinimum(report, 0.0001, EpsWeightSample, "epsilon weight sample");
-            Logging::ValidationSupport::checkMaximum(report, 1, EpsWeightSample, "epsilon weight sample");
+            Logging::ValidationSupport::checkMaximum(report, 1.0, EpsWeightSample, "epsilon weight sample");
+            Logging::ValidationSupport::checkMinimumInt(report, 0, MinimumFailedSamples, "minimum failed samples");
+            Logging::ValidationSupport::checkMinimum(report, 0.0001, VarianceFactor, "variance factor");
+            Logging::ValidationSupport::checkMinimum(report, 0.0001, LoopVarianceIncrement, "loop variance increment");
 
             startPointSettings->validate(report);
             clusterSettings->validate(report);
