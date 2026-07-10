@@ -563,12 +563,12 @@ namespace Deltares::Models
         return newVariableStochastList;
     }
 
-    std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Sample> modelSample, double beta)
+    std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Sample> sample, double beta)
     {
         std::shared_ptr<StochastPoint> realization = std::make_shared<StochastPoint>();
         realization->Beta = beta;
 
-        std::shared_ptr<Sample> betaSample = modelSample->getSampleAtBeta(std::fabs(beta));
+        std::shared_ptr<Sample> betaSample = sample->getSampleAtBeta(std::fabs(beta));
         double uProbability = 0.0;
 
         if (betaSample->IsExtended())
@@ -652,7 +652,7 @@ namespace Deltares::Models
                 if (this->hasQualitiveStochasts && this->stochasts[i]->definition->isQualitative())
                 {
                     const int varyingIndex = this->varyingStochastIndex[i];
-                    alpha->X = stochasts[i]->definition->getXFromU(betaSample->Values[varyingIndex]);
+                    alpha->X = stochasts[i]->definition->getXFromU(sample->Values[varyingIndex]);
                 }
                 else if (!this->hasVariableStochasts || !stochasts[i]->definition->isVariable())
                 {
@@ -676,12 +676,12 @@ namespace Deltares::Models
             }
         }
 
-        if (modelSample->IsExtended())
+        if (sample->IsExtended())
         {
             auto alphaProbability = std::make_shared<StochastPointAlpha>();
             alphaProbability->Stochast = getProbabilityStochast();
             alphaProbability->U = uProbability;
-            if (beta > 0.0)
+            if (beta != 0.0)
             {
                 alphaProbability->Alpha = -uProbability / beta;
                 alphaProbability->AlphaCorrelated = alphaProbability->Alpha;
