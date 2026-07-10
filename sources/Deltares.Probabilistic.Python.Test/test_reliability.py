@@ -398,6 +398,32 @@ def h(a,b,c):
         self.assertAlmostEqual(-1.61, beta, delta=margin)
         self.assertEqual(25, len(alphas))
 
+    def test_crude_monte_carlo_linear_probability(self):
+        project = project_builder.get_linear_probability_project()
+        project.settings.reliability_method = ReliabilityMethod.form
+        self.assertFalse(project.is_valid())
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+        project.settings.minimum_samples = 10000
+        project.settings.maximum_samples = 10000
+        self.assertTrue(project.is_valid())
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(3.29, beta, delta=margin)
+        self.assertEqual(3, len(alphas))
+
+        self.assertAlmostEqual(1.96, alphas[0].u, delta=margin)
+        self.assertAlmostEqual(0.95, alphas[0].x, delta=margin)
+        self.assertAlmostEqual(2.06, alphas[1].u, delta=margin)
+        self.assertAlmostEqual(0.96, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(1.66, alphas[2].u, delta=margin)
+        self.assertAlmostEqual(0.96, alphas[2].x, delta=margin)
 
     def test_form_linear_conditional(self):
         project = project_builder.get_linear_project()

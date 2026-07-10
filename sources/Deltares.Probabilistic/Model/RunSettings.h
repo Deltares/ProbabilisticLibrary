@@ -67,9 +67,19 @@ namespace Deltares::Models
         Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
         bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
-        void validate(Logging::ValidationReport& report) const
+        void validate(Logging::ValidationReport& report, bool allowProbabilityModelReturnTypes = false) const
         {
             Logging::ValidationSupport::checkMinimumInt(report, 1, MaxParallelProcesses, "max parallel processes");
+
+            if (!allowProbabilityModelReturnTypes && modelReturnType != ModelReturnType::ZValue)
+            {
+                auto message = std::make_shared<Logging::Message>();
+                message->Text = "model return type is not allowed for this reliability method.";
+                message->Type = Logging::MessageType::Error;
+                message->Subject = "model return type";
+
+                report.messages.push_back(message);
+            }
         }
 
         static std::string getHandleInvalidTypeString(Deltares::Models::HandleInvalidType type);
