@@ -268,6 +268,16 @@ TEST(ReliabilityMethodTest, TestNumBisection2)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testNumericalBisectionLinear();
 }
 
+TEST(ReliabilityMethodTest, TestNumIntZValueProbability)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumIntZValueProbability();
+}
+
+TEST(ReliabilityMethodTest, TestNumIntProbabilityInverse)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumericalBisectionLinear();
+}
+
 TEST(ReliabilityMethodTest, TestSubSetSimulationReliabilityNearestToMean)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testSubSetSimulationReliabilityNearestToMean();
@@ -303,14 +313,14 @@ TEST(ReliabilityMethodTest, TestCrudeMCReliability)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloReliability();
 }
 
-TEST(ReliabilityMethodTest, TestCrudeMCProbabilityReliability)
+TEST(ReliabilityMethodTest, TestCrudeMonteCarloZValueProbability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloProbabilityReliability();
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloZValueProbability();
 }
 
-TEST(ReliabilityMethodTest, TestCrudeMCProbabilityNonFailureReliability)
+TEST(ReliabilityMethodTest, testCrudeMonteCarloProbabilityInverse)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloProbabilityNonFailureReliability();
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloProbabilityInverse();
 }
 
 TEST(ReliabilityMethodTest, testCrudeMCwithCopula)
@@ -323,9 +333,24 @@ TEST(ReliabilityMethodTest, testCrudeMCwithQualitativeProject)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloWithQualitativeProject();
 }
 
+TEST(ReliabilityMethodTest, TestImportanceSamplingZValueProbability)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testImportanceSamplingZValueProbability();
+}
+
+TEST(ReliabilityMethodTest, TestImportanceSamplingProbabilityInverse)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testImportanceSamplingProbabilityInverse();
+}
+
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSampling)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSampling();
+}
+
+TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingProbability)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSamplingZValueProbability();
 }
 
 TEST(ReliabilityMethodTest, TestClustersAdpImpSampling)

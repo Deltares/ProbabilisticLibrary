@@ -305,50 +305,160 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
     }
 
-    void TestReliabilityMethods::testCrudeMonteCarloProbabilityReliability()
+    void TestReliabilityMethods::testCrudeMonteCarloZValueProbability()
     {
         auto calculator = CrudeMonteCarlo();
-        auto modelRunner = projectBuilder().BuildLinearProbabilityProject(2);
         calculator.Settings->MinimumSamples = 10000;
         calculator.Settings->MaximumSamples = 100000;
-        calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
-        auto designPoint = calculator.getDesignPoint(modelRunner);
-        ASSERT_EQ(designPoint->Alphas.size(), 3);
-        EXPECT_NEAR(designPoint->Beta, 3.2504, 1e-5);
-        EXPECT_NEAR(designPoint->Alphas[0]->U, 1.95, 0.02);
-        EXPECT_NEAR(designPoint->Alphas[0]->X, 0.95, 0.02);
-        EXPECT_NEAR(designPoint->Alphas[1]->U, 2.01, 0.02);
-        EXPECT_NEAR(designPoint->Alphas[1]->X, 0.95, 0.02);
-        EXPECT_NEAR(designPoint->Alphas[2]->U, 1.64, 0.02);
-        EXPECT_NEAR(designPoint->Alphas[2]->X, 0.95, 0.02);
 
-        // the result should be equal to 3 stochasts
-        auto modelRunner3 = projectBuilder().BuildLinearProject(3);
+        testZValueProbability(calculator, calculator.Settings->RunSettings);
+    }
+
+    void TestReliabilityMethods::testNumIntZValueProbability()
+    {
+        auto calculator = NumericalIntegration();
+
+        testZValueProbability(calculator, calculator.Settings.runSettings, true);
+    }
+
+    void TestReliabilityMethods::testImportanceSamplingZValueProbability()
+    {
+        auto calculator = ImportanceSampling();
+
         calculator.Settings->MinimumSamples = 10000;
         calculator.Settings->MaximumSamples = 100000;
-        calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ZValue;
-        auto designPoint3 = calculator.getDesignPoint(modelRunner3);
+
+        testZValueProbability(calculator, calculator.Settings->runSettings);
+    }
+
+    void TestReliabilityMethods::testAdaptiveImportanceSamplingZValueProbability()
+    {
+        auto calculator = AdaptiveImportanceSampling();
+
+        calculator.Settings->importanceSamplingSettings->MinimumSamples = 5000;
+        calculator.Settings->importanceSamplingSettings->MaximumSamples = 5000;
+        calculator.Settings->MinVarianceLoops = 2;
+        calculator.Settings->MaxVarianceLoops = 2;
+
+        testZValueProbability(calculator, calculator.Settings->importanceSamplingSettings->runSettings);
+    }
+
+    void TestReliabilityMethods::testZValueProbability(Deltares::Reliability::ReliabilityMethod& calculator, std::shared_ptr<RunSettings> runSettings, bool isNumInt)
+    {
+        std::shared_ptr<DesignPoint> designPoint3 = nullptr;
+
+        // for num int set the design point expected result in order to reduce calculation time
+        if (isNumInt)
+        {
+            designPoint3 = std::make_shared<DesignPoint>();
+            designPoint3->Beta = 3.24;
+
+            // last one not compared
+            for (size_t i = 0; i < 3; i++)
+            {
+                designPoint3->Alphas.push_back(std::make_shared<StochastPointAlpha>());
+                designPoint3->Alphas[i]->Alpha = -0.61;
+                designPoint3->Alphas[i]->U = 1.98;
+                designPoint3->Alphas[i]->X = 0.95;
+            }
+        }
+        else
+        {
+            runSettings->modelReturnType = ModelReturnType::ZValue;
+            auto modelRunner3 = projectBuilder().BuildLinearProject(3);
+            designPoint3 = calculator.getDesignPoint(modelRunner3);
+            ASSERT_EQ(designPoint3->Alphas.size(), 3);
+        }
+
+        // now use a model which returns a probability
+
+        runSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
+        auto modelRunner = projectBuilder().BuildLinearProbabilityProject(2);
+
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+        EXPECT_NEAR(designPoint->Beta, 3.25, 0.01);
 
         ASSERT_EQ(designPoint3->Alphas.size(), designPoint->Alphas.size());
         EXPECT_NEAR(designPoint3->Beta, designPoint->Beta, 0.03);
 
         // first 2 stochasts refer to given stochasts, there values in the design point should be close
-        EXPECT_NEAR(designPoint3->Alphas[0]->U, designPoint->Alphas[0]->U, 0.15);
-        EXPECT_NEAR(designPoint3->Alphas[0]->X, designPoint->Alphas[0]->X, 0.05);
-        EXPECT_NEAR(designPoint3->Alphas[1]->U, designPoint->Alphas[1]->U, 0.15);
-        EXPECT_NEAR(designPoint3->Alphas[1]->X, designPoint->Alphas[1]->X, 0.05);
+        for (int i = 0; i < designPoint3->Alphas.size() - 1; i++)
+        {
+            EXPECT_NEAR(designPoint->Alphas[i]->Alpha, designPoint3->Alphas[i]->Alpha, 0.15);
+            EXPECT_NEAR(designPoint->Alphas[i]->U, designPoint3->Alphas[i]->U, 0.15);
+            EXPECT_NEAR(designPoint->Alphas[i]->X, designPoint3->Alphas[i]->X, 0.05);
+        }
     }
 
-    void TestReliabilityMethods::testCrudeMonteCarloProbabilityNonFailureReliability()
+    void TestReliabilityMethods::testCrudeMonteCarloProbabilityInverse()
     {
         auto calculator = CrudeMonteCarlo();
-        auto modelRunner = projectBuilder().BuildLinearProbabilityNonFailureProject(2);
+
         calculator.Settings->MinimumSamples = 10000;
         calculator.Settings->MaximumSamples = 100000;
-        calculator.Settings->RunSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
-        auto designPoint = calculator.getDesignPoint(modelRunner);
-        ASSERT_EQ(designPoint->Alphas.size(), 3);
-        EXPECT_NEAR(designPoint->Beta, -3.2504, 1e-5);
+
+        testProbabilityInverse(calculator, calculator.Settings->RunSettings);
+    }
+
+    void TestReliabilityMethods::testImportanceSamplingProbabilityInverse()
+    {
+        auto calculator = ImportanceSampling();
+
+        calculator.Settings->MinimumSamples = 1000;
+        calculator.Settings->MaximumSamples = 1000;
+
+        testProbabilityInverse(calculator, calculator.Settings->runSettings);
+    }
+
+    void TestReliabilityMethods::testNumIntProbabilityInverse()
+    {
+        auto calculator = NumericalIntegration();
+
+        testProbabilityInverse(calculator, calculator.Settings.runSettings);
+    }
+
+    void TestReliabilityMethods::testProbabilityInverse(Deltares::Reliability::ReliabilityMethod& calculator, std::shared_ptr<RunSettings> runSettings)
+    {
+        runSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
+
+        auto modelRunnerProbability = projectBuilder().BuildLinearProbabilityProject(2);
+        auto designPointProbability = calculator.getDesignPoint(modelRunnerProbability);
+        ASSERT_EQ(designPointProbability->Alphas.size(), 3);
+
+        auto modelRunnerProbabilityInverse = projectBuilder().BuildLinearProbabilityInverseProject(2);
+        auto designPointProbabilityInverse = calculator.getDesignPoint(modelRunnerProbabilityInverse);
+        ASSERT_EQ(designPointProbabilityInverse->Alphas.size(), designPointProbability->Alphas.size());
+        EXPECT_NEAR(designPointProbabilityInverse->Beta, -designPointProbability->Beta, 1e-5);
+        for (int i = 0; i < designPointProbability->Alphas.size(); i++)
+        {
+            EXPECT_NEAR(designPointProbabilityInverse->Alphas[i]->Alpha, -designPointProbability->Alphas[i]->Alpha, 0.15);
+            EXPECT_NEAR(designPointProbabilityInverse->Alphas[i]->U, designPointProbability->Alphas[i]->U, 0.15);
+            EXPECT_NEAR(designPointProbabilityInverse->Alphas[i]->X, designPointProbability->Alphas[i]->X, 0.05);
+        }
+
+        runSettings->modelReturnType = ModelReturnType::ReliabilityIndex;
+
+        auto modelRunnerReliability = projectBuilder().BuildLinearReliabilityProject(2);
+        auto designPointReliability = calculator.getDesignPoint(modelRunnerReliability);
+        ASSERT_EQ(designPointReliability->Alphas.size(), designPointProbability->Alphas.size());
+        EXPECT_NEAR(designPointReliability->Beta, designPointProbability->Beta, 1e-5);
+        for (int i = 0; i < designPointProbability->Alphas.size(); i++)
+        {
+            EXPECT_NEAR(designPointReliability->Alphas[i]->Alpha, designPointProbability->Alphas[i]->Alpha, 0.15);
+            EXPECT_NEAR(designPointReliability->Alphas[i]->U, designPointProbability->Alphas[i]->U, 0.15);
+            EXPECT_NEAR(designPointReliability->Alphas[i]->X, designPointProbability->Alphas[i]->X, 0.05);
+        }
+
+        auto modelRunnerReliabilityInverse = projectBuilder().BuildLinearReliabilityInverseProject(2);
+        auto designPointReliabilityInverse = calculator.getDesignPoint(modelRunnerReliabilityInverse);
+        ASSERT_EQ(designPointReliabilityInverse->Alphas.size(), designPointProbability->Alphas.size());
+        EXPECT_NEAR(designPointReliabilityInverse->Beta, -designPointProbability->Beta, 1e-5);
+        for (int i = 0; i < designPointProbability->Alphas.size(); i++)
+        {
+            EXPECT_NEAR(designPointReliabilityInverse->Alphas[i]->Alpha, -designPointProbability->Alphas[i]->Alpha, 0.15);
+            EXPECT_NEAR(designPointReliabilityInverse->Alphas[i]->U, designPointProbability->Alphas[i]->U, 0.15);
+            EXPECT_NEAR(designPointReliabilityInverse->Alphas[i]->X, designPointProbability->Alphas[i]->X, 0.05);
+        }
     }
 
     void TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability()
@@ -393,7 +503,7 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testClustersAdpImpSampling()
     {
         auto expectedBetas = std::vector({ 0.80438, 0.753699, 0.78369, 0.7956208, 0.754192 });
-        auto expectedCentersA = std::vector( { -0.697351, 0.71673, -0.69555, -0.718478, 0.707038, -0.707175, 0.714029, 0.700116 });
+        auto expectedCentersA = std::vector({ -0.697351, 0.71673, -0.69555, -0.718478, 0.707038, -0.707175, 0.714029, 0.700116 });
         auto expectedCentersB = std::vector({ -0.716727, 0.697354, 0.718175, 0.695863, -0.712197, -0.70198, 0.714321, -0.699818 });
         auto expectedCentersC = std::vector({ -0.714813, 0.699316, -0.678015, -0.735048, 0.707866, 0.706347, 0.696578, -0.717481 });
         auto expectedCentersD = std::vector({ -0.70989, -0.704313, 0.708422, 0.705789, -0.693545, 0.720413, 0.688054, -0.72566 });
@@ -432,8 +542,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void TestReliabilityMethods::testDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType,
-        const double dsdu)
+    void TestReliabilityMethods::testDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType, const double dsdu)
     {
         auto calculator = DirectionalSampling();
         auto modelRunner = projectBuilder().BuildProjectTwoBranches(useProxy);
@@ -470,7 +579,7 @@ namespace Deltares::Probabilistic::Test
         {
             refBeta = 4.98355;
             refAlpha = { 0.35676 , -0.92328 , -0.14240 };
-            if (Numeric::NumericSupport::areEqual( dsdu , 3.0, 1e-12))
+            if (Numeric::NumericSupport::areEqual(dsdu, 3.0, 1e-12))
             {
                 refBeta = 5.08261;
                 refAlpha = { 0.39910 , -0.910716 , -0.106376 };

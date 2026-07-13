@@ -25,12 +25,13 @@
 
 namespace Deltares::Reliability
 {
-    void ImportanceSamplingCluster::initialize(int nStochasts, double z0Fac, bool z0Ignore, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet)
+    void ImportanceSamplingCluster::initialize(int nStochasts, double z0Fac, bool z0Ignore, DesignPointMethod method,
+                                               bool addProbability, std::shared_ptr<StochastSettingsSet> stochastSet)
     {
         this->z0Fac = z0Fac;
         this->z0Ignore = z0Ignore;
 
-        designPointBuilder = DesignPointBuilder(nStochasts, method, stochastSet);
+        designPointBuilder = DesignPointBuilder(nStochasts, method, stochastSet, addProbability);
 
         designPointBuilder.initialize(z0Fac * Statistics::StandardNormal::BetaMax);
     }
@@ -77,7 +78,7 @@ namespace Deltares::Reliability
 
     double ImportanceSamplingCluster::getProbability(double z0Fac, double failWeight, double totalWeight)
     {
-        if (z0Fac == -1)
+        if (z0Fac == -1.0)
         {
             return 1 - failWeight / totalWeight;
         }

@@ -73,10 +73,7 @@ namespace Deltares::Reliability
         constexpr double density = 1.0; // joint probability density
         constexpr int stochastIndex = 0; // number of the stochastic parameter
 
-        bool addProbability =
-            Settings.runSettings->modelReturnType == Models::ModelReturnType::ProbabilityFailure || Settings.runSettings->modelReturnType == Models::ModelReturnType::ReliabilityIndex;
-
-        designPointBuilder = DesignPointBuilder(nStochasts, Settings.designPointMethod, Settings.StochastSet, addProbability);
+        designPointBuilder = DesignPointBuilder(nStochasts, Settings.designPointMethod, Settings.StochastSet, Settings.runSettings->shouldAddProbability());
         double totalDensity = 0;
 
         // Call to the recursive part of the numerical integration computation

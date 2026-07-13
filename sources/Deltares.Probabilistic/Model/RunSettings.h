@@ -82,6 +82,14 @@ namespace Deltares::Models
             }
         }
 
+        /**
+         * \brief Indicates whether an additional alpha value should be generated for the probability in reliability methods
+         */
+        bool shouldAddProbability() const
+        {
+            return modelReturnType == ModelReturnType::ProbabilityFailure || modelReturnType == ModelReturnType::ReliabilityIndex;
+        }
+
         static std::string getHandleInvalidTypeString(Deltares::Models::HandleInvalidType type);
         static Deltares::Models::HandleInvalidType getHandleInvalidType(const std::string& type);
 

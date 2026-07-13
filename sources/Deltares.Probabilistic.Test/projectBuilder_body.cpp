@@ -52,13 +52,25 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProbabilityProject(size_t nStochasts)
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearProbability(v); });
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { linearProbability(v); });
         return CreateModelRunner(nStochasts, z);
     }
 
-    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProbabilityNonFailureProject(size_t nStochasts)
+    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProbabilityInverseProject(size_t nStochasts)
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearProbabilityNonFailure(v); });
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { linearProbability(v); v->Z = 1.0 - v->Z; });
+        return CreateModelRunner(nStochasts, z);
+    }
+
+    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearReliabilityProject(size_t nStochasts)
+    {
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { linearReliability(v); });
+        return CreateModelRunner(nStochasts, z);
+    }
+
+    std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearReliabilityInverseProject(size_t nStochasts)
+    {
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { linearReliability(v); v->Z = - v->Z; });
         return CreateModelRunner(nStochasts, z);
     }
 
@@ -316,10 +328,10 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void projectBuilder::linearProbabilityNonFailure(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linearReliability(std::shared_ptr<Models::ModelSample> sample)
     {
         linearProbability(sample);
-        sample->Z = 1 - sample->Z;
+        sample->Z = Statistics::StandardNormal::getUFromQ(sample->Z);
     }
 
     void projectBuilder::linearOutputOnly(std::shared_ptr<Models::ModelSample> sample)
