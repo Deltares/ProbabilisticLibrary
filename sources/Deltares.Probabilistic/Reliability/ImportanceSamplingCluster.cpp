@@ -45,12 +45,8 @@ namespace Deltares::Reliability
             FailCount++;
             FailWeight += failureAddition * sample->Weight;
             MaxFailWeight = std::max(MaxFailWeight, sample->Weight);
-        }
 
-        double smallestDomainAddition = z0Fac > 0.0 ? failureAddition : 1.0 - failureAddition;
-        if (smallestDomainAddition > 0)
-        {
-            designPointBuilder.addSample(sample, smallestDomainAddition);
+            designPointBuilder.addSample(sample, failureAddition);
         }
 
         if (this->NearestSample == nullptr || std::abs(sample->Z) < std::abs(this->NearestSample->Z))

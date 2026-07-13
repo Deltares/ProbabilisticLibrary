@@ -39,9 +39,9 @@ namespace Deltares::Reliability
 
         switch (modelReturnType)
         {
-        case Models::ModelReturnType::ZValue: return z >= 0.0 ? 1 : -1;
-        case Models::ModelReturnType::ProbabilityFailure: return z <= 0.5 ? 1 : -1;
-        case Models::ModelReturnType::ReliabilityIndex: return z >= 0.0 ? 1 : -1;
+        case Models::ModelReturnType::ZValue: return z > 0.0 ? 1 : -1;
+        case Models::ModelReturnType::ProbabilityFailure: return z < 0.5 ? 1 : -1;
+        case Models::ModelReturnType::ReliabilityIndex: return z > 0.0 ? 1 : -1;
         default: throw probLibException("model return type");
         }
     }

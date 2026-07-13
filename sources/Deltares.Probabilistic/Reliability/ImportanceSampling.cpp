@@ -221,6 +221,10 @@ namespace Deltares::Reliability
             if (isNearestCluster(*sample, sampleCluster, clusterResults))
             {
                 failureAddition = getFailureAddition(z, Settings->runSettings->modelReturnType);
+                if (z0Fac < 0.0)
+                {
+                    failureAddition = 1 - failureAddition;
+                }
             }
 
             combinedCluster->addSample(sample, failureAddition);
