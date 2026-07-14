@@ -349,6 +349,11 @@ TEST(ReliabilityMethodTest, TestAdaptiveImportanceSampling)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSampling();
 }
 
+TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingVarianceFactor)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSamplingVarianceFactor();
+}
+
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingProbability)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSamplingZValueProbability();

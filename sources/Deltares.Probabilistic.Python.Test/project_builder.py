@@ -112,6 +112,12 @@ def linear_abc(a, b, c):
 def linear_small_ab(a, b):
     return 1.98 - (a+b)
 
+def edges_ab(a, b):
+    return 0.998 - max(a, b)
+
+def poly_xyzu(x, y, z, u):
+    return x + 0.3 * y*y + 0.2 * z*z*z + 0.125 * u*u*u*u;
+
 def linear_small_abc(a, b, c):
     return 1.98 - (a+b+c)
 
@@ -354,7 +360,7 @@ def get_multiple_unbalanced_linear_project():
 
     return project
 
-def get_uncertainty_multiple_unbalanced_linear_project():
+def get_uncertainty_multiple_unbalanced_linear_project() -> UncertaintyProject:
 
     project = UncertaintyProject()
 
@@ -363,7 +369,7 @@ def get_uncertainty_multiple_unbalanced_linear_project():
 
     return project
 
-def get_sensitivity_multiple_unbalanced_linear_project():
+def get_sensitivity_multiple_unbalanced_linear_project() -> SensitivityProject:
 
     project = SensitivityProject()
 
@@ -372,7 +378,7 @@ def get_sensitivity_multiple_unbalanced_linear_project():
 
     return project
 
-def get_linear_small_project():
+def get_linear_small_project() -> ReliabilityProject:
 
     project = ReliabilityProject()
 
@@ -381,7 +387,29 @@ def get_linear_small_project():
 
     return project
 
-def get_linear_fully_correlated_project():
+def get_edges_project() -> ReliabilityProject:
+
+    project = ReliabilityProject()
+
+    project.model = edges_ab
+    assign_distributions(project, DistributionType.uniform)
+
+    return project
+
+def get_poly_project() -> ReliabilityProject:
+
+    project = ReliabilityProject()
+
+    project.model = poly_xyzu
+
+    for var in project.variables:
+        var.distribution = DistributionType.log_normal
+        var.mean = 1
+        var.deviation = 0.5
+
+    return project
+
+def get_linear_fully_correlated_project() -> ReliabilityProject:
 
     project = ReliabilityProject()
 
