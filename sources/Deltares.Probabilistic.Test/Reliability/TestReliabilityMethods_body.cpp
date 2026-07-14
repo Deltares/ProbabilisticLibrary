@@ -376,7 +376,7 @@ namespace Deltares::Probabilistic::Test
         auto modelRunner = projectBuilder().BuildLinearProbabilityProject(2);
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
-        EXPECT_NEAR(designPoint->Beta, 3.25, 0.01);
+        EXPECT_NEAR(designPoint->Beta, 3.25, 0.02);
 
         ASSERT_EQ(designPoint3->Alphas.size(), designPoint->Alphas.size());
         EXPECT_NEAR(designPoint3->Beta, designPoint->Beta, 0.03);

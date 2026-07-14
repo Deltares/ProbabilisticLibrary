@@ -416,6 +416,7 @@
     <ClInclude Include="Model\ZValueConverter.h" />
     <ClInclude Include="Logging\ValidationReport.h" />
     <ClInclude Include="Model\DefaultValueConverter.h" />
+    <ClInclude Include="Math\StatisticsCalculator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />

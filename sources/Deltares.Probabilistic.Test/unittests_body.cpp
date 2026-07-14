@@ -44,6 +44,7 @@
 #include "Statistics/TestXfromU.h"
 #include "Statistics/TestStochast.h"
 #include "Math/testMatrix.h"
+#include "Math/testStatisticsCalculator.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
@@ -744,6 +745,11 @@ TEST(UnitTests, testRootfinder)
 {
     auto tstRF = Deltares::Probabilistic::Test::rootfinder_tests();
     tstRF.all_rootfinder_tests();
+}
+
+TEST(UnitTests, testStatisticsCalculator)
+{
+    Deltares::Probabilistic::Test::testStatisticsCalculator::allStatisticsCalculatorTests();
 }
 
 TEST(UnitTests, testVector1D)

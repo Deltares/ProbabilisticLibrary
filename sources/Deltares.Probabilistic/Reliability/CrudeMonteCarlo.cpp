@@ -35,6 +35,7 @@
 #include "CrudeMonteCarloSettings.h"
 #include "DesignPointBuilder.h"
 #include "StochastSettings.h"
+#include "../Math/StatisticsCalculator.h"
 
 using namespace Deltares::Models;
 
@@ -91,13 +92,15 @@ namespace Deltares::Reliability
         randomSampleGenerator.sampleProvider = sampleProvider;
         randomSampleGenerator.initialize();
 
+        auto statistics = Numeric::StatisticsCalculator();
+
         int nParameters = modelRunner->getVaryingStochastCount();
         std::vector<double> zValues; // copy of z for all parallel threads as double
 
         auto designPointBuilder = DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet, Settings->RunSettings->shouldAddProbability());
 
-        double pf = 0.0;
         bool initial = true;
+        double pf = 0.0;
         double z0Fac = 0.0;
         double nFailed = 0.0;
         int nSamples = 0;
@@ -184,6 +187,8 @@ namespace Deltares::Reliability
             double failureAddition = getFailureAddition(z, Settings->RunSettings->modelReturnType);
             nFailed += failureAddition;
 
+            statistics.addValue(failureAddition);
+
             if (failureAddition > 0.0)
             {
                 convergenceReport->FailedSamples += 1;
@@ -196,10 +201,10 @@ namespace Deltares::Reliability
             {
                 designPointBuilder.addSample(u, smallestDomainAddition);
             }
-            pf = nFailed / nSamples;
+            pf = statistics.getMean();
             pf = qFail + qRange * pf;
 
-            convergenceReport->IsConverged = checkConvergence(modelRunner, pf, nSamples, sampleIndex);
+            convergenceReport->IsConverged = checkConvergence(modelRunner, statistics, pf, sampleIndex);
 
             if (convergenceReport->IsConverged)
             {
@@ -210,7 +215,7 @@ namespace Deltares::Reliability
         double beta = Statistics::StandardNormal::getUFromQ(pf);
         auto uMin = designPointBuilder.getSample();
 
-        convergenceReport->Convergence = getConvergence(pf, nSamples);
+        convergenceReport->Convergence = getConvergence(statistics);
 
         std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport);
 
@@ -233,7 +238,7 @@ namespace Deltares::Reliability
         }
     }
 
-    bool CrudeMonteCarlo::checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nmaal) const
+    bool CrudeMonteCarlo::checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, Numeric::StatisticsCalculator& statistics, double pf, int nmaal) const
     {
         std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
         report->Step = nmaal;
@@ -241,7 +246,7 @@ namespace Deltares::Reliability
 
         if (pf > 0 && pf < 1)
         {
-            double convergence = getConvergence(pf, samples);
+            double convergence = getConvergence(statistics);
             report->Reliability = Statistics::StandardNormal::getUFromQ(pf);
             report->Variation = convergence;
             modelRunner->reportResult(report);
@@ -255,16 +260,27 @@ namespace Deltares::Reliability
         }
     }
 
-    double CrudeMonteCarlo::getConvergence(double pf, int samples)
+    double CrudeMonteCarlo::getConvergence(Numeric::StatisticsCalculator& statistics)
     {
+        double pf = statistics.getMean();
+
         if (pf > 0 && pf < 1)
         {
             if (pf > 0.5)
             {
                 pf = 1 - pf;
             }
-            double varPf = sqrt((1 - pf) / (samples * pf));
-            return varPf;
+
+            // standard deviation of samples
+            //double std_dev = sqrt((1 - pf) * pf / statistics.getCount());
+
+            double standardError = statistics.getStandardDeviation() / sqrt(statistics.getCount());
+
+            // variation coefficient
+            double variationCoefficient = standardError / pf;
+
+            //double varPf = sqrt((1 - pf) / (samples * pf));
+            return variationCoefficient;
         }
         else
         {
