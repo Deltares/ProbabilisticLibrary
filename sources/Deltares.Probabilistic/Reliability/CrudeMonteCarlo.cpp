@@ -161,13 +161,9 @@ namespace Deltares::Reliability
                 z0Fac = getZFactor(zValues[zIndex], Settings->RunSettings->modelReturnType);
                 double zRemainderFactor = getZFactor(zRemainder, Settings->RunSettings->modelReturnType);
 
-                if (z0Fac != zRemainderFactor)
+                if (zRemainderFactor < 0.0)
                 {
                     qFail = 1 - qRange;
-                }
-                else
-                {
-                    qFail = 0;
                 }
 
                 initial = false;
@@ -272,7 +268,7 @@ namespace Deltares::Reliability
             }
 
             // standard deviation of samples
-            //double std_dev = sqrt((1 - pf) * pf / statistics.getCount());
+            double std_dev = sqrt((1 - pf) * pf / statistics.getCount());
 
             double standardError = statistics.getStandardDeviation() / sqrt(statistics.getCount());
 
