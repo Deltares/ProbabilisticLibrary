@@ -100,7 +100,6 @@ namespace Deltares::Reliability
         auto designPointBuilder = DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet, Settings->RunSettings->shouldAddProbability());
 
         bool initial = true;
-        double pf = 0.0;
         double z0Fac = 0.0;
         double nFailed = 0.0;
         int nSamples = 0;
@@ -108,7 +107,9 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<Sample>> samples;
         size_t zIndex = 0;
 
-        double qFail = 0;
+        bool addRemainder = qRange != 1.0;
+        double qRangeAdditional = addRemainder ? (1.0 - qRange) / qRange : 0.0;
+        double zRemainderAddition = addRemainder ? getFailureAddition(zRemainder, Settings->RunSettings->modelReturnType) : std::nan("");
 
         for (int sampleIndex = 0; sampleIndex < Settings->MaximumSamples + 1 && !isStopped(); sampleIndex++)
         {
@@ -150,6 +151,7 @@ namespace Deltares::Reliability
                 {
                     // return the result so far
                     auto uMin = designPointBuilder.getSample();
+                    double pf = statistics.getMean();
                     return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
                 }
 
@@ -159,13 +161,6 @@ namespace Deltares::Reliability
             if (initial)
             {
                 z0Fac = getZFactor(zValues[zIndex], Settings->RunSettings->modelReturnType);
-                double zRemainderFactor = getZFactor(zRemainder, Settings->RunSettings->modelReturnType);
-
-                if (zRemainderFactor < 0.0)
-                {
-                    qFail = 1 - qRange;
-                }
-
                 initial = false;
                 continue;
             }
@@ -185,6 +180,12 @@ namespace Deltares::Reliability
 
             statistics.addValue(failureAddition);
 
+            // for the remainder, add artificial sample for each sample so that overall mean and convergence are correct
+            if (addRemainder)
+            {
+                statistics.addValue(zRemainderAddition, qRangeAdditional);
+            }
+
             if (failureAddition > 0.0)
             {
                 convergenceReport->FailedSamples += 1;
@@ -197,10 +198,8 @@ namespace Deltares::Reliability
             {
                 designPointBuilder.addSample(u, smallestDomainAddition);
             }
-            pf = statistics.getMean();
-            pf = qFail + qRange * pf;
 
-            convergenceReport->IsConverged = checkConvergence(modelRunner, statistics, pf, sampleIndex);
+            convergenceReport->IsConverged = checkConvergence(modelRunner, statistics, sampleIndex);
 
             if (convergenceReport->IsConverged)
             {
@@ -208,6 +207,7 @@ namespace Deltares::Reliability
             }
         }
 
+        double pf = statistics.getMean();
         double beta = Statistics::StandardNormal::getUFromQ(pf);
         auto uMin = designPointBuilder.getSample();
 
@@ -234,11 +234,13 @@ namespace Deltares::Reliability
         }
     }
 
-    bool CrudeMonteCarlo::checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, Numeric::StatisticsCalculator& statistics, double pf, int nmaal) const
+    bool CrudeMonteCarlo::checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, Numeric::StatisticsCalculator& statistics, int nmaal) const
     {
         std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
         report->Step = nmaal;
         report->MaxSteps = Settings->MaximumSamples;
+
+        double pf = statistics.getMean();
 
         if (pf > 0 && pf < 1)
         {

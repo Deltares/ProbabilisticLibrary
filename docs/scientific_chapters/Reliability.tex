@@ -171,17 +171,33 @@ This process continues until the remaining cells -- those with mixed results -- 
 
 \subsubsection{Algorithm}
 
-Crude Monte Carlo is the standard Monte Carlo simulation method. Random realizations are generated in proportion to their probability density. The number of realizations that result in failure is counted, as well as the number that do not lead to failure. The probability of failure is then calculated as follows:
-
+Crude Monte Carlo is the standard Monte Carlo simulation method. Random realizations are generated in proportion to their probability density. Each realization $i$ leads to an addition $p_{\text{i}}$ to the total failure. The model result $z$ is converted to the addition as follows depending on the model result type:
+	
 \begin{align} 
-\label{eq:MonteCarlo}
-p_{\text{failure}} = \frac{N_{\text{failure}}}{N}
+	\label{eq:SampleAddition}
+	p_{\text{i}}\left(z\right) = \left\{\begin{array}{ll}\text{z-value} & z < 0 ? 1 : 0\\
+		\text{probability of failure} & z \\
+		\text{reliability index} & \Phi^{-1}\left(z\right) \\
+	\end{array}	
+	\right.
 \end{align}
 
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$p_{\text{failure}}$ & is the probability of failure \\  
-	$N_{\text{failure}}$ & is the number of realizations which were interpreted as failing \\ 
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
+\end{longtable}
+	
+The number of realizations that result in failure is counted, as well as the number that do not lead to failure. The probability of failure is then calculated as follows:
+
+\begin{align} 
+\label{eq:MonteCarlo}
+p_{\text{f}} = \frac{\sum_{\text{i}} p_{\text{i}}}{N}
+\end{align}
+
+where:
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$p_{\text{f}}$ & is the probability of failure \\  
+	$p_{\text{i}}$ & is the individual addition of a realization \\ 
 	$N$ & is the total number of realizations
 \end{longtable}
 
@@ -195,42 +211,35 @@ where:
 \subsubsection{Convergence}
 \label{sec:MCConvergence}
 
-The Monte Carlo simulation also leads to a standard deviation of the probability of failure. This standard deviation $\sigma_p$ is based on a confidence level $\alpha$:
+The Monte Carlo simulation also leads to a standard deviation of the probability of failure. This is the standard deviation of contributions $p_{\text{i}}$ of all samples, calculated as follows:
 
 \begin{align} 
-\label{eq:MonteCarloStandardDeviation}
-\sigma_p = z \sqrt{\frac{p \left(1 - p\right)}{N}}
+	\label{eq:MonteCarloStandardDeviation}
+	\sigma_p = \sqrt{\frac{\sum_i \left(p_{\text{i}} - p_{\text{f}}\right)^2}{N}}
 \end{align}
 
-with:
+In case the model result is either failing or not failing, meaning $p_{\text{i}}$ is always 1 or 0, the standard deviation is equal to:
 
 \begin{align} 
-\label{eq:MonteCarloStandardConfidence}
-z = \Phi^{-1}\left(1 - \frac{\alpha}{2}\right)
+	\label{eq:MonteCarloStandardDeviationZValue}
+	\sigma_{p \text{, z-value}} = \sqrt{p_{\text{f}} \cdot \left(1 - p_{\text{f}} \right) }
 \end{align}
 
-where:
-
-\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$\sigma_p$ & is the standard deviation of the probability of failure \\  
-	$p$ & is the probability of failure $p_{\text{failure}}$ \\
-	$N$ & is the total number of realizations \\
-	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$ ($z$ is equal to $1$ in the \probLib) \\
-	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
-	$\alpha$ & is the confidence level
-\end{longtable}
-
-The standard deviation $\sigma_p$ can be expressed as a variation coefficient $\varepsilon$:
+The next step is computing the standard error $SE$. This is defined as follows:
 
 \begin{align} 
-\label{eq:MonteCarloVariationCoefficient}
-\varepsilon = \left\{\begin{array}{ll}p < \tfrac{1}{2} & \tfrac{\sigma_p}{p} = z \sqrt{\frac{1 - p}{N p}}\\
-p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)} = z \sqrt{\frac{p}{N \left(1 - p\right)}}
-\end{array}	
-\right.
+	\label{eq:MonteCarloStandardError}
+	SE = \frac{\sigma_p}{\sqrt{N}}
 \end{align}
 
-The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. The Monte Carlo simulation will stop when $\varepsilon \leq \varepsilon_{\text{max}}$ (and limited to the minimum and maximum number of realizations). The confidence level $\alpha$ cannot be set by the user. Its value is such that $z$ is $1$.
+The coefficient of variation $\varepsilon$ is expressed as the relative standard error, relative to the probability of failure or the probability of non failure:
+
+\begin{align} 
+	\label{eq:MonteCarloCoeffiecientOfVariation}
+	\varepsilon = \frac{SE}{\text{min}\left(p_{\text{f}}, 1 - p_{\text{f}}\right)   }
+\end{align}
+
+The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. The Monte Carlo simulation will stop when $\varepsilon \leq \varepsilon_{\text{max}}$ (and limited to the minimum and maximum number of realizations).
 
 \begin{figure}[H]
 	\label{fig:MonteCarloConvergence}
@@ -242,6 +251,29 @@ The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. T
 When the underlying model fails for a certain realization, its results are ignored. The user should decide whether the number of failed realizations is acceptable.
 
 The minimum and maximum values for which the integration will run are defined in the $u$-space. The Monte Carlo analysis will then check whether the remaining area leads to failure or not.
+
+\subsubsection{Confidence level}
+\label{sec:MCConfidence}
+
+The confidence level $z$ is always $1$ in the \probLib and can not be set by the user. The confidence level should be applied to $\sigma_p$, defined in \autoref{eq:MonteCarloStandardDeviation}, giving:
+
+\begin{align} 
+	\label{eq:MonteCarloStandardDeviationConfidence}
+	\sigma_{p\text{, confidence}} = z \cdot \sigma_p
+\end{align}
+
+with:
+
+\begin{align} 
+\label{eq:MonteCarloStandardConfidence}
+z = \Phi^{-1}\left(1 - \frac{\alpha}{2}\right)
+\end{align}
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$ ($z$ is equal to $1$ in the \probLib) \\
+	$\alpha$ & is the confidence level \\
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF})
+\end{longtable}
 
 \subsection{Importance Sampling}
 \label{sec:ImportanceSampling}

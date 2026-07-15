@@ -103,8 +103,8 @@ namespace Deltares::Numeric
     private:
         bool initial = true;
         double mean = std::nan("");
-        double sumWeights = 0;
-        double sumSquaredWeights = 0;
+        double sumWeights = 0.0;
+        double sumSquaredWeights = 0.0;
         double sumSquaredDeviations = std::nan("");
     };
 
