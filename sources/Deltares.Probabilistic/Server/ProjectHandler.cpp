@@ -1105,7 +1105,14 @@ namespace Deltares::Server
                 else
                 {
                     std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(alpha->Stochast);
-                    return GetFragilityCurveId(fragilityCurve, newId);
+                    if (fragilityCurve != nullptr)
+                    {
+                        return GetFragilityCurveId(fragilityCurve, newId);
+                    }
+                    else
+                    {
+                        return GetStochastId(alpha->Stochast, newId);
+                    }
                 }
             }
         }

@@ -152,6 +152,12 @@ namespace Deltares::Reliability
                     // return the result so far
                     auto uMin = designPointBuilder.getSample();
                     double pf = statistics.getMean();
+
+                    if (std::isnan(pf))
+                    {
+                        pf = 0.0;
+                    }
+
                     return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
                 }
 

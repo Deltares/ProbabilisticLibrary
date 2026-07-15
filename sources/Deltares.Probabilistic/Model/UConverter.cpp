@@ -751,7 +751,10 @@ namespace Deltares::Models
     std::shared_ptr<Deltares::Statistics::Stochast> UConverter::getProbabilityStochast()
     {
         std::vector<double> limits = { 0.0, 1.0 };
-        return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, limits);
+        auto probStochast = std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, limits);
+        probStochast->name = "probability";
+
+        return probStochast;
     }
 }
 
