@@ -47,12 +47,6 @@ public class RunSettings
         return id;
     }
 
-    public ModelReturnType ModelReturnType
-    {
-        get { return ModelReturnTypeConverter.ConvertFromString(Interface.GetStringValue(id, "model_return_type")); }
-        set { Interface.SetStringValue(id, "model_return_type", ModelReturnTypeConverter.ConvertToString(value)); }
-    }
-
     public RunValuesType RunValuesType
     {
         get { return RunValuesTypeConverter.ConvertFromString(Interface.GetStringValue(id, "run_values_type")); }
