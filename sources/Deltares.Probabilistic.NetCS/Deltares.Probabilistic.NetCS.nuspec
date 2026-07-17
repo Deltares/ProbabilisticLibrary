@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Deltares_Probabilistic_Library</id>
-    <version>2026.1.1</version>
+    <version>2026.2.1</version>
     <authors>Deltares</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">LGPL</license>
