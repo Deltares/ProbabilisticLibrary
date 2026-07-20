@@ -48,22 +48,22 @@ namespace Deltares::Reliability
 
     double ReliabilityMethod::getFailureAddition(double z, Models::ModelReturnType modelReturnType)
     {
+        constexpr double max_p = 1.0 + 1E-6;
+        constexpr double min_p = - 1E-6;
+
         switch (modelReturnType)
         {
         case Models::ModelReturnType::ZValue:
             return z < 0 ? 1.0 : 0.0;
         case Models::ModelReturnType::ProbabilityFailure:
-            if (z < 0.0)
+            // add a small margin to be tolerant for rounding and arithmetic errors
+            if (z < min_p || z > max_p)
             {
-                return 0.0;
-            }
-            else if (z > 1.0)
-            {
-                return 1.0;
+                throw probLibException("Probability should be between 0 and 1 (inclusive)");
             }
             else
             {
-                return z;
+                return std::clamp(z, 0.0, 1.0);
             }
         case Models::ModelReturnType::ReliabilityIndex:
             if (z >= Statistics::StandardNormal::UMax)

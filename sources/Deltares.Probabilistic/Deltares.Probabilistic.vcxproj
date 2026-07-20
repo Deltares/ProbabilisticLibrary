@@ -588,6 +588,7 @@
     <ClCompile Include="Math\ASA\asa239.cpp" />
     <ClCompile Include="Math\SpecialFunctions.cpp" />
     <ClCompile Include="Math\BinarySupport.cpp" />
+    <ClCompile Include="Math\StatisticsCalculator.cpp" />
     <ClCompile Include="Statistics\Distributions\TruncatedDistribution.cpp" />
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Reliability\PrecomputedDirectionValues.cpp" />

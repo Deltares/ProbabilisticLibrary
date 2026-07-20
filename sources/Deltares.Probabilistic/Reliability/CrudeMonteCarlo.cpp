@@ -275,9 +275,7 @@ namespace Deltares::Reliability
                 pf = 1 - pf;
             }
 
-            // standard deviation of samples
-            double std_dev = sqrt((1 - pf) * pf / statistics.getCount());
-
+            // standard error
             double standardError = statistics.getStandardDeviation() / sqrt(statistics.getCount());
 
             // variation coefficient

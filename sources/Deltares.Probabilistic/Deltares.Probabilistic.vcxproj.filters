@@ -580,6 +580,7 @@
     <ClInclude Include="Combine\IndexPair.h" />
     <ClInclude Include="Combine\ComputeBetaSection.h" />
     <ClInclude Include="Math\StatisticsCalculator.h" />
+    <ClInclude Include="Math\StatisticsCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

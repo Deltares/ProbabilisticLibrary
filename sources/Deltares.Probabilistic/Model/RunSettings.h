@@ -90,11 +90,11 @@ namespace Deltares::Models
             return modelReturnType == ModelReturnType::ProbabilityFailure || modelReturnType == ModelReturnType::ReliabilityIndex;
         }
 
-        static std::string getHandleInvalidTypeString(Deltares::Models::HandleInvalidType type);
-        static Deltares::Models::HandleInvalidType getHandleInvalidType(const std::string& type);
+        static std::string getHandleInvalidTypeString(HandleInvalidType type);
+        static HandleInvalidType getHandleInvalidType(const std::string& type);
 
-        static std::string getModelReturnTypeString(Deltares::Models::ModelReturnType type);
-        static Deltares::Models::ModelReturnType getModelReturnType(const std::string& type);
+        static std::string getModelReturnTypeString(ModelReturnType type);
+        static ModelReturnType getModelReturnType(const std::string& type);
     };
 }
 

@@ -43,7 +43,7 @@ namespace Deltares::Models
         else throw Reliability::probLibException("handle invalid type " + type + " not a known type");
     }
 
-    std::string RunSettings::getModelReturnTypeString(Deltares::Models::ModelReturnType type)
+    std::string RunSettings::getModelReturnTypeString(ModelReturnType type)
     {
         switch (type)
         {
@@ -55,7 +55,7 @@ namespace Deltares::Models
 
     }
 
-    Deltares::Models::ModelReturnType RunSettings::getModelReturnType(const std::string& type)
+    ModelReturnType RunSettings::getModelReturnType(const std::string& type)
     {
         if (type == "z_value")  return ModelReturnType::ZValue;
         else if (type == "probability_failure") return ModelReturnType::ProbabilityFailure;

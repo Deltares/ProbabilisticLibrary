@@ -38,31 +38,7 @@ namespace Deltares::Numeric
          * \param value The value
          * \param weight optional weight
          */
-        void addValue(double value, double weight = 1.0)
-        {
-            if (weight == 0.0)
-            {
-                return;
-            }
-
-            sumWeights += weight;
-            sumSquaredWeights += weight * weight;
-
-            // Welford algorithm
-
-            if (initial)
-            {
-                mean = value;
-                sumSquaredDeviations = 0.0;
-                initial = false;
-            }
-            else
-            {
-                double delta = value - mean;
-                mean += delta * weight / sumWeights;
-                sumSquaredDeviations += weight * delta * (value - mean);
-            }
-        }
+        void addValue(double value, double weight = 1.0);
 
         /**
          * \brief Gets the mean value
@@ -77,19 +53,13 @@ namespace Deltares::Numeric
          * \brief Gets the sample standard deviation (division by n-1)
          * \return Sample standard deviation
          */
-        double getSampleStandardDeviation() const
-        {
-            return sqrt(sumSquaredDeviations / (sumWeights - sumSquaredWeights / sumWeights));
-        }
+        double getSampleStandardDeviation() const;
 
         /**
          * \brief Gets the standard deviation (division by n)
          * \return Standard deviation
          */
-        double getStandardDeviation() const
-        {
-            return sqrt(sumSquaredDeviations / sumWeights);
-        }
+        double getStandardDeviation() const;
 
         /**
          * \brief Gets sum of weight (equal to number of entries if no weights specified)
