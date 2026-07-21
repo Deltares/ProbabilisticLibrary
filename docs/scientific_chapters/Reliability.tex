@@ -117,6 +117,26 @@ $5.0$ & $2.87\cdot 10^{-7}$ \\ \hline
 
 Small values of $\beta$ indicate large probabilities of failure, large values of $\beta$ indicate small probabilities of failure. This can be easily explained with some examples in which, for the sake of simplicity, $Z$ is assumed to be normally distributed. If $\beta=1$, failure occurs if a random sample of $Z$ is more than $1\cdot\sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-1)\approx0.16$. On the other hand, if $\beta=4$, failure occurs if a random sample of $Z$ is more than $4 \cdot \sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-4)\approx3.2 \cdot 10^{-5}$. In other words: larger values of $\beta$ indicate that more extreme events are required for failure to occur, hence a lower probability of failure, hence a larger reliability of the system.
 
+\section{Model return type}
+\label{sec:ModelReturnType}
+
+Until so far we assumed that a model return a z-value, which should be interpreted as failing if smaller than zero or non failing otherwise. Some reliability methods support the model return a probability of failure or a reliability index.
+
+The model result $z$ is converted to an addition of failure as follows, depending on the model result type:
+
+\begin{align} 
+	\label{eq:SampleAddition}
+	p_{\text{i}}\left(z\right) = \left\{\begin{array}{ll}\text{z-value} & z < 0 ? 1 : 0\\
+		\text{probability of failure} & z \\
+		\text{reliability index} & \Phi^{-1}\left(z\right) \\
+	\end{array}	
+	\right.
+\end{align}
+
+where:
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
+\end{longtable}
 
 \section{Reliability methods}
 \label{sec:ReliabilityMethods}
@@ -136,7 +156,29 @@ If the underlying model fails for a certain realization, its results will be ign
 
 The minimum and maximum values for which the integration runs are defined in the $u$-space. Numerical integration fills the remaining space between these values and $-8$ and $8$ with additional cells to ensure complete coverage of the integration domain.
 
-\Note{$u=8$ corresponds to a probability of approximately $6\times10^{−16}$, which is orders of magnitude smaller than the probabilities of typical scenarios.}
+For variables $i$, $j$, $k$ the probability of failure is calculated as follows:
+
+\begin{align} 
+	\label{eq:NumericalIntegration}
+	p_{\text{f}} = \sum_{\text{i}} \sum_{\text{j}} \sum_{\text{k}} w_{\text{i}} \cdot w_{\text{j}} \cdot w_{\text{k}} \cdot p_{\text{i,j,k}}
+\end{align}
+
+where the weight $w_{\text{i}}$ is defined as
+
+\begin{align} 
+	\label{eq:NumericalIntegrationWeight}
+	w_{\text{i}} = \Phi^{-1}\left(u_{\text{i+1}}\right) - \Phi^{-1}\left(u_{\text{i}}\right)
+\end{align}
+
+and
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}
+	$i$, $j$, $k$ & are indices of variables ranging over the complete variable space. \\  
+	$p_{\text{f}}$ & is the probability of failure \\  
+	$p_{\text{i,j,k}}$ & is the individual addition of a realization, see \autoref{eq:SampleAddition} \\ 
+	$u_{\text{i}}$ & is the u-value corresponding with a realization of variable $i$. The index $i$ ranges over such values that $u_{\text{i}}$ ranges over $-8$ to $8$. Beyond $u=8$ numerical instability occurs, but $u=8$ corresponds to a probability of approximately $6 \cdot 10^{−16}$, which is orders of magnitude smaller than the probabilities of typical scenarios. \\
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\	
+\end{longtable}
 
 \begin{figure}[H]
 	\label{fig:NumericalIntegration}
@@ -171,21 +213,7 @@ This process continues until the remaining cells -- those with mixed results -- 
 
 \subsubsection{Algorithm}
 
-Crude Monte Carlo is the standard Monte Carlo simulation method. Random realizations are generated in proportion to their probability density. Each realization $i$ leads to an addition $p_{\text{i}}$ to the total failure. The model result $z$ is converted to the addition as follows depending on the model result type:
-	
-\begin{align} 
-	\label{eq:SampleAddition}
-	p_{\text{i}}\left(z\right) = \left\{\begin{array}{ll}\text{z-value} & z < 0 ? 1 : 0\\
-		\text{probability of failure} & z \\
-		\text{reliability index} & \Phi^{-1}\left(z\right) \\
-	\end{array}	
-	\right.
-\end{align}
-
-where:
-\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
-\end{longtable}
+Crude Monte Carlo is the standard Monte Carlo simulation method. Random realizations are generated in proportion to their probability density. Each realization $i$ leads to an addition $p_{\text{i}}$ (\autoref{eq:SampleAddition}) to the total failure. 
 	
 The number of realizations that result in failure is counted, as well as the number that do not lead to failure. The probability of failure is then calculated as follows:
 
@@ -197,7 +225,7 @@ p_{\text{f}} = \frac{\sum_{\text{i}} p_{\text{i}}}{N}
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$p_{\text{f}}$ & is the probability of failure \\  
-	$p_{\text{i}}$ & is the individual addition of a realization \\ 
+	$p_{\text{i}}$ & is the individual addition of a realization, see \autoref{eq:SampleAddition} \\ 
 	$N$ & is the total number of realizations
 \end{longtable}
 
@@ -316,17 +344,22 @@ where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$\varphi$ & is the standard normal probability density function, see \autoref{eq:StandardNormalPDF} \\  
 	$w_{\text{var}}$ & is the weight factor per variable per realization \\
-	$W_{\text{realization}}$ & is the weight factor of the realization \\
+	$W_{\text{realization}}$ & is the weight factor of the realization
 \end{longtable}
 
 Corresponding to \autoref{eq:MonteCarlo}, the probability of failure is equal to:
 
-\begin{align} 
+\begin{align}  
 \label{eq:ImportanceSampling}
-p_{\text{failure}} = \frac{\sum_{\text{failing realizations}} W}{\sum_{\text{all realizations}} W}
+p_{\text{failure}} = \frac{\sum_{\text{i}} p_{\text{i}} \cdot W_{\text{i}}}{\sum_{\text{i}} W_{\text{i}}}
 \end{align}
 
-To avoid numerical issues and because:
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$p_{\text{i}}$ & is the failure addition of a single realization, see \autoref{eq:SampleAddition} \\  
+	$p_{\text{failure}}$ & is the resulting probability of failure
+\end{longtable}To avoid numerical issues and because:
 
 \begin{align} 
 \label{eq:ImportanceSamplingLimit}
@@ -337,7 +370,7 @@ The probability of failure is calculated as follows:
 
 \begin{align} 
 \label{eq:ImportanceSamplingCalculated}
-p_{\text{failure}} = \frac{\sum_{\text{failing realizations}} W}{N}
+p_{\text{failure}} = \frac{\sum_{\text{i}} p_{\text{i}} \cdot W_{\text{i}}}{N}
 \end{align}
 
 \subsubsection{Convergence}
