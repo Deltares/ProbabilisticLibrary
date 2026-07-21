@@ -125,7 +125,7 @@ namespace Deltares::Reliability
 
         std::shared_ptr<Models::Sample> directionPoint = std::make_shared<Models::Sample>(startPoint.Values);
 
-        directionPoint = directionPoint->getSampleAtBeta(std::min(beta, this->Settings->MaximumLengthStartPoint));
+        directionPoint = std::make_shared<Models::Sample>(directionPoint->getSampleAtBeta(std::min(beta, this->Settings->MaximumLengthStartPoint)));
 
         for (int i = 0; i < nStochasts; i++)
         {
@@ -166,11 +166,11 @@ namespace Deltares::Reliability
 
         for (int k = 0; k < nstochasts; k++)
         {
-            std::shared_ptr<Models::Sample> u1 = sample->clone();
+            std::shared_ptr<Models::Sample> u1 = std::make_shared<Models::Sample>(sample->clone());
             u1->Values[k] -= stepSize;
             samples.push_back(u1);
 
-            std::shared_ptr<Models::Sample> u2 = sample->clone();
+            std::shared_ptr<Models::Sample> u2 = std::make_shared<Models::Sample>(sample->clone());
             u2->Values[k] += stepSize;
             samples.push_back(u2);
         }
@@ -218,7 +218,7 @@ namespace Deltares::Reliability
 
         double radiusFactor = this->Settings->RadiusSphereSearch / startPoint->getBeta();
 
-        std::shared_ptr<Models::Sample> uSphere = startPoint->getMultipliedSample(radiusFactor);
+        std::shared_ptr<Models::Sample> uSphere = std::make_shared<Models::Sample>(startPoint->getMultipliedSample(radiusFactor));
 
         if ( ! Settings->startVector.empty())
         {
@@ -251,7 +251,7 @@ namespace Deltares::Reliability
                 {
                     uRay->Values[k] = task(k);
                 }
-                std::shared_ptr<Models::Sample> u = uRay->getMultipliedSample(radiusFactor);
+                std::shared_ptr<Models::Sample> u = std::make_shared<Models::Sample>(uRay->getMultipliedSample(radiusFactor));
                 u->IterationIndex = i;
                 samples.push_back(u);
             }
@@ -294,7 +294,7 @@ namespace Deltares::Reliability
 
         auto betaZeqZero = Numeric::NumericSupport::interpolate(0.0, previous.Z, previous.getBeta(), u.Z, u.getBeta());
 
-        std::shared_ptr<Models::Sample> u3 = u.getSampleAtBeta(betaZeqZero);
+        std::shared_ptr<Models::Sample> u3 = std::make_shared<Models::Sample>(u.getSampleAtBeta(betaZeqZero));
         return u3;
     }
 }

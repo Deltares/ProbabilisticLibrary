@@ -92,7 +92,7 @@ namespace Deltares::Uncertainty
         }
         else
         {
-            std::shared_ptr<Sample> newSample = sample->getSampleAtBeta(distance);
+            std::shared_ptr<Sample> newSample = std::make_shared<Models::Sample>(sample->getSampleAtBeta(distance));
             newSample->IterationIndex = this->index;
             return newSample;
         }

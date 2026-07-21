@@ -388,7 +388,7 @@ namespace Deltares::Reliability
                 idx += nChain[j];
             } // beginning of each chain index
 
-            std::shared_ptr<Sample> newSample = selectedSamples[k - 1]->clone();
+            std::shared_ptr<Sample> newSample = std::make_shared<Models::Sample>(selectedSamples[k - 1]->clone());
             newSample->Z = selectedSamples[k - 1]->Z;
 
             newSamples.push_back(newSample);
@@ -417,7 +417,7 @@ namespace Deltares::Reliability
                 }
                 else
                 {
-                    sample = previousSample->clone();
+                    sample = std::make_shared<Models::Sample>(previousSample->clone());
                     sample->Z = previousSample->Z;
 
                     acceptance[idx + t] = 0; // note the rejection

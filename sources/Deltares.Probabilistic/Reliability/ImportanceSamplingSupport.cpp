@@ -68,7 +68,7 @@ namespace Deltares::Reliability
 
         if (sample.IsExtended())
         {
-            reducedSample = *(sample.getReducedSample());
+            reducedSample = sample.getReducedSample();
         }
 
         Sample originalSample = getOriginalSample(reducedSample, center, factors);

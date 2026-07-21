@@ -152,7 +152,7 @@ namespace Deltares::Reliability
         std::shared_ptr<Models::Sample> sample = modelSample;
         if (addProbability)
         {
-            sample = getSampleWithProbability(modelSample, probability);
+            sample = std::make_shared<Models::Sample>(getSampleWithProbability(modelSample, probability));
         }
 
         double weight = std::isnan(sample->Weight) ? 1.0 : sample->Weight;
@@ -205,7 +205,7 @@ namespace Deltares::Reliability
                         if (sampleAdded)
                         {
                             minimumBeta = nearestSamples.back()->getBeta();
-                            meanSample = nearestSamples.back()->clone();
+                            meanSample = std::make_shared<Models::Sample>(nearestSamples.back()->clone());
                         }
                         else
                         {
@@ -232,7 +232,7 @@ namespace Deltares::Reliability
 
                     nearestSamples.push_back(sample);
 
-                    meanSample = sample->clone();
+                    meanSample = std::make_shared<Models::Sample>(sample->clone());
                 }
             }
             break;
@@ -280,7 +280,7 @@ namespace Deltares::Reliability
     {
         if (!sampleAdded)
         {
-            return defaultSample->clone();
+            return std::make_shared<Models::Sample>(defaultSample->clone());
         }
         else
         {
@@ -288,7 +288,7 @@ namespace Deltares::Reliability
             {
             case DesignPointMethod::NearestToMean:
             {
-                return meanSample->clone();
+                return std::make_shared<Models::Sample>(meanSample->clone());
             }
             case DesignPointMethod::CenterOfGravity:
             {
@@ -333,20 +333,20 @@ namespace Deltares::Reliability
         }
     }
 
-    std::shared_ptr<Models::Sample> DesignPointBuilder::getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability)
+    Models::Sample DesignPointBuilder::getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability)
     {
         double pAveraged = (1 + (1 - probability)) / 2;
         double uAveraged = Statistics::StandardNormal::getUFromP(pAveraged);
 
         auto uCopy = sample->getExtendedSample(uAveraged);
 
-        if (std::isnan(uCopy->Weight))
+        if (std::isnan(uCopy.Weight))
         {
-            uCopy->Weight = probability;
+            uCopy.Weight = probability;
         }
         else
         {
-            uCopy->Weight *= probability;
+            uCopy.Weight *= probability;
         }
 
         return uCopy;

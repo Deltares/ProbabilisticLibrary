@@ -250,7 +250,7 @@ namespace Deltares::Optimization
             // if a sample has been used as a mean its distance will become 0 so it will not be selected
             int newMeanIndex = ProporSelect(squaredDistances, randomGenerator);
 
-            auto nextCluster = std::make_shared<Cluster>(samples[newMeanIndex]->clone());
+            auto nextCluster = std::make_shared<Cluster>(std::make_shared<Models::Sample>(samples[newMeanIndex]->clone()));
 
             clusters.push_back(nextCluster);
         }

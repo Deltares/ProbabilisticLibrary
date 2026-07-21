@@ -213,7 +213,7 @@ namespace Deltares::Reliability
                 {
                     // determine multiplication factor for z (z<0), if u = 0
                     z0Fac = getZFactor(zValues[0]);
-                    uMin = uMin->getSampleAtBeta(z0Fac * StandardNormal::BetaMax);
+                    uMin = std::make_shared<Models::Sample>(uMin->getSampleAtBeta(z0Fac * StandardNormal::BetaMax));
                     uMean.initialize(z0Fac * StandardNormal::BetaMax);
                     initial = false;
                     zIndex = 1;

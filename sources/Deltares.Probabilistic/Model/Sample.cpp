@@ -56,18 +56,18 @@ namespace Deltares::Models
         }
     }
 
-    std::shared_ptr<Sample> Sample::getSampleAtBeta(double newBeta)
+    Sample Sample::getSampleAtBeta(double newBeta) const
     {
         const double actualBeta = this->getBeta();
 
-        std::shared_ptr<Sample> normalizedSample = this->clone();
+        Sample normalizedSample = this->clone();
 
         if (actualBeta == 0)
         {
             const double defaultValue = newBeta * sqrt(1.0 / this->size);
             for (int k = 0; k < this->size; k++)
             {
-                normalizedSample->Values[k] = defaultValue;
+                normalizedSample.Values[k] = defaultValue;
             }
         }
         else
@@ -76,20 +76,20 @@ namespace Deltares::Models
 
             for (int k = 0; k < this->size; k++)
             {
-                normalizedSample->Values[k] = factor * this->Values[k];
+                normalizedSample.Values[k] = factor * this->Values[k];
             }
         }
 
         return normalizedSample;
     }
 
-    std::shared_ptr<Sample> Sample::getMultipliedSample(double factor)
+    Sample Sample::getMultipliedSample(double factor) const
     {
-        std::shared_ptr<Sample> multipliedSample = this->clone();
+        Sample multipliedSample = this->clone();
 
         for (int i = 0; i < this->size; i++)
         {
-            multipliedSample->Values[i] = factor * this->Values[i];
+            multipliedSample.Values[i] = factor * this->Values[i];
         }
 
         return multipliedSample;
@@ -124,38 +124,38 @@ namespace Deltares::Models
         return true;
     }
 
-    std::shared_ptr<Sample> Sample::clone() const
+    Sample Sample::clone() const
     {
-        std::shared_ptr<Sample> clonedSample = std::make_shared<Sample>(this->Values, this->extended);
+        Sample clonedSample = Sample(this->Values, this->extended);
 
-        clonedSample->AllowProxy = this->AllowProxy;
-        clonedSample->IterationIndex = this->IterationIndex;
-        clonedSample->threadId = this->threadId;
-        clonedSample->Weight = this->Weight;
+        clonedSample.AllowProxy = this->AllowProxy;
+        clonedSample.IterationIndex = this->IterationIndex;
+        clonedSample.threadId = this->threadId;
+        clonedSample.Weight = this->Weight;
 
         return clonedSample;
     }
 
-    std::shared_ptr<Sample> Sample::getExtendedSample(double extendedUValue) const
+    Sample Sample::getExtendedSample(double extendedUValue) const
     {
-        auto uCopy = clone();
+        auto extendedSample = clone();
 
-        uCopy->Values.push_back(extendedUValue);
-        uCopy->size = static_cast<int>(uCopy->Values.size());
-        uCopy->extended = true;
+        extendedSample.Values.push_back(extendedUValue);
+        extendedSample.size = static_cast<int>(extendedSample.Values.size());
+        extendedSample.extended = true;
 
-        return uCopy;
+        return extendedSample;
     }
 
-    std::shared_ptr<Sample> Sample::getReducedSample() const
+    Sample Sample::getReducedSample() const
     {
-        auto uCopy = clone();
+        auto reducedSample = clone();
 
-        uCopy->Values.pop_back();
-        uCopy->size = static_cast<int>(uCopy->Values.size());
-        uCopy->extended = false;
+        reducedSample.Values.pop_back();
+        reducedSample.size = static_cast<int>(reducedSample.Values.size());
+        reducedSample.extended = false;
 
-        return uCopy;
+        return reducedSample;
     }
 }
 

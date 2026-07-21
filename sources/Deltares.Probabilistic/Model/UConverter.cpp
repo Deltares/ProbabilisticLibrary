@@ -473,19 +473,19 @@ namespace Deltares::Models
         return xValues;
     }
 
-    std::shared_ptr<Sample> UConverter::getQualitativeExcludedSample(std::shared_ptr<Sample> sample)
+    Sample UConverter::getQualitativeExcludedSample(const Sample& sample) const
     {
-        std::shared_ptr<Sample> qualitativeExcludedSample = sample->clone();
+        Sample qualitativeExcludedSample = sample.clone();
 
-        for (size_t i = 0; i < sample->Values.size(); i++)
+        for (size_t i = 0; i < sample.Values.size(); i++)
         {
             if (this->varyingStochasts[i]->definition->isQualitative())
             {
-                qualitativeExcludedSample->Values[i] = 0;
+                qualitativeExcludedSample.Values[i] = 0;
             }
         }
 
-        return qualitativeExcludedSample->getSampleAtBeta(sample->getBeta());
+        return qualitativeExcludedSample.getSampleAtBeta(sample.getBeta());
     }
 
     std::shared_ptr<Sample> UConverter::getSampleFromStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
@@ -568,13 +568,13 @@ namespace Deltares::Models
         std::shared_ptr<StochastPoint> realization = std::make_shared<StochastPoint>();
         realization->Beta = beta;
 
-        std::shared_ptr<Sample> betaSample = sample->getSampleAtBeta(std::fabs(beta));
+        Sample betaSample = sample->getSampleAtBeta(std::fabs(beta));
         double uProbability = 0.0;
 
-        if (betaSample->IsExtended())
+        if (betaSample.IsExtended())
         {
-            uProbability = betaSample->Values.back();
-            betaSample = betaSample->getReducedSample();
+            uProbability = betaSample.Values.back();
+            betaSample = betaSample.getReducedSample();
         }
 
         if (this->hasQualitiveStochasts)
@@ -582,7 +582,7 @@ namespace Deltares::Models
             betaSample = getQualitativeExcludedSample(betaSample);
         }
 
-        int count = betaSample->getSize();
+        int count = betaSample.getSize();
 
         const double defaultAlpha = -1 / sqrt(count);
 
@@ -600,7 +600,7 @@ namespace Deltares::Models
                 }
                 else
                 {
-                    uValues[i] = betaSample->Values[i]; // - beta * alphas[i];
+                    uValues[i] = betaSample.Values[i]; // - beta * alphas[i];
                     alphas[i] = -uValues[i] / beta;
                 }
             }

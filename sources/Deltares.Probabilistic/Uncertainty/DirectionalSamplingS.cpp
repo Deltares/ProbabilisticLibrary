@@ -126,7 +126,7 @@ namespace Deltares::Uncertainty
         // Normalize the value of Samples via d
         for (size_t i = 0; i < samples.size(); i++)
         {
-            samples[i] = samples[i]->getSampleAtBeta(initialDistance);
+            samples[i] = std::make_shared<Sample>(samples[i]->getSampleAtBeta(initialDistance));
             samples[i]->IterationIndex = static_cast<int>(i);
         }
 

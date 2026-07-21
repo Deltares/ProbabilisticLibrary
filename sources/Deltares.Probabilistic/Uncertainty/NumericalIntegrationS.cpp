@@ -139,7 +139,7 @@ namespace Deltares::Uncertainty
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
-                std::shared_ptr<Sample> sample = parentSample.clone();
+                std::shared_ptr<Sample> sample = std::make_shared<Models::Sample>(parentSample.clone());
                 sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                 double contribution = pq.getDifference(uValues[j + 1]);

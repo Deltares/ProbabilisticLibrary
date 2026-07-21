@@ -55,7 +55,7 @@ namespace Deltares::Reliability
         {
             if (shouldCompute[i])
             {
-                uDirections[i] = directions[i].getDirection().getNormalizedSample();
+                uDirections[i] = std::make_shared<Models::Sample>(directions[i].getDirection().getNormalizedSample());
             }
         }
 

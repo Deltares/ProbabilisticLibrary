@@ -58,7 +58,7 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
         void handleSample(const std::shared_ptr<Models::Sample>& sample, double weight);
-        static std::shared_ptr<Models::Sample> getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability);
+        static Models::Sample getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability);
         void initializeTotals();
 
     public:

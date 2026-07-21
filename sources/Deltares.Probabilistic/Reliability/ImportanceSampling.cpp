@@ -137,7 +137,7 @@ namespace Deltares::Reliability
 
                     const std::shared_ptr<Sample> sample = sampleCreator.getRandomSample();
 
-                    std::shared_ptr<Sample> modifiedSample = sample->clone();
+                    std::shared_ptr<Sample> modifiedSample = std::make_shared<Models::Sample>(sample->clone());
 
                     for (int k = 0; k < nStochasts; k++)
                     {

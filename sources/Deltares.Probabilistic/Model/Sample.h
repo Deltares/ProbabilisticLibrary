@@ -93,23 +93,23 @@ namespace Deltares::Models
         double getDistance(const std::shared_ptr<Sample>& other) const;
         double getDistance2(const std::shared_ptr<Sample>& other) const;
         void setInitialValues(double beta);
-        std::shared_ptr<Sample> clone() const;
-        std::shared_ptr<Sample> getNormalizedSample() { return getSampleAtBeta(1); }
-        std::shared_ptr<Sample> getSampleAtBeta(double beta);
-        std::shared_ptr<Sample> getMultipliedSample(double factor);
+        Sample clone() const;
+        Sample getNormalizedSample() const { return getSampleAtBeta(1.0); }
+        Sample getSampleAtBeta(double beta) const;
+        Sample getMultipliedSample(double factor) const;
 
         /**
          * \brief Gets a sample with one additional u-value
          * \param extendedUValue The u value which will be appended to the list of values
          * \return Extended sample
          */
-        std::shared_ptr<Sample> getExtendedSample(double extendedUValue) const;
+        Sample getExtendedSample(double extendedUValue) const;
 
         /**
          * \brief Gets a sample where the last value from the list of values is removed
          * \return Reduced sample
          */
-        std::shared_ptr<Sample> getReducedSample() const;
+        Sample getReducedSample() const;
 
         void correctSmallValues(double tolerance = 1E-10);
         bool areValuesEqual(std::shared_ptr<Sample> other);

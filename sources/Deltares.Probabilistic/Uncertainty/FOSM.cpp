@@ -55,7 +55,7 @@ namespace Deltares::Uncertainty
         }
 
         std::shared_ptr<Sample> nextSample = std::make_shared<Sample>(gradient);
-        nextSample = nextSample->getNormalizedSample();
+        nextSample = std::make_shared<Models::Sample>(nextSample->getNormalizedSample());
         double z1 = modelRunner->getZValue(nextSample);
 
         if (this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations)
@@ -77,7 +77,7 @@ namespace Deltares::Uncertainty
 
         for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
         {
-            std::shared_ptr<Sample> quantileSample = nextSample->getSampleAtBeta(quantile->Reliability);
+            std::shared_ptr<Sample> quantileSample = std::make_shared<Models::Sample>(nextSample->getSampleAtBeta(quantile->Reliability));
             std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(quantileSample));
             evaluation->Quantile = quantile->getProbabilityOfNonFailure();
             result.quantileEvaluations.push_back(evaluation);
