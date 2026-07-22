@@ -23,6 +23,11 @@
 #include "CrudeMonteCarloSettings.h"
 #include "ReliabilityMethod.h"
 
+namespace Deltares::Numeric
+{
+    class StatisticsCalculator;
+}
+
 namespace Deltares::Reliability
 {
     class CrudeMonteCarlo : public ReliabilityMethod
@@ -38,8 +43,8 @@ namespace Deltares::Reliability
 
     private:
         std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::SampleProvider> sampleProvider, double zRemainder, double qRange);
-        bool checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nmaal) const;
-        static double getConvergence(double pf, int samples);
+        bool checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, Numeric::StatisticsCalculator& statistics, int nmaal) const;
+        static double getConvergence(Numeric::StatisticsCalculator& statistics);
         void applyLimits(const std::shared_ptr<Models::Sample>& sample) const;
     };
 }

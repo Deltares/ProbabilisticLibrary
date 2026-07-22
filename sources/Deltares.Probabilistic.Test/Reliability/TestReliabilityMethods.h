@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic/Reliability/DirectionReliabilitySettings.h"
+#include "../../Deltares.Probabilistic/Reliability/ReliabilityMethod.h"
 
 namespace Deltares::Probabilistic::Test
 {
@@ -35,6 +36,8 @@ namespace Deltares::Probabilistic::Test
         static void testLatinHyperCube();
         static void testNumericalBisection();
         static void testNumericalBisectionLinear();
+        static void testNumIntZValueProbability();
+        static void testNumIntProbabilityInverse();
         static void testCobylaReliability();
         static void testSubSetSimulationReliabilityNearestToMean();
         static void testSubSetSimulationReliabilityCenterOfGravity();
@@ -43,12 +46,19 @@ namespace Deltares::Probabilistic::Test
         static void testFragilityCurveIntegration();
         static void testNumericalIntegrationReliability();
         static void testCrudeMonteCarloReliability();
+        static void testCrudeMonteCarloZValueProbability();
+        static void testCrudeMonteCarloProbabilityInverse();
         static void testCrudeMonteCarloWithCopulaReliability();
         static void testCrudeMonteCarloWithQualitativeProject();
+        static void testImportanceSamplingZValueProbability();
+        static void testImportanceSamplingProbabilityInverse();
         static void testAdaptiveImportanceSampling();
         static void testAdaptiveImportanceSamplingVarianceFactor();
+        static void testAdaptiveImportanceSamplingZValueProbability();
         static void testClustersAdpImpSampling();
-        static void testDirSamplingProxyModels(const bool useProxy,
-            const Reliability::ModelVaryingType varyingType, const double dsdu);
+        static void testDirSamplingProxyModels(const bool useProxy, const Reliability::ModelVaryingType varyingType, const double dsdu);
+    private:
+        static void testProbabilityInverse(Deltares::Reliability::ReliabilityMethod& calculator, std::shared_ptr<Models::RunSettings> runSettings);
+        static void testZValueProbability(Deltares::Reliability::ReliabilityMethod& calculator, std::shared_ptr<Models::RunSettings> runSettings, bool isNumInt = false);
     };
 }

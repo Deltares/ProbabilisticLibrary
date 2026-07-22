@@ -117,6 +117,26 @@ $5.0$ & $2.87\cdot 10^{-7}$ \\ \hline
 
 Small values of $\beta$ indicate large probabilities of failure, large values of $\beta$ indicate small probabilities of failure. This can be easily explained with some examples in which, for the sake of simplicity, $Z$ is assumed to be normally distributed. If $\beta=1$, failure occurs if a random sample of $Z$ is more than $1\cdot\sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-1)\approx0.16$. On the other hand, if $\beta=4$, failure occurs if a random sample of $Z$ is more than $4 \cdot \sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-4)\approx3.2 \cdot 10^{-5}$. In other words: larger values of $\beta$ indicate that more extreme events are required for failure to occur, hence a lower probability of failure, hence a larger reliability of the system.
 
+\section{Model return type}
+\label{sec:ModelReturnType}
+
+Until so far we assumed that a model return a z-value, which should be interpreted as failing if smaller than zero or non failing otherwise. Some reliability methods support the model return a probability of failure or a reliability index.
+
+The model result $z$ is converted to an addition of failure as follows, depending on the model result type:
+
+\begin{align} 
+	\label{eq:SampleAddition}
+	p_{\text{i}}\left(z\right) = \left\{\begin{array}{ll}\text{z-value} & z < 0 ? 1 : 0\\
+		\text{probability of failure} & z \\
+		\text{reliability index} & \Phi^{-1}\left(z\right) \\
+	\end{array}	
+	\right.
+\end{align}
+
+where:
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
+\end{longtable}
 
 \section{Reliability methods}
 \label{sec:ReliabilityMethods}
@@ -136,7 +156,29 @@ If the underlying model fails for a certain realization, its results will be ign
 
 The minimum and maximum values for which the integration runs are defined in the $u$-space. Numerical integration fills the remaining space between these values and $-8$ and $8$ with additional cells to ensure complete coverage of the integration domain.
 
-\Note{$u=8$ corresponds to a probability of approximately $6\times10^{−16}$, which is orders of magnitude smaller than the probabilities of typical scenarios.}
+For variables $i$, $j$, $k$ the probability of failure is calculated as follows:
+
+\begin{align} 
+	\label{eq:NumericalIntegration}
+	p_{\text{f}} = \sum_{\text{i}} \sum_{\text{j}} \sum_{\text{k}} w_{\text{i}} \cdot w_{\text{j}} \cdot w_{\text{k}} \cdot p_{\text{i,j,k}}
+\end{align}
+
+where the weight $w_{\text{i}}$ is defined as
+
+\begin{align} 
+	\label{eq:NumericalIntegrationWeight}
+	w_{\text{i}} = \Phi^{-1}\left(u_{\text{i+1}}\right) - \Phi^{-1}\left(u_{\text{i}}\right)
+\end{align}
+
+and
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}
+	$i$, $j$, $k$ & are indices of variables ranging over the complete variable space. \\  
+	$p_{\text{f}}$ & is the probability of failure \\  
+	$p_{\text{i,j,k}}$ & is the individual addition of a realization, see \autoref{eq:SampleAddition} \\ 
+	$u_{\text{i}}$ & is the u-value corresponding with a realization of variable $i$. The index $i$ ranges over such values that $u_{\text{i}}$ ranges over $-8$ to $8$. Beyond $u=8$ numerical instability occurs, but $u=8$ corresponds to a probability of approximately $6 \cdot 10^{−16}$, which is orders of magnitude smaller than the probabilities of typical scenarios. \\
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\	
+\end{longtable}
 
 \begin{figure}[H]
 	\label{fig:NumericalIntegration}
@@ -171,17 +213,19 @@ This process continues until the remaining cells -- those with mixed results -- 
 
 \subsubsection{Algorithm}
 
-Crude Monte Carlo is the standard Monte Carlo simulation method. Random realizations are generated in proportion to their probability density. The number of realizations that result in failure is counted, as well as the number that do not lead to failure. The probability of failure is then calculated as follows:
+Crude Monte Carlo is the standard Monte Carlo simulation method. Random realizations are generated in proportion to their probability density. Each realization $i$ leads to an addition $p_{\text{i}}$ (\autoref{eq:SampleAddition}) to the total failure. 
+	
+The number of realizations that result in failure is counted, as well as the number that do not lead to failure. The probability of failure is then calculated as follows:
 
 \begin{align} 
 \label{eq:MonteCarlo}
-p_{\text{failure}} = \frac{N_{\text{failure}}}{N}
+p_{\text{f}} = \frac{\sum_{\text{i}} p_{\text{i}}}{N}
 \end{align}
 
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$p_{\text{failure}}$ & is the probability of failure \\  
-	$N_{\text{failure}}$ & is the number of realizations which were interpreted as failing \\ 
+	$p_{\text{f}}$ & is the probability of failure \\  
+	$p_{\text{i}}$ & is the individual addition of a realization, see \autoref{eq:SampleAddition} \\ 
 	$N$ & is the total number of realizations
 \end{longtable}
 
@@ -195,42 +239,35 @@ where:
 \subsubsection{Convergence}
 \label{sec:MCConvergence}
 
-The Monte Carlo simulation also leads to a standard deviation of the probability of failure. This standard deviation $\sigma_p$ is based on a confidence level $\alpha$:
+The Monte Carlo simulation also leads to a standard deviation of the probability of failure. This is the standard deviation of contributions $p_{\text{i}}$ of all samples, calculated as follows:
 
 \begin{align} 
-\label{eq:MonteCarloStandardDeviation}
-\sigma_p = z \sqrt{\frac{p \left(1 - p\right)}{N}}
+	\label{eq:MonteCarloStandardDeviation}
+	\sigma_p = \sqrt{\frac{\sum_i \left(p_{\text{i}} - p_{\text{f}}\right)^2}{N}}
 \end{align}
 
-with:
+In case the model result is either failing or not failing, meaning $p_{\text{i}}$ is always 1 or 0, the standard deviation is equal to:
 
 \begin{align} 
-\label{eq:MonteCarloStandardConfidence}
-z = \Phi^{-1}\left(1 - \frac{\alpha}{2}\right)
+	\label{eq:MonteCarloStandardDeviationZValue}
+	\sigma_{p \text{, z-value}} = \sqrt{p_{\text{f}} \cdot \left(1 - p_{\text{f}} \right) }
 \end{align}
 
-where:
-
-\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$\sigma_p$ & is the standard deviation of the probability of failure \\  
-	$p$ & is the probability of failure $p_{\text{failure}}$ \\
-	$N$ & is the total number of realizations \\
-	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$ ($z$ is equal to $1$ in the \probLib) \\
-	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
-	$\alpha$ & is the confidence level
-\end{longtable}
-
-The standard deviation $\sigma_p$ can be expressed as a variation coefficient $\varepsilon$:
+The next step is computing the standard error $SE$. This is defined as follows:
 
 \begin{align} 
-\label{eq:MonteCarloVariationCoefficient}
-\varepsilon = \left\{\begin{array}{ll}p < \tfrac{1}{2} & \tfrac{\sigma_p}{p} = z \sqrt{\frac{1 - p}{N p}}\\
-p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)} = z \sqrt{\frac{p}{N \left(1 - p\right)}}
-\end{array}	
-\right.
+	\label{eq:MonteCarloStandardError}
+	SE = \frac{\sigma_p}{\sqrt{N}}
 \end{align}
 
-The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. The Monte Carlo simulation will stop when $\varepsilon \leq \varepsilon_{\text{max}}$ (and limited to the minimum and maximum number of realizations). The confidence level $\alpha$ cannot be set by the user. Its value is such that $z$ is $1$.
+The coefficient of variation $\varepsilon$ is expressed as the relative standard error, relative to the probability of failure or the probability of non failure:
+
+\begin{align} 
+	\label{eq:MonteCarloCoeffiecientOfVariation}
+	\varepsilon = \frac{SE}{\text{min}\left(p_{\text{f}}, 1 - p_{\text{f}}\right)   }
+\end{align}
+
+The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. The Monte Carlo simulation will stop when $\varepsilon \leq \varepsilon_{\text{max}}$ (and limited to the minimum and maximum number of realizations).
 
 \begin{figure}[H]
 	\label{fig:MonteCarloConvergence}
@@ -242,6 +279,29 @@ The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. T
 When the underlying model fails for a certain realization, its results are ignored. The user should decide whether the number of failed realizations is acceptable.
 
 The minimum and maximum values for which the integration will run are defined in the $u$-space. The Monte Carlo analysis will then check whether the remaining area leads to failure or not.
+
+\subsubsection{Confidence level}
+\label{sec:MCConfidence}
+
+The confidence level $z$ is always $1$ in the \probLib and can not be set by the user. The confidence level should be applied to $\sigma_p$, defined in \autoref{eq:MonteCarloStandardDeviation}, giving:
+
+\begin{align} 
+	\label{eq:MonteCarloStandardDeviationConfidence}
+	\sigma_{p\text{, confidence}} = z \cdot \sigma_p
+\end{align}
+
+with:
+
+\begin{align} 
+\label{eq:MonteCarloStandardConfidence}
+z = \Phi^{-1}\left(1 - \frac{\alpha}{2}\right)
+\end{align}
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$ ($z$ is equal to $1$ in the \probLib) \\
+	$\alpha$ & is the confidence level \\
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF})
+\end{longtable}
 
 \subsection{Importance Sampling}
 \label{sec:ImportanceSampling}
@@ -284,17 +344,22 @@ where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$\varphi$ & is the standard normal probability density function, see \autoref{eq:StandardNormalPDF} \\  
 	$w_{\text{var}}$ & is the weight factor per variable per realization \\
-	$W_{\text{realization}}$ & is the weight factor of the realization \\
+	$W_{\text{realization}}$ & is the weight factor of the realization
 \end{longtable}
 
 Corresponding to \autoref{eq:MonteCarlo}, the probability of failure is equal to:
 
-\begin{align} 
+\begin{align}  
 \label{eq:ImportanceSampling}
-p_{\text{failure}} = \frac{\sum_{\text{failing realizations}} W}{\sum_{\text{all realizations}} W}
+p_{\text{failure}} = \frac{\sum_{\text{i}} p_{\text{i}} \cdot W_{\text{i}}}{\sum_{\text{i}} W_{\text{i}}}
 \end{align}
 
-To avoid numerical issues and because:
+where:
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$p_{\text{i}}$ & is the failure addition of a single realization, see \autoref{eq:SampleAddition} \\  
+	$p_{\text{failure}}$ & is the resulting probability of failure
+\end{longtable}To avoid numerical issues and because:
 
 \begin{align} 
 \label{eq:ImportanceSamplingLimit}
@@ -305,7 +370,7 @@ The probability of failure is calculated as follows:
 
 \begin{align} 
 \label{eq:ImportanceSamplingCalculated}
-p_{\text{failure}} = \frac{\sum_{\text{failing realizations}} W}{N}
+p_{\text{failure}} = \frac{\sum_{\text{i}} p_{\text{i}} \cdot W_{\text{i}}}{N}
 \end{align}
 
 \subsubsection{Convergence}

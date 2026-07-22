@@ -64,8 +64,15 @@ namespace Deltares::Reliability
 
     double ImportanceSamplingSupport::getSampleWeight(const Sample& sample, const Sample& center, double dimensionality, const std::vector<double>& factors)
     {
-        Sample originalSample = getOriginalSample(sample, center, factors);
-        return getWeight(sample, originalSample, dimensionality);
+        Sample reducedSample = sample;
+
+        if (sample.IsExtended())
+        {
+            reducedSample = sample.getReducedSample();
+        }
+
+        Sample originalSample = getOriginalSample(reducedSample, center, factors);
+        return getWeight(reducedSample, originalSample, dimensionality);
     }
 
     double ImportanceSamplingSupport::getConvergence(double pf, double minWeight, int samples)

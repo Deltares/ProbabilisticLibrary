@@ -32,7 +32,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestProxies::testLinearModel() const
     {
-        std::shared_ptr<Models::ModelRunner> modelRunner = projectBuilder::BuildLinearProject();
+        std::shared_ptr<Models::ModelRunner> modelRunner = projectBuilder::BuildLinearProject(2);
 
         std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> {1.0, 0.5});
 

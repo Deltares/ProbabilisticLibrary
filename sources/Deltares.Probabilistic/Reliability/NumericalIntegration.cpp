@@ -49,7 +49,7 @@ namespace Deltares::Reliability
         const double z = modelRunner->getZValue(u);
 
         // parameter for the position of the origin; necessary to determine the design point
-        z0Fac = NumericSupport::GetSign(z);
+        z0Fac = getZFactor(z, Settings.runSettings->modelReturnType);
 
         // Numerical integration isn't possible with a large set of stochastic parameters
         // warnings and errors are presented.
@@ -73,7 +73,7 @@ namespace Deltares::Reliability
         constexpr double density = 1.0; // joint probability density
         constexpr int stochastIndex = 0; // number of the stochastic parameter
 
-        designPointBuilder = DesignPointBuilder(nStochasts, Settings.designPointMethod, Settings.StochastSet);
+        designPointBuilder = DesignPointBuilder(nStochasts, Settings.designPointMethod, Settings.StochastSet, Settings.runSettings->shouldAddProbability());
         double totalDensity = 0;
 
         // Call to the recursive part of the numerical integration computation
@@ -140,7 +140,7 @@ namespace Deltares::Reliability
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
-                std::shared_ptr<Models::Sample> sample = parentSample.clone();
+                std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(parentSample.clone());
                 sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                 const double contribution = pq.getDifference(uValues[j + 1]);
@@ -156,7 +156,7 @@ namespace Deltares::Reliability
 
             for (size_t j = 0; j < samples.size(); j++)
             {
-                const auto sample = samples[j];
+                const auto& sample = samples[j];
 
                 if (!std::isnan(zValues[j]))
                 {
@@ -165,16 +165,16 @@ namespace Deltares::Reliability
                     totalDensity += sampleProbability;
 
                     // if the z-value is negative add the probability density to the probability of failure
-                    if (zValues[j] < 0.0)
+                    double failureAddition = getFailureAddition(zValues[j], Settings.runSettings->modelReturnType);
+                    if (failureAddition > 0.0)
                     {
-                        probFailure += sampleProbability;
+                        probFailure += failureAddition * sampleProbability;
                     }
 
-                    // If the combination of the z-value and the parameter for the position of the origin is negative
-                    // it is possible that a new design point is computed. Then also the alpha values are computed.
-                    if (zValues[j] * z0Fac < 0)
+                    double smallestDomainAddition = z0Fac > 0.0 ? failureAddition : 1.0 - failureAddition;
+                    if (smallestDomainAddition > 0)
                     {
-                        designPointBuilder.addSample(sample);
+                        designPointBuilder.addSample(sample, smallestDomainAddition);
                     }
                 }
             }

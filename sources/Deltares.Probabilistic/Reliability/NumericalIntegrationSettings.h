@@ -53,7 +53,7 @@ namespace Deltares::Reliability
         void validate(Logging::ValidationReport& report) const override
         {
             validateStochastSet(report);
-            runSettings->validate(report);
+            runSettings->validate(report, true);
         }
 
     private:

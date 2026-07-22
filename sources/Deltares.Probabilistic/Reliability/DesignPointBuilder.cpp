@@ -77,9 +77,14 @@ namespace Deltares::Reliability
     };
 
     DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method,
-        const std::shared_ptr<StochastSettingsSet>& stochastSet)
-        : count(count), method(method)
+        const std::shared_ptr<StochastSettingsSet>& stochastSet, bool addProbability)
+        : count(count), method(method), addProbability(addProbability)
     {
+        if (addProbability)
+        {
+            this->count += 1;
+        }
+
         initializeTotals();
 
         if (stochastSet != nullptr)
@@ -117,10 +122,10 @@ namespace Deltares::Reliability
 
     void DesignPointBuilder::initializeTotals()
     {
-        defaultSample = std::make_shared<Models::Sample>(count);
-        meanSample = std::make_shared<Models::Sample>(count);
-        sinSample = std::make_shared<Models::Sample>(count);
-        cosSample = std::make_shared<Models::Sample>(count);
+        defaultSample = std::make_shared<Models::Sample>(count, addProbability);
+        meanSample = std::make_shared<Models::Sample>(count, addProbability);
+        sinSample = std::make_shared<Models::Sample>(count, addProbability);
+        cosSample = std::make_shared<Models::Sample>(count, addProbability);
 
         for (const auto& modeFinder : modeFinders)
         {
@@ -140,11 +145,17 @@ namespace Deltares::Reliability
         }
     }
 
-    void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& sample)
+    void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& modelSample, double probability)
     {
         sampleAdded = true;
 
-        double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
+        std::shared_ptr<Models::Sample> sample = modelSample;
+        if (addProbability)
+        {
+            sample = std::make_shared<Models::Sample>(getSampleWithProbability(modelSample, probability));
+        }
+
+        double weight = std::isnan(sample->Weight) ? 1.0 : sample->Weight;
 
         if (!weightedSampleAdded && method != DesignPointMethod::NearestToMean)
         {
@@ -156,9 +167,11 @@ namespace Deltares::Reliability
             }
             else
             {
-                weight = 1;
+                weight = 1.0;
             }
         }
+
+        weight *= probability;
 
         handleSample(sample, weight);
     }
@@ -192,7 +205,7 @@ namespace Deltares::Reliability
                         if (sampleAdded)
                         {
                             minimumBeta = nearestSamples.back()->getBeta();
-                            meanSample = nearestSamples.back()->clone();
+                            meanSample = std::make_shared<Models::Sample>(nearestSamples.back()->clone());
                         }
                         else
                         {
@@ -202,7 +215,7 @@ namespace Deltares::Reliability
                     }
                 }
             }
-            else 
+            else
             {
                 double beta = sample->getBeta();
 
@@ -219,7 +232,7 @@ namespace Deltares::Reliability
 
                     nearestSamples.push_back(sample);
 
-                    meanSample = sample->clone();
+                    meanSample = std::make_shared<Models::Sample>(sample->clone());
                 }
             }
             break;
@@ -267,7 +280,7 @@ namespace Deltares::Reliability
     {
         if (!sampleAdded)
         {
-            return defaultSample->clone();
+            return std::make_shared<Models::Sample>(defaultSample->clone());
         }
         else
         {
@@ -275,11 +288,11 @@ namespace Deltares::Reliability
             {
             case DesignPointMethod::NearestToMean:
             {
-                return meanSample->clone();
+                return std::make_shared<Models::Sample>(meanSample->clone());
             }
             case DesignPointMethod::CenterOfGravity:
             {
-                std::shared_ptr<Models::Sample> gravityPoint = std::make_shared<Models::Sample>(count);
+                std::shared_ptr<Models::Sample> gravityPoint = std::make_shared<Models::Sample>(count, addProbability);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -304,7 +317,7 @@ namespace Deltares::Reliability
                 }
 
                 auto coordinates = Numeric::NumericSupport::GetCartesianCoordinates(angleValues);
-                std::shared_ptr<Models::Sample> anglePoint = std::make_shared<Models::Sample>(coordinates);
+                std::shared_ptr<Models::Sample> anglePoint = std::make_shared<Models::Sample>(coordinates, addProbability);
 
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
@@ -318,6 +331,25 @@ namespace Deltares::Reliability
                 throw std::runtime_error("Not supported");
             }
         }
+    }
+
+    Models::Sample DesignPointBuilder::getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability)
+    {
+        double pAveraged = (1 + (1 - probability)) / 2;
+        double uAveraged = Statistics::StandardNormal::getUFromP(pAveraged);
+
+        auto uCopy = sample->getExtendedSample(uAveraged);
+
+        if (std::isnan(uCopy.Weight))
+        {
+            uCopy.Weight = probability;
+        }
+        else
+        {
+            uCopy.Weight *= probability;
+        }
+
+        return uCopy;
     }
 
     std::string DesignPointBuilder::getDesignPointMethodString(DesignPointMethod method)

@@ -44,6 +44,7 @@
 #include "Statistics/TestXfromU.h"
 #include "Statistics/TestStochast.h"
 #include "Math/testMatrix.h"
+#include "Math/testStatisticsCalculator.h"
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
@@ -268,6 +269,16 @@ TEST(ReliabilityMethodTest, TestNumBisection2)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testNumericalBisectionLinear();
 }
 
+TEST(ReliabilityMethodTest, TestNumIntZValueProbability)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumIntZValueProbability();
+}
+
+TEST(ReliabilityMethodTest, TestNumIntProbabilityInverse)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumericalBisectionLinear();
+}
+
 TEST(ReliabilityMethodTest, TestSubSetSimulationReliabilityNearestToMean)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testSubSetSimulationReliabilityNearestToMean();
@@ -303,6 +314,16 @@ TEST(ReliabilityMethodTest, TestCrudeMCReliability)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloReliability();
 }
 
+TEST(ReliabilityMethodTest, TestCrudeMonteCarloZValueProbability)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloZValueProbability();
+}
+
+TEST(ReliabilityMethodTest, testCrudeMonteCarloProbabilityInverse)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloProbabilityInverse();
+}
+
 TEST(ReliabilityMethodTest, testCrudeMCwithCopula)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
@@ -313,6 +334,16 @@ TEST(ReliabilityMethodTest, testCrudeMCwithQualitativeProject)
     Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloWithQualitativeProject();
 }
 
+TEST(ReliabilityMethodTest, TestImportanceSamplingZValueProbability)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testImportanceSamplingZValueProbability();
+}
+
+TEST(ReliabilityMethodTest, TestImportanceSamplingProbabilityInverse)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testImportanceSamplingProbabilityInverse();
+}
+
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSampling)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSampling();
@@ -321,6 +352,11 @@ TEST(ReliabilityMethodTest, TestAdaptiveImportanceSampling)
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingVarianceFactor)
 {
     Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSamplingVarianceFactor();
+}
+
+TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingProbability)
+{
+    Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSamplingZValueProbability();
 }
 
 TEST(ReliabilityMethodTest, TestClustersAdpImpSampling)
@@ -714,6 +750,11 @@ TEST(UnitTests, testRootfinder)
 {
     auto tstRF = Deltares::Probabilistic::Test::rootfinder_tests();
     tstRF.all_rootfinder_tests();
+}
+
+TEST(UnitTests, testStatisticsCalculator)
+{
+    Deltares::Probabilistic::Test::testStatisticsCalculator::allStatisticsCalculatorTests();
 }
 
 TEST(UnitTests, testVector1D)

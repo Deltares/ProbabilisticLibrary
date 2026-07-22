@@ -82,6 +82,14 @@ class SampleMethod(Enum):
     def __str__(self):
         return str(self.value)
 
+class ModelReturnType(Enum):
+    """Enumeration which indicates how the return value of a model should be interpreted"""
+    z_value = 'z_value'
+    probability_failure = 'probability_failure'
+    reliability_index = 'reliability_index'
+    def __str__(self):
+        return str(self.value)
+
 class CombinerMethod(Enum):
     """Enumeration which defines the algorithm to combine design points"""
     hohenbichler = 'hohenbichler'
@@ -154,6 +162,7 @@ class Settings(FrozenObject):
                 'reuse_calculations',
                 'reliability_method',
                 'design_point_method',
+                'model_return_type',
                 'start_method',
                 'all_quadrants',
                 'max_steps_sphere_search',
@@ -251,6 +260,15 @@ class Settings(FrozenObject):
     @reliability_method.setter
     def reliability_method(self, value : ReliabilityMethod):
         interface.SetStringValue(self._id, 'reliability_method', str(value))
+
+    @property
+    def model_return_type(self) -> ModelReturnType:
+        """Defines how the model result should be interpreted"""
+        return ModelReturnType[interface.GetStringValue(self._id, 'model_return_type')]
+
+    @model_return_type.setter
+    def model_return_type(self, value : ModelReturnType):
+        interface.SetStringValue(self._id, 'model_return_type', str(value))
 
     @property
     def design_point_method(self) -> DesignPointMethod:

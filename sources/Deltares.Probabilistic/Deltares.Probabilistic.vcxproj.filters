@@ -269,6 +269,12 @@
     <ClCompile Include="Model\ModelSample.cpp" />
     <ClCompile Include="Reliability\CombinedLimitStateFunction.cpp" />
     <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />
+    <ClCompile Include="Uncertainty\Direction.cpp" />
+    <ClCompile Include="Server\ProjectEntries.cpp" />
+    <ClCompile Include="Statistics\StochastProperties.cpp" />
+    <ClCompile Include="Reliability\NumericalIntegrationShared.cpp" />
+    <ClCompile Include="Reliability\ZGetter.cpp" />
+    <ClCompile Include="Combine\ComputeBetaSection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -567,6 +573,14 @@
     <ClInclude Include="Model\ModelSampleStruct.h" />
     <ClInclude Include="Reliability\CombinedLimitStateFunction.h" />
     <ClInclude Include="Reliability\ProbabilityLimitStateFunction.h" />
+    <ClInclude Include="Uncertainty\Direction.h" />
+    <ClInclude Include="Server\ProjectEntries.h" />
+    <ClInclude Include="Reliability\NumericalIntegrationShared.h" />
+    <ClInclude Include="Reliability\ZGetter.h" />
+    <ClInclude Include="Combine\IndexPair.h" />
+    <ClInclude Include="Combine\ComputeBetaSection.h" />
+    <ClInclude Include="Math\StatisticsCalculator.h" />
+    <ClInclude Include="Math\StatisticsCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

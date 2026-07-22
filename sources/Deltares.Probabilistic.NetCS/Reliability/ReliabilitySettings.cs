@@ -124,6 +124,12 @@ public class ReliabilitySettings
         set { Interface.SetBoolValue(id, "use_z_from_sample", value); }
     }
 
+    public ModelReturnType ModelReturnType
+    {
+        get { return ModelReturnTypeConverter.ConvertFromString(Interface.GetStringValue(id, "model_return_type")); }
+        set { Interface.SetStringValue(id, "model_return_type", ModelReturnTypeConverter.ConvertToString(value)); }
+    }
+
     public DesignPointMethod DesignPointMethod
     {
         get { return DesignPointMethodConverter.ConvertFromString(Interface.GetStringValue(id, "design_point_method")); }

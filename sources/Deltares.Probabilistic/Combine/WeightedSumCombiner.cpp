@@ -72,7 +72,7 @@ namespace Deltares::Reliability
         }
 
         std::shared_ptr<Models::Sample> combinedSample = designPointBuilder.getSample();
-        combinedSample = combinedSample->getSampleAtBeta(combinedBeta);
+        combinedSample = std::make_shared<Models::Sample>(combinedSample->getSampleAtBeta(combinedBeta));
 
         // create final design point
         std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();

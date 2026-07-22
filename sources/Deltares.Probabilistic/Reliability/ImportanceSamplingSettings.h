@@ -106,7 +106,7 @@ namespace Deltares::Reliability
 
             validateStochastSettings(report);
 
-            runSettings->validate(report);
+            runSettings->validate(report, true);
         }
 
         /**

@@ -24,7 +24,7 @@ import math
 from typing import TypedDict
 import numpy as np
 
-from probabilistic_library import ModelProject, ReliabilityProject, UncertaintyProject, SensitivityProject, RunProject
+from probabilistic_library import ModelProject, ModelReturnType, ReliabilityProject, UncertaintyProject, SensitivityProject, RunProject
 from probabilistic_library import DistributionType, Stochast, DesignPoint, ConditionalValue
 from time import sleep
 from typing import TypedDict, Unpack
@@ -35,6 +35,13 @@ def sum_ab(a, b):
 def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
+
+def linear_prob_ab(a, b):
+    L = 2.7
+    L_red = L - (a+b)
+    p = (1.0 - L_red) / 2.0
+    p = max(0, min(p, 1)) # clip p between valid values
+    return p
 
 def failing_model(a, b):
     val = [a + b, a - b]
@@ -157,6 +164,17 @@ def get_linear_project():
     project = ReliabilityProject()
 
     project.model = linear_ab
+
+    assign_distributions(project, DistributionType.uniform)
+
+    return project
+
+def get_linear_probability_project():
+
+    project = ReliabilityProject()
+
+    project.model = linear_prob_ab
+    project.settings.model_return_type = ModelReturnType.probability_failure
 
     assign_distributions(project, DistributionType.uniform)
 

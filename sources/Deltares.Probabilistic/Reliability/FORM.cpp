@@ -62,7 +62,7 @@ namespace Deltares::Reliability
         {
             modelRunner->clearLists();
 
-            designPoint = getDesignPoint(modelRunner, startPoint->clone(), relaxationFactor, relaxationIndex);
+            designPoint = getDesignPoint(modelRunner, std::make_shared<Models::Sample>(startPoint->clone()), relaxationFactor, relaxationIndex);
 
             if (designPoint->convergenceReport->IsConverged)
             {
@@ -112,8 +112,8 @@ namespace Deltares::Reliability
         int iteration = 0;
         double beta = nan("");
 
-        std::shared_ptr<Models::Sample> sample = startPoint->clone();
-        std::shared_ptr<Models::Sample> resultSample = startPoint->clone();
+        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(startPoint->clone());
+        std::shared_ptr<Models::Sample> resultSample = std::make_shared<Models::Sample>(startPoint->clone());
 
         auto gradientCalculator = Models::GradientCalculator();
         gradientCalculator.Settings = this->Settings->GradientSettings;

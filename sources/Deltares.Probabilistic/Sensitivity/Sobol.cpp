@@ -168,7 +168,7 @@ namespace Deltares::Sensitivity
 
         for (int i = 0; i < nSamples; i++)
         {
-            std::shared_ptr<Sample> sample = samples1[i]->clone();
+            std::shared_ptr<Sample> sample = std::make_shared<Models::Sample>(samples1[i]->clone());
             sample->Values[index] = samples2[i]->Values[index];
             sample->IterationIndex = index;
 

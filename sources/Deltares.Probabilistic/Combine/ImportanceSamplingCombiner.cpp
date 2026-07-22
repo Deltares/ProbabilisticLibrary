@@ -205,7 +205,7 @@ namespace Deltares::Reliability
 
             // create alpha values for final design point
             const std::shared_ptr<Models::Sample> designPointSample = builder.getSample();
-            const std::shared_ptr<Models::Sample> combinedSample = designPointSample->getSampleAtBeta(combinedRealization->Beta);
+            const std::shared_ptr<Models::Sample> combinedSample = std::make_shared<Models::Sample>(designPointSample->getSampleAtBeta(combinedRealization->Beta));
 
             for (size_t i = 0; i < stochasts.size(); i++)
             {

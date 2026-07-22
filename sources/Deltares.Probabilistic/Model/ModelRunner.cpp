@@ -482,7 +482,7 @@ namespace Deltares::Models
 
         if (this->uConverter->haveSampleValuesChanged())
         {
-            evaluation = this->getEvaluation(sample->getSampleAtBeta(beta));
+            evaluation = this->getEvaluation(std::make_shared<Sample>(sample->getSampleAtBeta(beta)));
             evaluationAssigned = true;
         }
 

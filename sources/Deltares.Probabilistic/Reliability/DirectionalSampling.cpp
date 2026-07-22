@@ -122,7 +122,7 @@ namespace Deltares::Reliability
             double betaDirection = std::abs(betaValues[directionIndex % chunkSize]);
 
             // get the sample at the limit state
-            std::shared_ptr<Models::Sample> uSurface = u->getSampleAtBeta(betaDirection);
+            std::shared_ptr<Models::Sample> uSurface = std::make_shared<Models::Sample>(u->getSampleAtBeta(betaDirection));
 
             // calculate failure probability
             if (betaDirection >= 0 && betaDirection < StandardNormal::BetaMax * nStochasts)

@@ -49,7 +49,7 @@ namespace Deltares::Models
             double du = Settings->StepSize * 0.5;
             for (int k = 0; k < nStochasts; k++)
             {
-                std::shared_ptr<Sample> uNew = sample->clone();
+                std::shared_ptr<Sample> uNew = std::make_shared<Sample>(sample->clone());
                 uNew->Values[k] += du;
 
                 samples.push_back(uNew);
@@ -68,11 +68,11 @@ namespace Deltares::Models
         {
             for (int k = 0; k < nStochasts; k++)
             {
-                std::shared_ptr<Sample> u1 = sample->clone();
+                std::shared_ptr<Sample> u1 = std::make_shared<Sample>(sample->clone());
                 u1->Values[k] -= Settings->StepSize * 0.5;
                 samples.push_back(u1);
 
-                std::shared_ptr<Sample> u2 = sample->clone();
+                std::shared_ptr<Sample> u2 = std::make_shared<Sample>(sample->clone());
                 u2->Values[k] += Settings->StepSize * 0.5;
                 samples.push_back(u2);
             }

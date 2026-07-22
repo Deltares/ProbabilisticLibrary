@@ -26,7 +26,7 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<Models::Sample> ZGetter::GetSample(Models::Sample& uDirection, double factor, bool allowProxy) const
     {
-        std::shared_ptr<Models::Sample> u = uDirection.getMultipliedSample(factor);
+        std::shared_ptr<Models::Sample> u = std::make_shared<Models::Sample>(uDirection.getMultipliedSample(factor));
         u->AllowProxy = allowProxy;
 
         if (settings.UseInitialValues)

@@ -20,26 +20,16 @@
 // All rights reserved.
 //
 #pragma once
-#include "NumericalIntegrationSettings.h"
-#include "ReliabilityMethod.h"
 
-namespace Deltares::Reliability
+namespace Deltares::Probabilistic::Test
 {
-    class NumericalIntegration : public ReliabilityMethod
+    class testStatisticsCalculator
     {
     public:
-        NumericalIntegrationSettings Settings;
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> runner) override;
-        bool isValid() override
-        {
-            return Settings.isValid();
-        }
-
+        static void allStatisticsCalculatorTests();
     private:
-        double getStochastProbability(int stochastIndex, Models::Sample& parentSample, double density, double& totalDensity, int nSamples);
-        DesignPointBuilder designPointBuilder = DesignPointBuilder();
-        std::shared_ptr<Models::ModelRunner> modelRunner;
-        double z0Fac = 0.0;
+        static void statisticsCalculatorTest();
+        static void statisticsCalculatorWeightedTest();
     };
 }
 

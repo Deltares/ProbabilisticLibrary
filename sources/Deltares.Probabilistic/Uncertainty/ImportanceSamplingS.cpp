@@ -255,7 +255,7 @@ namespace Deltares::Uncertainty
 
     std::shared_ptr<Sample> ImportanceSamplingS::getModifiedSample(const Sample& sample, const Sample& center) const
     {
-        std::shared_ptr<Sample> modifiedSample = sample.clone();
+        std::shared_ptr<Sample> modifiedSample = std::make_shared<Models::Sample>(sample.clone());
 
         for (int k = 0; k < sample.getSize(); k++)
         {

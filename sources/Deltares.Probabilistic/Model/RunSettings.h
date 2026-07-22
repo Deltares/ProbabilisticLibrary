@@ -41,6 +41,13 @@ namespace Deltares::Models
         NoFail
     };
 
+    enum class ModelReturnType
+    {
+        ZValue,
+        ProbabilityFailure,
+        ReliabilityIndex
+    };
+
     class RunSettings
     {
     public:
@@ -55,17 +62,39 @@ namespace Deltares::Models
         bool RunAtDesignPoint = false;
         bool ExtendedLoggingAtDesignPoint = false;
         int MaxMessages = 1000;
+        ModelReturnType modelReturnType = ModelReturnType::ZValue;
         HandleInvalidType handleInvalidType = HandleInvalidType::Ignore;
         Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
         bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
-        void validate(Logging::ValidationReport& report) const
+        void validate(Logging::ValidationReport& report, bool allowProbabilityModelReturnTypes = false) const
         {
             Logging::ValidationSupport::checkMinimumInt(report, 1, MaxParallelProcesses, "max parallel processes");
+
+            if (!allowProbabilityModelReturnTypes && modelReturnType != ModelReturnType::ZValue)
+            {
+                auto message = std::make_shared<Logging::Message>();
+                message->Text = "model return type is not allowed for this reliability method.";
+                message->Type = Logging::MessageType::Error;
+                message->Subject = "model return type";
+
+                report.messages.push_back(message);
+            }
         }
 
-        static std::string getHandleInvalidTypeString(Deltares::Models::HandleInvalidType type);
-        static Deltares::Models::HandleInvalidType getHandleInvalidType(const std::string& type);
+        /**
+         * \brief Indicates whether an additional alpha value should be generated for the probability in reliability methods
+         */
+        bool shouldAddProbability() const
+        {
+            return modelReturnType == ModelReturnType::ProbabilityFailure || modelReturnType == ModelReturnType::ReliabilityIndex;
+        }
+
+        static std::string getHandleInvalidTypeString(HandleInvalidType type);
+        static HandleInvalidType getHandleInvalidType(const std::string& type);
+
+        static std::string getModelReturnTypeString(ModelReturnType type);
+        static ModelReturnType getModelReturnType(const std::string& type);
     };
 }
 

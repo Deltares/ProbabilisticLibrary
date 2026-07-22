@@ -35,21 +35,24 @@ namespace Deltares::Models
     {
     private:
         int size = 0;
+        bool extended = false;
 
     public:
-        Sample(int size)
+        Sample(int size, bool extended = false)
         {
             this->size = size;
+            this->extended = extended;
             for (int i = 0; i < size; i++)
             {
                 Values.push_back(0.0);
             }
         }
 
-        Sample(std::vector<double> values)
+        Sample(std::vector<double> values, bool extended = false)
         {
-            this->size = (int)values.size();
+            this->size = static_cast<int>(values.size());
             this->Values = values;
+            this->extended = extended;
         }
 
         /**
@@ -79,16 +82,35 @@ namespace Deltares::Models
         bool IsRestartRequired = false;
         double Z = nan("");
 
+        /**
+         * \brief Indicates whether the last value is an artificial value indicating the probability. This value does not correspond with an input variable of a model.
+         */
+        bool IsExtended() const { return extended; }
+
         int getSize() const;
 
         double getBeta() const;
         double getDistance(const std::shared_ptr<Sample>& other) const;
         double getDistance2(const std::shared_ptr<Sample>& other) const;
         void setInitialValues(double beta);
-        std::shared_ptr<Sample> clone() const;
-        std::shared_ptr<Sample> getNormalizedSample() { return getSampleAtBeta(1); }
-        std::shared_ptr<Sample> getSampleAtBeta(double beta);
-        std::shared_ptr<Sample> getMultipliedSample(double factor);
+        Sample clone() const;
+        Sample getNormalizedSample() const { return getSampleAtBeta(1.0); }
+        Sample getSampleAtBeta(double beta) const;
+        Sample getMultipliedSample(double factor) const;
+
+        /**
+         * \brief Gets a sample with one additional u-value
+         * \param extendedUValue The u value which will be appended to the list of values
+         * \return Extended sample
+         */
+        Sample getExtendedSample(double extendedUValue) const;
+
+        /**
+         * \brief Gets a sample where the last value from the list of values is removed
+         * \return Reduced sample
+         */
+        Sample getReducedSample() const;
+
         void correctSmallValues(double tolerance = 1E-10);
         bool areValuesEqual(std::shared_ptr<Sample> other);
 

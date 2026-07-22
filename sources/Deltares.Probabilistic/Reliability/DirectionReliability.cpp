@@ -49,7 +49,7 @@ namespace Deltares::Reliability
 
     double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Models::Sample& directionSample, double z0)
     {
-        auto normalizedSample = directionSample.getNormalizedSample();
+        auto normalizedSample = std::make_shared<Models::Sample>(directionSample.getNormalizedSample());
 
         auto task = BetaValueTask(normalizedSample, z0);
 
