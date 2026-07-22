@@ -39,7 +39,9 @@ def linear_ab(a, b):
 def linear_prob_ab(a, b):
     L = 2.7
     L_red = L - (a+b)
-    return (1.0 - L_red) / 2.0
+    p = (1.0 - L_red) / 2.0
+    p = max(0, min(p, 1)) # clip p between valid values
+    return p
 
 def failing_model(a, b):
     val = [a + b, a - b]
