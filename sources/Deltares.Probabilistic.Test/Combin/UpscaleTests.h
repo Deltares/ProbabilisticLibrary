@@ -21,7 +21,6 @@
 //
 #pragma once
 #include "../../Deltares.Probabilistic/Combine/UpScaling.h"
-#include "../../Deltares.Probabilistic/Combine/CombineElements.h"
 #include "../Utils/testutils.h"
 
 namespace Deltares::Probabilistic::Test
@@ -39,19 +38,18 @@ namespace Deltares::Probabilistic::Test
         void upscaleInTimeTests4();
         void upscaleInTimeTests5();
         void upscaleInTimeTests6();
-        void upscaleInTimeTests7();
-        void upscaleInTimeTests8();
+        void upscaleInTimeTests7() const;
+        void upscaleInTimeTests8() const;
         void equivalentAlphaTesting1();
-        void equivalentAlphaTesting2();
+        void equivalentAlphaTesting2() const;
         void equivalentAlphaTesting3();
         void equivalentAlphaTesting4();
-        void equivalentAlphaTesting5();
+        void equivalentAlphaTesting5() const;
         void equivalentAlphaTesting6();
         void upscaleToLargestBlockTests1();
         void upscaleToLargestBlockTests2();
         void upscaleToLargestBlockTests3();
         Reliability::upscaling upscaler = Reliability::upscaling();
-        Reliability::combineElements combiner = Reliability::combineElements();
         testutils test_utilities = testutils();
     };
 
