@@ -27,7 +27,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void UpscaleTests::runAllUpscaleInTimeTests()
+    void UpscaleTests::runAllUpscaleInTimeTests() const
     {
         upscaleInTimeTests1();
         upscaleInTimeTests2();
@@ -39,7 +39,7 @@ namespace Deltares::Probabilistic::Test
         upscaleInTimeTests8();
     }
 
-    void UpscaleTests::runAllEquivalentAlphaTests()
+    void UpscaleTests::runAllEquivalentAlphaTests() const
     {
         equivalentAlphaTesting1();
         equivalentAlphaTesting2();
@@ -49,18 +49,19 @@ namespace Deltares::Probabilistic::Test
         equivalentAlphaTesting6();
     }
 
-    void UpscaleTests::runAllUpscaleToLargestBlockTests()
+    void UpscaleTests::runAllUpscaleToLargestBlockTests() const
     {
         upscaleToLargestBlockTests1();
         upscaleToLargestBlockTests2();
         upscaleToLargestBlockTests3();
+        upscaleToLargestBlockTests4();
     }
 
     // Testing the upscaling of probabilities in time.
     // Test with 10 fully correlated elements.
     // Beta=3.5, and the design point is equal to (1 1 1 1 1)/Sqrt(5)
     // The resulting beta and alfa's should be equal to the values for the single element
-    void UpscaleTests::upscaleInTimeTests1()
+    void UpscaleTests::upscaleInTimeTests1() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
@@ -74,14 +75,14 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        test_utilities.checkAlphaBeta(element, elementORG, 0.001);
+        testutils::checkAlphaBeta(element, elementORG, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
     // Test with 10 uncorrelated elements.
     // Beta=3.5, and the design point is equal to (1 0 0 0 0)
     // The resulting beta is verified and alfa's should be equal to the values for the single element
-    void UpscaleTests::upscaleInTimeTests2()
+    void UpscaleTests::upscaleInTimeTests2() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
@@ -94,14 +95,14 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        test_utilities.checkAlphaBeta(element, ref, 0.001);
+        testutils::checkAlphaBeta(element, ref, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
     // Test with 10 uncorrelated elements.
     // Beta=3.5, and the design point is equal to (0 0.6 0 0.8 0)
     // The resulting beta is verified and alfa's should be equal to the values for the single element
-    void UpscaleTests::upscaleInTimeTests3()
+    void UpscaleTests::upscaleInTimeTests3() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
@@ -114,14 +115,14 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        test_utilities.checkAlphaBeta(element, ref, 0.001);
+        testutils::checkAlphaBeta(element, ref, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
     // Test with 10 uncorrelated elements.
     // Beta=3.5, and the design point is equal to (-1 0 0 0 0)
     // The resulting beta is verified and alfa's should be equal to the values for the single element
-    void UpscaleTests::upscaleInTimeTests4()
+    void UpscaleTests::upscaleInTimeTests4() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
@@ -134,14 +135,14 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        test_utilities.checkAlphaBeta(element, ref, 0.001);
+        testutils::checkAlphaBeta(element, ref, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
     // Test with 10 uncorrelated elements.
     // Beta=3.5, and the design point is equal to (0 0.6 0 -0.8 0)
     // The resulting beta is verified and alfa's should be equal to the values for the single element
-    void UpscaleTests::upscaleInTimeTests5()
+    void UpscaleTests::upscaleInTimeTests5() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
@@ -154,14 +155,14 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        test_utilities.checkAlphaBeta(element, ref, 0.001);
+        testutils::checkAlphaBeta(element, ref, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
     // Test with 10 almost fully correlated elements.
     // Beta= 3.5, and the design point is equal to (0, 0.6, 0, -0.8, 0)
     // The resulting beta is verified and alfa's should be equal to the values for the single element
-    void UpscaleTests::upscaleInTimeTests6()
+    void UpscaleTests::upscaleInTimeTests6() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr int nr_elements = 10;
@@ -173,7 +174,7 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        test_utilities.checkAlphaBeta(element, ref, 1.0e-6);
+        testutils::checkAlphaBeta(element, ref, 1.0e-6);
     }
 
     // case from issue HRING-1349
@@ -243,7 +244,7 @@ namespace Deltares::Probabilistic::Test
     // Test with 2 partially correlated elements.
     // Beta is 3.5, the design point is equal to (0.6 0.8), and Rho is equal to (0.5 0.5)
     // The resulting beta is verified and resulting alfa's should be (approximately) equal
-    void UpscaleTests::equivalentAlphaTesting1()
+    void UpscaleTests::equivalentAlphaTesting1() const
     {
         //  Initialisations:
         constexpr int nr_elements = 2;
@@ -257,7 +258,7 @@ namespace Deltares::Probabilistic::Test
         auto element_3 = Reliability::combineElements::combineTwoElementsPartialCorrelation(
             original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
 
-        test_utilities.checkAlphaBeta(element, element_3.ab, 1.0e-3);
+        testutils::checkAlphaBeta(element, element_3.ab, 1.0e-3);
         EXPECT_EQ(element_3.n, 0);
     }
 
@@ -286,7 +287,7 @@ namespace Deltares::Probabilistic::Test
     // Test with 2 fully correlated elements.
     // Beta is 3.5, the design point is equal to (1.0 0.0), and Rho is equal to (1.0 0.0)
     // The resulting beta is verified and resulting alfa's should be (approximately) equal
-    void UpscaleTests::equivalentAlphaTesting3()
+    void UpscaleTests::equivalentAlphaTesting3() const
     {
         constexpr double nr_elements = 2.0;
 
@@ -299,7 +300,7 @@ namespace Deltares::Probabilistic::Test
         auto C = Reliability::combineElements::combineTwoElementsPartialCorrelation(
             original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
 
-        test_utilities.checkAlphaBeta(elm, C.ab, 1e-3);
+        testutils::checkAlphaBeta(elm, C.ab, 1e-3);
         EXPECT_EQ(C.n, 0);
     }
 
@@ -307,7 +308,7 @@ namespace Deltares::Probabilistic::Test
     // Test with 2 uncorrelated elements.
     // Beta is 3.5, the design point is equal to (1.0 0.0), and Rho is equal to (0.0 1.0)
     // The resulting beta is verified and resulting alfa's should be (approximately) equal
-    void UpscaleTests::equivalentAlphaTesting4()
+    void UpscaleTests::equivalentAlphaTesting4() const
     {
         constexpr double nr_elements = 2.0;
 
@@ -320,7 +321,7 @@ namespace Deltares::Probabilistic::Test
         auto C = Reliability::combineElements::combineTwoElementsPartialCorrelation(
             ORG, ORG, inRhoT, Reliability::combineAndOr::combOr);
 
-        test_utilities.checkAlphaBeta(elm, C.ab, 1e-3);
+        testutils::checkAlphaBeta(elm, C.ab, 1e-3);
         EXPECT_EQ(C.n, 0);
     }
 
@@ -350,7 +351,7 @@ namespace Deltares::Probabilistic::Test
     // Test with 2 partially correlated elements.
     // Beta is 3.5, the design point is equal to (0.6 -0.8), and Rho is equal to (1.0 0.0)
     // The resulting beta is verified and resulting alfa's should be (approximately) equal
-    void UpscaleTests::equivalentAlphaTesting6()
+    void UpscaleTests::equivalentAlphaTesting6() const
     {
         constexpr double nr_elements = 2.0;
 
@@ -362,14 +363,14 @@ namespace Deltares::Probabilistic::Test
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
         auto C = Reliability::combineElements::combineTwoElementsPartialCorrelation(
             original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
-        test_utilities.checkAlphaBeta(element, C.ab, 1e-3, 2e-2);
+        testutils::checkAlphaBeta(element, C.ab, 1e-3, 2e-2);
         EXPECT_EQ(C.n, 0);
     }
 
     // Testing the upscaling of probabilities to the largest block duration.
     // Test with 5 random variables, beta=3.5, alpha is random and block durations are equal.
     // The resulting beta and alfa's should be equal to the values for the single element
-    void UpscaleTests::upscaleToLargestBlockTests1()
+    void UpscaleTests::upscaleToLargestBlockTests1() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr double beta = 3.5;
@@ -387,13 +388,13 @@ namespace Deltares::Probabilistic::Test
 
         auto result = upscaler.upscaleToLargestBlock(input);
 
-        test_utilities.checkAlphaBeta(result.largest_block, input.small_block, 0.001);
+        testutils::checkAlphaBeta(result.largest_block, input.small_block, 0.001);
     }
 
     // Testing the upscaling of probabilities to the largest block duration.
     // Test with 5 random variables, beta=3.5, alpha is random and block durations are equal.
     // The resulting beta and alfa's should be equal to the values for the single element
-    void UpscaleTests::upscaleToLargestBlockTests2()
+    void UpscaleTests::upscaleToLargestBlockTests2() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr double beta = 3.5;
@@ -411,14 +412,14 @@ namespace Deltares::Probabilistic::Test
 
         auto result = upscaler.upscaleToLargestBlock(input);
 
-        test_utilities.checkAlphaBeta(result.largest_block, input.small_block, 0.001);
+        testutils::checkAlphaBeta(result.largest_block, input.small_block, 0.001);
     }
 
     // Testing the upscaling of probabilities to the largest block duration.
     // Test with 5 random variables, beta=3.5, design point is equal to (0 0.6 0 0.8 0)
     // Auto-correlations are all set to zero. Block durations of variables with alpha>0 differ by a factor 10 with the maximum.
     // The resulting beta is verified (see upscaleInTimeTest3) and alfa's should be equal to the values for the single element.
-    void UpscaleTests::upscaleToLargestBlockTests3()
+    void UpscaleTests::upscaleToLargestBlockTests3() const
     {
         constexpr size_t nr_stochasts = 5;
         constexpr double beta = 3.5;
@@ -438,7 +439,33 @@ namespace Deltares::Probabilistic::Test
 
         auto result = upscaler.upscaleToLargestBlock(input);
 
-        test_utilities.checkAlphaBeta(result.largest_block, ref, 0.001);
+        testutils::checkAlphaBeta(result.largest_block, ref, 0.001);
+    }
+
+    // test that represents a situation with two time scales
+    void UpscaleTests::upscaleToLargestBlockTests4() const
+    {
+        constexpr size_t nr_stochasts = 8;
+        constexpr double beta = 3.690919;
+        const auto alpha = Numeric::vector1D(
+            { -0.272490, -0.083217, -0.549468, -0.001092, -0.045964, -0.068466, -0.384456, -0.679927 }); // alpha values
+        constexpr double tide = 12.0;
+        constexpr double half_year = 4383.0;
+        const auto duration = Numeric::vector1D({ tide, tide, tide, tide, tide, half_year, half_year, half_year}); // individual block durations
+        const auto in_rho_t = Numeric::vector1D(nr_stochasts);               // all rho values set to zero
+
+        auto input = Reliability::upscalingToLargestBlockInput();
+        input.small_block = Reliability::alphaBeta(beta, alpha); // Copy of the original beta and alpha values
+        input.block_durations = duration;  // Copy of the original durations
+        input.largest_block_duration = duration.maxval();
+        input.rho_t_small_block = in_rho_t;
+
+        constexpr auto beta2 = 2.265968;
+        const auto ref = Reliability::alphaBeta(beta2, { -0.147678, -0.0451, -0.297789, -0.000592, -0.02491, -0.082231, -0.461751, -0.816628 });
+
+        const auto [largest_block, durations_largest_block] = upscaler.upscaleToLargestBlock(input);
+
+        testutils::checkAlphaBeta(largest_block, ref, 1e-5);
     }
 
 }

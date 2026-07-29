@@ -32,16 +32,16 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         bool compareFiles(const std::string& refFile, const std::string& newFile) const;
-        std::string refFileWithPath(const std::string& sourceFile, const std::string& relativePath);
-        void checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin);
-        void checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin1, const double margin2);
+        static std::string refFileWithPath(const std::string& sourceFile, const std::string& relativePath);
+        static void checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin);
+        static void checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin1, const double margin2);
         static Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m);
         static Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m, size_t rows, size_t columns, bool mirrored);
     private:
-        std::vector<std::string> readWholeFile(const std::string& file) const;
+        static std::vector<std::string> readWholeFile(const std::string& file);
         bool compareLine(const std::string& ref, const std::string& nw) const;
-        std::vector<std::string> mySplit(const std::string& str) const;
-        bool looksLikeAnumber(const std::string& s) const;
+        static std::vector<std::string> mySplit(const std::string& str);
+        static bool looksLikeAnumber(const std::string& s);
         const double margin = 1e-5;
     };
 }

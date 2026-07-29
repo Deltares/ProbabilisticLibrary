@@ -50,7 +50,7 @@ namespace Deltares::Probabilistic::Test
         return true;
     }
 
-    std::vector<std::string> testutils::readWholeFile(const std::string& file) const
+    std::vector<std::string> testutils::readWholeFile(const std::string& file)
     {
         auto in = std::ifstream(file, std::ios::in);
 
@@ -69,7 +69,7 @@ namespace Deltares::Probabilistic::Test
     // returns true if the provided string looks like a string
     // only checks the first character.
     // used to avoid exceptions later on
-    bool testutils::looksLikeAnumber(const std::string& s) const
+    bool testutils::looksLikeAnumber(const std::string& s)
     {
         if (std::isdigit(s.at(0))) return true;
         if (s.at(0) == '-') return true;
@@ -108,7 +108,7 @@ namespace Deltares::Probabilistic::Test
         return true;
     }
 
-    std::vector<std::string> testutils::mySplit(const std::string& str) const
+    std::vector<std::string> testutils::mySplit(const std::string& str)
     {
         auto s = std::vector<std::string>();
         size_t i = 0;
@@ -143,17 +143,17 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    Deltares::Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m)
+    Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m)
     {
         size_t s = static_cast<size_t>(sqrt(static_cast<double>(m.size())));
 
         return convert1dmatrix(m, s, s, true);
     }
 
-    Deltares::Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m, size_t rows, size_t columns, bool mirrored)
+    Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m, size_t rows, size_t columns, bool mirrored)
     {
         auto vm = std::vector<double>(m);
-        auto cm = Deltares::Numeric::Matrix(rows, columns);
+        auto cm = Numeric::Matrix(rows, columns);
         size_t ii = 0;
 
         if (mirrored)
