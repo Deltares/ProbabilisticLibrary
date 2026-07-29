@@ -26,7 +26,6 @@
 #include "../Statistics/StandardNormal.h"
 #include <algorithm>
 #include <cmath>
-#include <format>
 #include <limits>
 
 #include "../Math/NumericSupport.h"
@@ -58,8 +57,9 @@ namespace Deltares::Reliability
         //
         // Determine the correlation between two time elements
         //
-        double rhoT = element.sumOfInners(element, inRhoT); // rhoT : Correlation coefficient between element 1 and element 2
-        rhoT = std::clamp(rhoT, rhoMin, rhoMax);
+
+        // rhoT : Correlation coefficient between element 1 and element 2
+        const double rhoT = std::clamp(element.sumOfInners(element, inRhoT), rhoMin, rhoMax);
 
         //
         // Compute failure probability and beta of the combined n elements
