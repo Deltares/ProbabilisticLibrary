@@ -41,7 +41,7 @@ private:
     static void fillDsSettings(Deltares::Reliability::DirectionalSamplingSettings& Settings, const Deltares::ProbLibCore::basicSettings& bs);
     static Deltares::Reliability::DesignPointMethod convertDp(const Deltares::ProbLibCore::DPoptions dp);
     static void fillImportanceSamplingSettings(Deltares::Reliability::ImportanceSamplingSettings& settings, const Deltares::ProbLibCore::basicSettings& bs,
-        std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
+        const std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
     static void fillStartVector(Deltares::Reliability::StartPointCalculatorSettings& startPoint,
         const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
 };

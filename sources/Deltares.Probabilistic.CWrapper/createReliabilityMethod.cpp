@@ -51,7 +51,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
 {
     switch (bs.methodId)
     {
-    case (ProbMethod::NI): {
+    case ProbMethod::NI: {
         auto ni = std::make_shared<NumericalIntegration>();
         ni->Settings.designPointMethod = DesignPointMethod::NearestToMean;
         for (size_t i = 0; i < number_of_stochasts; i++)
@@ -64,7 +64,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
             ni->Settings.StochastSet->stochastSettings.push_back(s);
         }
         return ni; }
-    case (ProbMethod::CM): {
+    case ProbMethod::CM: {
         auto cm = std::make_shared<CrudeMonteCarlo>();
         std::shared_ptr<RandomSettings> r(getRnd(bs));
         cm->Settings->randomSettings.swap(r);
@@ -72,30 +72,30 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         cm->Settings->MinimumSamples = bs.minSamples;
         cm->Settings->MaximumSamples = bs.maxSamples;
         return cm; }
-    case (ProbMethod::DS): {
+    case ProbMethod::DS: {
         auto ds = std::make_shared<DirectionalSampling>();
         fillDsSettings(*ds->Settings, bs);
         return ds; }
-    case (ProbMethod::FORM): {
+    case ProbMethod::FORM: {
         auto form = std::make_shared<FORM>();
         fillFormSettings(*form->Settings, bs, number_of_stochasts);
         return form; }
-    case (ProbMethod::FDIR): {
+    case ProbMethod::FDIR: {
         auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
         fillDsSettings(*fdir->DsSettings, bs);
         fillFormSettings(*fdir->formSettings, bs, number_of_stochasts);
         return fdir; }
-    case (ProbMethod::DSFIHR):
-    case (ProbMethod::DSFI): {
+    case ProbMethod::DSFIHR:
+    case ProbMethod::DSFI: {
         auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
         fillDsSettings(*dsfi->DsSettings, bs);
         fillFormSettings(*dsfi->formSettings, bs, number_of_stochasts);
         return dsfi; }
-    case (ProbMethod::IM): {
+    case ProbMethod::IM: {
         auto impSampling = std::make_shared<ImportanceSampling>();
         fillImportanceSamplingSettings(*impSampling->Settings, bs, stochasts);
         return impSampling; }
-    case (ProbMethod::AdaptiveIM): {
+    case ProbMethod::AdaptiveIM: {
         auto AdaptImpSampling = std::make_shared<AdaptiveImportanceSampling>();
         fillImportanceSamplingSettings(*AdaptImpSampling->Settings->importanceSamplingSettings, bs, stochasts);
         AdaptImpSampling->Settings->MaxVarianceLoops = bs.trialLoops;
@@ -104,13 +104,13 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
         fillStartVector(*AdaptImpSampling->Settings->startPointSettings, bs, number_of_stochasts);
         return AdaptImpSampling; }
-    case (ProbMethod::LatinHyperCube):
+    case ProbMethod::LatinHyperCube:
         {
             auto latinHyperCube = std::make_shared<LatinHyperCube>();
             latinHyperCube->Settings->MinimumSamples = bs.latin_hypercube_settings.MinimumSamples;
             return latinHyperCube;
         }
-    case (ProbMethod::NumericalBisection):
+    case ProbMethod::NumericalBisection:
         {
             auto numerical_bisection = std::make_shared<NumericalBisection>();
             numerical_bisection->Settings->MinimumIterations = bs.numerical_bisection_settings.MinimumIterations;
@@ -118,12 +118,12 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
             numerical_bisection->Settings->EpsilonBeta = bs.numerical_bisection_settings.EpsilonBeta;
             return numerical_bisection;
         }
-    case (ProbMethod::CobylaReliability): {
+    case ProbMethod::CobylaReliability: {
         auto cobyla_reliability = std::make_shared<CobylaReliability>();
         cobyla_reliability->Settings->EpsilonBeta = bs.cobyla_reliability_settings.EpsilonBeta;
         cobyla_reliability->Settings->MaximumIterations = bs.cobyla_reliability_settings.MaximumIterations;
         return cobyla_reliability; }
-    case (ProbMethod::SubSetSimulation): {
+    case ProbMethod::SubSetSimulation: {
         auto subSetSimulation = std::make_shared<SubsetSimulation>();
         subSetSimulation->Settings->VariationCoefficient = bs.sub_set_simulation_reliability_settings.VariationCoefficient;
         subSetSimulation->Settings->MarkovChainDeviation = bs.sub_set_simulation_reliability_settings.MarkovChainDeviation;
@@ -244,7 +244,7 @@ void createReliabilityMethod::fillDsSettings(DirectionalSamplingSettings& DsSett
 
 void createReliabilityMethod::fillImportanceSamplingSettings(ImportanceSamplingSettings& settings,
                                                              const basicSettings& bs,
-                                                             std::vector<std::shared_ptr<Stochast>>& stochasts)
+                                                             const std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
     auto r = getRnd(bs);
     settings.randomSettings.swap(r);
@@ -256,10 +256,10 @@ void createReliabilityMethod::fillImportanceSamplingSettings(ImportanceSamplingS
         settings.MaximumSamplesNoResult = bs.maxSamples;
         settings.designPointMethod = convertDp(bs.designPointOptions);
     }
-    for (size_t i = 0; i < stochasts.size(); i++)
+    for (const auto& stochast : stochasts)
     {
         auto s = std::make_shared<StochastSettings>();
-        s->stochast = stochasts[i];
+        s->stochast = stochast;
         s->VarianceFactor = bs.varianceFactor;
         settings.StochastSet->stochastSettings.push_back(s);
     }
