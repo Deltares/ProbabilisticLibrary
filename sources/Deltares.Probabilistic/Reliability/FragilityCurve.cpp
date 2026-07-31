@@ -29,6 +29,7 @@
 namespace Deltares::Reliability
 {
     using namespace Deltares::Models;
+    using namespace Deltares::Statistics;
 
     bool FragilityCurve::isGloballyDescending()
     {
@@ -53,18 +54,18 @@ namespace Deltares::Reliability
     std::shared_ptr<StochastPoint> FragilityCurve::getDesignPoint(double x)
     {
         // check whether there is a fragility value exactly at x
-        for (std::shared_ptr<Statistics::FragilityValue> fragilityValue : this->getProperties()->FragilityValues)
+        for (const auto& fragility_value : getProperties()->FragilityValues)
         {
-            if (fragilityValue->designPoint != nullptr && Numeric::NumericSupport::areEqual(x, fragilityValue->X, margin))
+            if (fragility_value->designPoint != nullptr && Numeric::NumericSupport::areEqual(x, fragility_value->X, margin))
             {
-                return fragilityValue->designPoint;
+                return fragility_value->designPoint;
             }
         }
 
-        std::shared_ptr<Statistics::FragilityValue> lowerFragilityValue = nullptr;
-        std::shared_ptr<Statistics::FragilityValue> upperFragilityValue = nullptr;
+        std::shared_ptr<FragilityValue> lowerFragilityValue = nullptr;
+        std::shared_ptr<FragilityValue> upperFragilityValue = nullptr;
 
-        for (std::shared_ptr<Statistics::FragilityValue> fragilityValue : this->getProperties()->FragilityValues)
+        for (const auto& fragilityValue : getProperties()->FragilityValues)
         {
             if (fragilityValue->designPoint != nullptr)
             {
@@ -82,25 +83,26 @@ namespace Deltares::Reliability
         }
         else if (!lowerPresent || !upperPresent)
         {
-            std::shared_ptr<Statistics::FragilityValue> fragilityValue = lowerPresent ? lowerFragilityValue : upperFragilityValue;
+            std::shared_ptr<FragilityValue> fragilityValue = lowerPresent ? lowerFragilityValue : upperFragilityValue;
 
             double beta = this->getUFromX(x);
             return fragilityValue->designPoint->getCopy(beta, margin);
         }
         else
         {
-            return getRealizationBetweenPoints(x, lowerFragilityValue, upperFragilityValue);
+            return getRealizationBetweenPoints(x, *lowerFragilityValue, *upperFragilityValue);
         }
     }
 
-    std::shared_ptr<StochastPoint> FragilityCurve::getRealizationBetweenPoints(double x, std::shared_ptr<Statistics::FragilityValue> lowerFragilityValue, std::shared_ptr<Statistics::FragilityValue> upperFragilityValue)
+    std::shared_ptr<StochastPoint> FragilityCurve::getRealizationBetweenPoints(double x,
+        const FragilityValue& lower_fragility_value, const FragilityValue& upper_fragility_value)
     {
         // create a list of all stochasts
 
         std::vector<std::shared_ptr<Stochast>> contributingStochasts;
         std::set<std::shared_ptr<Stochast>> contributingStochastsMap;
 
-        for (std::shared_ptr<StochastPointAlpha> alpha : lowerFragilityValue->designPoint->Alphas)
+        for (const std::shared_ptr<StochastPointAlpha>& alpha : lower_fragility_value.designPoint->Alphas)
         {
             if (!contributingStochastsMap.contains(alpha->Stochast))
             {
@@ -109,7 +111,7 @@ namespace Deltares::Reliability
             }
         }
 
-        for (std::shared_ptr<StochastPointAlpha> alpha : upperFragilityValue->designPoint->Alphas)
+        for (const std::shared_ptr<StochastPointAlpha>& alpha : upper_fragility_value.designPoint->Alphas)
         {
             if (!contributingStochastsMap.contains(alpha->Stochast))
             {
@@ -121,18 +123,18 @@ namespace Deltares::Reliability
         std::shared_ptr<StochastPoint> designPoint = std::make_shared<StochastPoint>();
         designPoint->Beta = this->getUFromX(x);
 
-        double upperFraction = (x - lowerFragilityValue->X) / (upperFragilityValue->X - lowerFragilityValue->X);
+        double upperFraction = (x - lower_fragility_value.X) / (upper_fragility_value.X - lower_fragility_value.X);
         double lowerFraction = 1 - upperFraction;
 
         double normal = 0;
 
-        for (auto stochast : contributingStochasts)
+        for (const auto& stochast : contributingStochasts)
         {
             std::shared_ptr<StochastPointAlpha> alpha = std::make_shared<StochastPointAlpha>();
             alpha->Stochast = stochast;
 
-            std::shared_ptr<StochastPointAlpha> lowerRealization = lowerFragilityValue->designPoint->getAlpha(stochast);
-            std::shared_ptr<StochastPointAlpha> upperRealization = upperFragilityValue->designPoint->getAlpha(stochast);
+            std::shared_ptr<StochastPointAlpha> lowerRealization = lower_fragility_value.designPoint->getAlpha(stochast);
+            std::shared_ptr<StochastPointAlpha> upperRealization = upper_fragility_value.designPoint->getAlpha(stochast);
 
             double lowerAlpha = lowerRealization == nullptr ? 0 : lowerRealization->Alpha;
             double upperAlpha = upperRealization == nullptr ? 0 : upperRealization->Alpha;
@@ -153,7 +155,7 @@ namespace Deltares::Reliability
 
         normal = std::sqrt(normal);
 
-        for (std::shared_ptr<StochastPointAlpha> alpha : designPoint->Alphas)
+        for (const std::shared_ptr<StochastPointAlpha>& alpha : designPoint->Alphas)
         {
             alpha->Alpha /= normal;
             alpha->AlphaCorrelated /= normal;
