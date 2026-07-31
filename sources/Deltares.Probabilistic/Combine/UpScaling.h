@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #pragma once
-#include "../Math/vector1D.h"
+#include "../Math/Vector1D.h"
 #include "AlphaBeta.h"
 #include "HohenbichlerFORM.h"
 #include "../Logging/Message.h"
@@ -40,15 +40,15 @@ namespace Deltares::Reliability
     struct upscalingToLargestBlockInput
     {
         alphaBeta small_block;
-        Numeric::vector1D rho_t_small_block;
-        Numeric::vector1D block_durations;
+        Numeric::Vector1D rho_t_small_block;
+        Numeric::Vector1D block_durations;
         double largest_block_duration;
     };
 
     struct upscalingToLargestBlockResult
     {
         alphaBeta largest_block;
-        Numeric::vector1D durations_largest_block;
+        Numeric::Vector1D durations_largest_block;
     };
 
     //
@@ -57,9 +57,9 @@ namespace Deltares::Reliability
     class upscaling
     {
     public:
-        int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::vector1D& inRhoT) const;
-        upscalingResult upscaleLength(const alphaBeta& crossSectionElement, const Numeric::vector1D& rhoXK,
-            const Numeric::vector1D& dXK, const double section_length) const;
+        int upscaleInTime(const double nrTimes, alphaBeta& element, const Numeric::Vector1D& inRhoT) const;
+        upscalingResult upscaleLength(const alphaBeta& crossSectionElement, const Numeric::Vector1D& rhoXK,
+            const Numeric::Vector1D& dXK, const double section_length) const;
         upscalingToLargestBlockResult upscaleToLargestBlock(const upscalingToLargestBlockInput& input) const;
     private:
         const double rhoLimit = 0.99999; // Limit value for the correlation coefficient

@@ -55,7 +55,7 @@ namespace Deltares::Statistics
             choleskyMatrix.get_dims(c1, c2);
             if (c1 == 0) CholeskyDecomposition();
 
-            auto u = vector1D(count);
+            auto u = Vector1D(count);
             for (size_t i = 0; i < count; i++)
             {
                 u(i) = uValues[i];
@@ -90,7 +90,7 @@ namespace Deltares::Statistics
             inverseCholeskyMatrix.get_dims(c1, c2);
             if (c1 == 0) InverseCholeskyDecomposition();
 
-            auto u = vector1D(count);
+            auto u = Vector1D(count);
             for (size_t i = 0; i < count; i++)
             {
                 u(i) = uValues[i];

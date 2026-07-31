@@ -40,7 +40,7 @@ namespace Deltares::Reliability
         for (const auto& designPoint : designPoints)
         {
             const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
-            auto alpha = Numeric::vector1D(nStochasts);
+            auto alpha = Numeric::Vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
                 alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);

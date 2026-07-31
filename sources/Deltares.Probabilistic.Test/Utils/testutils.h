@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 #include "../../Deltares.Probabilistic/Combine/AlphaBeta.h"
-#include "../../Deltares.Probabilistic/Math/matrix.h"
+#include "../../Deltares.Probabilistic/Math/Matrix.h"
 
 
 namespace Deltares::Probabilistic::Test

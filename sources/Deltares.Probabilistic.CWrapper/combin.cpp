@@ -56,7 +56,7 @@ elements fillElements(const multipleElements* m_elements)
     const int number_of_stochasts = m_elements->designPoints[0].size;
     for (int i = 0; i < m_elements->size; i++)
     {
-        auto alpha = vector1D(number_of_stochasts);
+        auto alpha = Vector1D(number_of_stochasts);
         for (int j = 0; j < number_of_stochasts; j++)
         {
             alpha(j) = m_elements->designPoints[i].alpha[j*m_elements->designPoints[i].stride_alpha];
@@ -123,7 +123,7 @@ int combineMultipleElements(const multipleElements* elements, betaAlphaCF* resul
 {
     const int number_of_stochasts = resulting_design_point->size;
     auto elm = fillElements(elements);
-    auto rhoC = vector1D(number_of_stochasts);
+    auto rhoC = Vector1D(number_of_stochasts);
     for (int i = 0; i < number_of_stochasts; i++)
     {
         rhoC(i) = elements->designPoints[0].rho[i];
@@ -150,9 +150,9 @@ extern "C"
 int upscaleLength(const betaAlphaCF* design_point_cross_section, const double section_length, betaAlphaCF* design_point_section)
 {
     const int number_of_stochasts = design_point_cross_section->size;
-    vector1D alpha = vector1D(number_of_stochasts);
-    vector1D rhoxk = vector1D(number_of_stochasts);
-    vector1D dxk = vector1D(number_of_stochasts);
+    Vector1D alpha = Vector1D(number_of_stochasts);
+    Vector1D rhoxk = Vector1D(number_of_stochasts);
+    Vector1D dxk = Vector1D(number_of_stochasts);
     for (int i = 0; i < number_of_stochasts; i++)
     {
         alpha(i) = design_point_cross_section->alpha[i];
@@ -185,9 +185,9 @@ void upscaleToLargestBlock(const betaAlphaCF* design_point_small_block, const do
     betaAlphaCF* design_point_largest_block)
 {
     int number_of_stochasts = design_point_small_block->size;
-    auto alpha_small_block = vector1D(number_of_stochasts);
-    auto rho = vector1D(number_of_stochasts);
-    auto block_durations = vector1D(number_of_stochasts);
+    auto alpha_small_block = Vector1D(number_of_stochasts);
+    auto rho = Vector1D(number_of_stochasts);
+    auto block_durations = Vector1D(number_of_stochasts);
     for (int i = 0; i < number_of_stochasts; i++)
     {
         alpha_small_block(i) = design_point_small_block->alpha[i*design_point_small_block->stride_alpha];
@@ -225,9 +225,9 @@ int combineTwoElementsPartialCorrelation(const betaAlphaCF* first_design_point, 
     betaAlphaCF* resulting_design_point, const int combAndOr)
 {
     auto number_of_stochasts = first_design_point->size;
-    auto rho = vector1D(number_of_stochasts);
-    auto alfa1 = vector1D(number_of_stochasts);
-    auto alfa2 = vector1D(number_of_stochasts);
+    auto rho = Vector1D(number_of_stochasts);
+    auto alfa1 = Vector1D(number_of_stochasts);
+    auto alfa2 = Vector1D(number_of_stochasts);
     for (int i = 0; i < number_of_stochasts; i++)
     {
         rho(i) = first_design_point->rho[i*first_design_point->stride_duration];
@@ -289,12 +289,12 @@ void calculateCombinationWithLargestCorrelation(const multipleElements* elements
 {
     int number_of_stochasts = elements->designPoints[0].size;
     int number_of_elements = elements->size;
-    vector1D rho(number_of_stochasts );
+    Vector1D rho(number_of_stochasts );
     for (int i = 0; i < number_of_stochasts ; i++) rho(i) = elements->designPoints[0].rho[i];
     std::vector<alphaBeta> alpha;
     for (int i = 0; i < number_of_elements ; i++)
     {
-        vector1D alpha_i = vector1D(number_of_stochasts);
+        Vector1D alpha_i = Vector1D(number_of_stochasts);
         for (int j = 1; j < number_of_stochasts ; j++)
         {
             alpha_i(j) = elements->designPoints[i].alpha[j];

@@ -21,7 +21,7 @@
 //
 #pragma once
 
-#include "../Math/vector1D.h"
+#include "../Math/Vector1D.h"
 
 namespace Deltares::Proxies
 {
@@ -44,7 +44,7 @@ namespace Deltares::Proxies
         /**
          * \brief Coefficients which are used by a proxy method to generate the output value of a sample
          */
-        Numeric::vector1D coefficients;
+        Numeric::Vector1D coefficients;
     };
 }
 

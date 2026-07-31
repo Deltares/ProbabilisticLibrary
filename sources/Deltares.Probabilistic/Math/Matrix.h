@@ -22,7 +22,7 @@
 #pragma once
 #include <iosfwd>
 #include <vector>
-#include "vector1D.h"
+#include "Vector1D.h"
 #include "../Utils/probLibException.h"
 
 namespace Deltares::Numeric
@@ -140,7 +140,7 @@ namespace Deltares::Numeric
         /**
          * returns the matrix * vector product
          */
-        vector1D matvec(const vector1D& v) const;
+        Vector1D matvec(const Vector1D& v) const;
 
         /**
          * sets the two dimensions of the matrix
@@ -179,7 +179,7 @@ namespace Deltares::Numeric
         }
 
         Matrix compute_minor(size_t d) const;
-        vector1D extract_column(size_t column_index) const;
+        Vector1D extract_column(size_t column_index) const;
 
         std::vector<double> m_data;
         size_t m_rows;
@@ -192,7 +192,7 @@ namespace Deltares::Numeric
         QRMatrix(const Matrix& q_matrix, const Matrix& r_matrix) noexcept
             : Q(q_matrix), R(r_matrix) {}
 
-        Numeric::vector1D solve(const Numeric::vector1D& target) const;
+        Numeric::Vector1D solve(const Numeric::Vector1D& target) const;
 
         Matrix getProduct() const
         {

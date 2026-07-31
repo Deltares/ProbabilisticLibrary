@@ -229,7 +229,7 @@ namespace Deltares::Reliability
         }
 
         auto st = sphereTasks(maxSteps, Settings->allQuadrants);
-        auto uSphereValues = Numeric::vector1D(uSphere->Values.size());
+        auto uSphereValues = Numeric::Vector1D(uSphere->Values.size());
         for (size_t i = 0; i < uSphere->Values.size(); i++)
         {
             uSphereValues(i) = uSphere->Values[i];

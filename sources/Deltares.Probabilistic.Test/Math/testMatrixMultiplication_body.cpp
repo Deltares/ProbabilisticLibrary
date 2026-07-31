@@ -23,7 +23,7 @@
 #include <numbers>
 #include <gtest/gtest.h>
 #include "testMatrixMultiplication.h"
-#include "../../Deltares.Probabilistic/Math/matrix.h"
+#include "../../Deltares.Probabilistic/Math/Matrix.h"
 
 namespace Deltares::Probabilistic::Test
 {
@@ -95,7 +95,7 @@ namespace Deltares::Probabilistic::Test
         m(1, 1) = 1.0;
         m(0, 1) = 0.0;
         m(1, 0) = 0.0;
-        auto v = Numeric::vector1D({ std::numbers::pi, std::numbers::e });
+        auto v = Numeric::Vector1D({ std::numbers::pi, std::numbers::e });
         auto r = m.matvec(v); // r = v as m is the identity matrix
         for (size_t i = 0; i < v.size(); i++)
         {

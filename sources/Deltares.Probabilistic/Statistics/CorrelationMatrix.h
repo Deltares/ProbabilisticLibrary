@@ -23,7 +23,7 @@
 #include <map>
 #include <memory>
 
-#include "../Math/matrix.h"
+#include "../Math/Matrix.h"
 #include <vector>
 
 #include "Stochast.h"

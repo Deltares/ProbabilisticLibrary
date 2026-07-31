@@ -21,7 +21,7 @@
 //
 #pragma once
 #include <vector>
-#include "matrix.h"
+#include "Matrix.h"
 
 namespace Deltares::Numeric
 {

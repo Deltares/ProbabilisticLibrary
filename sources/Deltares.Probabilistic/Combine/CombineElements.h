@@ -21,7 +21,7 @@
 //
 #pragma once
 #include <vector>
-#include "../Math/vector1D.h"
+#include "../Math/Vector1D.h"
 #include "AlphaBeta.h"
 #include "Combiner.h"
 #include "IndexPair.h"
@@ -40,17 +40,17 @@ namespace Deltares::Reliability
     {
     public:
         static cmbResult combineTwoElementsPartialCorrelation(const alphaBeta& element1,
-                    const alphaBeta& element2, const Numeric::vector1D& rhoP, const combineAndOr combAndOr);
+                    const alphaBeta& element2, const Numeric::Vector1D& rhoP, const combineAndOr combAndOr);
 
         static cmbResult combineMultipleElements(const elements& Elements,
-                    const Numeric::vector1D& rho, const combineAndOr combAndOrIn);
+                    const Numeric::Vector1D& rho, const combineAndOr combAndOrIn);
 
         static cmbResult combineMultipleElementsFull(const elements& Elements, const combineAndOr combAndOr);
 
         static cmbResult combineMultipleElementsProb(elements& Elements,
                     const std::vector<double>& percentages, const combineAndOr combAndOr);
 
-        static indexPair calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
+        static indexPair calculateCombinationWithLargestCorrelation(const Numeric::Vector1D& rhoP,
                     const std::vector<alphaBeta>& ab);
 
     private:

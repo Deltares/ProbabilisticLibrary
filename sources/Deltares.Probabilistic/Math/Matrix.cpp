@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "matrix.h"
+#include "Matrix.h"
 #include <iostream>
 
 #include "MatrixSupport.h"
@@ -168,14 +168,14 @@ namespace Deltares::Numeric
         return result;
     }
 
-    vector1D Matrix::matvec(const vector1D& v) const
+    Vector1D Matrix::matvec(const Vector1D& v) const
     {
         if (m_columns != v.size())
         {
             throw Reliability::probLibException("dimension mismatch in matvec");
         }
 
-        auto result = Numeric::vector1D(m_rows);
+        auto result = Numeric::Vector1D(m_rows);
         for (size_t row = 0; row < m_rows; row++)
         {
             double sum = 0.0;
@@ -254,9 +254,9 @@ namespace Deltares::Numeric
         return minor;
     }
 
-    vector1D Matrix::extract_column(size_t column_index) const
+    Vector1D Matrix::extract_column(size_t column_index) const
     {
-        vector1D v = vector1D(m_rows);
+        Vector1D v = Vector1D(m_rows);
 
         for (size_t i = 0; i < m_rows; i++)
         {
@@ -287,7 +287,7 @@ namespace Deltares::Numeric
             z1 = z.compute_minor(k);
 
             // extract k-th column into x
-            vector1D x = z1.extract_column(k);
+            Vector1D x = z1.extract_column(k);
 
             double a = x.norm();
             if (getValue(k, k) > 0)
@@ -295,7 +295,7 @@ namespace Deltares::Numeric
                 a = -a;
             }
 
-            vector1D e = vector1D(m);
+            Vector1D e = Vector1D(m);
             for (size_t i = 0; i < e.size(); i++)
             {
                 e(i) = i == k ? 1.0 : 0.0;
@@ -346,7 +346,7 @@ namespace Deltares::Numeric
         return qr;
     }
 
-    Numeric::vector1D QRMatrix::solve(const Numeric::vector1D& target) const
+    Numeric::Vector1D QRMatrix::solve(const Numeric::Vector1D& target) const
     {
         // see https://rosettacode.org/wiki/QR_decomposition#C++
 
@@ -354,9 +354,9 @@ namespace Deltares::Numeric
 
         qt.Transpose();
 
-        vector1D z = qt.matvec(target);
+        Vector1D z = qt.matvec(target);
 
-        vector1D x = vector1D(R.getColumnCount());
+        Vector1D x = Vector1D(R.getColumnCount());
 
         for (size_t i = 0; i < x.size(); i++)
         {

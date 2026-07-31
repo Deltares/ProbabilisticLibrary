@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include <cmath>
-#include "matrix.h"
+#include "Matrix.h"
 #include "../Utils/probLibException.h"
 
 namespace Deltares::Numeric

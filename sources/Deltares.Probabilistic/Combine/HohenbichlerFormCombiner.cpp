@@ -37,7 +37,7 @@ namespace Deltares::Reliability
         for (const auto& designPoint : designPoints)
         {
             const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
-            auto alpha = Numeric::vector1D(nStochasts);
+            auto alpha = Numeric::Vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
                 alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
@@ -46,7 +46,7 @@ namespace Deltares::Reliability
             elm.push_back(dp);
         }
 
-        auto rho = Numeric::vector1D(nStochasts);
+        auto rho = Numeric::Vector1D(nStochasts);
         for (size_t i = 0; i < nStochasts; i++)
         {
             rho(i) = selfCorrelationMatrix->getSelfCorrelation(stochasts[i]);

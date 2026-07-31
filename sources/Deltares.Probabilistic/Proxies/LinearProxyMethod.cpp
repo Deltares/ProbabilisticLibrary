@@ -23,8 +23,8 @@
 
 #include <vector>
 
-#include "../Math/vector1D.h"
-#include "../Math/matrix.h"
+#include "../Math/Vector1D.h"
+#include "../Math/Matrix.h"
 
 namespace Deltares::Proxies
 {
@@ -41,8 +41,8 @@ namespace Deltares::Proxies
 
     ProxyCoefficient LinearProxyMethod::trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples, std::vector<double> proxyValues)
     {
-        Numeric::vector1D results(trainingSamples.size());
-        Numeric::vector1D weights(trainingSamples.size());
+        Numeric::Vector1D results(trainingSamples.size());
+        Numeric::Vector1D weights(trainingSamples.size());
 
         for (size_t i = 0; i < trainingSamples.size(); i++)
         {
@@ -67,7 +67,7 @@ namespace Deltares::Proxies
         Numeric::QRMatrix qr = xValues.qr_decompose();
 
         // Solve using QR decomposition
-        Numeric::vector1D solution = qr.solve(results);
+        Numeric::Vector1D solution = qr.solve(results);
 
         ProxyCoefficient proxyCoefficient;
 

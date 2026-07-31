@@ -402,9 +402,9 @@
     <ClInclude Include="Statistics\Stochast.h" />
     <ClInclude Include="Statistics\StochastProperties.h" />
     <ClInclude Include="Statistics\Distributions\UniformDistribution.h" />
-    <ClInclude Include="Math\basic_math.h" />
-    <ClInclude Include="Math\vector1D.h" />
-    <ClInclude Include="Math\matrix.h" />
+    <ClInclude Include="Math\BasicMath.h" />
+    <ClInclude Include="Math\Vector1D.h" />
+    <ClInclude Include="Math\Matrix.h" />
     <ClInclude Include="Utils\probLibException.h" />
     <ClInclude Include="Utils\probLibString.h" />
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
@@ -603,7 +603,7 @@
     <ClCompile Include="Reliability\DirectionReliabilityDS.cpp" />
     <ClCompile Include="Reliability\DirectionReliabilitySettings.cpp" />
     <ClCompile Include="Math\ASA\asa241.cpp" />
-    <ClCompile Include="Math\vector1D.cpp" />
+    <ClCompile Include="Math\Vector1D.cpp" />
     <ClCompile Include="Reliability\StochastSettings.cpp" />
     <ClCompile Include="Reliability\StochastSettingsSet.cpp" />
     <ClCompile Include="Math\RootFinders\RootFinder.cpp" />
@@ -648,8 +648,8 @@
     <ClCompile Include="Statistics\StandardNormal.cpp" />
     <ClCompile Include="Statistics\Stochast.cpp" />
     <ClCompile Include="Statistics\Distributions\UniformDistribution.cpp" />
-    <ClCompile Include="Math\matrix.cpp" />
-    <ClCompile Include="Math\cholesky_decomp.cpp" />
+    <ClCompile Include="Math\Matrix.cpp" />
+    <ClCompile Include="Math\CholeskyDecomp.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
     <ClCompile Include="Statistics\Distributions\RayleighDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FrechetDistribution.cpp" />
