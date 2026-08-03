@@ -33,7 +33,7 @@ namespace Deltares::Reliability
         ProbabilisticLibraryException(const std::string& message, const double number);
         ProbabilisticLibraryException(const std::string& message, const int number);
         ProbabilisticLibraryException(const std::string& message, const size_t number);
-        virtual const char* what() const throw() { return message.c_str(); }
+        const char* what() const noexcept override { return message.c_str(); }
     private:
         const std::string message;
         static std::string toString(const double number);
