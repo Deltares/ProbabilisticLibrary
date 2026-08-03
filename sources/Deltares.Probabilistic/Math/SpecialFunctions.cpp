@@ -41,11 +41,11 @@ namespace Deltares::Numeric
 
         if (x < 0.0)
         {
-            throw Reliability::probLibException("Error in Dgammq: x < 0 violated; x = ", x);
+            throw Reliability::ProbabilisticLibraryException("Error in Dgammq: x < 0 violated; x = ", x);
         }
         else if (a <= 0.0)
         {
-            throw Reliability::probLibException("Error in Dgammq: a <= 0 violated; a = ", a);
+            throw Reliability::ProbabilisticLibraryException("Error in Dgammq: a <= 0 violated; a = ", a);
         }
         else
         {
@@ -111,7 +111,7 @@ namespace Deltares::Numeric
             }
             else
             {
-                throw Reliability::probLibException("Error in DGser: no convergence");
+                throw Reliability::ProbabilisticLibraryException("Error in DGser: no convergence");
             }
         }
     }
@@ -160,7 +160,7 @@ namespace Deltares::Numeric
         }
         else
         {
-            throw Reliability::probLibException("Error in DGcf: no convergence");
+            throw Reliability::ProbabilisticLibraryException("Error in DGcf: no convergence");
         }
     }
 

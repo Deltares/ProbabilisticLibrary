@@ -29,7 +29,7 @@ namespace Deltares::Reliability
         {
         case SampleMethodType::MarkovChain: return "markov_chain";
         case SampleMethodType::AdaptiveConditional: return "adaptive_conditional";
-        default: throw probLibException("Sample method");
+        default: throw ProbabilisticLibraryException("Sample method");
         }
     }
 
@@ -37,6 +37,6 @@ namespace Deltares::Reliability
     {
         if (method == "markov_chain") return SampleMethodType::MarkovChain;
         else if (method == "adaptive_conditional") return SampleMethodType::AdaptiveConditional;
-        else throw probLibException("Sample method");
+        else throw ProbabilisticLibraryException("Sample method");
     }
 }

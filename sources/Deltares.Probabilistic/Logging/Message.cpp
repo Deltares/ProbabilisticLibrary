@@ -34,7 +34,7 @@ namespace Deltares::Logging
         case Info: return "info";
         case Warning: return "warning";
         case Error: return "error";
-        default: throw Reliability::probLibException("message type");
+        default: throw Reliability::ProbabilisticLibraryException("message type");
         }
     }
 
@@ -44,7 +44,7 @@ namespace Deltares::Logging
         else if (type == "info") return Info;
         else if (type == "warning") return Warning;
         else if (type == "error") return Error;
-        else throw Reliability::probLibException("message type " + type + " not a known message type");
+        else throw Reliability::ProbabilisticLibraryException("message type " + type + " not a known message type");
     }
 }
 

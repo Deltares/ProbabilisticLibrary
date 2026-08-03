@@ -68,7 +68,7 @@ namespace Deltares::Probabilistic::Test
 
     WaartsResult TestWaartsSaddleSurface::expectedValues()
     {
-        throw Reliability::probLibException("Must be implemented for all reliability methods (too much differences between methods)");
+        throw Reliability::ProbabilisticLibraryException("Must be implemented for all reliability methods (too much differences between methods)");
     }
 
     WaartsResult TestWaartsSaddleSurface::expectedValuesFORM()

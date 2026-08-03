@@ -89,7 +89,7 @@ namespace Deltares::Statistics
         case DistributionType::Composite: distribution = std::make_shared<CompositeDistribution>(); break;
         case DistributionType::StandardNormal: distribution = std::make_shared<StandardNormalDistribution>(); break;
         default:
-            throw Deltares::Reliability::probLibException("Distribution type not supported");
+            throw Deltares::Reliability::ProbabilisticLibraryException("Distribution type not supported");
         }
 
         if (truncated && distribution->canTruncate())

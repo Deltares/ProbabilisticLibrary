@@ -41,7 +41,7 @@ namespace Deltares::Reliability
         case StartMethodType::SphereSearch:
             return getSphereStartPoint(modelRunner);
         default:
-            throw probLibException("Start method not supported: ", (int)this->Settings->StartMethod);
+            throw ProbabilisticLibraryException("Start method not supported: ", (int)this->Settings->StartMethod);
         }
     }
 

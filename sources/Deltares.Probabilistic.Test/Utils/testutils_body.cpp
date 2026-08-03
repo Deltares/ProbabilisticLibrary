@@ -57,7 +57,7 @@ namespace Deltares::Probabilistic::Test
         auto values = std::vector<std::string>();
 
         std::string line;
-        auto pls = Reliability::probLibString();
+        auto pls = Reliability::ProbabilisticLibraryString();
         while (std::getline(in, line))
         {
             line = pls.trim(line, "\r");

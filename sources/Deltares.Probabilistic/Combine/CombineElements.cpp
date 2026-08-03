@@ -209,11 +209,11 @@ namespace Deltares::Reliability
     {
         if (nStochasts != sizeAlpha2)
         {
-            throw probLibException("Array size alpha2 differs from alpha1");
+            throw ProbabilisticLibraryException("Array size alpha2 differs from alpha1");
         }
         if (nStochasts != sizeRhoP)
         {
-            throw probLibException("Array size rhoP differs from alpha1");
+            throw ProbabilisticLibraryException("Array size rhoP differs from alpha1");
         }
     }
 
@@ -327,7 +327,7 @@ namespace Deltares::Reliability
         const size_t nElements = ab.size();
         if (nElements < 2)
         {
-            throw probLibException("The method calculateCombinationWithLargestCorrelation is called with only one element");
+            throw ProbabilisticLibraryException("The method calculateCombinationWithLargestCorrelation is called with only one element");
         }
         //
         // Initialize rhoMax and the indices for the maximum element

@@ -203,7 +203,7 @@ namespace Deltares::Statistics
          */
         virtual void fit(StochastProperties& stochast, const std::vector<double>& values, const double shift)
         {
-            throw Reliability::probLibException("fit not supported");
+            throw Reliability::ProbabilisticLibraryException("fit not supported");
         }
 
         /**
@@ -223,7 +223,7 @@ namespace Deltares::Statistics
          */
         virtual void fitPrior(StochastProperties& stochast, const std::vector<double>& values, StochastProperties& prior, const double shift)
         {
-            throw Reliability::probLibException("fit with prior not supported");
+            throw Reliability::ProbabilisticLibraryException("fit with prior not supported");
         }
 
         /**

@@ -173,7 +173,7 @@ namespace Deltares::Numeric
         {
             if (row >= m_rows || column >= m_columns)
             {
-                throw Reliability::probLibException("array bound error");
+                throw Reliability::ProbabilisticLibraryException("array bound error");
             }
             return row * m_columns + column;
         }

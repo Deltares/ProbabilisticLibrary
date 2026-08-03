@@ -31,7 +31,7 @@ namespace Deltares::Models
         {
         case GradientType::OneDirection: return "single";
         case GradientType::TwoDirections: return "double";
-        default: throw Reliability::probLibException("Gradient type");
+        default: throw Reliability::ProbabilisticLibraryException("Gradient type");
         }
     }
 
@@ -39,7 +39,7 @@ namespace Deltares::Models
     {
         if (method == "single") return GradientType::OneDirection;
         else if (method == "double") return GradientType::TwoDirections;
-        else throw Reliability::probLibException("Gradient type");
+        else throw Reliability::ProbabilisticLibraryException("Gradient type");
     }
 }
 

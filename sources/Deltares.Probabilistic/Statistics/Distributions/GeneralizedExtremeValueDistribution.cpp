@@ -50,7 +50,7 @@ namespace Deltares::Statistics
         case DistributionType::Gumbel: return gumbelDistribution;
         case DistributionType::Frechet: return frechetDistribution;
         case DistributionType::Weibull: return weibullDistribution;
-        default: throw Reliability::probLibException("Extreme distribution type not supported");
+        default: throw Reliability::ProbabilisticLibraryException("Extreme distribution type not supported");
         }
     }
 
@@ -79,7 +79,7 @@ namespace Deltares::Statistics
             return weibullStochast;
         }
         default:
-            throw Reliability::probLibException("Extreme distribution type not supported");
+            throw Reliability::ProbabilisticLibraryException("Extreme distribution type not supported");
         }
     }
 
@@ -211,7 +211,7 @@ namespace Deltares::Statistics
             target.Scale = source.Scale / source.Shape;
             target.Observations = source.Observations;
             break;
-        default: throw Reliability::probLibException("Extreme distribution type not supported");
+        default: throw Reliability::ProbabilisticLibraryException("Extreme distribution type not supported");
         }
     }
 }

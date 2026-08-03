@@ -87,7 +87,7 @@ namespace Deltares::Numeric
     {
         if (m_rows != m.m_rows)
         {
-            throw Reliability::probLibException("number of rows differ");
+            throw Reliability::ProbabilisticLibraryException("number of rows differ");
         }
 
         Vector1D result(m_rows);
@@ -141,7 +141,7 @@ namespace Deltares::Numeric
     {
         if (m_rows != m.m_rows)
         {
-            throw Reliability::probLibException("number of rows differ");
+            throw Reliability::ProbabilisticLibraryException("number of rows differ");
         }
         for (size_t row = 0; row < m_rows; row++)
         {
@@ -168,7 +168,7 @@ namespace Deltares::Numeric
     {
         if (m_rows != m.m_rows)
         {
-            throw Reliability::probLibException("number of rows differ");
+            throw Reliability::ProbabilisticLibraryException("number of rows differ");
         }
         auto sum = 0.0;
         for (size_t k = 0; k < m_rows; k++)
@@ -182,7 +182,7 @@ namespace Deltares::Numeric
     {
         if (m_rows != m.m_rows || m_rows != n.m_rows)
         {
-            throw Reliability::probLibException("number of rows differ");
+            throw Reliability::ProbabilisticLibraryException("number of rows differ");
         }
         auto sum = 0.0;
         for (size_t k = 0; k < m_rows; k++)

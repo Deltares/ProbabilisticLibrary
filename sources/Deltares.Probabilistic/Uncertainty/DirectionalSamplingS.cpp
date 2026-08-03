@@ -331,7 +331,7 @@ namespace Deltares::Uncertainty
         }
         else
         {
-            throw Reliability::probLibException("modelType");
+            throw Reliability::ProbabilisticLibraryException("modelType");
         }
     }
 

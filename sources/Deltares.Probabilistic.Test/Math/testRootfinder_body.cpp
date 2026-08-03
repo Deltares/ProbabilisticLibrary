@@ -48,14 +48,14 @@ namespace Deltares::Probabilistic::Test
     double rootfinder_tests::testConstFunc([[maybe_unused]] double x)
     {
         cnt++;
-        if (cnt > 1000) throw Reliability::probLibException("too many function calls");
+        if (cnt > 1000) throw Reliability::ProbabilisticLibraryException("too many function calls");
         return 1.0;
     }
 
     double rootfinder_tests::testNodFunc(double x)
     {
         cnt++;
-        if (cnt > 1000) throw Reliability::probLibException("too many function calls");
+        if (cnt > 1000) throw Reliability::ProbabilisticLibraryException("too many function calls");
         return (x < 0 ? a : a + b * x);
     }
 

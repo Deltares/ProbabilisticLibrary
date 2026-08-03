@@ -40,7 +40,7 @@ namespace Deltares::Statistics
             case DistributionPropertyType::Shape: this->Shape = value; break;
             case DistributionPropertyType::ShapeB: this->ShapeB = value; break;
             case DistributionPropertyType::Observations: this->Observations = static_cast<int>(value); break;
-            default: throw Reliability::probLibException("Property not supported");
+            default: throw Reliability::ProbabilisticLibraryException("Property not supported");
         }
     }
 

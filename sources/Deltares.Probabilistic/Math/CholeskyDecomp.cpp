@@ -28,7 +28,7 @@ namespace Deltares::Numeric
     // Cholesky decomposition
     Matrix Matrix::CholeskyDecomposition() const
     {
-        if (m_rows != m_columns) throw Reliability::probLibException("CholeskyDecomposition : input matrix must be square.");
+        if (m_rows != m_columns) throw Reliability::ProbabilisticLibraryException("CholeskyDecomposition : input matrix must be square.");
 
         const size_t nStochasts = m_rows;        // Number of stochastic variables
 
@@ -48,7 +48,7 @@ namespace Deltares::Numeric
             }
             else
             {
-                throw Reliability::probLibException("Cholesky decomposition fails.");
+                throw Reliability::ProbabilisticLibraryException("Cholesky decomposition fails.");
             }
 
             for (size_t i = j + 1; i < nStochasts; i++)
@@ -56,7 +56,7 @@ namespace Deltares::Numeric
                 double sum_col = 0.0;
                 if (cholesky(j, j) == 0.0)
                 {
-                    throw Reliability::probLibException("Cholesky decomposition fails.");
+                    throw Reliability::ProbabilisticLibraryException("Cholesky decomposition fails.");
                 }
                 for (size_t k = 0; k < j; k++)
                 {

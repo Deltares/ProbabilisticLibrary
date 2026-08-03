@@ -136,7 +136,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         subSetSimulation->Settings->designPointMethod = convertDp(bs.designPointOptions);
         return subSetSimulation; }
     default:
-        throw probLibException("method not implemented yet: ", static_cast<int>(bs.methodId));
+        throw ProbabilisticLibraryException("method not implemented yet: ", static_cast<int>(bs.methodId));
     }
 }
 
@@ -199,7 +199,7 @@ void createReliabilityMethod::fillStartVector(StartPointCalculatorSettings& star
         startPoint.StartMethod = StartMethodType::SensitivitySearch;
         break;
     default:
-        throw probLibException("not implemented: start method: ", static_cast<int>(bs.startMethod));
+        throw ProbabilisticLibraryException("not implemented: start method: ", static_cast<int>(bs.startMethod));
     }
 }
 

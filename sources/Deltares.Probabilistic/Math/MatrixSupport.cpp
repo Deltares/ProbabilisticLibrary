@@ -156,7 +156,7 @@ namespace Deltares::Numeric
                 order++;
                 if (order >= n)
                 {
-                    throw Reliability::probLibException("can not inverse matrix.");
+                    throw Reliability::ProbabilisticLibraryException("can not inverse matrix.");
                 }
             }
 
@@ -203,7 +203,7 @@ namespace Deltares::Numeric
     {
         if (src->getRowCount() != src->getColumnCount())
         {
-            throw Reliability::probLibException("Matrix inverse: input matrix must be square.");
+            throw Reliability::ProbabilisticLibraryException("Matrix inverse: input matrix must be square.");
         }
 
         const size_t n = src->getRowCount();        // Number of stochastic variables

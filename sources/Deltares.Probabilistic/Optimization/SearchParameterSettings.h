@@ -103,7 +103,7 @@ namespace Deltares::Optimization
             }
             else
             {
-                throw Reliability::probLibException("Use values type not supported");
+                throw Reliability::ProbabilisticLibraryException("Use values type not supported");
             }
 
             return values;

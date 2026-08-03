@@ -70,7 +70,7 @@ namespace Deltares::Optimization
 
         if (combinations.empty())
         {
-            throw Reliability::probLibException("No dimensions or empty dimensions are not allowed");
+            throw Reliability::ProbabilisticLibraryException("No dimensions or empty dimensions are not allowed");
         }
 
         int gridCounter = 0;

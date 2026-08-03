@@ -32,7 +32,7 @@ namespace Deltares::Sensitivity
         case SensitivityMethodType::SensitivitySobol: return this->GetSobolMethod();
         case SensitivityMethodType::SensitivitySingleVariation: return this->GetSingleVariationMethod();
 
-        default: throw Reliability::probLibException("Sensitivity method");
+        default: throw Reliability::ProbabilisticLibraryException("Sensitivity method");
         }
     }
 
@@ -67,7 +67,7 @@ namespace Deltares::Sensitivity
         {
         case SensitivityMethodType::SensitivitySobol: GetSobolMethod()->Settings->validate(report); break;
         case SensitivityMethodType::SensitivitySingleVariation: GetSingleVariationMethod()->Settings->validate(report); break;
-        default: throw Reliability::probLibException("Sensitivity method");
+        default: throw Reliability::ProbabilisticLibraryException("Sensitivity method");
         }
     }
 
@@ -77,7 +77,7 @@ namespace Deltares::Sensitivity
         {
         case SensitivityMethodType::SensitivitySobol: return "sobol";
         case SensitivityMethodType::SensitivitySingleVariation: return "single_variation";
-        default: throw Reliability::probLibException("Sensitivity method");
+        default: throw Reliability::ProbabilisticLibraryException("Sensitivity method");
         }
     }
 
@@ -85,7 +85,7 @@ namespace Deltares::Sensitivity
     {
         if (method == "sobol") return SensitivityMethodType::SensitivitySobol;
         else if (method == "single_variation") return SensitivityMethodType::SensitivitySingleVariation;
-        else throw Reliability::probLibException("Sensitivity method");
+        else throw Reliability::ProbabilisticLibraryException("Sensitivity method");
     }
 }
 

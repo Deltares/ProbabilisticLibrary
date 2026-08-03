@@ -29,7 +29,7 @@ namespace Deltares::Numeric
     {
         if (weight < 0)
         {
-            throw Reliability::probLibException("Negative weight not supported");
+            throw Reliability::ProbabilisticLibraryException("Negative weight not supported");
         }
 
         if (weight == 0.0)

@@ -42,7 +42,7 @@ namespace Deltares::Reliability
         case Models::ModelReturnType::ZValue: return z > 0.0 ? 1 : -1;
         case Models::ModelReturnType::ProbabilityFailure: return z < 0.5 ? 1 : -1;
         case Models::ModelReturnType::ReliabilityIndex: return z > 0.0 ? 1 : -1;
-        default: throw probLibException("model return type");
+        default: throw ProbabilisticLibraryException("model return type");
         }
     }
 
@@ -59,7 +59,7 @@ namespace Deltares::Reliability
             // add a small margin to be tolerant for rounding and arithmetic errors
             if (z < min_p || z > max_p)
             {
-                throw probLibException("Probability should be between 0 and 1 (inclusive)");
+                throw ProbabilisticLibraryException("Probability should be between 0 and 1 (inclusive)");
             }
             else
             {
@@ -79,7 +79,7 @@ namespace Deltares::Reliability
                 return Statistics::StandardNormal::getQFromU(z);
             }
         default:
-            throw probLibException("model return type");
+            throw ProbabilisticLibraryException("model return type");
         }
     }
 

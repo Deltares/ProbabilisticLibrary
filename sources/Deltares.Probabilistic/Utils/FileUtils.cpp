@@ -36,7 +36,7 @@ namespace Deltares::Reliability
         if (tmpnam_s(buffer, bufSize) != 0)
 #endif
         {
-            throw probLibException("generating a temp name fails");
+            throw ProbabilisticLibraryException("generating a temp name fails");
         }
         std::string tempFilename = buffer;
         return tempFilename;

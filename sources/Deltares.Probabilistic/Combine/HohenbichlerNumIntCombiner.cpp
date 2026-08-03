@@ -32,7 +32,7 @@ namespace Deltares::Reliability
         const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
         const std::shared_ptr<Models::ProgressIndicator>& progress)
     {
-        if (designPoints.empty()) throw probLibException("no design point in combiner");
+        if (designPoints.empty()) throw ProbabilisticLibraryException("no design point in combiner");
         if (designPoints.size() == 1) return designPoints[0];
 
         const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);

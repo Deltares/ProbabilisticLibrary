@@ -68,7 +68,7 @@ namespace Deltares::Statistics
         }
         else
         {
-            throw Deltares::Reliability::probLibException("Constant type not supported");
+            throw Deltares::Reliability::ProbabilisticLibraryException("Constant type not supported");
         }
     }
 

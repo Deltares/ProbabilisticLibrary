@@ -247,7 +247,7 @@ namespace Deltares::Models
     {
         if (this->zLambda == nullptr)
         {
-            throw Reliability::probLibException("callback function not set or released");
+            throw Reliability::ProbabilisticLibraryException("callback function not set or released");
         }
 
         sample->threadId = omp_get_thread_num();
@@ -346,7 +346,7 @@ namespace Deltares::Models
                 case Ignore: break; // nothing to do
                 case Fail: sample->Z = -std::numeric_limits<double>::max();  break;
                 case NoFail: sample->Z = std::numeric_limits<double>::max();  break;
-                default: throw Reliability::probLibException("invalid handle type not known");
+                default: throw Reliability::ProbabilisticLibraryException("invalid handle type not known");
             }
         }
     }

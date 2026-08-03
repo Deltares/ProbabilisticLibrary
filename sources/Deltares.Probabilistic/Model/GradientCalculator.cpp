@@ -89,7 +89,7 @@ namespace Deltares::Models
         }
         else
         {
-            throw probLibException("gradient type");
+            throw ProbabilisticLibraryException("gradient type");
         }
 
         return gradient;

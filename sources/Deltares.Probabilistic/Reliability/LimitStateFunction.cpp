@@ -120,14 +120,14 @@ namespace Deltares::Reliability
     {
         if (compare == "less_than") return CompareType::LessThan;
         else if (compare == "greater_than") return CompareType::GreaterThan;
-        else throw probLibException("compare type");
+        else throw ProbabilisticLibraryException("compare type");
     }
 
     std::string LimitStateFunction::GetCompareTypeString(CompareType compareType)
     {
         if (compareType == CompareType::LessThan) return "less_than";
         else if (compareType == CompareType::GreaterThan) return "greater_than";
-        else throw probLibException("compare type");
+        else throw ProbabilisticLibraryException("compare type");
     }
 }
 

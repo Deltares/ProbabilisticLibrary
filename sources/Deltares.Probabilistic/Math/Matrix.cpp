@@ -92,7 +92,7 @@ namespace Deltares::Numeric
     {
         if (m_rows != m.m_rows || m_columns != m.m_columns)
         {
-            throw Reliability::probLibException("#rows <> #colums in matrix addition");
+            throw Reliability::ProbabilisticLibraryException("#rows <> #colums in matrix addition");
         }
 
         Matrix result(m_rows, m_columns);
@@ -150,7 +150,7 @@ namespace Deltares::Numeric
 
     Matrix Matrix::matmul(const Matrix& m2) const
     {
-        if (m_columns != m2.m_rows) throw Reliability::probLibException("dimension mismatch in matmul");
+        if (m_columns != m2.m_rows) throw Reliability::ProbabilisticLibraryException("dimension mismatch in matmul");
 
         auto result = Matrix(m_rows, m2.m_columns);
         for (size_t row = 0; row < m_rows; row++)
@@ -172,7 +172,7 @@ namespace Deltares::Numeric
     {
         if (m_columns != v.size())
         {
-            throw Reliability::probLibException("dimension mismatch in matvec");
+            throw Reliability::ProbabilisticLibraryException("dimension mismatch in matvec");
         }
 
         auto result = Numeric::Vector1D(m_rows);

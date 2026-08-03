@@ -24,22 +24,22 @@
 
 namespace Deltares::Reliability
 {
-    probLibException::probLibException(const std::string& message, const double number)
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& message, const double number)
         : message(std::format("{} {}" , message, toString(number)))
     {
     }
 
-    probLibException::probLibException(const std::string& message, const int number)
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& message, const int number)
         : message(std::format("{} {}", message , number))
     {
     }
 
-    probLibException::probLibException(const std::string& message, const size_t number)
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& message, const size_t number)
         : message(std::format("{} {}", message, number))
     {
     }
 
-    std::string probLibException::toString(const double number)
+    std::string ProbabilisticLibraryException::toString(const double number)
     {
         constexpr double threshold = 1e5;
         if (std::abs(number) > threshold)

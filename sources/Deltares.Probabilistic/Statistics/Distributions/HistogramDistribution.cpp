@@ -362,7 +362,7 @@ namespace Deltares::Statistics
 
         if (values.size() != weights.size())
         {
-            throw Reliability::probLibException("Histogram fit: sizes values and weighs should be same");
+            throw Reliability::ProbabilisticLibraryException("Histogram fit: sizes values and weighs should be same");
         }
 
         // Build up list of weighted values

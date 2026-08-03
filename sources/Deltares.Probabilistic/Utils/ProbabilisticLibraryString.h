@@ -25,7 +25,7 @@
 
 namespace Deltares::Reliability
 {
-    class probLibString
+    class ProbabilisticLibraryString
     {
     public:
         bool iStrcmp(const std::string& s1, const std::string& s2);

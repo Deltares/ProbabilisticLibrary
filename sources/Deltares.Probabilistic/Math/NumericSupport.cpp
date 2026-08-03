@@ -153,7 +153,7 @@ namespace Deltares::Numeric
     {
         if (p1.size() != p2.size())
         {
-            throw Reliability::probLibException("lengths differ in doublesAreEqual.");
+            throw Reliability::ProbabilisticLibraryException("lengths differ in doublesAreEqual.");
         }
         for (size_t i = 0; i < p1.size(); i++)
         {
@@ -221,7 +221,7 @@ namespace Deltares::Numeric
         case DoubleType::NaN:
             return nan("");
         default:
-            throw Deltares::Reliability::probLibException("double type not supported");
+            throw Deltares::Reliability::ProbabilisticLibraryException("double type not supported");
         }
     }
 
@@ -348,7 +348,7 @@ namespace Deltares::Numeric
     {
         if (values.empty())
         {
-            throw Deltares::Reliability::probLibException("empty vector not allowed in getLocationMinimum");
+            throw Deltares::Reliability::ProbabilisticLibraryException("empty vector not allowed in getLocationMinimum");
         }
         else
         {
@@ -369,7 +369,7 @@ namespace Deltares::Numeric
     {
         if (values.empty())
         {
-            throw Deltares::Reliability::probLibException("empty vector not allowed in getLocationMaximum");
+            throw Deltares::Reliability::ProbabilisticLibraryException("empty vector not allowed in getLocationMaximum");
         }
         else
         {
@@ -409,7 +409,7 @@ namespace Deltares::Numeric
             maxX = 1.0 / maxX;
             break;
         default:
-            throw Deltares::Reliability::probLibException("interpolation type not supported");
+            throw Deltares::Reliability::ProbabilisticLibraryException("interpolation type not supported");
         }
 
         if (minY == maxY)
@@ -435,7 +435,7 @@ namespace Deltares::Numeric
     {
         if (xValues.size() != yValues.size())
         {
-            throw Deltares::Reliability::probLibException("XValues and YValues not of the same length");
+            throw Deltares::Reliability::ProbabilisticLibraryException("XValues and YValues not of the same length");
         }
 
         if (xValues.empty())
@@ -559,7 +559,7 @@ namespace Deltares::Numeric
     {
         if (values.size() != weights.size())
         {
-            throw Reliability::probLibException("Values and weights should have same size");
+            throw Reliability::ProbabilisticLibraryException("Values and weights should have same size");
         }
 
         if (values.empty())
@@ -648,7 +648,7 @@ namespace Deltares::Numeric
     {
         if (values1.size() != values2.size())
         {
-            throw Reliability::probLibException("Expected vectors of the same size");
+            throw Reliability::ProbabilisticLibraryException("Expected vectors of the same size");
         }
 
         std::vector<double> result(values1.size());
@@ -755,7 +755,7 @@ namespace Deltares::Numeric
     {
         if (length < 0)
         {
-            throw Reliability::probLibException("length in LinearSpaced < 0");
+            throw Reliability::ProbabilisticLibraryException("length in LinearSpaced < 0");
         }
 
         switch (length)

@@ -317,7 +317,7 @@ namespace Deltares::Reliability
             }
         }
         default:
-            throw probLibException("Loop measure type");
+            throw ProbabilisticLibraryException("Loop measure type");
         }
     }
 

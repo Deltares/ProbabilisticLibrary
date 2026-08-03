@@ -359,7 +359,7 @@ namespace Deltares::Reliability
         case DesignPointMethod::NearestToMean: return "nearest_to_mean";
         case DesignPointMethod::CenterOfGravity: return "center_of_gravity";
         case DesignPointMethod::CenterOfAngles: return "center_of_angles";
-        default: throw probLibException("Design point method");
+        default: throw ProbabilisticLibraryException("Design point method");
         }
     }
 
@@ -368,7 +368,7 @@ namespace Deltares::Reliability
         if (method == "nearest_to_mean") return DesignPointMethod::NearestToMean;
         else if (method == "center_of_gravity") return DesignPointMethod::CenterOfGravity;
         else if (method == "center_of_angles") return DesignPointMethod::CenterOfAngles;
-        else throw probLibException("Design point method");
+        else throw ProbabilisticLibraryException("Design point method");
     }
 }
 

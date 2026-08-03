@@ -203,7 +203,7 @@ namespace Deltares::Server
             convergenceReports[id] = std::make_shared<ConvergenceReport>();
             convergenceReportIds[convergenceReports[id]] = id;
             break;
-        default: throw probLibException("object type");
+        default: throw ProbabilisticLibraryException("object type");
         }
 
         return id;
@@ -263,7 +263,7 @@ namespace Deltares::Server
         case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
         case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
         case ObjectType::ConvergenceReport: convergenceReportIds.erase(convergenceReports[id]); convergenceReports.erase(id); break;
-        default: throw probLibException("object type");
+        default: throw ProbabilisticLibraryException("object type");
         }
         types.erase(id);
     }
