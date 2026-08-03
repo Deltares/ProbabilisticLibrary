@@ -24,7 +24,7 @@
 #include "testRootfinder.h"
 #include "../../Deltares.Probabilistic/Math/RootFinders/BisectionRootFinder.h"
 #include "../../Deltares.Probabilistic/Math/RootFinders/LinearRootFinder.h"
-#include "../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Probabilistic::Test
 {

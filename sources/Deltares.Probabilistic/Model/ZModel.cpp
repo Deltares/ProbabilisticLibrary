@@ -27,7 +27,7 @@
 #include "ModelSample.h"
 #include "ModelSampleStruct.h"
 #include "../Logging/ValidationSupport.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 
 namespace Deltares::Models

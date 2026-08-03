@@ -23,7 +23,7 @@
 
 #include <map>
 
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include "../Math/NumericSupport.h"
 
 namespace Deltares::Optimization

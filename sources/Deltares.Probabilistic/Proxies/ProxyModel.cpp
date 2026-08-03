@@ -27,7 +27,7 @@
 #include "ProxyTrainer.h"
 #include "SingleProxyTrainer.h"
 #include "../Model/ModelSample.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Proxies
 {

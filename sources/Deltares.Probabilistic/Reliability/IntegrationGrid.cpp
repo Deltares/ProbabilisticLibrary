@@ -23,7 +23,7 @@
 #include <cmath>
 #include "IntegrationGrid.h"
 #include "../Math/BinarySupport.h"
-#include "../Utils/probLibString.h"
+#include "../Utils/ProbabilisticLibraryString.h"
 #include "../Statistics/Stochast.h"
 
 using namespace Deltares::Numeric;

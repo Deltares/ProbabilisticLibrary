@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "ValidationSupport.h"
-#include "../Utils/probLibString.h"
+#include "../Utils/ProbabilisticLibraryString.h"
 
 #include <utility>
 #include <cmath>

@@ -23,7 +23,7 @@
 #include <cmath>
 #include <vector>
 
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Optimization
 {

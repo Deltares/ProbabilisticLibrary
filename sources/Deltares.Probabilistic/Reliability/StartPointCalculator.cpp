@@ -22,7 +22,7 @@
 #include "StartPointCalculator.h"
 
 #include "DirectionReliability.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include "../Math/NumericSupport.h"
 #include "SphereTasks.h"
 

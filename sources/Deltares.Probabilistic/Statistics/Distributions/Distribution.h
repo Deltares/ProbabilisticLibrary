@@ -27,7 +27,7 @@
 // ReSharper disable once CppUnusedIncludeDirective
 // not used here, but at many locations that include this file
 #include "../../Math/WeightedValue.h"
-#include "../../Utils/probLibException.h"
+#include "../../Utils/ProbabilisticLibraryException.h"
 #include "../../Logging/ValidationReport.h"
 
 namespace Deltares::Statistics

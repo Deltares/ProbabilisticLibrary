@@ -51,7 +51,7 @@
 #include "UniformDistribution.h"
 #include "WeibullDistribution.h"
 
-#include "../../Utils/probLibException.h"
+#include "../../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Statistics
 {

@@ -21,7 +21,7 @@
 //
 
 #include "StochastProperties.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include <functional>
 #include <algorithm>
 

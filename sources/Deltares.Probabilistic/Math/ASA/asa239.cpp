@@ -3,7 +3,7 @@
 # include <iomanip>
 # include <cmath>
 # include <ctime>
-# include "../../Utils/probLibException.h"
+# include "../../Utils/ProbabilisticLibraryException.h"
 # include "asa239.hpp"
 
 // START-NOSCAN

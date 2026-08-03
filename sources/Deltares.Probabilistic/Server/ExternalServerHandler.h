@@ -23,7 +23,7 @@
 
 #include "BaseHandler.h"
 #include "ProjectServer.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 #define _WINSOCKAPI_
 

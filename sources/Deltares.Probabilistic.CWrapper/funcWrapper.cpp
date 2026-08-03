@@ -21,7 +21,7 @@
 //
 #include "funcWrapper.h"
 
-#include "../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 #include <omp.h>
 
 using namespace Deltares::Reliability;

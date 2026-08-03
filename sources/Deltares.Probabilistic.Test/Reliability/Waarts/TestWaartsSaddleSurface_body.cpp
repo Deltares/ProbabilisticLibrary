@@ -25,7 +25,7 @@
 #include "../../../Deltares.Probabilistic/Model/ModelSample.h"
 #include "../../../Deltares.Probabilistic/Model/ZModel.h"
 #include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
-#include "../../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 #include <numbers>
 
 namespace Deltares::Probabilistic::Test

@@ -21,7 +21,7 @@
 //
 #include "StatisticsCalculator.h"
 
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Numeric
 {

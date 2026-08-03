@@ -21,7 +21,7 @@
 //
 #include "TestSpecialFunctions.h"
 #include "../../Deltares.Probabilistic/Math/SpecialFunctions.h"
-#include "../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 #include <gtest/gtest.h>
 #include <cmath>
 #include <limits>

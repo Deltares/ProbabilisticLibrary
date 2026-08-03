@@ -216,7 +216,7 @@
     <ClCompile Include="Utils\FileUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\probLibString.cpp">
+    <ClCompile Include="Utils\ProbabilisticLibraryString.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Utils\DirtySupport.cpp">
@@ -257,7 +257,7 @@
     <ClCompile Include="Proxies\ProxyCoefficients.cpp" />
     <ClCompile Include="Model\DefaultValueConverter.cpp" />
     <ClCompile Include="Proxies\ProxyCoefficient.cpp" />
-    <ClCompile Include="Utils\probLibException.cpp" />
+    <ClCompile Include="Utils\ProbabilisticLibraryException.cpp" />
     <ClCompile Include="Statistics\BaseCorrelation.cpp" />
     <ClCompile Include="Statistics\CopulaCorrelation.cpp" />
     <ClCompile Include="Statistics\BaseCopula.cpp" />
@@ -508,10 +508,10 @@
     <ClInclude Include="Utils\FileUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\probLibException.h">
+    <ClInclude Include="Utils\ProbabilisticLibraryException.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\probLibString.h">
+    <ClInclude Include="Utils\ProbabilisticLibraryString.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\DirtySupport.h">

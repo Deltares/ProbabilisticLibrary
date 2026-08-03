@@ -24,7 +24,7 @@
 #include "../Model/RunSettings.h"
 #include "../Model/Validatable.h"
 #include "../Model/ModelSample.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Proxies
 {

@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "probLibException.h"
+#include "ProbabilisticLibraryException.h"
 #include <format>
 
 namespace Deltares::Reliability

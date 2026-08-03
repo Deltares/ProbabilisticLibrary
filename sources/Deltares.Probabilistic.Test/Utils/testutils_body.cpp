@@ -24,7 +24,7 @@
 #include <cmath>
 #include <fstream>
 #include <iterator>
-#include "../../Deltares.Probabilistic/Utils/probLibString.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryString.h"
 
 namespace Deltares::Probabilistic::Test
 {

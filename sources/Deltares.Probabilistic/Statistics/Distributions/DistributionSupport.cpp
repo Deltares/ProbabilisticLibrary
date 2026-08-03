@@ -25,7 +25,7 @@
 
 #include "../../Math/NumericSupport.h"
 #include "../../Math/RootFinders/BisectionRootFinder.h"
-#include "../../Utils/probLibException.h"
+#include "../../Utils/ProbabilisticLibraryException.h"
 #include "../StandardNormal.h"
 
 namespace Deltares::Statistics

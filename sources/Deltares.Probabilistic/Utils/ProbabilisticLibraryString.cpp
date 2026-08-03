@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "probLibString.h"
+#include "ProbabilisticLibraryString.h"
 #include <string.h> //For strcasecmp(). Also could be found in <mem.h>
 #include <algorithm>
 #include <cctype>

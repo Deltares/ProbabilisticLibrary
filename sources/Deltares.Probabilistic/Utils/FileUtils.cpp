@@ -21,7 +21,7 @@
 //
 
 #include "FileUtils.h"
-#include "probLibException.h"
+#include "ProbabilisticLibraryException.h"
 #include <cstdio>
 
 namespace Deltares::Reliability

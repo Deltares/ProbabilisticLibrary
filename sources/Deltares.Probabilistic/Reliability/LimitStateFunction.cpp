@@ -22,7 +22,7 @@
 #include "LimitStateFunction.h"
 
 #include "../Model/ModelInputParameter.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Reliability
 {

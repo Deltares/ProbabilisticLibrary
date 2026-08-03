@@ -405,8 +405,8 @@
     <ClInclude Include="Math\BasicMath.h" />
     <ClInclude Include="Math\Vector1D.h" />
     <ClInclude Include="Math\Matrix.h" />
-    <ClInclude Include="Utils\probLibException.h" />
-    <ClInclude Include="Utils\probLibString.h" />
+    <ClInclude Include="Utils\ProbabilisticLibraryException.h" />
+    <ClInclude Include="Utils\ProbabilisticLibraryString.h" />
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
     <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FrechetDistribution.h" />
@@ -609,8 +609,8 @@
     <ClCompile Include="Math\RootFinders\RootFinder.cpp" />
     <ClCompile Include="Statistics\Distributions\HistogramDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ExternalDistribution.cpp" />
-    <ClCompile Include="Utils\probLibString.cpp" />
-    <ClCompile Include="Utils\probLibException.cpp" />
+    <ClCompile Include="Utils\ProbabilisticLibraryString.cpp" />
+    <ClCompile Include="Utils\ProbabilisticLibraryException.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Math\RandomValueGenerator.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />

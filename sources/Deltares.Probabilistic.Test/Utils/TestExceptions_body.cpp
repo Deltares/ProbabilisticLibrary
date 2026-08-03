@@ -21,7 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include "TestExceptions.h"
-#include "../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 #include "../../Deltares.Probabilistic/Server/ExternalServerHandler.h"
 
 namespace Deltares::Probabilistic::Test

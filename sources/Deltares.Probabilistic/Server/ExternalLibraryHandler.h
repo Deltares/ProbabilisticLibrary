@@ -26,7 +26,7 @@
 #endif
 
 #include "BaseHandler.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Server
 {

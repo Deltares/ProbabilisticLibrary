@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "RunSettings.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Models
 {

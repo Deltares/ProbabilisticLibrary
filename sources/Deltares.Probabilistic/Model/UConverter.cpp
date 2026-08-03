@@ -28,7 +28,7 @@
 #include "../Statistics/CopulaCorrelation.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 #include <set>
 

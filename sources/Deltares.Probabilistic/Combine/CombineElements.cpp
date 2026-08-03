@@ -24,7 +24,7 @@
 #include <vector>
 #include "CombineElements.h"
 #include "HohenbichlerFORM.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Math/BasicMath.h"
 

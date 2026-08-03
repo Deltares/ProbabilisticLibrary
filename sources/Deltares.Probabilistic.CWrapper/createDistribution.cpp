@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "createDistribution.h"
-#include "../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
