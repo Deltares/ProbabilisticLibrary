@@ -24,18 +24,18 @@
 
 namespace Deltares::Reliability
 {
-    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& message, const double number)
-        : message(std::format("{} {}" , message, toString(number)))
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& first_part_message, const double number)
+        : message(std::format("{} {}" , first_part_message, toString(number)))
     {
     }
 
-    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& message, const int number)
-        : message(std::format("{} {}", message , number))
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& first_part_message, const int number)
+        : message(std::format("{} {}", first_part_message , number))
     {
     }
 
-    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& message, const size_t number)
-        : message(std::format("{} {}", message, number))
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& first_part_message, const size_t number)
+        : message(std::format("{} {}", first_part_message, number))
     {
     }
 
