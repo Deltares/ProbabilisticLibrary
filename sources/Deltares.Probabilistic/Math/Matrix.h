@@ -41,31 +41,6 @@ namespace Deltares::Numeric
         Matrix(size_t rows, size_t columns);
 
         /**
-         * Copy Constructor
-         */
-        Matrix(const Matrix& m);
-
-        /**
-         * Move Constructor
-         */
-        Matrix(Matrix&& m) noexcept;
-
-        /**
-         * Destructor
-         */
-        ~Matrix();
-
-        /**
-         * the assignment operator
-         */
-        Matrix& operator=(const Matrix& m);
-
-        /**
-         * the assignment operator
-         */
-        Matrix& operator=(Matrix&& m) noexcept;
-
-        /**
          * the + operator
          */
         Matrix operator+(const Matrix& m) const;

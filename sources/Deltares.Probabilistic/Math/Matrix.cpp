@@ -37,60 +37,11 @@ namespace Deltares::Numeric
         }
     }
 
-    Matrix::Matrix(const Matrix& m)
-        : m_data(std::vector<double>(m.m_rows* m.m_columns)),
-        m_rows(m.m_rows),
-        m_columns(m.m_columns)
-    {
-        for (size_t pos = 0; pos < m_rows * m_columns; pos++)
-        {
-            m_data[pos] = m.m_data[pos];
-        }
-    }
-
-    Matrix::Matrix(Matrix&& m) noexcept
-        : m_data(m.m_data),
-          m_rows(m.m_rows),
-          m_columns(m.m_columns)
-    {
-        m.m_data = std::vector<double>(0);
-        m.m_rows = 0;
-        m.m_columns = 0;
-    }
-
-    Matrix::~Matrix() = default;
-
-    Matrix& Matrix::operator=(const Matrix& m)
-    {
-        if (this != &m)
-        {
-            m_rows = m.m_rows;
-            m_columns = m.m_columns;
-
-            m_data = std::vector<double>(m_rows * m_columns);
-
-            for (size_t pos = 0; pos < m_rows * m_columns; pos++)
-            {
-                m_data[pos] = m.m_data[pos];
-            }
-        }
-
-        return *this;
-    }
-
-    Matrix& Matrix::operator=(Matrix&& m) noexcept
-    {
-        std::swap(m_data, m.m_data);
-        std::swap(m_rows, m.m_rows);
-        std::swap(m_columns, m.m_columns);
-        return *this;
-    }
-
     Matrix Matrix::operator+(const Matrix& m) const
     {
         if (m_rows != m.m_rows || m_columns != m.m_columns)
         {
-            throw Reliability::ProbabilisticLibraryException("#rows <> #colums in matrix addition");
+            throw Reliability::ProbabilisticLibraryException("#rows <> #columns in matrix addition");
         }
 
         Matrix result(m_rows, m_columns);
@@ -173,7 +124,7 @@ namespace Deltares::Numeric
             throw Reliability::ProbabilisticLibraryException("dimension mismatch in matvec");
         }
 
-        auto result = Numeric::Vector1D(m_rows);
+        auto result = Vector1D(m_rows);
         for (size_t row = 0; row < m_rows; row++)
         {
             double sum = 0.0;
@@ -344,7 +295,7 @@ namespace Deltares::Numeric
         return qr;
     }
 
-    Numeric::Vector1D QRMatrix::solve(const Numeric::Vector1D& target) const
+    Vector1D QRMatrix::solve(const Vector1D& target) const
     {
         // see https://rosettacode.org/wiki/QR_decomposition#C++
 
