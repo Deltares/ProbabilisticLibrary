@@ -20,31 +20,12 @@
 // All rights reserved.
 //
 #include "ProbabilisticLibraryString.h"
-#include <string.h> //For strcasecmp(). Also could be found in <mem.h>
 #include <algorithm>
 #include <cctype>
+#include <format>
 
 namespace Deltares::Reliability
 {
-
-#ifdef _MSC_VER
-    //not #if defined(_WIN32) || defined(_WIN64) because we have strncasecmp in mingw
-#define strncasecmp _strnicmp
-#define strcasecmp _stricmp
-#endif
-
-    bool ProbabilisticLibraryString::iStrcmp(const std::string& s1, const std::string& s2)
-    {
-        if (s1.length() != s2.length())
-            return false;  // optimization since std::string holds length in variable.
-        return strcasecmp(s1.c_str(), s2.c_str()) == 0;
-    }
-
-    bool ProbabilisticLibraryString::iFind(const std::string& s1, const std::string& s2)
-    {
-        return (strToLower(s1).find(strToLower(s2)) < s1.length());
-    }
-
     std::string ProbabilisticLibraryString::strToLower(const std::string& data)
     {
         std::string s = data;
@@ -54,14 +35,7 @@ namespace Deltares::Reliability
 
     std::string ProbabilisticLibraryString::double2str(const double x)
     {
-        char buffer[32];
-#ifdef _WIN32
-        sprintf_s(buffer, "%15.6g", x);
-#else
-        snprintf(buffer, 32, "%15.6g", x);
-#endif // _WIN32
-        std::string retval = buffer;
-        return retval;
+        return std::format("{:15.6g}", x);
     }
 
     std::string ProbabilisticLibraryString::double2strTrimmed(const double x)
@@ -69,17 +43,6 @@ namespace Deltares::Reliability
         auto str = double2str(x);
         str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
         return str;
-    }
-
-    std::string ProbabilisticLibraryString::doubles2str(const std::vector<double>& x)
-    {
-        std::string s;
-        for (const auto& value : x)
-        {
-            if (!s.empty()) s += "_";
-            s += double2str(value);
-        }
-        return s;
     }
 
     std::string ProbabilisticLibraryString::doubles2strTrimmed(const std::vector<double>& x)

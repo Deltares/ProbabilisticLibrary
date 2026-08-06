@@ -210,6 +210,8 @@
     <ClInclude Include="Utils\testutils_body.cpp" />
     <ClInclude Include="Utils\TestExceptions.h" />
     <ClInclude Include="Utils\TestExceptions_body.cpp" />
+    <ClInclude Include="Utils\TestString.h" />
+    <ClInclude Include="Utils\TestString.cpp" />
     <ClInclude Include="unittests_body.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -265,6 +267,7 @@
     <ClCompile Include="unittests.cpp" />
     <ClCompile Include="Utils\testutils.cpp" />
     <ClCompile Include="Utils\TestExceptions.cpp" />
+    <ClCompile Include="Utils\TestString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Deltares.Probabilistic\Deltares.Probabilistic.vcxproj">

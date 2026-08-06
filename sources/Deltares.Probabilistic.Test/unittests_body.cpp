@@ -51,6 +51,7 @@
 #include "Optimization/testCobyla.h"
 #include "Proxies/TestProxies.h"
 #include "Utils/TestExceptions.h"
+#include "Utils/TestString.h"
 #include "Reliability/Waarts/TestWaartsLinearResistance.h"
 #include "Reliability/Waarts/TestWaartsNoisyLimitState.h"
 #include "Reliability/Waarts/TestWaartsResistanceOneQuadraticTerm.h"
@@ -239,6 +240,16 @@ TEST(UnitTests, testNumIntSharedGivenURange2)
 TEST(UnitTests, testExceptions)
 {
     Deltares::Probabilistic::Test::TestExceptions::testProblibExceptions();
+}
+
+TEST(UnitTests, testDouble2String)
+{
+    Deltares::Probabilistic::Test::TestString::testDouble2Str();
+}
+
+TEST(UnitTests, testDoubles2String)
+{
+    Deltares::Probabilistic::Test::TestString::testDoubles2Str();
 }
 
 TEST(ReliabilityMethodTest, TestFORM)

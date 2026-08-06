@@ -28,8 +28,6 @@ namespace Deltares::Reliability
     class ProbabilisticLibraryString
     {
     public:
-        static bool iStrcmp(const std::string& s1, const std::string& s2);
-        static bool iFind(const std::string& s1, const std::string& s2);
         static std::string double2str(const double x);
         static std::string double2strTrimmed(const double x);
 
@@ -41,7 +39,6 @@ namespace Deltares::Reliability
          */
         static std::string double2strForText(const double x);
 
-        static std::string doubles2str(const std::vector<double>& x);
         static std::string doubles2strTrimmed(const std::vector<double>& x);
 
         // trim from both ends of string (right then left)
