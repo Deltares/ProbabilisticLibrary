@@ -35,14 +35,6 @@ namespace Deltares::Numeric
         }
     }
 
-    Vector1D::Vector1D(const Vector1D& m) : m_data(m.m_rows), m_rows(m.m_rows)
-    {
-        for (size_t pos = 0; pos < m_rows; pos++)
-        {
-            m_data[pos] = m.m_data[pos];
-        }
-    }
-
     Vector1D::Vector1D(const std::initializer_list<double>& m) : m_data(m.size()), m_rows(m.size())
     {
         size_t pos = 0;
@@ -51,36 +43,6 @@ namespace Deltares::Numeric
             m_data[pos] = x;
             pos++;
         }
-    }
-
-    Vector1D::Vector1D(Vector1D&& m) noexcept : m_data(m.m_data), m_rows(m.m_rows)
-    {
-        m.m_data = std::vector<double>(0);
-        m.m_rows = 0;
-    }
-
-    Vector1D& Vector1D::operator=(const Vector1D& m)
-    {
-        if (this != &m)
-        {
-            m_rows = m.m_rows;
-
-            m_data = std::vector<double>(m_rows);
-
-            for (size_t pos = 0; pos < m_rows; pos++)
-            {
-                m_data[pos] = m.m_data[pos];
-            }
-        }
-
-        return *this;
-    }
-
-    Vector1D& Vector1D::operator=(Vector1D&& m) noexcept
-    {
-        std::swap(m_data, m.m_data);
-        std::swap(m_rows, m.m_rows);
-        return *this;
     }
 
     Vector1D Vector1D::operator+(const Vector1D& m) const

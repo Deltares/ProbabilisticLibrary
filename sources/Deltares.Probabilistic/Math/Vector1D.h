@@ -32,12 +32,7 @@ namespace Deltares::Numeric
     public:
         Vector1D();
         Vector1D(size_t rows);
-        Vector1D(const Vector1D& m);
         Vector1D(const std::initializer_list<double>& m);
-        Vector1D(Vector1D&& m) noexcept;
-
-        Vector1D& operator=(const Vector1D& m);
-        Vector1D& operator=(Vector1D&& m) noexcept;
 
         Vector1D operator+(const Vector1D& m) const;
         Vector1D operator*(double d) const;
