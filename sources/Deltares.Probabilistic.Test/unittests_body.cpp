@@ -164,20 +164,32 @@ TEST(UnitTests, testMatmul)
 
 TEST(MatrixTest, qr_decomposition)
 {
-    auto testMatrix = Deltares::Probabilistic::Test::matrix_tests();
-    testMatrix.qr_decomposition();
+    Deltares::Probabilistic::Test::matrix_tests::qr_decomposition();
 }
 
 TEST(MatrixTest, linear_equations)
 {
-    auto testMatrix = Deltares::Probabilistic::Test::matrix_tests();
-    testMatrix.linear_equations();
+    Deltares::Probabilistic::Test::matrix_tests::linear_equations();
 }
 
 TEST(MatrixTest, linear_equations_overdetermined)
 {
-    auto testMatrix = Deltares::Probabilistic::Test::matrix_tests();
-    testMatrix.linear_equations_overdetermined();
+    Deltares::Probabilistic::Test::matrix_tests::linear_equations_overdetermined();
+}
+
+TEST(MatrixTest, multiply_with_double)
+{
+    Deltares::Probabilistic::Test::matrix_tests::multiply();
+}
+
+TEST(MatrixTest, add_two_matrices)
+{
+    Deltares::Probabilistic::Test::matrix_tests::add();
+}
+
+TEST(MatrixTest, stream_operator_test)
+{
+    Deltares::Probabilistic::Test::matrix_tests::matrixStreamOperatorTest();
 }
 
 TEST(ProxiesTest, linear_model)

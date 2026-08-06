@@ -19,15 +19,15 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <numbers>
 
 #include "testMatrix.h"
 #include <gtest/gtest.h>
 #include "../Utils/testutils.h"
+#include <sstream>
 
 namespace Deltares::Probabilistic::Test
 {
-    void matrix_tests::qr_decomposition() const
+    void matrix_tests::qr_decomposition()
     {
         auto matrix_values =
         {
@@ -92,7 +92,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void matrix_tests::linear_equations() const
+    void matrix_tests::linear_equations()
     {
         // solving Ax= b
 
@@ -120,7 +120,7 @@ namespace Deltares::Probabilistic::Test
 
     }
 
-    void matrix_tests::linear_equations_overdetermined() const
+    void matrix_tests::linear_equations_overdetermined()
     {
         // solving Ax= b
         // example taken from https://www.math.uwaterloo.ca/~jmckinno/Math225/Week6/Lecture2i.pdf
@@ -147,5 +147,79 @@ namespace Deltares::Probabilistic::Test
             EXPECT_NEAR(x_expected(i), x(i), 0.001);
         }
 
+    }
+
+    void matrix_tests::multiply()
+    {
+        const auto a_values =
+        {
+             1.0,  3.0,
+             3.0, -1.0,
+             2.0,  2.0
+        };
+
+        constexpr size_t m_rows = 3;
+        constexpr size_t m_columns = 2;
+        Numeric::Matrix A = testutils::convert1dmatrix(a_values, m_rows, m_columns, false);
+
+        constexpr double factor = 2.0;
+        const auto B = A * factor;
+        const auto C = factor * A;
+
+        for (size_t i = 0; i < m_rows; i++)
+        {
+            for (size_t j = 0; j < m_columns; j++)
+            {
+                EXPECT_NEAR(B(i, j), C(i, j), margin);
+                EXPECT_NEAR(factor * A(i, j), C(i, j), margin);
+            }
+        }
+
+    }
+
+    void matrix_tests::add()
+    {
+        const auto a_values =
+        {
+             1.0,  3.0,
+             3.0, -1.0,
+             2.0,  2.0
+        };
+
+        constexpr size_t m_rows = 3;
+        constexpr size_t m_columns = 2;
+        Numeric::Matrix A = testutils::convert1dmatrix(a_values, m_rows, m_columns, false);
+        Numeric::Matrix B = testutils::convert1dmatrix(a_values, m_rows, m_columns, false);
+
+        const auto C = A + B;
+
+        for (size_t i = 0; i < m_rows; i++)
+        {
+            for (size_t j = 0; j < m_columns; j++)
+            {
+                EXPECT_NEAR(A(i, j) + B(i, j), C(i, j), margin);
+            }
+        }
+    }
+
+    void matrix_tests::matrixStreamOperatorTest()
+    {
+        Numeric::Matrix m(2, 3);
+
+        m(0, 0) = 1;
+        m(0, 1) = 2;
+        m(0, 2) = 3;
+        m(1, 0) = 4;
+        m(1, 1) = 5;
+        m(1, 2) = 6;
+
+        std::ostringstream os;
+        os << m;
+
+        const std::string expected =
+            "1, 2, 3, \n"
+            "4, 5, 6, \n";
+
+        EXPECT_EQ(expected, os.str());
     }
 }

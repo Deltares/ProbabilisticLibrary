@@ -58,9 +58,7 @@ namespace Deltares::Numeric
         m.m_columns = 0;
     }
 
-    Matrix::~Matrix()
-    {
-    }
+    Matrix::~Matrix() = default;
 
     Matrix& Matrix::operator=(const Matrix& m)
     {
@@ -220,7 +218,7 @@ namespace Deltares::Numeric
             }
             return true;
         }
-        catch (const std::exception&)
+        catch (const Reliability::ProbabilisticLibraryException&)
         {
             return false;
         }
