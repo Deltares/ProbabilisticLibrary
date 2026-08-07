@@ -29,7 +29,7 @@ namespace Deltares::Reliability
     std::string ProbabilisticLibraryString::strToLower(const std::string& data)
     {
         std::string s = data;
-        std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); });
+        std::ranges::transform(s, s.begin(), [](unsigned char c) { return std::tolower(c); });
         return s;
     }
 
@@ -41,7 +41,7 @@ namespace Deltares::Reliability
     std::string ProbabilisticLibraryString::double2strTrimmed(const double x)
     {
         auto str = double2str(x);
-        str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+        std::erase(str, ' ');
         return str;
     }
 
