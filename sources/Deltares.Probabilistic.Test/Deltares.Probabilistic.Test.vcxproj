@@ -35,8 +35,6 @@
   <ItemDefinitionGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -72,8 +70,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -138,7 +134,6 @@
     <ClInclude Include="Math\TestSpecialFunctions.h" />
     <ClInclude Include="Math\TestStatisticsCalculator.h" />
     <ClInclude Include="Optimization\testCobyla.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="projectBuilder.h" />
     <ClInclude Include="Model\TestRunModel.h" />
     <ClInclude Include="Reliability\TestStartPointCalculator.h" />
@@ -191,12 +186,6 @@
     <ClCompile Include="Math\TestSpecialFunctions.cpp" />
     <ClCompile Include="Math\TestStatisticsCalculator.cpp" />
     <ClCompile Include="Optimization\testCobyla.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="projectBuilder.cpp" />
     <ClCompile Include="Model\TestRunModel.cpp" />
     <ClCompile Include="Reliability\TestStartPointCalculator.cpp" />
