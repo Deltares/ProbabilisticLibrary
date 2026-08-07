@@ -19,5 +19,65 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestProxies_body.cpp"
+#include "TestProxies.h"
+
+#include "../projectBuilder.h"
+
+#include "../../Deltares.Probabilistic/Proxies/ProxyModel.h"
+
+#include <gtest/gtest.h>
+
+namespace Deltares::Probabilistic::Test
+{
+
+    void TestProxies::testLinearModel() const
+    {
+        std::shared_ptr<Models::ModelRunner> modelRunner = projectBuilder::BuildLinearProject(2);
+
+        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> {1.0, 0.5});
+
+        modelRunner->ProxySettings->InitializationType = Proxies::ProxyInitializationType::Single;
+        modelRunner->ProxySettings->MethodType = Proxies::ProxyMethodType::FirstOrder;
+
+        testProxy(modelRunner, sample);
+    }
+
+    void TestProxies::testLinearOutputOnlyModel() const
+    {
+        std::shared_ptr<Models::ModelRunner> modelRunner = projectBuilder::BuildLinearOutputOnlyProject();
+
+        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> {1.0, 0.5});
+
+        modelRunner->ProxySettings->InitializationType = Proxies::ProxyInitializationType::Single;
+        modelRunner->ProxySettings->MethodType = Proxies::ProxyMethodType::FirstOrder;
+
+        testProxy(modelRunner, sample);
+    }
+
+    void TestProxies::testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::Sample> sample) const
+    {
+        modelRunner->useProxy(false);
+
+        Models::Evaluation eval1 = modelRunner->getEvaluation(sample);
+
+        modelRunner->useProxy(true);
+
+        modelRunner->initializeForRun();
+
+        Models::Evaluation eval2 = modelRunner->getEvaluation(sample);
+
+        EXPECT_FALSE(eval1.usedProxy);
+        EXPECT_TRUE(eval2.usedProxy);
+
+        for (size_t i = 0; i < eval1.OutputValues.size(); i++)
+        {
+            EXPECT_NEAR(eval1.OutputValues[i], eval2.OutputValues[i], margin);
+        }
+
+        if (!std::isnan(eval1.Z))
+        {
+            EXPECT_NEAR(eval1.Z, eval2.Z, margin);
+        }
+    }
+}
+

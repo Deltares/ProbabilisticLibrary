@@ -19,6 +19,65 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestWaartsParallelSystem_body.cpp"
 
+#include "TestWaartsParallelSystem.h"
+#include "../../projectBuilder.h"
+#include "../../../Deltares.Probabilistic/Model/ModelSample.h"
+#include "../../../Deltares.Probabilistic/Model/ZModel.h"
+#include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
+#include "../../../Deltares.Probabilistic/Math/NumericSupport.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    std::shared_ptr<Models::ModelRunner> TestWaartsParallelSystem::WaartsModel()
+    {
+        constexpr int nrStochasts = 5;
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        {
+            const double u1 = v->Values[0];
+            const double u2 = v->Values[1];
+            const double u3 = v->Values[2];
+            const double u4 = v->Values[3];
+            const double u5 = v->Values[4];
+
+            const double g1 = 2.677 - u1 - u2;
+            const double g2 = 2.500 - u2 - u3;
+            const double g3 = 2.323 - u3 - u4;
+            const double g4 = 2.250 - u4 - u5;
+            const double parallelSystem = Numeric::NumericSupport::getMaximum({ g1, g2, g3, g4 });
+
+            v->Z = parallelSystem;
+            return parallelSystem;
+        });
+
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        for(int i = 0; i < nrStochasts; i++)
+        {
+            stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        }
+        return getModelRunner(z, stochasts);
+    }
+
+    WaartsResult TestWaartsParallelSystem::expectedValues()
+    {
+        auto expected = WaartsResult();
+        expected.beta = 3.5;
+        expected.converged = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsParallelSystem::expectedValuesFORM()
+    {
+        auto expected = expectedValues();
+        expected.beta = 1.64;
+        return expected;
+    }
+
+    WaartsResult TestWaartsParallelSystem::expectedValuesCrudeMonteCarlo()
+    {
+        auto expected = expectedValues();
+        expected.beta = 3.29;
+        return expected;
+    }
+
+}

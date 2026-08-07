@@ -19,5 +19,43 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestNumIntShared_body.cpp"
+
+#include <gtest/gtest.h>
+//#include <cmath>
+#include "TestNumIntShared.h"
+#include "../../Deltares.Probabilistic/Reliability/NumericalIntegrationShared.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    void TestNumIntShared::testDefaults()
+    {
+        auto settings = Reliability::StochastSettings();
+        auto u_values = Reliability::NumericalIntegrationShared::buildUpList(settings);
+        ASSERT_EQ(u_values.size(), settings.Intervals + 1);
+        EXPECT_EQ(u_values.front(), settings.MinValue);
+        EXPECT_EQ(u_values.back(), settings.MaxValue);
+    }
+
+    void TestNumIntShared::testGivenURange()
+    {
+        auto settings = Reliability::StochastSettings();
+        settings.MinValue = -5.0;
+        settings.MaxValue = 5.0;
+        auto u_values = Reliability::NumericalIntegrationShared::buildUpList(settings);
+        EXPECT_EQ(u_values.size(), settings.Intervals + 3);
+        EXPECT_EQ(u_values.front(), -8.0);
+        EXPECT_EQ(u_values.back(), 8.0);
+    }
+
+    void TestNumIntShared::testGivenURange2()
+    {
+        auto settings = Reliability::StochastSettings();
+        settings.MinValue = -15.0;
+        settings.MaxValue = 15.0;
+        auto u_values = Reliability::NumericalIntegrationShared::buildUpList(settings);
+        EXPECT_EQ(u_values.size(), 109);
+        EXPECT_EQ(u_values.front(), -8.0);
+        EXPECT_EQ(u_values.back(), 8.0);
+    }
+
+}

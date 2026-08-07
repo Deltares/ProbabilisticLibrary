@@ -19,6 +19,73 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestWaartsConvexFailureDomain_body.cpp"
 
+#include "TestWaartsConvexFailureDomain.h"
+#include "../../projectBuilder.h"
+#include "../../../Deltares.Probabilistic/Model/ModelSample.h"
+#include "../../../Deltares.Probabilistic/Model/ZModel.h"
+#include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
+
+#include <numbers>
+
+namespace Deltares::Probabilistic::Test
+{
+    std::shared_ptr<Models::ModelRunner> TestWaartsConvexFailureDomain::WaartsModel()
+    {
+        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        {
+            const double u1 = v->Values[0];
+            const double u2 = v->Values[1];
+            v->Z = 0.1 * pow(u1 - u2, 2) - (u1 + u2) / std::numbers::sqrt2 + 2.5;
+            return v->Z;
+        });
+
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+        return getModelRunner(z, stochasts);
+    }
+
+    WaartsResult TestWaartsConvexFailureDomain::expectedValues()
+    {
+        auto expected = WaartsResult();
+        expected.beta = 2.6;
+        expected.alpha = { -sqrt(0.5), -sqrt(0.5) };
+        return expected;
+    }
+
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesFORM()
+    {
+        auto expected = expectedValues();
+        expected.beta = 2.50;
+        return expected;
+    }
+
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesFDIR()
+    {
+        return expectedValuesFORM();
+    }
+
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesCrudeMonteCarlo()
+    {
+        auto expected = expectedValues();
+        expected.beta = 2.69;
+        expected.converged = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesAdaptiveImportanceSampling()
+    {
+        auto expected = expectedValues();
+        expected.beta = 2.67;
+        return expected;
+    }
+
+    WaartsResult TestWaartsConvexFailureDomain::expectedValuesImportanceSampling()
+    {
+        auto expected = expectedValues();
+        expected.converged = false;
+        return expected;
+    }
+
+}

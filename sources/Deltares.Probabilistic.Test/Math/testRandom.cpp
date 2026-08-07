@@ -19,5 +19,101 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "testRandom_body.cpp"
+#include <gtest/gtest.h>
+#include "testRandom.h"
+#include "../../Deltares.Probabilistic/Math/RandomValueGenerator.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    void testRandom::allRandomTests()
+    {
+        mersenneTwisterTest1();
+        initializationTest();
+        repetitiveTest();
+        twoInstances();
+    }
+
+    void testRandom::mersenneTwisterTest1()
+    {
+        constexpr double margin = 1e-12;
+        auto mt = Numeric::RandomValueGenerator();
+        mt.initialize(true, 1);
+
+        double sum = 0.0;
+        for (size_t i = 0; i < 1000; i++)
+        {
+            sum += mt.next();
+        }
+        ASSERT_NEAR(sum, 510.36972065202127, margin);
+    }
+
+    void testRandom::initializationTest()
+    {
+        auto mt = Numeric::RandomValueGenerator();
+        mt.initialize(false, 0);
+
+        double val2 = mt.next();
+        ASSERT_TRUE(val2 >= 0.0 && val2 <= 1.0);
+    }
+
+    void testRandom::repetitiveTest()
+    {
+        auto mt = Numeric::RandomValueGenerator();
+
+        size_t size1 = 1000;
+        size_t size2 = 1500;
+
+        std::vector<double> values1;
+        std::vector<double> values2;
+        std::vector<double> values3;
+        std::vector<double> values4;
+
+        mt.initialize(true, 0);
+        for (size_t i = 0; i < size1; i++)
+        {
+            values1.push_back(mt.next());
+        }
+
+        mt.initialize(true, 1);
+        for (size_t i = 0; i < size2; i++)
+        {
+            values2.push_back(mt.next());
+        }
+
+        mt.initialize(true, 0);
+        for (size_t i = 0; i < size1; i++)
+        {
+            values3.push_back(mt.next());
+        }
+
+        mt.initialize(true, 1);
+        for (size_t i = 0; i < size2; i++)
+        {
+            values4.push_back(mt.next());
+        }
+
+        for (size_t i = 0; i < size1; i++)
+        {
+            ASSERT_EQ(values1[i], values3[i]);
+        }
+
+        for (size_t i = 0; i < size2; i++)
+        {
+            ASSERT_EQ(values2[i], values4[i]);
+        }
+    }
+
+    void testRandom::twoInstances()
+    {
+        auto mt1 = Numeric::RandomValueGenerator();
+        mt1.initialize(true, 0);
+        auto mt2 = Numeric::RandomValueGenerator();
+        mt2.initialize(true, 0);
+
+        double val1 = mt1.next();
+        double val2 = mt2.next();
+        ASSERT_EQ(val1, val2);
+    }
+
+}
+

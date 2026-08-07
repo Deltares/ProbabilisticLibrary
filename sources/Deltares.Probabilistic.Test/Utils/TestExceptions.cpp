@@ -19,5 +19,59 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestExceptions_body.cpp"
+#include <gtest/gtest.h>
+#include "TestExceptions.h"
+#include "../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../Deltares.Probabilistic/Server/ExternalServerHandler.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    void TestExceptions::testProblibExceptions()
+    {
+        std::string message;
+        try
+        {
+            throw Reliability::probLibException("message", 12.34);
+        }
+        catch (const Reliability::probLibException& e)
+        {
+            message = e.what();
+        }
+        EXPECT_EQ(message, "message 12.3400");
+
+        try
+        {
+            throw Reliability::probLibException("message", 1e99);
+        }
+        catch (const Reliability::probLibException& e)
+        {
+            message = e.what();
+        }
+        EXPECT_EQ(message, "message 1.0000e+99");
+
+        try
+        {
+            constexpr int a = -1234;
+            throw Reliability::probLibException("message", a);
+        }
+        catch (const Reliability::probLibException& e)
+        {
+            message = e.what();
+        }
+        EXPECT_EQ(message, "message -1234");
+
+        try
+        {
+            constexpr size_t a = 123456789;
+            throw Reliability::probLibException("message", a);
+        }
+        catch (const Reliability::probLibException& e)
+        {
+            message = e.what();
+        }
+        EXPECT_EQ(message, "message 123456789");
+    }
+
+
+}
+
