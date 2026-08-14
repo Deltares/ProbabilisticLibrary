@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="$(SolutionDir)utils\Test.targets"/>
+    <Import Project="$(ProjectDir)..\utils\Test.targets"/>
 
     <ItemGroup>
       <ProjectReference Include="..\Deltares.Probabilistic.NetCS\Deltares.Probabilistic.NetCS.csproj" />
