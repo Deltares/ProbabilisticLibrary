@@ -49,7 +49,7 @@ namespace Deltares::Uncertainty
         bool isBetaValid(std::shared_ptr<Models::ModelRunner> modelRunner, double beta, double betaPrevious, double requiredBetaIncrement);
         void repairResults(std::vector<double>& values);
         bool areResultsValid(std::vector<double>& values);
-        void checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor);
+        void checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, Models::Sample& startPoint, Models::Sample& previousPoint, double factor);
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, std::shared_ptr<Models::Evaluation>> evaluations;
     };
 }

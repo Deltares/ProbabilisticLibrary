@@ -135,15 +135,15 @@ namespace Deltares::Uncertainty
         {
             std::vector<Numeric::WeightedValue> values;
 
-            std::vector<std::shared_ptr<Sample>> samples;
+            std::vector<Sample> samples;
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
-                std::shared_ptr<Sample> sample = std::make_shared<Models::Sample>(parentSample.clone());
-                sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
+                Sample sample = parentSample.clone();
+                sample.Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                 double contribution = pq.getDifference(uValues[j + 1]);
-                sample->Weight = density * contribution * nSamples * (static_cast<int>(uValues.size()) - 1);
+                sample.Weight = density * contribution * nSamples * (static_cast<int>(uValues.size()) - 1);
 
                 samples.push_back(sample);
             }
@@ -151,11 +151,11 @@ namespace Deltares::Uncertainty
             // compute the z-value(s)
             const std::vector<double> zValues = modelRunner.getZValues(samples);
 
-            for (const auto& sample : samples)
+            for (auto& sample : samples)
             {
-                if (!std::isnan(sample->Z))
+                if (!std::isnan(sample.Z))
                 {
-                    values.emplace_back(sample->Z, sample->Weight);
+                    values.emplace_back(sample.Z, sample.Weight);
 
                     if (registerSamplesForCorrelation)
                     {

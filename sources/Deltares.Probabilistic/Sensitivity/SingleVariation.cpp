@@ -39,18 +39,18 @@ namespace Deltares::Sensitivity
         double uLow = StandardNormal::getUFromP(Settings->LowValue);
         double uHigh = StandardNormal::getUFromP(Settings->HighValue);
 
-        std::vector<std::shared_ptr<Sample>> samples;
+        std::vector<Sample> samples;
 
-        samples.push_back(std::make_shared<Sample>(nStochasts));
+        samples.push_back(Sample(nStochasts));
 
         for (int i = 0; i < nStochasts; i++)
         {
-            std::shared_ptr<Sample> lowSample = std::make_shared<Sample>(nStochasts);
-            lowSample->Values[i] = uLow;
+            Sample lowSample = Sample(nStochasts);
+            lowSample.Values[i] = uLow;
             samples.push_back(lowSample);
 
-            std::shared_ptr<Sample> highSample = std::make_shared<Sample>(nStochasts);
-            highSample->Values[i] = uHigh;
+            Sample highSample = Sample(nStochasts);
+            highSample.Values[i] = uHigh;
             samples.push_back(highSample);
         }
 

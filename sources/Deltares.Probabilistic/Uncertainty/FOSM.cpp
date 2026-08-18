@@ -41,21 +41,21 @@ namespace Deltares::Uncertainty
         gradientCalculator.Settings->StepSize = Settings->StepSize;
         gradientCalculator.Settings->gradientType = GradientType::OneDirection;
 
-        std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
+        Sample zeroSample = Sample(nStochasts);
 
         std::vector<double> gradient = gradientCalculator.getGradient(*modelRunner, zeroSample);
         double length = Numeric::NumericSupport::GetLength(gradient);
-        double z0 = zeroSample->Z;
+        double z0 = zeroSample.Z;
 
         // disturb slightly if no gradient found
         if (length < 1E-6)
         {
-            std::shared_ptr<Sample>  disturbedSample = std::make_shared<Sample>(Numeric::NumericSupport::select(zeroSample->Values, [](double p) { return 0.001; }));
+            Sample  disturbedSample = Sample(Numeric::NumericSupport::select(zeroSample.Values, [](double p) { return 0.001; }));
             gradient = gradientCalculator.getGradient(*modelRunner, disturbedSample);
         }
 
-        std::shared_ptr<Sample> nextSample = std::make_shared<Sample>(gradient);
-        nextSample = std::make_shared<Models::Sample>(nextSample->getNormalizedSample());
+        Sample nextSample = Sample(gradient);
+        nextSample = nextSample.getNormalizedSample();
         double z1 = modelRunner->getZValue(nextSample);
 
         if (this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations)
@@ -77,8 +77,8 @@ namespace Deltares::Uncertainty
 
         for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
         {
-            std::shared_ptr<Sample> quantileSample = std::make_shared<Models::Sample>(nextSample->getSampleAtBeta(quantile->Reliability));
-            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(quantileSample));
+            Sample quantileSample = nextSample.getSampleAtBeta(quantile->Reliability);
+            std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(quantileSample));
             evaluation->Quantile = quantile->getProbabilityOfNonFailure();
             result.quantileEvaluations.push_back(evaluation);
         }

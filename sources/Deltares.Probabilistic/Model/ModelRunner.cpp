@@ -584,7 +584,7 @@ namespace Deltares::Models
         return result;
     }
 
-    void  ModelRunner::registerSample(const std::shared_ptr<Uncertainty::CorrelationMatrixBuilder>& correlationMatrixBuilder, Sample& sample) const
+    void ModelRunner::registerSample(const std::shared_ptr<Uncertainty::CorrelationMatrixBuilder>& correlationMatrixBuilder, Sample& sample) const
     {
         this->uConverter->registerSample(correlationMatrixBuilder, sample);
     }

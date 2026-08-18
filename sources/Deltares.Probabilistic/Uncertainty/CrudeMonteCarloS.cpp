@@ -48,7 +48,7 @@ namespace Deltares::Uncertainty
 
         std::vector<double> zValues; // copy of z for all parallel threads as double
 
-        std::vector<std::shared_ptr<Sample>> samples;
+        std::vector<Sample> samples;
         std::vector<double> zSamples;
         size_t zIndex = 0;
         int nSamples = 0;
@@ -70,7 +70,7 @@ namespace Deltares::Uncertainty
 
                 for (int i = 0; i < runs; i++)
                 {
-                    std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
+                    Sample sample = randomSampleGenerator.getRandomSample();
                     samples.push_back(sample);
                 }
 
@@ -79,7 +79,7 @@ namespace Deltares::Uncertainty
                 zIndex = 0;
             }
 
-            double z = samples[zIndex]->Z;
+            double z = samples[zIndex].Z;
 
             if (std::isnan(z))
             {
@@ -113,7 +113,7 @@ namespace Deltares::Uncertainty
                 randomSampleGenerator.restart();
                 randomSampleGenerator.proceed(quantileIndex);
 
-                std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
+                Sample sample = randomSampleGenerator.getRandomSample();
                 auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(sample));
                 evaluation->Quantile = p;
                 result.quantileEvaluations.push_back(evaluation);

@@ -47,8 +47,8 @@ namespace Deltares::Sensitivity
 
         // step 1
 
-        std::vector<std::shared_ptr<Sample>> samplesA;
-        std::vector<std::shared_ptr<Sample>> samplesB;
+        std::vector<Sample> samplesA;
+        std::vector<Sample> samplesB;
 
         for (int i = 0; i < nSamples; i++)
         {
@@ -59,11 +59,11 @@ namespace Deltares::Sensitivity
             });
 
             std::vector<double> uValuesA = NumericSupport::take(uSequence, 0, nStochasts);
-            std::shared_ptr<Sample> sampleA = std::make_shared<Sample>(uValuesA);
+            Sample sampleA = Sample(uValuesA);
             samplesA.push_back(sampleA);
 
             std::vector<double> uValuesB = NumericSupport::take(uSequence, nStochasts, nStochasts);
-            std::shared_ptr<Sample> sampleB = std::make_shared<Sample>(uValuesB);
+            Sample sampleB = Sample(uValuesB);
             samplesB.push_back(sampleB);
         }
 
@@ -98,8 +98,8 @@ namespace Deltares::Sensitivity
 
         for (int index = 0; index < nStochasts; index++)
         {
-            std::vector< std::shared_ptr<Sample>> samplesAB = getMixedSamples(index, samplesA, samplesB, nSamples);
-            std::vector< std::shared_ptr<Sample>> samplesBA = getMixedSamples(index, samplesB, samplesA, nSamples);
+            std::vector<Sample> samplesAB = getMixedSamples(index, samplesA, samplesB, nSamples);
+            std::vector<Sample> samplesBA = getMixedSamples(index, samplesB, samplesA, nSamples);
 
             std::vector<double> zABi = modelRunner->getZValues(samplesAB);
             iteration++;
@@ -162,15 +162,15 @@ namespace Deltares::Sensitivity
         return sensitivityStochast;
     }
 
-    std::vector<std::shared_ptr<Sample>> Sobol::getMixedSamples(int index, std::vector<std::shared_ptr<Models::Sample>> samples1, std::vector<std::shared_ptr<Models::Sample>> samples2, int nSamples)
+    std::vector<Sample> Sobol::getMixedSamples(int index, std::vector<Sample> samples1, std::vector<Sample> samples2, int nSamples)
     {
-        std::vector<std::shared_ptr<Sample>> mixedSamples;
+        std::vector<Sample> mixedSamples;
 
         for (int i = 0; i < nSamples; i++)
         {
-            std::shared_ptr<Sample> sample = std::make_shared<Models::Sample>(samples1[i]->clone());
-            sample->Values[index] = samples2[i]->Values[index];
-            sample->IterationIndex = index;
+            Sample sample = samples1[i].clone();
+            sample.Values[index] = samples2[i].Values[index];
+            sample.IterationIndex = index;
 
             mixedSamples.push_back(sample);
         }
