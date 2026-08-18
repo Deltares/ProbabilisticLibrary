@@ -1,3 +1,3 @@
 <Project>
-    <Import Project="$(SolutionDir)utils\Base.targets"/>
+    <Import Project="Base.targets"/>
 </Project>

@@ -1,5 +1,5 @@
 <Project>
-    <Import Project="$(SolutionDir)utils\Base.targets"/>
+    <Import Project="Base.targets"/>
 
     <PropertyGroup>
         <NoWarn>108,114</NoWarn>
