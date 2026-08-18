@@ -221,7 +221,7 @@ namespace Deltares::Statistics
                 return GetInterpolatedStudentValue(degreesOfFreedom, static_cast<int>(i));
             }
         }
-        throw Reliability::probLibException("unexpected fall through in GetStudentValue");
+        throw Reliability::ProbabilisticLibraryException("unexpected fall through in GetStudentValue");
     }
 
     StudentTDistribution::StudentTValue StudentTDistribution::GetInterpolatedStudentValue(int degreesOfFreedom, int N) const

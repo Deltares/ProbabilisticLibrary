@@ -20,14 +20,14 @@
 // All rights reserved.
 //
 #include <cmath>
-#include "vector1D.h"
+#include "Vector1D.h"
 #include <fstream>
 
 namespace Deltares::Numeric
 {
-    vector1D::vector1D() : m_data(0), m_rows(0) {}
+    Vector1D::Vector1D() : m_data(0), m_rows(0) {}
 
-    vector1D::vector1D(size_t rows) : m_data(rows), m_rows(rows)
+    Vector1D::Vector1D(size_t rows) : m_data(rows), m_rows(rows)
     {
         for (size_t pos = 0; pos < m_rows; pos++)
         {
@@ -35,15 +35,7 @@ namespace Deltares::Numeric
         }
     }
 
-    vector1D::vector1D(const vector1D& m) : m_data(m.m_rows), m_rows(m.m_rows)
-    {
-        for (size_t pos = 0; pos < m_rows; pos++)
-        {
-            m_data[pos] = m.m_data[pos];
-        }
-    }
-
-    vector1D::vector1D(const std::initializer_list<double>& m) : m_data(m.size()), m_rows(m.size())
+    Vector1D::Vector1D(const std::initializer_list<double>& m) : m_data(m.size()), m_rows(m.size())
     {
         size_t pos = 0;
         for (auto x : m)
@@ -53,44 +45,14 @@ namespace Deltares::Numeric
         }
     }
 
-    vector1D::vector1D(vector1D&& m) noexcept : m_data(m.m_data), m_rows(m.m_rows)
-    {
-        m.m_data = std::vector<double>(0);
-        m.m_rows = 0;
-    }
-
-    vector1D& vector1D::operator=(const vector1D& m)
-    {
-        if (this != &m)
-        {
-            m_rows = m.m_rows;
-
-            m_data = std::vector<double>(m_rows);
-
-            for (size_t pos = 0; pos < m_rows; pos++)
-            {
-                m_data[pos] = m.m_data[pos];
-            }
-        }
-
-        return *this;
-    }
-
-    vector1D& vector1D::operator=(vector1D&& m) noexcept
-    {
-        std::swap(m_data, m.m_data);
-        std::swap(m_rows, m.m_rows);
-        return *this;
-    }
-
-    vector1D vector1D::operator+(const vector1D& m) const
+    Vector1D Vector1D::operator+(const Vector1D& m) const
     {
         if (m_rows != m.m_rows)
         {
-            throw Reliability::probLibException("number of rows differ");
+            throw Reliability::ProbabilisticLibraryException("number of rows differ");
         }
 
-        vector1D result(m_rows);
+        Vector1D result(m_rows);
 
         for (size_t pos = 0; pos < m_rows; pos++)
         {
@@ -100,9 +62,9 @@ namespace Deltares::Numeric
         return result;
     }
 
-    vector1D vector1D::operator*(double d) const
+    Vector1D Vector1D::operator*(double d) const
     {
-        vector1D result(m_rows);
+        Vector1D result(m_rows);
 
         for (size_t pos = 0; pos < m_rows; pos++)
         {
@@ -112,12 +74,12 @@ namespace Deltares::Numeric
         return result;
     }
 
-    vector1D operator*(double d, const vector1D& m)
+    Vector1D operator*(double d, const Vector1D& m)
     {
         return m * d;
     }
 
-    std::ostream& operator<<(std::ostream& os, const vector1D& m)
+    std::ostream& operator<<(std::ostream& os, const Vector1D& m)
     {
         for (size_t row = 0; row < m.m_rows; row++)
         {
@@ -129,7 +91,7 @@ namespace Deltares::Numeric
         return os;
     }
 
-    void vector1D::operator*=(double d)
+    void Vector1D::operator*=(double d)
     {
         for (size_t row = 0; row < m_rows; row++)
         {
@@ -137,11 +99,11 @@ namespace Deltares::Numeric
         }
     }
 
-    void vector1D::operator+=(const vector1D& m)
+    void Vector1D::operator+=(const Vector1D& m)
     {
         if (m_rows != m.m_rows)
         {
-            throw Reliability::probLibException("number of rows differ");
+            throw Reliability::ProbabilisticLibraryException("number of rows differ");
         }
         for (size_t row = 0; row < m_rows; row++)
         {
@@ -149,12 +111,12 @@ namespace Deltares::Numeric
         }
     }
 
-    size_t vector1D::size() const
+    size_t Vector1D::size() const
     {
         return m_rows;
     }
 
-    double vector1D::sumOfSquares() const
+    double Vector1D::sumOfSquares() const
     {
         auto sum = 0.0;
         for (size_t k = 0; k < m_rows; k++)
@@ -164,11 +126,11 @@ namespace Deltares::Numeric
         return sum;
     }
 
-    double vector1D::sumOfInner(const vector1D& m) const
+    double Vector1D::sumOfInner(const Vector1D& m) const
     {
         if (m_rows != m.m_rows)
         {
-            throw Reliability::probLibException("number of rows differ");
+            throw Reliability::ProbabilisticLibraryException("number of rows differ");
         }
         auto sum = 0.0;
         for (size_t k = 0; k < m_rows; k++)
@@ -178,11 +140,11 @@ namespace Deltares::Numeric
         return sum;
     }
 
-    double vector1D::sumOfInners(const vector1D& m, const vector1D& n) const
+    double Vector1D::sumOfInners(const Vector1D& m, const Vector1D& n) const
     {
         if (m_rows != m.m_rows || m_rows != n.m_rows)
         {
-            throw Reliability::probLibException("number of rows differ");
+            throw Reliability::ProbabilisticLibraryException("number of rows differ");
         }
         auto sum = 0.0;
         for (size_t k = 0; k < m_rows; k++)
@@ -192,7 +154,7 @@ namespace Deltares::Numeric
         return sum;
     }
 
-    void vector1D::assign(const double x)
+    void Vector1D::assign(const double x)
     {
         for (size_t k = 0; k < m_rows; k++)
         {
@@ -200,12 +162,12 @@ namespace Deltares::Numeric
         }
     }
 
-    double vector1D::norm() const
+    double Vector1D::norm() const
     {
         return sqrt(sumOfSquares());
     }
 
-    void vector1D::normalize()
+    void Vector1D::normalize()
     {
         double s = norm();
         if (s > 0.0)
@@ -226,7 +188,7 @@ namespace Deltares::Numeric
         }
     }
 
-    double vector1D::minval() const
+    double Vector1D::minval() const
     {
         if (m_rows == 0) return nan("");
 
@@ -238,7 +200,7 @@ namespace Deltares::Numeric
         return m;
     }
 
-    double vector1D::maxval() const
+    double Vector1D::maxval() const
     {
         if (m_rows == 0) return nan("");
 
@@ -251,7 +213,7 @@ namespace Deltares::Numeric
         return m;
     }
 
-    void vector1D::dumpResult(std::ofstream& o) const
+    void Vector1D::dumpResult(std::ofstream& o) const
     {
         o << m_rows << std::endl;
         for (size_t i = 0; i < m_rows; i++)
@@ -260,11 +222,11 @@ namespace Deltares::Numeric
         }
     }
 
-    vector1D vector1D::readDumpFile(std::fstream& o)
+    Vector1D Vector1D::readDumpFile(std::fstream& o)
     {
         size_t n;
         o >> n;
-        vector1D x(n);
+        Vector1D x(n);
         for (size_t i = 0; i < n; i++)
         {
             o >> x(i);

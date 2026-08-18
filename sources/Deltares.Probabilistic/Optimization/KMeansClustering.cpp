@@ -23,7 +23,7 @@
 
 #include <map>
 
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include "../Math/NumericSupport.h"
 
 namespace Deltares::Optimization
@@ -44,7 +44,7 @@ namespace Deltares::Optimization
     {
         if (this->Samples.empty())
         {
-            throw Reliability::probLibException("Cluster must have at least one sample");
+            throw Reliability::ProbabilisticLibraryException("Cluster must have at least one sample");
         }
 
         this->Center = std::make_shared<Models::Sample>(this->Samples[0]->Values.size());
@@ -207,7 +207,7 @@ namespace Deltares::Optimization
         case ClusterInitializationMethod::PlusPlus:
             return InitPlusPlus(options.NumberClusters, samples, randomGenerator, options.SampleHasWeighting);
         default:
-            throw Reliability::probLibException("Cluster initialization method");
+            throw Reliability::ProbabilisticLibraryException("Cluster initialization method");
         }
     }
 

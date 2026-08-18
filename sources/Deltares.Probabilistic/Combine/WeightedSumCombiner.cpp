@@ -31,7 +31,7 @@ namespace Deltares::Reliability
     {
         if (scenarios.size() != designPoints.size())
         {
-            throw probLibException("Scenarios and design points must be of same length");
+            throw ProbabilisticLibraryException("Scenarios and design points must be of same length");
         }
 
         std::vector<std::shared_ptr<Statistics::Stochast>> parameters = DesignPoint::getUniqueStochasts(designPoints);

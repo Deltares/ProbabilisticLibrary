@@ -22,8 +22,8 @@
 #pragma once
 #include <iosfwd>
 #include <vector>
-#include "vector1D.h"
-#include "../Utils/probLibException.h"
+#include "Vector1D.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Numeric
 {
@@ -39,31 +39,6 @@ namespace Deltares::Numeric
          * Constructor
          */
         Matrix(size_t rows, size_t columns);
-
-        /**
-         * Copy Constructor
-         */
-        Matrix(const Matrix& m);
-
-        /**
-         * Move Constructor
-         */
-        Matrix(Matrix&& m) noexcept;
-
-        /**
-         * Destructor
-         */
-        ~Matrix();
-
-        /**
-         * the assignment operator
-         */
-        Matrix& operator=(const Matrix& m);
-
-        /**
-         * the assignment operator
-         */
-        Matrix& operator=(Matrix&& m) noexcept;
 
         /**
          * the + operator
@@ -140,7 +115,7 @@ namespace Deltares::Numeric
         /**
          * returns the matrix * vector product
          */
-        vector1D matvec(const vector1D& v) const;
+        Vector1D matvec(const Vector1D& v) const;
 
         /**
          * sets the two dimensions of the matrix
@@ -173,13 +148,13 @@ namespace Deltares::Numeric
         {
             if (row >= m_rows || column >= m_columns)
             {
-                throw Reliability::probLibException("array bound error");
+                throw Reliability::ProbabilisticLibraryException("array bound error");
             }
             return row * m_columns + column;
         }
 
         Matrix compute_minor(size_t d) const;
-        vector1D extract_column(size_t column_index) const;
+        Vector1D extract_column(size_t column_index) const;
 
         std::vector<double> m_data;
         size_t m_rows;
@@ -192,7 +167,7 @@ namespace Deltares::Numeric
         QRMatrix(const Matrix& q_matrix, const Matrix& r_matrix) noexcept
             : Q(q_matrix), R(r_matrix) {}
 
-        Numeric::vector1D solve(const Numeric::vector1D& target) const;
+        Numeric::Vector1D solve(const Numeric::Vector1D& target) const;
 
         Matrix getProduct() const
         {

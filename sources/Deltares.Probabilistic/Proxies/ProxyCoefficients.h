@@ -22,7 +22,7 @@
 #pragma once
 #include <vector>
 
-#include "../Math/vector1D.h"
+#include "../Math/Vector1D.h"
 #include "ProxyCoefficient.h"
 
 namespace Deltares::Proxies

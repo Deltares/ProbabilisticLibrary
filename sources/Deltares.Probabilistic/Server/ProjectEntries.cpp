@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "ProjectEntries.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Server
 {
@@ -80,7 +80,7 @@ namespace Deltares::Server
         {
             return it->second;
         }
-        throw Reliability::probLibException("type not supported: " + object_type);
+        throw Reliability::ProbabilisticLibraryException("type not supported: " + object_type);
     }
 
     bool ProjectEntries::CanHandle(const std::string& object_type)

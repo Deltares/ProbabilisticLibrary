@@ -23,7 +23,7 @@
 #include <cmath>
 #include <vector>
 
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Optimization
 {
@@ -103,7 +103,7 @@ namespace Deltares::Optimization
             }
             else
             {
-                throw Reliability::probLibException("Use values type not supported");
+                throw Reliability::ProbabilisticLibraryException("Use values type not supported");
             }
 
             return values;

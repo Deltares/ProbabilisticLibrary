@@ -87,8 +87,9 @@ namespace Deltares::Reliability
     private:
         const double margin = 1E-8;
 
-        std::shared_ptr<Models::StochastPoint> getRealizationBetweenPoints(double x, std::shared_ptr<Statistics::FragilityValue> lowerFragilityValue, std::shared_ptr<Statistics::FragilityValue> upperFragilityValue);
-        double interpolateAlphas(double lowerFraction, double lowerAlpha, double upperAlpha);
+        std::shared_ptr<Models::StochastPoint> getRealizationBetweenPoints(double x,
+            const Statistics::FragilityValue& lower_fragility_value, const Statistics::FragilityValue& upper_fragility_value);
+        static double interpolateAlphas(double lowerFraction, double lowerAlpha, double upperAlpha);
     };
 }
 

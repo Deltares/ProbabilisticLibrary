@@ -21,7 +21,6 @@
 //
 #pragma once
 #include "../../Deltares.Probabilistic/Combine/UpScaling.h"
-#include "../../Deltares.Probabilistic/Combine/CombineElements.h"
 #include "../Utils/testutils.h"
 
 namespace Deltares::Probabilistic::Test
@@ -29,29 +28,29 @@ namespace Deltares::Probabilistic::Test
     class UpscaleTests
     {
     public:
-        void runAllUpscaleInTimeTests();
-        void runAllEquivalentAlphaTests();
-        void runAllUpscaleToLargestBlockTests();
+        void runAllUpscaleInTimeTests() const;
+        void runAllEquivalentAlphaTests() const;
+        void runAllUpscaleToLargestBlockTests() const;
     private:
-        void upscaleInTimeTests1();
-        void upscaleInTimeTests2();
-        void upscaleInTimeTests3();
-        void upscaleInTimeTests4();
-        void upscaleInTimeTests5();
-        void upscaleInTimeTests6();
-        void upscaleInTimeTests7();
-        void upscaleInTimeTests8();
-        void equivalentAlphaTesting1();
-        void equivalentAlphaTesting2();
-        void equivalentAlphaTesting3();
-        void equivalentAlphaTesting4();
-        void equivalentAlphaTesting5();
-        void equivalentAlphaTesting6();
-        void upscaleToLargestBlockTests1();
-        void upscaleToLargestBlockTests2();
-        void upscaleToLargestBlockTests3();
+        void upscaleInTimeTests1() const;
+        void upscaleInTimeTests2() const;
+        void upscaleInTimeTests3() const;
+        void upscaleInTimeTests4() const;
+        void upscaleInTimeTests5() const;
+        void upscaleInTimeTests6() const;
+        void upscaleInTimeTests7() const;
+        void upscaleInTimeTests8() const;
+        void equivalentAlphaTesting1() const;
+        void equivalentAlphaTesting2() const;
+        void equivalentAlphaTesting3() const;
+        void equivalentAlphaTesting4() const;
+        void equivalentAlphaTesting5() const;
+        void equivalentAlphaTesting6() const;
+        void upscaleToLargestBlockTests1() const;
+        void upscaleToLargestBlockTests2() const;
+        void upscaleToLargestBlockTests3() const;
+        void upscaleToLargestBlockTests4() const;
         Reliability::upscaling upscaler = Reliability::upscaling();
-        Reliability::combineElements combiner = Reliability::combineElements();
         testutils test_utilities = testutils();
     };
 

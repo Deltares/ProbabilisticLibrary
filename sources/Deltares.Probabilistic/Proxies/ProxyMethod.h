@@ -25,7 +25,7 @@
 #include "ProxyCoefficients.h"
 #include "../Model/ModelSample.h"
 #include "../Model/ZModel.h"
-#include "../Math/vector1D.h"
+#include "../Math/Vector1D.h"
 
 namespace Deltares::Proxies
 {

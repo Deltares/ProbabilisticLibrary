@@ -22,7 +22,7 @@
 #include "StartPointCalculator.h"
 
 #include "DirectionReliability.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include "../Math/NumericSupport.h"
 #include "SphereTasks.h"
 
@@ -41,7 +41,7 @@ namespace Deltares::Reliability
         case StartMethodType::SphereSearch:
             return getSphereStartPoint(modelRunner);
         default:
-            throw probLibException("Start method not supported: ", (int)this->Settings->StartMethod);
+            throw ProbabilisticLibraryException("Start method not supported: ", (int)this->Settings->StartMethod);
         }
     }
 
@@ -229,7 +229,7 @@ namespace Deltares::Reliability
         }
 
         auto st = sphereTasks(maxSteps, Settings->allQuadrants);
-        auto uSphereValues = Numeric::vector1D(uSphere->Values.size());
+        auto uSphereValues = Numeric::Vector1D(uSphere->Values.size());
         for (size_t i = 0; i < uSphere->Values.size(); i++)
         {
             uSphereValues(i) = uSphere->Values[i];

@@ -29,7 +29,7 @@ namespace Deltares::Models
         if (value == "mean_values") return Statistics::MeanValues;
         else if (value == "median_values") return Statistics::MedianValues;
         else if (value == "design_values") return Statistics::DesignValues;
-        else throw Reliability::probLibException("Run values type not supported");
+        else throw Reliability::ProbabilisticLibraryException("Run values type not supported");
     }
 
     std::string RunProjectSettings::getRunValuesTypeString(Statistics::RunValuesType runValuesType)
@@ -39,7 +39,7 @@ namespace Deltares::Models
         case Statistics::MeanValues: return "mean_values";
         case Statistics::MedianValues: return "median_values";
         case Statistics::DesignValues: return "design_values";
-        default: throw Reliability::probLibException("Run values type not supported");
+        default: throw Reliability::ProbabilisticLibraryException("Run values type not supported");
         }
     }
 }

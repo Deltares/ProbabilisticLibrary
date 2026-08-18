@@ -22,11 +22,7 @@
 #pragma once
 #include "CrudeMonteCarloSettings.h"
 #include "ReliabilityMethod.h"
-
-namespace Deltares::Numeric
-{
-    class StatisticsCalculator;
-}
+#include "../Math/StatisticsCalculator.h"
 
 namespace Deltares::Reliability
 {
@@ -42,9 +38,10 @@ namespace Deltares::Reliability
         }
 
     private:
-        std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::SampleProvider> sampleProvider, double zRemainder, double qRange);
-        bool checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, Numeric::StatisticsCalculator& statistics, int nmaal) const;
-        static double getConvergence(Numeric::StatisticsCalculator& statistics);
+        std::shared_ptr<DesignPoint> getReducedDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, const
+                                                           std::shared_ptr<Models::SampleProvider>& sampleProvider, double zRemainder, double qRange);
+        bool checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, const Numeric::StatisticsCalculator& statistics, int nmaal) const;
+        static double getConvergence(const Numeric::StatisticsCalculator& statistics);
         void applyLimits(const std::shared_ptr<Models::Sample>& sample) const;
     };
 }

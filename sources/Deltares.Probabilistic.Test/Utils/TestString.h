@@ -19,32 +19,15 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "Message.h"
-#include "../Utils/ProbabilisticLibraryException.h"
+#pragma once
 
-namespace Deltares::Logging
+namespace Deltares::Probabilistic::Test
 {
-    using enum MessageType;
-
-    std::string Message::getMessageTypeString(MessageType type)
+    class TestString
     {
-        switch (type)
-        {
-        case Debug: return "debug";
-        case Info: return "info";
-        case Warning: return "warning";
-        case Error: return "error";
-        default: throw Reliability::ProbabilisticLibraryException("message type");
-        }
-    }
-
-    MessageType Message::getMessageType(const std::string& type)
-    {
-        if (type == "debug")  return Debug;
-        else if (type == "info") return Info;
-        else if (type == "warning") return Warning;
-        else if (type == "error") return Error;
-        else throw Reliability::ProbabilisticLibraryException("message type " + type + " not a known message type");
-    }
+    public:
+        static void testDouble2Str();
+        static void testDoubles2Str();
+    };
 }
 

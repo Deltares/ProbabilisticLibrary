@@ -51,7 +51,7 @@ namespace Deltares::Reliability
         {
         case Monotone: return "monotone";
         case Varying: return "varying";
-        default: throw Reliability::probLibException("Model varying type");
+        default: throw Reliability::ProbabilisticLibraryException("Model varying type");
         }
     }
 
@@ -59,7 +59,7 @@ namespace Deltares::Reliability
     {
         if (type == "monotone") return Monotone;
         else if (type == "varying") return Varying;
-        else throw Reliability::probLibException("Model varying type");
+        else throw Reliability::ProbabilisticLibraryException("Model varying type");
     }
 
 

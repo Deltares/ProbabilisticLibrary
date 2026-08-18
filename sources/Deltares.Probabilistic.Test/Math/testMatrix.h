@@ -26,8 +26,14 @@ namespace Deltares::Probabilistic::Test
     class matrix_tests
     {
     public:
-        void qr_decomposition() const;
-        void linear_equations() const;
-        void linear_equations_overdetermined() const;
+        static void qr_decomposition();
+        static void linear_equations();
+        static void linear_equations_overdetermined();
+        static void multiply();
+        static void add();
+        static void matrixStreamOperatorTest();
+
+    private:
+        static constexpr double margin = 1e-12;
     };
 }

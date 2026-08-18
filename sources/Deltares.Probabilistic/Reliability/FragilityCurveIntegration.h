@@ -31,7 +31,9 @@ namespace Deltares::Reliability
     public:
         std::shared_ptr<FragilityCurveIntegrationSettings> Settings = std::make_shared<FragilityCurveIntegrationSettings>();
 
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Statistics::Stochast> parameter, std::shared_ptr<Statistics::Stochast> fragilityCurve, std::shared_ptr<Statistics::Stochast> fragilityCurveNormalized = nullptr);
+        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Statistics::Stochast> parameter, const
+                                                    std::shared_ptr<Statistics::Stochast>& fragilityCurve, const
+                                                    std::shared_ptr<Statistics::Stochast>& fragilityCurveNormalized = nullptr) const;
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 
         bool isValid() override
@@ -51,7 +53,8 @@ namespace Deltares::Reliability
             double U = 0.0;
             double Weight = 0.0;
         };
-        std::vector<std::shared_ptr<UStep>> getSteps(std::shared_ptr<Statistics::Stochast> stochast, double stepSize);
+
+        static std::vector<std::shared_ptr<UStep>> getSteps(Statistics::Stochast& stochast, double stepSize);
     };
 }
 

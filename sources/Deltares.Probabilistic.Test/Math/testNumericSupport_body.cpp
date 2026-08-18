@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 #include "testNumericSupport.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
-#include "../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Probabilistic::Test
 {

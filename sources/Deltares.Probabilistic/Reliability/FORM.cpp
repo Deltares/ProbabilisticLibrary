@@ -91,8 +91,8 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    std::shared_ptr<DesignPoint> FORM::getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, std::shared_ptr<Models::Sample> startPoint,
-        const double relaxationFactor, const int relaxationIndex)
+    std::shared_ptr<DesignPoint> FORM::getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+        const std::shared_ptr<Models::Sample>& startPoint, const double relaxationFactor, const int relaxationIndex)
     {
         constexpr double minGradientLength = 1E-08;
 
@@ -160,14 +160,14 @@ namespace Deltares::Reliability
                 const std::shared_ptr<ReliabilityReport> reportTooSmall = getReport(iteration, beta);
                 modelRunner->reportResult(reportTooSmall);
 
-                const double betaNoVariation = ReliabilityMethod::getZFactor(sample->Z) * Statistics::StandardNormal::BetaMax;
+                const double betaNoVariation = getZFactor(sample->Z) * Statistics::StandardNormal::BetaMax;
                 return modelRunner->getDesignPoint(sample, betaNoVariation, convergenceReport);
             }
 
             //   compute beta
             if (zGradientLength == 0)
             {
-                beta = ReliabilityMethod::getZFactor(z0) * Statistics::StandardNormal::BetaMax;
+                beta = getZFactor(z0) * Statistics::StandardNormal::BetaMax;
             }
             else
             {
@@ -285,7 +285,7 @@ namespace Deltares::Reliability
     {
         const size_t nStochasts = last10u[0]->getSize();
         const size_t nIter = last10u.size();
-        double rNIter = 1.0 / (double)nIter;
+        double rNIter = 1.0 / static_cast<double>(nIter);
         double sumUk = 0.0;
         auto uk = std::vector<double>(nStochasts);
         for (size_t k = 0; k < nStochasts; k++)

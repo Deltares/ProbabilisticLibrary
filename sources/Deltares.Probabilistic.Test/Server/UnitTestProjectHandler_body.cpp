@@ -176,7 +176,7 @@ namespace Deltares::Probabilistic::Test
         {
             ProjectEntries::GetType("STOCHAST");
         }
-        catch (const Reliability::probLibException& e)
+        catch (const Reliability::ProbabilisticLibraryException& e)
         {
             error_message = e.what();
         }

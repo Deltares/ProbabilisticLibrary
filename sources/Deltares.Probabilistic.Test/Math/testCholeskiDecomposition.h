@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #pragma once
-#include "../../Deltares.Probabilistic/Math/matrix.h"
+#include "../../Deltares.Probabilistic/Math/Matrix.h"
 
 namespace Deltares::Probabilistic::Test
 {

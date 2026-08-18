@@ -19,32 +19,31 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "Message.h"
-#include "../Utils/ProbabilisticLibraryException.h"
+#include <gtest/gtest.h>
+#include "TestString.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryString.h"
 
-namespace Deltares::Logging
+namespace Deltares::Probabilistic::Test
 {
-    using enum MessageType;
-
-    std::string Message::getMessageTypeString(MessageType type)
+    void TestString::testDouble2Str()
     {
-        switch (type)
-        {
-        case Debug: return "debug";
-        case Info: return "info";
-        case Warning: return "warning";
-        case Error: return "error";
-        default: throw Reliability::ProbabilisticLibraryException("message type");
-        }
+        double x = 1.23;
+        std::string value = Reliability::ProbabilisticLibraryString::double2str(x);
+        value = Reliability::ProbabilisticLibraryString::trim(value, " ");
+        EXPECT_EQ(value, "1.23");
+
+        x = 1e-12;
+        value = Reliability::ProbabilisticLibraryString::double2str(x);
+        value = Reliability::ProbabilisticLibraryString::trim(value, " ");
+        EXPECT_EQ(value, "1e-12");
     }
 
-    MessageType Message::getMessageType(const std::string& type)
+    void TestString::testDoubles2Str()
     {
-        if (type == "debug")  return Debug;
-        else if (type == "info") return Info;
-        else if (type == "warning") return Warning;
-        else if (type == "error") return Error;
-        else throw Reliability::ProbabilisticLibraryException("message type " + type + " not a known message type");
+        const auto x = std::vector({ -1e-12, 1e-12 });
+        const auto value = Reliability::ProbabilisticLibraryString::doubles2strTrimmed(x);
+        EXPECT_EQ(value, "-1e-12_1e-12");
     }
+
 }
 

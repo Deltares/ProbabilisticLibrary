@@ -26,7 +26,7 @@
 #include "DiscreteValue.h"
 #include "HistogramValue.h"
 #include "FragilityValue.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include "DistributionPropertyType.h"
 
 #include <vector>

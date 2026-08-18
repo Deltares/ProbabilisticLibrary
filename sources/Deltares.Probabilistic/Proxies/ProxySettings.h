@@ -24,7 +24,7 @@
 #include "../Model/RunSettings.h"
 #include "../Model/Validatable.h"
 #include "../Model/ModelSample.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Proxies
 {
@@ -130,7 +130,7 @@ namespace Deltares::Proxies
             case QualitativeValue::Low: return LowDefinition;
             case QualitativeValue::High: return HighDefinition;
             case QualitativeValue::Medium: return 0.5;
-            default: throw Reliability::probLibException("Qualitative value");
+            default: throw Reliability::ProbabilisticLibraryException("Qualitative value");
             }
         }
 

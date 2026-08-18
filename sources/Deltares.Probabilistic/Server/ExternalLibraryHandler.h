@@ -26,7 +26,7 @@
 #endif
 
 #include "BaseHandler.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Server
 {
@@ -45,7 +45,7 @@ namespace Deltares::Server
             HMODULE libInstance = LoadLibraryEx(library, nullptr, LOAD_LIBRARY_SEARCH_APPLICATION_DIR);
             if (!libInstance)
             {
-                throw Reliability::probLibException("Could not load the dynamic library " + std::string(libraryName));
+                throw Reliability::ProbabilisticLibraryException("Could not load the dynamic library " + std::string(libraryName));
             }
 
             // resolve all function addresses

@@ -140,7 +140,7 @@ namespace Deltares::Statistics
         case RunValuesType::MedianValues: return getXFromU(0);
         case RunValuesType::MeanValues: return getMean();
         case RunValuesType::DesignValues: return getDesignValue();
-        default: throw Reliability::probLibException("Value type not supported");
+        default: throw Reliability::ProbabilisticLibraryException("Value type not supported");
         }
     }
 
@@ -155,7 +155,7 @@ namespace Deltares::Statistics
             case RunValuesType::MeanValues: return distribution->getMean(*valueSetProperties);
             case RunValuesType::DesignValues:
                 return distribution->getXFromU(*valueSetProperties, StandardNormal::getUFromP(designQuantile)) / designFactor;
-            default: throw Reliability::probLibException("Value type not supported");
+            default: throw Reliability::ProbabilisticLibraryException("Value type not supported");
             }
         }
         else
@@ -645,7 +645,7 @@ namespace Deltares::Statistics
         Logging::ValidationReport report = getFitValidationReport(values, nullptr, shift);
         if (!report.isValid())
         {
-            throw Reliability::probLibException("Can not fit with given values and shift");
+            throw Reliability::ProbabilisticLibraryException("Can not fit with given values and shift");
         }
 
         distribution->fit(*properties, values, shift);
@@ -656,7 +656,7 @@ namespace Deltares::Statistics
         Logging::ValidationReport report = getFitValidationReport(values, prior, shift);
         if (!report.isValid())
         {
-            throw Reliability::probLibException("Can not fit with given values, prior and shift");
+            throw Reliability::ProbabilisticLibraryException("Can not fit with given values, prior and shift");
         }
 
         distribution->fitPrior(*properties, values, *prior->getProperties(), shift);
@@ -754,7 +754,7 @@ namespace Deltares::Statistics
     {
         if (distributionType == "deviation") return Statistics::ConstantParameterType::Deviation;
         else if (distributionType == "variation") return Statistics::ConstantParameterType::VariationCoefficient;
-        else throw Reliability::probLibException("constant parameter type");
+        else throw Reliability::ProbabilisticLibraryException("constant parameter type");
     }
 
     std::string Stochast::getConstantParameterTypeString(Statistics::ConstantParameterType distributionType)
@@ -763,7 +763,7 @@ namespace Deltares::Statistics
         {
         case Statistics::ConstantParameterType::Deviation: return "deviation";
         case Statistics::ConstantParameterType::VariationCoefficient: return "variation";
-        default:  throw Reliability::probLibException("constant parameter type");
+        default:  throw Reliability::ProbabilisticLibraryException("constant parameter type");
         }
     }
 
@@ -804,7 +804,7 @@ namespace Deltares::Statistics
         {
             return it->second;
         }
-        throw Reliability::probLibException("distribution type");
+        throw Reliability::ProbabilisticLibraryException("distribution type");
     }
 
     std::string Stochast::getDistributionTypeString(DistributionType distributionType)
@@ -816,7 +816,7 @@ namespace Deltares::Statistics
                 return name;
             }
         }
-        throw Reliability::probLibException("distribution type");
+        throw Reliability::ProbabilisticLibraryException("distribution type");
     }
 
 }

@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "RunSettings.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Models
 {
@@ -31,7 +31,7 @@ namespace Deltares::Models
         case HandleInvalidType::Ignore: return "ignore";
         case HandleInvalidType::Fail: return "fail";
         case HandleInvalidType::NoFail: return "no_fail";
-        default: throw Reliability::probLibException("handle invalid type");
+        default: throw Reliability::ProbabilisticLibraryException("handle invalid type");
         }
     }
 
@@ -40,7 +40,7 @@ namespace Deltares::Models
         if (type == "ignore")  return HandleInvalidType::Ignore;
         else if (type == "fail") return HandleInvalidType::Fail;
         else if (type == "no_fail") return HandleInvalidType::NoFail;
-        else throw Reliability::probLibException("handle invalid type " + type + " not a known type");
+        else throw Reliability::ProbabilisticLibraryException("handle invalid type " + type + " not a known type");
     }
 
     std::string RunSettings::getModelReturnTypeString(ModelReturnType type)
@@ -50,7 +50,7 @@ namespace Deltares::Models
         case ModelReturnType::ZValue: return "z_value";
         case ModelReturnType::ProbabilityFailure: return "probability_failure";
         case ModelReturnType::ReliabilityIndex: return "reliability_index";
-        default: throw Reliability::probLibException("model return type");
+        default: throw Reliability::ProbabilisticLibraryException("model return type");
         }
 
     }
@@ -60,7 +60,7 @@ namespace Deltares::Models
         if (type == "z_value")  return ModelReturnType::ZValue;
         else if (type == "probability_failure") return ModelReturnType::ProbabilityFailure;
         else if (type == "reliability_index") return ModelReturnType::ReliabilityIndex;
-        else throw Reliability::probLibException("model return type " + type + " not a known type");
+        else throw Reliability::ProbabilisticLibraryException("model return type " + type + " not a known type");
     }
 
 }

@@ -247,7 +247,7 @@ namespace Deltares::Reliability
                 case DoubleType::Zero:
                     break;
                 default:
-                    throw probLibException("invalid result in updateProbabilities");
+                    throw ProbabilisticLibraryException("invalid result in updateProbabilities");
                 }
             }
         }

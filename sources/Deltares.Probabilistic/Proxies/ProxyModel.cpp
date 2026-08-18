@@ -27,7 +27,7 @@
 #include "ProxyTrainer.h"
 #include "SingleProxyTrainer.h"
 #include "../Model/ModelSample.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Proxies
 {
@@ -68,7 +68,7 @@ namespace Deltares::Proxies
         switch (settings->MethodType)
         {
         case ProxyMethodType::FirstOrder: return std::make_unique<LinearProxyMethod>();
-        default: throw Reliability::probLibException("Proxy method is not implemented.");
+        default: throw Reliability::ProbabilisticLibraryException("Proxy method is not implemented.");
         }
     }
 
@@ -77,7 +77,7 @@ namespace Deltares::Proxies
         switch (settings->InitializationType)
         {
         case ProxyInitializationType::Single: return std::make_unique<SingleProxyTrainer>();
-        default: throw Reliability::probLibException("Proxy trainer is not implemented.");
+        default: throw Reliability::ProbabilisticLibraryException("Proxy trainer is not implemented.");
         }
     }
 

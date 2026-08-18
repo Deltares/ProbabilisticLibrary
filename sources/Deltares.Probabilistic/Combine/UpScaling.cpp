@@ -26,7 +26,6 @@
 #include "../Statistics/StandardNormal.h"
 #include <algorithm>
 #include <cmath>
-#include <format>
 #include <limits>
 
 #include "../Math/NumericSupport.h"
@@ -44,7 +43,7 @@ namespace Deltares::Reliability
     /// <param name="element"> the design point of a single time element </param>
     /// <param name="inRhoT"> Correlation coefficients for each of the variables, in time </param>
     /// <returns> the number of not converged intermediate calculations </returns>
-    int upscaling::upscaleInTime(const double nrTimes, alphaBeta& element, const vector1D& inRhoT) const
+    int upscaling::upscaleInTime(const double nrTimes, alphaBeta& element, const Vector1D& inRhoT) const
     {
         constexpr double rhoMax = 1.0 - 1.0e-10;  // Max allowed value of correlation coefficient (very close to one)
         constexpr double rhoMin = 1.0e-10;        // Min allowed value of correlation coefficient (very close to zero)
@@ -53,13 +52,14 @@ namespace Deltares::Reliability
         size_t nStochasts = element.size(); // Number of stochastic variables
         int failures = 0;
 
-        auto alphaT = vector1D(nStochasts); // Equivalent alpha values for all variables, of the combined element
+        auto alphaT = Vector1D(nStochasts); // Equivalent alpha values for all variables, of the combined element
 
         //
         // Determine the correlation between two time elements
         //
-        double rhoT = element.sumOfInners(element, inRhoT); // rhoT : Correlation coefficient between element 1 and element 2
-        rhoT = std::clamp(rhoT, rhoMin, rhoMax);
+
+        // rhoT : Correlation coefficient between element 1 and element 2
+        const double rhoT = std::clamp(element.sumOfInners(element, inRhoT), rhoMin, rhoMax);
 
         //
         // Compute failure probability and beta of the combined n elements
@@ -154,7 +154,7 @@ namespace Deltares::Reliability
     /// <param name="section_length">  Section length </param>
     /// <returns> design point after upscaling </returns>
     upscalingResult upscaling::upscaleLength(const alphaBeta& crossSectionElement,
-        const vector1D& rhoXK, const vector1D& dXK, const double section_length) const
+        const Vector1D& rhoXK, const Vector1D& dXK, const double section_length) const
     {
         upscalingResult return_value;
         //
@@ -194,7 +194,7 @@ namespace Deltares::Reliability
         if (betaSectionCalculator.hasLengthEffect())
         {
             constexpr double delta_beta = 0.01;
-            return_value.design_point.setAlpha(vector1D(number_of_stochasts));
+            return_value.design_point.setAlpha(Vector1D(number_of_stochasts));
             //
             // Calculate beta for section from the beta of the cross-section
             const auto betaSection = betaSectionCalculator.Compute(crossSectionElement.getBeta());
@@ -260,13 +260,13 @@ namespace Deltares::Reliability
         //
         // Allocate vectors
         //
-        auto rhoT = vector1D(nrVar);
+        auto rhoT = Vector1D(nrVar);
 
         //
         // Copy input for intermediate use
         //
         return_value.largest_block = input.small_block;
-        vector1D durations = input.block_durations;
+        Vector1D durations = input.block_durations;
 
         for (;;)
         {

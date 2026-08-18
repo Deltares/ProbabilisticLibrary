@@ -53,7 +53,7 @@ namespace Deltares::Reliability
             auto hhFormCmb = std::make_shared<HohenbichlerFormCombiner>();
             return hhFormCmb;
         }
-        default: throw probLibException("Combiner type");
+        default: throw ProbabilisticLibraryException("Combiner type");
         }
     }
 
@@ -111,7 +111,7 @@ namespace Deltares::Reliability
         {
         case ExcludingCombinerType::WeightedSum: return std::make_unique<WeightedSumCombiner>();
         case ExcludingCombinerType::HohenbichlerExcluding: return std::make_unique<HohenbichlerExcludingCombiner>();
-        default: throw probLibException("Excluding combiner type");
+        default: throw ProbabilisticLibraryException("Excluding combiner type");
         }
     }
 
@@ -121,7 +121,7 @@ namespace Deltares::Reliability
         {
         case combineAndOr::combOr: return "series";
         case combineAndOr::combAnd: return "parallel";
-        default: throw probLibException("Combine type");
+        default: throw ProbabilisticLibraryException("Combine type");
         }
     }
 
@@ -129,7 +129,7 @@ namespace Deltares::Reliability
     {
         if (method == "series") return combineAndOr::combOr;
         else if (method == "parallel") return combineAndOr::combAnd;
-        else throw probLibException("Combine type");
+        else throw ProbabilisticLibraryException("Combine type");
     }
 
     std::string DesignPointCombiner::getCombinerMethodString(CombinerType type)
@@ -140,7 +140,7 @@ namespace Deltares::Reliability
         case ImportanceSamplingCombine: return "importance_sampling";
         case DirectionalSamplingCombine: return "directional_sampling";
         case HohenbichlerForm: return "hohenbichler_form";
-        default: throw probLibException("Combiner method");
+        default: throw ProbabilisticLibraryException("Combiner method");
         }
     }
 
@@ -150,7 +150,7 @@ namespace Deltares::Reliability
         else if (method == "importance_sampling") return ImportanceSamplingCombine;
         else if (method == "directional_sampling") return DirectionalSamplingCombine;
         else if (method == "hohenbichler_form") return HohenbichlerForm;
-        else throw probLibException("Combiner method type");
+        else throw ProbabilisticLibraryException("Combiner method type");
     }
 
     std::string DesignPointCombiner::getExcludingCombinerMethodString(ExcludingCombinerType type)
@@ -159,7 +159,7 @@ namespace Deltares::Reliability
         {
         case ExcludingCombinerType::HohenbichlerExcluding: return "hohenbichler_excluding";
         case ExcludingCombinerType::WeightedSum: return "weighted_sum";
-        default: throw probLibException("Excluding combiner method");
+        default: throw ProbabilisticLibraryException("Excluding combiner method");
         }
     }
 
@@ -167,7 +167,7 @@ namespace Deltares::Reliability
     {
         if (method == "hohenbichler_excluding") return ExcludingCombinerType::HohenbichlerExcluding;
         else if (method == "weighted_sum") return ExcludingCombinerType::WeightedSum;
-        else throw probLibException("Excluding combiner method type");
+        else throw ProbabilisticLibraryException("Excluding combiner method type");
     }
 
 }

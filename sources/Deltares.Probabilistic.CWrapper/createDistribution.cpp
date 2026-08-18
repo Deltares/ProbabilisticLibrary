@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "createDistribution.h"
-#include "../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
@@ -30,7 +30,7 @@ Stochast createDistribution::createValid(const EnumDistributions distHR, std::ve
     auto s = create(distHR, parameters);
     if (!s.isValid())
     {
-        throw probLibException("parameters are not valid for distribution.");
+        throw ProbabilisticLibraryException("parameters are not valid for distribution.");
     }
     return s;
 }
@@ -85,7 +85,7 @@ Stochast createDistribution::create(const EnumDistributions distHR, std::vector<
         p = { 0.0, 1.0, 0.0, 0.0 }; }
         break;
     default:
-        throw probLibException("Unknown distribution function - code: ", static_cast<int>(distHR));
+        throw ProbabilisticLibraryException("Unknown distribution function - code: ", static_cast<int>(distHR));
     }
 
     Stochast stochast;

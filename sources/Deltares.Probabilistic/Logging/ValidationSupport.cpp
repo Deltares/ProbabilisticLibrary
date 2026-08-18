@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "ValidationSupport.h"
-#include "../Utils/probLibString.h"
+#include "../Utils/ProbabilisticLibraryString.h"
 
 #include <utility>
 #include <cmath>
@@ -179,7 +179,7 @@ namespace Deltares::Logging
 
     std::string ValidationSupport::toString(double value)
     {
-        return Deltares::Reliability::probLibString::double2strForText(value);
+        return Deltares::Reliability::ProbabilisticLibraryString::double2strForText(value);
     }
 }
 

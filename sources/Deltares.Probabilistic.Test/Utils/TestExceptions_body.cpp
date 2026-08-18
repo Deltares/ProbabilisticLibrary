@@ -21,7 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include "TestExceptions.h"
-#include "../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 #include "../../Deltares.Probabilistic/Server/ExternalServerHandler.h"
 
 namespace Deltares::Probabilistic::Test
@@ -31,9 +31,9 @@ namespace Deltares::Probabilistic::Test
         std::string message;
         try
         {
-            throw Reliability::probLibException("message", 12.34);
+            throw Reliability::ProbabilisticLibraryException("message", 12.34);
         }
-        catch (const Reliability::probLibException& e)
+        catch (const Reliability::ProbabilisticLibraryException& e)
         {
             message = e.what();
         }
@@ -41,9 +41,9 @@ namespace Deltares::Probabilistic::Test
 
         try
         {
-            throw Reliability::probLibException("message", 1e99);
+            throw Reliability::ProbabilisticLibraryException("message", 1e99);
         }
-        catch (const Reliability::probLibException& e)
+        catch (const Reliability::ProbabilisticLibraryException& e)
         {
             message = e.what();
         }
@@ -52,9 +52,9 @@ namespace Deltares::Probabilistic::Test
         try
         {
             constexpr int a = -1234;
-            throw Reliability::probLibException("message", a);
+            throw Reliability::ProbabilisticLibraryException("message", a);
         }
-        catch (const Reliability::probLibException& e)
+        catch (const Reliability::ProbabilisticLibraryException& e)
         {
             message = e.what();
         }
@@ -63,9 +63,9 @@ namespace Deltares::Probabilistic::Test
         try
         {
             constexpr size_t a = 123456789;
-            throw Reliability::probLibException("message", a);
+            throw Reliability::ProbabilisticLibraryException("message", a);
         }
-        catch (const Reliability::probLibException& e)
+        catch (const Reliability::ProbabilisticLibraryException& e)
         {
             message = e.what();
         }

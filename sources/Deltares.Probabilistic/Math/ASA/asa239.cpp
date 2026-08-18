@@ -3,7 +3,7 @@
 # include <iomanip>
 # include <cmath>
 # include <ctime>
-# include "../../Utils/probLibException.h"
+# include "../../Utils/ProbabilisticLibraryException.h"
 # include "asa239.hpp"
 
 // START-NOSCAN
@@ -364,12 +364,12 @@ namespace ASA::conversions
         //
         if (x < 0.0)
         {
-            throw Deltares::Reliability::probLibException("gammad: x < 0");
+            throw Deltares::Reliability::ProbabilisticLibraryException("gammad: x < 0");
         }
 
         if (p <= 0.0)
         {
-            throw Deltares::Reliability::probLibException("gammad: p <= 0");
+            throw Deltares::Reliability::ProbabilisticLibraryException("gammad: p <= 0");
         }
 
         if (x == 0.0)

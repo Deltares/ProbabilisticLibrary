@@ -47,7 +47,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM: return this->GetDsThenFormReliabilityMethod();
         case ReliabilityMethodType::ReliabilityFragilityCurveIntegration: return this->GetFragilityCurveIntegrationMethod();
 
-        default: throw probLibException("Reliability method");
+        default: throw ProbabilisticLibraryException("Reliability method");
         }
     }
 
@@ -324,7 +324,7 @@ namespace Deltares::Reliability
             dsfi->DsSettings->validate(report);
             break;
         }
-        default: throw probLibException("Reliability method");
+        default: throw ProbabilisticLibraryException("Reliability method");
         }
     }
 
@@ -346,7 +346,7 @@ namespace Deltares::Reliability
         case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling: return "form_then_directional_sampling";
         case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM: return "directional_sampling_then_form";
         case ReliabilityMethodType::ReliabilityFragilityCurveIntegration: return "fragility_curve_integration";
-        default: throw probLibException("Reliability method");
+        default: throw ProbabilisticLibraryException("Reliability method");
         }
     }
 
@@ -366,7 +366,7 @@ namespace Deltares::Reliability
         else if (method == "form_then_directional_sampling") return ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling;
         else if (method == "directional_sampling_then_form") return ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM;
         else if (method == "fragility_curve_integration") return ReliabilityMethodType::ReliabilityFragilityCurveIntegration;
-        else throw probLibException("Reliability method");
+        else throw ProbabilisticLibraryException("Reliability method");
     }
 
     std::string Settings::getReliabilityResultTypeString(ReliabilityResultType method)
@@ -375,7 +375,7 @@ namespace Deltares::Reliability
         {
         case ReliabilityResultType::ResultDesignPoint: return "design_point";
         case ReliabilityResultType::ResultFragilityCurve: return "fragility_curve";
-        default: throw probLibException("Reliability result");
+        default: throw ProbabilisticLibraryException("Reliability result");
         }
     }
 
@@ -383,7 +383,7 @@ namespace Deltares::Reliability
     {
         if (method == "design_point") return ReliabilityResultType::ResultDesignPoint;
         else if (method == "fragility_curve") return ReliabilityResultType::ResultFragilityCurve;
-        else throw probLibException("Reliability result");
+        else throw ProbabilisticLibraryException("Reliability result");
     }
 }
 

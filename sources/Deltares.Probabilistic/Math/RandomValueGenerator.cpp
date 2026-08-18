@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include "RandomValueGenerator.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include <ctime>
 
 namespace Deltares::Numeric

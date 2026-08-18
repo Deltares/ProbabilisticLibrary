@@ -55,7 +55,7 @@ namespace Deltares::Statistics
             choleskyMatrix.get_dims(c1, c2);
             if (c1 == 0) CholeskyDecomposition();
 
-            auto u = vector1D(count);
+            auto u = Vector1D(count);
             for (size_t i = 0; i < count; i++)
             {
                 u(i) = uValues[i];
@@ -90,7 +90,7 @@ namespace Deltares::Statistics
             inverseCholeskyMatrix.get_dims(c1, c2);
             if (c1 == 0) InverseCholeskyDecomposition();
 
-            auto u = vector1D(count);
+            auto u = Vector1D(count);
             for (size_t i = 0; i < count; i++)
             {
                 u(i) = uValues[i];
@@ -166,7 +166,7 @@ namespace Deltares::Statistics
     {
         if (std::max(i, j) >= static_cast<int>(dim))
         {
-            throw probLibException("dimension mismatch in SetCorrelation");
+            throw ProbabilisticLibraryException("dimension mismatch in SetCorrelation");
         }
 
         value = std::min(std::max(value, -1.0), 1.0);
@@ -223,7 +223,7 @@ namespace Deltares::Statistics
                 auto cholesky_matrix = matrix.CholeskyDecomposition();
                 validation_result = true;
             }
-            catch (const probLibException& e)
+            catch (const ProbabilisticLibraryException& e)
             {
                 validation_result = false;
                 validation_message = e.what();
@@ -278,7 +278,7 @@ namespace Deltares::Statistics
     {
         if (source->GetDimension() == 0) return;
         auto corrM = std::dynamic_pointer_cast<CorrelationMatrix> (source);
-        if (corrM == nullptr) throw probLibException("error casting a correlation matrix in filter method.");
+        if (corrM == nullptr) throw ProbabilisticLibraryException("error casting a correlation matrix in filter method.");
 
         auto nrAllStochasts = index.size();
 

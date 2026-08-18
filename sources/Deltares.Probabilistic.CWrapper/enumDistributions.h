@@ -21,32 +21,31 @@
 //
 #pragma once
 
-namespace Deltares {
-    namespace Reliability {
-
-        enum class EnumDistributions
-        {
-            deterministic,
-            uniform,
-            normal,
-            lognormal,
-            lognormal2,
-            shiftedExponential,
-            gumbel,
-            gumbel2,
-            weibull,
-            rayleigh,
-            pareto,
-            triangular,
-            table,
-            tableT,
-            conditionalWeibull,
-            modifiedGumbel,
-            truncatedModifiedGumbel,
-            RayleighN = 18,
-            truncatedNormal,
-            beta,
-            uspace
-        };
-    }
+namespace Deltares ::Reliability
+{
+    enum class EnumDistributions
+    {
+        deterministic,
+        uniform,
+        normal,
+        lognormal,
+        lognormal2,
+        shiftedExponential,
+        gumbel,
+        gumbel2,
+        weibull,
+        rayleigh,
+        pareto,
+        triangular,
+        table,
+        tableT,
+        conditionalWeibull,
+        modifiedGumbel,
+        truncatedModifiedGumbel,
+        RayleighN = 18,
+        truncatedNormal,
+        beta,
+        uspace
+    };
 }
+

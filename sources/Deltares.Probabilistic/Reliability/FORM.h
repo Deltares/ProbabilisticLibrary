@@ -38,7 +38,7 @@ namespace Deltares::Reliability
         }
 
     private:
-        std::shared_ptr<DesignPoint> getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, std::shared_ptr<Models::Sample> startSample,
+        std::shared_ptr<DesignPoint> getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startSample,
             const double relaxationFactor, const int relaxationIndex);
         static bool areAllResultsValid(const std::vector<double>& values);
         bool isConverged(Models::ModelRunner& modelRunner, const Models::Sample& sample, ConvergenceReport& convergenceReport, double beta, double zGradientLength) const;

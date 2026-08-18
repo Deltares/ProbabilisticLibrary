@@ -46,7 +46,7 @@ extern "C" DLL_PUBLIC void AddLibrary(const char* library)
         std::filesystem::path path(libraryStr);
         if (!std::filesystem::exists(path))
         {
-            throw Deltares::Reliability::probLibException(libraryStr + " does not exist");
+            throw Deltares::Reliability::ProbabilisticLibraryException(libraryStr + " does not exist");
         }
 
         if (libraryStr.ends_with(".exe"))
@@ -62,7 +62,7 @@ extern "C" DLL_PUBLIC void AddLibrary(const char* library)
         }
         else
         {
-            throw Deltares::Reliability::probLibException(libraryStr + " is not supported");
+            throw Deltares::Reliability::ProbabilisticLibraryException(libraryStr + " is not supported");
         }
     }
     catch (const std::exception& e)

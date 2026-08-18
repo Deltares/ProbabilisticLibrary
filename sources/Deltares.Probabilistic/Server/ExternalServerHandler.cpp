@@ -57,7 +57,7 @@ namespace Deltares::Server
         int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
         if (iResult != 0)
         {
-            throw Reliability::probLibException("Socket startup failed with error: " + std::to_string(iResult));
+            throw Reliability::ProbabilisticLibraryException("Socket startup failed with error: " + std::to_string(iResult));
         }
 
         ZeroMemory(&hints, sizeof(hints));
@@ -73,7 +73,7 @@ namespace Deltares::Server
         if (iResult != 0)
         {
             WSACleanup();
-            throw Reliability::probLibException("Get address info failed with error: " + std::to_string(iResult));
+            throw Reliability::ProbabilisticLibraryException("Get address info failed with error: " + std::to_string(iResult));
         }
     }
 
@@ -111,7 +111,7 @@ namespace Deltares::Server
         if (ConnectSocket == INVALID_SOCKET)
         {
             WSACleanup();
-            throw Reliability::probLibException("Invalid socket");
+            throw Reliability::ProbabilisticLibraryException("Invalid socket");
         }
 
         return ConnectSocket;
@@ -130,7 +130,7 @@ namespace Deltares::Server
         {
             closesocket(server_socket);
             WSACleanup();
-            throw Reliability::probLibException ("Send \"" + message + "\" failed with error: " + std::to_string(WSAGetLastError()));
+            throw Reliability::ProbabilisticLibraryException ("Send \"" + message + "\" failed with error: " + std::to_string(WSAGetLastError()));
         }
         else
         {
@@ -151,7 +151,7 @@ namespace Deltares::Server
 
             if (received < 0)
             {
-                throw Reliability::probLibException("Receive failed");
+                throw Reliability::ProbabilisticLibraryException("Receive failed");
             }
 
             std::string answer = std::string(receiveBuffer, received);
@@ -172,7 +172,7 @@ namespace Deltares::Server
             {
                 // Get everything after the prefix length
                 std::string exception_message = answer.substr(exception_prefix.length());
-                throw Reliability::probLibException(exception_message);
+                throw Reliability::ProbabilisticLibraryException(exception_message);
             }
 
             return answer;
@@ -200,7 +200,7 @@ namespace Deltares::Server
     {
         if (!std::filesystem::exists(this->serverName))
         {
-            throw Reliability::probLibException(this->serverName + " does not exist");
+            throw Reliability::ProbabilisticLibraryException(this->serverName + " does not exist");
         }
 
         UpdateAddressInfo();
@@ -343,7 +343,7 @@ namespace Deltares::Server
         }
         catch (const std::exception& e)
         {
-            throw Reliability::probLibException("Expected int value: \"" + result + "\"");
+            throw Reliability::ProbabilisticLibraryException("Expected int value: \"" + result + "\"");
         }
     }
 
@@ -362,7 +362,7 @@ namespace Deltares::Server
         }
         catch (const std::exception& e)
         {
-            throw Reliability::probLibException("Expected int value: \"" + result + "\" with command ");
+            throw Reliability::ProbabilisticLibraryException("Expected int value: \"" + result + "\" with command ");
         }
     }
 
@@ -433,7 +433,7 @@ namespace Deltares::Server
         }
         catch (const std::exception& e)
         {
-            throw Reliability::probLibException("Expected int value: \"" + result + "\"");
+            throw Reliability::ProbabilisticLibraryException("Expected int value: \"" + result + "\"");
         }
     }
 

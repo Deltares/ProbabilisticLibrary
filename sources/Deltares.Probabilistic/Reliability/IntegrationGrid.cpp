@@ -23,7 +23,7 @@
 #include <cmath>
 #include "IntegrationGrid.h"
 #include "../Math/BinarySupport.h"
-#include "../Utils/probLibString.h"
+#include "../Utils/ProbabilisticLibraryString.h"
 #include "../Statistics/Stochast.h"
 
 using namespace Deltares::Numeric;
@@ -151,7 +151,7 @@ namespace Deltares::Reliability
                 return i;
             }
         }
-        throw probLibException("index not found in integrationLine");
+        throw ProbabilisticLibraryException("index not found in integrationLine");
     }
 
     size_t IntegrationLine::get_index(IntegrationPoint* point)
@@ -163,7 +163,7 @@ namespace Deltares::Reliability
                 return i;
             }
         }
-        throw probLibException("index not found in integrationLine");
+        throw ProbabilisticLibraryException("index not found in integrationLine");
     }
 
     bool IntegrationLine::HasNextKnownPoint(std::shared_ptr<IntegrationPoint> point, const DoubleType result)
@@ -249,7 +249,7 @@ namespace Deltares::Reliability
         {
             if (domain.Cells[i].get() == this) return i;
         }
-        throw probLibException("index not found in integration cell");
+        throw ProbabilisticLibraryException("index not found in integration cell");
     }
 
     void IntegrationCell::split()
@@ -360,7 +360,7 @@ namespace Deltares::Reliability
 
     std::shared_ptr<IntegrationPoint> IntegrationDomain::GetIntegrationPoint(std::vector<double>& coordinates)
     {
-        auto hash = probLibString::doubles2strTrimmed(coordinates);
+        auto hash = ProbabilisticLibraryString::doubles2strTrimmed(coordinates);
         auto integrationPoint = pointsSet[hash];
 
         if (integrationPoint == nullptr)
@@ -388,7 +388,7 @@ namespace Deltares::Reliability
                 }
             }
 
-            auto hash = probLibString::doubles2strTrimmed(lineCoordinates);
+            auto hash = ProbabilisticLibraryString::doubles2strTrimmed(lineCoordinates);
             auto line = LinesSet[i][hash];
             if (line == nullptr)
             {

@@ -28,7 +28,7 @@
 #include "../Statistics/CopulaCorrelation.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 #include <set>
 
@@ -189,7 +189,7 @@ namespace Deltares::Models
 
         if (requiredSource == nullptr)
         {
-            throw Reliability::probLibException(stochast->definition->name + ": Could not find source stochast");
+            throw Reliability::ProbabilisticLibraryException(stochast->definition->name + ": Could not find source stochast");
         }
 
         for (size_t j = 0; j < this->stochasts.size(); j++)
@@ -209,7 +209,7 @@ namespace Deltares::Models
 
         if (!variableStochastIndexFound)
         {
-            throw Reliability::probLibException(stochast->definition->name + ": Variable stochast source " + requiredSource->name + " has not been found.\n");
+            throw Reliability::ProbabilisticLibraryException(stochast->definition->name + ": Variable stochast source " + requiredSource->name + " has not been found.\n");
         }
     }
 
@@ -393,7 +393,7 @@ namespace Deltares::Models
         auto corrM = std::dynamic_pointer_cast<Statistics::CorrelationMatrix> (varyingCorrelationMatrix);
         if (corrM == nullptr)
         {
-            throw Reliability::probLibException("not implemented yet");
+            throw Reliability::ProbabilisticLibraryException("not implemented yet");
         }
         return corrM->ApplyCorrelation(sample->Values);
     }
@@ -556,7 +556,7 @@ namespace Deltares::Models
             // when no progress and not everything has been assigned => error
             if (!ready && !modified)
             {
-                throw Deltares::Reliability::probLibException("circular reference");
+                throw Deltares::Reliability::ProbabilisticLibraryException("circular reference");
             }
         }
 

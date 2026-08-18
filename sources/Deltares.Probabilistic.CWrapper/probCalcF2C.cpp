@@ -25,7 +25,7 @@
 
 #include "basicSettings.h"
 #include "createDistribution.h"
-#include "../Deltares.Probabilistic/Math/vector1D.h"
+#include "../Deltares.Probabilistic/Math/Vector1D.h"
 
 #include "funcWrapper.h"
 #include "progressWrapper.h"

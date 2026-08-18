@@ -42,7 +42,7 @@ namespace Deltares::Uncertainty
         case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: return this->GetCrudeMonteCarloMethod();
         case UncertaintyMethodType::UncertaintyImportanceSampling: return this->GetImportanceSamplingMethod();
         case UncertaintyMethodType::UncertaintyDirectionalSampling: return this->GetDirectionalSamplingMethod();
-        default: throw Reliability::probLibException("Uncertainty method");
+        default: throw Reliability::ProbabilisticLibraryException("Uncertainty method");
         }
     }
 
@@ -153,7 +153,7 @@ namespace Deltares::Uncertainty
         case UncertaintyMethodType::UncertaintyDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;
         case UncertaintyMethodType::UncertaintyFORM: GetFORMMethod()->Settings->validate(report); break;
         case UncertaintyMethodType::UncertaintyFOSM: GetFOSMMethod()->Settings->validate(report); break;
-        default: throw Reliability::probLibException("Uncertainty method");
+        default: throw Reliability::ProbabilisticLibraryException("Uncertainty method");
         }
     }
 
@@ -167,7 +167,7 @@ namespace Deltares::Uncertainty
         case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: return "crude_monte_carlo";
         case UncertaintyMethodType::UncertaintyImportanceSampling: return "importance_sampling";
         case UncertaintyMethodType::UncertaintyDirectionalSampling: return "directional_sampling";
-        default: throw Reliability::probLibException("Uncertainty method");
+        default: throw Reliability::ProbabilisticLibraryException("Uncertainty method");
         }
     }
 
@@ -179,7 +179,7 @@ namespace Deltares::Uncertainty
         else if (method == "crude_monte_carlo") return UncertaintyMethodType::UncertaintyCrudeMonteCarlo;
         else if (method == "importance_sampling") return UncertaintyMethodType::UncertaintyImportanceSampling;
         else if (method == "directional_sampling") return UncertaintyMethodType::UncertaintyDirectionalSampling;
-        else throw Reliability::probLibException("Uncertainty method");
+        else throw Reliability::ProbabilisticLibraryException("Uncertainty method");
     }
 
 }

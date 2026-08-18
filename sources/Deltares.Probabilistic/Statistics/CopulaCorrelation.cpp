@@ -37,11 +37,11 @@ namespace Deltares::Statistics
     {
         if (i >= max_stochasts)
         {
-            throw Reliability::probLibException("Invalid index in SetCorrelation: ", i);
+            throw Reliability::ProbabilisticLibraryException("Invalid index in SetCorrelation: ", i);
         }
         else if (j >= max_stochasts)
         {
-            throw Reliability::probLibException("Invalid index in SetCorrelation: ", j);
+            throw Reliability::ProbabilisticLibraryException("Invalid index in SetCorrelation: ", j);
         }
 
         auto pair = CopulaPair();
@@ -172,7 +172,7 @@ namespace Deltares::Statistics
     void CopulaCorrelation::Filter(const std::shared_ptr<BaseCorrelation> source, const std::vector<int>& index)
     {
         auto src = std::dynamic_pointer_cast<CopulaCorrelation> (source);
-        if (src == nullptr) throw Reliability::probLibException("error casting a correlation source in filter method.");
+        if (src == nullptr) throw Reliability::ProbabilisticLibraryException("error casting a correlation source in filter method.");
         for (auto copula : src->copulas)
         {
             auto ii = FindNewIndex(index, copula.index1);

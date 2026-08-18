@@ -25,7 +25,7 @@
 #include "../../../Deltares.Probabilistic/Model/ModelSample.h"
 #include "../../../Deltares.Probabilistic/Model/ZModel.h"
 #include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
-#include "../../../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 #include <numbers>
 
 namespace Deltares::Probabilistic::Test
@@ -68,7 +68,7 @@ namespace Deltares::Probabilistic::Test
 
     WaartsResult TestWaartsSaddleSurface::expectedValues()
     {
-        throw Reliability::probLibException("Must be implemented for all reliability methods (too much differences between methods)");
+        throw Reliability::ProbabilisticLibraryException("Must be implemented for all reliability methods (too much differences between methods)");
     }
 
     WaartsResult TestWaartsSaddleSurface::expectedValuesFORM()

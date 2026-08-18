@@ -26,14 +26,14 @@
 
 namespace Deltares::Reliability
 {
-    class probLibException : public std::exception
+    class ProbabilisticLibraryException : public std::exception
     {
     public:
-        explicit probLibException(std::string message) : message(std::move(message)) {}
-        probLibException(const std::string& message, const double number);
-        probLibException(const std::string& message, const int number);
-        probLibException(const std::string& message, const size_t number);
-        virtual const char* what() const throw() { return message.c_str(); }
+        explicit ProbabilisticLibraryException(std::string message) : message(std::move(message)) {}
+        ProbabilisticLibraryException(const std::string& first_part_message, const double number);
+        ProbabilisticLibraryException(const std::string& first_part_message, const int number);
+        ProbabilisticLibraryException(const std::string& first_part_message, const size_t number);
+        const char* what() const noexcept override { return message.c_str(); }
     private:
         const std::string message;
         static std::string toString(const double number);

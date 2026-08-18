@@ -241,7 +241,7 @@ namespace Deltares::Reliability
         }
         else
         {
-            throw probLibException("Sample method type");
+            throw ProbabilisticLibraryException("Sample method type");
         }
     }
 

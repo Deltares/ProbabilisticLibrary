@@ -19,27 +19,27 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "probLibException.h"
+#include "ProbabilisticLibraryException.h"
 #include <format>
 
 namespace Deltares::Reliability
 {
-    probLibException::probLibException(const std::string& message, const double number)
-        : message(std::format("{} {}" , message, toString(number)))
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& first_part_message, const double number)
+        : message(std::format("{} {}" , first_part_message, toString(number)))
     {
     }
 
-    probLibException::probLibException(const std::string& message, const int number)
-        : message(std::format("{} {}", message , number))
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& first_part_message, const int number)
+        : message(std::format("{} {}", first_part_message , number))
     {
     }
 
-    probLibException::probLibException(const std::string& message, const size_t number)
-        : message(std::format("{} {}", message, number))
+    ProbabilisticLibraryException::ProbabilisticLibraryException(const std::string& first_part_message, const size_t number)
+        : message(std::format("{} {}", first_part_message, number))
     {
     }
 
-    std::string probLibException::toString(const double number)
+    std::string ProbabilisticLibraryException::toString(const double number)
     {
         constexpr double threshold = 1e5;
         if (std::abs(number) > threshold)

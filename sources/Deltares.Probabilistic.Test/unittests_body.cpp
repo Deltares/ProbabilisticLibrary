@@ -51,6 +51,7 @@
 #include "Optimization/testCobyla.h"
 #include "Proxies/TestProxies.h"
 #include "Utils/TestExceptions.h"
+#include "Utils/TestString.h"
 #include "Reliability/Waarts/TestWaartsLinearResistance.h"
 #include "Reliability/Waarts/TestWaartsNoisyLimitState.h"
 #include "Reliability/Waarts/TestWaartsResistanceOneQuadraticTerm.h"
@@ -164,20 +165,32 @@ TEST(UnitTests, testMatmul)
 
 TEST(MatrixTest, qr_decomposition)
 {
-    auto testMatrix = Deltares::Probabilistic::Test::matrix_tests();
-    testMatrix.qr_decomposition();
+    Deltares::Probabilistic::Test::matrix_tests::qr_decomposition();
 }
 
 TEST(MatrixTest, linear_equations)
 {
-    auto testMatrix = Deltares::Probabilistic::Test::matrix_tests();
-    testMatrix.linear_equations();
+    Deltares::Probabilistic::Test::matrix_tests::linear_equations();
 }
 
 TEST(MatrixTest, linear_equations_overdetermined)
 {
-    auto testMatrix = Deltares::Probabilistic::Test::matrix_tests();
-    testMatrix.linear_equations_overdetermined();
+    Deltares::Probabilistic::Test::matrix_tests::linear_equations_overdetermined();
+}
+
+TEST(MatrixTest, multiply_with_double)
+{
+    Deltares::Probabilistic::Test::matrix_tests::multiply();
+}
+
+TEST(MatrixTest, add_two_matrices)
+{
+    Deltares::Probabilistic::Test::matrix_tests::add();
+}
+
+TEST(MatrixTest, stream_operator_test)
+{
+    Deltares::Probabilistic::Test::matrix_tests::matrixStreamOperatorTest();
 }
 
 TEST(ProxiesTest, linear_model)
@@ -227,6 +240,16 @@ TEST(UnitTests, testNumIntSharedGivenURange2)
 TEST(UnitTests, testExceptions)
 {
     Deltares::Probabilistic::Test::TestExceptions::testProblibExceptions();
+}
+
+TEST(UnitTests, testDouble2String)
+{
+    Deltares::Probabilistic::Test::TestString::testDouble2Str();
+}
+
+TEST(UnitTests, testDoubles2String)
+{
+    Deltares::Probabilistic::Test::TestString::testDoubles2Str();
 }
 
 TEST(ReliabilityMethodTest, TestFORM)

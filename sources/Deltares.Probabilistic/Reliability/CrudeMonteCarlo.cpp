@@ -20,10 +20,8 @@
 // All rights reserved.
 //
 #include "CrudeMonteCarlo.h"
-#include <iostream>
 #include <vector>
 #include <cmath>
-#include <memory>
 
 #include "../Statistics/StandardNormal.h"
 #include "../Model/Sample.h"
@@ -32,10 +30,8 @@
 #include "ConvergenceReport.h"
 #include "ReliabilityReport.h"
 #include "DesignPoint.h"
-#include "CrudeMonteCarloSettings.h"
 #include "DesignPointBuilder.h"
 #include "StochastSettings.h"
-#include "../Math/StatisticsCalculator.h"
 
 using namespace Deltares::Models;
 
@@ -84,7 +80,8 @@ namespace Deltares::Reliability
         return getReducedDesignPoint(modelRunner, sampleProvider, zRemainder, qRange);
     }
 
-    std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<SampleProvider> sampleProvider, double zRemainder, double qRange)
+    std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(const std::shared_ptr<ModelRunner>&modelRunner,
+        const std::shared_ptr<SampleProvider>& sampleProvider, double zRemainder, double qRange)
     {
         auto randomSampleGenerator = RandomSampleGenerator();
         randomSampleGenerator.Settings = this->Settings->randomSettings;
@@ -240,7 +237,8 @@ namespace Deltares::Reliability
         }
     }
 
-    bool CrudeMonteCarlo::checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, Numeric::StatisticsCalculator& statistics, int nmaal) const
+    bool CrudeMonteCarlo::checkConvergence(const std::shared_ptr<ModelRunner>& modelRunner,
+        const Numeric::StatisticsCalculator& statistics, int nmaal) const
     {
         std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
         report->Step = nmaal;
@@ -264,7 +262,7 @@ namespace Deltares::Reliability
         }
     }
 
-    double CrudeMonteCarlo::getConvergence(Numeric::StatisticsCalculator& statistics)
+    double CrudeMonteCarlo::getConvergence(const Numeric::StatisticsCalculator& statistics)
     {
         double pf = statistics.getMean();
 
@@ -281,7 +279,6 @@ namespace Deltares::Reliability
             // variation coefficient
             double variationCoefficient = standardError / pf;
 
-            //double varPf = sqrt((1 - pf) / (samples * pf));
             return variationCoefficient;
         }
         else

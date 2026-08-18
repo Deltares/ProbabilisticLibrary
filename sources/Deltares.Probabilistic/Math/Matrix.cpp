@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "matrix.h"
+#include "Matrix.h"
 #include <iostream>
 
 #include "MatrixSupport.h"
@@ -37,62 +37,11 @@ namespace Deltares::Numeric
         }
     }
 
-    Matrix::Matrix(const Matrix& m)
-        : m_data(std::vector<double>(m.m_rows* m.m_columns)),
-        m_rows(m.m_rows),
-        m_columns(m.m_columns)
-    {
-        for (size_t pos = 0; pos < m_rows * m_columns; pos++)
-        {
-            m_data[pos] = m.m_data[pos];
-        }
-    }
-
-    Matrix::Matrix(Matrix&& m) noexcept
-        : m_data(m.m_data),
-          m_rows(m.m_rows),
-          m_columns(m.m_columns)
-    {
-        m.m_data = std::vector<double>(0);
-        m.m_rows = 0;
-        m.m_columns = 0;
-    }
-
-    Matrix::~Matrix()
-    {
-    }
-
-    Matrix& Matrix::operator=(const Matrix& m)
-    {
-        if (this != &m)
-        {
-            m_rows = m.m_rows;
-            m_columns = m.m_columns;
-
-            m_data = std::vector<double>(m_rows * m_columns);
-
-            for (size_t pos = 0; pos < m_rows * m_columns; pos++)
-            {
-                m_data[pos] = m.m_data[pos];
-            }
-        }
-
-        return *this;
-    }
-
-    Matrix& Matrix::operator=(Matrix&& m) noexcept
-    {
-        std::swap(m_data, m.m_data);
-        std::swap(m_rows, m.m_rows);
-        std::swap(m_columns, m.m_columns);
-        return *this;
-    }
-
     Matrix Matrix::operator+(const Matrix& m) const
     {
         if (m_rows != m.m_rows || m_columns != m.m_columns)
         {
-            throw Reliability::probLibException("#rows <> #colums in matrix addition");
+            throw Reliability::ProbabilisticLibraryException("#rows <> #columns in matrix addition");
         }
 
         Matrix result(m_rows, m_columns);
@@ -150,7 +99,7 @@ namespace Deltares::Numeric
 
     Matrix Matrix::matmul(const Matrix& m2) const
     {
-        if (m_columns != m2.m_rows) throw Reliability::probLibException("dimension mismatch in matmul");
+        if (m_columns != m2.m_rows) throw Reliability::ProbabilisticLibraryException("dimension mismatch in matmul");
 
         auto result = Matrix(m_rows, m2.m_columns);
         for (size_t row = 0; row < m_rows; row++)
@@ -168,14 +117,14 @@ namespace Deltares::Numeric
         return result;
     }
 
-    vector1D Matrix::matvec(const vector1D& v) const
+    Vector1D Matrix::matvec(const Vector1D& v) const
     {
         if (m_columns != v.size())
         {
-            throw Reliability::probLibException("dimension mismatch in matvec");
+            throw Reliability::ProbabilisticLibraryException("dimension mismatch in matvec");
         }
 
-        auto result = Numeric::vector1D(m_rows);
+        auto result = Vector1D(m_rows);
         for (size_t row = 0; row < m_rows; row++)
         {
             double sum = 0.0;
@@ -220,7 +169,7 @@ namespace Deltares::Numeric
             }
             return true;
         }
-        catch (const std::exception&)
+        catch (const Reliability::ProbabilisticLibraryException&)
         {
             return false;
         }
@@ -254,9 +203,9 @@ namespace Deltares::Numeric
         return minor;
     }
 
-    vector1D Matrix::extract_column(size_t column_index) const
+    Vector1D Matrix::extract_column(size_t column_index) const
     {
-        vector1D v = vector1D(m_rows);
+        Vector1D v = Vector1D(m_rows);
 
         for (size_t i = 0; i < m_rows; i++)
         {
@@ -287,7 +236,7 @@ namespace Deltares::Numeric
             z1 = z.compute_minor(k);
 
             // extract k-th column into x
-            vector1D x = z1.extract_column(k);
+            Vector1D x = z1.extract_column(k);
 
             double a = x.norm();
             if (getValue(k, k) > 0)
@@ -295,7 +244,7 @@ namespace Deltares::Numeric
                 a = -a;
             }
 
-            vector1D e = vector1D(m);
+            Vector1D e = Vector1D(m);
             for (size_t i = 0; i < e.size(); i++)
             {
                 e(i) = i == k ? 1.0 : 0.0;
@@ -346,7 +295,7 @@ namespace Deltares::Numeric
         return qr;
     }
 
-    Numeric::vector1D QRMatrix::solve(const Numeric::vector1D& target) const
+    Vector1D QRMatrix::solve(const Vector1D& target) const
     {
         // see https://rosettacode.org/wiki/QR_decomposition#C++
 
@@ -354,9 +303,9 @@ namespace Deltares::Numeric
 
         qt.Transpose();
 
-        vector1D z = qt.matvec(target);
+        Vector1D z = qt.matvec(target);
 
-        vector1D x = vector1D(R.getColumnCount());
+        Vector1D x = Vector1D(R.getColumnCount());
 
         for (size_t i = 0; i < x.size(); i++)
         {

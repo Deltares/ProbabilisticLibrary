@@ -25,7 +25,7 @@
 
 #include "../../Math/NumericSupport.h"
 #include "../../Math/RootFinders/BisectionRootFinder.h"
-#include "../../Utils/probLibException.h"
+#include "../../Utils/ProbabilisticLibraryException.h"
 #include "../StandardNormal.h"
 
 namespace Deltares::Statistics
@@ -68,7 +68,7 @@ namespace Deltares::Statistics
         }
         else
         {
-            throw Deltares::Reliability::probLibException("Constant type not supported");
+            throw Deltares::Reliability::ProbabilisticLibraryException("Constant type not supported");
         }
     }
 

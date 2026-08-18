@@ -31,7 +31,9 @@ namespace Deltares::Reliability
 {
     using namespace Deltares::Numeric;
 
-    std::shared_ptr<DesignPoint> FragilityCurveIntegration::getDesignPoint(std::shared_ptr<Statistics::Stochast> parameter, std::shared_ptr<Statistics::Stochast> fragilityCurve, std::shared_ptr<Statistics::Stochast> fragilityCurveNormalized)
+    std::shared_ptr<DesignPoint> FragilityCurveIntegration::getDesignPoint(std::shared_ptr<Statistics::Stochast> parameter,
+        const std::shared_ptr<Statistics::Stochast>& fragilityCurve,
+        const std::shared_ptr<Statistics::Stochast>& fragilityCurveNormalized) const
     {
         double probFailure = 0;
         double probFailureExcluded = 0;
@@ -49,11 +51,11 @@ namespace Deltares::Reliability
 
         // Perform numerical integration over the fragility curve stochast
 
-        std::vector<std::shared_ptr<UStep>> steps = getSteps(parameter, Settings->StepSize);
+        std::vector<std::shared_ptr<UStep>> steps = getSteps(*parameter, Settings->StepSize);
 
         int count = 0;
 
-        for (std::shared_ptr<UStep> step : steps)
+        for (const std::shared_ptr<UStep>& step : steps)
         {
             // Do one step in the numerical integration
 
@@ -75,11 +77,11 @@ namespace Deltares::Reliability
             }
 
             // Multiply this probability with the probability of the fragility curve stochast value
-            double addition = step->Weight * prob;
+            const double addition = step->Weight * prob;
 
-            std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> { step->U, uFrag });
+            auto sample = std::make_shared<Models::Sample>(std::vector<double> { step->U, uFrag });
 
-            double beta = std::sqrt(step->U * step->U + uFrag * uFrag);
+            const double beta = std::hypot(step->U, uFrag);
             sample->Weight = Statistics::StandardNormal::getQFromU(beta);
 
             designPointBuilder.addSample(sample);
@@ -94,14 +96,14 @@ namespace Deltares::Reliability
             probFailure /= probFailureExcluded;
         }
 
-        std::shared_ptr<DesignPoint> designPoint = std::make_shared<DesignPoint>();
+        auto designPoint = std::make_shared<DesignPoint>();
         designPoint->Beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
         std::shared_ptr<Models::Sample> designPointSample = designPointBuilder.getSample();
 
         // Set the contribution of the conditional stochast
         double alphaParameter = -designPointSample->Values[0] / designPoint->Beta; // u = - beta * alpha
-        std::shared_ptr<Models::StochastPointAlpha> alpha = std::make_shared<Models::StochastPointAlpha>();
+        auto alpha = std::make_shared<Models::StochastPointAlpha>();
         alpha->Stochast = parameter;
         alpha->Alpha = alphaParameter;
         alpha->AlphaCorrelated = alphaParameter;
@@ -110,11 +112,11 @@ namespace Deltares::Reliability
         designPoint->Alphas.push_back(alpha);
 
         // Set the contribution of the fragility curve(s)
-        for (std::shared_ptr<Statistics::Stochast> fCurve : { fragilityCurve, fragilityCurveNormalized })
+        for (const std::shared_ptr<Statistics::Stochast>& fCurve : { fragilityCurve, fragilityCurveNormalized })
         {
             if (fCurve != nullptr)
             {
-                std::shared_ptr<Models::StochastPointAlpha> alphaCurve = std::make_shared<Models::StochastPointAlpha>();
+                auto alphaCurve = std::make_shared<Models::StochastPointAlpha>();
                 alphaCurve->Stochast = fCurve;
                 alphaCurve->U = designPointSample->Values[1];
 
@@ -225,28 +227,28 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    std::vector<std::shared_ptr<FragilityCurveIntegration::UStep>> FragilityCurveIntegration::getSteps(std::shared_ptr<Statistics::Stochast> stochast, double stepSize)
+    std::vector<std::shared_ptr<FragilityCurveIntegration::UStep>> FragilityCurveIntegration::getSteps(Statistics::Stochast& stochast, double stepSize)
     {
         std::vector<std::shared_ptr<UStep>> steps;
 
-        if (stochast->getDistributionType() == Statistics::DistributionType::Deterministic)
+        if (stochast.getDistributionType() == Statistics::DistributionType::Deterministic)
         {
             steps.push_back(std::make_shared<UStep>(0, 1));
         }
-        else if (stochast->getDistributionType() == Statistics::DistributionType::Discrete || stochast->getDistributionType() == Statistics::DistributionType::Qualitative)
+        else if (stochast.getDistributionType() == Statistics::DistributionType::Discrete || stochast.getDistributionType() == Statistics::DistributionType::Qualitative)
         {
-            stochast->initializeForRun();
-            for (std::shared_ptr<Statistics::DiscreteValue> discreteValue : stochast->getProperties()->DiscreteValues)
+            stochast.initializeForRun();
+            for (const std::shared_ptr<Statistics::DiscreteValue>& discreteValue : stochast.getProperties()->DiscreteValues)
             {
-                steps.push_back(std::make_shared<UStep>(stochast->getUFromX(discreteValue->X), discreteValue->NormalizedAmount));
+                steps.push_back(std::make_shared<UStep>(stochast.getUFromX(discreteValue->X), discreteValue->NormalizedAmount));
             }
         }
-        else if (stochast->getDistributionType() == Statistics::DistributionType::Table)
+        else if (stochast.getDistributionType() == Statistics::DistributionType::Table)
         {
-            stochast->initializeForRun();
-            for (std::shared_ptr<Statistics::HistogramValue> histogramValue : stochast->getProperties()->HistogramValues)
+            stochast.initializeForRun();
+            for (const std::shared_ptr<Statistics::HistogramValue>& histogramValue : stochast.getProperties()->HistogramValues)
             {
-                steps.push_back(std::make_shared<UStep>(stochast->getUFromX(histogramValue->getCenter()), histogramValue->NormalizedAmount));
+                steps.push_back(std::make_shared<UStep>(stochast.getUFromX(histogramValue->getCenter()), histogramValue->NormalizedAmount));
             }
         }
         else

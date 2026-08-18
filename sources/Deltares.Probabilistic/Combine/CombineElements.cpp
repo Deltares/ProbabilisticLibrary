@@ -24,9 +24,9 @@
 #include <vector>
 #include "CombineElements.h"
 #include "HohenbichlerFORM.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 #include "../Statistics/StandardNormal.h"
-#include "../Math/basic_math.h"
+#include "../Math/BasicMath.h"
 
 using namespace Deltares::Statistics;
 
@@ -39,7 +39,7 @@ namespace Deltares::Reliability
     // \param rhoP      : Auto correlation of the stochastic variables between element 1 and element 2
     // \param combAndOr : Combination type, And / Or
     cmbResult combineElements::combineTwoElementsPartialCorrelation(const alphaBeta& element1,
-        const alphaBeta& element2, const Numeric::vector1D& rhoP, const combineAndOr combAndOr)
+        const alphaBeta& element2, const Numeric::Vector1D& rhoP, const combineAndOr combAndOr)
     {
         int failureHohenbichler = 0;
         //
@@ -51,9 +51,9 @@ namespace Deltares::Reliability
         // Allocate temp vectors
         //
         alphaBeta element3; // returned value
-        element3.setAlpha(Numeric::vector1D(nStochasts));
-        auto alphaX1 = Numeric::vector1D(nStochasts);
-        auto alphaX2 = Numeric::vector1D(nStochasts);
+        element3.setAlpha(Numeric::Vector1D(nStochasts));
+        auto alphaX1 = Numeric::Vector1D(nStochasts);
+        auto alphaX2 = Numeric::Vector1D(nStochasts);
         //
         //   Determine the correlation of the system
         //
@@ -209,11 +209,11 @@ namespace Deltares::Reliability
     {
         if (nStochasts != sizeAlpha2)
         {
-            throw probLibException("Array size alpha2 differs from alpha1");
+            throw ProbabilisticLibraryException("Array size alpha2 differs from alpha1");
         }
         if (nStochasts != sizeRhoP)
         {
-            throw probLibException("Array size rhoP differs from alpha1");
+            throw ProbabilisticLibraryException("Array size rhoP differs from alpha1");
         }
     }
 
@@ -245,7 +245,7 @@ namespace Deltares::Reliability
     // \param rho(:)            : Correlation data
     // \param combAndOrIn       : Combination type, And / Or
     cmbResult combineElements::combineMultipleElements(const elements& Elements,
-        const Numeric::vector1D& rho, const combineAndOr combAndOr)
+        const Numeric::Vector1D& rho, const combineAndOr combAndOr)
     {
         //
         // Get the vector dimensions
@@ -265,7 +265,7 @@ namespace Deltares::Reliability
             size_t nrElementsComp = nrElements;
             auto local = Elements;
             cmbResult ab;
-            ab.ab.setAlpha(Numeric::vector1D(nrStochasts));
+            ab.ab.setAlpha(Numeric::Vector1D(nrStochasts));
 
             //
             // Continuously combine the two elements with the largest correlation
@@ -318,7 +318,7 @@ namespace Deltares::Reliability
     // \param nElements         : Number of elements to be combined (for instance tidal periods)
     // \param alpha(:,:)        : Alpha vector per element
     // \returns i1max, i2max    : Indices of combination of elements with the largest correlation
-    indexPair combineElements::calculateCombinationWithLargestCorrelation(const Numeric::vector1D& rhoP,
+    indexPair combineElements::calculateCombinationWithLargestCorrelation(const Numeric::Vector1D& rhoP,
         const std::vector<alphaBeta>& ab)
     {
         //
@@ -327,7 +327,7 @@ namespace Deltares::Reliability
         const size_t nElements = ab.size();
         if (nElements < 2)
         {
-            throw probLibException("The method calculateCombinationWithLargestCorrelation is called with only one element");
+            throw ProbabilisticLibraryException("The method calculateCombinationWithLargestCorrelation is called with only one element");
         }
         //
         // Initialize rhoMax and the indices for the maximum element
@@ -375,7 +375,7 @@ namespace Deltares::Reliability
         // Allocate vectors and matrices
         // Get the correlation coefficients of all the strength variables
         //
-        auto rhoP = Numeric::vector1D(nrStochasts);
+        auto rhoP = Numeric::Vector1D(nrStochasts);
         rhoP.assign(1.0);
 
         return combineMultipleElements(Elements, rhoP, combAndOr);
@@ -396,7 +396,7 @@ namespace Deltares::Reliability
         //
         // Allocate vectors and matrices
         //
-        auto rhoP = Numeric::vector1D(nrStochasts);
+        auto rhoP = Numeric::Vector1D(nrStochasts);
 
         //
         // Adjust the beta values of the input with the probability

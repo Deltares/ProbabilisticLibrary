@@ -26,7 +26,7 @@
 #include "GradientSettings.h"
 #include "Sample.h"
 #include "ModelRunner.h"
-#include "../Utils/probLibException.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 using namespace Deltares::Reliability;
 
@@ -89,7 +89,7 @@ namespace Deltares::Models
         }
         else
         {
-            throw probLibException("gradient type");
+            throw ProbabilisticLibraryException("gradient type");
         }
 
         return gradient;

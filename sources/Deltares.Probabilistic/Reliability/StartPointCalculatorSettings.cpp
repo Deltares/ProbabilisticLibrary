@@ -35,7 +35,7 @@ namespace Deltares::Reliability
         case RaySearch: return "ray_search";
         case SphereSearch: return "sphere_search";
         case SensitivitySearch: return "sensitivity_search";
-        default: throw probLibException("Start point method");
+        default: throw ProbabilisticLibraryException("Start point method");
         }
     }
 
@@ -45,7 +45,7 @@ namespace Deltares::Reliability
         else if (method == "ray_search") return RaySearch;
         else if (method == "sphere_search") return SphereSearch;
         else if (method == "sensitivity_search") return SensitivitySearch;
-        else throw probLibException("Start point method");
+        else throw ProbabilisticLibraryException("Start point method");
     }
 
     std::shared_ptr<StartPointCalculatorSettings> StartPointCalculatorSettings::clone() const
