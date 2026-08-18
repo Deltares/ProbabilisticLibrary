@@ -41,7 +41,7 @@ namespace Deltares::Reliability
 
         double qRange = 1.0;
 
-        std::shared_ptr<Sample> remainderSample = sampleProvider->getSample();
+        Sample remainderSample = sampleProvider->getSample();
 
         for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
         {
@@ -56,11 +56,11 @@ namespace Deltares::Reliability
 
                 if (probLow > probHigh)
                 {
-                    remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
+                    remainderSample.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
                 }
                 else
                 {
-                    remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
+                    remainderSample.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace Deltares::Reliability
         return getReducedDesignPoint(modelRunner, qRange);
     };
 
-    std::vector<std::shared_ptr<Sample>> LatinHyperCube::CreateAllSamples(int nStochasts)
+    std::vector<Sample> LatinHyperCube::CreateAllSamples(int nStochasts)
     {
         struct IndexedItem
         {
@@ -129,7 +129,7 @@ namespace Deltares::Reliability
             pMaxValues.push_back(StandardNormal::getQFromU(uMax));
         }
 
-        std::vector<std::shared_ptr<Sample>> samples;
+        std::vector<Sample> samples;
         for (int n = 0; n < Settings->MinimumSamples; n++)
         {
             std::vector<int> uIndices;
@@ -153,8 +153,8 @@ namespace Deltares::Reliability
                 weight += pLow - pHigh;
             }
 
-            auto sample = std::make_shared<Sample>(uValues);
-            sample->Weight = weight / nStochasts;
+            auto sample = Sample(uValues);
+            sample.Weight = weight / nStochasts;
             samples.push_back(sample);
         }
         return samples;
@@ -168,7 +168,7 @@ namespace Deltares::Reliability
 
         auto uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
-        std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nStochasts);
+        Sample uMin = Sample(nStochasts);
 
         // initialise convergence indicator and loops
         bool initial = true;
@@ -182,7 +182,7 @@ namespace Deltares::Reliability
 
         auto samples = CreateAllSamples(nStochasts);
 
-        std::vector<std::shared_ptr<Sample>> calcSamples;
+        std::vector<Sample> calcSamples;
         double probFailure = 0.0;
         const int chunkSize = Settings->RunSettings->MaxChunkSize;
 
@@ -198,7 +198,7 @@ namespace Deltares::Reliability
 
                 if (initial)
                 {
-                    calcSamples.push_back(std::make_shared<Sample>(nStochasts));
+                    calcSamples.push_back(Sample(nStochasts));
                     runs = std::max(1, runs - 1);
                 }
 
@@ -213,7 +213,7 @@ namespace Deltares::Reliability
                 {
                     // determine multiplication factor for z (z<0), if u = 0
                     z0Fac = getZFactor(zValues[0]);
-                    uMin = std::make_shared<Models::Sample>(uMin->getSampleAtBeta(z0Fac * StandardNormal::BetaMax));
+                    uMin = Sample(uMin.getSampleAtBeta(z0Fac * StandardNormal::BetaMax));
                     uMean.initialize(z0Fac * StandardNormal::BetaMax);
                     initial = false;
                     zIndex = 1;
@@ -226,7 +226,7 @@ namespace Deltares::Reliability
 
 
             double z = zValues[zIndex];
-            std::shared_ptr<Sample> u = calcSamples[zIndex];
+            Sample u = calcSamples[zIndex];
 
             // ignore a failed evaluation
             if (std::isnan(z))
@@ -251,7 +251,7 @@ namespace Deltares::Reliability
 
             if (z < 0.0)
             {
-                probFailure += qRange * u->Weight;
+                probFailure += qRange * u.Weight;
             }
 
             // check if convergence is reached (or stop criterion)

@@ -45,20 +45,20 @@ namespace Deltares::Reliability
         bool addProbability = false;
         double minimumBeta = std::numeric_limits<double>::infinity();
         double sumWeights = 0;
-        std::shared_ptr<Models::Sample> defaultSample = nullptr;
-        std::shared_ptr<Models::Sample> meanSample = nullptr;
-        std::shared_ptr<Models::Sample> sinSample = nullptr;
-        std::shared_ptr<Models::Sample> cosSample = nullptr;
+        Models::Sample defaultSample = Models::Sample();
+        Models::Sample meanSample = Models::Sample();
+        Models::Sample sinSample = Models::Sample();
+        Models::Sample cosSample = Models::Sample();
         bool sampleAdded = false;
         bool weightedSampleAdded = false;
-        std::vector<std::shared_ptr<Models::Sample>> nearestSamples;
+        std::vector<Models::Sample> nearestSamples;
 
         std::vector<int> qualitativeIndices;
         int qualitativeCount = 0;
         std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
-        void handleSample(const std::shared_ptr<Models::Sample>& sample, double weight);
-        static Models::Sample getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability);
+        void handleSample(Models::Sample& sample, double weight);
+        static Models::Sample getSampleWithProbability(Models::Sample& sample, double probability);
         void initializeTotals();
 
     public:
@@ -66,10 +66,10 @@ namespace Deltares::Reliability
         explicit DesignPointBuilder(int count, DesignPointMethod method, const std::shared_ptr<StochastSettingsSet>& stochastSet = nullptr, bool addProbability = false);
         explicit DesignPointBuilder(DesignPointMethod method, const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts);
 
-        void initialize(double beta) const;
-        void addSample(const std::shared_ptr<Models::Sample>& sample, double probability = 1.0);
-        void removeSample(const std::shared_ptr<Models::Sample>& sample);
-        std::shared_ptr<Models::Sample> getSample();
+        void initialize(double beta);
+        void addSample(Models::Sample& sample, double probability = 1.0);
+        void removeSample(Models::Sample& sample);
+        Models::Sample getSample() const;
 
         static std::string getDesignPointMethodString(DesignPointMethod method);
         static DesignPointMethod getDesignPointMethod(const std::string& method);

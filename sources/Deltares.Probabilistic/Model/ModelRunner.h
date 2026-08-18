@@ -78,13 +78,13 @@ namespace Deltares::Models
         void useProxy(bool useProxy);
         void updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings);
         void setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider);
-        double getZValue(const std::shared_ptr<Sample>& sample);
-        std::vector<double> getZValues(const std::vector<std::shared_ptr<Sample>>& samples);
-        double getBeta(const std::shared_ptr<Sample>& sample) const;
+        double getZValue(Sample& sample);
+        std::vector<double> getZValues(std::vector<Sample>& samples);
+        double getBeta(Sample& sample) const;
         bool canCalculateBeta() const;
         int getStochastCount() const;
         int getVaryingStochastCount() const;
-        bool shouldExitPrematurely(const std::vector<std::shared_ptr<Sample>>& samples) const;
+        bool shouldExitPrematurely(const std::vector<Sample>& samples) const;
         void removeTask(int iterationIndex) const;
 
         void reportResult(const std::shared_ptr<Reliability::ReliabilityReport>& report);
@@ -93,10 +93,10 @@ namespace Deltares::Models
 
         void doTextualProgress(ProgressType type, const std::string& text) const;
         bool isVaryingStochast(int index) const;
-        std::shared_ptr<Reliability::DesignPoint> getDesignPoint(const std::shared_ptr<Sample>& sample, double beta, const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport = nullptr, const std::string& identifier = "") const;
+        std::shared_ptr<Reliability::DesignPoint> getDesignPoint(Sample& sample, double beta, const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport = nullptr, const std::string& identifier = "");
         Uncertainty::UncertaintyResult getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast) const;
         Sensitivity::SensitivityResult getSensitivityResult() const;
-        std::shared_ptr<Models::ModelSample> getModelSample(const std::shared_ptr<Sample>& sample) const;
+        std::shared_ptr<Models::ModelSample> getModelSample(Sample sample) const;
         std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type) const;
         std::vector<double> getOnlyVaryingValues(const std::vector<double>& values) const;
 
@@ -105,14 +105,14 @@ namespace Deltares::Models
         void setShouldInvertFunction(ShouldInvertLambda shouldInvertFunction) { this->shouldInvertFunction = shouldInvertFunction; }
         void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
         void runDesignPoint(const std::shared_ptr<Reliability::DesignPoint>& designPoint);
-        std::shared_ptr<Sample> getSampleFromStochastPoint(const std::shared_ptr<Models::StochastPoint>& stochastPoint) const;
-        void registerSample(const std::shared_ptr<Uncertainty::CorrelationMatrixBuilder>& correlationMatrixBuilder, const std::shared_ptr<Sample>& sample) const;
+        Sample getSampleFromStochastPoint(const std::shared_ptr<Models::StochastPoint>& stochastPoint) const;
+        void registerSample(const std::shared_ptr<Uncertainty::CorrelationMatrixBuilder>& correlationMatrixBuilder, Sample& sample) const;
         void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues) const;
         Evaluation getEvaluationFromType(Statistics::RunValuesType type) const;
 
         bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
         void setAllowRepository(bool proxyModel) const;
-        Evaluation getEvaluation(const std::shared_ptr<Sample>& sample) const;
+        Evaluation getEvaluation(Sample& sample) const;
     private:
         std::shared_ptr<ZModel> zModel;
         std::shared_ptr<UConverter> uConverter;

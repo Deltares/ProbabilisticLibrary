@@ -78,7 +78,7 @@ namespace Deltares::Reliability
         std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
 
         bool Clustering = false;
-        std::vector<std::shared_ptr<Models::Sample>> Clusters;
+        std::vector<Models::Sample> Clusters;
 
         void validateStochastSettings(Logging::ValidationReport& report) const
         {

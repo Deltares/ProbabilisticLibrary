@@ -46,12 +46,12 @@ namespace Deltares::Reliability
 
         auto searchArea = SearchArea();
         searchArea.Dimensions = std::vector<SearchDimension>(nStochasts);
-        std::shared_ptr<Sample> startPoint = Settings->StochastSet->getStartPoint();
+        Sample startPoint = Settings->StochastSet->getStartPoint();
         for( int i = 0; i < nStochasts; i++)
         {
             searchArea.Dimensions[i].LowerBound = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
             searchArea.Dimensions[i].UpperBound = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
-            searchArea.Dimensions[i].StartValue = startPoint->Values[i];
+            searchArea.Dimensions[i].StartValue = startPoint.Values[i];
         }
 
         auto result = optimizer.GetCalibrationPoint(searchArea, optModel);
@@ -70,7 +70,7 @@ namespace Deltares::Reliability
         return designPoint;
     };
 
-    double wrappedOptimizationModel::GetConstraintValue(const std::shared_ptr<Sample> sample)
+    double wrappedOptimizationModel::GetConstraintValue(Sample& sample)
     {
         auto z = modelRunner->getZValue(sample);
 
@@ -81,10 +81,10 @@ namespace Deltares::Reliability
         return std::abs(z);
     }
 
-    double wrappedOptimizationModel::GetZValue(std::shared_ptr<Sample> sample) const
+    double wrappedOptimizationModel::GetZValue(Sample& sample) const
     {
         double beta = 0.0;
-        for (const auto & val : sample->Values)
+        for (const auto & val : sample.Values)
         {
             beta += pow(val, 2);
         }

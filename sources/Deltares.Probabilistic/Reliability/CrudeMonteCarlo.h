@@ -42,7 +42,7 @@ namespace Deltares::Reliability
                                                            std::shared_ptr<Models::SampleProvider>& sampleProvider, double zRemainder, double qRange);
         bool checkConvergence(const std::shared_ptr<Models::ModelRunner>& modelRunner, const Numeric::StatisticsCalculator& statistics, int nmaal) const;
         static double getConvergence(const Numeric::StatisticsCalculator& statistics);
-        void applyLimits(const std::shared_ptr<Models::Sample>& sample) const;
+        void applyLimits(Models::Sample& sample) const;
     };
 }
 

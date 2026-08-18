@@ -88,11 +88,11 @@ namespace Deltares::Reliability
                 if (!points->isKnown()) unknownPoints.push_back(points);
             }
 
-            std::vector<std::shared_ptr<Sample>> upar;
+            std::vector<Sample> upar;
             for (auto& points : unknownPoints)
             {
-                auto sample = std::make_shared<Sample>(points->Coordinates);
-                sample->IterationIndex = step-1;
+                auto sample = Sample(points->Coordinates);
+                sample.IterationIndex = step-1;
                 upar.push_back(sample);
             }
 
@@ -258,7 +258,7 @@ namespace Deltares::Reliability
         return (diff < Settings->EpsilonBeta && step >= Settings->MinimumIterations) || step >= Settings->MaximumIterations;
     }
 
-    std::shared_ptr<Sample> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const
+    Sample NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const
     {
         auto method = Settings->designPointMethod;
         auto designPoint = DesignPointBuilder(static_cast<int>(domain.getDimension()), method);
@@ -268,8 +268,8 @@ namespace Deltares::Reliability
         {
             if (point->getResult() == compResult || point->getResult() == DoubleType::Zero)
             {
-                auto sample = std::make_shared<Sample>(point->Coordinates);
-                sample->Weight = point->ProbabilityDensity();
+                auto sample = Sample(point->Coordinates);
+                sample.Weight = point->ProbabilityDensity();
                 designPoint.addSample(sample);
             }
         }

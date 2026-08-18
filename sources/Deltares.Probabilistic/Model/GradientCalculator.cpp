@@ -34,11 +34,11 @@ namespace Deltares::Models
 {
     using enum GradientType;
 
-    std::vector<double> GradientCalculator::getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Sample>& sample) const
+    std::vector<double> GradientCalculator::getGradient(Models::ModelRunner& modelRunner, Sample& sample) const
     {
         int nStochasts = modelRunner.getVaryingStochastCount();
 
-        std::vector<std::shared_ptr<Sample>> samples;
+        std::vector<Sample> samples;
         std::vector<double> gradient(nStochasts);
 
         // first sample is the sample itself
@@ -49,8 +49,8 @@ namespace Deltares::Models
             double du = Settings->StepSize * 0.5;
             for (int k = 0; k < nStochasts; k++)
             {
-                std::shared_ptr<Sample> uNew = std::make_shared<Sample>(sample->clone());
-                uNew->Values[k] += du;
+                Sample uNew = sample.clone();
+                uNew.Values[k] += du;
 
                 samples.push_back(uNew);
             }
@@ -68,12 +68,12 @@ namespace Deltares::Models
         {
             for (int k = 0; k < nStochasts; k++)
             {
-                std::shared_ptr<Sample> u1 = std::make_shared<Sample>(sample->clone());
-                u1->Values[k] -= Settings->StepSize * 0.5;
+                Sample u1 = sample.clone();
+                u1.Values[k] -= Settings->StepSize * 0.5;
                 samples.push_back(u1);
 
-                std::shared_ptr<Sample> u2 = std::make_shared<Sample>(sample->clone());
-                u2->Values[k] += Settings->StepSize * 0.5;
+                Sample u2 = sample.clone();
+                u2.Values[k] += Settings->StepSize * 0.5;
                 samples.push_back(u2);
             }
 

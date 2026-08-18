@@ -38,6 +38,18 @@ namespace Deltares::Models
         bool extended = false;
 
     public:
+        Sample() = default;
+
+        Sample(size_t size, bool extended = false)
+        {
+            this->size = static_cast<int>(size);
+            this->extended = extended;
+            for (size_t i = 0; i < size; i++)
+            {
+                Values.push_back(0.0);
+            }
+        }
+
         Sample(int size, bool extended = false)
         {
             this->size = size;
@@ -90,8 +102,8 @@ namespace Deltares::Models
         int getSize() const;
 
         double getBeta() const;
-        double getDistance(const std::shared_ptr<Sample>& other) const;
-        double getDistance2(const std::shared_ptr<Sample>& other) const;
+        double getDistance(Sample& other) const;
+        double getDistance2(Sample& other) const;
         void setInitialValues(double beta);
         Sample clone() const;
         Sample getNormalizedSample() const { return getSampleAtBeta(1.0); }
@@ -112,7 +124,7 @@ namespace Deltares::Models
         Sample getReducedSample() const;
 
         void correctSmallValues(double tolerance = 1E-10);
-        bool areValuesEqual(std::shared_ptr<Sample> other);
+        bool areValuesEqual(Sample& other);
 
         /**
          * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
@@ -120,7 +132,7 @@ namespace Deltares::Models
          * \param function Operation on a sample
          * \return Resulting numeric values
          */
-        static std::vector<double> select(std::vector<std::shared_ptr<Sample>>& samples, std::function<double(std::shared_ptr<Sample>)> function)
+        static std::vector<double> select(std::vector<Sample>& samples, std::function<double(Sample)> function)
         {
             std::vector<double> result(samples.size());
 

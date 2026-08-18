@@ -122,10 +122,10 @@ namespace Deltares::Reliability
 
     void DesignPointBuilder::initializeTotals()
     {
-        defaultSample = std::make_shared<Models::Sample>(count, addProbability);
-        meanSample = std::make_shared<Models::Sample>(count, addProbability);
-        sinSample = std::make_shared<Models::Sample>(count, addProbability);
-        cosSample = std::make_shared<Models::Sample>(count, addProbability);
+        defaultSample = Models::Sample(count, addProbability);
+        meanSample = Models::Sample(count, addProbability);
+        sinSample = Models::Sample(count, addProbability);
+        cosSample = Models::Sample(count, addProbability);
 
         for (const auto& modeFinder : modeFinders)
         {
@@ -135,27 +135,27 @@ namespace Deltares::Reliability
         sumWeights = 0;
     }
 
-    void DesignPointBuilder::initialize(double beta) const
+    void DesignPointBuilder::initialize(double beta) 
     {
         double value = Numeric::NumericSupport::GetSign(beta) * sqrt(std::abs(beta) / count);
 
         for (int i = 0; i < count; i++)
         {
-            defaultSample->Values[i] = value;
+            defaultSample.Values[i] += value;
         }
     }
 
-    void DesignPointBuilder::addSample(const std::shared_ptr<Models::Sample>& modelSample, double probability)
+    void DesignPointBuilder::addSample(Models::Sample& modelSample, double probability)
     {
         sampleAdded = true;
 
-        std::shared_ptr<Models::Sample> sample = modelSample;
+        Models::Sample sample = modelSample;
         if (addProbability)
         {
-            sample = std::make_shared<Models::Sample>(getSampleWithProbability(modelSample, probability));
+            sample = Models::Sample(getSampleWithProbability(modelSample, probability));
         }
 
-        double weight = std::isnan(sample->Weight) ? 1.0 : sample->Weight;
+        double weight = std::isnan(sample.Weight) ? 1.0 : sample.Weight;
 
         if (!weightedSampleAdded && method != DesignPointMethod::NearestToMean)
         {
@@ -176,14 +176,14 @@ namespace Deltares::Reliability
         handleSample(sample, weight);
     }
 
-    void DesignPointBuilder::removeSample(const std::shared_ptr<Models::Sample>& sample)
+    void DesignPointBuilder::removeSample(Models::Sample& sample)
     {
-        double weight = std::isnan(sample->Weight) ? -1 : -sample->Weight;
+        double weight = std::isnan(sample.Weight) ? -1 : -sample.Weight;
 
         handleSample(sample, weight);
     }
 
-    void DesignPointBuilder::handleSample(const std::shared_ptr<Models::Sample>& sample, double weight)
+    void DesignPointBuilder::handleSample(Models::Sample& sample, double weight)
     {
         constexpr double delta = 1E-10;
 
@@ -195,7 +195,7 @@ namespace Deltares::Reliability
             {
                 if (sampleAdded)
                 {
-                    bool updateMinimumSample = nearestSamples.back() == sample;
+                    bool updateMinimumSample = nearestSamples.back().areValuesEqual(sample);
 
                     std::erase(nearestSamples, sample);
                     sampleAdded = !nearestSamples.empty();
@@ -204,20 +204,20 @@ namespace Deltares::Reliability
                     {
                         if (sampleAdded)
                         {
-                            minimumBeta = nearestSamples.back()->getBeta();
-                            meanSample = std::make_shared<Models::Sample>(nearestSamples.back()->clone());
+                            minimumBeta = nearestSamples.back().getBeta();
+                            meanSample = nearestSamples.back().clone();
                         }
                         else
                         {
                             minimumBeta = std::numeric_limits<double>::infinity();
-                            meanSample = nullptr;
+                            meanSample = Models::Sample();
                         }
                     }
                 }
             }
             else
             {
-                double beta = sample->getBeta();
+                double beta = sample.getBeta();
 
                 if (beta < minimumBeta)
                 {
@@ -232,7 +232,7 @@ namespace Deltares::Reliability
 
                     nearestSamples.push_back(sample);
 
-                    meanSample = std::make_shared<Models::Sample>(sample->clone());
+                    meanSample = sample.clone();
                 }
             }
             break;
@@ -242,12 +242,12 @@ namespace Deltares::Reliability
             for (int j = 0; j < this->qualitativeCount; j++)
             {
                 int qIndex = qualitativeIndices[j];
-                modeFinders[j]->add(sample->Values[qIndex], weight);
+                modeFinders[j]->add(sample.Values[qIndex], weight);
             }
 
-            for (int i = 0; i < sample->getSize(); i++)
+            for (int i = 0; i < sample.getSize(); i++)
             {
-                meanSample->Values[i] += weight * sample->Values[i];
+                meanSample.Values[i] += weight * sample.Values[i];
             }
 
             sumWeights += weight;
@@ -258,15 +258,15 @@ namespace Deltares::Reliability
             for (int j = 0; j < this->qualitativeCount; j++)
             {
                 int qIndex = qualitativeIndices[j];
-                modeFinders[j]->add(sample->Values[qIndex], weight);
+                modeFinders[j]->add(sample.Values[qIndex], weight);
             }
 
-            auto sphericalValues = Numeric::NumericSupport::GetSphericalCoordinates(sample->Values);
-            meanSample->Values[0] += weight * sphericalValues[0];
+            auto sphericalValues = Numeric::NumericSupport::GetSphericalCoordinates(sample.Values);
+            meanSample.Values[0] += weight * sphericalValues[0];
             for (int i = 1; i < count; i++)
             {
-                sinSample->Values[i] += weight * std::sin(sphericalValues[i]);
-                cosSample->Values[i] += weight * std::cos(sphericalValues[i]);
+                sinSample.Values[i] += weight * std::sin(sphericalValues[i]);
+                cosSample.Values[i] += weight * std::cos(sphericalValues[i]);
             }
             sumWeights += weight;
             break;
@@ -276,11 +276,11 @@ namespace Deltares::Reliability
         }
     }
 
-    std::shared_ptr<Models::Sample> DesignPointBuilder::getSample()
+    Models::Sample DesignPointBuilder::getSample() const
     {
         if (!sampleAdded)
         {
-            return std::make_shared<Models::Sample>(defaultSample->clone());
+            return defaultSample.clone();
         }
         else
         {
@@ -288,21 +288,21 @@ namespace Deltares::Reliability
             {
             case DesignPointMethod::NearestToMean:
             {
-                return std::make_shared<Models::Sample>(meanSample->clone());
+                return meanSample.clone();
             }
             case DesignPointMethod::CenterOfGravity:
             {
-                std::shared_ptr<Models::Sample> gravityPoint = std::make_shared<Models::Sample>(count, addProbability);
+                Models::Sample gravityPoint = Models::Sample(count, addProbability);
 
                 for (int i = 0; i < count; i++)
                 {
-                    gravityPoint->Values[i] = meanSample->Values[i] / sumWeights;
+                    gravityPoint.Values[i] = meanSample.Values[i] / sumWeights;
                 }
 
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
                     int qIndex = qualitativeIndices[j];
-                    gravityPoint->Values[qIndex] = modeFinders[j]->getMode();
+                    gravityPoint.Values[qIndex] = modeFinders[j]->getMode();
                 }
 
                 return gravityPoint;
@@ -310,19 +310,19 @@ namespace Deltares::Reliability
             case DesignPointMethod::CenterOfAngles:
             {
                 auto angleValues = std::vector<double>(count);
-                angleValues[0] = meanSample->Values[0] / sumWeights;
+                angleValues[0] = meanSample.Values[0] / sumWeights;
                 for (int i = 1; i < count; i++)
                 {
-                    angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
+                    angleValues[i] = std::atan2(sinSample.Values[i] / sumWeights, cosSample.Values[i] / sumWeights);
                 }
 
                 auto coordinates = Numeric::NumericSupport::GetCartesianCoordinates(angleValues);
-                std::shared_ptr<Models::Sample> anglePoint = std::make_shared<Models::Sample>(coordinates, addProbability);
+                Models::Sample anglePoint = Models::Sample(coordinates, addProbability);
 
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
                     int qIndex = qualitativeIndices[j];
-                    anglePoint->Values[qIndex] = modeFinders[j]->getMode();
+                    anglePoint.Values[qIndex] = modeFinders[j]->getMode();
                 }
 
                 return anglePoint;
@@ -333,12 +333,12 @@ namespace Deltares::Reliability
         }
     }
 
-    Models::Sample DesignPointBuilder::getSampleWithProbability(const std::shared_ptr<Models::Sample>& sample, double probability)
+    Models::Sample DesignPointBuilder::getSampleWithProbability(Models::Sample& sample, double probability)
     {
         double pAveraged = (1 + (1 - probability)) / 2;
         double uAveraged = Statistics::StandardNormal::getUFromP(pAveraged);
 
-        auto uCopy = sample->getExtendedSample(uAveraged);
+        auto uCopy = sample.getExtendedSample(uAveraged);
 
         if (std::isnan(uCopy.Weight))
         {

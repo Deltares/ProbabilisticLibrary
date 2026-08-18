@@ -28,7 +28,7 @@
 
 namespace Deltares::Reliability
 {
-    std::shared_ptr<Models::Sample> StartPointCalculator::getStartPoint(Models::ModelRunner& modelRunner) const
+    Models::Sample StartPointCalculator::getStartPoint(Models::ModelRunner& modelRunner) const
     {
         switch (this->Settings->StartMethod)
         {
@@ -45,14 +45,14 @@ namespace Deltares::Reliability
         }
     }
 
-    std::shared_ptr<Models::Sample> StartPointCalculator::getNoneStartPoint() const
+    Models::Sample StartPointCalculator::getNoneStartPoint() const
     {
-        std::shared_ptr<Models::Sample> startPoint = Settings->StochastSet->getStartPoint();
+        Models::Sample startPoint = Settings->StochastSet->getStartPoint();
         if ( ! Settings->startVector.empty())
         {
-            for (int i = 0; i < startPoint->getSize(); i++)
+            for (int i = 0; i < startPoint.getSize(); i++)
             {
-                startPoint->Values[i] = Settings->startVector[i];
+                startPoint.Values[i] = Settings->startVector[i];
             }
         }
         return startPoint;
@@ -78,28 +78,28 @@ namespace Deltares::Reliability
         }
     }
 
-    std::shared_ptr<Models::Sample> StartPointCalculator::getRayStartPoint(Models::ModelRunner& modelRunner) const
+    Models::Sample StartPointCalculator::getRayStartPoint(Models::ModelRunner& modelRunner) const
     {
-        std::shared_ptr<Models::Sample> startPoint = this->Settings->StochastSet->getStartPoint();
+        Models::Sample startPoint = this->Settings->StochastSet->getStartPoint();
 
         if ( ! Settings->startVector.empty())
         {
-            for (int i = 0; i < startPoint->getSize(); i++)
+            for (int i = 0; i < startPoint.getSize(); i++)
             {
-                startPoint->Values[i] = this->Settings->startVector[i];
+                startPoint.Values[i] = this->Settings->startVector[i];
             }
         }
         else
         {
-            correctDefaultValues(*startPoint);
+            correctDefaultValues(startPoint);
         }
 
-        std::shared_ptr<Models::Sample> rayStartPoint = getDirectionStartPoint(modelRunner, *startPoint);
+        Models::Sample rayStartPoint = getDirectionStartPoint(modelRunner, startPoint);
 
         return rayStartPoint;
     }
 
-    std::shared_ptr<Models::Sample> StartPointCalculator::getDirectionStartPoint(Models::ModelRunner& modelRunner, Models::Sample& startPoint) const
+    Models::Sample StartPointCalculator::getDirectionStartPoint(Models::ModelRunner& modelRunner, Models::Sample& startPoint) const
     {
         int nStochasts = modelRunner.getVaryingStochastCount();
 
@@ -123,40 +123,40 @@ namespace Deltares::Reliability
 
         double beta = directionReliability.getBeta(modelRunner, startPoint, 1);
 
-        std::shared_ptr<Models::Sample> directionPoint = std::make_shared<Models::Sample>(startPoint.Values);
+        Models::Sample directionPoint = Models::Sample(startPoint.Values);
 
-        directionPoint = std::make_shared<Models::Sample>(directionPoint->getSampleAtBeta(std::min(beta, this->Settings->MaximumLengthStartPoint)));
+        directionPoint = Models::Sample(directionPoint.getSampleAtBeta(std::min(beta, this->Settings->MaximumLengthStartPoint)));
 
         for (int i = 0; i < nStochasts; i++)
         {
             if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
             {
-                directionPoint->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->StartValue;
+                directionPoint.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->StartValue;
             }
         }
 
         return directionPoint;
     }
 
-    std::shared_ptr<Models::Sample> StartPointCalculator::getSensitivityStartPoint(Models::ModelRunner& modelRunner) const
+    Models::Sample StartPointCalculator::getSensitivityStartPoint(Models::ModelRunner& modelRunner) const
     {
         int nStochasts = modelRunner.getVaryingStochastCount();
-        std::shared_ptr<Models::Sample> startPoint = std::make_shared<Models::Sample>(nStochasts);
+        Models::Sample startPoint = Models::Sample(nStochasts);
 
         std::vector<double> gradient = getGradient(modelRunner, startPoint);
 
         auto gradientSample = Models::Sample(gradient);
 
-        std::shared_ptr<Models::Sample> sensitivityStartPoint = getDirectionStartPoint(modelRunner, gradientSample);
+        Models::Sample sensitivityStartPoint = getDirectionStartPoint(modelRunner, gradientSample);
 
         return sensitivityStartPoint;
     }
 
-    std::vector<double> StartPointCalculator::getGradient(Models::ModelRunner& modelRunner, const std::shared_ptr<Models::Sample>& sample)
+    std::vector<double> StartPointCalculator::getGradient(Models::ModelRunner& modelRunner, Models::Sample& sample)
     {
         int nstochasts = modelRunner.getVaryingStochastCount();
 
-        std::vector<std::shared_ptr<Models::Sample>> samples;
+        std::vector<Models::Sample> samples;
         std::vector<double> gradient(nstochasts);
 
         double stepSize = 2;
@@ -166,12 +166,12 @@ namespace Deltares::Reliability
 
         for (int k = 0; k < nstochasts; k++)
         {
-            std::shared_ptr<Models::Sample> u1 = std::make_shared<Models::Sample>(sample->clone());
-            u1->Values[k] -= stepSize;
+            Models::Sample u1 = sample.clone();
+            u1.Values[k] -= stepSize;
             samples.push_back(u1);
 
-            std::shared_ptr<Models::Sample> u2 = std::make_shared<Models::Sample>(sample->clone());
-            u2->Values[k] += stepSize;
+            Models::Sample u2 = sample.clone();
+            u2.Values[k] += stepSize;
             samples.push_back(u2);
         }
 
@@ -202,23 +202,23 @@ namespace Deltares::Reliability
         return gradient;
     }
 
-    std::shared_ptr<Models::Sample> StartPointCalculator::getSphereStartPoint(Models::ModelRunner& modelRunner) const
+    Models::Sample StartPointCalculator::getSphereStartPoint(Models::ModelRunner& modelRunner) const
     {
         constexpr int nRadiusFactors = 20;
         auto maxSteps = Settings->maxStepsSphereSearch;
 
-        std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(modelRunner.getVaryingStochastCount());
+        Models::Sample zeroSample = Models::Sample(modelRunner.getVaryingStochastCount());
         double z0 = modelRunner.getZValue(zeroSample);
 
         double z0Fac = z0 < 0 ? -1 : 1;
 
-        std::shared_ptr<Models::Sample> startPoint = this->Settings->StochastSet->getStartPoint();
+        Models::Sample startPoint = this->Settings->StochastSet->getStartPoint();
 
-        correctDefaultValues(*startPoint);
+        correctDefaultValues(startPoint);
 
-        double radiusFactor = this->Settings->RadiusSphereSearch / startPoint->getBeta();
+        double radiusFactor = this->Settings->RadiusSphereSearch / startPoint.getBeta();
 
-        std::shared_ptr<Models::Sample> uSphere = std::make_shared<Models::Sample>(startPoint->getMultipliedSample(radiusFactor));
+        std::shared_ptr<Models::Sample> uSphere = std::make_shared<Models::Sample>(startPoint.getMultipliedSample(radiusFactor));
 
         if ( ! Settings->startVector.empty())
         {
@@ -236,23 +236,25 @@ namespace Deltares::Reliability
         }
         auto tasks = st.examineSurfaceForTasks(uSphereValues);
 
-        std::shared_ptr<Models::Sample> bestSample = nullptr;
-        std::vector<std::shared_ptr<Models::Sample>> previousSamples;
+        Models::Sample bestSample = Models::Sample(uSphere->Values.size());
+        bestSample.Z = std::numeric_limits<double>::infinity();
+
+        std::vector<Models::Sample> previousSamples;
 
         for (int i = 0; i < nRadiusFactors; i++)
         {
             radiusFactor = Numeric::NumericSupport::Divide(i + 1, nRadiusFactors);
 
-            std::vector<std::shared_ptr<Models::Sample>> samples;
+            std::vector<Models::Sample> samples;
             for (const auto& task : tasks)
             {
-                std::shared_ptr<Models::Sample> uRay = this->Settings->StochastSet->getStartPoint();
+                Models::Sample uRay = this->Settings->StochastSet->getStartPoint();
                 for (size_t k = 0; k < uSphere->Values.size(); k++)
                 {
-                    uRay->Values[k] = task(k);
+                    uRay.Values[k] = task(k);
                 }
-                std::shared_ptr<Models::Sample> u = std::make_shared<Models::Sample>(uRay->getMultipliedSample(radiusFactor));
-                u->IterationIndex = i;
+                Models::Sample u = Models::Sample(uRay.getMultipliedSample(radiusFactor));
+                u.IterationIndex = i;
                 samples.push_back(u);
             }
             auto zValues = modelRunner.getZValues(samples);
@@ -261,7 +263,7 @@ namespace Deltares::Reliability
             if (zValues[indexMinimal] < 0.0)
             {
                 auto previous = (i > 0 ? previousSamples[indexMinimal] : zeroSample);
-                bestSample = refineSpherePoint(*samples[indexMinimal], *previous);
+                bestSample = refineSpherePoint(samples[indexMinimal], previous);
                 break;
             }
 
@@ -269,32 +271,32 @@ namespace Deltares::Reliability
 
             for (auto& z : zValues) { z = std::fabs(z); }
             auto indexAbsMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
-            setBestSample(bestSample, samples[indexAbsMinimal]);
+            bestSample = getBestSample(bestSample, samples[indexAbsMinimal]);
         }
 
         return bestSample;
     }
 
     // Sets the best sample based on closest to Z == 0
-    void StartPointCalculator::setBestSample(std::shared_ptr<Models::Sample> & bestSample, const std::shared_ptr<Models::Sample> sample)
+    Models::Sample StartPointCalculator::getBestSample(Models::Sample& bestSample, Models::Sample& sample)
     {
-        if (bestSample == nullptr)
+        if (std::abs(bestSample.Z) > std::abs(sample.Z))
         {
-            bestSample = sample;
+            return sample;
         }
-        else if (std::abs(bestSample->Z) > std::abs(sample->Z))
+        else
         {
-            bestSample = sample;
+            return bestSample;
         }
     }
 
-    std::shared_ptr<Models::Sample> StartPointCalculator::refineSpherePoint(Models::Sample& u, Models::Sample& previous)
+    Models::Sample StartPointCalculator::refineSpherePoint(Models::Sample& u, Models::Sample& previous)
     {
         // determine the u-vector for which the z-function is 0.0, assuming linear behaviour between the samples u and previous.
 
         auto betaZeqZero = Numeric::NumericSupport::interpolate(0.0, previous.Z, previous.getBeta(), u.Z, u.getBeta());
 
-        std::shared_ptr<Models::Sample> u3 = std::make_shared<Models::Sample>(u.getSampleAtBeta(betaZeqZero));
+        Models::Sample u3 = Models::Sample(u.getSampleAtBeta(betaZeqZero));
         return u3;
     }
 }

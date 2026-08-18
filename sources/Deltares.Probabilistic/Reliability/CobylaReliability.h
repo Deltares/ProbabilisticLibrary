@@ -32,8 +32,8 @@ namespace Deltares::Reliability
     public:
         wrappedOptimizationModel(std::shared_ptr<Models::ModelRunner> model_runner, double z0fac) :
             modelRunner(model_runner), z0Fac(z0fac) {}
-        double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
-        double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) override;
+        double GetZValue(Models::Sample& sample) const override;
+        double GetConstraintValue(Models::Sample& sample) override;
         unsigned GetNumberOfConstraints() const override { return 1; }
         DesignPointBuilder uMean = DesignPointBuilder();
     private:

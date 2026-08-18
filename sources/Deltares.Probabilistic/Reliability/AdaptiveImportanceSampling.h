@@ -66,9 +66,9 @@ namespace Deltares::Reliability
         bool updateClusters(int loopCounter) const;
         bool updateStartPoint(const std::shared_ptr<DesignPoint>& designPoint,
             const std::shared_ptr<Models::ModelRunner>& modelRunner, int loopCounter);
-        std::shared_ptr<Models::Sample> getStartPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+        Models::Sample getStartPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner,
             const std::shared_ptr<DesignPoint>& designPoint);
-        std::vector<std::shared_ptr<Models::Sample>> getClusterCenters(const std::vector<std::shared_ptr<Models::Sample>>& samples) const;
+        std::vector<Models::Sample> getClusterCenters(const std::vector<Models::Sample>& samples) const;
 
         void setCallbacks(int loopCounter);
 
@@ -80,9 +80,14 @@ namespace Deltares::Reliability
         void reportVarianceLoop(Models::ModelRunner& modelRunner, const int loopCounter) const;
 
         /**
+         * \brief Indicates whether last start point has been set
+         */
+        bool hasLastStartPoint = false;
+
+        /**
          * \brief Previous start point 
          */
-        std::shared_ptr<Models::Sample> lastStartPoint = nullptr;
+        Models::Sample lastStartPoint;
 
         /**
          * \brief Internal importance sampling routine
@@ -92,7 +97,7 @@ namespace Deltares::Reliability
         /**
          * \brief Executed samples used for cluster determination
          */
-        std::vector<std::shared_ptr<Models::Sample>> clusterSamples;
+        std::vector<Models::Sample> clusterSamples;
     };
 }
 
