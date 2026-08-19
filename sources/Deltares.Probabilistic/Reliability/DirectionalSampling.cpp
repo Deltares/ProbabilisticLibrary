@@ -42,7 +42,7 @@ namespace Deltares::Reliability
         int parSamples = 0;
 
         std::vector<double> betaValues;
-        std::vector<std::shared_ptr<Models::Sample>> samples;
+        std::vector<Models::Sample> samples;
 
         modelRunner->updateStochastSettings(Settings->StochastSet);
 
@@ -53,7 +53,7 @@ namespace Deltares::Reliability
         randomSampleGenerator.Settings->StochastSet = Settings->StochastSet;
         randomSampleGenerator.initialize();
 
-        std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(nStochasts);
+        Models::Sample zeroSample = Models::Sample(nStochasts);
         double z0 = modelRunner->getZValue(zeroSample);
         double z0Fac = getZFactor(z0);
 
@@ -91,8 +91,8 @@ namespace Deltares::Reliability
                 if (modelRunner->shouldExitPrematurely(samples))
                 {
                     // return the result so far
-                    return modelRunner->getDesignPoint(designPointBuilder.getSample(),
-                        StandardNormal::getUFromQ(pf), convergenceReport);
+                    auto designPointSample = designPointBuilder.getSample();
+                    return modelRunner->getDesignPoint(designPointSample, StandardNormal::getUFromQ(pf), convergenceReport);
                 }
 
                 samples.clear();
@@ -103,7 +103,7 @@ namespace Deltares::Reliability
                 for (int i = 0; i < runs; i++)
                 {
                     auto sample = randomSampleGenerator.getRandomSample();
-                    sample->IterationIndex = directionIndex + i;
+                    sample.IterationIndex = directionIndex + i;
                     samples.push_back(sample);
                 }
 
@@ -117,25 +117,25 @@ namespace Deltares::Reliability
                 continue;
             }
 
-            std::shared_ptr<Models::Sample> u = samples[directionIndex % chunkSize];
+            Models::Sample u = samples[directionIndex % chunkSize];
 
             double betaDirection = std::abs(betaValues[directionIndex % chunkSize]);
 
             // get the sample at the limit state
-            auto uSurface = std::make_shared<Models::Sample>(u->getSampleAtBeta(betaDirection));
+            auto uSurface = u.getSampleAtBeta(betaDirection);
 
             // calculate failure probability
             if (betaDirection >= 0 && betaDirection < StandardNormal::BetaMax * nStochasts)
             {
-                uSurface->Weight = SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
+                uSurface.Weight = SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
 
-                qtot += uSurface->Weight;
+                qtot += uSurface.Weight;
 
                 designPointBuilder.addSample(uSurface);
             }
             else
             {
-                uSurface->Weight = 0;
+                uSurface.Weight = 0;
             }
 
             validSamples++;
@@ -149,8 +149,8 @@ namespace Deltares::Reliability
             bool enoughSamples = directionIndex >= Settings->MinimumDirections;
             convergenceReport->TotalDirections = directionIndex+1;
 
-            sumWeights += uSurface->Weight;
-            sumWeights2 += uSurface->Weight * uSurface->Weight;
+            sumWeights += uSurface.Weight;
+            sumWeights2 += uSurface.Weight * uSurface.Weight;
 
             if (qtot > 0)
             {
@@ -162,7 +162,7 @@ namespace Deltares::Reliability
 
                 std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
                 report->ReportMatchesEvaluation = false;
-                report->Contribution = uSurface->Weight;
+                report->Contribution = uSurface.Weight;
                 report->Reliability = beta;
                 report->Variation = convergence;
 
@@ -177,7 +177,7 @@ namespace Deltares::Reliability
             {
                 std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
                 report->ReportMatchesEvaluation = false;
-                report->Variation = uSurface->Weight;
+                report->Variation = uSurface.Weight;
 
                 modelRunner->reportResult(report);
             }
@@ -211,7 +211,7 @@ namespace Deltares::Reliability
     }
 
     std::vector<double> DirectionalSampling::getDirectionBetas(Models::ModelRunner& modelRunner,
-        const std::vector<std::shared_ptr<Models::Sample>>& samples, double z0, double threshold)
+        std::vector<Models::Sample>& samples, double z0, double threshold)
     {
         const size_t nSamples = samples.size();
         auto betaValues = std::vector<double>(nSamples);
@@ -219,7 +219,7 @@ namespace Deltares::Reliability
         std::vector<DirectionReliabilityDS> directions;
         for (auto& sample : samples)
         {
-            directions.emplace_back(threshold, z0, *Settings->DirectionSettings, *sample);
+            directions.emplace_back(threshold, z0, *Settings->DirectionSettings, sample);
         }
 
         if ( ! modelRunner.canCalculateBeta())
@@ -230,7 +230,7 @@ namespace Deltares::Reliability
                 for (size_t i = 0; i < nSamples; i++)
                 {
                     // retain previous results from model if running in a proxy model environment
-                    shouldCompute[i] = !previousResults.contains(samples[i]->IterationIndex);
+                    shouldCompute[i] = !previousResults.contains(samples[i].IterationIndex);
                 }
             }
 
@@ -245,13 +245,13 @@ namespace Deltares::Reliability
         for (int i = 0; i < static_cast<int>(nSamples); i++)
         {
             // retain previous results from model if running in a proxy model environment
-            if (modelRunner.ProxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
+            if (modelRunner.ProxySettings->IsProxyModel && previousResults.contains(samples[i].IterationIndex))
             {
-                betaValues[i] = previousResults[samples[i]->IterationIndex];
+                betaValues[i] = previousResults[samples[i].IterationIndex];
             }
             else
             {
-                samples[i]->threadId = omp_get_thread_num();
+                samples[i].threadId = omp_get_thread_num();
                 betaValues[i] = directions[i].getBeta(modelRunner, z0Fac);
             }
         }
@@ -261,9 +261,9 @@ namespace Deltares::Reliability
         {
             for (size_t i = 0; i < samples.size(); i++)
             {
-                if (!samples[i]->AllowProxy)
+                if (!samples[i].AllowProxy)
                 {
-                    previousResults.insert({ samples[i]->IterationIndex, betaValues[i] });
+                    previousResults.insert({ samples[i].IterationIndex, betaValues[i] });
                 }
             }
         }

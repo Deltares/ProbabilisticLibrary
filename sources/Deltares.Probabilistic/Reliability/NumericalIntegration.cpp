@@ -39,7 +39,7 @@ namespace Deltares::Reliability
         int nStochasts = modelRunner->getVaryingStochastCount();
 
         // local variables
-        const auto u = std::make_shared<Models::Sample>(nStochasts); //local vector with values in u-space
+        auto u = Models::Sample(nStochasts); //local vector with values in u-space
 
         // Examine the position of the origin: if the origin has a negative z-value the design point must be searched
         // with positive values of the z-function. The explanation for searching with positive z-values as the origin
@@ -82,7 +82,7 @@ namespace Deltares::Reliability
 
         auto convergenceReport = std::make_shared<ConvergenceReport>();
 
-        double probFailure = getStochastProbability(stochastIndex, *u, density, totalDensity, 1);
+        double probFailure = getStochastProbability(stochastIndex, u, density, totalDensity, 1);
 
         probFailure /= totalDensity;
 
@@ -90,7 +90,7 @@ namespace Deltares::Reliability
         // distance from the design point to the origin.
         const double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-        const auto designPoint = designPointBuilder.getSample();
+        auto designPoint = designPointBuilder.getSample();
 
         return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
     }
@@ -136,15 +136,15 @@ namespace Deltares::Reliability
         }
         else
         {
-            std::vector<std::shared_ptr<Models::Sample>> samples;
+            std::vector<Models::Sample> samples;
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
-                std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(parentSample.clone());
-                sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
+                Models::Sample sample = parentSample.clone();
+                sample.Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                 const double contribution = pq.getDifference(uValues[j + 1]);
-                sample->Weight = density * contribution * nSamples;
+                sample.Weight = density * contribution * nSamples;
 
                 samples.push_back(sample);
             }
@@ -156,11 +156,11 @@ namespace Deltares::Reliability
 
             for (size_t j = 0; j < samples.size(); j++)
             {
-                const auto& sample = samples[j];
+                auto sample = samples[j];
 
                 if (!std::isnan(zValues[j]))
                 {
-                    const double sampleProbability = sample->Weight / nSamples;
+                    const double sampleProbability = sample.Weight / nSamples;
 
                     totalDensity += sampleProbability;
 

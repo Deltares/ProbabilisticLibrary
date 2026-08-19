@@ -48,7 +48,7 @@ namespace Deltares::Proxies
                 }
             }
 
-            std::shared_ptr<Models::Sample> uSample = std::make_shared<Models::Sample>(u);
+            Models::Sample uSample = Models::Sample(u);
             std::vector<double> xValues = uConverter->getXValues(uSample);
             std::shared_ptr<Models::ModelSample> sample = std::make_shared<Models::ModelSample>(xValues);
 
@@ -64,7 +64,7 @@ namespace Deltares::Proxies
                 u[j] = settings.GetQualitativeValue(settings.Direction);
             }
 
-            std::shared_ptr<Models::Sample> uSample = std::make_shared<Models::Sample>(u);
+            Models::Sample uSample = Models::Sample(u);
             std::vector<double> xValues = uConverter->getXValues(uSample);
             std::shared_ptr<Models::ModelSample> sample = std::make_shared<Models::ModelSample>(xValues);
 

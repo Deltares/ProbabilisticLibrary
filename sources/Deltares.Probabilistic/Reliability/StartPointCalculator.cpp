@@ -218,25 +218,25 @@ namespace Deltares::Reliability
 
         double radiusFactor = this->Settings->RadiusSphereSearch / startPoint.getBeta();
 
-        std::shared_ptr<Models::Sample> uSphere = std::make_shared<Models::Sample>(startPoint.getMultipliedSample(radiusFactor));
+        Models::Sample uSphere = startPoint.getMultipliedSample(radiusFactor);
 
         if ( ! Settings->startVector.empty())
         {
             for (size_t i = 0; i < this->Settings->startVector.size(); i++)
             {
-                uSphere->Values[i] = this->Settings->startVector[i];
+                uSphere.Values[i] = this->Settings->startVector[i];
             }
         }
 
         auto st = sphereTasks(maxSteps, Settings->allQuadrants);
-        auto uSphereValues = Numeric::Vector1D(uSphere->Values.size());
-        for (size_t i = 0; i < uSphere->Values.size(); i++)
+        auto uSphereValues = Numeric::Vector1D(uSphere.Values.size());
+        for (size_t i = 0; i < uSphere.Values.size(); i++)
         {
-            uSphereValues(i) = uSphere->Values[i];
+            uSphereValues(i) = uSphere.Values[i];
         }
         auto tasks = st.examineSurfaceForTasks(uSphereValues);
 
-        Models::Sample bestSample = Models::Sample(uSphere->Values.size());
+        Models::Sample bestSample = Models::Sample(uSphere.Values.size());
         bestSample.Z = std::numeric_limits<double>::infinity();
 
         std::vector<Models::Sample> previousSamples;
@@ -249,7 +249,7 @@ namespace Deltares::Reliability
             for (const auto& task : tasks)
             {
                 Models::Sample uRay = this->Settings->StochastSet->getStartPoint();
-                for (size_t k = 0; k < uSphere->Values.size(); k++)
+                for (size_t k = 0; k < uSphere.Values.size(); k++)
                 {
                     uRay.Values[k] = task(k);
                 }
