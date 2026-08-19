@@ -79,12 +79,12 @@ namespace Deltares::Models
         void updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings);
         void setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider);
         double getZValue(Sample& sample);
-        std::vector<double> getZValues(std::vector<Sample>& samples);
+        std::vector<double> getZValues(std::vector<Sample*>& samples);
         double getBeta(Sample& sample) const;
         bool canCalculateBeta() const;
         int getStochastCount() const;
         int getVaryingStochastCount() const;
-        bool shouldExitPrematurely(const std::vector<Sample>& samples) const;
+        bool shouldExitPrematurely(const std::vector<Sample*>& samples) const;
         void removeTask(int iterationIndex) const;
 
         void reportResult(const std::shared_ptr<Reliability::ReliabilityReport>& report);

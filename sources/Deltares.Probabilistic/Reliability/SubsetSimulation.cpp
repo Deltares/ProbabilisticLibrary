@@ -56,7 +56,7 @@ namespace Deltares::Reliability
 
         std::shared_ptr<ConvergenceReport> convergenceReport = nullptr;
         std::vector<std::shared_ptr<DesignPoint>> contributingDesignPoints;
-        std::vector<Sample> selectedSamples;
+        std::vector<Sample*> selectedSamples;
 
         while (!ready && !isStopped())
         {
@@ -74,12 +74,12 @@ namespace Deltares::Reliability
 
             iteration++;
 
-            std::vector<Sample> samples;
-            std::vector<Sample> performedSamples;
+            std::vector<Sample*> samples;
+            std::vector<Sample*> performedSamples;
             std::vector<double> zValues;
 
             // create samples
-            std::vector<Sample> newSamples = getNewSamples(modelRunner, initial, z0Fac, selectedSamples);
+            std::vector<Sample*> newSamples = getNewSamples(modelRunner, initial, z0Fac, selectedSamples);
 
             int skip = 0;
 
@@ -111,7 +111,7 @@ namespace Deltares::Reliability
                     }
                     else
                     {
-                        zValues = Sample::select(samples, [](Sample p) { return p.Z; });
+                        zValues = Sample::select(samples, [](Sample* p) { return p->Z; });
                     }
 
                     // determine multiplication factor for z (z<0) at u = 0
@@ -132,7 +132,7 @@ namespace Deltares::Reliability
 
                 double z = zValues[zIndex] * z0Fac;
 
-                Sample sample = samples[zIndex];
+                Sample* sample = samples[zIndex];
                 performedSamples.push_back(samples[zIndex]);
 
                 // ignore a failed evaluation
@@ -156,7 +156,7 @@ namespace Deltares::Reliability
                 // register minimum value of r and alpha
                 if (z * z0Fac < 0)
                 {
-                    designPointBuilder.addSample(sample);
+                    designPointBuilder.addSample(*sample);
                 }
 
                 // uncorrected prob of failure for convergence
@@ -202,7 +202,7 @@ namespace Deltares::Reliability
 
             ssFactor *= Settings->SubsetFraction;
 
-            ready = ssFactor < 1E-20 || selectedSamples.back().Z * z0Fac < 0;
+            ready = ssFactor < 1E-20 || selectedSamples.back()->Z * z0Fac < 0;
 
             if (!ready)
             {
@@ -226,7 +226,7 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    std::vector<Sample> SubsetSimulation::getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<Sample> selectedSamples)
+    std::vector<Sample*> SubsetSimulation::getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<Sample*> selectedSamples)
     {
         if (selectedSamples.empty())
         {
@@ -246,13 +246,14 @@ namespace Deltares::Reliability
         }
     }
 
-    std::vector<Sample> SubsetSimulation::getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, bool initial)
+    std::vector<Sample*> SubsetSimulation::getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, bool initial)
     {
-        std::vector<Sample> samples;
+        std::vector<Sample*> samples;
 
         if (initial)
         {
-            samples.push_back(Sample(modelRunner->getVaryingStochastCount()));
+            Sample sample = Sample(modelRunner->getVaryingStochastCount());
+            samples.push_back(&sample);
         }
 
         for (int i = 0; i < Settings->MaximumSamples; i++)
@@ -261,21 +262,22 @@ namespace Deltares::Reliability
             Sample sample = randomSampleGenerator.getRandomSample();
             sample.IterationIndex = -1;
 
-            samples.push_back(sample);
+            samples.push_back(&sample);
         }
 
         return samples;
     }
 
-    std::vector<Sample> SubsetSimulation::getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<Sample>& selectedSamples, double z0Fac)
+    std::vector<Sample*> SubsetSimulation::getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<Sample*>& selectedSamples, double z0Fac)
     {
-        std::vector<Sample> samples;
+        std::vector<Sample*> samples;
 
-        double maxZ = selectedSamples.back().Z;
+        double maxZ = selectedSamples.back()->Z;
 
         for (int i = 0; i < this->Settings->MaximumSamples; i++)
         {
-            samples.push_back(getMarkovChainSample(selectedSamples[i % selectedSamples.size()], modelRunner, maxZ, z0Fac));
+            Sample markovSample = getMarkovChainSample(*selectedSamples[i % selectedSamples.size()], modelRunner, maxZ, z0Fac);
+            samples.push_back(&markovSample);
         }
 
         return samples;
@@ -335,9 +337,9 @@ namespace Deltares::Reliability
         return oldSample;
     }
 
-    std::vector<Sample> SubsetSimulation::getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<Sample>& selectedSamples)
+    std::vector<Sample*> SubsetSimulation::getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<Sample*>& selectedSamples)
     {
-        double b = selectedSamples.back().Z;
+        double b = selectedSamples.back()->Z;
 
         size_t nStochasts = modelRunner->getVaryingStochastCount(); //number of parameters
         size_t nSelectedSamples = selectedSamples.size(); // number of seeds
@@ -364,7 +366,7 @@ namespace Deltares::Reliability
         }
 
         // The arrays begin with initial value 0
-        std::vector<Sample> newSamples;
+        std::vector<Sample*> newSamples;
 
         // 1. compute the standard deviation
 
@@ -389,10 +391,10 @@ namespace Deltares::Reliability
                 idx += nChain[j];
             } // beginning of each chain index
 
-            Sample newSample = selectedSamples[k - 1].clone();
-            newSample.Z = selectedSamples[k - 1].Z;
+            Sample newSample = selectedSamples[k - 1]->clone();
+            newSample.Z = selectedSamples[k - 1]->Z;
 
-            newSamples.push_back(newSample);
+            newSamples.push_back(&newSample);
 
             Sample previousSample = newSample;
 
@@ -423,7 +425,7 @@ namespace Deltares::Reliability
                     acceptance[idx + t] = 0; // note the rejection
                 }
 
-                newSamples.push_back(sample);
+                newSamples.push_back(&sample);
 
                 previousSample = sample;
             } // end of for-t loop
@@ -504,15 +506,15 @@ namespace Deltares::Reliability
         return newSamples;
     }
 
-    std::vector<Sample> SubsetSimulation::selectSamples(double z0Fac, std::vector<Sample> performedSamples)
+    std::vector<Sample*> SubsetSimulation::selectSamples(double z0Fac, std::vector<Sample*> performedSamples)
     {
         std::sort(performedSamples.begin(), performedSamples.end(),
-            [z0Fac](const Sample& val1, const Sample& val2)
-            {return val1.Z * z0Fac < val2.Z * z0Fac; });
+            [z0Fac](const Sample* val1, const Sample* val2)
+            {return val1->Z * z0Fac < val2->Z * z0Fac; });
 
-        std::vector<Sample> selectedSamples;
+        std::vector<Sample*> selectedSamples;
 
-        for (int i = 0; i < Settings->SubsetFraction * performedSamples.size(); i++)
+        for (int i = 0; i < Settings->SubsetFraction * static_cast<int>(performedSamples.size()); i++)
         {
             selectedSamples.push_back(performedSamples[i]);
         }

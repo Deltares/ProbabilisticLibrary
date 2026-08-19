@@ -182,7 +182,7 @@ namespace Deltares::Reliability
 
         auto samples = CreateAllSamples(nStochasts);
 
-        std::vector<Sample> calcSamples;
+        std::vector<Sample*> calcSamples;
         double probFailure = 0.0;
         const int chunkSize = Settings->RunSettings->MaxChunkSize;
 
@@ -198,13 +198,14 @@ namespace Deltares::Reliability
 
                 if (initial)
                 {
-                    calcSamples.push_back(Sample(nStochasts));
+                    Sample sample = Sample(nStochasts);
+                    calcSamples.push_back(&sample);
                     runs = std::max(1, runs - 1);
                 }
 
                 for (int i = 0; i < runs; i++)
                 {
-                    calcSamples.push_back(samples[n + i]);
+                    calcSamples.push_back(&samples[n + i]);
                 }
 
                 zValues = modelRunner->getZValues(calcSamples);
@@ -226,7 +227,7 @@ namespace Deltares::Reliability
 
 
             double z = zValues[zIndex];
-            Sample u = calcSamples[zIndex];
+            Sample u = *calcSamples[zIndex];
 
             // ignore a failed evaluation
             if (std::isnan(z))

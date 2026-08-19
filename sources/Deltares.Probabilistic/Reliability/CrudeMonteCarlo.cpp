@@ -101,7 +101,7 @@ namespace Deltares::Reliability
         double nFailed = 0.0;
         int nSamples = 0;
         const std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-        std::vector<Sample> samples;
+        std::vector<Sample*> samples;
         size_t zIndex = 0;
 
         bool addRemainder = qRange != 1.0;
@@ -121,7 +121,8 @@ namespace Deltares::Reliability
 
                 if (initial)
                 {
-                    samples.push_back(sampleProvider->getSample());
+                    Sample sample = sampleProvider->getSample();
+                    samples.push_back(&sample);
                     runs = runs - 1;
                 }
 
@@ -133,7 +134,7 @@ namespace Deltares::Reliability
                         applyLimits(sample);
                     }
 
-                    samples.push_back(sample);
+                    samples.push_back(&sample);
                 }
 
                 zValues = modelRunner->getZValues(samples);
@@ -169,7 +170,7 @@ namespace Deltares::Reliability
             }
 
             double z = zValues[zIndex];
-            Sample u = samples[zIndex];
+            Sample u = *samples[zIndex];
 
             if (std::isnan(z))
             {

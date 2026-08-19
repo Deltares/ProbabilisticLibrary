@@ -74,7 +74,7 @@ namespace Deltares::Reliability
         bool reported = false;
         bool addProbability = Settings->runSettings->shouldAddProbability();
 
-        std::vector<Sample> samples; // copy of u for all parallel threads as double
+        std::vector<Sample*> samples; // copy of u for all parallel threads as double
         std::vector<double> zValues; // copy of z for all parallel threads as double
 
         // list of all clusters
@@ -118,7 +118,7 @@ namespace Deltares::Reliability
                 if (initial)
                 {
                     auto initialSample = sampleProvider->getSample();
-                    samples.push_back(initialSample);
+                    samples.push_back(&initialSample);
                     clusters.push_back(nullptr);
                     runs = runs - 1;
                 }
@@ -146,7 +146,7 @@ namespace Deltares::Reliability
 
                     modifiedSample.Weight = ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
 
-                    samples.push_back(modifiedSample);
+                    samples.push_back(&modifiedSample);
                     clusters.push_back(cluster);
                 }
 
@@ -221,7 +221,7 @@ namespace Deltares::Reliability
                 continue;
             }
 
-            Sample sample = samples[zIndex];
+            Sample sample = *samples[zIndex];
 
             double failureAddition = 0.0;
             if (isNearestCluster(sample, sampleCluster, clusterResults))

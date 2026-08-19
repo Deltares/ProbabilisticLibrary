@@ -126,7 +126,12 @@ namespace Deltares::Models
 
     Sample Sample::clone() const
     {
-        Sample clonedSample = Sample(this->Values, this->extended);
+        Sample clonedSample = Sample(this->size, this->extended);
+
+        for (int i = 0; i < size; i++)
+        {
+            clonedSample.Values[i] = this->Values[i];
+        }
 
         clonedSample.AllowProxy = this->AllowProxy;
         clonedSample.IterationIndex = this->IterationIndex;

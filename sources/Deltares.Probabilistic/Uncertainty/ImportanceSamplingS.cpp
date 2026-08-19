@@ -53,7 +53,7 @@ namespace Deltares::Uncertainty
         designPointBuilder = DesignPointBuilder(nParameters, DesignPointMethod::CenterOfGravity, Settings->StochastSet);
 
         Sample uMin = Sample(nParameters);
-        std::vector<Sample> samples;
+        std::vector<Sample*> samples;
         std::vector<double> zValues;
         std::vector<double> weights;
         std::vector<double> cumulativeWeights;
@@ -87,7 +87,7 @@ namespace Deltares::Uncertainty
                 {
                     Sample sample = randomSampleGenerator.getRandomSample();
                     Sample modifiedSample = getModifiedSample(sample, center);
-                    samples.push_back(modifiedSample);
+                    samples.push_back(&modifiedSample);
                 }
 
                 std::vector<double> zSampleValues = modelRunner->getZValues(samples);
@@ -95,7 +95,7 @@ namespace Deltares::Uncertainty
                 zIndex = 0;
             }
 
-            Sample sample = samples[zIndex];
+            Sample sample = *samples[zIndex];
 
             if (std::isnan(sample.Z))
             {

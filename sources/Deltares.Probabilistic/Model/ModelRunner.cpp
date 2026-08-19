@@ -29,7 +29,6 @@
 #include <format>
 
 #include "../Reliability/FragilityCurve.h"
-#include "../Reliability/ProbabilityLimitStateFunction.h"
 
 namespace Deltares::Models
 {
@@ -250,13 +249,13 @@ namespace Deltares::Models
      * \param samples Samples to be calculated
      * \return Z-values of the samples
      */
-    std::vector<double> ModelRunner::getZValues(std::vector<Sample>& samples)
+    std::vector<double> ModelRunner::getZValues(std::vector<Sample*>& samples)
     {
         std::vector<std::shared_ptr<ModelSample>> xSamples;
 
-        for (const auto& sample : samples)
+        for (auto sample : samples)
         {
-            xSamples.push_back(getModelSample(sample));
+            xSamples.push_back(getModelSample(*sample));
         }
 
         this->zModel->invoke(xSamples);
@@ -267,9 +266,9 @@ namespace Deltares::Models
         {
             registerEvaluation(xSamples[i]);
 
-            samples[i].Z = xSamples[i]->Z;
-            samples[i].AllowProxy = xSamples[i]->AllowProxy;
-            samples[i].IsRestartRequired = xSamples[i]->IsRestartRequired;
+            samples[i]->Z = xSamples[i]->Z;
+            samples[i]->AllowProxy = xSamples[i]->AllowProxy;
+            samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
             zValues[i] = xSamples[i]->Z;
         }
 
@@ -350,11 +349,11 @@ namespace Deltares::Models
      * \param samples Already calculated samples
      * \return Indication
      */
-    bool ModelRunner::shouldExitPrematurely(const std::vector<Sample>& samples) const
+    bool ModelRunner::shouldExitPrematurely(const std::vector<Sample*>& samples) const
     {
-        for (const Sample& sample : samples)
+        for (Sample* sample : samples)
         {
-            if (sample.IsRestartRequired)
+            if (sample->IsRestartRequired)
             {
                 return true;
             }

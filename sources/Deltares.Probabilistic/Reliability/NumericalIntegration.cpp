@@ -136,7 +136,7 @@ namespace Deltares::Reliability
         }
         else
         {
-            std::vector<Models::Sample> samples;
+            std::vector<Models::Sample*> samples;
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
@@ -146,7 +146,7 @@ namespace Deltares::Reliability
                 const double contribution = pq.getDifference(uValues[j + 1]);
                 sample.Weight = density * contribution * nSamples;
 
-                samples.push_back(sample);
+                samples.push_back(&sample);
             }
 
             // compute the z-value(s)
@@ -160,7 +160,7 @@ namespace Deltares::Reliability
 
                 if (!std::isnan(zValues[j]))
                 {
-                    const double sampleProbability = sample.Weight / nSamples;
+                    const double sampleProbability = sample->Weight / nSamples;
 
                     totalDensity += sampleProbability;
 
@@ -174,7 +174,7 @@ namespace Deltares::Reliability
                     double smallestDomainAddition = z0Fac > 0.0 ? failureAddition : 1.0 - failureAddition;
                     if (smallestDomainAddition > 0)
                     {
-                        designPointBuilder.addSample(sample, smallestDomainAddition);
+                        designPointBuilder.addSample(*sample, smallestDomainAddition);
                     }
                 }
             }

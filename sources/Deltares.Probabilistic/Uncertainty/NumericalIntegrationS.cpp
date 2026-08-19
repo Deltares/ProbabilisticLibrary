@@ -83,7 +83,7 @@ namespace Deltares::Uncertainty
 
             if (quantileIndex >= 0)
             {
-                auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
+                auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(*this->calculatedSamples[quantileIndex]));
                 evaluation->Quantile = quantile->getProbabilityOfNonFailure();
                 result.quantileEvaluations.push_back(evaluation);
             }
@@ -135,7 +135,7 @@ namespace Deltares::Uncertainty
         {
             std::vector<Numeric::WeightedValue> values;
 
-            std::vector<Sample> samples;
+            std::vector<Sample*> samples;
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
@@ -145,21 +145,21 @@ namespace Deltares::Uncertainty
                 double contribution = pq.getDifference(uValues[j + 1]);
                 sample.Weight = density * contribution * nSamples * (static_cast<int>(uValues.size()) - 1);
 
-                samples.push_back(sample);
+                samples.push_back(&sample);
             }
 
             // compute the z-value(s)
             const std::vector<double> zValues = modelRunner.getZValues(samples);
 
-            for (auto& sample : samples)
+            for (Sample* sample : samples)
             {
-                if (!std::isnan(sample.Z))
+                if (!std::isnan(sample->Z))
                 {
-                    values.emplace_back(sample.Z, sample.Weight);
+                    values.emplace_back(sample->Z, sample->Weight);
 
                     if (registerSamplesForCorrelation)
                     {
-                        modelRunner.registerSample(this->correlationMatrixBuilder, sample);
+                        modelRunner.registerSample(this->correlationMatrixBuilder, *sample);
                     }
                 }
 

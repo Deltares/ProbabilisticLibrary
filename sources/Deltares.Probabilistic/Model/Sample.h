@@ -143,6 +143,24 @@ namespace Deltares::Models
 
             return result;
         }
+
+        /**
+         * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
+         * \param samples Collection of samples
+         * \param function Operation on a sample
+         * \return Resulting numeric values
+         */
+        static std::vector<double> select(std::vector<Sample*>& samples, std::function<double(Sample*)> function)
+        {
+            std::vector<double> result(samples.size());
+
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                result[i] = function(samples[i]);
+            }
+
+            return result;
+        }
     };
 }
 

@@ -38,11 +38,11 @@ namespace Deltares::Models
     {
         int nStochasts = modelRunner.getVaryingStochastCount();
 
-        std::vector<Sample> samples;
+        std::vector<Sample*> samples;
         std::vector<double> gradient(nStochasts);
 
         // first sample is the sample itself
-        samples.push_back(sample);
+        samples.push_back(&sample);
 
         if (Settings->gradientType == OneDirection)
         {
@@ -52,7 +52,7 @@ namespace Deltares::Models
                 Sample uNew = sample.clone();
                 uNew.Values[k] += du;
 
-                samples.push_back(uNew);
+                samples.push_back(&uNew);
             }
 
             std::vector<double> zValues = modelRunner.getZValues(samples);
@@ -70,11 +70,11 @@ namespace Deltares::Models
             {
                 Sample u1 = sample.clone();
                 u1.Values[k] -= Settings->StepSize * 0.5;
-                samples.push_back(u1);
+                samples.push_back(&u1);
 
                 Sample u2 = sample.clone();
                 u2.Values[k] += Settings->StepSize * 0.5;
-                samples.push_back(u2);
+                samples.push_back(&u2);
             }
 
             std::vector<double> zValues = modelRunner.getZValues(samples);

@@ -64,13 +64,14 @@ namespace Deltares::Reliability
             //
             // collect samples
             //
-            std::vector<Models::Sample> uSamples;
+            std::vector<Models::Sample*> uSamples;
             for (size_t i = 0; i < nSamples; i++)
             {
                 if (shouldCompute[i])
                 {
                     uValues[i] = directions[i].GetPrecomputeUvalue();
-                    uSamples.push_back(model.GetSample(uDirections[i], uValues[i]));
+                    Models::Sample sample = model.GetSample(uDirections[i], uValues[i]);
+                    uSamples.push_back(&sample);
                 }
             }
 
@@ -88,11 +89,11 @@ namespace Deltares::Reliability
             {
                 if (shouldCompute[i])
                 {
-                    directions[i].getDirection().IsRestartRequired = uSamples[ii].IsRestartRequired;
-                    directions[i].getDirection().AllowProxy = uSamples[ii].AllowProxy;
-                    directions[i].getDirection().Z = uSamples[ii].Z;
+                    directions[i].getDirection().IsRestartRequired = uSamples[ii]->IsRestartRequired;
+                    directions[i].getDirection().AllowProxy = uSamples[ii]->AllowProxy;
+                    directions[i].getDirection().Z = uSamples[ii]->Z;
                     auto z1pv = PrecomputedDirectionValue(uValues[i], z0Fac * zValues[ii],
-                        uSamples[ii].IsRestartRequired, uSamples[ii].AllowProxy);
+                        uSamples[ii]->IsRestartRequired, uSamples[ii]->AllowProxy);
                     directions[i].ProvidePrecomputeValue(z1pv);
                     shouldCompute[i] = directions[i].CanPrecomputeSample();
                     ii++;

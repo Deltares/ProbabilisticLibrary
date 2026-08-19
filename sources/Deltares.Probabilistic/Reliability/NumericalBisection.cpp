@@ -88,12 +88,12 @@ namespace Deltares::Reliability
                 if (!points->isKnown()) unknownPoints.push_back(points);
             }
 
-            std::vector<Sample> upar;
+            std::vector<Sample*> upar;
             for (auto& points : unknownPoints)
             {
                 auto sample = Sample(points->Coordinates);
                 sample.IterationIndex = step-1;
-                upar.push_back(sample);
+                upar.push_back(&sample);
             }
 
             std::vector<double> zValues = modelRunner->getZValues(upar);

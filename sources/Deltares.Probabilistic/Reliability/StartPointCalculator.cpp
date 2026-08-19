@@ -156,23 +156,23 @@ namespace Deltares::Reliability
     {
         int nstochasts = modelRunner.getVaryingStochastCount();
 
-        std::vector<Models::Sample> samples;
+        std::vector<Models::Sample*> samples;
         std::vector<double> gradient(nstochasts);
 
         double stepSize = 2;
 
         // first sample is the sample itself
-        samples.push_back(sample);
+        samples.push_back(&sample);
 
         for (int k = 0; k < nstochasts; k++)
         {
             Models::Sample u1 = sample.clone();
             u1.Values[k] -= stepSize;
-            samples.push_back(u1);
+            samples.push_back(&u1);
 
             Models::Sample u2 = sample.clone();
             u2.Values[k] += stepSize;
-            samples.push_back(u2);
+            samples.push_back(&u2);
         }
 
         std::vector<double> zValues = modelRunner.getZValues(samples);
@@ -239,13 +239,13 @@ namespace Deltares::Reliability
         Models::Sample bestSample = Models::Sample(uSphere.Values.size());
         bestSample.Z = std::numeric_limits<double>::infinity();
 
-        std::vector<Models::Sample> previousSamples;
+        std::vector<Models::Sample*> previousSamples;
 
         for (int i = 0; i < nRadiusFactors; i++)
         {
             radiusFactor = Numeric::NumericSupport::Divide(i + 1, nRadiusFactors);
 
-            std::vector<Models::Sample> samples;
+            std::vector<Models::Sample*> samples;
             for (const auto& task : tasks)
             {
                 Models::Sample uRay = this->Settings->StochastSet->getStartPoint();
@@ -255,15 +255,15 @@ namespace Deltares::Reliability
                 }
                 Models::Sample u = Models::Sample(uRay.getMultipliedSample(radiusFactor));
                 u.IterationIndex = i;
-                samples.push_back(u);
+                samples.push_back(&u);
             }
             auto zValues = modelRunner.getZValues(samples);
             for (auto & z : zValues) {z *= z0Fac;}
             auto indexMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
             if (zValues[indexMinimal] < 0.0)
             {
-                auto previous = (i > 0 ? previousSamples[indexMinimal] : zeroSample);
-                bestSample = refineSpherePoint(samples[indexMinimal], previous);
+                Models::Sample* previous = (i > 0 ? previousSamples[indexMinimal] : &zeroSample);
+                bestSample = refineSpherePoint(*samples[indexMinimal], *previous);
                 break;
             }
 
@@ -271,7 +271,7 @@ namespace Deltares::Reliability
 
             for (auto& z : zValues) { z = std::fabs(z); }
             auto indexAbsMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
-            bestSample = getBestSample(bestSample, samples[indexAbsMinimal]);
+            bestSample = getBestSample(bestSample, *samples[indexAbsMinimal]);
         }
 
         return bestSample;

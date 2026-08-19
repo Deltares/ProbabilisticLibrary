@@ -107,7 +107,7 @@ namespace Deltares::Uncertainty
         randomSampleGenerator.sampleProvider = sampleProvider;
         randomSampleGenerator.initialize();
 
-        std::vector<Sample> samples;
+        std::vector<Sample*> samples;
 
         int nDirections = this->Settings->getRequiredSamples(modelRunner.getVaryingStochastCount());
         nDirections = std::min(nDirections, this->Settings->NumberDirections);
@@ -115,7 +115,7 @@ namespace Deltares::Uncertainty
         for (int i = 0; i < nDirections; i++)
         {
             Sample randomSample = randomSampleGenerator.getRandomSample();
-            samples.push_back(randomSample);
+            samples.push_back(&randomSample);
         }
 
         // Calculate the corresponding distance d of the origin using the length of the samples list
@@ -126,8 +126,9 @@ namespace Deltares::Uncertainty
         // Normalize the value of Samples via d
         for (size_t i = 0; i < samples.size(); i++)
         {
-            samples[i] = samples[i].getSampleAtBeta(initialDistance);
-            samples[i].IterationIndex = static_cast<int>(i);
+            Sample betaSample = samples[i]->getSampleAtBeta(initialDistance);
+            samples[i] = &betaSample;
+            samples[i]->IterationIndex = static_cast<int>(i);
         }
 
         std::vector<double> zValues = modelRunner.getZValues(samples);
@@ -153,7 +154,7 @@ namespace Deltares::Uncertainty
         {
             const bool isValid = quantile->Reliability > beta0 ? zValues[i] > Z0 : zValues[i] < Z0;
             // If the direction is invalid, the direction will not be used in the calculation
-            std::shared_ptr<Direction> direction = std::make_shared<Direction>(samples[i], i, isValid);
+            std::shared_ptr<Direction> direction = std::make_shared<Direction>(*samples[i], i, isValid);
             direction->AddResult(0, Z0);
             direction->AddResult(initialDistance, zValues[i]);
             directions.push_back(direction);
@@ -169,8 +170,7 @@ namespace Deltares::Uncertainty
         double error = std::numeric_limits<double>::max();
         double quantile95 = Statistics::StandardNormal::getUFromP(0.95);
 
-        Sample lowestSample;
-        bool lowestSampleAssigned = false;
+        Sample* lowestSample = nullptr;
 
         int j = 0; //iteration over N
         while (j < this->Settings->MaximumIterations && error > this->Settings->VariationCoefficientFailure)
@@ -183,30 +183,30 @@ namespace Deltares::Uncertainty
             { return predict(predZi, directions, probability0, nStochasts); });
 
             //for each new scale in direction i values, the new z values are calculated (zValues[i,j])
-            std::vector<Sample> newSamples;
-            std::vector<Sample> calculateSamples;
+            std::vector<Sample*> newSamples;
+            std::vector<Sample*> calculateSamples;
 
             for (size_t i = 0; i < directions.size(); i++)
             {
                 Sample newSample = directions[i]->CreateNewSampleAt(zPredicted, maxBetaDirection);
-                newSamples.push_back(newSample);
+                newSamples.push_back(&newSample);
                 if (directions[i]->IsValid())
                 {
                     newSample.IterationIndex = static_cast<int>(i);
-                    calculateSamples.push_back(newSample); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
+                    calculateSamples.push_back(&newSample); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
                 }
             }
 
             modelRunner.getZValues(calculateSamples);
 
-            std::vector<double> newZValues = Sample::select(newSamples, [](Sample p) {return p.Z; });
+            std::vector<double> newZValues = Sample::select(newSamples, [](Sample* p) {return p->Z; });
 
             //add the newZvalues to the list of zValues
             for (size_t i = 0; i < directions.size(); i++)
             {
                 if (directions[i]->IsValid())
                 {
-                    directions[i]->AddResult(directions[i]->GetDistanceAtZ(zPredicted), newSamples[i].Z);
+                    directions[i]->AddResult(directions[i]->GetDistanceAtZ(zPredicted), newSamples[i]->Z);
                 }
             }
 
@@ -224,16 +224,15 @@ namespace Deltares::Uncertainty
             if (!calculateSamples.empty())
             {
                 lowestSample = selectSampleWithLowestBeta(calculateSamples);
-                lowestSampleAssigned = true;
             }
 
             performedIterations++;
             modelRunner.reportProgress(performedIterations, Settings->MaximumIterations + 1);
         }
 
-        if (lowestSampleAssigned)
+        if (lowestSample != nullptr)
         {
-            auto evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluation(lowestSample));
+            auto evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluation(*lowestSample));
             this->evaluations[quantile] = evaluation;
         }
 
@@ -241,16 +240,16 @@ namespace Deltares::Uncertainty
     }
 
     // select the sample with the lowest beta as representative
-    Sample DirectionalSamplingS::selectSampleWithLowestBeta(const std::vector<Sample>& calculate_samples)
+    Sample* DirectionalSamplingS::selectSampleWithLowestBeta(const std::vector<Sample*>& calculate_samples)
     {
-        Sample lowest_sample;
+        Sample* lowest_sample = nullptr;
         if (!calculate_samples.empty())
         {
             lowest_sample = calculate_samples[0];
-            double lowest_beta = lowest_sample.getBeta();
+            double lowest_beta = lowest_sample->getBeta();
             for (const auto& calculateSample : calculate_samples)
             {
-                const double calc_beta = calculateSample.getBeta();
+                const double calc_beta = calculateSample->getBeta();
                 if (calc_beta < lowest_beta)
                 {
                     lowest_sample = calculateSample;

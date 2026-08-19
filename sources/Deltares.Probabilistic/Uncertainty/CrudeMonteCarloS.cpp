@@ -48,7 +48,7 @@ namespace Deltares::Uncertainty
 
         std::vector<double> zValues; // copy of z for all parallel threads as double
 
-        std::vector<Sample> samples;
+        std::vector<Sample*> samples;
         std::vector<double> zSamples;
         size_t zIndex = 0;
         int nSamples = 0;
@@ -71,7 +71,7 @@ namespace Deltares::Uncertainty
                 for (int i = 0; i < runs; i++)
                 {
                     Sample sample = randomSampleGenerator.getRandomSample();
-                    samples.push_back(sample);
+                    samples.push_back(&sample);
                 }
 
                 modelRunner->getZValues(samples);
@@ -79,7 +79,7 @@ namespace Deltares::Uncertainty
                 zIndex = 0;
             }
 
-            double z = samples[zIndex].Z;
+            double z = samples[zIndex]->Z;
 
             if (std::isnan(z))
             {
@@ -90,7 +90,7 @@ namespace Deltares::Uncertainty
 
             if (registerSamplesForCorrelation)
             {
-                modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
+                modelRunner->registerSample(this->correlationMatrixBuilder, *samples[zIndex]);
             }
 
             nSamples++;

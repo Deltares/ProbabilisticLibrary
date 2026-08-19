@@ -42,7 +42,7 @@ namespace Deltares::Reliability
         int parSamples = 0;
 
         std::vector<double> betaValues;
-        std::vector<Models::Sample> samples;
+        std::vector<Models::Sample*> samples;
 
         modelRunner->updateStochastSettings(Settings->StochastSet);
 
@@ -104,7 +104,7 @@ namespace Deltares::Reliability
                 {
                     auto sample = randomSampleGenerator.getRandomSample();
                     sample.IterationIndex = directionIndex + i;
-                    samples.push_back(sample);
+                    samples.push_back(&sample);
                 }
 
                 betaValues = getDirectionBetas(*modelRunner, samples, z0, minBetaDirection);
@@ -117,7 +117,7 @@ namespace Deltares::Reliability
                 continue;
             }
 
-            Models::Sample u = samples[directionIndex % chunkSize];
+            Models::Sample u = *samples[directionIndex % chunkSize];
 
             double betaDirection = std::abs(betaValues[directionIndex % chunkSize]);
 
@@ -211,7 +211,7 @@ namespace Deltares::Reliability
     }
 
     std::vector<double> DirectionalSampling::getDirectionBetas(Models::ModelRunner& modelRunner,
-        std::vector<Models::Sample>& samples, double z0, double threshold)
+        std::vector<Models::Sample*>& samples, double z0, double threshold)
     {
         const size_t nSamples = samples.size();
         auto betaValues = std::vector<double>(nSamples);
@@ -219,7 +219,7 @@ namespace Deltares::Reliability
         std::vector<DirectionReliabilityDS> directions;
         for (auto& sample : samples)
         {
-            directions.emplace_back(threshold, z0, *Settings->DirectionSettings, sample);
+            directions.emplace_back(threshold, z0, *Settings->DirectionSettings, *sample);
         }
 
         if ( ! modelRunner.canCalculateBeta())
@@ -230,7 +230,7 @@ namespace Deltares::Reliability
                 for (size_t i = 0; i < nSamples; i++)
                 {
                     // retain previous results from model if running in a proxy model environment
-                    shouldCompute[i] = !previousResults.contains(samples[i].IterationIndex);
+                    shouldCompute[i] = !previousResults.contains(samples[i]->IterationIndex);
                 }
             }
 
@@ -245,13 +245,13 @@ namespace Deltares::Reliability
         for (int i = 0; i < static_cast<int>(nSamples); i++)
         {
             // retain previous results from model if running in a proxy model environment
-            if (modelRunner.ProxySettings->IsProxyModel && previousResults.contains(samples[i].IterationIndex))
+            if (modelRunner.ProxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
             {
-                betaValues[i] = previousResults[samples[i].IterationIndex];
+                betaValues[i] = previousResults[samples[i]->IterationIndex];
             }
             else
             {
-                samples[i].threadId = omp_get_thread_num();
+                samples[i]->threadId = omp_get_thread_num();
                 betaValues[i] = directions[i].getBeta(modelRunner, z0Fac);
             }
         }
@@ -261,9 +261,9 @@ namespace Deltares::Reliability
         {
             for (size_t i = 0; i < samples.size(); i++)
             {
-                if (!samples[i].AllowProxy)
+                if (!samples[i]->AllowProxy)
                 {
-                    previousResults.insert({ samples[i].IterationIndex, betaValues[i] });
+                    previousResults.insert({ samples[i]->IterationIndex, betaValues[i] });
                 }
             }
         }
