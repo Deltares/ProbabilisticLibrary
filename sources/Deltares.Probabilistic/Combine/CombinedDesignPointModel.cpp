@@ -236,7 +236,7 @@ namespace Deltares::Reliability
         {
             double beta = std::numeric_limits<double>::max();
 
-            for (const std::shared_ptr<DesignPointModel> designPointModel : designPointModels)
+            for (const std::shared_ptr<DesignPointModel>& designPointModel : designPointModels)
             {
                 double designPointBeta = designPointModel->getDirectionBeta(sample);
 
@@ -252,7 +252,7 @@ namespace Deltares::Reliability
         {
             double beta = 0;
 
-            for (const std::shared_ptr<DesignPointModel> designPointModel : designPointModels)
+            for (const std::shared_ptr<DesignPointModel>& designPointModel : designPointModels)
             {
                 double designPointBeta = designPointModel->getDirectionBeta(sample);
 

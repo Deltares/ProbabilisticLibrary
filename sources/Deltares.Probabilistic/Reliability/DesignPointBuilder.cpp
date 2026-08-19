@@ -197,7 +197,8 @@ namespace Deltares::Reliability
                 {
                     bool updateMinimumSample = nearestSamples.back().areValuesEqual(sample);
 
-                    std::erase(nearestSamples, sample);
+                    std::erase_if(nearestSamples, [&sample](auto s) { return sample.areValuesEqual(s); });
+                    
                     sampleAdded = !nearestSamples.empty();
 
                     if (updateMinimumSample)

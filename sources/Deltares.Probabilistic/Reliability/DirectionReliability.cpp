@@ -78,8 +78,6 @@ namespace Deltares::Reliability
 
             double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings->FindMinimalValue);
 
-            directionTask.UValues.AllowProxy = directionTask.UValues.AllowProxy;
-
             return beta;
         }
     }

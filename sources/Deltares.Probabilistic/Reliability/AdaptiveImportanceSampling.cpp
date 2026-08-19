@@ -60,7 +60,7 @@ namespace Deltares::Reliability
 
         if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
         {
-            const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
+            const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint.getBeta());
             startDesignPoint->Identifier = "Start point";
             previousDesignPoints.push_back(startDesignPoint);
         }
@@ -379,10 +379,10 @@ namespace Deltares::Reliability
 
     void AdaptiveImportanceSampling::reportVarianceLoop(ModelRunner& modelRunner, const int loopCounter) const
     {
-        for (const Sample& center : importanceSampling->Settings->Clusters)
+        for (Sample& center : importanceSampling->Settings->Clusters)
         {
             modelRunner.reportMessage(Logging::MessageType::Info,
-                "Cluster = (" + Numeric::NumericSupport::ConvertToString(center->Values, ", ") + ")");
+                "Cluster = (" + Numeric::NumericSupport::ConvertToString(center.Values, ", ") + ")");
         }
         const auto text = std::format("Calculating variance loop #{:}.", loopCounter);
         modelRunner.doTextualProgress(ProgressType::Global, text);

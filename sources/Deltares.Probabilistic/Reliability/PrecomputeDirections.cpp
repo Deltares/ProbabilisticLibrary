@@ -88,11 +88,11 @@ namespace Deltares::Reliability
             {
                 if (shouldCompute[i])
                 {
-                    directions[i].getDirection().IsRestartRequired = uSamples[ii]->IsRestartRequired;
-                    directions[i].getDirection().AllowProxy = uSamples[ii]->AllowProxy;
-                    directions[i].getDirection().Z = uSamples[ii]->Z;
+                    directions[i].getDirection().IsRestartRequired = uSamples[ii].IsRestartRequired;
+                    directions[i].getDirection().AllowProxy = uSamples[ii].AllowProxy;
+                    directions[i].getDirection().Z = uSamples[ii].Z;
                     auto z1pv = PrecomputedDirectionValue(uValues[i], z0Fac * zValues[ii],
-                        uSamples[ii]->IsRestartRequired, uSamples[ii]->AllowProxy);
+                        uSamples[ii].IsRestartRequired, uSamples[ii].AllowProxy);
                     directions[i].ProvidePrecomputeValue(z1pv);
                     shouldCompute[i] = directions[i].CanPrecomputeSample();
                     ii++;

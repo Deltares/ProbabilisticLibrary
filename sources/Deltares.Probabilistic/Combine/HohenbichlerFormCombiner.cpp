@@ -40,7 +40,7 @@ namespace Deltares::Reliability
             auto alpha = Numeric::Vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
-                alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
+                alpha(i) = -(reorderedDesignPoint.Values[i] / designPoint->Beta);
             }
             auto dp = alphaBeta(designPoint->Beta, alpha);
             elm.push_back(dp);

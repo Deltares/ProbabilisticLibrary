@@ -85,7 +85,7 @@ namespace Deltares::Reliability
                 for (size_t k = 0; k < stochasts.size(); k++)
                 {
                     auto corr = selfCorrelationMatrix->getSelfCorrelation(stochasts[k], designPoints[i], designPoints[j]);
-                    rho += reorderedDesignPoint1->Values[k] * reorderedDesignPoint2->Values[k] * corr / betaDp1Dp2;
+                    rho += reorderedDesignPoint1.Values[k] * reorderedDesignPoint2.Values[k] * corr / betaDp1Dp2;
                 }
                 if (rho > rhoMax || (i == 0 && j == 1))
                 {
