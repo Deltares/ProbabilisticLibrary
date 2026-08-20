@@ -28,6 +28,7 @@
 #include "../Math/SpecialFunctions.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/GradientCalculator.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "../Statistics/DistributionType.h"

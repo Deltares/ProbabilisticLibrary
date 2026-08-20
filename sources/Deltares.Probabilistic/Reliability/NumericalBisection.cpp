@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cmath>
 #include "../Statistics/StandardNormal.h"
+#include "../Model/SampleStorage.h"
 
 using namespace Deltares::Models;
 using namespace Deltares::Statistics;

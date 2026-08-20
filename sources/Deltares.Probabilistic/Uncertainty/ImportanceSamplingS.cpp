@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "ImportanceSamplingSettingsS.h"
 #include "../Reliability/ImportanceSamplingSupport.h"

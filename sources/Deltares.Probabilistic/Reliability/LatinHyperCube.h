@@ -23,6 +23,7 @@
 
 #include "ReliabilityMethod.h"
 #include "LatinHyperCubeSettings.h"
+#include "../Model/SampleStorage.h"
 
 namespace Deltares::Reliability
 {

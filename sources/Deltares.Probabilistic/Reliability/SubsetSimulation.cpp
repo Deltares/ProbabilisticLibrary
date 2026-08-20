@@ -58,7 +58,7 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<DesignPoint>> contributingDesignPoints;
 
         SampleStorage storage = SampleStorage(Settings->MaximumSamples + 1);
-        SampleStorage newStorage = SampleStorage(Settings->MaximumSamples + 1);
+        SampleStorage newStorage = SampleStorage(Settings->SubsetFraction * Settings->MaximumSamples + 1);
 
         std::vector<Sample*> selectedSamples;
 

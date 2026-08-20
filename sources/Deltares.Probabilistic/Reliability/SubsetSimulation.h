@@ -24,6 +24,7 @@
 #include "SubsetSimulationSettings.h"
 #include "ReliabilityMethod.h"
 #include "../Model/RandomSampleGenerator.h"
+#include "../Model/SampleStorage.h"
 
 namespace Deltares::Reliability
 {

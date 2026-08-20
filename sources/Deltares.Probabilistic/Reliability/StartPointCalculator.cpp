@@ -24,6 +24,7 @@
 #include "DirectionReliability.h"
 #include "../Utils/ProbabilisticLibraryException.h"
 #include "../Math/NumericSupport.h"
+#include "../Model/SampleStorage.h"
 #include "SphereTasks.h"
 
 namespace Deltares::Reliability
@@ -156,7 +157,7 @@ namespace Deltares::Reliability
     {
         int nstochasts = modelRunner.getVaryingStochastCount();
 
-        Models::SampleStorage storage = Models::SampleStorage(nstochasts + 1);
+        Models::SampleStorage storage = Models::SampleStorage(2 * nstochasts + 1);
         std::vector<Models::Sample*> samples;
         std::vector<double> gradient(nstochasts);
 

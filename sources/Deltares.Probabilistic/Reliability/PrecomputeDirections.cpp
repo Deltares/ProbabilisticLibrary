@@ -19,11 +19,10 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-
 #include "PrecomputeDirections.h"
-
 #include "ReliabilityMethod.h"
 #include "ZGetter.h"
+#include "../Model/SampleStorage.h"
 
 namespace Deltares::Reliability
 {

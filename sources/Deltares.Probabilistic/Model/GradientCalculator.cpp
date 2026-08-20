@@ -26,6 +26,7 @@
 #include "GradientSettings.h"
 #include "Sample.h"
 #include "ModelRunner.h"
+#include "SampleStorage.h"
 #include "../Utils/ProbabilisticLibraryException.h"
 
 using namespace Deltares::Reliability;
@@ -38,12 +39,8 @@ namespace Deltares::Models
     {
         int nStochasts = modelRunner.getVaryingStochastCount();
 
-        //std::vector<Sample> sampleStorage;
         std::vector<Sample*> samples;
         std::vector<double> gradient(nStochasts);
-
-        //sampleStorage.reserve(nStochasts);
-        //samples.reserve(nStochasts + 1);
 
         // first sample is the sample itself
         samples.push_back(&sample);

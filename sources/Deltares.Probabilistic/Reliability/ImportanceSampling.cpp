@@ -29,6 +29,7 @@
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "ConvergenceReport.h"
 #include "ReliabilityReport.h"

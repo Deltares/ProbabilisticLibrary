@@ -162,35 +162,5 @@ namespace Deltares::Models
             return result;
         }
     };
-
-    class SampleStorage
-    {
-    private:
-        std::vector<Sample> samples;
-
-    public:
-        SampleStorage() = default;
-
-        SampleStorage(size_t size)
-        {
-            samples.reserve(size);
-        }
-
-        void reserve(size_t size)
-        {
-            samples.reserve(size);
-        }
-
-        Sample* keep(Sample& sample)
-        {
-            samples.push_back(sample);
-            return &samples.back();
-        }
-
-        void clear()
-        {
-            samples.clear();
-        }
-    };
 }
 

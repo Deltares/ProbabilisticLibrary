@@ -22,6 +22,7 @@
 #pragma once
 #include "NumericalIntegrationSettingsS.h"
 #include "UncertaintyMethod.h"
+#include "../Model/SampleStorage.h"
 
 namespace Deltares::Uncertainty
 {
@@ -45,7 +46,7 @@ namespace Deltares::Uncertainty
     private:
         std::vector<Numeric::WeightedValue> collectSamples(Models::ModelRunner& modelRunner, int stochastIndex, Models::Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
         std::vector<Models::Sample*> calculatedSamples;
-        Models::SampleStorage calculatedSampleStorage;
+        Models::SampleStorage calculatedSampleStorage = Models::SampleStorage(0);
     };
 }
 

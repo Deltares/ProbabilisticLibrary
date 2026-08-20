@@ -189,6 +189,7 @@
     <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
     <ClInclude Include="Model\SampleRepository.h" />
     <ClInclude Include="Model\ModelProjectSettings.h" />
+    <ClInclude Include="Model\SampleStorage.h" />
     <ClInclude Include="Sensitivity\SensitivityValue.h" />
     <ClInclude Include="Sensitivity\Sobol.h" />
     <ClInclude Include="Sensitivity\SensitivityMethod.h" />

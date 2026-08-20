@@ -20,31 +20,50 @@
 // All rights reserved.
 //
 #pragma once
-#include "SensitivityMethod.h"
-#include "SobolSettings.h"
-#include "../Model/SampleStorage.h"
 
-namespace Deltares::Sensitivity
+#include <vector>
+
+#include "Sample.h"
+
+namespace Deltares::Models
 {
     /**
-     * \brief Calculates the sensitivity using Sobol indices
+     * \brief Keeps samples alive
      */
-    class Sobol : public SensitivityMethod
+
+    class SampleStorage
     {
+    private:
+        std::vector<Sample> samples;
+
     public:
         /**
-         * \brief Settings for this algorithm
+         * \brief Creates a registration to keep samples alive
+         * \param size The maximum number of samples to be kept alive
          */
-        std::shared_ptr<SobolSettings> Settings = std::make_shared<SobolSettings>();
+        SampleStorage(size_t size)
+        {
+            samples.reserve(size);
+        }
 
         /**
-         * \brief Gets the sensitivity
-         * \param modelRunner The model for which the sensitivity is calculated
-         * \return The sensitivity
+         * \brief Keeps a sample alive and returns a pointer to a sample
+         * \param sample Sample
+         * \return Pointer to sample
          */
-        SensitivityResult getSensitivityResult(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-    private:
-        std::vector<Models::Sample*> getMixedSamples(int index, std::vector<Models::Sample*> samples1, std::vector<Models::Sample*> samples2, Models::SampleStorage& storage, int nSamples);
+        Sample* keep(const Sample& sample)
+        {
+            samples.push_back(sample);
+            return &samples.back();
+        }
+
+        /**
+         * \brief Stops keeping the already registered samples alive
+         */
+        void clear()
+        {
+            samples.clear();
+        }
     };
 }
 

@@ -26,6 +26,7 @@
 #include "../Statistics/StandardNormal.h"
 #include "../Statistics/ProbabilityIterator.h"
 #include "../Math/NumericSupport.h"
+#include "../Model/SampleStorage.h"
 
 namespace Deltares::Reliability
 {

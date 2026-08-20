@@ -23,6 +23,7 @@
 #include "DirectionReliabilityDS.h"
 #include "PrecomputeDirections.h"
 #include "../Model/RandomSampleGenerator.h"
+#include "../Model/SampleStorage.h"
 #include "../Math/SpecialFunctions.h"
 #include <omp.h>
 #include <algorithm>

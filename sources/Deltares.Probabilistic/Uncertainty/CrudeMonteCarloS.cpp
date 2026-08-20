@@ -25,6 +25,7 @@
 #include <algorithm>
 
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "CrudeMonteCarloSettingsS.h"
 #include "UncertaintyResult.h"

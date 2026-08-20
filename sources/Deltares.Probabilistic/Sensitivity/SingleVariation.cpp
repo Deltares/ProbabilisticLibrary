@@ -25,6 +25,7 @@
 
 #include "SensitivityValue.h"
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Statistics/Stochast.h"
 
 namespace Deltares::Sensitivity
