@@ -96,8 +96,8 @@ namespace Deltares::Models
         std::shared_ptr<Reliability::DesignPoint> getDesignPoint(Sample& sample, double beta, const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport = nullptr, const std::string& identifier = "");
         Uncertainty::UncertaintyResult getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast) const;
         Sensitivity::SensitivityResult getSensitivityResult() const;
-        std::shared_ptr<Models::ModelSample> getModelSample(Sample sample) const;
-        std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type) const;
+        Models::ModelSample getModelSample(Sample& sample) const;
+        Models::ModelSample getModelSampleFromType(Statistics::RunValuesType type) const;
         std::vector<double> getOnlyVaryingValues(const std::vector<double>& values) const;
 
         void setDirectionModel(const ZBetaLambda& zBetaLambda) const;
@@ -123,9 +123,9 @@ namespace Deltares::Models
         std::vector< std::shared_ptr<Logging::Message>> messages;
         std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
-        static Evaluation getEvaluationFromSample(const std::shared_ptr<ModelSample>& sample);
+        static Evaluation getEvaluationFromSample(ModelSample& sample);
 
-        void registerEvaluation(const std::shared_ptr<ModelSample>& sample);
+        void registerEvaluation(ModelSample& sample);
 
         std::shared_ptr<SampleProvider> sampleProvider = nullptr;
 

@@ -63,7 +63,7 @@ namespace Deltares::Models
         return sample;
     }
 
-    std::shared_ptr<ModelSample> StochastPoint::getModelSample()
+    ModelSample StochastPoint::getModelSample()
     {
         std::vector<double> values(Alphas.size());
         for (size_t i = 0; i < Alphas.size(); i++)
@@ -71,7 +71,7 @@ namespace Deltares::Models
             values[i] = this->Alphas[i]->X;
         }
 
-        return std::make_shared<ModelSample>(values);
+        return ModelSample(values);
     }
 
     std::vector<std::shared_ptr<StochastPointAlpha>> StochastPoint::getAlphas(const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts) const

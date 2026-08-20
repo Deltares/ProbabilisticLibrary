@@ -31,7 +31,7 @@ namespace Deltares::Models
         std::string parameter = "";
         int arrayIndex = 0;
         void initialize(std::vector<std::shared_ptr<ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<ModelInputParameter>>& outputParameters) override;
-        void updateZValue(std::shared_ptr<ModelSample> sample) override;
+        void updateZValue(ModelSample& sample) override;
         std::string getIdentifier() override { return parameter; }
 
     private:

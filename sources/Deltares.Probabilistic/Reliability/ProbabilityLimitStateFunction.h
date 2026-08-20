@@ -31,7 +31,7 @@ namespace Deltares::Reliability
     {
     public:
         std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = nullptr;
-        void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
+        void updateZValue(Models::ModelSample& sample) override;
     };
 }
 

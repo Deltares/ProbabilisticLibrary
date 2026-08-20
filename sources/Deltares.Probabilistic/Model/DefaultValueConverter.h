@@ -30,15 +30,15 @@ namespace Deltares::Models
     class DefaultValueConverter : public ZValueConverter
     {
     public:
-        void updateZValue(std::shared_ptr<ModelSample> sample) override
+        void updateZValue(ModelSample& sample) override
         {
-            if (sample->OutputValues.empty())
+            if (sample.OutputValues.empty())
             {
-                sample->Z = std::nan("");
+                sample.Z = std::nan("");
             }
             else
             {
-                sample->Z = sample->OutputValues[0];
+                sample.Z = sample.OutputValues[0];
             }
         }
     };

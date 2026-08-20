@@ -110,7 +110,7 @@ namespace Deltares::Reliability
         auto corr = std::make_shared<CorrelationMatrix>(false);
         auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
-        auto zModel = std::make_shared<Models::ZModel>([&w](std::shared_ptr<Models::ModelSample> v) { return w.zfunc(v); });
+        auto zModel = std::make_shared<Models::ZModel>([&w](Models::ModelSample& v) { return w.zfunc(v); });
         auto modelRunner = std::make_shared<Models::ModelRunner>(zModel, uConverter);
         modelRunner->initializeForRun();
         auto relMethod = std::make_shared<FORM>();

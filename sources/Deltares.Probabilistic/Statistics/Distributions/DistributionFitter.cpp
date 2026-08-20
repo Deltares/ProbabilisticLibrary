@@ -57,14 +57,14 @@ namespace Deltares::Statistics
         }
 
         const auto model = std::make_shared<Models::ZModel>([this, values, &stochast, properties]
-            (const std::shared_ptr<Models::ModelSample>& sample)
-            { return getLogLikelihood(*sample, values, stochast, properties); });
+            (Models::ModelSample& sample)
+            { return getLogLikelihood(sample, values, stochast, properties); });
 
-        const std::shared_ptr<Models::ModelSample> sample = gridSearch.getOptimizedSample(searchArea, model);
+        Models::ModelSample sample = gridSearch.getOptimizedSample(searchArea, model);
 
         if (sample != nullptr)
         {
-            return sample->Values;
+            return sample.Values;
         }
         else
         {

@@ -40,7 +40,7 @@ namespace Deltares::Proxies
          * \param trainingSamples Samples which are used for training
          * \param proxyValues Values to be proxied
          */
-        ProxyCoefficient trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples,
+        ProxyCoefficient trainValue(std::vector<Models::ModelSample*>& trainingSamples,
                                     std::vector<double> proxyValues) override;
 
         /**

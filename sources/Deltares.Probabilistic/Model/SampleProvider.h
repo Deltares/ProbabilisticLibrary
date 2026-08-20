@@ -44,9 +44,9 @@ namespace Deltares::Models
             return {sampleSize};
         }
 
-        static std::shared_ptr<ModelSample> getModelSample(std::vector<double>& values)
+        static ModelSample getModelSample(std::vector<double>& values)
         {
-            return std::make_shared<ModelSample>(values);
+            return ModelSample(values);
         }
 
     private:

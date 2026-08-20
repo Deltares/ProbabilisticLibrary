@@ -39,13 +39,13 @@ namespace Deltares::Models
     /**
      * \brief Copies the results from another sample
      */
-    void ModelSample::copyFrom(const std::shared_ptr<ModelSample>& source)
+    void ModelSample::copyFrom(ModelSample& source)
     {
-        this->Z = source->Z;
-        this->OutputValues = std::vector<double>(source->OutputValues.size());
+        this->Z = source.Z;
+        this->OutputValues = std::vector<double>(source.OutputValues.size());
         for (size_t i = 0; i < this->OutputValues.size(); i++)
         {
-            this->OutputValues[i] = source->OutputValues[i];
+            this->OutputValues[i] = source.OutputValues[i];
         }
     }
 
@@ -97,16 +97,16 @@ namespace Deltares::Models
         Tag = sampleStruct->Tag;
     }
 
-    bool ModelSample::hasSameValues(std::shared_ptr<ModelSample> other)
+    bool ModelSample::hasSameValues(ModelSample& other)
     {
-        if (this->Values.size() != other->Values.size())
+        if (this->Values.size() != other.Values.size())
         {
             return false;
         }
 
         for (int i = 0; i < this->Values.size(); i++)
         {
-            if (this->Values[i] != other->Values[i])
+            if (this->Values[i] != other.Values[i])
             {
                 return false;
             }

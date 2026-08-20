@@ -41,7 +41,7 @@ namespace Deltares::Reliability
         bool normalize = false;
 
         void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
-        void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
+        void updateZValue(Models::ModelSample& sample) override;
 
         static CompareType GetCompareType(std::string compare);
         static std::string GetCompareTypeString(CompareType compareType);

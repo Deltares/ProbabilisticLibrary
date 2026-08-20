@@ -32,10 +32,10 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<Models::ModelRunner> TestWaartsSeriesSystem::WaartsModel()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
         {
-            const double u1 = v->Values[0];
-            const double u2 = v->Values[1];
+            const double u1 = v.Values[0];
+            const double u2 = v.Values[1];
 
             double g1 = 0.1 * pow(u1 - u2,2) - (u1 + u2) / std::numbers::sqrt2 + 3.0;
             double g2 = 0.1 * pow(u1 - u2,2) + (u1 + u2) / std::numbers::sqrt2 + 3.0;
@@ -43,7 +43,7 @@ namespace Deltares::Probabilistic::Test
             double g4 = -u1 + u2 + 3.5 * std::numbers::sqrt2;
             double seriesSystem = Numeric::NumericSupport::getMinimum({ g1, g2, g3, g4 });
 
-            v->Z = seriesSystem;
+            v.Z = seriesSystem;
             return seriesSystem;
         });
 

@@ -35,13 +35,11 @@ namespace Deltares::Models
     class SampleRepository
     {
     public:
-        SampleRepository()
-        {
-        }
+        SampleRepository() = default;
 
-        void registerSample(std::shared_ptr<ModelSample> sample);
+        void registerSample(ModelSample& sample);
 
-        std::shared_ptr<ModelSample> retrieveSample(std::shared_ptr<ModelSample> sample);
+        ModelSample retrieveSample(ModelSample& sample);
 
         void clear();
 
@@ -49,11 +47,11 @@ namespace Deltares::Models
         class SampleCollection
         {
         public:
-            void registerSample(std::shared_ptr<ModelSample> sample);
-            std::shared_ptr<ModelSample> retrieveSample(std::shared_ptr<ModelSample> sample) const;
-            int size() { return static_cast<int>(samples.size()); }
+            void registerSample(ModelSample& sample);
+            ModelSample retrieveSample(ModelSample& sample) const;
+            int size() const { return static_cast<int>(samples.size()); }
         private:
-            std::vector<std::shared_ptr<ModelSample>> samples;
+            std::vector<ModelSample> samples;
         };
 
         std::unordered_map<double, std::unique_ptr<SampleCollection>> sampleCollections;
@@ -64,13 +62,13 @@ namespace Deltares::Models
          * \return the key for the sample
          * \remarks The key is not unique 
          */
-        double getKey(std::shared_ptr<ModelSample> sample);
+        double getKey(ModelSample& sample);
 
         /**
          * \brief Indicates whether the sample us useful to be registered in the repository
          * \return Indication
          */
-        bool shouldRegisterSample(std::shared_ptr<ModelSample> sample);
+        bool shouldRegisterSample(ModelSample& sample);
 
         /**
          * \brief Supporting utility for multi threading

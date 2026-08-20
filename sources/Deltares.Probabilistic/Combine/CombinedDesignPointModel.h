@@ -86,7 +86,7 @@ namespace Deltares::Reliability
          * \param sample Sample, should contain values defined in u-space
          * \remark The calculation result is stored in the sample z-value
          */
-        void calculate(std::shared_ptr<Models::ModelSample> sample);
+        void calculate(Models::ModelSample& sample);
 
         /**
          * \brief Indicates whether the beta value in a direction can be calculated
@@ -99,7 +99,7 @@ namespace Deltares::Reliability
          * \param sample Sample indicating direction
          * \return Length
          */
-        double getBetaDirection(std::shared_ptr<Models::ModelSample> sample);
+        double getBetaDirection(Models::ModelSample& sample);
 
         /**
          * \brief Replaces standard normal stochasts in a design point with stochasts defined in the design points

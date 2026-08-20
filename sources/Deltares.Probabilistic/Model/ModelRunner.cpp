@@ -128,31 +128,31 @@ namespace Deltares::Models
     }
 
 
-    std::shared_ptr<ModelSample> ModelRunner::getModelSample(Sample sample) const
+    ModelSample ModelRunner::getModelSample(Sample& sample) const
     {
         std::vector<double> xValues = this->uConverter->getXValues(sample);
 
         // create a sample with values in x-space
-        std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
+        ModelSample xSample = SampleProvider::getModelSample(xValues);
 
-        xSample->AllowProxy = sample.AllowProxy;
-        xSample->IterationIndex = sample.IterationIndex;
-        xSample->threadId = sample.threadId;
-        xSample->Weight = sample.Weight;
-        xSample->IsRestartRequired = sample.IsRestartRequired;
-        xSample->Beta = sample.getBeta();
-        xSample->OutputValues.resize(this->zModel->outputParameters.size());
+        xSample.AllowProxy = sample.AllowProxy;
+        xSample.IterationIndex = sample.IterationIndex;
+        xSample.threadId = sample.threadId;
+        xSample.Weight = sample.Weight;
+        xSample.IsRestartRequired = sample.IsRestartRequired;
+        xSample.Beta = sample.getBeta();
+        xSample.OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
     }
 
-    std::shared_ptr<ModelSample> ModelRunner::getModelSampleFromType(Statistics::RunValuesType type) const
+    ModelSample ModelRunner::getModelSampleFromType(Statistics::RunValuesType type) const
     {
         std::vector<double> xValues = this->uConverter->getValuesFromType(type);
 
         // create a sample with values in x-space
-        std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
-        xSample->OutputValues.resize(this->zModel->outputParameters.size());
+        ModelSample xSample = SampleProvider::getModelSample(xValues);
+        xSample.OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
     }
@@ -164,13 +164,13 @@ namespace Deltares::Models
      */
     double ModelRunner::getZValue(Sample& sample)
     {
-        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+        ModelSample xSample = getModelSample(sample);
 
         this->zModel->invoke(xSample);
 
         registerEvaluation(xSample);
 
-        sample.Z = xSample->Z;
+        sample.Z = xSample.Z;
 
         return sample.Z;
     }
@@ -182,7 +182,7 @@ namespace Deltares::Models
      */
     Evaluation ModelRunner::getEvaluation(Sample& sample) const
     {
-        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+        ModelSample xSample = getModelSample(sample);
 
         this->zModel->invoke(xSample);
 
@@ -207,7 +207,7 @@ namespace Deltares::Models
      */
     Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type) const
     {
-        std::shared_ptr<ModelSample> xSample = getModelSampleFromType(type);
+        ModelSample xSample = getModelSampleFromType(type);
 
         this->zModel->invoke(xSample);
 
@@ -229,18 +229,18 @@ namespace Deltares::Models
     void ModelRunner::runDesignPoint(const std::shared_ptr<Reliability::DesignPoint>& designPoint)
     {
         Sample sample = designPoint->getSample();
-        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+        ModelSample xSample = getModelSample(sample);
 
-        xSample->ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
-        xSample->LoggingCounter = runDesignPointCounter++;
+        xSample.ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
+        xSample.LoggingCounter = runDesignPointCounter++;
 
         this->zModel->invoke(xSample);
 
         registerEvaluation(xSample);
 
-        for (size_t i = 0; i < xSample->Values.size(); i++)
+        for (size_t i = 0; i < xSample.Values.size(); i++)
         {
-            designPoint->Alphas[i]->X = xSample->Values[i];
+            designPoint->Alphas[i]->X = xSample.Values[i];
         }
     }
 
@@ -251,7 +251,7 @@ namespace Deltares::Models
      */
     std::vector<double> ModelRunner::getZValues(std::vector<Sample*>& samples)
     {
-        std::vector<std::shared_ptr<ModelSample>> xSamples;
+        std::vector<ModelSample> xSamples;
 
         for (auto sample : samples)
         {
@@ -266,10 +266,10 @@ namespace Deltares::Models
         {
             registerEvaluation(xSamples[i]);
 
-            samples[i]->Z = xSamples[i]->Z;
-            samples[i]->AllowProxy = xSamples[i]->AllowProxy;
-            samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
-            zValues[i] = xSamples[i]->Z;
+            samples[i]->Z = xSamples[i].Z;
+            samples[i]->AllowProxy = xSamples[i].AllowProxy;
+            samples[i]->IsRestartRequired = xSamples[i].IsRestartRequired;
+            zValues[i] = xSamples[i].Z;
         }
 
         return zValues;
@@ -300,23 +300,23 @@ namespace Deltares::Models
      */
     double ModelRunner::getBeta(Sample& sample) const
     {
-        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+        ModelSample xSample = getModelSample(sample);
 
         return this->zModel->getBeta(xSample);
     }
 
-    Evaluation ModelRunner::getEvaluationFromSample(const std::shared_ptr<ModelSample>& sample)
+    Evaluation ModelRunner::getEvaluationFromSample(ModelSample& sample)
     {
         Evaluation evaluation = Evaluation();
 
-        evaluation.Z = sample->Z;
-        evaluation.Beta = sample->Beta;
-        evaluation.Iteration = sample->IterationIndex;
-        evaluation.Weight = sample->Weight;
-        evaluation.usedProxy = sample->UsedProxy;
-        evaluation.InputValues = sample->Values;
-        evaluation.OutputValues = sample->OutputValues;
-        evaluation.Tag = sample->Tag;
+        evaluation.Z = sample.Z;
+        evaluation.Beta = sample.Beta;
+        evaluation.Iteration = sample.IterationIndex;
+        evaluation.Weight = sample.Weight;
+        evaluation.usedProxy = sample.UsedProxy;
+        evaluation.InputValues = sample.Values;
+        evaluation.OutputValues = sample.OutputValues;
+        evaluation.Tag = sample.Tag;
 
         return evaluation;
     }
@@ -325,7 +325,7 @@ namespace Deltares::Models
      * \brief Registers an evaluation for a calculated sample
      * \param sample Calculated sample
      */
-    void ModelRunner::registerEvaluation(const std::shared_ptr<ModelSample>& sample)
+    void ModelRunner::registerEvaluation(ModelSample& sample)
     {
         if (this->Settings->SaveEvaluations)
         {

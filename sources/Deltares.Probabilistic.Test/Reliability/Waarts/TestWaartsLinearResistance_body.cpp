@@ -30,10 +30,10 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<Models::ModelRunner> TestWaartsLinearResistance::WaartsModel()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
         {
-            v->Z = v->Values[0] - v->Values[1];
-            return v->Z;
+            v.Z = v.Values[0] - v.Values[1];
+            return v.Z;
         });
 
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();

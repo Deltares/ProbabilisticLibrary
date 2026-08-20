@@ -24,16 +24,16 @@
 
 namespace Deltares::Models
 {
-    void SampleRepository::SampleCollection::registerSample(std::shared_ptr<ModelSample> sample)
+    void SampleRepository::SampleCollection::registerSample(ModelSample& sample)
     {
-        this->samples.push_back(sample);
+        this->samples.push_back(sample.clone());
     }
 
-    std::shared_ptr<ModelSample> SampleRepository::SampleCollection::retrieveSample(std::shared_ptr<ModelSample> sample) const
+    ModelSample SampleRepository::SampleCollection::retrieveSample(ModelSample& sample) const
     {
-        for (std::shared_ptr<ModelSample> existingSample : samples)
+        for (auto existingSample : samples)
         {
-            if (existingSample->hasSameValues(sample))
+            if (existingSample.hasSameValues(sample))
             {
                 return existingSample;
             }
@@ -42,25 +42,25 @@ namespace Deltares::Models
         return nullptr;
     }
 
-    double SampleRepository::getKey(std::shared_ptr<ModelSample> sample)
+    double SampleRepository::getKey(ModelSample& sample)
     {
         // calculates a sample key for the sample sample
         double sum = 0;
-        for (size_t i = 0; i < sample->Values.size(); i++)
+        for (size_t i = 0; i < sample.Values.size(); i++)
         {
             int index = static_cast<int>(i) + 1;
-            sum += index * sample->Values[i];
+            sum += index * sample.Values[i];
         }
 
         return sum;
     }
 
-    bool SampleRepository::shouldRegisterSample(std::shared_ptr<ModelSample> sample)
+    bool SampleRepository::shouldRegisterSample(ModelSample& sample)
     {
-        return !(sample->UsedProxy);
+        return !(sample.UsedProxy);
     }
 
-    void SampleRepository::registerSample(std::shared_ptr<ModelSample> sample)
+    void SampleRepository::registerSample(ModelSample& sample)
     {
         if (shouldRegisterSample(sample))
         {
@@ -82,7 +82,7 @@ namespace Deltares::Models
         }
     }
 
-    std::shared_ptr<ModelSample> SampleRepository::retrieveSample(std::shared_ptr<ModelSample> sample)
+    ModelSample SampleRepository::retrieveSample(ModelSample& sample)
     {
         double key = this->getKey(sample);
 

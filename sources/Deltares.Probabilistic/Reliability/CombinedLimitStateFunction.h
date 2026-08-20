@@ -36,7 +36,7 @@ namespace Deltares::Reliability
 
         std::vector<std::shared_ptr<LimitStateFunction>> limitStateFunctions;
 
-        void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
+        void updateZValue(Models::ModelSample& sample) override;
 
         void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
     };
