@@ -40,9 +40,11 @@ namespace Deltares::Reliability
         double minBetaDirection = 200; // initialize convergence indicator and loops
         auto designPointBuilder = DesignPointBuilder (nStochasts, Settings->designPointMethod, Settings->StochastSet);
         int parSamples = 0;
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
 
         std::vector<double> betaValues;
         std::vector<Models::Sample*> samples;
+        Models::SampleStorage storage = Models::SampleStorage(chunkSize);
 
         modelRunner->updateStochastSettings(Settings->StochastSet);
 
@@ -74,7 +76,6 @@ namespace Deltares::Reliability
             }
         }
 
-        int chunkSize = modelRunner->Settings->MaxChunkSize;
         if (modelRunner->ProxySettings->IsProxyModel)
         {
             // the early return for proxy models has results depending on the chunk size
@@ -96,6 +97,7 @@ namespace Deltares::Reliability
                 }
 
                 samples.clear();
+                storage.clear();
 
                 int runs = std::min(chunkSize, Settings->MaximumDirections - parSamples * chunkSize);
 
@@ -104,7 +106,7 @@ namespace Deltares::Reliability
                 {
                     auto sample = randomSampleGenerator.getRandomSample();
                     sample.IterationIndex = directionIndex + i;
-                    samples.push_back(&sample);
+                    samples.push_back(storage.keep(sample));
                 }
 
                 betaValues = getDirectionBetas(*modelRunner, samples, z0, minBetaDirection);

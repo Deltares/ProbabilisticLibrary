@@ -39,7 +39,7 @@ namespace Deltares::Sensitivity
         double uLow = StandardNormal::getUFromP(Settings->LowValue);
         double uHigh = StandardNormal::getUFromP(Settings->HighValue);
 
-        SampleStorage storage = SampleStorage(nStochasts + 1);
+        SampleStorage storage = SampleStorage(2 * nStochasts + 1);
         std::vector<Sample*> samples;
 
         Sample zeroSample = Sample(nStochasts);

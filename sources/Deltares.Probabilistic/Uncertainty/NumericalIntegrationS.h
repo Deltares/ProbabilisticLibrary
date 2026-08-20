@@ -45,6 +45,7 @@ namespace Deltares::Uncertainty
     private:
         std::vector<Numeric::WeightedValue> collectSamples(Models::ModelRunner& modelRunner, int stochastIndex, Models::Sample& parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
         std::vector<Models::Sample*> calculatedSamples;
+        Models::SampleStorage calculatedSampleStorage;
     };
 }
 

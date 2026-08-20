@@ -100,10 +100,10 @@ namespace Deltares::Sensitivity
 
         for (int index = 0; index < nStochasts; index++)
         {
-            storage.clear();
+            SampleStorage mixedStorage = SampleStorage(2 * nSamples);
 
-            std::vector<Sample*> samplesAB = getMixedSamples(index, samplesA, samplesB, storage, nSamples);
-            std::vector<Sample*> samplesBA = getMixedSamples(index, samplesB, samplesA, storage, nSamples);
+            std::vector<Sample*> samplesAB = getMixedSamples(index, samplesA, samplesB, mixedStorage, nSamples);
+            std::vector<Sample*> samplesBA = getMixedSamples(index, samplesB, samplesA, mixedStorage, nSamples);
 
             std::vector<double> zABi = modelRunner->getZValues(samplesAB);
             iteration++;

@@ -80,11 +80,6 @@ namespace Deltares::Reliability
         void reportVarianceLoop(Models::ModelRunner& modelRunner, const int loopCounter) const;
 
         /**
-         * \brief Indicates whether last start point has been set
-         */
-        bool hasLastStartPoint = false;
-
-        /**
          * \brief Previous start point 
          */
         Models::Sample lastStartPoint;

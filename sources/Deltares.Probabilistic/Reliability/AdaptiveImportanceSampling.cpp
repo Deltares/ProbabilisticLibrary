@@ -303,7 +303,7 @@ namespace Deltares::Reliability
         {
             Sample newStartPoint = this->getStartPoint(modelRunner, designPoint);
 
-            if (this->hasLastStartPoint && !this->lastStartPoint.areValuesEqual(newStartPoint))
+            if (!this->lastStartPoint.areValuesEqual(newStartPoint))
             {
                 this->lastStartPoint = newStartPoint;
                 importanceSampling->Settings->StochastSet->setStartPoint(newStartPoint);
@@ -324,7 +324,7 @@ namespace Deltares::Reliability
     Sample AdaptiveImportanceSampling::getStartPoint(const std::shared_ptr<ModelRunner>& modelRunner,
         const std::shared_ptr<DesignPoint>& designPoint)
     {
-        if (!this->nextLoopsAllowed(designPoint->Beta) && this->hasLastStartPoint)
+        if (!this->nextLoopsAllowed(designPoint->Beta))
         {
             // reuse last start point
             return this->lastStartPoint;
@@ -345,7 +345,7 @@ namespace Deltares::Reliability
 
                 newSample = modelRunner->getSampleFromStochastPoint(directionDesignPoint);
             }
-            else if (Settings->StartValueStepSize > 0 && this->hasLastStartPoint)
+            else if (Settings->StartValueStepSize > 0)
             {
                 // avoid a new start point very close to the old start point
                 for (size_t i = 0; i < newSample.Values.size(); i++)

@@ -39,7 +39,6 @@ namespace Deltares::Uncertainty
         this->calculatedSamples.clear();
 
         modelRunner->updateStochastSettings(Settings->StochastSet);
-
         int nStochasts = modelRunner->getVaryingStochastCount();
 
         // Numerical integration isn't possible with a large set of stochastic parameters
@@ -54,6 +53,17 @@ namespace Deltares::Uncertainty
         {
             modelRunner->reportMessage(Logging::MessageType::Warning,
                 "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
+        }
+
+        if (!this->Settings->RequestedQuantiles.empty())
+        {
+            int size = 1;
+            for (auto stochastSetting : Settings->StochastSet->VaryingStochastSettings)
+            {
+                size *= stochastSetting->Intervals + 1;
+            }
+
+            this->calculatedSampleStorage = SampleStorage(size);
         }
 
         std::vector<double> zSamples;
@@ -166,7 +176,7 @@ namespace Deltares::Uncertainty
 
                 if (!this->Settings->RequestedQuantiles.empty())
                 {
-                    this->calculatedSamples.push_back(sample);
+                    this->calculatedSamples.push_back(this->calculatedSampleStorage.keep(*sample));
                 }
             }
 
