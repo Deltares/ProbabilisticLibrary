@@ -101,6 +101,10 @@ namespace Deltares::Reliability
         double nFailed = 0.0;
         int nSamples = 0;
         const std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
+
+        SampleStorage storage = SampleStorage(chunkSize);
         std::vector<Sample*> samples;
         size_t zIndex = 0;
 
@@ -114,15 +118,15 @@ namespace Deltares::Reliability
 
             if (initial || zIndex >= samples.size())
             {
+                storage.clear();
                 samples.clear();
 
-                int chunkSize = modelRunner->Settings->MaxChunkSize;
                 int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
                 if (initial)
                 {
                     Sample sample = sampleProvider->getSample();
-                    samples.push_back(&sample);
+                    samples.push_back(storage.keep(sample));
                     runs = runs - 1;
                 }
 
@@ -134,7 +138,7 @@ namespace Deltares::Reliability
                         applyLimits(sample);
                     }
 
-                    samples.push_back(&sample);
+                    samples.push_back(storage.keep(sample));
                 }
 
                 zValues = modelRunner->getZValues(samples);

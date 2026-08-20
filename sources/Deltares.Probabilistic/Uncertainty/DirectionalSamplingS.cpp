@@ -112,23 +112,22 @@ namespace Deltares::Uncertainty
         int nDirections = this->Settings->getRequiredSamples(modelRunner.getVaryingStochastCount());
         nDirections = std::min(nDirections, this->Settings->NumberDirections);
 
-        for (int i = 0; i < nDirections; i++)
-        {
-            Sample randomSample = randomSampleGenerator.getRandomSample();
-            samples.push_back(&randomSample);
-        }
+        SampleStorage storage = SampleStorage(nDirections);
 
         // Calculate the corresponding distance d of the origin using the length of the samples list
 
         double initialDistance = getBetaDistance(std::abs(quantile->Reliability), nStochasts, this->Settings->modelType);
         initialDistance = std::max(0.1, initialDistance);
 
-        // Normalize the value of Samples via d
-        for (size_t i = 0; i < samples.size(); i++)
+        for (size_t i = 0; static_cast<int>(i) < nDirections; i++)
         {
-            Sample betaSample = samples[i]->getSampleAtBeta(initialDistance);
-            samples[i] = &betaSample;
-            samples[i]->IterationIndex = static_cast<int>(i);
+            Sample randomSample = randomSampleGenerator.getRandomSample();
+
+            // Normalize the value of Samples via d
+            Sample betaSample = randomSample.getSampleAtBeta(initialDistance);
+            betaSample.IterationIndex = static_cast<int>(i);
+
+            samples.push_back(storage.keep(betaSample));
         }
 
         std::vector<double> zValues = modelRunner.getZValues(samples);
@@ -186,14 +185,16 @@ namespace Deltares::Uncertainty
             std::vector<Sample*> newSamples;
             std::vector<Sample*> calculateSamples;
 
+            storage = SampleStorage(directions.size());
+
             for (size_t i = 0; i < directions.size(); i++)
             {
                 Sample newSample = directions[i]->CreateNewSampleAt(zPredicted, maxBetaDirection);
-                newSamples.push_back(&newSample);
+                newSamples.push_back(storage.keep(newSample));
                 if (directions[i]->IsValid())
                 {
-                    newSample.IterationIndex = static_cast<int>(i);
-                    calculateSamples.push_back(&newSample); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
+                    newSamples.back()->IterationIndex = static_cast<int>(i);
+                    calculateSamples.push_back(newSamples.back()); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
                 }
             }
 

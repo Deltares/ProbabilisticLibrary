@@ -38,8 +38,8 @@ namespace Deltares::Reliability
         Models::Sample getSphereStartPoint(Models::ModelRunner& modelRunner) const;
         Models::Sample getDirectionStartPoint(Models::ModelRunner& modelRunner, Models::Sample& startPoint) const;
         void correctDefaultValues(Models::Sample& startPoint) const;
-        static Models::Sample getBestSample(Models::Sample& bestSample, Models::Sample& sample);
-        static Models::Sample refineSpherePoint(Models::Sample& u, Models::Sample& previous);
+        static Models::Sample getBestSample(Models::Sample* bestSample, Models::Sample* sample);
+        static Models::Sample refineSpherePoint(Models::Sample* u, Models::Sample* previous);
         static std::vector<double> getGradient(Models::ModelRunner& modelRunner, Models::Sample& sample);
     };
 }

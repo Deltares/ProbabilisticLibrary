@@ -68,7 +68,7 @@ namespace Deltares::Reliability
         return getReducedDesignPoint(modelRunner, qRange);
     };
 
-    std::vector<Sample> LatinHyperCube::CreateAllSamples(int nStochasts)
+    std::vector<Sample*> LatinHyperCube::createAllSamples(int nStochasts, Models::SampleStorage& storage)
     {
         struct IndexedItem
         {
@@ -129,7 +129,7 @@ namespace Deltares::Reliability
             pMaxValues.push_back(StandardNormal::getQFromU(uMax));
         }
 
-        std::vector<Sample> samples;
+        std::vector<Sample*> samples;
         for (int n = 0; n < Settings->MinimumSamples; n++)
         {
             std::vector<int> uIndices;
@@ -155,7 +155,7 @@ namespace Deltares::Reliability
 
             auto sample = Sample(uValues);
             sample.Weight = weight / nStochasts;
-            samples.push_back(sample);
+            samples.push_back(storage.keep(sample));
         }
         return samples;
     }
@@ -177,14 +177,16 @@ namespace Deltares::Reliability
         int nFailed = 0;
         int nSamples = 0;
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+        const int chunkSize = Settings->RunSettings->MaxChunkSize;
 
         size_t zIndex = 0;
 
-        auto samples = CreateAllSamples(nStochasts);
+        SampleStorage storage = SampleStorage(Settings->MinimumSamples + 1);
+
+        auto samples = createAllSamples(nStochasts, storage);
 
         std::vector<Sample*> calcSamples;
         double probFailure = 0.0;
-        const int chunkSize = Settings->RunSettings->MaxChunkSize;
 
         for (int n = 0; n < Settings->MinimumSamples && !isStopped(); n++)
         {
@@ -199,13 +201,13 @@ namespace Deltares::Reliability
                 if (initial)
                 {
                     Sample sample = Sample(nStochasts);
-                    calcSamples.push_back(&sample);
+                    calcSamples.push_back(storage.keep(sample));
                     runs = std::max(1, runs - 1);
                 }
 
                 for (int i = 0; i < runs; i++)
                 {
-                    calcSamples.push_back(&samples[n + i]);
+                    calcSamples.push_back(samples[n + i]);
                 }
 
                 zValues = modelRunner->getZValues(calcSamples);

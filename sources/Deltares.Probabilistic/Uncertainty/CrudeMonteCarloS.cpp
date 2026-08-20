@@ -52,10 +52,13 @@ namespace Deltares::Uncertainty
         std::vector<double> zSamples;
         size_t zIndex = 0;
         int nSamples = 0;
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
 
         bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
 
         const int requiredSamples = std::clamp(Settings->getRequiredSamples(), Settings->MinimumSamples, Settings->MaximumSamples);
+
+        SampleStorage storage = SampleStorage(chunkSize);
 
         for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
         {
@@ -64,14 +67,14 @@ namespace Deltares::Uncertainty
             if (zIndex >= samples.size())
             {
                 samples.clear();
+                storage.clear();
 
-                int chunkSize = modelRunner->Settings->MaxChunkSize;
                 int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
 
                 for (int i = 0; i < runs; i++)
                 {
                     Sample sample = randomSampleGenerator.getRandomSample();
-                    samples.push_back(&sample);
+                    samples.push_back(storage.keep(sample));
                 }
 
                 modelRunner->getZValues(samples);

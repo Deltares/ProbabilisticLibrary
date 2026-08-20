@@ -152,7 +152,7 @@ namespace Deltares::Reliability
         Models::Sample sample = modelSample;
         if (addProbability)
         {
-            sample = Models::Sample(getSampleWithProbability(modelSample, probability));
+            sample = getSampleWithProbability(modelSample, probability);
         }
 
         double weight = std::isnan(sample.Weight) ? 1.0 : sample.Weight;

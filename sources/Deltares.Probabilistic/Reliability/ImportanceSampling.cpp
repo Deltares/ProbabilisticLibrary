@@ -73,9 +73,11 @@ namespace Deltares::Reliability
         bool initial = true;
         bool reported = false;
         bool addProbability = Settings->runSettings->shouldAddProbability();
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
 
-        std::vector<Sample*> samples; // copy of u for all parallel threads as double
-        std::vector<double> zValues; // copy of z for all parallel threads as double
+        SampleStorage storage = SampleStorage(chunkSize);
+        std::vector<Sample*> samples;
+        std::vector<double> zValues; 
 
         // list of all clusters
         std::shared_ptr<DesignPoint> startDesignPoint = nullptr;
@@ -108,17 +110,16 @@ namespace Deltares::Reliability
 
             if (initial || zIndex >= zValues.size())
             {
+                storage.clear();
                 samples.clear();
                 clusters.clear();
-
-                int chunkSize = modelRunner->Settings->MaxChunkSize;
 
                 int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
                 if (initial)
                 {
                     auto initialSample = sampleProvider->getSample();
-                    samples.push_back(&initialSample);
+                    samples.push_back(storage.keep(initialSample));
                     clusters.push_back(nullptr);
                     runs = runs - 1;
                 }
@@ -128,7 +129,7 @@ namespace Deltares::Reliability
                 {
                     // get values for stochastic parameters
                     clusterIndex++;
-                    if (clusterIndex >= clusterResults.size())
+                    if (clusterIndex >= static_cast<int>(clusterResults.size()))
                     {
                         clusterIndex = 0;
                     }
@@ -146,7 +147,7 @@ namespace Deltares::Reliability
 
                     modifiedSample.Weight = ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
 
-                    samples.push_back(&modifiedSample);
+                    samples.push_back(storage.keep(modifiedSample));
                     clusters.push_back(cluster);
                 }
 

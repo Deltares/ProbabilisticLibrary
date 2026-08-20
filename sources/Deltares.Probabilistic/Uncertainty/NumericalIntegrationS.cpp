@@ -136,6 +136,7 @@ namespace Deltares::Uncertainty
             std::vector<Numeric::WeightedValue> values;
 
             std::vector<Sample*> samples;
+            SampleStorage storage = SampleStorage(uValues.size());
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
@@ -145,7 +146,7 @@ namespace Deltares::Uncertainty
                 double contribution = pq.getDifference(uValues[j + 1]);
                 sample.Weight = density * contribution * nSamples * (static_cast<int>(uValues.size()) - 1);
 
-                samples.push_back(&sample);
+                samples.push_back(storage.keep(sample));
             }
 
             // compute the z-value(s)

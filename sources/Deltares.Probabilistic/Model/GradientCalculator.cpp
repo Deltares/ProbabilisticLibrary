@@ -38,21 +38,27 @@ namespace Deltares::Models
     {
         int nStochasts = modelRunner.getVaryingStochastCount();
 
+        //std::vector<Sample> sampleStorage;
         std::vector<Sample*> samples;
         std::vector<double> gradient(nStochasts);
+
+        //sampleStorage.reserve(nStochasts);
+        //samples.reserve(nStochasts + 1);
 
         // first sample is the sample itself
         samples.push_back(&sample);
 
         if (Settings->gradientType == OneDirection)
         {
+            SampleStorage storage = SampleStorage(nStochasts);
+
             double du = Settings->StepSize * 0.5;
             for (int k = 0; k < nStochasts; k++)
             {
                 Sample uNew = sample.clone();
                 uNew.Values[k] += du;
 
-                samples.push_back(&uNew);
+                samples.push_back(storage.keep(uNew));
             }
 
             std::vector<double> zValues = modelRunner.getZValues(samples);
@@ -66,15 +72,17 @@ namespace Deltares::Models
         }
         else if (Settings->gradientType == TwoDirections)
         {
+            SampleStorage storage = SampleStorage(2 * nStochasts);
+
             for (int k = 0; k < nStochasts; k++)
             {
                 Sample u1 = sample.clone();
                 u1.Values[k] -= Settings->StepSize * 0.5;
-                samples.push_back(&u1);
+                samples.push_back(storage.keep(u1));
 
                 Sample u2 = sample.clone();
                 u2.Values[k] += Settings->StepSize * 0.5;
-                samples.push_back(&u2);
+                samples.push_back(storage.keep(u2));
             }
 
             std::vector<double> zValues = modelRunner.getZValues(samples);

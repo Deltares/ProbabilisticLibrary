@@ -64,14 +64,16 @@ namespace Deltares::Reliability
             //
             // collect samples
             //
+            Models::SampleStorage storage = Models::SampleStorage(nSamples);
             std::vector<Models::Sample*> uSamples;
+
             for (size_t i = 0; i < nSamples; i++)
             {
                 if (shouldCompute[i])
                 {
                     uValues[i] = directions[i].GetPrecomputeUvalue();
                     Models::Sample sample = model.GetSample(uDirections[i], uValues[i]);
-                    uSamples.push_back(&sample);
+                    uSamples.push_back(storage.keep(sample));
                 }
             }
 

@@ -41,13 +41,13 @@ namespace Deltares::Reliability
         }
 
     private:
-        std::vector<Models::Sample*> getInitialSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial);
-        std::vector<Models::Sample*> getMarkovChainSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<Models::Sample*>& selectedSamples, double z0Fac);
+        std::vector<Models::Sample*> getInitialSamples(std::shared_ptr<Models::ModelRunner> modelRunner, Models::SampleStorage& storage, bool initial);
+        std::vector<Models::Sample*> getMarkovChainSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<Models::Sample*>& selectedSamples, Models::SampleStorage& storage, double z0Fac);
         Models::Sample getMarkovChainSample(Models::Sample oldSample, std::shared_ptr<Models::ModelRunner> modelRunner, double maxZ, double z0Fac);
-        std::vector<Models::Sample*> getAdaptiveConditionalSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<Models::Sample*>& selectedSamples);
+        std::vector<Models::Sample*> getAdaptiveConditionalSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<Models::Sample*>& selectedSamples, Models::SampleStorage& storage);
 
-        std::vector<Models::Sample*> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<Models::Sample*> selectedSamples);
-        std::vector<Models::Sample*> selectSamples(double z0Fac, std::vector<Models::Sample*> performedSamples);
+        std::vector<Models::Sample*> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<Models::Sample*> selectedSamples, Models::SampleStorage& storage);
+        std::vector<Models::Sample*> selectSamples(double z0Fac, std::vector<Models::Sample*> performedSamples, Models::SampleStorage& storage);
         static double getConvergence(double pf, int samples);
         bool isConverged(int sampleIndex, double convergence) const;
 

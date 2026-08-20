@@ -47,6 +47,8 @@ namespace Deltares::Sensitivity
 
         // step 1
 
+        SampleStorage storage = SampleStorage(2 * nSamples);
+
         std::vector<Sample*> samplesA;
         std::vector<Sample*> samplesB;
 
@@ -60,11 +62,11 @@ namespace Deltares::Sensitivity
 
             std::vector<double> uValuesA = NumericSupport::take(uSequence, 0, nStochasts);
             Sample sampleA = Sample(uValuesA);
-            samplesA.push_back(&sampleA);
+            samplesA.push_back(storage.keep(sampleA));
 
             std::vector<double> uValuesB = NumericSupport::take(uSequence, nStochasts, nStochasts);
             Sample sampleB = Sample(uValuesB);
-            samplesB.push_back(&sampleB);
+            samplesB.push_back(storage.keep(sampleB));
         }
 
         modelRunner->reportProgress(0, nIterations * nSamples);
@@ -98,8 +100,10 @@ namespace Deltares::Sensitivity
 
         for (int index = 0; index < nStochasts; index++)
         {
-            std::vector<Sample*> samplesAB = getMixedSamples(index, samplesA, samplesB, nSamples);
-            std::vector<Sample*> samplesBA = getMixedSamples(index, samplesB, samplesA, nSamples);
+            storage.clear();
+
+            std::vector<Sample*> samplesAB = getMixedSamples(index, samplesA, samplesB, storage, nSamples);
+            std::vector<Sample*> samplesBA = getMixedSamples(index, samplesB, samplesA, storage, nSamples);
 
             std::vector<double> zABi = modelRunner->getZValues(samplesAB);
             iteration++;
@@ -162,7 +166,7 @@ namespace Deltares::Sensitivity
         return sensitivityStochast;
     }
 
-    std::vector<Sample*> Sobol::getMixedSamples(int index, std::vector<Sample*> samples1, std::vector<Sample*> samples2, int nSamples)
+    std::vector<Sample*> Sobol::getMixedSamples(int index, std::vector<Sample*> samples1, std::vector<Sample*> samples2, SampleStorage& storage, int nSamples)
     {
         std::vector<Sample*> mixedSamples;
 
@@ -172,7 +176,7 @@ namespace Deltares::Sensitivity
             sample.Values[index] = samples2[i]->Values[index];
             sample.IterationIndex = index;
 
-            mixedSamples.push_back(&sample);
+            mixedSamples.push_back(storage.keep(sample));
         }
 
         return mixedSamples;

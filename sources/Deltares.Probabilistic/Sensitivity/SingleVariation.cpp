@@ -39,20 +39,21 @@ namespace Deltares::Sensitivity
         double uLow = StandardNormal::getUFromP(Settings->LowValue);
         double uHigh = StandardNormal::getUFromP(Settings->HighValue);
 
+        SampleStorage storage = SampleStorage(nStochasts + 1);
         std::vector<Sample*> samples;
 
         Sample zeroSample = Sample(nStochasts);
-        samples.push_back(&zeroSample);
+        samples.push_back(storage.keep(zeroSample));
 
         for (int i = 0; i < nStochasts; i++)
         {
             Sample lowSample = Sample(nStochasts);
             lowSample.Values[i] = uLow;
-            samples.push_back(&lowSample);
+            samples.push_back(storage.keep(lowSample));
 
             Sample highSample = Sample(nStochasts);
             highSample.Values[i] = uHigh;
-            samples.push_back(&highSample);
+            samples.push_back(storage.keep(highSample));
         }
 
         std::vector<double> z = modelRunner->getZValues(samples);

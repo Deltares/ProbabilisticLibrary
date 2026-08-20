@@ -156,23 +156,24 @@ namespace Deltares::Reliability
     {
         int nstochasts = modelRunner.getVaryingStochastCount();
 
+        Models::SampleStorage storage = Models::SampleStorage(nstochasts + 1);
         std::vector<Models::Sample*> samples;
         std::vector<double> gradient(nstochasts);
 
         double stepSize = 2;
 
         // first sample is the sample itself
-        samples.push_back(&sample);
+        samples.push_back(storage.keep(sample));
 
         for (int k = 0; k < nstochasts; k++)
         {
             Models::Sample u1 = sample.clone();
             u1.Values[k] -= stepSize;
-            samples.push_back(&u1);
+            samples.push_back(storage.keep(u1));
 
             Models::Sample u2 = sample.clone();
             u2.Values[k] += stepSize;
-            samples.push_back(&u2);
+            samples.push_back(storage.keep(u2));
         }
 
         std::vector<double> zValues = modelRunner.getZValues(samples);
@@ -239,6 +240,7 @@ namespace Deltares::Reliability
         Models::Sample bestSample = Models::Sample(uSphere.Values.size());
         bestSample.Z = std::numeric_limits<double>::infinity();
 
+        Models::SampleStorage storage = Models::SampleStorage(tasks.size() * nRadiusFactors);
         std::vector<Models::Sample*> previousSamples;
 
         for (int i = 0; i < nRadiusFactors; i++)
@@ -246,6 +248,7 @@ namespace Deltares::Reliability
             radiusFactor = Numeric::NumericSupport::Divide(i + 1, nRadiusFactors);
 
             std::vector<Models::Sample*> samples;
+
             for (const auto& task : tasks)
             {
                 Models::Sample uRay = this->Settings->StochastSet->getStartPoint();
@@ -253,9 +256,9 @@ namespace Deltares::Reliability
                 {
                     uRay.Values[k] = task(k);
                 }
-                Models::Sample u = Models::Sample(uRay.getMultipliedSample(radiusFactor));
+                Models::Sample u = uRay.getMultipliedSample(radiusFactor);
                 u.IterationIndex = i;
-                samples.push_back(&u);
+                samples.push_back(storage.keep(u));
             }
             auto zValues = modelRunner.getZValues(samples);
             for (auto & z : zValues) {z *= z0Fac;}
@@ -263,7 +266,7 @@ namespace Deltares::Reliability
             if (zValues[indexMinimal] < 0.0)
             {
                 Models::Sample* previous = (i > 0 ? previousSamples[indexMinimal] : &zeroSample);
-                bestSample = refineSpherePoint(*samples[indexMinimal], *previous);
+                bestSample = refineSpherePoint(samples[indexMinimal], previous);
                 break;
             }
 
@@ -271,32 +274,32 @@ namespace Deltares::Reliability
 
             for (auto& z : zValues) { z = std::fabs(z); }
             auto indexAbsMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
-            bestSample = getBestSample(bestSample, *samples[indexAbsMinimal]);
+            bestSample = getBestSample(&bestSample, samples[indexAbsMinimal]);
         }
 
         return bestSample;
     }
 
     // Sets the best sample based on closest to Z == 0
-    Models::Sample StartPointCalculator::getBestSample(Models::Sample& bestSample, Models::Sample& sample)
+    Models::Sample StartPointCalculator::getBestSample(Models::Sample* bestSample, Models::Sample* sample)
     {
-        if (std::abs(bestSample.Z) > std::abs(sample.Z))
+        if (std::abs(bestSample->Z) > std::abs(sample->Z))
         {
-            return sample;
+            return *sample;
         }
         else
         {
-            return bestSample;
+            return *bestSample;
         }
     }
 
-    Models::Sample StartPointCalculator::refineSpherePoint(Models::Sample& u, Models::Sample& previous)
+    Models::Sample StartPointCalculator::refineSpherePoint(Models::Sample* u, Models::Sample* previous)
     {
         // determine the u-vector for which the z-function is 0.0, assuming linear behaviour between the samples u and previous.
 
-        auto betaZeqZero = Numeric::NumericSupport::interpolate(0.0, previous.Z, previous.getBeta(), u.Z, u.getBeta());
+        auto betaZeqZero = Numeric::NumericSupport::interpolate(0.0, previous->Z, previous->getBeta(), u->Z, u->getBeta());
 
-        Models::Sample u3 = Models::Sample(u.getSampleAtBeta(betaZeqZero));
+        Models::Sample u3 = Models::Sample(u->getSampleAtBeta(betaZeqZero));
         return u3;
     }
 }
