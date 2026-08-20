@@ -39,7 +39,7 @@ namespace Deltares::Proxies
          * \brief Trains the proxy method
          * \returns Collection with training samples
          */
-        std::vector<std::shared_ptr<Models::ModelSample>> getTrainingSet() override;
+        std::vector<Models::ModelSample> getTrainingSet() override;
     };
 }
 

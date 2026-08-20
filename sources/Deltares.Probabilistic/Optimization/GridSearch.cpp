@@ -26,33 +26,39 @@ namespace Deltares::Optimization
 {
     Models::ModelSample GridSearch::getOptimizedSample(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model)
     {
-        Models::ModelSample sample = findGridExtreme(searchArea, model, nullptr, 0);
+        std::vector<double> defaultValues;
+        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
+        {
+            defaultValues.push_back(std::nan(""));
+        }
+
+        Models::ModelSample initialSample = Models::ModelSample(defaultValues);
+        initialSample.Z = std::numeric_limits<double>::infinity();
+
+        Models::ModelSample sample = findGridExtreme(searchArea, model, initialSample, 0);
         counter = 0;
         reusedCounter = 0;
 
-        if (sample != nullptr)
+        int gridMoves = 0;
+        while (gridMoves < MaxGridMoves && isSampleOnEdge(searchArea, sample))
         {
-            int gridMoves = 0;
-            while (gridMoves < MaxGridMoves && isSampleOnEdge(searchArea, sample))
-            {
-                moveSampleToCenter(searchArea, sample);
-                sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves);
-                gridMoves++;
+            moveSampleToCenter(searchArea, sample);
+            sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves);
+            gridMoves++;
 
-                counter = 0;
-                reusedCounter = 0;
-            }
+            counter = 0;
+            reusedCounter = 0;
+        }
 
-            int refinements = 0;
-            while (canRefine(searchArea, refinements))
-            {
-                refineGrid(searchArea, refinements, sample);
-                sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves + refinements);
-                refinements++;
+        int refinements = 0;
+        while (canRefine(searchArea, refinements))
+        {
+            refineGrid(searchArea, refinements, sample);
+            sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves + refinements);
+            refinements++;
 
-                counter = 0;
-                reusedCounter = 0;
-            }
+            counter = 0;
+            reusedCounter = 0;
         }
 
         return sample;
@@ -87,7 +93,7 @@ namespace Deltares::Optimization
 
             counter++;
 
-            if (!std::isnan(sample.Z) && (minSample == nullptr || sample.Z < minSample.Z))
+            if (!std::isnan(sample.Z) && sample.Z < minSample.Z)
             {
                 minSample = sample;
             }
@@ -177,7 +183,7 @@ namespace Deltares::Optimization
             {
                 // when refinement is allowed, create values for the new grid higher, lower and equal the original sample
                 // the values higher and lower are exactly between the sample and its neighbors in the previous grid
-                double newInterval = dimension->getInterval() / 2; 
+                double newInterval = dimension->getInterval() / 2;
                 dimension->MinValue = sample.Values[i] - newInterval;
                 dimension->MaxValue = sample.Values[i] + newInterval;
                 dimension->NumberOfValues = 3;
@@ -196,11 +202,11 @@ namespace Deltares::Optimization
 
     double GridSearch::getTolerance(std::shared_ptr<SearchParameterSettings> dimension)
     {
-        if (dimension->NumberOfValues > 0) 
+        if (dimension->NumberOfValues > 0)
         {
             return std::fabs((dimension->MaxValue - dimension->MinValue)) / (10 * dimension->NumberOfValues);
         }
-        else 
+        else
         {
             return 0;
         }

@@ -41,7 +41,7 @@ void funcWrapper::FDelegate(ModelSample& s)
     }
     else
     {
-        s->Z = result;
+        s.Z = result;
     }
 }
 

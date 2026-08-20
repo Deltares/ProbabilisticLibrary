@@ -81,17 +81,17 @@ namespace Deltares::Proxies
         /**
          * \brief List of training samples
          */
-        std::vector<std::shared_ptr<Models::ModelSample>> trainingSamples;
+        std::vector<Models::ModelSample*> trainingSamples;
 
         /**
          * \brief Calculates a sample
          */
-        void invoke(const std::shared_ptr<Models::ModelSample>& sample) override;
+        void invoke(Models::ModelSample& sample) override;
 
         /**
          * \brief Calculates a number of samples
          */
-        void invoke(const std::vector<std::shared_ptr<Models::ModelSample>>& samples) override;
+        void invoke(const std::vector<Models::ModelSample*>& samples) override;
 
         /**
          * \brief Reports whether these settings have valid values

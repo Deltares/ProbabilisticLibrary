@@ -32,7 +32,7 @@
 namespace Deltares::Models
 {
     using ZLambda = std::function<void(ModelSample&)>;
-    using ZMultipleLambda = std::function<void(std::vector<ModelSample>)>;
+    using ZMultipleLambda = std::function<void(std::vector<ModelSample*>)>;
     using ZBetaLambda = std::function<double(ModelSample&)>;
 
     using ZValuesCallBack = void(*)(const double* data, int size, double* outputValues);
@@ -150,7 +150,7 @@ namespace Deltares::Models
         /**
          * \brief Calculates a number of samples
          */
-        virtual void invoke(const std::vector<ModelSample>& samples);
+        virtual void invoke(const std::vector<ModelSample*>& samples);
 
         double getBeta(ModelSample& sample) const;
 
@@ -232,7 +232,7 @@ namespace Deltares::Models
         /**
          * \brief Calculates a number of samples
          */
-        void invokeMultipleLambda(std::vector<ModelSample>& samples) const;
+        void invokeMultipleLambda(std::vector<ModelSample*>& samples) const;
 
         /**
          * \brief Handles the calculation time

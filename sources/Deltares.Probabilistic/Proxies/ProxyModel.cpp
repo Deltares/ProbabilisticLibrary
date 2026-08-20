@@ -40,16 +40,16 @@ namespace Deltares::Proxies
             std::unique_ptr<ProxyTrainer> proxyTrainer = getProxyTrainer();
             proxyTrainer->uConverter = this->uConverter;
 
-            std::vector<std::shared_ptr<Models::ModelSample>> initialSamples = proxyTrainer->getTrainingSet();
+            std::vector<Models::ModelSample> initialSamples = proxyTrainer->getTrainingSet();
 
-            for (std::shared_ptr<Models::ModelSample> newSample : initialSamples)
+            for (auto newSample : initialSamples)
             {
-                this->trainingSamples.push_back(newSample);
+                this->trainingSamples.push_back(&newSample);
             }
         }
 
-        std::vector<std::shared_ptr<Models::ModelSample>> samplesToCalculate;
-        for (const std::shared_ptr<Models::ModelSample>& trainingSample : trainingSamples)
+        std::vector<Models::ModelSample*> samplesToCalculate;
+        for (Models::ModelSample* trainingSample : trainingSamples)
         {
             if (trainingSample->OutputValues.empty())
             {
@@ -81,13 +81,13 @@ namespace Deltares::Proxies
         }
     }
 
-    void ProxyModel::invoke(const std::shared_ptr<Models::ModelSample>& sample)
+    void ProxyModel::invoke(Models::ModelSample& sample)
     {
-        if (sample->AllowProxy)
+        if (sample.AllowProxy)
         {
             proxyMethod->invoke(sample, proxyCoefficients);
             this->model->zValueConverter->updateZValue(sample);
-            sample->UsedProxy = true;
+            sample.UsedProxy = true;
         }
         else
         {
@@ -95,13 +95,13 @@ namespace Deltares::Proxies
         }
     }
 
-    void ProxyModel::invoke(const std::vector<std::shared_ptr<Models::ModelSample>>& samples)
+    void ProxyModel::invoke(const std::vector<Models::ModelSample*>& samples)
     {
         if (std::ranges::any_of(samples, [](const auto& sample) { return sample->AllowProxy; }))
         {
-            for (const auto& sample : samples)
+            for (const auto sample : samples)
             {
-                invoke(sample);
+                invoke(*sample);
             }
         }
         else

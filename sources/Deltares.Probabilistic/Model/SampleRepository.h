@@ -39,7 +39,7 @@ namespace Deltares::Models
 
         void registerSample(ModelSample& sample);
 
-        ModelSample retrieveSample(ModelSample& sample);
+        bool retrieveSample(ModelSample& sample);
 
         void clear();
 
@@ -48,7 +48,7 @@ namespace Deltares::Models
         {
         public:
             void registerSample(ModelSample& sample);
-            ModelSample retrieveSample(ModelSample& sample) const;
+            bool retrieveSample(ModelSample& sample) const;
             int size() const { return static_cast<int>(samples.size()); }
         private:
             std::vector<ModelSample> samples;

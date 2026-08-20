@@ -252,13 +252,17 @@ namespace Deltares::Models
     std::vector<double> ModelRunner::getZValues(std::vector<Sample*>& samples)
     {
         std::vector<ModelSample> xSamples;
+        std::vector<ModelSample*> xSamplesPtrs;
+
+        xSamples.reserve(samples.size());
 
         for (auto sample : samples)
         {
             xSamples.push_back(getModelSample(*sample));
+            xSamplesPtrs.push_back(&xSamples.back());
         }
 
-        this->zModel->invoke(xSamples);
+        this->zModel->invoke(xSamplesPtrs);
 
         std::vector<double> zValues(xSamples.size());
 

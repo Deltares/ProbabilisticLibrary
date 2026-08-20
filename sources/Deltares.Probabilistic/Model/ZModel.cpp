@@ -69,13 +69,13 @@ namespace Deltares::Models
 
     ZMultipleLambda ZModel::getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda) const
     {
-        ZMultipleLambda calcValuesLambda = [zValuesMultipleLambda, this](std::vector<ModelSample> samples)
+        ZMultipleLambda calcValuesLambda = [zValuesMultipleLambda, this](std::vector<ModelSample*> samples)
         {
             double** inputValues = new double* [samples.size()];
             double** outputValues = new double* [samples.size()];
             for (size_t i = 0; i < samples.size(); i++)
             {
-                inputValues[i] = samples[i].Values.data();
+                inputValues[i] = samples[i]->Values.data();
                 outputValues[i] = new double[this->outputParametersCount];
                 for (int j = 0; j < this->outputParametersCount; j++)
                 {
@@ -94,10 +94,10 @@ namespace Deltares::Models
 
             for (size_t i = 0; i < samples.size(); i++)
             {
-                samples[i].OutputValues.clear();
+                samples[i]->OutputValues.clear();
                 for (int j = 0; j < this->outputParametersCount; j++)
                 {
-                    samples[i].OutputValues.push_back(outputValues[i][j]);
+                    samples[i]->OutputValues.push_back(outputValues[i][j]);
                 }
                 delete[] outputValues[i];
             }
@@ -126,20 +126,20 @@ namespace Deltares::Models
 
     ZMultipleLambda ZModel::getLambdaFromMultipleModelSampleCallBack(MultipleModelSampleCallback modelSampleLambda) const
     {
-        ZMultipleLambda calcValuesLambda = [modelSampleLambda](std::vector<ModelSample> samples)
+        ZMultipleLambda calcValuesLambda = [modelSampleLambda](std::vector<ModelSample*> samples)
         {
             ModelSampleStruct* modelSamples = new ModelSampleStruct[samples.size()];
 
             for (size_t i = 0; i < samples.size(); i++)
             {
-                samples[i].fillModelSampleStruct(&modelSamples[i]);
+                samples[i]->fillModelSampleStruct(&modelSamples[i]);
             }
 
             (*modelSampleLambda)(modelSamples, static_cast<int>(samples.size()));
 
             for (size_t i = 0; i < samples.size(); i++)
             {
-                samples[i].setModelSampleStruct(&modelSamples[i]);
+                samples[i]->setModelSampleStruct(&modelSamples[i]);
             }
         };
 
@@ -204,9 +204,14 @@ namespace Deltares::Models
 
     void ZModel::invoke(ModelSample& sample)
     {
-        ModelSample alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
+        bool alreadyExecuted = false;
 
-        if (alreadyExecutedSample == nullptr)
+        if (isRepositoryAllowed)
+        {
+            alreadyExecuted = repository.retrieveSample(sample);
+        }
+
+        if (!alreadyExecuted)
         {
             if (measureCalculationTime && isRepositoryAllowed)
             {
@@ -229,10 +234,6 @@ namespace Deltares::Models
                 repository.registerSample(sample);
             }
         }
-        else
-        {
-            sample->copyFrom(alreadyExecutedSample);
-        }
 
         if (!useZFromSample)
         {
@@ -254,14 +255,14 @@ namespace Deltares::Models
         this->zLambda(sample);
     }
 
-    void ZModel::invokeMultipleLambda(std::vector<ModelSample>& samples) const
+    void ZModel::invokeMultipleLambda(std::vector<ModelSample*>& samples) const
     {
         if (zMultipleLambda == nullptr)
         {
 #pragma omp parallel for
             for (int i = 0; i < static_cast<int>(samples.size()); i++)
             {
-                invokeLambda(samples[i]);
+                invokeLambda(*samples[i]);
             }
         }
         else
@@ -270,21 +271,22 @@ namespace Deltares::Models
         }
     }
 
-    void ZModel::invoke(const std::vector<ModelSample>& samples)
+    void ZModel::invoke(const std::vector<ModelSample*>& samples)
     {
-        std::vector<ModelSample> executeSamples;
+        std::vector<ModelSample*> executeSamples;
 
         for (auto sample : samples)
         {
-            ModelSample alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
+            bool alreadyExecuted = false;
 
-            if (alreadyExecutedSample == nullptr)
+            if (isRepositoryAllowed)
+            {
+                alreadyExecuted = repository.retrieveSample(*sample);
+            }
+
+            if (!alreadyExecuted)
             {
                 executeSamples.push_back(sample);
-            }
-            else
-            {
-                sample.copyFrom(alreadyExecutedSample);
             }
         }
 
@@ -314,7 +316,7 @@ namespace Deltares::Models
             {
                 for (auto sample : executeSamples)
                 {
-                    repository.registerSample(sample);
+                    repository.registerSample(*sample);
                 }
             }
         }
@@ -323,10 +325,10 @@ namespace Deltares::Models
         {
             if (!useZFromSample)
             {
-                this->zValueConverter->updateZValue(samples[i]);
+                this->zValueConverter->updateZValue(*samples[i]);
             }
 
-            this->handleInvalidSample(samples[i]);
+            this->handleInvalidSample(*samples[i]);
         }
     }
 

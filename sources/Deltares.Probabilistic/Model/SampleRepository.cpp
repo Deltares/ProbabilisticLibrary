@@ -26,20 +26,23 @@ namespace Deltares::Models
 {
     void SampleRepository::SampleCollection::registerSample(ModelSample& sample)
     {
-        this->samples.push_back(sample.clone());
+        ModelSample copy = ModelSample(sample.Values);
+        copy.copyFrom(sample);
+        this->samples.push_back(copy);
     }
 
-    ModelSample SampleRepository::SampleCollection::retrieveSample(ModelSample& sample) const
+    bool SampleRepository::SampleCollection::retrieveSample(ModelSample& sample) const
     {
         for (auto existingSample : samples)
         {
             if (existingSample.hasSameValues(sample))
             {
-                return existingSample;
+                sample.copyFrom(existingSample);
+                return true;
             }
         }
 
-        return nullptr;
+        return false;
     }
 
     double SampleRepository::getKey(ModelSample& sample)
@@ -82,13 +85,13 @@ namespace Deltares::Models
         }
     }
 
-    ModelSample SampleRepository::retrieveSample(ModelSample& sample)
+    bool SampleRepository::retrieveSample(ModelSample& sample)
     {
         double key = this->getKey(sample);
 
         if (!this->sampleCollections.contains(key))
         {
-            return nullptr;
+            return false;
         }
 
         return this->sampleCollections[key]->retrieveSample(sample);

@@ -34,7 +34,7 @@ namespace Deltares::Proxies
         {
             if (proxyCoefficients.coefficients[index].valid)
             {
-                sample->OutputValues[index] = invokeValue(sample->Values, proxyCoefficients.coefficients[index]);
+                sample.OutputValues[index] = invokeValue(sample.Values, proxyCoefficients.coefficients[index]);
             }
             else
             {
@@ -59,7 +59,7 @@ namespace Deltares::Proxies
         for (size_t index = 0; index < trainingSamples[0]->OutputValues.size(); index++)
         {
             std::vector<double> proxyValues = Models::ModelSample::select(
-                trainingSamples, [index](Models::ModelSample& p) { return p.OutputValues[index]; });
+                trainingSamples, [index](Models::ModelSample* p) { return p->OutputValues[index]; });
 
             if (std::ranges::all_of(proxyValues, [](double x) {return Numeric::NumericSupport::isValidValue(x); }))
             {
@@ -72,7 +72,7 @@ namespace Deltares::Proxies
         }
 
         std::vector<double> zValues = Models::ModelSample::select(
-            trainingSamples, [](std::shared_ptr<Models::ModelSample> p) { return p->Z; });
+            trainingSamples, [](Models::ModelSample* p) { return p->Z; });
 
         if (std::ranges::all_of(zValues, [](double x) {return Numeric::NumericSupport::isValidValue(x); }))
         {
