@@ -76,7 +76,7 @@ namespace Deltares::Uncertainty
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (const std::shared_ptr<Statistics::ProbabilityValue> &quantile : this->Settings->RequestedQuantiles)
+        for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
         {
             if (this->evaluations.contains(quantile))
             {
@@ -171,6 +171,7 @@ namespace Deltares::Uncertainty
         double quantile95 = Statistics::StandardNormal::getUFromP(0.95);
 
         Sample* lowestSample = nullptr;
+        SampleStorage lowestSampleStorage = SampleStorage(1);
 
         int j = 0; //iteration over N
         while (j < this->Settings->MaximumIterations && error > this->Settings->VariationCoefficientFailure)
@@ -185,13 +186,12 @@ namespace Deltares::Uncertainty
             //for each new scale in direction i values, the new z values are calculated (zValues[i,j])
             std::vector<Sample*> newSamples;
             std::vector<Sample*> calculateSamples;
-
-            storage = SampleStorage(directions.size());
+            SampleStorage newStorage = SampleStorage(directions.size());
 
             for (size_t i = 0; i < directions.size(); i++)
             {
                 Sample newSample = directions[i]->CreateNewSampleAt(zPredicted, maxBetaDirection);
-                newSamples.push_back(storage.keep(newSample));
+                newSamples.push_back(newStorage.keep(newSample));
                 if (directions[i]->IsValid())
                 {
                     newSamples.back()->IterationIndex = static_cast<int>(i);
@@ -226,6 +226,9 @@ namespace Deltares::Uncertainty
             if (!calculateSamples.empty())
             {
                 lowestSample = selectSampleWithLowestBeta(calculateSamples);
+
+                lowestSampleStorage.clear();
+                lowestSample = lowestSampleStorage.keep(*lowestSample);
             }
 
             performedIterations++;
