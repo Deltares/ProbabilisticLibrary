@@ -12,6 +12,7 @@ file(GLOB probabilistic_files
     "Statistics/Distributions/*.cpp"
     "Optimization/*.cpp"
     "Server/*.cpp"
+    "Server/Handlers/*.cpp"
     "Logging/*.cpp"
     "Utils/*.cpp"
     "Combine/*.h"

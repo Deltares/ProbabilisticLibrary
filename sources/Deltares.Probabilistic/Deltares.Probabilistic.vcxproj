@@ -159,6 +159,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\ObjectHandlerAdmin.h" />
+    <ClInclude Include="Server\Handlers\ObjectHandlerStorage.h" />
+    <ClInclude Include="Server\Handlers\ObjectHandler.h" />
+    <ClInclude Include="Server\Handlers\HistogramValueHandler.h" />
     <ClInclude Include="Reliability\ProbabilityLimitStateFunction.h" />
     <ClInclude Include="Combine\ExcludingCombineSettings.h" />
     <ClInclude Include="Combine\ExcludingCombineProject.h" />

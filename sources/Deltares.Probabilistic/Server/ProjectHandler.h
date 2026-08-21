@@ -30,6 +30,7 @@
 #include "../Reliability/LimitStateFunction.h"
 #include "../Reliability/CombinedLimitStateFunction.h"
 #include "../Reliability/Settings.h"
+#include "../Reliability/ProbabilityLimitStateFunction.h"
 #include "../Model/Evaluation.h"
 #include "../Model/RunProject.h"
 #include "../Model/RunProjectSettings.h"
@@ -46,17 +47,17 @@
 #include "../Combine/LengthEffectProject.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/DiscreteValue.h"
-
-namespace Deltares::Reliability
-{
-    class ProbabilityLimitStateFunction;
-}
+#include "Handlers/HistogramValueHandler.h"
+#include "Handlers/ObjectHandler.h"
+#include "Handlers/ObjectHandlerAdmin.h"
 
 namespace Deltares::Server
 {
     class ProjectHandler : public BaseHandler
     {
     public:
+        ProjectHandler();
+
         bool CanHandle(const std::string& object_type) override;
         int GetNewId() override;
         int Create(const std::string& object_type) override;
@@ -106,7 +107,6 @@ namespace Deltares::Server
         int GetUncertaintyResultId(const std::shared_ptr<Uncertainty::UncertaintyResult>& result, int newId);
         int GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId);
         int GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId);
-        int GetHistogramValueId(const std::shared_ptr<Statistics::HistogramValue>& histogramValue, int newId);
         int GetDiscreteValueId(const std::shared_ptr<Statistics::DiscreteValue>& discreteValue, int newId);
         int GetFragilityValueId(const std::shared_ptr<Statistics::FragilityValue>& fragilityValue, int newId);
         int GetContributingStochastId(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, int newId);
@@ -125,10 +125,12 @@ namespace Deltares::Server
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
 
-        int new_id = 0;
         std::mutex mtx;
 
-        std::unordered_map<int, ObjectType> types;
+        std::unordered_map<ObjectType, ObjectHandler*> handlers;
+
+        ObjectHandlerAdmin admin;
+        HistogramValueHandler histogramValueHandler;
 
         std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
         std::unordered_map<int, std::shared_ptr<Statistics::ProbabilityValue>> probabilityValues;
@@ -140,7 +142,6 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Reliability::ProbabilityLimitStateFunction>> probabilityLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
-        std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
         std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
         std::unordered_map<int, std::shared_ptr<Statistics::ContributingStochast>> contributingStochasts;
         std::unordered_map<int, std::shared_ptr<Statistics::VariableStochastValue>> conditionalValues;
@@ -187,7 +188,6 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, int> probabilityValueIds;
         std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
         std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;
-        std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
         std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
         std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
         std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
@@ -206,5 +206,8 @@ namespace Deltares::Server
         std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
         std::shared_ptr<Statistics::Stochast> GetStochast(int id);
         std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
+
+        static bool IsSupported(ObjectType objectType);
+
     };
 }
