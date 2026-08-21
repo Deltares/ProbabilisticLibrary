@@ -582,6 +582,7 @@
     <ClInclude Include="Combine\ComputeBetaSection.h" />
     <ClInclude Include="Math\StatisticsCalculator.h" />
     <ClInclude Include="Model\SampleStorage.h" />
+    <ClInclude Include="Model\ModelSampleStorage.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

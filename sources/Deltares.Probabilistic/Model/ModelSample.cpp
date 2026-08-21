@@ -21,6 +21,8 @@
 //
 #include "ModelSample.h"
 
+#include "../Math/NumericSupport.h"
+
 namespace Deltares::Models
 {
     void ModelSample::clear()
@@ -36,9 +38,24 @@ namespace Deltares::Models
         Tag = 0;
     }
 
-    /**
-     * \brief Copies the results from another sample
-     */
+    ModelSample ModelSample::clone()
+    {
+        ModelSample clone = ModelSample(Numeric::NumericSupport::select(this->Values, [] (double x) {return x; }));
+        clone.copyFrom(*this);
+
+        clone.AllowProxy = this->AllowProxy;
+        clone.Beta = this->Beta;
+        clone.ExtendedLogging = this->ExtendedLogging;
+        clone.IsRestartRequired = this->IsRestartRequired;
+        clone.IterationIndex = this->IterationIndex;
+        clone.Tag = this->Tag;
+        clone.UsedProxy = this->UsedProxy;
+        clone.Weight = this->Weight;
+        clone.threadId = this->threadId;
+
+        return clone;
+    }
+
     void ModelSample::copyFrom(ModelSample& source)
     {
         this->Z = source.Z;

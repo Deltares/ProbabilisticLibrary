@@ -27,6 +27,7 @@
 #include "ProxyTrainer.h"
 #include "SingleProxyTrainer.h"
 #include "../Model/ModelSample.h"
+#include "../Model/ModelSampleStorage.h"
 #include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Proxies
@@ -44,23 +45,32 @@ namespace Deltares::Proxies
 
             for (auto newSample : initialSamples)
             {
-                this->trainingSamples.push_back(&newSample);
+                this->trainingSamples.push_back(newSample);
             }
         }
 
+        Models::ModelSampleStorage storage = Models::ModelSampleStorage(trainingSamples.size());
+
         std::vector<Models::ModelSample*> samplesToCalculate;
-        for (Models::ModelSample* trainingSample : trainingSamples)
+        std::vector<Models::ModelSample*> proxyTrainingSamples;
+
+        for (Models::ModelSample& trainingSample : trainingSamples)
         {
-            if (trainingSample->OutputValues.empty())
+            if (trainingSample.OutputValues.empty())
             {
-                trainingSample->AllowProxy = false;
-                samplesToCalculate.push_back(trainingSample);
+                trainingSample.AllowProxy = false;
+                samplesToCalculate.push_back(storage.keep(trainingSample));
+                proxyTrainingSamples.push_back(samplesToCalculate.back());
+            }
+            else
+            {
+                proxyTrainingSamples.push_back(storage.keep(trainingSample));
             }
         }
 
         invoke(samplesToCalculate);
 
-        proxyCoefficients = proxyMethod->train(this->trainingSamples);
+        proxyCoefficients = proxyMethod->train(proxyTrainingSamples);
     }
 
     std::unique_ptr<ProxyMethod> ProxyModel::getProxyMethod()

@@ -45,7 +45,7 @@ void funcWrapper::FDelegate(ModelSample& s)
     }
 }
 
-void funcWrapper::FDelegateParallel(std::vector<ModelSample> samples)
+void funcWrapper::FDelegateParallel(std::vector<ModelSample*> samples)
 {
     auto errorMessagePerThread = std::vector<std::string>(omp_get_num_threads());
 
@@ -54,15 +54,15 @@ void funcWrapper::FDelegateParallel(std::vector<ModelSample> samples)
     {
         computationSettings compSetting{ designPointOptions::dpOutFALSE, compId, omp_get_thread_num(), 1 };
         tError e = tError();
-        double result = zfunc(samples[i].Values.data(), &compSetting, &e);
+        double result = zfunc(samples[i]->Values.data(), &compSetting, &e);
         if (e.errorCode != 0)
         {
             errorMessagePerThread[omp_get_thread_num()] = e.errorMessage;
-            samples[i].Z = std::nan("");
+            samples[i]->Z = std::nan("");
         }
         else
         {
-            samples[i].Z = result;
+            samples[i]->Z = result;
         }
     }
 

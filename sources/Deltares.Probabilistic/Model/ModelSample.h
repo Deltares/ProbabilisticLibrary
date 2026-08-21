@@ -67,7 +67,14 @@ namespace Deltares::Models
         void clear();
 
         /**
+         * \brief Gets a clone of this model sample
+         * \return Clone
+         */
+        ModelSample clone();
+
+        /**
          * \brief Copies the results from another sample
+         * \param source The model sample to copy from
          */
         void copyFrom(ModelSample& source);
 

@@ -81,7 +81,7 @@ namespace Deltares::Proxies
         /**
          * \brief List of training samples
          */
-        std::vector<Models::ModelSample*> trainingSamples;
+        std::vector<Models::ModelSample> trainingSamples;
 
         /**
          * \brief Calculates a sample

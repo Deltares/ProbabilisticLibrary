@@ -26,9 +26,7 @@ namespace Deltares::Models
 {
     void SampleRepository::SampleCollection::registerSample(ModelSample& sample)
     {
-        ModelSample copy = ModelSample(sample.Values);
-        copy.copyFrom(sample);
-        this->samples.push_back(copy);
+        this->samples.push_back(sample.clone());
     }
 
     bool SampleRepository::SampleCollection::retrieveSample(ModelSample& sample) const
@@ -60,7 +58,7 @@ namespace Deltares::Models
 
     bool SampleRepository::shouldRegisterSample(ModelSample& sample)
     {
-        return !(sample.UsedProxy);
+        return !sample.UsedProxy;
     }
 
     void SampleRepository::registerSample(ModelSample& sample)

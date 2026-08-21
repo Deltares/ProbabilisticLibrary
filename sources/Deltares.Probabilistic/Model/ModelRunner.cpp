@@ -28,6 +28,7 @@
 #include "../Proxies/ProxyModel.h"
 #include <format>
 
+#include "ModelSampleStorage.h"
 #include "../Reliability/FragilityCurve.h"
 
 namespace Deltares::Models
@@ -251,29 +252,29 @@ namespace Deltares::Models
      */
     std::vector<double> ModelRunner::getZValues(std::vector<Sample*>& samples)
     {
-        std::vector<ModelSample> xSamples;
-        std::vector<ModelSample*> xSamplesPtrs;
+        std::vector<ModelSample*> xSamples;
+        ModelSampleStorage storage = ModelSampleStorage(samples.size());
 
         xSamples.reserve(samples.size());
 
         for (auto sample : samples)
         {
-            xSamples.push_back(getModelSample(*sample));
-            xSamplesPtrs.push_back(&xSamples.back());
+            ModelSample xSample = getModelSample(*sample);
+            xSamples.push_back(storage.keep(xSample));
         }
 
-        this->zModel->invoke(xSamplesPtrs);
+        this->zModel->invoke(xSamples);
 
         std::vector<double> zValues(xSamples.size());
 
         for (size_t i = 0; i < xSamples.size(); i++)
         {
-            registerEvaluation(xSamples[i]);
+            registerEvaluation(*xSamples[i]);
 
-            samples[i]->Z = xSamples[i].Z;
-            samples[i]->AllowProxy = xSamples[i].AllowProxy;
-            samples[i]->IsRestartRequired = xSamples[i].IsRestartRequired;
-            zValues[i] = xSamples[i].Z;
+            samples[i]->Z = xSamples[i]->Z;
+            samples[i]->AllowProxy = xSamples[i]->AllowProxy;
+            samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
+            zValues[i] = xSamples[i]->Z;
         }
 
         return zValues;

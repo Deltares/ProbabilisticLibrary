@@ -20,34 +20,50 @@
 // All rights reserved.
 //
 #pragma once
-#include <functional>
-#include <memory>
+
 #include <vector>
 
-#include "../Deltares.Probabilistic/Model/ModelSample.h"
-#include "../Deltares.Probabilistic/Model/RunSettings.h"
-#include "stringHelper.h"
+#include "ModelSample.h"
 
-struct computationSettings
+namespace Deltares::Models
 {
-    Deltares::Models::designPointOptions dpOut;
-    int computationId;         // reserved for e.g. wind direction
-    int threadId;
-    int reliabilityMethodSubStepsCounter;
-};
+    /**
+     * \brief Keeps model samples alive
+     */
 
-typedef std::function<double(double[], computationSettings*, tError*)> zFuncExtern;
+    class ModelSampleStorage
+    {
+    private:
+        std::vector<ModelSample> samples;
 
-class funcWrapper
-{
-public:
-    funcWrapper(const int id, zFuncExtern func) : compId(id), zfunc(func) { ; }
-    void FDelegate(Deltares::Models::ModelSample& s);
-    void FDelegateParallel(std::vector<Deltares::Models::ModelSample*> s);
-    std::vector<std::string> error_messages;
-private:
-    const int compId;
-    zFuncExtern zfunc;
+    public:
+        /**
+         * \brief Creates a registration to keep model samples alive
+         * \param size The maximum number of model samples to be kept alive
+         */
+        ModelSampleStorage(size_t size)
+        {
+            samples.reserve(size);
+        }
+
+        /**
+         * \brief Keeps a sample alive and returns a pointer to a model sample
+         * \param sample Model sample
+         * \return Pointer to model sample
+         */
+        ModelSample* keep(const ModelSample& sample)
+        {
+            samples.push_back(sample);
+            return &samples.back();
+        }
+
+        /**
+         * \brief Stops keeping the already registered model samples alive
+         */
+        void clear()
+        {
+            samples.clear();
+        }
+    };
 }
-;
 
