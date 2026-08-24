@@ -32,12 +32,6 @@ namespace Deltares::Server
 
     ProjectHandler::ProjectHandler()
     {
-        handlers[ObjectType::HistogramValue] = &histogramValueHandler;
-
-        for (const auto& [objectType, handler] : handlers)
-        {
-            handler->SetAdmin(&this->admin);
-        }
     }
 
     bool ProjectHandler::CanHandle(const std::string& object_type)
@@ -52,16 +46,16 @@ namespace Deltares::Server
 
     bool ProjectHandler::IsSupported(ObjectType objectType)
     {
-        return objectType == ObjectType::HistogramValue;
+        return admin.IsSupported(objectType);
     }
 
     int ProjectHandler::Create(const std::string& object_type)
     {
         ObjectType objectType = ProjectEntries::GetType(object_type);
 
-        if (IsSupported(objectType))
+        if (admin.IsSupported(objectType))
         {
-            return handlers[objectType]->Create();
+            return admin.Create(objectType);
         }
 
         int id = this->GetNewId();
@@ -77,10 +71,6 @@ namespace Deltares::Server
         case ObjectType::ProbabilityValue:
             probabilityValues[id] = std::make_shared<ProbabilityValue>();
             probabilityValueIds[probabilityValues[id]] = id;
-            break;
-        case ObjectType::Message:
-            messages[id] = std::make_shared<Logging::Message>();
-            messageIds[messages[id]] = id;
             break;
         case ObjectType::Project:
             projects[id] = std::make_shared<ReliabilityProject>();
@@ -103,14 +93,6 @@ namespace Deltares::Server
         case ObjectType::Stochast:
             stochasts[id] = std::make_shared<Stochast>();
             stochastIds[stochasts[id]] = id;
-            break;
-        case ObjectType::DiscreteValue:
-            discreteValues[id] = std::make_shared<DiscreteValue>();
-            discreteValueIds[discreteValues[id]] = id;
-            break;
-        case ObjectType::FragilityValue:
-            fragilityValues[id] = std::make_shared<FragilityValue>();
-            fragilityValueIds[fragilityValues[id]] = id;
             break;
         case ObjectType::ContributingStochast:
             contributingStochasts[id] = std::make_shared<ContributingStochast>();
@@ -239,7 +221,7 @@ namespace Deltares::Server
 
         if (IsSupported(objectType))
         {
-            handlers[objectType]->Destroy(id);
+            admin.Destroy(id);
             return;
         }
 
@@ -247,7 +229,6 @@ namespace Deltares::Server
         {
         case ObjectType::StandardNormal: break;
         case ObjectType::ProbabilityValue: probabilityValueIds.erase(probabilityValues[id]); probabilityValues.erase(id); break;
-        case ObjectType::Message: messageIds.erase(messages[id]); messages.erase(id); break;
         case ObjectType::ValidationReport: validationReports.erase(id); break;
         case ObjectType::Project: projects.erase(id); break;
         case ObjectType::ModelParameter: modelParameterIds.erase(modelParameters[id]); modelParameters.erase(id); break;
@@ -255,8 +236,6 @@ namespace Deltares::Server
         case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
         case ObjectType::ProbabilityLimitStateFunction: probabilityLimitStateFunctions.erase(id); break;
         case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
-        case ObjectType::DiscreteValue: discreteValueIds.erase(discreteValues[id]); discreteValues.erase(id); break;
-        case ObjectType::FragilityValue: fragilityValueIds.erase(fragilityValues[id]); fragilityValues.erase(id); break;
         case ObjectType::ContributingStochast: contributingStochastIds.erase(contributingStochasts[id]); contributingStochasts.erase(id); break;
         case ObjectType::ConditionalValue: conditionalValueIds.erase(conditionalValues[id]);  conditionalValues.erase(id); break;
         case ObjectType::CorrelationMatrix:
@@ -306,7 +285,7 @@ namespace Deltares::Server
 
         if (IsSupported(objectType))
         {
-            return handlers[objectType]->GetValue(id, property_);
+            return admin.GetValue(id, property_);
         }
 
         if (objectType == ObjectType::StandardNormal)
@@ -348,25 +327,6 @@ namespace Deltares::Server
             else if (property_ == "u_from_x_and_source") return stochast->getUFromXAndSource(tempValues["x_and_source"][1], tempValues["x_and_source"][0]);
             else if (property_ == "fixed_value") return std::dynamic_pointer_cast<FragilityCurve>(stochast)->fixedValue;
             else return std::nan("");
-        }
-        else if (objectType == ObjectType::DiscreteValue)
-        {
-            std::shared_ptr<DiscreteValue> discreteValue = discreteValues[id];
-
-            if (property_ == "x") return discreteValue->X;
-            else if (property_ == "amount") return discreteValue->Amount;
-            else if (property_ == "normalized_amount") return discreteValue->NormalizedAmount;
-            else if (property_ == "cumulative_amount") return discreteValue->CumulativeNormalizedAmount;
-        }
-        else if (objectType == ObjectType::FragilityValue)
-        {
-            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
-
-            if (property_ == "x") return fragilityValue->X;
-            else if (property_ == "reliability_index") return fragilityValue->Reliability;
-            else if (property_ == "probability_of_failure") return fragilityValue->getProbabilityOfFailure();
-            else if (property_ == "probability_of_non_failure") return fragilityValue->getProbabilityOfNonFailure();
-            else if (property_ == "return_period") return fragilityValue->getReturnPeriod();
         }
         else if (objectType == ObjectType::ContributingStochast)
         {
@@ -554,7 +514,7 @@ namespace Deltares::Server
 
         if (IsSupported(objectType))
         {
-            handlers[objectType]->SetValue(id, property_, value);
+            admin.SetValue(id, property_, value);
         }
 
         if (objectType == ObjectType::ProbabilityValue)
@@ -589,27 +549,6 @@ namespace Deltares::Server
             else if (property_ == "fixed_value") std::dynamic_pointer_cast<FragilityCurve>(stochast)->fixedValue = value;
             else if (property_ == "design_point_x") argValue = value;
             else if (property_ == "conditional_x") argValue = value;
-        }
-        else if (objectType == ObjectType::DiscreteValue)
-        {
-            std::shared_ptr<DiscreteValue> discreteValue = discreteValues[id];
-
-            if (property_ == "x") discreteValue->X = value;
-            else if (property_ == "amount") discreteValue->Amount = value;
-
-            discreteValue->setDirty();
-        }
-        else if (objectType == ObjectType::FragilityValue)
-        {
-            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
-
-            if (property_ == "x") fragilityValue->X = value;
-            else if (property_ == "reliability_index") fragilityValue->Reliability = value;
-            else if (property_ == "probability_of_failure") fragilityValue->setProbabilityOfFailure(value);
-            else if (property_ == "probability_of_non_failure") fragilityValue->setProbabilityOfNonFailure(value);
-            else if (property_ == "return_period") fragilityValue->setReturnPeriod(value);
-
-            fragilityValue->setDirty();
         }
         else if (objectType == ObjectType::ContributingStochast)
         {
@@ -790,6 +729,11 @@ namespace Deltares::Server
     int ProjectHandler::GetIntValue(int id, const std::string& property_)
     {
         ObjectType objectType = admin.GetObjectType(id);
+
+        if (IsSupported(objectType))
+        {
+            return admin.GetIntValue(id, property_);
+        }
 
         if (ProjectEntries::IsModelProjectType(objectType))
         {
@@ -1011,6 +955,11 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
+        if (IsSupported(objectType))
+        {
+            return admin.GetIdValue(id, property_);
+        }
+
         int newId = this->GetNewId();
 
         if (ProjectEntries::IsModelProjectType(objectType))
@@ -1093,7 +1042,7 @@ namespace Deltares::Server
         }
         else if (objectType == ObjectType::FragilityValue)
         {
-            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
+            std::shared_ptr<FragilityValue> fragilityValue = admin.fragilityValueHandler.GetObject(id);
 
             if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<DesignPoint>(fragilityValue->designPoint), newId);
         }
@@ -1204,6 +1153,11 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
+        if (IsSupported(objectType))
+        {
+            return admin.SetIntValue(id, property_, value);
+        }
+
         if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
@@ -1259,14 +1213,14 @@ namespace Deltares::Server
             else if (property_ == "array_size") stochast->modelParameter->arraySize = value;
             else if (property_ == "copy_from") stochast->copyFrom(stochasts[value]);
             else if (property_ == "conditional_source") stochast->VariableSource = stochasts[value];
-            else if (property_ == "histogram_values") stochast->getProperties()->HistogramValues.push_back(histogramValueHandler.GetObject(value));
-            else if (property_ == "fragility_values") stochast->getProperties()->FragilityValues.push_back(fragilityValues[value]);
-            else if (property_ == "discrete_values") stochast->getProperties()->DiscreteValues.push_back(discreteValues[value]);
+            else if (property_ == "histogram_values") stochast->getProperties()->HistogramValues.push_back(admin.histogramValueHandler.GetObject(value));
+            else if (property_ == "fragility_values") stochast->getProperties()->FragilityValues.push_back(admin.fragilityValueHandler.GetObject(value));
+            else if (property_ == "discrete_values") stochast->getProperties()->DiscreteValues.push_back(admin.discreteValueHandler.GetObject(value));
             else if (property_ == "prior") tempIntValue = value;
         }
         else if (objectType == ObjectType::FragilityValue)
         {
-            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
+            std::shared_ptr<FragilityValue> fragilityValue = admin.fragilityValueHandler.GetObject(id);
 
             if (property_ == "design_point")
             {
@@ -1406,6 +1360,11 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id1);
 
+        if (IsSupported(objectType))
+        {
+            return admin.GetIntArgValue(id1, id2, property_);
+        }
+
         if (objectType == ObjectType::SelfCorrelationMatrix)
         {
             std::shared_ptr<SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
@@ -1432,6 +1391,11 @@ namespace Deltares::Server
     bool ProjectHandler::GetBoolValue(int id, const std::string& property_)
     {
         ObjectType objectType = admin.GetObjectType(id);
+
+        if (IsSupported(objectType))
+        {
+            return admin.GetBoolValue(id, property_);
+        }
 
         if (ProjectEntries::IsModelProjectType(objectType))
         {
@@ -1581,6 +1545,11 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
+        if (IsSupported(objectType))
+        {
+            return admin.SetBoolValue(id, property_, value);
+        }
+
         if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
@@ -1681,16 +1650,12 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (objectType == ObjectType::Message)
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<Logging::Message> message = messages[id];
-
-            if (property_ == "type") return Logging::Message::getMessageTypeString(message->Type);
-            else if (property_ == "text") return message->Text;
-            else if (property_ == "subject") return message->Subject;
-            else return "";
+            return admin.GetStringValue(id, property_);
         }
-        else if (objectType == ObjectType::ModelParameter)
+
+        if (objectType == ObjectType::ModelParameter)
         {
             std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
@@ -1826,15 +1791,12 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (objectType == ObjectType::Message)
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<Logging::Message> message = messages[id];
-
-            if (property_ == "type") message->Type = Logging::Message::getMessageType(value);
-            else if (property_ == "text") message->Text = value;
-            else if (property_ == "subject") message->Subject = value;
+            return admin.SetStringValue(id, property_, value);
         }
-        else if (ProjectEntries::IsStochast(objectType))
+
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -2041,7 +2003,7 @@ namespace Deltares::Server
                 stochast->getProperties()->DiscreteValues.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    stochast->getProperties()->DiscreteValues.push_back(discreteValues[values[i]]);
+                    stochast->getProperties()->DiscreteValues.push_back(admin.discreteValueHandler.GetObject(values[i]));
                 }
             }
             else if (property_ == "histogram_values")
@@ -2050,7 +2012,7 @@ namespace Deltares::Server
                 stochast->getProperties()->HistogramValues.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    stochast->getProperties()->HistogramValues.push_back(histogramValueHandler.GetObject(values[i]));
+                    stochast->getProperties()->HistogramValues.push_back(admin.histogramValueHandler.GetObject(values[i]));
                 }
             }
             else if (property_ == "fragility_values")
@@ -2059,7 +2021,7 @@ namespace Deltares::Server
                 stochast->getProperties()->FragilityValues.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    stochast->getProperties()->FragilityValues.push_back(fragilityValues[values[i]]);
+                    stochast->getProperties()->FragilityValues.push_back(admin.fragilityValueHandler.GetObject(values[i]));
                 }
             }
             else if (property_ == "contributing_stochasts")
@@ -2417,15 +2379,15 @@ namespace Deltares::Server
         {
             std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
 
-            if (property_ == "messages") return GetMessageId(validationReport->messages[index], newId);
+            if (property_ == "messages") return admin.messageHandler.GetObjectId(validationReport->messages[index], newId);
         }
         else if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
-            if (property_ == "histogram_values") return histogramValueHandler.GetObjectId(stochast->getProperties()->HistogramValues[index], newId);
-            else if (property_ == "discrete_values") return GetDiscreteValueId(stochast->getProperties()->DiscreteValues[index], newId);
-            else if (property_ == "fragility_values") return GetFragilityValueId(stochast->getProperties()->FragilityValues[index], newId);
+            if (property_ == "histogram_values") return admin.histogramValueHandler.GetObjectId(stochast->getProperties()->HistogramValues[index], newId);
+            else if (property_ == "discrete_values") return admin.discreteValueHandler.GetObjectId(stochast->getProperties()->DiscreteValues[index], newId);
+            else if (property_ == "fragility_values") return admin.fragilityValueHandler.GetObjectId(stochast->getProperties()->FragilityValues[index], newId);
             else if (property_ == "contributing_stochasts") return GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index], newId);
             else if (property_ == "conditional_values") return GetConditionalValueId(stochast->ValueSet->StochastValues[index], newId);
             else if (property_ == "array_variables") return GetStochastId(stochast->ArrayVariables[index], newId);
@@ -2463,7 +2425,7 @@ namespace Deltares::Server
 
             if (property_ == "values") return GetSensitivityValueId(result->values[index], newId);
             else if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
-            else if (property_ == "messages") return GetMessageId(result->messages[index], newId);
+            else if (property_ == "messages") return admin.messageHandler.GetObjectId(result->messages[index], newId);
         }
         else if (objectType == ObjectType::StochastPoint)
         {
@@ -2479,7 +2441,7 @@ namespace Deltares::Server
             else if (property_ == "alphas") return GetAlphaId(designPoint->Alphas[index], newId);
             else if (property_ == "evaluations") return GetEvaluationId(designPoint->Evaluations[index], newId);
             else if (property_ == "reliability_results") return GetReliabilityResultId(designPoint->ReliabilityResults[index], newId);
-            else if (property_ == "messages") return GetMessageId(designPoint->Messages[index], newId);
+            else if (property_ == "messages") return admin.messageHandler.GetObjectId(designPoint->Messages[index], newId);
         }
         else if (objectType == ObjectType::UncertaintySettings)
         {
@@ -2493,7 +2455,7 @@ namespace Deltares::Server
 
             if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
             else if (property_ == "quantile_evaluations") return GetEvaluationId(result->quantileEvaluations[index], newId);
-            else if (property_ == "messages") return GetMessageId(result->messages[index], newId);
+            else if (property_ == "messages") return admin.messageHandler.GetObjectId(result->messages[index], newId);
         }
 
         return 0;
@@ -2988,34 +2950,6 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetDiscreteValueId(const std::shared_ptr<DiscreteValue>& discreteValue, int newId)
-    {
-        if (!discreteValueIds.contains(discreteValue))
-        {
-            std::lock_guard lock(mtx);
-
-            discreteValues[newId] = discreteValue;
-            admin.RegisterType(newId, ObjectType::DiscreteValue);
-            discreteValueIds[discreteValue] = newId;
-        }
-
-        return discreteValueIds[discreteValue];
-    }
-
-    int ProjectHandler::GetFragilityValueId(const std::shared_ptr<FragilityValue>& fragilityValue, int newId)
-    {
-        if (!fragilityValueIds.contains(fragilityValue))
-        {
-            std::lock_guard lock(mtx);
-
-            fragilityValues[newId] = fragilityValue;
-            admin.RegisterType(newId, ObjectType::FragilityValue);
-            fragilityValueIds[fragilityValue] = newId;
-        }
-
-        return fragilityValueIds[fragilityValue];
-    }
-
     int ProjectHandler::GetContributingStochastId(const std::shared_ptr<ContributingStochast>& contributingStochast, int newId)
     {
         if (!contributingStochastIds.contains(contributingStochast))
@@ -3077,20 +3011,6 @@ namespace Deltares::Server
         }
 
         return reliabilityResultIds[result];
-    }
-
-    int ProjectHandler::GetMessageId(const std::shared_ptr<Logging::Message>& message, int newId)
-    {
-        if (!messageIds.contains(message))
-        {
-            std::lock_guard lock(mtx);
-
-            messages[newId] = message;
-            admin.RegisterType(newId, ObjectType::Message);
-            messageIds[message] = newId;
-        }
-
-        return messageIds[message];
     }
 
     std::shared_ptr<DesignPointIds> ProjectHandler::GetDesignPointIds(int id)

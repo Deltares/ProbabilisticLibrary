@@ -20,42 +20,47 @@
 // All rights reserved.
 //
 #pragma once
-
 #include <string>
+
+#include "ObjectHandler.h"
 #include "StoredObjectHandler.h"
-#include "../../Statistics/HistogramValue.h"
+#include "../../Server/ProjectEntries.h"
+#include "../../Statistics/FragilityValue.h"
 
 namespace Deltares::Server
 {
-    class HistogramValueHandler : public StoredObjectHandler<Statistics::HistogramValue>
+    class FragilityValueHandler : public StoredObjectHandler<Statistics::FragilityValue>
     {
     public:
-
         ObjectType GetObjectType() override
         {
-            return ObjectType::HistogramValue;
+            return ObjectType::FragilityValue;
         }
 
         double GetValue(int id, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
+            std::shared_ptr<Statistics::FragilityValue> fragilityValue = this->GetObject(id);
 
-            if (property_ == "lower_bound") return histogramValue->LowerBound;
-            else if (property_ == "upper_bound") return histogramValue->UpperBound;
-            else if (property_ == "amount") return histogramValue->Amount;
+            if (property_ == "x") return fragilityValue->X;
+            else if (property_ == "reliability_index") return fragilityValue->Reliability;
+            else if (property_ == "probability_of_failure") return fragilityValue->getProbabilityOfFailure();
+            else if (property_ == "probability_of_non_failure") return fragilityValue->getProbabilityOfNonFailure();
+            else if (property_ == "return_period") return fragilityValue->getReturnPeriod();
             else return ObjectHandler::GetValue(id, property_);
         }
 
         void SetValue(int id, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
+            std::shared_ptr<Statistics::FragilityValue> fragilityValue = this->GetObject(id);
 
-            if (property_ == "lower_bound") histogramValue->LowerBound = value;
-            else if (property_ == "upper_bound") histogramValue->UpperBound = value;
-            else if (property_ == "amount") histogramValue->Amount = value;
+            if (property_ == "x") fragilityValue->X = value;
+            else if (property_ == "reliability_index") fragilityValue->Reliability = value;
+            else if (property_ == "probability_of_failure") fragilityValue->setProbabilityOfFailure(value);
+            else if (property_ == "probability_of_non_failure") fragilityValue->setProbabilityOfNonFailure(value);
+            else if (property_ == "return_period") fragilityValue->setReturnPeriod(value);
             else ObjectHandler::SetValue(id, property_, value);
 
-            histogramValue->setDirty();
+            fragilityValue->setDirty();
         }
     };
 }

@@ -22,40 +22,42 @@
 #pragma once
 
 #include <string>
+#include "ObjectHandler.h"
 #include "StoredObjectHandler.h"
-#include "../../Statistics/HistogramValue.h"
+#include "../../Server/ProjectEntries.h"
+#include "../../Statistics/DiscreteValue.h"
 
 namespace Deltares::Server
 {
-    class HistogramValueHandler : public StoredObjectHandler<Statistics::HistogramValue>
+    class DiscreteValueHandler : public StoredObjectHandler<Statistics::DiscreteValue>
     {
     public:
 
         ObjectType GetObjectType() override
         {
-            return ObjectType::HistogramValue;
+            return ObjectType::DiscreteValue;
         }
 
         double GetValue(int id, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
+            std::shared_ptr<Statistics::DiscreteValue> discreteValue = GetObject(id);
 
-            if (property_ == "lower_bound") return histogramValue->LowerBound;
-            else if (property_ == "upper_bound") return histogramValue->UpperBound;
-            else if (property_ == "amount") return histogramValue->Amount;
+            if (property_ == "x") return discreteValue->X;
+            else if (property_ == "amount") return discreteValue->Amount;
+            else if (property_ == "normalized_amount") return discreteValue->NormalizedAmount;
+            else if (property_ == "cumulative_amount") return discreteValue->CumulativeNormalizedAmount;
             else return ObjectHandler::GetValue(id, property_);
         }
 
         void SetValue(int id, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
+            std::shared_ptr<Statistics::DiscreteValue> discreteValue = GetObject(id);
 
-            if (property_ == "lower_bound") histogramValue->LowerBound = value;
-            else if (property_ == "upper_bound") histogramValue->UpperBound = value;
-            else if (property_ == "amount") histogramValue->Amount = value;
+            if (property_ == "x") discreteValue->X = value;
+            else if (property_ == "amount") discreteValue->Amount = value;
             else ObjectHandler::SetValue(id, property_, value);
 
-            histogramValue->setDirty();
+            discreteValue->setDirty();
         }
     };
 }

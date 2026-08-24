@@ -46,10 +46,7 @@
 #include "../Combine/ExcludingCombineSettings.h"
 #include "../Combine/LengthEffectProject.h"
 #include "../Statistics/Stochast.h"
-#include "../Statistics/DiscreteValue.h"
-#include "Handlers/HistogramValueHandler.h"
-#include "Handlers/ObjectHandler.h"
-#include "Handlers/ObjectHandlerAdmin.h"
+#include "Handlers/HandlerAdmin.h"
 
 namespace Deltares::Server
 {
@@ -107,13 +104,10 @@ namespace Deltares::Server
         int GetUncertaintyResultId(const std::shared_ptr<Uncertainty::UncertaintyResult>& result, int newId);
         int GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId);
         int GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId);
-        int GetDiscreteValueId(const std::shared_ptr<Statistics::DiscreteValue>& discreteValue, int newId);
-        int GetFragilityValueId(const std::shared_ptr<Statistics::FragilityValue>& fragilityValue, int newId);
         int GetContributingStochastId(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, int newId);
         int GetConditionalValueId(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, int newId);
         int GetEvaluationId(const std::shared_ptr<Models::Evaluation>& evaluation, int newId);
         int GetReliabilityResultId(const std::shared_ptr<Reliability::ReliabilityResult>& result, int newId);
-        int GetMessageId(const std::shared_ptr<Logging::Message>& message, int newId);
         int GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId);
         int GetStatus(const std::string& command) const;
 
@@ -126,23 +120,16 @@ namespace Deltares::Server
     private:
 
         std::mutex mtx;
-
-        std::unordered_map<ObjectType, ObjectHandler*> handlers;
-
-        ObjectHandlerAdmin admin;
-        HistogramValueHandler histogramValueHandler;
+        HandlerAdmin admin;
 
         std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
         std::unordered_map<int, std::shared_ptr<Statistics::ProbabilityValue>> probabilityValues;
-        std::unordered_map<int, std::shared_ptr<Logging::Message>> messages;
         std::unordered_map<int, std::shared_ptr<Logging::ValidationReport>> validationReports;
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
         std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
         std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Reliability::ProbabilityLimitStateFunction>> probabilityLimitStateFunctions;
-        std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
-        std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
         std::unordered_map<int, std::shared_ptr<Statistics::ContributingStochast>> contributingStochasts;
         std::unordered_map<int, std::shared_ptr<Statistics::VariableStochastValue>> conditionalValues;
         std::unordered_map<int, std::shared_ptr<Statistics::BaseCorrelation>> correlations;
@@ -188,13 +175,10 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, int> probabilityValueIds;
         std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
         std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;
-        std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
-        std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
         std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
         std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
         std::unordered_map<std::shared_ptr<Models::Evaluation>, int> evaluationIds;
         std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
-        std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
         std::unordered_map<std::shared_ptr<Reliability::ConvergenceReport>, int> convergenceReportIds;
 
         std::unordered_map <std::string, std::vector<double>> tempValues;
@@ -207,7 +191,7 @@ namespace Deltares::Server
         std::shared_ptr<Statistics::Stochast> GetStochast(int id);
         std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
 
-        static bool IsSupported(ObjectType objectType);
+        bool IsSupported(ObjectType objectType);
 
     };
 }

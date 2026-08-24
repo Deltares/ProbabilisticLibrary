@@ -21,6 +21,9 @@
 //
 #pragma once
 
+#include <mutex>
+#include <unordered_map>
+
 namespace Deltares::Server
 {
     class ObjectHandlerAdmin
@@ -37,11 +40,14 @@ namespace Deltares::Server
         {
             std::lock_guard lock(mtx);
             new_id++;
+
             return new_id;
         }
 
         void RegisterType(int id, ObjectType objectType)
         {
+            std::lock_guard lock(mtx);
+
             types[id] = objectType;
         }
 
@@ -52,6 +58,8 @@ namespace Deltares::Server
 
         void Remove(int id)
         {
+            std::lock_guard lock(mtx);
+
             types.erase(id);
         }
 

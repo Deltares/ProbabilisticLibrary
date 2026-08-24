@@ -276,6 +276,7 @@
     <ClCompile Include="Reliability\ZGetter.cpp" />
     <ClCompile Include="Combine\ComputeBetaSection.cpp" />
     <ClCompile Include="Math\StatisticsCalculator.cpp" />
+    <ClCompile Include="Server\Handlers\HandlerAdmin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -583,8 +584,12 @@
     <ClInclude Include="Math\StatisticsCalculator.h" />
     <ClInclude Include="Server\Handlers\HistogramValueHandler.h" />
     <ClInclude Include="Server\Handlers\ObjectHandler.h" />
-    <ClInclude Include="Server\Handlers\ObjectHandlerStorage.h" />
     <ClInclude Include="Server\Handlers\ObjectHandlerAdmin.h" />
+    <ClInclude Include="Server\Handlers\DiscreteValueHandler.h" />
+    <ClInclude Include="Server\Handlers\FragilityValueHandler.h" />
+    <ClInclude Include="Server\Handlers\MessageHandler.h" />
+    <ClInclude Include="Server\Handlers\HandlerAdmin.h" />
+    <ClInclude Include="Server\Handlers\StoredObjectHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

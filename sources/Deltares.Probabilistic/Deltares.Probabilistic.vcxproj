@@ -159,8 +159,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\StoredObjectHandler.h" />
+    <ClInclude Include="Server\Handlers\HandlerAdmin.h" />
+    <ClInclude Include="Server\Handlers\MessageHandler.h" />
+    <ClInclude Include="Server\Handlers\FragilityValueHandler.h" />
+    <ClInclude Include="Server\Handlers\DiscreteValueHandler.h" />
     <ClInclude Include="Server\Handlers\ObjectHandlerAdmin.h" />
-    <ClInclude Include="Server\Handlers\ObjectHandlerStorage.h" />
     <ClInclude Include="Server\Handlers\ObjectHandler.h" />
     <ClInclude Include="Server\Handlers\HistogramValueHandler.h" />
     <ClInclude Include="Reliability\ProbabilityLimitStateFunction.h" />
@@ -423,6 +427,7 @@
     <ClInclude Include="Math\StatisticsCalculator.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Server\Handlers\HandlerAdmin.cpp" />
     <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />
     <ClCompile Include="Combine\ExcludingCombineSettings.cpp" />
     <ClCompile Include="Combine\ExcludingCombineProject.cpp" />

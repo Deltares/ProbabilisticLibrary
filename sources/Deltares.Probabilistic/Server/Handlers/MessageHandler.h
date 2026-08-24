@@ -23,39 +23,38 @@
 
 #include <string>
 #include "StoredObjectHandler.h"
-#include "../../Statistics/HistogramValue.h"
+#include "../../Server/ProjectEntries.h"
+#include "../../Logging/Message.h"
 
 namespace Deltares::Server
 {
-    class HistogramValueHandler : public StoredObjectHandler<Statistics::HistogramValue>
+    class MessageHandler : public StoredObjectHandler<Logging::Message>
     {
     public:
 
         ObjectType GetObjectType() override
         {
-            return ObjectType::HistogramValue;
+            return ObjectType::Message;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        std::string GetStringValue(int id, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
+            std::shared_ptr<Logging::Message> message = GetObject(id);
 
-            if (property_ == "lower_bound") return histogramValue->LowerBound;
-            else if (property_ == "upper_bound") return histogramValue->UpperBound;
-            else if (property_ == "amount") return histogramValue->Amount;
-            else return ObjectHandler::GetValue(id, property_);
+            if (property_ == "type") return Logging::Message::getMessageTypeString(message->Type);
+            else if (property_ == "text") return message->Text;
+            else if (property_ == "subject") return message->Subject;
+            else return StoredObjectHandler::GetStringValue(id, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetStringValue(int id, const std::string& property_, const std::string& value) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
+            std::shared_ptr<Logging::Message> message = GetObject(id);
 
-            if (property_ == "lower_bound") histogramValue->LowerBound = value;
-            else if (property_ == "upper_bound") histogramValue->UpperBound = value;
-            else if (property_ == "amount") histogramValue->Amount = value;
-            else ObjectHandler::SetValue(id, property_, value);
-
-            histogramValue->setDirty();
+            if (property_ == "type") message->Type = Logging::Message::getMessageType(value);
+            else if (property_ == "text") message->Text = value;
+            else if (property_ == "subject") message->Subject = value;
+            else StoredObjectHandler::SetStringValue(id, property_, value);
         }
     };
 }

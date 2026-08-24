@@ -24,7 +24,8 @@
 #include <vector>
 
 #include "ObjectHandlerAdmin.h"
-#include "../../Statistics/HistogramValue.h"
+#include "../../Model/ZModel.h"
+#include "../../Model/ModelSampleStruct.h"
 
 namespace Deltares::Server
 {
