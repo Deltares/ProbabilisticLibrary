@@ -109,6 +109,11 @@ namespace Deltares::Server
             return objects.contains(id);
         }
 
+        bool ContainsObject(const std::shared_ptr<T>& object)
+        {
+            return objectIds.contains(object);
+        }
+
         virtual ObjectType GetObjectType() = 0;
     };
 }

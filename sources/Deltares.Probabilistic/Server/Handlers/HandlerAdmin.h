@@ -33,7 +33,9 @@
 #include "ModelParameterHandler.h"
 #include "ProbabilityValueHandler.h"
 #include "ReliabilityResultHandler.h"
+#include "ScenarioHandler.h"
 #include "StandardNormalHandler.h"
+#include "StochastHandler.h"
 #include "ValidationReportHandler.h"
 
 namespace Deltares::Server
@@ -50,6 +52,8 @@ namespace Deltares::Server
         EvaluationHandler evaluationHandler;
         ProbabilityValueHandler probabilityValueHandler;
         StandardNormalHandler standardNormalHandler;
+        StochastHandler stochastHandler;
+        ScenarioHandler scenarioHandler;
         ValidationReportHandler validationReportHandler;
         ModelParameterHandler modelParameterHandler;
         LimitStateFunctionHandler limitStateFunctionHandler;
@@ -168,6 +172,42 @@ namespace Deltares::Server
         {
             ObjectType objectType = admin.GetObjectType(id);
             return handlers[objectType]->GetIndexedIdValue(id, property_, index);
+        }
+
+        void SetArrayValue(int id, const std::string& property_, double* values, int size)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetArrayValue(id, property_, values, size);
+        }
+
+        void SetArrayIntValue(int id, const std::string& property_, int* values, int size)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetArrayIntValue(id, property_, values, size);
+        }
+
+        double GetArgValue(int id, const std::string& property_, double argument)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            return handlers[objectType]->GetArgValue(id, property_, argument);
+        }
+
+        void SetArgValue(int id, const std::string& property_, double argument, double value)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetArgValue(id, property_, argument, value);
+        }
+
+        double GetIndexedValue(int id, const std::string& property_, int index)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            return handlers[objectType]->GetIndexedValue(id, property_, index);
+        }
+
+        void Execute(int id, const std::string& method_)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->Execute(id, method_);
         }
 
     private:

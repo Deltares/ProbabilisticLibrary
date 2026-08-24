@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\StochastHandler.h" />
+    <ClInclude Include="Server\Handlers\ScenarioHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilityResultHandler.h" />
     <ClInclude Include="Server\Handlers\EvaluationHandler.h" />
     <ClInclude Include="Server\Handlers\LimitStateFunctionHandler.h" />
@@ -219,6 +221,7 @@
     <ClInclude Include="Sensitivity\SobolResource.h" />
     <ClInclude Include="Sensitivity\SobolDirectionLoader.h" />
     <ClInclude Include="Statistics\Distributions\DistributionSupport.h" />
+    <ClInclude Include="Server\Handlers\FragilityCurveHandler.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />

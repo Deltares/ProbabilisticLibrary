@@ -27,6 +27,12 @@ namespace Deltares::Server
     HandlerAdmin::HandlerAdmin()
     {
         validationReportHandler.messageHandler = &messageHandler;
+        scenarioHandler.stochastHandler = &stochastHandler;
+
+        stochastHandler.validationReportHandler = &validationReportHandler;
+        stochastHandler.discreteValueHandler = &discreteValueHandler;
+        stochastHandler.histogramValueHandler = &histogramValueHandler;
+        stochastHandler.fragilityValueHandler = &fragilityValueHandler;
 
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
@@ -35,6 +41,8 @@ namespace Deltares::Server
         handlers[ObjectType::Evaluation] = &evaluationHandler;
         handlers[ObjectType::ProbabilityValue] = &probabilityValueHandler;
         handlers[ObjectType::StandardNormal] = &standardNormalHandler;
+        handlers[ObjectType::Stochast] = &stochastHandler;
+        handlers[ObjectType::Scenario] = &scenarioHandler;
         handlers[ObjectType::ValidationReport] = &validationReportHandler;
         handlers[ObjectType::ModelParameter] = &modelParameterHandler;
         handlers[ObjectType::LimitStateFunction] = &limitStateFunctionHandler;
@@ -57,6 +65,8 @@ namespace Deltares::Server
             objectType == ObjectType::Evaluation ||
             objectType == ObjectType::ProbabilityValue ||
             objectType == ObjectType::StandardNormal ||
+            objectType == ObjectType::Stochast ||
+            objectType == ObjectType::Scenario ||
             objectType == ObjectType::ValidationReport ||
             objectType == ObjectType::ModelParameter ||
             objectType == ObjectType::LimitStateFunction ||

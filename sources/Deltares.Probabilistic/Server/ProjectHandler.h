@@ -91,7 +91,6 @@ namespace Deltares::Server
         void SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack) override;
         void Execute(int id, const std::string& method_) override;
 
-        int GetStochastId(const std::shared_ptr<Statistics::Stochast>& stochast, int newId);
         int GetFragilityCurveId(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, int newId);
         int GetCorrelationMatrixId(const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix, int newid);
         int GetDesignPointId(const std::shared_ptr<Reliability::DesignPoint>& designPoint, int newId);
@@ -115,14 +114,12 @@ namespace Deltares::Server
         std::mutex mtx;
         HandlerAdmin admin;
 
-        std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
         std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Reliability::ProbabilityLimitStateFunction>> probabilityLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Statistics::ContributingStochast>> contributingStochasts;
         std::unordered_map<int, std::shared_ptr<Statistics::VariableStochastValue>> conditionalValues;
         std::unordered_map<int, std::shared_ptr<Statistics::BaseCorrelation>> correlations;
-        std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
         std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
         std::unordered_map<int, std::shared_ptr<Models::StochastPoint>> stochastPoints;
@@ -155,7 +152,6 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Sensitivity::SensitivityValue>, int> sensitivityValuesIds;
         std::unordered_map<std::shared_ptr<Models::StochastPointAlpha>, int> alphaIds;
         std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
-        std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
         std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
         std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;
         std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
