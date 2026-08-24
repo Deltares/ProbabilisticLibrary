@@ -26,9 +26,20 @@ namespace Deltares::Server
 {
     HandlerAdmin::HandlerAdmin()
     {
+        validationReportHandler.messageHandler = &messageHandler;
+
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
         handlers[ObjectType::FragilityValue] = &fragilityValueHandler;
+        handlers[ObjectType::Message] = &messageHandler;
+        handlers[ObjectType::Evaluation] = &evaluationHandler;
+        handlers[ObjectType::ProbabilityValue] = &probabilityValueHandler;
+        handlers[ObjectType::StandardNormal] = &standardNormalHandler;
+        handlers[ObjectType::ValidationReport] = &validationReportHandler;
+        handlers[ObjectType::ModelParameter] = &modelParameterHandler;
+        handlers[ObjectType::LimitStateFunction] = &limitStateFunctionHandler;
+        handlers[ObjectType::ReliabilityResult] = &reliabilityResultHandler;
+        handlers[ObjectType::ConvergenceReport] = &convergenceReportHandler;
 
         for (const auto& [objectType, handler] : handlers)
         {
@@ -42,7 +53,15 @@ namespace Deltares::Server
             objectType == ObjectType::HistogramValue ||
             objectType == ObjectType::DiscreteValue ||
             objectType == ObjectType::FragilityValue ||
-            objectType == ObjectType::Message;
+            objectType == ObjectType::Message ||
+            objectType == ObjectType::Evaluation ||
+            objectType == ObjectType::ProbabilityValue ||
+            objectType == ObjectType::StandardNormal ||
+            objectType == ObjectType::ValidationReport ||
+            objectType == ObjectType::ModelParameter ||
+            objectType == ObjectType::LimitStateFunction ||
+            objectType == ObjectType::ReliabilityResult ||
+            objectType == ObjectType::ConvergenceReport;
     }
 }
 

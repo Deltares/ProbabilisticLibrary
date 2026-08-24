@@ -23,6 +23,7 @@
 
 #include <mutex>
 #include <unordered_map>
+#include "../ProjectEntries.h"
 
 namespace Deltares::Server
 {

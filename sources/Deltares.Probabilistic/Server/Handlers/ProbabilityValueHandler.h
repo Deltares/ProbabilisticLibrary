@@ -20,45 +20,46 @@
 // All rights reserved.
 //
 #pragma once
-
 #include <string>
+
+#include "ObjectHandler.h"
 #include "StoredObjectHandler.h"
-#include "../../Statistics/HistogramValue.h"
+#include "../../Server/ProjectEntries.h"
+#include "../../Statistics/ProbabilityValue.h"
 
 namespace Deltares::Server
 {
     /**
-     * \brief Handles properties and methods of class HistogramValue
+     * \brief Handles properties and methods of class ProbabilityValue
      */
-    class HistogramValueHandler : public StoredObjectHandler<Statistics::HistogramValue>
+    class ProbabilityValueHandler : public StoredObjectHandler<Statistics::ProbabilityValue>
     {
     public:
-
         ObjectType GetObjectType() override
         {
-            return ObjectType::HistogramValue;
+            return ObjectType::ProbabilityValue;
         }
 
         double GetValue(int id, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
+            std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = this->GetObject(id);
 
-            if (property_ == "lower_bound") return histogramValue->LowerBound;
-            else if (property_ == "upper_bound") return histogramValue->UpperBound;
-            else if (property_ == "amount") return histogramValue->Amount;
+            if (property_ == "reliability_index") return probabilityValue->Reliability;
+            else if (property_ == "probability_of_failure") return probabilityValue->getProbabilityOfFailure();
+            else if (property_ == "probability_of_non_failure") return probabilityValue->getProbabilityOfNonFailure();
+            else if (property_ == "return_period") return probabilityValue->getReturnPeriod();
             else return ObjectHandler::GetValue(id, property_);
         }
 
         void SetValue(int id, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
+            std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = this->GetObject(id);
 
-            if (property_ == "lower_bound") histogramValue->LowerBound = value;
-            else if (property_ == "upper_bound") histogramValue->UpperBound = value;
-            else if (property_ == "amount") histogramValue->Amount = value;
+            if (property_ == "reliability_index") probabilityValue->Reliability = value;
+            else if (property_ == "probability_of_failure") probabilityValue->setProbabilityOfFailure(value);
+            else if (property_ == "probability_of_non_failure") probabilityValue->setProbabilityOfNonFailure(value);
+            else if (property_ == "return_period") probabilityValue->setReturnPeriod(value);
             else ObjectHandler::SetValue(id, property_, value);
-
-            histogramValue->setDirty();
         }
     };
 }

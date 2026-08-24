@@ -29,6 +29,9 @@
 
 namespace Deltares::Server
 {
+    /**
+     * \brief Handles properties and methods of class DiscreteValue
+     */
     class DiscreteValueHandler : public StoredObjectHandler<Statistics::DiscreteValue>
     {
     public:

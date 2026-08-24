@@ -21,11 +21,20 @@
 //
 #pragma once
 
+#include <unordered_map>
 #include "../ProjectEntries.h"
+#include "ConvergenceReportHandler.h"
 #include "DiscreteValueHandler.h"
+#include "EvaluationHandler.h"
 #include "FragilityValueHandler.h"
 #include "HistogramValueHandler.h"
+#include "LimitStateFunctionHandler.h"
 #include "MessageHandler.h"
+#include "ModelParameterHandler.h"
+#include "ProbabilityValueHandler.h"
+#include "ReliabilityResultHandler.h"
+#include "StandardNormalHandler.h"
+#include "ValidationReportHandler.h"
 
 namespace Deltares::Server
 {
@@ -38,6 +47,14 @@ namespace Deltares::Server
         DiscreteValueHandler discreteValueHandler;
         FragilityValueHandler fragilityValueHandler;
         MessageHandler messageHandler;
+        EvaluationHandler evaluationHandler;
+        ProbabilityValueHandler probabilityValueHandler;
+        StandardNormalHandler standardNormalHandler;
+        ValidationReportHandler validationReportHandler;
+        ModelParameterHandler modelParameterHandler;
+        LimitStateFunctionHandler limitStateFunctionHandler;
+        ReliabilityResultHandler reliabilityResultHandler;
+        ConvergenceReportHandler convergenceReportHandler;
 
         int GetNewId()
         {
@@ -145,6 +162,12 @@ namespace Deltares::Server
         {
             ObjectType objectType = admin.GetObjectType(id1);
             return handlers[objectType]->GetIntArgValue(id1, id2, property_);
+        }
+
+        int GetIndexedIdValue(int id, const std::string& property_, int index)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            return handlers[objectType]->GetIndexedIdValue(id, property_, index);
         }
 
     private:

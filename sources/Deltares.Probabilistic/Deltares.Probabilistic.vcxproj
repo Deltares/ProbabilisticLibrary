@@ -159,6 +159,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\ReliabilityResultHandler.h" />
+    <ClInclude Include="Server\Handlers\EvaluationHandler.h" />
+    <ClInclude Include="Server\Handlers\LimitStateFunctionHandler.h" />
+    <ClInclude Include="Server\Handlers\ModelParameterHandler.h" />
+    <ClInclude Include="Server\Handlers\ValidationReportHandler.h" />
+    <ClInclude Include="Server\Handlers\StandardNormalHandler.h" />
+    <ClInclude Include="Server\Handlers\ProbabilityValueHandler.h" />
     <ClInclude Include="Server\Handlers\StoredObjectHandler.h" />
     <ClInclude Include="Server\Handlers\HandlerAdmin.h" />
     <ClInclude Include="Server\Handlers\MessageHandler.h" />
@@ -425,6 +432,7 @@
     <ClInclude Include="Logging\ValidationReport.h" />
     <ClInclude Include="Model\DefaultValueConverter.h" />
     <ClInclude Include="Math\StatisticsCalculator.h" />
+    <ClInclude Include="Server\Handlers\ConvergenceReportHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server\Handlers\HandlerAdmin.cpp" />

@@ -20,45 +20,33 @@
 // All rights reserved.
 //
 #pragma once
-
 #include <string>
+
+#include "ObjectHandler.h"
 #include "StoredObjectHandler.h"
-#include "../../Statistics/HistogramValue.h"
+#include "../../Server/ProjectEntries.h"
+#include "../../Statistics/StandardNormal.h"
+#include "../../Statistics/ProbabilityValue.h"
 
 namespace Deltares::Server
 {
     /**
-     * \brief Handles properties and methods of class HistogramValue
+     * \brief Handles properties and methods of class StandardNormal
+     * \remarks Another class type is used for instantiation
      */
-    class HistogramValueHandler : public StoredObjectHandler<Statistics::HistogramValue>
+    class StandardNormalHandler : public StoredObjectHandler<Statistics::ProbabilityValue>
     {
     public:
-
         ObjectType GetObjectType() override
         {
-            return ObjectType::HistogramValue;
+            return ObjectType::StandardNormal;
         }
 
         double GetValue(int id, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
-
-            if (property_ == "lower_bound") return histogramValue->LowerBound;
-            else if (property_ == "upper_bound") return histogramValue->UpperBound;
-            else if (property_ == "amount") return histogramValue->Amount;
+            if (property_ == "u_max") return Statistics::StandardNormal::UMax;
+            else if (property_ == "beta_max") return Statistics::StandardNormal::BetaMax;
             else return ObjectHandler::GetValue(id, property_);
-        }
-
-        void SetValue(int id, const std::string& property_, double value) override
-        {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
-
-            if (property_ == "lower_bound") histogramValue->LowerBound = value;
-            else if (property_ == "upper_bound") histogramValue->UpperBound = value;
-            else if (property_ == "amount") histogramValue->Amount = value;
-            else ObjectHandler::SetValue(id, property_, value);
-
-            histogramValue->setDirty();
         }
     };
 }

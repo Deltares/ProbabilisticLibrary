@@ -29,6 +29,9 @@
 
 namespace Deltares::Server
 {
+    /**
+     * \brief Handles properties and methods of class FragilityValue
+     */
     class FragilityValueHandler : public StoredObjectHandler<Statistics::FragilityValue>
     {
     public:
@@ -39,7 +42,7 @@ namespace Deltares::Server
 
         double GetValue(int id, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::FragilityValue> fragilityValue = this->GetObject(id);
+            std::shared_ptr<Statistics::FragilityValue> fragilityValue = GetObject(id);
 
             if (property_ == "x") return fragilityValue->X;
             else if (property_ == "reliability_index") return fragilityValue->Reliability;
@@ -51,7 +54,7 @@ namespace Deltares::Server
 
         void SetValue(int id, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::FragilityValue> fragilityValue = this->GetObject(id);
+            std::shared_ptr<Statistics::FragilityValue> fragilityValue = GetObject(id);
 
             if (property_ == "x") fragilityValue->X = value;
             else if (property_ == "reliability_index") fragilityValue->Reliability = value;

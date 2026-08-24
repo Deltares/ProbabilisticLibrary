@@ -28,6 +28,9 @@
 
 namespace Deltares::Server
 {
+    /**
+     * \brief Handles properties and methods of class Message
+     */
     class MessageHandler : public StoredObjectHandler<Logging::Message>
     {
     public:

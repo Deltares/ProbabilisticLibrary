@@ -68,20 +68,8 @@ namespace Deltares::Server
         {
         case ObjectType::StandardNormal:
             break; // nothing to do
-        case ObjectType::ProbabilityValue:
-            probabilityValues[id] = std::make_shared<ProbabilityValue>();
-            probabilityValueIds[probabilityValues[id]] = id;
-            break;
         case ObjectType::Project:
             projects[id] = std::make_shared<ReliabilityProject>();
-            break;
-        case ObjectType::ModelParameter:
-            modelParameters[id] = std::make_shared<Models::ModelInputParameter>();
-            modelParameterIds[modelParameters[id]] = id;
-            break;
-        case ObjectType::LimitStateFunction:
-            limitStateFunctions[id] = std::make_shared<LimitStateFunction>();
-            limitStateFunctionIds[limitStateFunctions[id]] = id;
             break;
         case ObjectType::CombinedLimitStateFunction:
             combinedLimitStateFunctions[id] = std::make_shared<CombinedLimitStateFunction>();
@@ -141,14 +129,6 @@ namespace Deltares::Server
         case ObjectType::FragilityCurveSettings:
             fragilityCurveSettings[id] = std::make_shared<FragilityCurveIntegrationSettings>();
             break;
-        case ObjectType::Evaluation:
-            evaluations[id] = std::make_shared<Models::Evaluation>();
-            evaluationIds[evaluations[id]] = id;
-            break;
-        case ObjectType::ReliabilityResult:
-            reliabilityResults[id] = std::make_shared<ReliabilityResult>();
-            reliabilityResultIds[reliabilityResults[id]] = id;
-            break;
         case ObjectType::CombineProject:
             combineProjects[id] = std::make_shared<CombineProject>();
             break;
@@ -198,10 +178,6 @@ namespace Deltares::Server
         case ObjectType::LengthEffectProject:
             lengthEffectProjects[id] = std::make_shared<LengthEffectProject>();
             break;
-        case ObjectType::ConvergenceReport:
-            convergenceReports[id] = std::make_shared<ConvergenceReport>();
-            convergenceReportIds[convergenceReports[id]] = id;
-            break;
         default: throw ProbabilisticLibraryException("object type");
         }
 
@@ -227,12 +203,7 @@ namespace Deltares::Server
 
         switch (objectType)
         {
-        case ObjectType::StandardNormal: break;
-        case ObjectType::ProbabilityValue: probabilityValueIds.erase(probabilityValues[id]); probabilityValues.erase(id); break;
-        case ObjectType::ValidationReport: validationReports.erase(id); break;
         case ObjectType::Project: projects.erase(id); break;
-        case ObjectType::ModelParameter: modelParameterIds.erase(modelParameters[id]); modelParameters.erase(id); break;
-        case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
         case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
         case ObjectType::ProbabilityLimitStateFunction: probabilityLimitStateFunctions.erase(id); break;
         case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
@@ -250,8 +221,6 @@ namespace Deltares::Server
         case ObjectType::FragilityCurve:  fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
         case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
         case ObjectType::FragilityCurveSettings: fragilityCurveSettings.erase(id); break;
-        case ObjectType::Evaluation: evaluationIds.erase(evaluations[id]); evaluations.erase(id); break;
-        case ObjectType::ReliabilityResult: reliabilityResultIds.erase(reliabilityResults[id]); reliabilityResults.erase(id); break;
         case ObjectType::CombineProject: combineProjects.erase(id); break;
         case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
         case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
@@ -267,7 +236,6 @@ namespace Deltares::Server
         case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
         case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
         case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
-        case ObjectType::ConvergenceReport: convergenceReportIds.erase(convergenceReports[id]); convergenceReports.erase(id); break;
         default: throw ProbabilisticLibraryException("object type");
         }
 
@@ -288,23 +256,7 @@ namespace Deltares::Server
             return admin.GetValue(id, property_);
         }
 
-        if (objectType == ObjectType::StandardNormal)
-        {
-            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
-
-            if (property_ == "u_max") return StandardNormal::UMax;
-            else if (property_ == "beta_max") return StandardNormal::BetaMax;
-        }
-        else if (objectType == ObjectType::ProbabilityValue)
-        {
-            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
-
-            if (property_ == "reliability_index") return probabilityValue->Reliability;
-            else if (property_ == "probability_of_failure") return probabilityValue->getProbabilityOfFailure();
-            else if (property_ == "probability_of_non_failure") return probabilityValue->getProbabilityOfNonFailure();
-            else if (property_ == "return_period") return probabilityValue->getReturnPeriod();
-        }
-        else if (ProjectEntries::IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -333,18 +285,6 @@ namespace Deltares::Server
             std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
 
             if (property_ == "probability") return contributingStochast->Probability;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "critical_value") return limitStateFunction->criticalValue;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "default_value") return parameter->defaultValue;
         }
         else if (objectType == ObjectType::ConditionalValue)
         {
@@ -459,24 +399,6 @@ namespace Deltares::Server
             else if (property_ == "x") return alpha->X;
             else if (property_ == "influence_factor") return alpha->InfluenceFactor;
         }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "z") return evaluation->Z;
-            else if (property_ == "quantile") return evaluation->Quantile;
-            else if (property_ == "beta") return evaluation->Beta;
-            else if (property_ == "weight") return evaluation->Weight;
-        }
-        else if (objectType == ObjectType::ReliabilityResult)
-        {
-            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
-
-            if (property_ == "reliability_index") return result->Reliability;
-            else if (property_ == "convergence") return std::isnan(result->ConvBeta) ? result->Variation : result->ConvBeta;
-            else if (property_ == "variation") return result->Variation;
-            else if (property_ == "contribution") return result->Contribution;
-        }
         else if (objectType == ObjectType::SensitivityValue)
         {
             std::shared_ptr<Sensitivity::SensitivityValue> sensitivity_value = sensitivityValues[id];
@@ -493,18 +415,6 @@ namespace Deltares::Server
 
             if (property_ == "length") return length_effect->length;
         }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "convergence") return convergence_report->Convergence;
-            else if (property_ == "fail_fraction") return convergence_report->FailFraction;
-            else if (property_ == "fail_weight") return convergence_report->FailWeight;
-            else if (property_ == "max_weight") return convergence_report->MaxWeight;
-            else if (property_ == "relaxation_factor") return convergence_report->RelaxationFactor;
-            else if (property_ == "variance_factor") return convergence_report->VarianceFactor;
-            else if (property_ == "z_margin") return convergence_report->ZMargin;
-        }
         return std::nan("");
     }
 
@@ -517,16 +427,7 @@ namespace Deltares::Server
             admin.SetValue(id, property_, value);
         }
 
-        if (objectType == ObjectType::ProbabilityValue)
-        {
-            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
-
-            if (property_ == "reliability_index") probabilityValue->Reliability = value;
-            else if (property_ == "probability_of_failure") probabilityValue->setProbabilityOfFailure(value);
-            else if (property_ == "probability_of_non_failure") probabilityValue->setProbabilityOfNonFailure(value);
-            else if (property_ == "return_period") probabilityValue->setReturnPeriod(value);
-        }
-        else if (ProjectEntries::IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -555,18 +456,6 @@ namespace Deltares::Server
             std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
 
             if (property_ == "probability") contributingStochast->Probability = value;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "critical_value") limitStateFunction->criticalValue = value;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "default_value") parameter->defaultValue = value;
         }
         else if (objectType == ObjectType::ConditionalValue)
         {
@@ -684,24 +573,6 @@ namespace Deltares::Server
 
             if (property_ == "length") length_effect->length = value;
         }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "z") evaluation->Z = value;
-            else if (property_ == "quantile") evaluation->Quantile = value;
-            else if (property_ == "beta") evaluation->Beta = value;
-            else if (property_ == "weight") evaluation->Weight = value;
-        }
-        else if (objectType == ObjectType::ReliabilityResult)
-        {
-            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
-
-            if (property_ == "reliability_index") result->Reliability = value;
-            else if (property_ == "convergence") result->ConvBeta = value;
-            else if (property_ == "variation") result->Variation = value;
-            else if (property_ == "contribution") result->Contribution = value;
-        }
         else if (objectType == ObjectType::SensitivityValue)
         {
             std::shared_ptr<Sensitivity::SensitivityValue> sensitivity_value = sensitivityValues[id];
@@ -711,18 +582,6 @@ namespace Deltares::Server
             else if (property_ == "high") sensitivity_value->high = value;
             else if (property_ == "first_order_index") sensitivity_value->firstOrderIndex = value;
             else if (property_ == "total_index") sensitivity_value->totalIndex = value;
-        }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "convergence") convergence_report->Convergence = value;
-            else if (property_ == "fail_fraction") convergence_report->FailFraction = value;
-            else if (property_ == "fail_weight") convergence_report->FailWeight = value;
-            else if (property_ == "max_weight") convergence_report->MaxWeight = value;
-            else if (property_ == "relaxation_factor") convergence_report->RelaxationFactor = value;
-            else if (property_ == "variance_factor") convergence_report->VarianceFactor = value;
-            else if (property_ == "z_margin") convergence_report->ZMargin = value;
         }
     }
 
@@ -744,13 +603,7 @@ namespace Deltares::Server
             else if (property_ == "total_model_runs") return project->modelRuns;
         }
 
-        if (objectType == ObjectType::ValidationReport)
-        {
-            std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
-
-            if (property_ == "messages_count") return static_cast<int>(validationReport->messages.size());
-        }
-        else if (objectType == ObjectType::Project)
+        if (objectType == ObjectType::Project)
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -759,14 +612,7 @@ namespace Deltares::Server
             else if (property_ == "total_model_runs") return project->modelRuns;
         }
 
-        if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "index") return parameter->index;
-            else if (property_ == "array_size") return parameter->arraySize;
-        }
-        else if (objectType == ObjectType::Alpha)
+        if (objectType == ObjectType::Alpha)
         {
             std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
 
@@ -919,33 +765,11 @@ namespace Deltares::Server
             else if (property_ == "reliability_results_count") return static_cast<int>(designPoint->ReliabilityResults.size());
             else if (property_ == "messages_count") return static_cast<int>(designPoint->Messages.size());
         }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "iteration") return evaluation->Iteration;
-            else if (property_ == "tag") return evaluation->Tag;
-            else if (property_ == "input_values_count") return static_cast<int>(evaluation->InputValues.size());
-            else if (property_ == "output_values_count") return static_cast<int>(evaluation->OutputValues.size());
-        }
-        else if (objectType == ObjectType::ReliabilityResult)
-        {
-            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
-
-            if (property_ == "index") return result->Index;
-            else if (property_ == "samples") return static_cast<int>(result->Samples);
-        }
         else if (objectType == ObjectType::LengthEffectProject)
         {
             std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
 
             if (property_ == "correlation_lengths_count") return static_cast<int>(project->correlationLengths.size());
-        }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "failed_samples") return convergence_report->FailedSamples;
         }
 
         return 0;
@@ -966,27 +790,27 @@ namespace Deltares::Server
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
-            if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
+            if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()));
         }
         else if (ProjectEntries::IsModelSettingsType(objectType))
         {
             std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
 
-            if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(settings->getValidationReport()), newId);
+            if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(settings->getValidationReport()));
         }
 
         if (objectType == ObjectType::Project)
         {
             std::shared_ptr<ReliabilityProject> project = projects[id];
 
-            if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction, newId);
+            if (property_ == "limit_state_function") return admin.limitStateFunctionHandler.GetObjectId(project->limitStateFunction);
             else if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
         }
         else if (objectType == ObjectType::RunProject)
         {
             std::shared_ptr<Models::RunProject> project = runProjects[id];
 
-            if (property_ == "realization") return GetEvaluationId(project->evaluation, newId);
+            if (property_ == "realization") return admin.evaluationHandler.GetObjectId(project->evaluation);
         }
         else if (objectType == ObjectType::UncertaintyProject)
         {
@@ -1007,7 +831,7 @@ namespace Deltares::Server
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
             if (property_ == "conditional_source") return GetStochastId(stochast->VariableSource, newId);
-            else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(stochast->getValidationReport()), newId);
+            else if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(stochast->getValidationReport()));
             else if (property_ == "validate_fit")
             {
                 std::shared_ptr<Stochast> prior = tempIntValue > 0 ? stochasts[tempIntValue] : nullptr;
@@ -1018,7 +842,7 @@ namespace Deltares::Server
                     tempIntValue = 0;
                     argValue = std::nan("");
                 }
-                return GetValidationReportId(std::make_shared<Logging::ValidationReport>(report), newId);
+                return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(report));
             }
             else if (property_ == "conditional_x")
             {
@@ -1124,14 +948,14 @@ namespace Deltares::Server
             if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
             else if (property_ == "design_point_correlation_matrix") return GetCorrelationMatrixId(combineProject->correlationMatrix, newId);
             else if (property_ == "correlation_matrix") return GetSelfCorrelationMatrixId(combineProject->selfCorrelationMatrix, newId);
-            else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
+            else if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()));
         }
         else if (objectType == ObjectType::ExcludingCombineProject)
         {
             std::shared_ptr<ExcludingCombineProject> combineProject = excludingCombineProjects[id];
 
             if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
-            else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
+            else if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()));
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
@@ -1143,7 +967,7 @@ namespace Deltares::Server
         {
             std::shared_ptr<DesignPoint> designPoint = designPoints[id];
 
-            if (property_ == "convergence_report") return GetConvergenceReportId(designPoint->convergenceReport, newId);
+            if (property_ == "convergence_report") return admin.convergenceReportHandler.GetObjectId(designPoint->convergenceReport);
         }
 
         return 0;
@@ -1183,27 +1007,6 @@ namespace Deltares::Server
             std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
 
             if (property_ == "fragility_curve") probabilityLimitStateFunction->fragilityCurve = fragilityCurves[value];
-        }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "iteration") evaluation->Iteration = value;
-            else if (property_ == "tag") evaluation->Tag = value;
-        }
-        else if (objectType == ObjectType::ReliabilityResult)
-        {
-            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
-
-            if (property_ == "index") result->Index = value;
-            else if (property_ == "samples") result->Samples = value;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "index") parameter->index = value;
-            else if (property_ == "array_size") parameter->arraySize = value;
         }
         else if (ProjectEntries::IsStochast(objectType))
         {
@@ -1344,12 +1147,6 @@ namespace Deltares::Server
             if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
             else if (property_ == "design_point_cross_section") project->designPointCrossSection = designPoints[value];
         }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "failed_samples") convergence_report->FailedSamples = value;
-        }
         else if (objectType == ObjectType::SelfCorrelationMatrix)
         {
             if (property_ == "correlation_stochast") tempIntValue = value;
@@ -1416,13 +1213,7 @@ namespace Deltares::Server
             else if (property_ == "use_z_from_sample") return settings->RunSettings->UseZFromSample;
         }
 
-        if (objectType == ObjectType::ValidationReport)
-        {
-            std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
-
-            if (property_ == "is_valid") return validationReport->isValid();
-        }
-        else if (objectType == ObjectType::FragilityCurve)
+        if (objectType == ObjectType::FragilityCurve)
         {
             std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
 
@@ -1465,19 +1256,6 @@ namespace Deltares::Server
             if (property_ == "is_identity") return matrix->IsIdentity();
             else if (property_ == "has_conflicting_correlations") return matrix->HasConflictingCorrelations();
             else if (property_ == "is_valid") return matrix->IsValid();
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "is_array") return parameter->isArray;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "use_compare_parameter") return limitStateFunction->useCompareParameter;
-            else if (property_ == "normalize") return limitStateFunction->normalize;
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
@@ -1531,12 +1309,6 @@ namespace Deltares::Server
 
             if (property_ == "is_valid") return project->is_valid();
         }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "is_converged") return convergence_report->IsConverged;
-        }
 
         return false;
     }
@@ -1585,19 +1357,6 @@ namespace Deltares::Server
             if (property_ == "inverted") fragilityCurve->inverted = value;
             else if (property_ == "fixed") fragilityCurve->fixed = value;
         }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "is_array") parameter->isArray = value;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "use_compare_parameter") limitStateFunction->useCompareParameter = value;
-            else if (property_ == "normalize") limitStateFunction->normalize = value;
-        }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
             std::shared_ptr<LimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
@@ -1638,12 +1397,6 @@ namespace Deltares::Server
 
             if (property_ == "is_converged") designPoint->convergenceReport->IsConverged = value;
         }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "is_converged") convergence_report->IsConverged = value;
-        }
     }
 
     std::string ProjectHandler::GetStringValue(int id, const std::string& property_)
@@ -1655,13 +1408,7 @@ namespace Deltares::Server
             return admin.GetStringValue(id, property_);
         }
 
-        if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "name") return parameter->name;
-        }
-        else if (ProjectEntries::IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
@@ -1669,14 +1416,6 @@ namespace Deltares::Server
             else if (property_ == "constant_parameter") return Stochast::getConstantParameterTypeString(stochast->constantParameterType);
             else if (property_ == "name") return stochast->name;
             else return "";
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "parameter") return limitStateFunction->criticalParameter;
-            else if (property_ == "compare_parameter") return limitStateFunction->compareParameter;
-            else if (property_ == "compare_type") return LimitStateFunction::GetCompareTypeString(limitStateFunction->compareType);
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
@@ -1803,20 +1542,6 @@ namespace Deltares::Server
             if (property_ == "distribution") stochast->setDistributionType(Stochast::getDistributionType(value));
             else if (property_ == "constant_parameter") stochast->constantParameterType = Stochast::getConstantParameterType(value);
             else if (property_ == "name") stochast->name = value;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "name") parameter->name = value;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "parameter") limitStateFunction->criticalParameter = value;
-            else if (property_ == "compare_parameter") limitStateFunction->compareParameter = value;
-            else if (property_ == "compare_type") limitStateFunction->compareType = LimitStateFunction::GetCompareType(value);
         }
         else if (objectType == ObjectType::CombinedLimitStateFunction)
         {
@@ -1979,7 +1704,7 @@ namespace Deltares::Server
                 project->model->inputParameters.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    project->model->inputParameters.push_back(modelParameters[values[i]]);
+                    project->model->inputParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
                 }
                 project->updateStochasts();
             }
@@ -1988,7 +1713,7 @@ namespace Deltares::Server
                 project->model->outputParameters.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    project->model->outputParameters.push_back(modelParameters[values[i]]);
+                    project->model->outputParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
                 }
             }
         }
@@ -2114,7 +1839,7 @@ namespace Deltares::Server
 
                 for (int i = 0; i < size; i++)
                 {
-                    project->uncertaintyParameters.push_back(modelParameters[values[i]]);
+                    project->uncertaintyParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
                 }
             }
         }
@@ -2128,7 +1853,7 @@ namespace Deltares::Server
 
                 for (int i = 0; i < size; i++)
                 {
-                    project->sensitivityParameters.push_back(modelParameters[values[i]]);
+                    project->sensitivityParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
                 }
             }
         }
@@ -2162,7 +1887,7 @@ namespace Deltares::Server
                 settings->RequestedQuantiles.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    settings->RequestedQuantiles.push_back(probabilityValues[values[i]]);
+                    settings->RequestedQuantiles.push_back(admin.probabilityValueHandler.GetObject(values[i]));
                 }
             }
         }
@@ -2267,13 +1992,6 @@ namespace Deltares::Server
                 return lengthEffect->correlationLengths[index];
             }
         }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "input_values") return evaluation->InputValues[index];
-            else if (property_ == "output_values") return evaluation->OutputValues[index];
-        }
 
         return std::nan("");
     }
@@ -2368,6 +2086,11 @@ namespace Deltares::Server
         ObjectType objectType = admin.GetObjectType(id);
         int newId = this->GetNewId();
 
+        if (IsSupported(objectType))
+        {
+            return admin.GetIndexedIdValue(id, property_, index);
+        }
+
         if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
@@ -2375,19 +2098,13 @@ namespace Deltares::Server
             if (property_ == "stochasts") return GetStochastId(project->stochasts[index], newId);
         }
 
-        if (objectType == ObjectType::ValidationReport)
-        {
-            std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
-
-            if (property_ == "messages") return admin.messageHandler.GetObjectId(validationReport->messages[index], newId);
-        }
-        else if (ProjectEntries::IsStochast(objectType))
+        if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
-            if (property_ == "histogram_values") return admin.histogramValueHandler.GetObjectId(stochast->getProperties()->HistogramValues[index], newId);
-            else if (property_ == "discrete_values") return admin.discreteValueHandler.GetObjectId(stochast->getProperties()->DiscreteValues[index], newId);
-            else if (property_ == "fragility_values") return admin.fragilityValueHandler.GetObjectId(stochast->getProperties()->FragilityValues[index], newId);
+            if (property_ == "histogram_values") return admin.histogramValueHandler.GetObjectId(stochast->getProperties()->HistogramValues[index]);
+            else if (property_ == "discrete_values") return admin.discreteValueHandler.GetObjectId(stochast->getProperties()->DiscreteValues[index]);
+            else if (property_ == "fragility_values") return admin.fragilityValueHandler.GetObjectId(stochast->getProperties()->FragilityValues[index]);
             else if (property_ == "contributing_stochasts") return GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index], newId);
             else if (property_ == "conditional_values") return GetConditionalValueId(stochast->ValueSet->StochastValues[index], newId);
             else if (property_ == "array_variables") return GetStochastId(stochast->ArrayVariables[index], newId);
@@ -2402,7 +2119,7 @@ namespace Deltares::Server
         {
             std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
-            if (property_ == "limit_state_functions") return GetLimitStateFunctionId(limitStateFunction->limitStateFunctions[index], newId);
+            if (property_ == "limit_state_functions") return admin.limitStateFunctionHandler.GetObjectId(limitStateFunction->limitStateFunctions[index]);
         }
         else if (objectType == ObjectType::UncertaintyProject)
         {
@@ -2410,22 +2127,22 @@ namespace Deltares::Server
 
             if (property_ == "uncertainty_stochasts") return GetStochastId(project->uncertaintyResults[index]->stochast, newId);
             else if (property_ == "uncertainty_results") return GetUncertaintyResultId(project->uncertaintyResults[index], newId);
-            else if (property_ == "uncertainty_parameters") return GetModelParameterId(project->uncertaintyParameters[index], newId);
+            else if (property_ == "uncertainty_parameters") return admin.modelParameterHandler.GetObjectId(project->uncertaintyParameters[index]);
         }
         else if (objectType == ObjectType::SensitivityProject)
         {
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
             if (property_ == "results") return GetSensitivityResultId(project->sensitivityResults[index], newId);
-            else if (property_ == "sensitivity_parameters") return GetModelParameterId(project->sensitivityParameters[index], newId);
+            else if (property_ == "sensitivity_parameters") return admin.modelParameterHandler.GetObjectId(project->sensitivityParameters[index]);
         }
         else if (objectType == ObjectType::SensitivityResult)
         {
             std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
 
             if (property_ == "values") return GetSensitivityValueId(result->values[index], newId);
-            else if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
-            else if (property_ == "messages") return admin.messageHandler.GetObjectId(result->messages[index], newId);
+            else if (property_ == "evaluations") return admin.evaluationHandler.GetObjectId(result->evaluations[index]);
+            else if (property_ == "messages") return admin.messageHandler.GetObjectId(result->messages[index]);
         }
         else if (objectType == ObjectType::StochastPoint)
         {
@@ -2439,23 +2156,23 @@ namespace Deltares::Server
 
             if (property_ == "contributing_design_points") return GetDesignPointId(designPoint->ContributingDesignPoints[index], newId);
             else if (property_ == "alphas") return GetAlphaId(designPoint->Alphas[index], newId);
-            else if (property_ == "evaluations") return GetEvaluationId(designPoint->Evaluations[index], newId);
-            else if (property_ == "reliability_results") return GetReliabilityResultId(designPoint->ReliabilityResults[index], newId);
-            else if (property_ == "messages") return admin.messageHandler.GetObjectId(designPoint->Messages[index], newId);
+            else if (property_ == "evaluations") return admin.evaluationHandler.GetObjectId(designPoint->Evaluations[index]);
+            else if (property_ == "reliability_results") return admin.reliabilityResultHandler.GetObjectId(designPoint->ReliabilityResults[index]);
+            else if (property_ == "messages") return admin.messageHandler.GetObjectId(designPoint->Messages[index]);
         }
         else if (objectType == ObjectType::UncertaintySettings)
         {
             std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
-            if (property_ == "quantiles") return GetProbabilityValueId(settings->RequestedQuantiles[index], newId);
+            if (property_ == "quantiles") return admin.probabilityValueHandler.GetObjectId(settings->RequestedQuantiles[index]);
         }
         else if (objectType == ObjectType::UncertaintyResult)
         {
             std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
 
-            if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
-            else if (property_ == "quantile_evaluations") return GetEvaluationId(result->quantileEvaluations[index], newId);
-            else if (property_ == "messages") return admin.messageHandler.GetObjectId(result->messages[index], newId);
+            if (property_ == "evaluations") return admin.evaluationHandler.GetObjectId(result->evaluations[index]);
+            else if (property_ == "quantile_evaluations") return admin.evaluationHandler.GetObjectId(result->quantileEvaluations[index]);
+            else if (property_ == "messages") return admin.messageHandler.GetObjectId(result->messages[index]);
         }
 
         return 0;
@@ -2658,44 +2375,6 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetProbabilityValueId(const std::shared_ptr<ProbabilityValue>& probability, int newId)
-    {
-        if (probability == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!probabilityValueIds.contains(probability))
-            {
-                std::lock_guard lock(mtx);
-
-                probabilityValues[newId] = probability;
-                admin.RegisterType(newId, ObjectType::ProbabilityValue);
-                probabilityValueIds[probability] = newId;
-            }
-
-            return probabilityValueIds[probability];
-        }
-    }
-
-    int ProjectHandler::GetValidationReportId(const std::shared_ptr<Logging::ValidationReport>& validationReport, int newId)
-    {
-        if (validationReport == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            std::lock_guard lock(mtx);
-
-            // assume always a new report is created
-            validationReports[newId] = validationReport;
-            admin.RegisterType(newId, ObjectType::ValidationReport);
-            return newId;
-        }
-    }
-
     int ProjectHandler::GetStochastId(const std::shared_ptr<Stochast>& stochast, int newId)
     {
         if (stochast == nullptr)
@@ -2714,27 +2393,6 @@ namespace Deltares::Server
             }
 
             return stochastIds[stochast];
-        }
-    }
-
-    int ProjectHandler::GetModelParameterId(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, int newId)
-    {
-        if (modelParameter == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!modelParameterIds.contains(modelParameter))
-            {
-                std::lock_guard lock(mtx);
-
-                modelParameters[newId] = modelParameter;
-                admin.RegisterType(newId, ObjectType::ModelParameter);
-                modelParameterIds[modelParameter] = newId;
-            }
-
-            return modelParameterIds[modelParameter];
         }
     }
 
@@ -2810,27 +2468,6 @@ namespace Deltares::Server
         return -1;
     }
 
-    int ProjectHandler::GetLimitStateFunctionId(const std::shared_ptr<LimitStateFunction>& limitStateFunction, int newId)
-    {
-        if (limitStateFunction == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!limitStateFunctionIds.contains(limitStateFunction))
-            {
-                std::lock_guard lock(mtx);
-
-                limitStateFunctions[newId] = limitStateFunction;
-                admin.RegisterType(newId, ObjectType::LimitStateFunction);
-                limitStateFunctionIds[limitStateFunction] = newId;
-            }
-
-            return limitStateFunctionIds[limitStateFunction];
-        }
-    }
-
     int ProjectHandler::GetDesignPointId(const std::shared_ptr<DesignPoint>& designPoint, int newId)
     {
         if (designPoint == nullptr)
@@ -2864,27 +2501,6 @@ namespace Deltares::Server
         }
 
         return alphaIds[alpha];
-    }
-
-    int ProjectHandler::GetConvergenceReportId(const std::shared_ptr<ConvergenceReport>& convergenceReport, int newId)
-    {
-        if (convergenceReport == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!convergenceReportIds.contains(convergenceReport))
-            {
-                std::lock_guard lock(mtx);
-
-                convergenceReports[newId] = convergenceReport;
-                admin.RegisterType(newId, ObjectType::ConvergenceReport);
-                convergenceReportIds[convergenceReport] = newId;
-            }
-
-            return convergenceReportIds[convergenceReport];
-        }
     }
 
     int ProjectHandler::GetUncertaintyResultId(const std::shared_ptr<Uncertainty::UncertaintyResult>& result, int newId)
@@ -2978,41 +2594,6 @@ namespace Deltares::Server
         return conditionalValueIds[conditionalValue];
     }
 
-    int ProjectHandler::GetEvaluationId(const std::shared_ptr<Models::Evaluation>& evaluation, int newId)
-    {
-        if (evaluation == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!evaluationIds.contains(evaluation))
-            {
-                std::lock_guard lock(mtx);
-
-                evaluations[newId] = evaluation;
-                admin.RegisterType(newId, ObjectType::Evaluation);
-                evaluationIds[evaluation] = newId;
-            }
-
-            return evaluationIds[evaluation];
-        }
-    }
-
-    int ProjectHandler::GetReliabilityResultId(const std::shared_ptr<ReliabilityResult>& result, int newId)
-    {
-        if (!reliabilityResultIds.contains(result))
-        {
-            std::lock_guard lock(mtx);
-
-            reliabilityResults[newId] = result;
-            admin.RegisterType(newId, ObjectType::ReliabilityResult);
-            reliabilityResultIds[result] = newId;
-        }
-
-        return reliabilityResultIds[result];
-    }
-
     std::shared_ptr<DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
     {
         return nullptr;
@@ -3084,9 +2665,9 @@ namespace Deltares::Server
 
     std::shared_ptr<LimitStateFunction> ProjectHandler::GetLimitStateFunction(int id)
     {
-        if (limitStateFunctions.contains(id))
+        if (admin.limitStateFunctionHandler.Contains(id))
         {
-            return limitStateFunctions[id];
+            return admin.limitStateFunctionHandler.GetObject(id);
         }
         else if (combinedLimitStateFunctions.contains(id))
         {

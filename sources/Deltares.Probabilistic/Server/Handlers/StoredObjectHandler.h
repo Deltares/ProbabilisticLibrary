@@ -29,6 +29,9 @@ namespace Deltares::Server
 {
     template<typename T>
 
+    /**
+     * \brief Base class for object handlers which contains a registration of all objects
+     */
     class StoredObjectHandler : public ObjectHandler
     {
     private:
@@ -36,7 +39,6 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<T>, int> objectIds;
 
         ObjectHandlerAdmin* admin = nullptr;
-        //ObjectType objectType = ObjectType::StandardNormal; // to initialize it with something
 
     public:
 
@@ -73,24 +75,38 @@ namespace Deltares::Server
 
         std::shared_ptr<T> GetObject(int id) const
         {
+            if (id == 0)
+            {
+                return nullptr;
+            }
+
             auto it = objects.find(id);
             return it != objects.end() ? it->second : nullptr;
         }
 
-        int GetObjectId(const std::shared_ptr<T>& object, int newId)
+        int GetObjectId(const std::shared_ptr<T>& object)
         {
+            if (object == nullptr)
+            {
+                return 0;
+            }
+
             if (!objectIds.contains(object))
             {
-                if (!objectIds.contains(object))
-                {
-                    objects[newId] = object;
-                    objectIds[object] = newId;
+                int newId = admin->GetNewId();
 
-                    admin->RegisterType(newId, GetObjectType());
-                }
+                objects[newId] = object;
+                objectIds[object] = newId;
+
+                admin->RegisterType(newId, GetObjectType());
             }
 
             return objectIds.at(object);
+        }
+
+        bool Contains(int id)
+        {
+            return objects.contains(id);
         }
 
         virtual ObjectType GetObjectType() = 0;
