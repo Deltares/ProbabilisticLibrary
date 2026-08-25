@@ -70,13 +70,6 @@ namespace Deltares::Server
         case ObjectType::Project:
             projects[id] = std::make_shared<ReliabilityProject>();
             break;
-        case ObjectType::CombinedLimitStateFunction:
-            combinedLimitStateFunctions[id] = std::make_shared<CombinedLimitStateFunction>();
-            combinedLimitStateFunctionIds[combinedLimitStateFunctions[id]] = id;
-            break;
-        case ObjectType::ProbabilityLimitStateFunction:
-            probabilityLimitStateFunctions[id] = std::make_shared<ProbabilityLimitStateFunction>();
-            break;
         case ObjectType::CorrelationMatrix:
             correlations[id] = std::make_shared<CorrelationMatrix>(true);
             correlationIds[correlations[id]] = id;
@@ -173,8 +166,6 @@ namespace Deltares::Server
         switch (objectType)
         {
         case ObjectType::Project: projects.erase(id); break;
-        case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
-        case ObjectType::ProbabilityLimitStateFunction: probabilityLimitStateFunctions.erase(id); break;
         case ObjectType::CorrelationMatrix:
         case ObjectType::CopulaCorrelation:
             correlationIds.erase(correlations[id]); correlations.erase(id); break;
@@ -442,12 +433,6 @@ namespace Deltares::Server
 
             if (property_ == "variables_count") return correlationMatrix->GetDimension();
         }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "limit_state_functions_count") return static_cast<int>(limitStateFunction->limitStateFunctions.size());
-        }
         else if (objectType == ObjectType::Settings)
         {
             std::shared_ptr<Settings> settings = settingsValues[id];
@@ -581,12 +566,6 @@ namespace Deltares::Server
 
             if (property_ == "variable") return admin.stochastHandler.GetObjectId(result->stochast);
         }
-        else if (objectType == ObjectType::ProbabilityLimitStateFunction)
-        {
-            std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
-
-            if (property_ == "fragility_curve") return admin.fragilityCurveHandler.GetObjectId(probabilityLimitStateFunction->fragilityCurve);
-        }
         else if (objectType == ObjectType::SensitivityValue)
         {
             std::shared_ptr<Sensitivity::SensitivityValue> result = sensitivityValues[id];
@@ -656,12 +635,6 @@ namespace Deltares::Server
             else if (property_ == "fragility_curve") project->fragilityCurve = admin.fragilityCurveHandler.GetObject(value);
             else if (property_ == "fragility_curve_normalized") project->fragilityCurveNormalized = admin.fragilityCurveHandler.GetObject(value);
             else if (property_ == "settings") project->settings = fragilityCurveSettings[value];
-        }
-        else if (objectType == ObjectType::ProbabilityLimitStateFunction)
-        {
-            std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
-
-            if (property_ == "fragility_curve") probabilityLimitStateFunction->fragilityCurve = admin.fragilityCurveHandler.GetObject(value);
         }
         else if (objectType == ObjectType::Settings)
         {
@@ -820,12 +793,6 @@ namespace Deltares::Server
             else if (property_ == "has_conflicting_correlations") return matrix->HasConflictingCorrelations();
             else if (property_ == "is_valid") return matrix->IsValid();
         }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "normalize") return limitStateFunction->normalize;
-        }
         else if (objectType == ObjectType::StochastSettings)
         {
             std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
@@ -898,13 +865,7 @@ namespace Deltares::Server
             else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
         }
 
-        if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "normalize") limitStateFunction->normalize = value;
-        }
-        else if (objectType == ObjectType::StochastSettings)
+        if (objectType == ObjectType::StochastSettings)
         {
             std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
@@ -943,13 +904,7 @@ namespace Deltares::Server
             return admin.GetStringValue(id, property_);
         }
 
-        if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(limitStateFunction->combineType);
-        }
-        else if (objectType == ObjectType::Settings)
+        if (objectType == ObjectType::Settings)
         {
             std::shared_ptr<Settings> settings = settingsValues[id];
 
@@ -1043,13 +998,7 @@ namespace Deltares::Server
             return admin.SetStringValue(id, property_, value);
         }
 
-        if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "combine_type") limitStateFunction->combineType = DesignPointCombiner::getCombineType(value);
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
+        if (objectType == ObjectType::UncertaintyProject)
         {
             std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
@@ -1215,19 +1164,6 @@ namespace Deltares::Server
                 }
 
                 correlationMatrix->Init(correlationMatrixStochasts);
-            }
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "limit_state_functions")
-            {
-                limitStateFunction->limitStateFunctions.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    limitStateFunction->limitStateFunctions.push_back(GetLimitStateFunction(values[i]));
-                }
             }
         }
         else if (objectType == ObjectType::UncertaintyProject)
@@ -1484,12 +1420,6 @@ namespace Deltares::Server
             std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
             if (property_ == "variables") return admin.stochastHandler.GetObjectId(correlationMatrix->GetStochast(index));
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "limit_state_functions") return admin.limitStateFunctionHandler.GetObjectId(limitStateFunction->limitStateFunctions[index]);
         }
         else if (objectType == ObjectType::UncertaintyProject)
         {
@@ -1870,13 +1800,13 @@ namespace Deltares::Server
         {
             return admin.limitStateFunctionHandler.GetObject(id);
         }
-        else if (combinedLimitStateFunctions.contains(id))
+        else if (admin.combinedLimitStateFunctionHandler.Contains(id))
         {
-            return combinedLimitStateFunctions[id];
+            return admin.combinedLimitStateFunctionHandler.GetObject(id);
         }
-        else if (probabilityLimitStateFunctions.contains(id))
+        else if (admin.probabilityLimitStateFunctionHandler.Contains(id))
         {
-            return probabilityLimitStateFunctions[id];
+            return admin.probabilityLimitStateFunctionHandler.GetObject(id);
         }
         else
         {

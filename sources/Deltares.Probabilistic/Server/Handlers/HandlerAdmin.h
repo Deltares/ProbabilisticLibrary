@@ -23,6 +23,7 @@
 
 #include <unordered_map>
 
+#include "CombinedLimitStateFunctionHandler.h"
 #include "ContributingStochastHandler.h"
 #include "../ProjectEntries.h"
 #include "ConvergenceReportHandler.h"
@@ -35,6 +36,7 @@
 #include "LimitStateFunctionHandler.h"
 #include "MessageHandler.h"
 #include "ModelParameterHandler.h"
+#include "ProbabilityLimitStateFunctionHandler.h"
 #include "ProbabilityValueHandler.h"
 #include "ReliabilityResultHandler.h"
 #include "ScenarioHandler.h"
@@ -64,6 +66,8 @@ namespace Deltares::Server
         ValidationReportHandler validationReportHandler;
         ModelParameterHandler modelParameterHandler;
         LimitStateFunctionHandler limitStateFunctionHandler;
+        ProbabilityLimitStateFunctionHandler probabilityLimitStateFunctionHandler;
+        CombinedLimitStateFunctionHandler combinedLimitStateFunctionHandler;
         ReliabilityResultHandler reliabilityResultHandler;
         ConvergenceReportHandler convergenceReportHandler;
         ContributingStochastHandler contributingStochastHandler;

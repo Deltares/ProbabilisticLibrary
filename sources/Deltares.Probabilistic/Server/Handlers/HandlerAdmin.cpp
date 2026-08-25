@@ -41,6 +41,9 @@ namespace Deltares::Server
 
         fragilityCurveHandler.stochastHandler = &stochastHandler;
 
+        fragilityValueHandler.designPointCallback = [this](int id) {return this->designPointHandler.GetObject(id); };
+        fragilityValueHandler.designPointIdCallback = [this](std::shared_ptr<Reliability::DesignPoint> designPoint) {return this->designPointHandler.GetObjectId(designPoint); };
+
         alphaHandler.stochastHandler = &stochastHandler;
         alphaHandler.fragilityCurveHandler = &fragilityCurveHandler;
 
@@ -51,6 +54,10 @@ namespace Deltares::Server
         designPointHandler.alphaHandler = &alphaHandler;
 
         stochastPointHandler.alphaHandler = &alphaHandler;
+
+        probabilityLimitStateFunctionHandler.fragilityCurveHandler = &fragilityCurveHandler;
+
+        combinedLimitStateFunctionHandler.limitStateFunctionHandler = &limitStateFunctionHandler;
 
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
@@ -65,6 +72,8 @@ namespace Deltares::Server
         handlers[ObjectType::ValidationReport] = &validationReportHandler;
         handlers[ObjectType::ModelParameter] = &modelParameterHandler;
         handlers[ObjectType::LimitStateFunction] = &limitStateFunctionHandler;
+        handlers[ObjectType::ProbabilityLimitStateFunction] = &probabilityLimitStateFunctionHandler;
+        handlers[ObjectType::CombinedLimitStateFunction] = &combinedLimitStateFunctionHandler;
         handlers[ObjectType::ReliabilityResult] = &reliabilityResultHandler;
         handlers[ObjectType::ConvergenceReport] = &convergenceReportHandler;
         handlers[ObjectType::ConditionalValue] = &conditionalValueHandler;
@@ -95,6 +104,8 @@ namespace Deltares::Server
             objectType == ObjectType::ValidationReport ||
             objectType == ObjectType::ModelParameter ||
             objectType == ObjectType::LimitStateFunction ||
+            objectType == ObjectType::ProbabilityLimitStateFunction ||
+            objectType == ObjectType::CombinedLimitStateFunction ||
             objectType == ObjectType::ReliabilityResult ||
             objectType == ObjectType::ConvergenceReport ||
             objectType == ObjectType::ContributingStochast ||

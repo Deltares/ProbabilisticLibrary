@@ -606,6 +606,8 @@
     <ClInclude Include="Server\Handlers\StochastPointAlphaHandler.h" />
     <ClInclude Include="Server\Handlers\DesignPointHandler.h" />
     <ClInclude Include="Server\Handlers\StochastPointHandler.h" />
+    <ClInclude Include="Server\Handlers\ProbabilityLimitStateFunctionHandler.h" />
+    <ClInclude Include="Server\Handlers\CombinedLimitStateFunctionHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

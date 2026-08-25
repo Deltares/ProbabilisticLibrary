@@ -103,8 +103,6 @@ namespace Deltares::Server
         HandlerAdmin admin;
 
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
-        std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
-        std::unordered_map<int, std::shared_ptr<Reliability::ProbabilityLimitStateFunction>> probabilityLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Statistics::BaseCorrelation>> correlations;
         std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
@@ -126,7 +124,6 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyResult>> uncertaintyResults;
 
-        std::unordered_map<std::shared_ptr<Reliability::CombinedLimitStateFunction>, int> combinedLimitStateFunctionIds;
         std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
         std::unordered_map<std::shared_ptr<Uncertainty::UncertaintyResult>, int> uncertaintyResultsIds;
         std::unordered_map<std::shared_ptr<Sensitivity::SensitivityResult>, int> sensitivityResultsIds;
@@ -136,7 +133,6 @@ namespace Deltares::Server
 
         std::unordered_map <std::string, std::vector<double>> tempValues;
 
-        double argValue = nan("");
         int tempIntValue = 0;
 
         std::shared_ptr<Models::ModelProject> GetProject(int id);
