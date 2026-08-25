@@ -41,6 +41,17 @@ namespace Deltares::Server
 
         fragilityCurveHandler.stochastHandler = &stochastHandler;
 
+        alphaHandler.stochastHandler = &stochastHandler;
+        alphaHandler.fragilityCurveHandler = &fragilityCurveHandler;
+
+        designPointHandler.convergenceReportHandler = &convergenceReportHandler;
+        designPointHandler.evaluationHandler = &evaluationHandler;
+        designPointHandler.reliabilityResultHandler = &reliabilityResultHandler;
+        designPointHandler.messageHandler = &messageHandler;
+        designPointHandler.alphaHandler = &alphaHandler;
+
+        stochastPointHandler.alphaHandler = &alphaHandler;
+
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
         handlers[ObjectType::FragilityValue] = &fragilityValueHandler;
@@ -58,6 +69,9 @@ namespace Deltares::Server
         handlers[ObjectType::ConvergenceReport] = &convergenceReportHandler;
         handlers[ObjectType::ConditionalValue] = &conditionalValueHandler;
         handlers[ObjectType::ContributingStochast] = &contributingStochastHandler;
+        handlers[ObjectType::Alpha] = &alphaHandler;
+        handlers[ObjectType::StochastPoint] = &stochastPointHandler;
+        handlers[ObjectType::DesignPoint] = &designPointHandler;
 
         for (const auto& [objectType, handler] : handlers)
         {
@@ -84,7 +98,10 @@ namespace Deltares::Server
             objectType == ObjectType::ReliabilityResult ||
             objectType == ObjectType::ConvergenceReport ||
             objectType == ObjectType::ContributingStochast ||
-            objectType == ObjectType::ConditionalValue;
+            objectType == ObjectType::ConditionalValue ||
+            objectType == ObjectType::Alpha ||
+            objectType == ObjectType::StochastPoint ||
+            objectType == ObjectType::DesignPoint;
     }
 }
 

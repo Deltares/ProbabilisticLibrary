@@ -603,6 +603,9 @@
     <ClInclude Include="Server\Handlers\FragilityCurveHandler.h" />
     <ClInclude Include="Server\Handlers\ContributingStochastHandler.h" />
     <ClInclude Include="Server\Handlers\ConditionalValueHandler.h" />
+    <ClInclude Include="Server\Handlers\StochastPointAlphaHandler.h" />
+    <ClInclude Include="Server\Handlers\DesignPointHandler.h" />
+    <ClInclude Include="Server\Handlers\StochastPointHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

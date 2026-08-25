@@ -25,6 +25,7 @@
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
 #include "../../Statistics/FragilityValue.h"
+#include "../../Reliability/DesignPoint.h"
 
 namespace Deltares::Server
 {
@@ -60,6 +61,21 @@ namespace Deltares::Server
 
             fragilityValue->setDirty();
         }
+
+        int GetIdValue(const std::shared_ptr<Statistics::FragilityValue>& fragilityValue, const std::string& property_) override
+        {
+            if (property_ == "design_point") return designPointIdCallback(std::static_pointer_cast<Reliability::DesignPoint>(fragilityValue->designPoint));
+            else return StoredObjectHandler::GetIdValue(fragilityValue, property_);
+        }
+
+        void SetIntValue(const std::shared_ptr<Statistics::FragilityValue>& fragilityValue, const std::string& property_, int value) override
+        {
+            if (property_ == "design_point") fragilityValue->designPoint = designPointCallback(value);
+            else StoredObjectHandler::SetIntValue(fragilityValue, property_, value);
+        }
+
+        GetObjectCallBack<Reliability::DesignPoint> designPointCallback = nullptr;
+        GetObjectIdCallBack<Reliability::DesignPoint> designPointIdCallback = nullptr;
     };
 }
 

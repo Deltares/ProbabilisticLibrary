@@ -26,6 +26,7 @@
 #include "ContributingStochastHandler.h"
 #include "../ProjectEntries.h"
 #include "ConvergenceReportHandler.h"
+#include "DesignPointHandler.h"
 #include "DiscreteValueHandler.h"
 #include "EvaluationHandler.h"
 #include "FragilityCurveHandler.h"
@@ -39,6 +40,8 @@
 #include "ScenarioHandler.h"
 #include "StandardNormalHandler.h"
 #include "StochastHandler.h"
+#include "StochastPointAlphaHandler.h"
+#include "StochastPointHandler.h"
 #include "ValidationReportHandler.h"
 
 namespace Deltares::Server
@@ -65,6 +68,9 @@ namespace Deltares::Server
         ConvergenceReportHandler convergenceReportHandler;
         ContributingStochastHandler contributingStochastHandler;
         ConditionalValueHandler conditionalValueHandler;
+        StochastPointAlphaHandler alphaHandler;
+        StochastPointHandler stochastPointHandler;
+        DesignPointHandler designPointHandler;
 
         int GetNewId()
         {
