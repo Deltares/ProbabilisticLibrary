@@ -29,7 +29,6 @@
 #include "../Reliability/LimitStateFunction.h"
 #include "../Reliability/CombinedLimitStateFunction.h"
 #include "../Reliability/Settings.h"
-#include "../Reliability/ProbabilityLimitStateFunction.h"
 #include "../Model/RunProject.h"
 #include "../Model/RunProjectSettings.h"
 #include "../Uncertainty/UncertaintyProject.h"
@@ -89,7 +88,6 @@ namespace Deltares::Server
         void Execute(int id, const std::string& method_) override;
 
         int GetCorrelationMatrixId(const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix, int newid);
-        int GetUncertaintyResultId(const std::shared_ptr<Uncertainty::UncertaintyResult>& result, int newId);
         int GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId);
         int GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId);
         int GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId);
@@ -122,10 +120,8 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityValue>> sensitivityValues;
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
         std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
-        std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyResult>> uncertaintyResults;
 
         std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
-        std::unordered_map<std::shared_ptr<Uncertainty::UncertaintyResult>, int> uncertaintyResultsIds;
         std::unordered_map<std::shared_ptr<Sensitivity::SensitivityResult>, int> sensitivityResultsIds;
         std::unordered_map<std::shared_ptr<Sensitivity::SensitivityValue>, int> sensitivityValuesIds;
         std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;

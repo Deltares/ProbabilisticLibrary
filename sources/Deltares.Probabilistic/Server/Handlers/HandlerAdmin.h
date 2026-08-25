@@ -44,6 +44,7 @@
 #include "StochastHandler.h"
 #include "StochastPointAlphaHandler.h"
 #include "StochastPointHandler.h"
+#include "UncertaintyResultHandler.h"
 #include "ValidationReportHandler.h"
 
 namespace Deltares::Server
@@ -75,6 +76,7 @@ namespace Deltares::Server
         StochastPointAlphaHandler alphaHandler;
         StochastPointHandler stochastPointHandler;
         DesignPointHandler designPointHandler;
+        UncertaintyResultHandler uncertaintyResultHandler;
 
         int GetNewId()
         {

@@ -59,6 +59,10 @@ namespace Deltares::Server
 
         combinedLimitStateFunctionHandler.limitStateFunctionHandler = &limitStateFunctionHandler;
 
+        uncertaintyResultHandler.stochastHandler = &stochastHandler;
+        uncertaintyResultHandler.evaluationHandler = &evaluationHandler;
+        uncertaintyResultHandler.messageHandler = &messageHandler;
+
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
         handlers[ObjectType::FragilityValue] = &fragilityValueHandler;
@@ -112,7 +116,8 @@ namespace Deltares::Server
             objectType == ObjectType::ConditionalValue ||
             objectType == ObjectType::Alpha ||
             objectType == ObjectType::StochastPoint ||
-            objectType == ObjectType::DesignPoint;
+            objectType == ObjectType::DesignPoint ||
+            objectType == ObjectType::UncertaintyResult;
     }
 }
 
