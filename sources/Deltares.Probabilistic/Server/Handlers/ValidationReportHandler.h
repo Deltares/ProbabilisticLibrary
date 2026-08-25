@@ -40,29 +40,22 @@ namespace Deltares::Server
             return ObjectType::ValidationReport;
         }
 
-        int GetIntValue(int id, const std::string& property_) override
+        int GetIntValue(const std::shared_ptr<Logging::ValidationReport>& validationReport, const std::string& property_) override
         {
-            std::shared_ptr<Logging::ValidationReport> validationReport = GetObject(id);
-
             if (property_ == "messages_count") return static_cast<int>(validationReport->messages.size());
-            else return StoredObjectHandler::GetIntValue(id, property_);
+            else return StoredObjectHandler::GetIntValue(validationReport, property_);
         }
 
-        int GetIndexedIdValue(int id, const std::string& property_, int index) override
+        int GetIndexedIdValue(const std::shared_ptr<Logging::ValidationReport>& validationReport, const std::string& property_, int index) override
         {
-            std::shared_ptr<Logging::ValidationReport> validationReport = GetObject(id);
-
             if (property_ == "messages") return messageHandler->GetObjectId(validationReport->messages[index]);
-
-            else return StoredObjectHandler::GetIntValue(id, property_);
+            else return StoredObjectHandler::GetIndexedIdValue(validationReport, property_);
         }
 
-        bool GetBoolValue(int id, const std::string& property_) override
+        bool GetBoolValue(const std::shared_ptr<Logging::ValidationReport>& validationReport, const std::string& property_) override
         {
-            std::shared_ptr<Logging::ValidationReport> validationReport = GetObject(id);
-
             if (property_ == "is_valid") return validationReport->isValid();
-            else return StoredObjectHandler::GetBoolValue(id, property_);
+            else return StoredObjectHandler::GetBoolValue(validationReport, property_);
         }
 
         MessageHandler* messageHandler = nullptr;

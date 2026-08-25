@@ -159,6 +159,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\BaseStochastHandler.h" />
+    <ClInclude Include="Server\Handlers\ContributingStochastHandler.h" />
+    <ClInclude Include="Server\Handlers\ConditionalValueHandler.h" />
     <ClInclude Include="Server\Handlers\StochastHandler.h" />
     <ClInclude Include="Server\Handlers\ScenarioHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilityResultHandler.h" />

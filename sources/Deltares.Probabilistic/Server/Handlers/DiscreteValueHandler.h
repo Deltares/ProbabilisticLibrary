@@ -41,24 +41,20 @@ namespace Deltares::Server
             return ObjectType::DiscreteValue;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Statistics::DiscreteValue>& discreteValue, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::DiscreteValue> discreteValue = GetObject(id);
-
             if (property_ == "x") return discreteValue->X;
             else if (property_ == "amount") return discreteValue->Amount;
             else if (property_ == "normalized_amount") return discreteValue->NormalizedAmount;
             else if (property_ == "cumulative_amount") return discreteValue->CumulativeNormalizedAmount;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(discreteValue, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Statistics::DiscreteValue>& discreteValue, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::DiscreteValue> discreteValue = GetObject(id);
-
             if (property_ == "x") discreteValue->X = value;
             else if (property_ == "amount") discreteValue->Amount = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(discreteValue, property_, value);
 
             discreteValue->setDirty();
         }

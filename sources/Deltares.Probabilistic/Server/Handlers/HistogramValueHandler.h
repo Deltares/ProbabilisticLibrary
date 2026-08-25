@@ -39,24 +39,20 @@ namespace Deltares::Server
             return ObjectType::HistogramValue;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Statistics::HistogramValue>& histogramValue, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
-
             if (property_ == "lower_bound") return histogramValue->LowerBound;
             else if (property_ == "upper_bound") return histogramValue->UpperBound;
             else if (property_ == "amount") return histogramValue->Amount;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(histogramValue, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Statistics::HistogramValue>& histogramValue, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::HistogramValue> histogramValue = GetObject(id);
-
             if (property_ == "lower_bound") histogramValue->LowerBound = value;
             else if (property_ == "upper_bound") histogramValue->UpperBound = value;
             else if (property_ == "amount") histogramValue->Amount = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(histogramValue, property_, value);
 
             histogramValue->setDirty();
         }

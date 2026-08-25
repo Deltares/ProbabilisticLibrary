@@ -117,8 +117,6 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
         std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
         std::unordered_map<int, std::shared_ptr<Reliability::ProbabilityLimitStateFunction>> probabilityLimitStateFunctions;
-        std::unordered_map<int, std::shared_ptr<Statistics::ContributingStochast>> contributingStochasts;
-        std::unordered_map<int, std::shared_ptr<Statistics::VariableStochastValue>> conditionalValues;
         std::unordered_map<int, std::shared_ptr<Statistics::BaseCorrelation>> correlations;
         std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
@@ -154,8 +152,6 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
         std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
         std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;
-        std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
-        std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
 
         std::unordered_map <std::string, std::vector<double>> tempValues;
 

@@ -40,55 +40,45 @@ namespace Deltares::Server
             return ObjectType::Evaluation;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Models::Evaluation>& evaluation, const std::string& property_) override
         {
-            std::shared_ptr<Models::Evaluation> evaluation = GetObject(id);
-
             if (property_ == "z") return evaluation->Z;
             else if (property_ == "quantile") return evaluation->Quantile;
             else if (property_ == "beta") return evaluation->Beta;
             else if (property_ == "weight") return evaluation->Weight;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(evaluation, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Models::Evaluation>& evaluation, const std::string& property_, double value) override
         {
-            std::shared_ptr<Models::Evaluation> evaluation = GetObject(id);
-
             if (property_ == "z") evaluation->Z = value;
             else if (property_ == "quantile") evaluation->Quantile = value;
             else if (property_ == "beta") evaluation->Beta = value;
             else if (property_ == "weight") evaluation->Weight = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(evaluation, property_, value);
         }
 
-        double GetIndexedValue(int id, const std::string& property_, int index) override
+        double GetIndexedValue(const std::shared_ptr<Models::Evaluation>& evaluation, const std::string& property_, int index) override
         {
-            std::shared_ptr<Models::Evaluation> evaluation = GetObject(id);
-
             if (property_ == "input_values") return evaluation->InputValues[index];
             else if (property_ == "output_values") return evaluation->OutputValues[index];
-            else return StoredObjectHandler::GetIndexedValue(id, property_, index);
+            else return StoredObjectHandler::GetIndexedValue(evaluation, property_, index);
         }
 
-        int GetIntValue(int id, const std::string& property_) override
+        int GetIntValue(const std::shared_ptr<Models::Evaluation>& evaluation, const std::string& property_) override
         {
-            std::shared_ptr<Models::Evaluation> evaluation = GetObject(id);
-
             if (property_ == "iteration") return evaluation->Iteration;
             else if (property_ == "tag") return evaluation->Tag;
             else if (property_ == "input_values_count") return static_cast<int>(evaluation->InputValues.size());
             else if (property_ == "output_values_count") return static_cast<int>(evaluation->OutputValues.size());
-            else return ObjectHandler::GetIntValue(id, property_);
+            else return StoredObjectHandler::GetIntValue(evaluation, property_);
         }
 
-        void SetIntValue(int id, const std::string& property_, int value) override
+        void SetIntValue(const std::shared_ptr<Models::Evaluation>& evaluation, const std::string& property_, int value) override
         {
-            std::shared_ptr<Models::Evaluation> evaluation = GetObject(id);
-
             if (property_ == "iteration") evaluation->Iteration = value;
             else if (property_ == "tag") evaluation->Tag = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetIntValue(evaluation, property_, value);
         }
     };
 }

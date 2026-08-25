@@ -46,7 +46,7 @@ namespace Deltares::Server
         {
             if (property_ == "u_max") return Statistics::StandardNormal::UMax;
             else if (property_ == "beta_max") return Statistics::StandardNormal::BetaMax;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(id, property_);
         }
 
         double GetArgValue(int id, const std::string& property_, double argument) override
@@ -59,7 +59,7 @@ namespace Deltares::Server
             else if (property_ == "p_from_t") return Statistics::StandardNormal::getPFromT(argument);
             else if (property_ == "t_from_u") return Statistics::StandardNormal::getTFromU(argument);
             else if (property_ == "u_from_t") return Statistics::StandardNormal::getUFromT(argument);
-            else return ObjectHandler::GetArgValue(id, property_, argument);
+            else return StoredObjectHandler::GetArgValue(id, property_, argument);
         }
     };
 }

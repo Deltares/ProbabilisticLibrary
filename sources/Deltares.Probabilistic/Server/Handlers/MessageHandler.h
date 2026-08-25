@@ -40,24 +40,20 @@ namespace Deltares::Server
             return ObjectType::Message;
         }
 
-        std::string GetStringValue(int id, const std::string& property_) override
+        std::string GetStringValue(const std::shared_ptr<Logging::Message>& message, const std::string& property_) override
         {
-            std::shared_ptr<Logging::Message> message = GetObject(id);
-
             if (property_ == "type") return Logging::Message::getMessageTypeString(message->Type);
             else if (property_ == "text") return message->Text;
             else if (property_ == "subject") return message->Subject;
-            else return StoredObjectHandler::GetStringValue(id, property_);
+            else return StoredObjectHandler::GetStringValue(message, property_);
         }
 
-        void SetStringValue(int id, const std::string& property_, const std::string& value) override
+        void SetStringValue(const std::shared_ptr<Logging::Message>& message, const std::string& property_, const std::string& value) override
         {
-            std::shared_ptr<Logging::Message> message = GetObject(id);
-
             if (property_ == "type") message->Type = Logging::Message::getMessageType(value);
             else if (property_ == "text") message->Text = value;
             else if (property_ == "subject") message->Subject = value;
-            else StoredObjectHandler::SetStringValue(id, property_, value);
+            else StoredObjectHandler::SetStringValue(message, property_, value);
         }
     };
 }

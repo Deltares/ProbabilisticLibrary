@@ -40,26 +40,22 @@ namespace Deltares::Server
             return ObjectType::ProbabilityValue;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Statistics::ProbabilityValue>& probabilityValue, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = this->GetObject(id);
-
             if (property_ == "reliability_index") return probabilityValue->Reliability;
             else if (property_ == "probability_of_failure") return probabilityValue->getProbabilityOfFailure();
             else if (property_ == "probability_of_non_failure") return probabilityValue->getProbabilityOfNonFailure();
             else if (property_ == "return_period") return probabilityValue->getReturnPeriod();
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(probabilityValue, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Statistics::ProbabilityValue>& probabilityValue, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = this->GetObject(id);
-
             if (property_ == "reliability_index") probabilityValue->Reliability = value;
             else if (property_ == "probability_of_failure") probabilityValue->setProbabilityOfFailure(value);
             else if (property_ == "probability_of_non_failure") probabilityValue->setProbabilityOfNonFailure(value);
             else if (property_ == "return_period") probabilityValue->setReturnPeriod(value);
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(probabilityValue, property_, value);
         }
     };
 }

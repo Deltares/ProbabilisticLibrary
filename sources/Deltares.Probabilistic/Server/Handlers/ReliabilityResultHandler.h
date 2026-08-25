@@ -40,44 +40,36 @@ namespace Deltares::Server
             return ObjectType::ReliabilityResult;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Reliability::ReliabilityResult>& result, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::ReliabilityResult> result = GetObject(id);
-
             if (property_ == "reliability_index") return result->Reliability;
             else if (property_ == "convergence") return std::isnan(result->ConvBeta) ? result->Variation : result->ConvBeta;
             else if (property_ == "variation") return result->Variation;
             else if (property_ == "contribution") return result->Contribution;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(result, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Reliability::ReliabilityResult>& result, const std::string& property_, double value) override
         {
-            std::shared_ptr<Reliability::ReliabilityResult> result = GetObject(id);
-
             if (property_ == "reliability_index") result->Reliability = value;
             else if (property_ == "convergence") result->ConvBeta = value;
             else if (property_ == "variation") result->Variation = value;
             else if (property_ == "contribution") result->Contribution = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(result, property_, value);
         }
 
-        int GetIntValue(int id, const std::string& property_) override
+        int GetIntValue(const std::shared_ptr<Reliability::ReliabilityResult>& result, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::ReliabilityResult> result = GetObject(id);
-
             if (property_ == "index") return result->Index;
             else if (property_ == "samples") return static_cast<int>(result->Samples);
-            else return ObjectHandler::GetIntValue(id, property_);
+            else return StoredObjectHandler::GetIntValue(result, property_);
         }
 
-        void SetIntValue(int id, const std::string& property_, int value) override
+        void SetIntValue(const std::shared_ptr<Reliability::ReliabilityResult>& result, const std::string& property_, int value) override
         {
-            std::shared_ptr<Reliability::ReliabilityResult> result = GetObject(id);
-
             if (property_ == "index") result->Index = value;
             else if (property_ == "samples") result->Samples = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(result, property_, value);
         }
     };
 }

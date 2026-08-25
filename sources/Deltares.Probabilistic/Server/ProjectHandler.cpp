@@ -23,7 +23,6 @@
 
 #include "../Reliability/ProbabilityLimitStateFunction.h"
 #include "../Statistics/CopulaCorrelation.h"
-#include "Handlers/HistogramValueHandler.h"
 
 namespace Deltares::Server
 {
@@ -77,14 +76,6 @@ namespace Deltares::Server
             break;
         case ObjectType::ProbabilityLimitStateFunction:
             probabilityLimitStateFunctions[id] = std::make_shared<ProbabilityLimitStateFunction>();
-            break;
-        case ObjectType::ContributingStochast:
-            contributingStochasts[id] = std::make_shared<ContributingStochast>();
-            contributingStochastIds[contributingStochasts[id]] = id;
-            break;
-        case ObjectType::ConditionalValue:
-            conditionalValues[id] = std::make_shared<VariableStochastValue>();
-            conditionalValueIds[conditionalValues[id]] = id;
             break;
         case ObjectType::CorrelationMatrix:
             correlations[id] = std::make_shared<CorrelationMatrix>(true);
@@ -199,8 +190,6 @@ namespace Deltares::Server
         case ObjectType::Project: projects.erase(id); break;
         case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
         case ObjectType::ProbabilityLimitStateFunction: probabilityLimitStateFunctions.erase(id); break;
-        case ObjectType::ContributingStochast: contributingStochastIds.erase(contributingStochasts[id]); contributingStochasts.erase(id); break;
-        case ObjectType::ConditionalValue: conditionalValueIds.erase(conditionalValues[id]);  conditionalValues.erase(id); break;
         case ObjectType::CorrelationMatrix:
         case ObjectType::CopulaCorrelation:
             correlationIds.erase(correlations[id]); correlations.erase(id); break;
@@ -250,29 +239,6 @@ namespace Deltares::Server
         if (ProjectEntries::IsStochast(objectType))
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
-        }
-        else if (objectType == ObjectType::ContributingStochast)
-        {
-            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
-
-            if (property_ == "probability") return contributingStochast->Probability;
-        }
-        else if (objectType == ObjectType::ConditionalValue)
-        {
-            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
-
-            if (property_ == "x") return conditionalValue->X;
-            else if (property_ == "location") return conditionalValue->Stochast->Location;
-            else if (property_ == "scale") return conditionalValue->Stochast->Scale;
-            else if (property_ == "shape") return conditionalValue->Stochast->Shape;
-            else if (property_ == "shape_b") return conditionalValue->Stochast->ShapeB;
-            else if (property_ == "shift") return conditionalValue->Stochast->Shift;
-            else if (property_ == "shift_b") return conditionalValue->Stochast->ShiftB;
-            else if (property_ == "minimum") return conditionalValue->Stochast->Minimum;
-            else if (property_ == "maximum") return conditionalValue->Stochast->Maximum;
-            else if (property_ == "mean") return conditionalValue->mean;
-            else if (property_ == "deviation") return conditionalValue->deviation;
-            else return std::nan("");
         }
         else if (objectType == ObjectType::Settings)
         {
@@ -395,28 +361,6 @@ namespace Deltares::Server
         {
             std::shared_ptr<Stochast> stochast = GetStochast(id);
 
-        }
-        else if (objectType == ObjectType::ContributingStochast)
-        {
-            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
-
-            if (property_ == "probability") contributingStochast->Probability = value;
-        }
-        else if (objectType == ObjectType::ConditionalValue)
-        {
-            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
-
-            if (property_ == "x") conditionalValue->X = value;
-            else if (property_ == "location") conditionalValue->Stochast->Location = value;
-            else if (property_ == "scale") conditionalValue->Stochast->Scale = value;
-            else if (property_ == "shape") conditionalValue->Stochast->Shape = value;
-            else if (property_ == "shape_b") conditionalValue->Stochast->ShapeB = value;
-            else if (property_ == "shift") conditionalValue->Stochast->Shift = value;
-            else if (property_ == "shift_b") conditionalValue->Stochast->ShiftB = value;
-            else if (property_ == "minimum") conditionalValue->Stochast->Minimum = value;
-            else if (property_ == "maximum") conditionalValue->Stochast->Maximum = value;
-            else if (property_ == "mean") conditionalValue->mean = value;
-            else if (property_ == "deviation") conditionalValue->deviation = value;
         }
         else if (objectType == ObjectType::Settings)
         {
@@ -591,12 +535,6 @@ namespace Deltares::Server
             if (property_ == "count_correlations") return matrix->CountCorrelations();
             else if (property_ == "variables_count") return matrix->GetDimension();
         }
-        else if (objectType == ObjectType::ConditionalValue)
-        {
-            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
-
-            if (property_ == "observations") return conditionalValue->Stochast->Observations;
-        }
         else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
         {
             std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
@@ -766,12 +704,6 @@ namespace Deltares::Server
 
             if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<DesignPoint>(fragilityValue->designPoint), newId);
         }
-        else if (objectType == ObjectType::ContributingStochast)
-        {
-            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
-
-            if (property_ == "variable") return admin.stochastHandler.GetObjectId(std::static_pointer_cast<Stochast>(contributingStochast->Stochast));
-        }
         else if (objectType == ObjectType::StochastSettings)
         {
             std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
@@ -911,18 +843,6 @@ namespace Deltares::Server
             {
                 fragilityValue->designPoint = designPoints.contains(value) ? designPoints[value] : nullptr;
             }
-        }
-        else if (objectType == ObjectType::ContributingStochast)
-        {
-            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
-
-            if (property_ == "variable") contributingStochast->Stochast = admin.stochastHandler.GetObject(value);
-        }
-        else if (objectType == ObjectType::ConditionalValue)
-        {
-            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
-
-            if (property_ == "observations") conditionalValue->Stochast->Observations = value;
         }
         else if (objectType == ObjectType::Settings)
         {
@@ -2271,34 +2191,6 @@ namespace Deltares::Server
 
             return sensitivityValuesIds[result];
         }
-    }
-
-    int ProjectHandler::GetContributingStochastId(const std::shared_ptr<ContributingStochast>& contributingStochast, int newId)
-    {
-        if (!contributingStochastIds.contains(contributingStochast))
-        {
-            std::lock_guard lock(mtx);
-
-            contributingStochasts[newId] = contributingStochast;
-            admin.RegisterType(newId, ObjectType::ContributingStochast);
-            contributingStochastIds[contributingStochast] = newId;
-        }
-
-        return contributingStochastIds[contributingStochast];
-    }
-
-    int ProjectHandler::GetConditionalValueId(const std::shared_ptr<VariableStochastValue>& conditionalValue, int newId)
-    {
-        if (!conditionalValueIds.contains(conditionalValue))
-        {
-            std::lock_guard lock(mtx);
-
-            conditionalValues[newId] = conditionalValue;
-            admin.RegisterType(newId, ObjectType::ConditionalValue);
-            conditionalValueIds[conditionalValue] = newId;
-        }
-
-        return conditionalValueIds[conditionalValue];
     }
 
     std::shared_ptr<DesignPointIds> ProjectHandler::GetDesignPointIds(int id)

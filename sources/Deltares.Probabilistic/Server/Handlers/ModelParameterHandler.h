@@ -28,7 +28,7 @@
 namespace Deltares::Server
 {
     /**
-     * \brief Handles properties and methods of class HistogramValue
+     * \brief Handles properties and methods of class ModelInputParameter
      */
     class ModelParameterHandler : public StoredObjectHandler<Models::ModelInputParameter>
     {
@@ -39,70 +39,54 @@ namespace Deltares::Server
             return ObjectType::ModelParameter;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, const std::string& property_) override
         {
-            std::shared_ptr<Models::ModelInputParameter> modelParameter = GetObject(id);
-
             if (property_ == "default_value") return modelParameter->defaultValue;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(modelParameter, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, const std::string& property_, double value) override
         {
-            std::shared_ptr<Models::ModelInputParameter> modelParameter = GetObject(id);
-
             if (property_ == "default_value") modelParameter->defaultValue = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(modelParameter, property_, value);
         }
 
-        int GetIntValue(int id, const std::string& property_) override
+        int GetIntValue(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, const std::string& property_) override
         {
-            std::shared_ptr<Models::ModelInputParameter> modelParameter = GetObject(id);
-
             if (property_ == "index") return modelParameter->index;
             else if (property_ == "array_size") return modelParameter->arraySize;
-            else return ObjectHandler::GetIntValue(id, property_);
+            else return StoredObjectHandler::GetIntValue(modelParameter, property_);
         }
 
-        void SetIntValue(int id, const std::string& property_, int value) override
+        void SetIntValue(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, const std::string& property_, int value) override
         {
-            std::shared_ptr<Models::ModelInputParameter> modelParameter = GetObject(id);
-
             if (property_ == "index") modelParameter->index = value;
             else if (property_ == "array_size") modelParameter->arraySize = value;
-            else ObjectHandler::SetIntValue(id, property_, value);
+            else StoredObjectHandler::SetIntValue(modelParameter, property_, value);
         }
 
-        bool GetBoolValue(int id, const std::string& property_) override
+        bool GetBoolValue(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, const std::string& property_) override
         {
-            std::shared_ptr<Models::ModelInputParameter> modelParameter = GetObject(id);
-
             if (property_ == "is_array") return modelParameter->isArray;
-            else return ObjectHandler::GetBoolValue(id, property_);
+            else return StoredObjectHandler::GetBoolValue(modelParameter, property_);
         }
 
-        void SetBoolValue(int id, const std::string& property_, bool value) override
+        void SetBoolValue(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, const std::string& property_, bool value) override
         {
-            std::shared_ptr<Models::ModelInputParameter> modelParameter = GetObject(id);
-
             if (property_ == "is_array") modelParameter->isArray = value;
-            else ObjectHandler::SetBoolValue(id, property_, value);
+            else StoredObjectHandler::SetBoolValue(modelParameter, property_, value);
         }
 
-        std::string GetStringValue(int id, const std::string& property_) override
+        std::string GetStringValue(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, const std::string& property_) override
         {
-            std::shared_ptr<Models::ModelInputParameter> modelParameter = GetObject(id);
-
             if (property_ == "name") return modelParameter->name;
-            else return ObjectHandler::GetStringValue(id, property_);
+            else return StoredObjectHandler::GetStringValue(modelParameter, property_);
         }
 
-        void SetStringValue(int id, const std::string& property_, const std::string& value) override
+        void SetStringValue(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, const std::string& property_, const std::string& value) override
         {
-            std::shared_ptr<Models::ModelInputParameter> modelParameter = GetObject(id);
-
             if (property_ == "name") modelParameter->name = value;
-            else ObjectHandler::SetStringValue(id, property_, value);
+            else StoredObjectHandler::SetStringValue(modelParameter, property_, value);
         }
     };
 }

@@ -42,6 +42,8 @@ namespace Deltares::Server
 
     public:
 
+        virtual ObjectType GetObjectType() = 0;
+
         void SetAdmin(ObjectHandlerAdmin* admin) override
         {
             this->admin = admin;
@@ -114,7 +116,159 @@ namespace Deltares::Server
             return objectIds.contains(object);
         }
 
-        virtual ObjectType GetObjectType() = 0;
+        // double
+
+        double GetValue(int id, const std::string& property_) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetValue(object, property_);
+        }
+
+        virtual double GetValue(const std::shared_ptr<T>& object, const std::string& property_) { return 0; }
+
+        void SetValue(int id, const std::string& property_, double value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetValue(object, property_);
+        }
+
+        virtual void SetValue(const std::shared_ptr<T>& object, const std::string& property_, double value) {}
+
+        // indexed double
+
+        double GetIndexedValue(int id, const std::string& property_, int index) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetIndexedValue(object, property_);
+        }
+
+        virtual double GetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index) { return 0; }
+
+        void SetIndexedValue(int id, const std::string& property_, int index, double value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetIndexedValue(object, property_);
+        }
+
+        virtual void SetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index, double value) {}
+
+        // arg
+
+        double GetArgValue(int id, const std::string& property_, double argument) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetArgValue(object, property_, argument);
+        }
+
+        virtual double GetArgValue(const std::shared_ptr<T>& object, const std::string& property_, double argument) { return 0; }
+
+        void SetArgValue(int id, const std::string& property_, double argument, double value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetArgValue(object, property_, argument, value);
+        }
+
+        virtual void SetArgValue(const std::shared_ptr<T>& object, const std::string& property_, double argument, double value) {}
+
+        // int
+
+        int GetIntValue(int id, const std::string& property_) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetIntValue(object, property_);
+        }
+
+        virtual int GetIntValue(const std::shared_ptr<T>& object, const std::string& property_) { return 0; }
+
+        void SetIntValue(int id, const std::string& property_, int value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetIntValue(object, property_, value);
+        }
+
+        virtual void SetIntValue(const std::shared_ptr<T>& object, const std::string& property_, int value) {}
+
+        // id
+
+        int GetIdValue(int id, const std::string& property_) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetIdValue(object, property_);
+        }
+
+        virtual int GetIdValue(const std::shared_ptr<T>& object, const std::string& property_) { return 0; }
+
+        int GetIndexedIdValue(int id, const std::string& property_, int index) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetIndexedIdValue(object, property_, index);
+        }
+
+        virtual int GetIndexedIdValue(const std::shared_ptr<T>& object, const std::string& property_, int index) { return 0; }
+
+        // array
+
+        void SetArrayValue(int id, const std::string& property_, double* value, int size) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetArrayValue(object, property_, value, size);
+        }
+
+        virtual void SetArrayValue(const std::shared_ptr<T>& object, const std::string& property_, double* value, int size) {}
+
+        void SetArrayIntValue(int id, const std::string& property_, int* value, int size) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetArrayValue(object, property_, value, size);
+        }
+
+        virtual void SetArrayIntValue(const std::shared_ptr<T>& object, const std::string& property_, int* value, int size) {}
+
+        // bool
+
+        bool GetBoolValue(int id, const std::string& property_) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetBoolValue(object, property_);
+        }
+
+        virtual bool GetBoolValue(const std::shared_ptr<T>& object, const std::string& property_) { return false; }
+
+        void SetBoolValue(int id, const std::string& property_, bool value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetBoolValue(object, property_, value);
+        }
+
+        virtual void SetBoolValue(const std::shared_ptr<T>& object, const std::string& property_, bool value) { }
+
+        // std::string
+
+        std::string GetStringValue(int id, const std::string& property_) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetStringValue(object, property_);
+        }
+
+        virtual std::string GetStringValue(const std::shared_ptr<T>& object, const std::string& property_) { return ""; }
+
+        void SetStringValue(int id, const std::string& property_, const std::string& value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetStringValue(object, property_, value);
+        }
+
+        virtual void SetStringValue(const std::shared_ptr<T>& object, const std::string& property_, const std::string& value) {}
+
+        // method
+
+        void Execute(int id, const std::string& method_) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return Execute(object, method_);
+        }
+
+        virtual void Execute(const std::shared_ptr<T>& object, const std::string& method_) {}
     };
 }
 

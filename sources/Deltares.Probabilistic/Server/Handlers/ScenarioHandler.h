@@ -41,54 +41,42 @@ namespace Deltares::Server
             return ObjectType::Scenario;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Statistics::Scenario>& scenario, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::Scenario> scenario = GetObject(id);
-
             if (property_ == "probability") return scenario->probability;
             else if (property_ == "physical_value") return scenario->parameterValue;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(scenario, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Statistics::Scenario>& scenario, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::Scenario> scenario = GetObject(id);
-
             if (property_ == "probability") scenario->probability = value;
             else if (property_ == "physical_value") scenario->parameterValue = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(scenario, property_, value);
         }
 
-        int GetIdValue(int id, const std::string& property_) override
+        int GetIdValue(const std::shared_ptr<Statistics::Scenario>& scenario, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::Scenario> scenario = GetObject(id);
-
             if (property_ == "parameter") return stochastHandler->GetObjectId(scenario->parameter);
-            else return ObjectHandler::GetIdValue(id, property_);
+            else return StoredObjectHandler::GetIdValue(scenario, property_);
         }
 
-        void SetIntValue(int id, const std::string& property_, int value) override
+        void SetIntValue(const std::shared_ptr<Statistics::Scenario>& scenario, const std::string& property_, int value) override
         {
-            std::shared_ptr<Statistics::Scenario> scenario = GetObject(id);
-
             if (property_ == "parameter") scenario->parameter = stochastHandler->GetObject(value);
-            else ObjectHandler::SetIntValue(id, property_, value);
+            else StoredObjectHandler::SetIntValue(scenario, property_, value);
         }
 
-        std::string GetStringValue(int id, const std::string& property_) override
+        std::string GetStringValue(const std::shared_ptr<Statistics::Scenario>& scenario, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::Scenario> scenario = GetObject(id);
-
             if (property_ == "name") return scenario->name;
-            else return ObjectHandler::GetStringValue(id, property_);
+            else return StoredObjectHandler::GetStringValue(scenario, property_);
         }
 
-        void SetStringValue(int id, const std::string& property_, const std::string& value) override
+        void SetStringValue(const std::shared_ptr<Statistics::Scenario>& scenario, const std::string& property_, const std::string& value) override
         {
-            std::shared_ptr<Statistics::Scenario> scenario = GetObject(id);
-
             if (property_ == "name") scenario->name = value;
-            else ObjectHandler::SetStringValue(id, property_, value);
+            else StoredObjectHandler::SetStringValue(scenario, property_, value);
         }
 
         StochastHandler* stochastHandler = nullptr;

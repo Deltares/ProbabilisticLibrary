@@ -22,7 +22,6 @@
 #pragma once
 #include <string>
 
-#include "ObjectHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
 #include "../../Reliability/LimitStateFunction.h"
@@ -40,58 +39,46 @@ namespace Deltares::Server
             return ObjectType::LimitStateFunction;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = GetObject(id);
-
             if (property_ == "critical_value") return limitStateFunction->criticalValue;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(limitStateFunction, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, const std::string& property_, double value) override
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = GetObject(id);
-
             if (property_ == "critical_value") limitStateFunction->criticalValue = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(limitStateFunction, property_, value);
         }
 
-        bool GetBoolValue(int id, const std::string& property_) override
+        bool GetBoolValue(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = GetObject(id);
-
             if (property_ == "use_compare_parameter") return limitStateFunction->useCompareParameter;
             else if (property_ == "normalize") return limitStateFunction->normalize;
-            else return ObjectHandler::GetBoolValue(id, property_);
+            else return StoredObjectHandler::GetBoolValue(limitStateFunction, property_);
         }
 
-        void SetBoolValue(int id, const std::string& property_, bool value) override
+        void SetBoolValue(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, const std::string& property_, bool value) override
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = GetObject(id);
-
             if (property_ == "use_compare_parameter") limitStateFunction->useCompareParameter = value;
             else if (property_ == "normalize") limitStateFunction->normalize = value;
-            else ObjectHandler::SetBoolValue(id, property_, value);
+            else StoredObjectHandler::SetBoolValue(limitStateFunction, property_, value);
         }
 
-        std::string GetStringValue(int id, const std::string& property_) override
+        std::string GetStringValue(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = GetObject(id);
-
             if (property_ == "parameter") return limitStateFunction->criticalParameter;
             else if (property_ == "compare_parameter") return limitStateFunction->compareParameter;
             else if (property_ == "compare_type") return Reliability::LimitStateFunction::GetCompareTypeString(limitStateFunction->compareType);
-            else return ObjectHandler::GetStringValue(id, property_);
+            else return StoredObjectHandler::GetStringValue(limitStateFunction, property_);
         }
 
-        void SetStringValue(int id, const std::string& property_, const std::string& value) override
+        void SetStringValue(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, const std::string& property_, const std::string& value) override
         {
-            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = GetObject(id);
-
             if (property_ == "parameter") limitStateFunction->criticalParameter = value;
             else if (property_ == "compare_parameter") limitStateFunction->compareParameter = value;
             else if (property_ == "compare_type") limitStateFunction->compareType = Reliability::LimitStateFunction::GetCompareType(value);
-            else ObjectHandler::SetStringValue(id, property_, value);
+            else StoredObjectHandler::SetStringValue(limitStateFunction, property_, value);
         }
     };
 }

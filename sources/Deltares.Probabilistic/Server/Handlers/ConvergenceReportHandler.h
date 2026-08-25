@@ -40,10 +40,8 @@ namespace Deltares::Server
             return ObjectType::ConvergenceReport;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Reliability::ConvergenceReport>& convergence_report, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = GetObject(id);
-
             if (property_ == "convergence") return convergence_report->Convergence;
             else if (property_ == "fail_fraction") return convergence_report->FailFraction;
             else if (property_ == "fail_weight") return convergence_report->FailWeight;
@@ -51,13 +49,11 @@ namespace Deltares::Server
             else if (property_ == "relaxation_factor") return convergence_report->RelaxationFactor;
             else if (property_ == "variance_factor") return convergence_report->VarianceFactor;
             else if (property_ == "z_margin") return convergence_report->ZMargin;
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(convergence_report, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Reliability::ConvergenceReport>& convergence_report, const std::string& property_, double value) override
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = GetObject(id);
-
             if (property_ == "convergence") convergence_report->Convergence = value;
             else if (property_ == "fail_fraction") convergence_report->FailFraction = value;
             else if (property_ == "fail_weight") convergence_report->FailWeight = value;
@@ -65,39 +61,31 @@ namespace Deltares::Server
             else if (property_ == "relaxation_factor") convergence_report->RelaxationFactor = value;
             else if (property_ == "variance_factor") convergence_report->VarianceFactor = value;
             else if (property_ == "z_margin") convergence_report->ZMargin = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(convergence_report, property_, value);
         }
 
-        int GetIntValue(int id, const std::string& property_) override
+        int GetIntValue(const std::shared_ptr<Reliability::ConvergenceReport>& convergence_report, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = GetObject(id);
-
             if (property_ == "failed_samples") return convergence_report->FailedSamples;
-            else return StoredObjectHandler::GetIntValue(id, property_);
+            else return StoredObjectHandler::GetIntValue(convergence_report, property_);
         }
 
-        void SetIntValue(int id, const std::string& property_, int value) override
+        void SetIntValue(const std::shared_ptr<Reliability::ConvergenceReport>& convergence_report, const std::string& property_, int value) override
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = GetObject(id);
-
             if (property_ == "failed_samples") convergence_report->FailedSamples = value;
-            else return StoredObjectHandler::SetIntValue(id, property_, value);
+            else return StoredObjectHandler::SetIntValue(convergence_report, property_, value);
         }
 
-        bool GetBoolValue(int id, const std::string& property_) override
+        bool GetBoolValue(const std::shared_ptr<Reliability::ConvergenceReport>& convergence_report, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = GetObject(id);
-
             if (property_ == "is_converged") return convergence_report->IsConverged;
-            else return StoredObjectHandler::GetBoolValue(id, property_);
+            else return StoredObjectHandler::GetBoolValue(convergence_report, property_);
         }
 
-        void SetBoolValue(int id, const std::string& property_, bool value) override
+        void SetBoolValue(const std::shared_ptr<Reliability::ConvergenceReport>& convergence_report, const std::string& property_, bool value) override
         {
-            std::shared_ptr<Reliability::ConvergenceReport> convergence_report = GetObject(id);
-
             if (property_ == "is_converged") convergence_report->IsConverged = value;
-            else StoredObjectHandler::SetBoolValue(id, property_, value);
+            else StoredObjectHandler::SetBoolValue(convergence_report, property_, value);
         }
     };
 }

@@ -601,6 +601,9 @@
     <ClInclude Include="Server\Handlers\ScenarioHandler.h" />
     <ClInclude Include="Server\Handlers\StochastHandler.h" />
     <ClInclude Include="Server\Handlers\FragilityCurveHandler.h" />
+    <ClInclude Include="Server\Handlers\ContributingStochastHandler.h" />
+    <ClInclude Include="Server\Handlers\ConditionalValueHandler.h" />
+    <ClInclude Include="Server\Handlers\BaseStochastHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -22,6 +22,8 @@
 #pragma once
 
 #include <unordered_map>
+
+#include "ContributingStochastHandler.h"
 #include "../ProjectEntries.h"
 #include "ConvergenceReportHandler.h"
 #include "DiscreteValueHandler.h"
@@ -59,6 +61,8 @@ namespace Deltares::Server
         LimitStateFunctionHandler limitStateFunctionHandler;
         ReliabilityResultHandler reliabilityResultHandler;
         ConvergenceReportHandler convergenceReportHandler;
+        ContributingStochastHandler contributingStochastHandler;
+        ConditionalValueHandler conditionalValueHandler;
 
         int GetNewId()
         {

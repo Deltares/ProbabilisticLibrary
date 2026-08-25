@@ -33,6 +33,10 @@ namespace Deltares::Server
         stochastHandler.discreteValueHandler = &discreteValueHandler;
         stochastHandler.histogramValueHandler = &histogramValueHandler;
         stochastHandler.fragilityValueHandler = &fragilityValueHandler;
+        stochastHandler.conditionalValueHandler = &conditionalValueHandler;
+        stochastHandler.contributingStochastHandler = &contributingStochastHandler;
+
+        contributingStochastHandler.stochastHandler = &stochastHandler;
 
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
@@ -48,6 +52,8 @@ namespace Deltares::Server
         handlers[ObjectType::LimitStateFunction] = &limitStateFunctionHandler;
         handlers[ObjectType::ReliabilityResult] = &reliabilityResultHandler;
         handlers[ObjectType::ConvergenceReport] = &convergenceReportHandler;
+        handlers[ObjectType::ConditionalValue] = &conditionalValueHandler;
+        handlers[ObjectType::ContributingStochast] = &contributingStochastHandler;
 
         for (const auto& [objectType, handler] : handlers)
         {
@@ -71,7 +77,9 @@ namespace Deltares::Server
             objectType == ObjectType::ModelParameter ||
             objectType == ObjectType::LimitStateFunction ||
             objectType == ObjectType::ReliabilityResult ||
-            objectType == ObjectType::ConvergenceReport;
+            objectType == ObjectType::ConvergenceReport ||
+            objectType == ObjectType::ContributingStochast ||
+            objectType == ObjectType::ConditionalValue;
     }
 }
 

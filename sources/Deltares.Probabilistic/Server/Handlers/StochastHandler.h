@@ -22,6 +22,13 @@
 #pragma once
 
 #include <string>
+
+#include "BaseStochastHandler.h"
+#include "ConditionalValueHandler.h"
+#include "ContributingStochastHandler.h"
+#include "DiscreteValueHandler.h"
+#include "FragilityValueHandler.h"
+#include "HistogramValueHandler.h"
 #include "StoredObjectHandler.h"
 #include "ValidationReportHandler.h"
 #include "../../Statistics/Stochast.h"
@@ -40,10 +47,8 @@ namespace Deltares::Server
             return ObjectType::Stochast;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "location") return stochast->getProperties()->Location;
             else if (property_ == "scale") return stochast->getProperties()->Scale;
             else if (property_ == "shape") return stochast->getProperties()->Shape;
@@ -61,13 +66,11 @@ namespace Deltares::Server
             else if (property_ == "ks_test") return stochast->getKSTest(tempValues["data"]);
             else if (property_ == "x_from_u_and_source") return stochast->getXFromUAndSource(tempValues["u_and_x"][1], tempValues["u_and_x"][0]);
             else if (property_ == "u_from_x_and_source") return stochast->getUFromXAndSource(tempValues["x_and_source"][1], tempValues["x_and_source"][0]);
-            else return ObjectHandler::GetValue(id, property_);
+            else return StoredObjectHandler::GetValue(stochast, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, double value) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "location") stochast->getProperties()->Location = value;
             else if (property_ == "scale") stochast->getProperties()->Scale = value;
             else if (property_ == "shape") stochast->getProperties()->Shape = value;
@@ -86,13 +89,11 @@ namespace Deltares::Server
             else if (property_ == "shift_for_fit") argValue = value;
             else if (property_ == "design_point_x") argValue = value;
             else if (property_ == "conditional_x") argValue = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else StoredObjectHandler::SetValue(stochast, property_, value);
         }
 
-        int GetIntValue(int id, const std::string& property_) override
+        int GetIntValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "observations") return stochast->getProperties()->Observations;
             else if (property_ == "array_size") return stochast->modelParameter->arraySize;
             else if (property_ == "histogram_values_count") return static_cast<int>(stochast->getProperties()->HistogramValues.size());
@@ -106,13 +107,11 @@ namespace Deltares::Server
                 tempValues["special_values"] = stochast->getSpecialXValues();
                 return static_cast<int>(tempValues["special_values"].size());
             }
-            else return ObjectHandler::GetIntValue(id, property_);
+            else return StoredObjectHandler::GetIntValue(stochast, property_);
         }
 
-        int GetIdValue(int id, const std::string& property_) override
+        int GetIdValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "conditional_source") return GetObjectId(stochast->VariableSource);
             else if (property_ == "validate") return validationReportHandler->GetObjectId(std::make_shared<Logging::ValidationReport>(stochast->getValidationReport()));
             else if (property_ == "validate_fit")
@@ -135,13 +134,11 @@ namespace Deltares::Server
                 std::shared_ptr<Statistics::Stochast> conditionalStochast = stochast->getVariableStochast(x);
                 return GetObjectId(conditionalStochast);
             }
-            else return ObjectHandler::GetIdValue(id, property_);
+            else return StoredObjectHandler::GetIdValue(stochast, property_);
         }
 
-        void SetIntValue(int id, const std::string& property_, int value) override
+        void SetIntValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, int value) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "observations") stochast->getProperties()->Observations = value;
             else if (property_ == "array_size") stochast->modelParameter->arraySize = value;
             else if (property_ == "copy_from") stochast->copyFrom(GetObject(value));
@@ -150,13 +147,11 @@ namespace Deltares::Server
             else if (property_ == "fragility_values") stochast->getProperties()->FragilityValues.push_back(fragilityValueHandler->GetObject(value));
             else if (property_ == "discrete_values") stochast->getProperties()->DiscreteValues.push_back(discreteValueHandler->GetObject(value));
             else if (property_ == "prior") tempIntValue = value;
-            else ObjectHandler::SetIntValue(id, property_, value);
+            else StoredObjectHandler::SetIntValue(stochast, property_, value);
         }
 
-        bool GetBoolValue(int id, const std::string& property_) override
+        bool GetBoolValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "inverted") return stochast->isInverted();
             else if (property_ == "truncated") return stochast->isTruncated();
             else if (property_ == "conditional") return stochast->IsVariableStochast;
@@ -179,44 +174,36 @@ namespace Deltares::Server
             else if (property_ == "is_used_shape") return stochast->hasParameter(Statistics::DistributionPropertyType::Shape);
             else if (property_ == "is_used_shape_b") return stochast->hasParameter(Statistics::DistributionPropertyType::ShapeB);
             else if (property_ == "is_used_observations") return stochast->hasParameter(Statistics::DistributionPropertyType::Observations);
-            else return ObjectHandler::GetBoolValue(id, property_);
+            else return StoredObjectHandler::GetBoolValue(stochast, property_);
         }
 
-        void SetBoolValue(int id, const std::string& property_, bool value) override
+        void SetBoolValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, bool value) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "inverted") stochast->setInverted(value);
             else if (property_ == "truncated") stochast->setTruncated(value);
             else if (property_ == "conditional") stochast->IsVariableStochast = value;
             else if (property_ == "is_array") stochast->modelParameter->isArray = value;
-            else ObjectHandler::SetBoolValue(id, property_, value);
+            else StoredObjectHandler::SetBoolValue(stochast, property_, value);
         }
 
-        std::string GetStringValue(int id, const std::string& property_) override
+        std::string GetStringValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "distribution") return Statistics::Stochast::getDistributionTypeString(stochast->getDistributionType());
             else if (property_ == "constant_parameter") return Statistics::Stochast::getConstantParameterTypeString(stochast->constantParameterType);
             else if (property_ == "name") return stochast->name;
-            else return ObjectHandler::GetStringValue(id, property_);
+            else return StoredObjectHandler::GetStringValue(stochast, property_);
         }
 
-        void SetStringValue(int id, const std::string& property_, const std::string& value) override
+        void SetStringValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, const std::string& value) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "distribution") stochast->setDistributionType(Statistics::Stochast::getDistributionType(value));
             else if (property_ == "constant_parameter") stochast->constantParameterType = Statistics::Stochast::getConstantParameterType(value);
             else if (property_ == "name") stochast->name = value;
-            else ObjectHandler::SetStringValue(id, property_, value);
+            else StoredObjectHandler::SetStringValue(stochast, property_, value);
         }
 
-        void SetArrayValue(int id, const std::string& property_, double* values, int size) override
+        void SetArrayValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, double* values, int size) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             std::vector<double> dataValues(size);
             for (int i = 0; i < size; i++)
             {
@@ -228,13 +215,11 @@ namespace Deltares::Server
             else if (property_ == "weights") tempValues["weights"] = dataValues;
             else if (property_ == "u_and_x") tempValues["u_and_x"] = dataValues;
             else if (property_ == "x_and_source") tempValues["x_and_source"] = dataValues;
-            else ObjectHandler::SetArrayValue(id, property_, values, size);
+            else StoredObjectHandler::SetArrayValue(stochast, property_, values, size);
         }
 
-        void SetArrayIntValue(int id, const std::string& property_, int* values, int size) override
+        void SetArrayIntValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, int* values, int size) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "discrete_values")
             {
                 stochast->getProperties()->setDirty();
@@ -268,7 +253,7 @@ namespace Deltares::Server
                 stochast->getProperties()->ContributingStochasts.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    stochast->getProperties()->ContributingStochasts.push_back(contributingStochasts[values[i]]);
+                    stochast->getProperties()->ContributingStochasts.push_back(contributingStochastHandler->GetObject(values[i]));
                 }
             }
             else if (property_ == "conditional_values")
@@ -276,7 +261,7 @@ namespace Deltares::Server
                 stochast->ValueSet->StochastValues.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    stochast->ValueSet->StochastValues.push_back(conditionalValues[values[i]]);
+                    stochast->ValueSet->StochastValues.push_back(conditionalValueHandler->GetObject(values[i]));
                 }
             }
             else if (property_ == "array_variables")
@@ -287,13 +272,11 @@ namespace Deltares::Server
                     stochast->ArrayVariables.push_back(GetObject(values[i]));
                 }
             }
-            else ObjectHandler::SetArrayIntValue(id, property_, values, size);
+            else StoredObjectHandler::SetArrayIntValue(stochast, property_, values, size);
         }
 
-        double GetArgValue(int id, const std::string& property_, double argument) override
+        double GetArgValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, double argument) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "quantile") return stochast->getQuantile(argument);
             else if (property_ == "x_from_u") return stochast->getXFromU(argument);
             else if (property_ == "u_from_x") return stochast->getUFromX(argument);
@@ -301,39 +284,33 @@ namespace Deltares::Server
             else if (property_ == "p_from_x") return stochast->getPFromX(argument);
             else if (property_ == "pdf") return stochast->getPDF(argument);
             else if (property_ == "cdf") return stochast->getCDF(argument);
-            else return ObjectHandler::GetArgValue(id, property_, argument);
+            else return StoredObjectHandler::GetArgValue(stochast, property_, argument);
         }
 
-        void SetArgValue(int id, const std::string& property_, double argument, double value) override
+        void SetArgValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, double argument, double value) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "x_at_u") stochast->setXAtU(value, argument, Statistics::ConstantParameterType::VariationCoefficient);
         }
 
-        double GetIndexedValue(int id, const std::string& property_, int index) override
+        double GetIndexedValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, int index) override
         {
             if (property_ == "special_values") return tempValues["special_values"][index];
-            else return ObjectHandler::GetIndexedValue(id, property_, index);
+            else return StoredObjectHandler::GetIndexedValue(stochast, property_, index);
         }
 
-        int GetIndexedIdValue(int id, const std::string& property_, int index) override
+        int GetIndexedIdValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, int index) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (property_ == "histogram_values") return histogramValueHandler->GetObjectId(stochast->getProperties()->HistogramValues[index]);
             else if (property_ == "discrete_values") return discreteValueHandler->GetObjectId(stochast->getProperties()->DiscreteValues[index]);
             else if (property_ == "fragility_values") return fragilityValueHandler->GetObjectId(stochast->getProperties()->FragilityValues[index]);
-            else if (property_ == "contributing_stochasts") return GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index], newId);
-            else if (property_ == "conditional_values") return GetConditionalValueId(stochast->ValueSet->StochastValues[index], newId);
+            else if (property_ == "contributing_stochasts") return contributingStochastHandler->GetObjectId(stochast->getProperties()->ContributingStochasts[index]);
+            else if (property_ == "conditional_values") return conditionalValueHandler->GetObjectId(stochast->ValueSet->StochastValues[index]);
             else if (property_ == "array_variables") return GetObjectId(stochast->ArrayVariables[index]);
-            else return ObjectHandler::GetIndexedIdValue(id, property_, index);
+            else return StoredObjectHandler::GetIndexedIdValue(stochast, property_, index);
         }
 
-        void Execute(int id, const std::string& method_) override
+        void Execute(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& method_) override
         {
-            std::shared_ptr<Statistics::Stochast> stochast = GetObject(id);
-
             if (method_ == "initialize_for_run") stochast->initializeForRun();
             else if (method_ == "initialize_conditional_values") stochast->initializeConditionalValues();
             else if (method_ == "set_x_at_u_dev") stochast->setXAtU(tempValues["u_and_x"][1], tempValues["u_and_x"][0], Statistics::ConstantParameterType::Deviation);
@@ -364,12 +341,18 @@ namespace Deltares::Server
                 argValue = nan("");
                 tempValues.erase("data");
             }
+            else
+            {
+                StoredObjectHandler::Execute(stochast, method_);
+            }
         }
 
         ValidationReportHandler* validationReportHandler = nullptr;
         HistogramValueHandler* histogramValueHandler = nullptr;
         DiscreteValueHandler* discreteValueHandler = nullptr;
         FragilityValueHandler* fragilityValueHandler = nullptr;
+        ConditionalValueHandler* conditionalValueHandler = nullptr;
+        ContributingStochastHandler* contributingStochastHandler = nullptr;
 
     private:
         std::unordered_map <std::string, std::vector<double>> tempValues;
