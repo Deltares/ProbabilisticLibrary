@@ -22,6 +22,8 @@
 #pragma once
 
 #include <string>
+
+#include "StochastHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Reliability/FragilityCurve.h"
 
@@ -39,79 +41,92 @@ namespace Deltares::Server
             return ObjectType::FragilityCurve;
         }
 
-        double GetValue(int id, const std::string& property_) override
+        double GetValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = GetObject(id);
-
             if (property_ == "fixed_value") return fragilityCurve->fixedValue;
-            else return ObjectHandler::GetValue(id, property_);
+            else return stochastHandler->GetValue(fragilityCurve, property_);
         }
 
-        void SetValue(int id, const std::string& property_, double value) override
+        void SetValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, double value) override
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = GetObject(id);
-
             if (property_ == "fixed_value") fragilityCurve->fixedValue = value;
-            else ObjectHandler::SetValue(id, property_, value);
+            else stochastHandler->SetValue(fragilityCurve, property_, value);
         }
 
-        int GetIdValue(int id, const std::string& property_) override
+        int GetIdValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = GetObject(id);
-
             if (property_ == "design_point_x")
             {
                 double x = argValue;
                 argValue = std::nan("");
 
                 std::shared_ptr<Models::StochastPoint> stochastPoint = fragilityCurve->getDesignPoint(x);
-                std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<DesignPoint>(*stochastPoint);
 
-                return GetDesignPointId(designPoint, newId);
+                //std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<DesignPoint>(*stochastPoint);
+                //return GetDesignPointId(designPoint, newId);
+
+                // TODO
+                return 0;
             }
-            else return ObjectHandler::GetIdValue(id, property_);
+            else stochastHandler->GetIdValue(fragilityCurve, property_);
         }
 
-        void SetIntValue(int id, const std::string& property_, int value) override
+        int GetIndexedIdValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, int index) override
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = GetObject(id);
-
-            if (property_ == "index") modelParameter->index = value;
-            else if (property_ == "array_size") modelParameter->arraySize = value;
-            else ObjectHandler::SetIntValue(id, property_, value);
+            return stochastHandler->GetIndexedIdValue(fragilityCurve, property_, index);
         }
 
-        bool GetBoolValue(int id, const std::string& property_) override
+        int GetIntValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = GetObject(id);
-
-            if (property_ == "fixed") return fragilityCurve->fixed;
-            else return ObjectHandler::GetBoolValue(id, property_);
+            return stochastHandler->GetIntValue(fragilityCurve, property_);
         }
 
-        void SetBoolValue(int id, const std::string& property_, bool value) override
+        void SetIntValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, int value) override
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = GetObject(id);
-
-            if (property_ == "is_array") modelParameter->isArray = value;
-            else ObjectHandler::SetBoolValue(id, property_, value);
+            stochastHandler->SetIntValue(fragilityCurve, property_, value);
         }
 
-        std::string GetStringValue(int id, const std::string& property_) override
+        bool GetBoolValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_) override
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = GetObject(id);
-
-            if (property_ == "name") return modelParameter->name;
-            else return ObjectHandler::GetStringValue(id, property_);
+            if (property_ == "inverted") return fragilityCurve->inverted;
+            else if (property_ == "fixed") return fragilityCurve->fixed;
+            else return stochastHandler->GetBoolValue(fragilityCurve, property_);
         }
 
-        void SetStringValue(int id, const std::string& property_, const std::string& value) override
+        void SetBoolValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, bool value) override
         {
-            std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = GetObject(id);
-
-            if (property_ == "name") modelParameter->name = value;
-            else ObjectHandler::SetStringValue(id, property_, value);
+            if (property_ == "inverted") fragilityCurve->inverted = value;
+            else if (property_ == "fixed") fragilityCurve->fixed = value;
+            else stochastHandler->SetBoolValue(fragilityCurve, property_, value);
         }
+
+        std::string GetStringValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_) override
+        {
+            return stochastHandler->GetStringValue(fragilityCurve, property_);
+        }
+
+        void SetStringValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, const std::string& value) override
+        {
+            stochastHandler->SetStringValue(fragilityCurve, property_, value);
+        }
+
+        void SetArrayValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, double* values, int size) override
+        {
+            return stochastHandler->SetArrayValue(fragilityCurve, property_, values, size);
+        }
+
+        double GetArgValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, double argument) override
+        {
+            return stochastHandler->GetArgValue(fragilityCurve, property_, argument);
+        }
+
+        void SetArgValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, double argument, double value) override
+        {
+            stochastHandler->SetArgValue(fragilityCurve, property_, argument, value);
+        }
+
+        StochastHandler* stochastHandler = nullptr;
+
     private:
         double argValue = nan("");
     };

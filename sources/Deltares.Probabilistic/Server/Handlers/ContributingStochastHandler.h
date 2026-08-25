@@ -23,7 +23,6 @@
 
 #include <string>
 
-#include "BaseStochastHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Statistics/Stochast.h"
 #include "../../Statistics/ContributingStochast.h"
@@ -56,17 +55,18 @@ namespace Deltares::Server
 
         int GetIdValue(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, const std::string& property_) override
         {
-            if (property_ == "variable") return stochastHandler->GetObjectId(std::static_pointer_cast<Statistics::Stochast>(contributingStochast->Stochast));
+            if (property_ == "variable") return stochastIdCallback(std::static_pointer_cast<Statistics::Stochast>(contributingStochast->Stochast));
             else return StoredObjectHandler::GetIdValue(contributingStochast, property_);
         }
 
         void SetIntValue(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, const std::string& property_, int value) override
         {
-            if (property_ == "variable") contributingStochast->Stochast = stochastHandler->GetObject(value);
+            if (property_ == "variable") contributingStochast->Stochast = stochastCallback(value);
             else StoredObjectHandler::SetIntValue(contributingStochast, property_, value);
         }
 
-        BaseStochastHandler* stochastHandler = nullptr;
+        GetObjectCallBack<Statistics::Stochast> stochastCallback = nullptr;
+        GetObjectIdCallBack<Statistics::Stochast> stochastIdCallback = nullptr;
     };
 }
 

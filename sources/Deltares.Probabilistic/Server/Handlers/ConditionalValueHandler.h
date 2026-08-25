@@ -83,30 +83,6 @@ namespace Deltares::Server
             if (property_ == "observations") conditionalValue->Stochast->Observations = value;
             else StoredObjectHandler::SetIntValue(conditionalValue, property_, value);
         }
-
-        bool GetBoolValue(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, const std::string& property_) override
-        {
-            if (property_ == "is_array") return conditionalValue->isArray;
-            else return StoredObjectHandler::GetBoolValue(conditionalValue, property_);
-        }
-
-        void SetBoolValue(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, const std::string& property_, bool value) override
-        {
-            if (property_ == "is_array") conditionalValue->isArray = value;
-            else StoredObjectHandler::SetBoolValue(conditionalValue, property_, value);
-        }
-
-        std::string GetStringValue(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, const std::string& property_) override
-        {
-            if (property_ == "name") return conditionalValue->name;
-            else return StoredObjectHandler::GetStringValue(conditionalValue, property_);
-        }
-
-        void SetStringValue(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, const std::string& property_, const std::string& value) override
-        {
-            if (property_ == "name") conditionalValue->name = value;
-            else StoredObjectHandler::SetStringValue(conditionalValue, property_, value);
-        }
     };
 }
 

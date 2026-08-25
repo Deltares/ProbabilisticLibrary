@@ -36,7 +36,10 @@ namespace Deltares::Server
         stochastHandler.conditionalValueHandler = &conditionalValueHandler;
         stochastHandler.contributingStochastHandler = &contributingStochastHandler;
 
-        contributingStochastHandler.stochastHandler = &stochastHandler;
+        contributingStochastHandler.stochastCallback = [this](int id) {return this->stochastHandler.GetObject(id); };
+        contributingStochastHandler.stochastIdCallback = [this](std::shared_ptr<Statistics::Stochast> stochast) {return this->stochastHandler.GetObjectId(stochast); };
+
+        fragilityCurveHandler.stochastHandler = &stochastHandler;
 
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
@@ -47,6 +50,7 @@ namespace Deltares::Server
         handlers[ObjectType::StandardNormal] = &standardNormalHandler;
         handlers[ObjectType::Stochast] = &stochastHandler;
         handlers[ObjectType::Scenario] = &scenarioHandler;
+        handlers[ObjectType::FragilityCurve] = &fragilityCurveHandler;
         handlers[ObjectType::ValidationReport] = &validationReportHandler;
         handlers[ObjectType::ModelParameter] = &modelParameterHandler;
         handlers[ObjectType::LimitStateFunction] = &limitStateFunctionHandler;
@@ -72,6 +76,7 @@ namespace Deltares::Server
             objectType == ObjectType::ProbabilityValue ||
             objectType == ObjectType::StandardNormal ||
             objectType == ObjectType::Stochast ||
+            objectType == ObjectType::FragilityCurve ||
             objectType == ObjectType::Scenario ||
             objectType == ObjectType::ValidationReport ||
             objectType == ObjectType::ModelParameter ||

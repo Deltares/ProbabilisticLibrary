@@ -28,10 +28,15 @@
 namespace Deltares::Server
 {
     template<typename T>
+    using GetObjectCallBack = std::function<std::shared_ptr<T>(int)>;
+
+    template<typename T>
+    using GetObjectIdCallBack = std::function<int(std::shared_ptr<T>)>;
 
     /**
      * \brief Base class for object handlers which contains a registration of all objects
      */
+    template<typename T>
     class StoredObjectHandler : public ObjectHandler
     {
     private:
@@ -129,7 +134,7 @@ namespace Deltares::Server
         void SetValue(int id, const std::string& property_, double value) override
         {
             std::shared_ptr<T> object = GetObject(id);
-            return SetValue(object, property_);
+            return SetValue(object, property_, value);
         }
 
         virtual void SetValue(const std::shared_ptr<T>& object, const std::string& property_, double value) {}
@@ -139,7 +144,7 @@ namespace Deltares::Server
         double GetIndexedValue(int id, const std::string& property_, int index) override
         {
             std::shared_ptr<T> object = GetObject(id);
-            return GetIndexedValue(object, property_);
+            return GetIndexedValue(object, property_, index);
         }
 
         virtual double GetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index) { return 0; }
@@ -147,7 +152,7 @@ namespace Deltares::Server
         void SetIndexedValue(int id, const std::string& property_, int index, double value) override
         {
             std::shared_ptr<T> object = GetObject(id);
-            return SetIndexedValue(object, property_);
+            return SetIndexedValue(object, property_, index, value);
         }
 
         virtual void SetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index, double value) {}
@@ -208,21 +213,21 @@ namespace Deltares::Server
 
         // array
 
-        void SetArrayValue(int id, const std::string& property_, double* value, int size) override
+        void SetArrayValue(int id, const std::string& property_, double* values, int size) override
         {
             std::shared_ptr<T> object = GetObject(id);
-            return SetArrayValue(object, property_, value, size);
+            return SetArrayValue(object, property_, values, size);
         }
 
         virtual void SetArrayValue(const std::shared_ptr<T>& object, const std::string& property_, double* value, int size) {}
 
-        void SetArrayIntValue(int id, const std::string& property_, int* value, int size) override
+        void SetArrayIntValue(int id, const std::string& property_, int* values, int size) override
         {
             std::shared_ptr<T> object = GetObject(id);
-            return SetArrayValue(object, property_, value, size);
+            return SetArrayIntValue(object, property_, values, size);
         }
 
-        virtual void SetArrayIntValue(const std::shared_ptr<T>& object, const std::string& property_, int* value, int size) {}
+        virtual void SetArrayIntValue(const std::shared_ptr<T>& object, const std::string& property_, int* values, int size) {}
 
         // bool
 

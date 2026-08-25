@@ -22,6 +22,8 @@
 #pragma once
 
 #include <string>
+
+#include "MessageHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
 #include "../../Logging/ValidationReport.h"
@@ -49,7 +51,7 @@ namespace Deltares::Server
         int GetIndexedIdValue(const std::shared_ptr<Logging::ValidationReport>& validationReport, const std::string& property_, int index) override
         {
             if (property_ == "messages") return messageHandler->GetObjectId(validationReport->messages[index]);
-            else return StoredObjectHandler::GetIndexedIdValue(validationReport, property_);
+            else return StoredObjectHandler::GetIndexedIdValue(validationReport, property_, index);
         }
 
         bool GetBoolValue(const std::shared_ptr<Logging::ValidationReport>& validationReport, const std::string& property_) override

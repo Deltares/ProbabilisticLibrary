@@ -103,10 +103,6 @@ namespace Deltares::Server
             alphas[id] = std::make_shared<Models::StochastPointAlpha>();
             alphaIds[alphas[id]] = id;
             break;
-        case ObjectType::FragilityCurve:
-            fragilityCurves[id] = std::make_shared<FragilityCurve>();
-            fragilityCurveIds[fragilityCurves[id]] = id;
-            break;
         case ObjectType::FragilityCurveProject:
             fragilityCurveProjects[id] = std::make_shared<FragilityCurveProject>();
             break;
@@ -198,7 +194,6 @@ namespace Deltares::Server
         case ObjectType::StochastPoint: stochastPoints.erase(id); break;
         case ObjectType::DesignPoint: designPointIds.erase(designPoints[id]); designPoints.erase(id); break;
         case ObjectType::Alpha: alphaIds.erase(alphas[id]); alphas.erase(id); break;
-        case ObjectType::FragilityCurve:  fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
         case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
         case ObjectType::FragilityCurveSettings: fragilityCurveSettings.erase(id); break;
         case ObjectType::CombineProject: combineProjects.erase(id); break;
@@ -236,11 +231,7 @@ namespace Deltares::Server
             return admin.GetValue(id, property_);
         }
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-        }
-        else if (objectType == ObjectType::Settings)
+        if (objectType == ObjectType::Settings)
         {
             std::shared_ptr<Settings> settings = settingsValues[id];
 
@@ -357,12 +348,7 @@ namespace Deltares::Server
             admin.SetValue(id, property_, value);
         }
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-        }
-        else if (objectType == ObjectType::Settings)
+        if (objectType == ObjectType::Settings)
         {
             std::shared_ptr<Settings> settings = settingsValues[id];
 
@@ -522,11 +508,6 @@ namespace Deltares::Server
             if (property_ == "values_count") return static_cast<int>(result->values.size());
             else if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
             else if (property_ == "messages_count") return static_cast<int>(result->messages.size());
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
         }
         else if (objectType == ObjectType::CorrelationMatrix)
         {
@@ -693,11 +674,6 @@ namespace Deltares::Server
 
             if (property_ == "result") return GetSensitivityResultId(project->sensitivityResult, newId);
         }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-        }
         else if (objectType == ObjectType::FragilityValue)
         {
             std::shared_ptr<FragilityValue> fragilityValue = admin.fragilityValueHandler.GetObject(id);
@@ -727,7 +703,7 @@ namespace Deltares::Server
                     std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(alpha->Stochast);
                     if (fragilityCurve != nullptr)
                     {
-                        return GetFragilityCurveId(fragilityCurve, newId);
+                        return admin.fragilityCurveHandler.GetObjectId(fragilityCurve);
                     }
                     else
                     {
@@ -746,7 +722,7 @@ namespace Deltares::Server
         {
             std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
 
-            if (property_ == "fragility_curve") return GetFragilityCurveId(probabilityLimitStateFunction->fragilityCurve, newId);
+            if (property_ == "fragility_curve") return admin.fragilityCurveHandler.GetObjectId(probabilityLimitStateFunction->fragilityCurve);
         }
         else if (objectType == ObjectType::SensitivityValue)
         {
@@ -760,8 +736,8 @@ namespace Deltares::Server
 
             if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
             else if (property_ == "integrand") return admin.stochastHandler.GetObjectId(project->integrand);
-            else if (property_ == "fragility_curve") GetFragilityCurveId(project->fragilityCurve, newId);
-            else if (property_ == "fragility_curve_normalized") GetFragilityCurveId(project->fragilityCurveNormalized, newId);
+            else if (property_ == "fragility_curve") admin.fragilityCurveHandler.GetObjectId(project->fragilityCurve);
+            else if (property_ == "fragility_curve_normalized") admin.fragilityCurveHandler.GetObjectId(project->fragilityCurveNormalized);
         }
         else if (objectType == ObjectType::CombineProject)
         {
@@ -820,20 +796,15 @@ namespace Deltares::Server
             std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
 
             if (property_ == "integrand") project->integrand = admin.stochastHandler.GetObject(value);
-            else if (property_ == "fragility_curve") project->fragilityCurve = fragilityCurves[value];
-            else if (property_ == "fragility_curve_normalized") project->fragilityCurveNormalized = fragilityCurves[value];
+            else if (property_ == "fragility_curve") project->fragilityCurve = admin.fragilityCurveHandler.GetObject(value);
+            else if (property_ == "fragility_curve_normalized") project->fragilityCurveNormalized = admin.fragilityCurveHandler.GetObject(value);
             else if (property_ == "settings") project->settings = fragilityCurveSettings[value];
         }
         else if (objectType == ObjectType::ProbabilityLimitStateFunction)
         {
             std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
 
-            if (property_ == "fragility_curve") probabilityLimitStateFunction->fragilityCurve = fragilityCurves[value];
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
+            if (property_ == "fragility_curve") probabilityLimitStateFunction->fragilityCurve = admin.fragilityCurveHandler.GetObject(value);
         }
         else if (objectType == ObjectType::FragilityValue)
         {
@@ -1009,20 +980,7 @@ namespace Deltares::Server
             else if (property_ == "use_z_from_sample") return settings->RunSettings->UseZFromSample;
         }
 
-        if (objectType == ObjectType::FragilityCurve)
-        {
-            std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
-
-            if (property_ == "inverted") return fragilityCurve->inverted;
-            else if (property_ == "fixed") return fragilityCurve->fixed;
-        }
-
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-        }
-        else if (objectType == ObjectType::CorrelationMatrix)
+        if (objectType == ObjectType::CorrelationMatrix)
         {
             std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
 
@@ -1113,20 +1071,8 @@ namespace Deltares::Server
             else if (property_ == "use_z_from_sample") settings->RunSettings->UseZFromSample = value;
             else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
         }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
 
-        }
-
-        if (objectType == ObjectType::FragilityCurve)
-        {
-            std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
-
-            if (property_ == "inverted") fragilityCurve->inverted = value;
-            else if (property_ == "fixed") fragilityCurve->fixed = value;
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        if (objectType == ObjectType::CombinedLimitStateFunction)
         {
             std::shared_ptr<LimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
@@ -1177,11 +1123,7 @@ namespace Deltares::Server
             return admin.GetStringValue(id, property_);
         }
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        if (objectType == ObjectType::CombinedLimitStateFunction)
         {
             std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
@@ -1293,11 +1235,7 @@ namespace Deltares::Server
             return admin.SetStringValue(id, property_, value);
         }
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
+        if (objectType == ObjectType::CombinedLimitStateFunction)
         {
             std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
 
@@ -1402,12 +1340,7 @@ namespace Deltares::Server
             return;
         }
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
+        if (objectType == ObjectType::LengthEffectProject)
         {
             std::shared_ptr<LengthEffectProject> lengthEffect = lengthEffectProjects[id];
             if (property_ == "correlation_lengths")
@@ -1634,12 +1567,6 @@ namespace Deltares::Server
             return admin.GetArgValue(id, property_, argument);
         }
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-        }
-
         return std::nan("");
     }
 
@@ -1650,11 +1577,6 @@ namespace Deltares::Server
         if (IsSupported(objectType))
         {
             admin.SetArgValue(id, property_, argument, value);
-            return;
-        }
-
-        if (ProjectEntries::IsStochast(objectType))
-        {
         }
     }
 
@@ -1784,12 +1706,7 @@ namespace Deltares::Server
             if (property_ == "stochasts") return admin.stochastHandler.GetObjectId(project->stochasts[index]);
         }
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-        }
-        else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
+        if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
         {
             std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
 
@@ -2023,27 +1940,6 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetFragilityCurveId(const std::shared_ptr<FragilityCurve>& fragilityCurve, int newId)
-    {
-        if (fragilityCurve == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!fragilityCurveIds.contains(fragilityCurve))
-            {
-                std::lock_guard lock(mtx);
-
-                fragilityCurves[newId] = fragilityCurve;
-                admin.RegisterType(newId, ObjectType::FragilityCurve);
-                fragilityCurveIds[fragilityCurve] = newId;
-            }
-
-            return fragilityCurveIds[fragilityCurve];
-        }
-    }
-
     int ProjectHandler::GetCorrelationMatrixId(const std::shared_ptr<BaseCorrelation>& correlationMatrix, int newId)
     {
         if (correlationMatrix == nullptr)
@@ -2239,22 +2135,6 @@ namespace Deltares::Server
         else if (sensitivitySettingsValues.contains(id))
         {
             return sensitivitySettingsValues[id];
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
-    std::shared_ptr<Stochast> ProjectHandler::GetStochast(int id)
-    {
-        if (stochasts.contains(id))
-        {
-            return stochasts[id];
-        }
-        else if (fragilityCurves.contains(id))
-        {
-            return fragilityCurves[id];
         }
         else
         {

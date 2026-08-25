@@ -28,6 +28,7 @@
 #include "ConvergenceReportHandler.h"
 #include "DiscreteValueHandler.h"
 #include "EvaluationHandler.h"
+#include "FragilityCurveHandler.h"
 #include "FragilityValueHandler.h"
 #include "HistogramValueHandler.h"
 #include "LimitStateFunctionHandler.h"
@@ -55,6 +56,7 @@ namespace Deltares::Server
         ProbabilityValueHandler probabilityValueHandler;
         StandardNormalHandler standardNormalHandler;
         StochastHandler stochastHandler;
+        FragilityCurveHandler fragilityCurveHandler;
         ScenarioHandler scenarioHandler;
         ValidationReportHandler validationReportHandler;
         ModelParameterHandler modelParameterHandler;

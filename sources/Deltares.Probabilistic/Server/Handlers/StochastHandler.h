@@ -23,7 +23,6 @@
 
 #include <string>
 
-#include "BaseStochastHandler.h"
 #include "ConditionalValueHandler.h"
 #include "ContributingStochastHandler.h"
 #include "DiscreteValueHandler.h"

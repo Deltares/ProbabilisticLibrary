@@ -123,7 +123,6 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Models::StochastPoint>> stochastPoints;
         std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
         std::unordered_map<int, std::shared_ptr<Models::StochastPointAlpha>> alphas;
-        std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveIntegrationSettings>> fragilityCurveSettings;
         std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
@@ -149,7 +148,6 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<Sensitivity::SensitivityResult>, int> sensitivityResultsIds;
         std::unordered_map<std::shared_ptr<Sensitivity::SensitivityValue>, int> sensitivityValuesIds;
         std::unordered_map<std::shared_ptr<Models::StochastPointAlpha>, int> alphaIds;
-        std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
         std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
         std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;
 
