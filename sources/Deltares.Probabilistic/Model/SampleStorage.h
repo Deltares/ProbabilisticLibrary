@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "Sample.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Models
 {
@@ -53,6 +54,11 @@ namespace Deltares::Models
          */
         Sample* keep(const Sample& sample)
         {
+            if (samples.size() == samples.capacity())
+            {
+                throw Reliability::ProbabilisticLibraryException("Maximum number of samples is exceeded");
+            }
+
             samples.push_back(sample);
             return &samples.back();
         }

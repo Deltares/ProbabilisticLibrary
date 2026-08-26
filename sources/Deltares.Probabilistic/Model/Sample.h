@@ -41,30 +41,19 @@ namespace Deltares::Models
         Sample() = default;
 
         Sample(size_t size, bool extended = false)
+            : size(static_cast<int>(size)), extended(extended), Values(size, 0.0)
         {
-            this->size = static_cast<int>(size);
-            this->extended = extended;
-            for (size_t i = 0; i < size; i++)
-            {
-                Values.push_back(0.0);
-            }
         }
 
         Sample(int size, bool extended = false)
+            : size(size), extended(extended), Values(size, 0.0)
         {
-            this->size = size;
-            this->extended = extended;
-            for (int i = 0; i < size; i++)
-            {
-                Values.push_back(0.0);
-            }
         }
 
         Sample(std::vector<double> values, bool extended = false)
+            : size(static_cast<int>(values.size())), extended(extended)
         {
-            this->size = static_cast<int>(values.size());
             this->Values = values;
-            this->extended = extended;
         }
 
         /**
