@@ -229,16 +229,5 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(ProjectEntries::IsModelSettingsType(RunProjectSettings));
         EXPECT_TRUE(ProjectEntries::IsModelSettingsType(SensitivitySettings));
     }
-
-    void UnitTestProjectHandler::TestProjectEntriesIsStochast()
-    {
-        using namespace Deltares::Server;
-        using enum ObjectType;
-
-        EXPECT_FALSE(ProjectEntries::IsStochast(Alpha));
-        EXPECT_FALSE(ProjectEntries::IsStochast(CombineSettings));
-        EXPECT_TRUE(ProjectEntries::IsStochast(Stochast));
-        EXPECT_TRUE(ProjectEntries::IsStochast(FragilityCurve));
-    }
 }
 

@@ -27,6 +27,8 @@
 #include "ContributingStochastHandler.h"
 #include "../ProjectEntries.h"
 #include "ConvergenceReportHandler.h"
+#include "CopulaCorrelationHandler.h"
+#include "CorrelationMatrixHandler.h"
 #include "DesignPointHandler.h"
 #include "DiscreteValueHandler.h"
 #include "EvaluationHandler.h"
@@ -40,6 +42,9 @@
 #include "ProbabilityValueHandler.h"
 #include "ReliabilityResultHandler.h"
 #include "ScenarioHandler.h"
+#include "SelfCorrelationMatrixHandler.h"
+#include "SensitivityResultHandler.h"
+#include "SensitivityValueHandler.h"
 #include "StandardNormalHandler.h"
 #include "StochastHandler.h"
 #include "StochastPointAlphaHandler.h"
@@ -73,10 +78,15 @@ namespace Deltares::Server
         ConvergenceReportHandler convergenceReportHandler;
         ContributingStochastHandler contributingStochastHandler;
         ConditionalValueHandler conditionalValueHandler;
+        CorrelationMatrixHandler correlationMatrixHandler;
+        CopulaCorrelationHandler copulaCorrelationHandler;
+        SelfCorrelationMatrixHandler selfCorrelationMatrixHandler;
         StochastPointAlphaHandler alphaHandler;
         StochastPointHandler stochastPointHandler;
         DesignPointHandler designPointHandler;
         UncertaintyResultHandler uncertaintyResultHandler;
+        SensitivityResultHandler sensitivityResultHandler;
+        SensitivityValueHandler sensitivityValueHandler;
 
         int GetNewId()
         {
@@ -186,6 +196,12 @@ namespace Deltares::Server
             return handlers[objectType]->GetIntArgValue(id1, id2, property_);
         }
 
+        void SetIntArgValue(int id1, int id2, const std::string& property_, double value)
+        {
+            ObjectType objectType = admin.GetObjectType(id1);
+            return handlers[objectType]->SetIntArgValue(id1, id2, property_, value);
+        }
+
         int GetIndexedIdValue(int id, const std::string& property_, int index)
         {
             ObjectType objectType = admin.GetObjectType(id);
@@ -220,6 +236,24 @@ namespace Deltares::Server
         {
             ObjectType objectType = admin.GetObjectType(id);
             return handlers[objectType]->GetIndexedValue(id, property_, index);
+        }
+
+        double GetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            return handlers[objectType]->GetIndexedIndexedValue(id, property_, index1, index2);
+        }
+
+        void SetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2, double value)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            return handlers[objectType]->SetIndexedIndexedValue(id, property_, index1, index2, value);
+        }
+
+        void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            return handlers[objectType]->SetIndexedIndexedIntValue(id, property_, index1, index2, value);
         }
 
         void Execute(int id, const std::string& method_)

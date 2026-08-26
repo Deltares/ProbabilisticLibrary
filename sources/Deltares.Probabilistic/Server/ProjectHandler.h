@@ -88,8 +88,6 @@ namespace Deltares::Server
         void Execute(int id, const std::string& method_) override;
 
         int GetCorrelationMatrixId(const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix, int newid);
-        int GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId);
-        int GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId);
         int GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId);
         int GetStatus(const std::string& command) const;
 
@@ -101,7 +99,6 @@ namespace Deltares::Server
         HandlerAdmin admin;
 
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
-        std::unordered_map<int, std::shared_ptr<Statistics::BaseCorrelation>> correlations;
         std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
@@ -111,21 +108,14 @@ namespace Deltares::Server
         std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineProject>> excludingCombineProjects;
         std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineSettings>> excludingCombineSettings;
         std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
-        std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
         std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
         std::unordered_map<int, std::shared_ptr<Models::RunProjectSettings>> runProjectSettings;
         std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
         std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivitySettings>> sensitivitySettingsValues;
-        std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityResult>> sensitivityResults;
-        std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityValue>> sensitivityValues;
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
         std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
 
         std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
-        std::unordered_map<std::shared_ptr<Sensitivity::SensitivityResult>, int> sensitivityResultsIds;
-        std::unordered_map<std::shared_ptr<Sensitivity::SensitivityValue>, int> sensitivityValuesIds;
-        std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
-        std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;
 
         std::unordered_map <std::string, std::vector<double>> tempValues;
 

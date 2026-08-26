@@ -70,14 +70,6 @@ namespace Deltares::Server
         case ObjectType::Project:
             projects[id] = std::make_shared<ReliabilityProject>();
             break;
-        case ObjectType::CorrelationMatrix:
-            correlations[id] = std::make_shared<CorrelationMatrix>(true);
-            correlationIds[correlations[id]] = id;
-            break;
-        case ObjectType::CopulaCorrelation:
-            correlations[id] = std::make_shared<CopulaCorrelation>();
-            correlationIds[correlations[id]] = id;
-            break;
         case ObjectType::Settings:
             settingsValues[id] = std::make_shared<Settings>();
             settingsValuesIds[settingsValues[id]] = id;
@@ -103,10 +95,6 @@ namespace Deltares::Server
         case ObjectType::ExcludingCombineSettings:
             excludingCombineSettings[id] = std::make_shared<ExcludingCombineSettings>();
             break;
-        case ObjectType::SelfCorrelationMatrix:
-            selfCorrelationMatrices[id] = std::make_shared<SelfCorrelationMatrix>();
-            selfCorrelationIds[selfCorrelationMatrices[id]] = id;
-            break;
         case ObjectType::RunProject:
             runProjects[id] = std::make_shared<Models::RunProject>();
             break;
@@ -124,14 +112,6 @@ namespace Deltares::Server
             break;
         case ObjectType::SensitivitySettings:
             sensitivitySettingsValues[id] = std::make_shared<Sensitivity::SensitivitySettings>();
-            break;
-        case ObjectType::SensitivityResult:
-            sensitivityResults[id] = std::make_shared<Sensitivity::SensitivityResult>();
-            sensitivityResultsIds[sensitivityResults[id]] = id;
-            break;
-        case ObjectType::SensitivityValue:
-            sensitivityValues[id] = std::make_shared<Sensitivity::SensitivityValue>();
-            sensitivityValuesIds[sensitivityValues[id]] = id;
             break;
         case ObjectType::LengthEffectProject:
             lengthEffectProjects[id] = std::make_shared<LengthEffectProject>();
@@ -162,9 +142,6 @@ namespace Deltares::Server
         switch (objectType)
         {
         case ObjectType::Project: projects.erase(id); break;
-        case ObjectType::CorrelationMatrix:
-        case ObjectType::CopulaCorrelation:
-            correlationIds.erase(correlations[id]); correlations.erase(id); break;
         case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
         case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
         case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
@@ -173,15 +150,12 @@ namespace Deltares::Server
         case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
         case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
         case ObjectType::ExcludingCombineSettings: excludingCombineSettings.erase(id); break;
-        case ObjectType::SelfCorrelationMatrix: selfCorrelationIds.erase(selfCorrelationMatrices[id]); selfCorrelationMatrices.erase(id); break;
         case ObjectType::RunProject: runProjects.erase(id); break;
         case ObjectType::RunProjectSettings: runProjectSettings.erase(id); break;
         case ObjectType::UncertaintyProject: uncertaintyProjects.erase(id); break;
         case ObjectType::UncertaintySettings: uncertaintySettingsValues.erase(id); break;
         case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
         case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
-        case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
-        case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
         case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
         default: throw ProbabilisticLibraryException("object type");
         }
@@ -260,16 +234,6 @@ namespace Deltares::Server
 
             if (property_ == "low_value") return settings->LowValue;
             else if (property_ == "high_value") return settings->HighValue;
-        }
-        else if (objectType == ObjectType::SensitivityValue)
-        {
-            std::shared_ptr<Sensitivity::SensitivityValue> sensitivity_value = sensitivityValues[id];
-
-            if (property_ == "low") return sensitivity_value->low;
-            else if (property_ == "medium") return sensitivity_value->medium;
-            else if (property_ == "high") return sensitivity_value->high;
-            else if (property_ == "first_order_index") return sensitivity_value->firstOrderIndex;
-            else if (property_ == "total_index") return sensitivity_value->totalIndex;
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
@@ -353,16 +317,6 @@ namespace Deltares::Server
 
             if (property_ == "length") length_effect->length = value;
         }
-        else if (objectType == ObjectType::SensitivityValue)
-        {
-            std::shared_ptr<Sensitivity::SensitivityValue> sensitivity_value = sensitivityValues[id];
-
-            if (property_ == "low") sensitivity_value->low = value;
-            else if (property_ == "medium") sensitivity_value->medium = value;
-            else if (property_ == "high") sensitivity_value->high = value;
-            else if (property_ == "first_order_index") sensitivity_value->firstOrderIndex = value;
-            else if (property_ == "total_index") sensitivity_value->totalIndex = value;
-        }
     }
 
     int ProjectHandler::GetIntValue(int id, const std::string& property_)
@@ -406,27 +360,6 @@ namespace Deltares::Server
 
             if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
             else if (property_ == "sensitivity_parameters_count") return static_cast<int>(project->sensitivityParameters.size());
-        }
-        else if (objectType == ObjectType::SensitivityResult)
-        {
-            std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
-
-            if (property_ == "values_count") return static_cast<int>(result->values.size());
-            else if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
-            else if (property_ == "messages_count") return static_cast<int>(result->messages.size());
-        }
-        else if (objectType == ObjectType::CorrelationMatrix)
-        {
-            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
-
-            if (property_ == "count_correlations") return matrix->CountCorrelations();
-            else if (property_ == "variables_count") return matrix->GetDimension();
-        }
-        else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "variables_count") return correlationMatrix->GetDimension();
         }
         else if (objectType == ObjectType::Settings)
         {
@@ -533,25 +466,19 @@ namespace Deltares::Server
 
             if (property_ == "uncertainty_stochast") return admin.stochastHandler.GetObjectId(project->uncertaintyResult->stochast);
             else if (property_ == "uncertainty_result") return admin.uncertaintyResultHandler.GetObjectId(project->uncertaintyResult);
-            else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix, newId);
+            else if (property_ == "output_correlation_matrix") return admin.correlationMatrixHandler.GetObjectId(project->outputCorrelationMatrix);
         }
         else if (objectType == ObjectType::SensitivityProject)
         {
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-            if (property_ == "result") return GetSensitivityResultId(project->sensitivityResult, newId);
+            if (property_ == "result") return admin.sensitivityResultHandler.GetObjectId(project->sensitivityResult);
         }
         else if (objectType == ObjectType::StochastSettings)
         {
             std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
             if (property_ == "variable") return admin.stochastHandler.GetObjectId(stochastSettings->stochast);
-        }
-        else if (objectType == ObjectType::SensitivityValue)
-        {
-            std::shared_ptr<Sensitivity::SensitivityValue> result = sensitivityValues[id];
-
-            if (property_ == "variable") return admin.stochastHandler.GetObjectId(result->stochast);
         }
         else if (objectType == ObjectType::FragilityCurveProject)
         {
@@ -567,8 +494,18 @@ namespace Deltares::Server
             std::shared_ptr<CombineProject> combineProject = combineProjects[id];
 
             if (property_ == "design_point") return admin.designPointHandler.GetObjectId(combineProject->designPoint);
-            else if (property_ == "design_point_correlation_matrix") return GetCorrelationMatrixId(combineProject->correlationMatrix, newId);
-            else if (property_ == "correlation_matrix") return GetSelfCorrelationMatrixId(combineProject->selfCorrelationMatrix, newId);
+            else if (property_ == "design_point_correlation_matrix")
+            {
+                if (std::dynamic_pointer_cast<CopulaCorrelation>(combineProject->correlationMatrix) != nullptr)
+                {
+                    return admin.copulaCorrelationHandler.GetObjectId(std::dynamic_pointer_cast<CopulaCorrelation>(combineProject->correlationMatrix));
+                }
+                else
+                {
+                    return admin.correlationMatrixHandler.GetObjectId(std::dynamic_pointer_cast<CorrelationMatrix>(combineProject->correlationMatrix));
+                }
+            }
+            else if (property_ == "correlation_matrix") return admin.selfCorrelationMatrixHandler.GetObjectId(combineProject->selfCorrelationMatrix);
             else if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()));
         }
         else if (objectType == ObjectType::ExcludingCombineProject)
@@ -602,8 +539,8 @@ namespace Deltares::Server
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
             if (property_ == "settings") project->setSettings(GetSettings(value));
-            else if (property_ == "correlation_matrix") project->correlation = correlations[value];
-            else if (property_ == "copula_correlation") project->correlation = correlations[value];
+            else if (property_ == "correlation_matrix") project->correlation = admin.correlationMatrixHandler.GetObject(value);
+            else if (property_ == "copula_correlation") project->correlation = admin.copulaCorrelationHandler.GetObject(value);
             else if (property_ == "share_project") project->shareStochasts(GetProject(value));
             else if (property_ == "total_model_runs") project->modelRuns = value;
         }
@@ -684,8 +621,18 @@ namespace Deltares::Server
             std::shared_ptr<CombineProject> combineProject = combineProjects[id];
 
             if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
-            else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = selfCorrelationMatrices[value];
-            else if (property_ == "design_point_correlation_matrix") combineProject->correlationMatrix = correlations[value];
+            else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = admin.selfCorrelationMatrixHandler.GetObject(value);
+            else if (property_ == "design_point_correlation_matrix")
+            {
+                if (admin.copulaCorrelationHandler.Contains(value))
+                {
+                    combineProject->correlationMatrix = admin.copulaCorrelationHandler.GetObject(value);
+                }
+                else
+                {
+                    combineProject->correlationMatrix = admin.correlationMatrixHandler.GetObject(value);
+                }
+            }
         }
         else if (objectType == ObjectType::ExcludingCombineProject)
         {
@@ -697,12 +644,8 @@ namespace Deltares::Server
         {
             std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
 
-            if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
+            if (property_ == "correlation_matrix") project->selfCorrelationMatrix = admin.selfCorrelationMatrixHandler.GetObject(value);
             else if (property_ == "design_point_cross_section") project->designPointCrossSection = admin.designPointHandler.GetObject(value);
-        }
-        else if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            if (property_ == "correlation_stochast") tempIntValue = value;
         }
     }
 
@@ -715,13 +658,6 @@ namespace Deltares::Server
             return admin.GetIntArgValue(id1, id2, property_);
         }
 
-        if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            std::shared_ptr<SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
-            std::shared_ptr<Stochast> stochast = admin.stochastHandler.GetObject(id2);
-
-            if (property_ == "rho") return correlationMatrix->getSelfCorrelation(stochast);
-        }
         return std::nan("");
     }
 
@@ -729,12 +665,9 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id1);
 
-        if (objectType == ObjectType::SelfCorrelationMatrix)
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
-            std::shared_ptr<Stochast> stochast = admin.stochastHandler.GetObject(id2);
-
-            if (property_ == "rho") correlationMatrix->setSelfCorrelation(stochast, value);
+            return admin.SetIntArgValue(id1, id2, property_, value);
         }
     }
 
@@ -766,15 +699,7 @@ namespace Deltares::Server
             else if (property_ == "use_z_from_sample") return settings->RunSettings->UseZFromSample;
         }
 
-        if (objectType == ObjectType::CorrelationMatrix)
-        {
-            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
-
-            if (property_ == "is_identity") return matrix->IsIdentity();
-            else if (property_ == "has_conflicting_correlations") return matrix->HasConflictingCorrelations();
-            else if (property_ == "is_valid") return matrix->IsValid();
-        }
-        else if (objectType == ObjectType::StochastSettings)
+        if (objectType == ObjectType::StochastSettings)
         {
             std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
 
@@ -954,12 +879,6 @@ namespace Deltares::Server
 
             if (property_ == "combiner_method") return DesignPointCombiner::getExcludingCombinerMethodString(settings->combinerMethod);
         }
-        else if (objectType == ObjectType::SensitivityResult)
-        {
-            std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
-
-            if (property_ == "identifier") return result->identifier;
-        }
 
         return "";
     }
@@ -1042,12 +961,6 @@ namespace Deltares::Server
 
             if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getExcludingCombinerMethod(value);
         }
-        else if (objectType == ObjectType::SensitivityResult)
-        {
-            std::shared_ptr<Sensitivity::SensitivityResult> sensitivityResult = sensitivityResults[id];
-
-            if (property_ == "identifier") sensitivityResult->identifier = value;
-        }
         else if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
@@ -1126,22 +1039,7 @@ namespace Deltares::Server
             }
         }
 
-        if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "variables")
-            {
-                std::vector<std::shared_ptr<Stochast>> correlationMatrixStochasts;
-                for (int i = 0; i < size; i++)
-                {
-                    correlationMatrixStochasts.push_back(admin.stochastHandler.GetObject(values[i]));
-                }
-
-                correlationMatrix->Init(correlationMatrixStochasts);
-            }
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
+        if (objectType == ObjectType::UncertaintyProject)
         {
             std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
@@ -1273,10 +1171,7 @@ namespace Deltares::Server
             return admin.GetIndexedValue(id, property_, index);
         }
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
+        if (objectType == ObjectType::LengthEffectProject)
         {
             std::shared_ptr<LengthEffectProject> lengthEffect = lengthEffectProjects[id];
             if (property_ == "correlation_lengths")
@@ -1297,23 +1192,9 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "correlation") return correlationMatrix->GetCorrelation(admin.stochastHandler.GetObject(index1), admin.stochastHandler.GetObject(index2)).value;
-            else if (property_ == "correlation_index") return correlationMatrix->GetCorrelation(index1, index2).value;
-        }
-        else if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix = selfCorrelationMatrices[id];
-
-            if (property_ == "correlation")
-            {
-                int stochastId = tempIntValue;
-                tempIntValue = 0;
-                return selfCorrelationMatrix->getSelfCorrelation(admin.stochastHandler.GetObject(stochastId), admin.designPointHandler.GetObject(index1), admin.designPointHandler.GetObject(index2));
-            }
+            return admin.GetIndexedIndexedValue(id, property_, index1, index2);
         }
 
         return std::nan("");
@@ -1323,33 +1204,9 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (objectType == ObjectType::CorrelationMatrix)
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "correlation") correlationMatrix->SetCorrelation(admin.stochastHandler.GetObject(index1), admin.stochastHandler.GetObject(index2), value, CorrelationType::Gaussian);
-            else if (property_ == "correlation_index") correlationMatrix->SetCorrelation(index1, index2, value, CorrelationType::Gaussian);
-        }
-        else if (objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "correlation")
-            {
-                CorrelationType type = static_cast<CorrelationType>(tempIntValue);
-                correlationMatrix->SetCorrelation(admin.stochastHandler.GetObject(index1), admin.stochastHandler.GetObject(index2), value, type);
-            }
-        }
-        else if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix = selfCorrelationMatrices[id];
-
-            if (property_ == "correlation")
-            {
-                int stochastId = tempIntValue;
-                tempIntValue = 0;
-                selfCorrelationMatrix->setSelfCorrelation(admin.stochastHandler.GetObject(stochastId), admin.designPointHandler.GetObject(index1), admin.designPointHandler.GetObject(index2), value);
-            }
+            admin.SetIndexedIndexedValue(id, property_, index1, index2, value);
         }
     }
 
@@ -1357,14 +1214,9 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (objectType == ObjectType::CopulaCorrelation)
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "correlation")
-            {
-                tempIntValue = value;
-            }
+            return admin.SetIndexedIndexedIntValue(id, property_, index1, index2, value);
         }
     }
 
@@ -1376,7 +1228,6 @@ namespace Deltares::Server
     int ProjectHandler::GetIndexedIdValue(int id, const std::string& property_, int index)
     {
         ObjectType objectType = admin.GetObjectType(id);
-        int newId = this->GetNewId();
 
         if (IsSupported(objectType))
         {
@@ -1390,13 +1241,7 @@ namespace Deltares::Server
             if (property_ == "stochasts") return admin.stochastHandler.GetObjectId(project->stochasts[index]);
         }
 
-        if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "variables") return admin.stochastHandler.GetObjectId(correlationMatrix->GetStochast(index));
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
+        if (objectType == ObjectType::UncertaintyProject)
         {
             std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
@@ -1408,16 +1253,8 @@ namespace Deltares::Server
         {
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-            if (property_ == "results") return GetSensitivityResultId(project->sensitivityResults[index], newId);
+            if (property_ == "results") return admin.sensitivityResultHandler.GetObjectId(project->sensitivityResults[index]);
             else if (property_ == "sensitivity_parameters") return admin.modelParameterHandler.GetObjectId(project->sensitivityParameters[index]);
-        }
-        else if (objectType == ObjectType::SensitivityResult)
-        {
-            std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
-
-            if (property_ == "values") return GetSensitivityValueId(result->values[index], newId);
-            else if (property_ == "evaluations") return admin.evaluationHandler.GetObjectId(result->evaluations[index]);
-            else if (property_ == "messages") return admin.messageHandler.GetObjectId(result->messages[index]);
         }
         else if (objectType == ObjectType::UncertaintySettings)
         {
@@ -1552,16 +1389,7 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (ProjectEntries::IsStochast(objectType))
-        {
-        }
-        else if (objectType == ObjectType::CorrelationMatrix)
-        {
-            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
-
-            if (method_ == "resolve_conflicting_correlations") matrix->resolveConflictingCorrelations();
-        }
-        else if (ProjectEntries::IsModelProjectType(objectType))
+        if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
@@ -1594,48 +1422,6 @@ namespace Deltares::Server
         }
     }
 
-    int ProjectHandler::GetCorrelationMatrixId(const std::shared_ptr<BaseCorrelation>& correlationMatrix, int newId)
-    {
-        if (correlationMatrix == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!correlationIds.contains(correlationMatrix))
-            {
-                std::lock_guard lock(mtx);
-
-                correlations[newId] = correlationMatrix;
-                admin.RegisterType(newId, ObjectType::CorrelationMatrix);
-                correlationIds[correlationMatrix] = newId;
-            }
-
-            return correlationIds[correlationMatrix];
-        }
-    }
-
-    int ProjectHandler::GetSelfCorrelationMatrixId(const std::shared_ptr<SelfCorrelationMatrix>& correlationMatrix, int newId)
-    {
-        if (correlationMatrix == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!selfCorrelationIds.contains(correlationMatrix))
-            {
-                std::lock_guard lock(mtx);
-
-                selfCorrelationMatrices[newId] = correlationMatrix;
-                admin.RegisterType(newId, ObjectType::SelfCorrelationMatrix);
-                selfCorrelationIds[correlationMatrix] = newId;
-            }
-
-            return selfCorrelationIds[correlationMatrix];
-        }
-    }
-
     int ProjectHandler::GetStatus(const std::string& command) const
     {
         if (command == "count_entries")
@@ -1643,48 +1429,6 @@ namespace Deltares::Server
             return admin.GetSize();
         }
         return -1;
-    }
-
-    int ProjectHandler::GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId)
-    {
-        if (result == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!sensitivityResultsIds.contains(result))
-            {
-                std::lock_guard lock(mtx);
-
-                sensitivityResults[newId] = result;
-                admin.RegisterType(newId, ObjectType::SensitivityResult);
-                sensitivityResultsIds[result] = newId;
-            }
-
-            return sensitivityResultsIds[result];
-        }
-    }
-
-    int ProjectHandler::GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId)
-    {
-        if (result == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!sensitivityValuesIds.contains(result))
-            {
-                std::lock_guard lock(mtx);
-
-                sensitivityValues[newId] = result;
-                admin.RegisterType(newId, ObjectType::SensitivityValue);
-                sensitivityValuesIds[result] = newId;
-            }
-
-            return sensitivityValuesIds[result];
-        }
     }
 
     std::shared_ptr<DesignPointIds> ProjectHandler::GetDesignPointIds(int id)

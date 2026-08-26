@@ -157,6 +157,34 @@ namespace Deltares::Server
 
         virtual void SetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index, double value) {}
 
+        // indexed indexed double
+
+        double GetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetIndexedIndexedValue(object, property_, index1, index2);
+        }
+
+        virtual double GetIndexedIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2) { return 0; }
+
+        void SetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2, double value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetIndexedIndexedValue(object, property_, index1, index2, value);
+        }
+
+        virtual void SetIndexedIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2, double value) {}
+
+        // indexed indexed int
+
+        void SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetIndexedIndexedIntValue(object, property_, index1, index2, value);
+        }
+
+        virtual void SetIndexedIndexedIntValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2, int value) {}
+
         // arg
 
         double GetArgValue(int id, const std::string& property_, double argument) override
@@ -174,6 +202,24 @@ namespace Deltares::Server
         }
 
         virtual void SetArgValue(const std::shared_ptr<T>& object, const std::string& property_, double argument, double value) {}
+
+        // int arg
+
+        double GetIntArgValue(int id, int argument, const std::string& property_) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetIntArgValue(object, argument, property_);
+        }
+
+        virtual double GetIntArgValue(const std::shared_ptr<T>& object, int argument, const std::string& property_) { return 0; }
+
+        void SetIntArgValue(int id, int argument, const std::string& property_, double value) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetIntArgValue(object, argument, property_, value);
+        }
+
+        virtual void SetIntArgValue(const std::shared_ptr<T>& object, int argument, const std::string& property_, double value) {}
 
         // int
 

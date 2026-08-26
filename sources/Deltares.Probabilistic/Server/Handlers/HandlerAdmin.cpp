@@ -44,6 +44,10 @@ namespace Deltares::Server
         fragilityValueHandler.designPointCallback = [this](int id) {return this->designPointHandler.GetObject(id); };
         fragilityValueHandler.designPointIdCallback = [this](std::shared_ptr<Reliability::DesignPoint> designPoint) {return this->designPointHandler.GetObjectId(designPoint); };
 
+        correlationMatrixHandler.stochastHandler = &stochastHandler;
+        copulaCorrelationHandler.stochastHandler = &stochastHandler;
+        selfCorrelationMatrixHandler.stochastHandler = &stochastHandler;
+
         alphaHandler.stochastHandler = &stochastHandler;
         alphaHandler.fragilityCurveHandler = &fragilityCurveHandler;
 
@@ -62,6 +66,12 @@ namespace Deltares::Server
         uncertaintyResultHandler.stochastHandler = &stochastHandler;
         uncertaintyResultHandler.evaluationHandler = &evaluationHandler;
         uncertaintyResultHandler.messageHandler = &messageHandler;
+
+        sensitivityResultHandler.sensitivityValueHandler = &sensitivityValueHandler;
+        sensitivityResultHandler.evaluationHandler = &evaluationHandler;
+        sensitivityResultHandler.messageHandler = &messageHandler;
+
+        sensitivityValueHandler.stochastHandler = &stochastHandler;
 
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
@@ -82,9 +92,15 @@ namespace Deltares::Server
         handlers[ObjectType::ConvergenceReport] = &convergenceReportHandler;
         handlers[ObjectType::ConditionalValue] = &conditionalValueHandler;
         handlers[ObjectType::ContributingStochast] = &contributingStochastHandler;
+        handlers[ObjectType::CorrelationMatrix] = &correlationMatrixHandler;
+        handlers[ObjectType::CopulaCorrelation] = &copulaCorrelationHandler;
+        handlers[ObjectType::SelfCorrelationMatrix] = &selfCorrelationMatrixHandler;
         handlers[ObjectType::Alpha] = &alphaHandler;
         handlers[ObjectType::StochastPoint] = &stochastPointHandler;
         handlers[ObjectType::DesignPoint] = &designPointHandler;
+        handlers[ObjectType::UncertaintyResult] = &uncertaintyResultHandler;
+        handlers[ObjectType::SensitivityResult] = &sensitivityResultHandler;
+        handlers[ObjectType::SensitivityValue] = &sensitivityValueHandler;
 
         for (const auto& [objectType, handler] : handlers)
         {
@@ -114,10 +130,15 @@ namespace Deltares::Server
             objectType == ObjectType::ConvergenceReport ||
             objectType == ObjectType::ContributingStochast ||
             objectType == ObjectType::ConditionalValue ||
+            objectType == ObjectType::CorrelationMatrix ||
+            objectType == ObjectType::CopulaCorrelation ||
+            objectType == ObjectType::SelfCorrelationMatrix ||
             objectType == ObjectType::Alpha ||
             objectType == ObjectType::StochastPoint ||
             objectType == ObjectType::DesignPoint ||
-            objectType == ObjectType::UncertaintyResult;
+            objectType == ObjectType::UncertaintyResult ||
+            objectType == ObjectType::SensitivityResult ||
+            objectType == ObjectType::SensitivityValue;
     }
 }
 
