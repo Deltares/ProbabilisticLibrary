@@ -34,23 +34,25 @@ namespace Deltares::Reliability
         designPointBuilder = DesignPointBuilder(nStochasts, method, stochastSet, addProbability);
 
         designPointBuilder.initialize(z0Fac * Statistics::StandardNormal::BetaMax);
+
+        this->NearestSample.Z = std::numeric_limits<double>::infinity();
     }
 
-    void ImportanceSamplingCluster::addSample(std::shared_ptr<Models::Sample> sample, double failureAddition)
+    void ImportanceSamplingCluster::addSample(Models::Sample& sample, double failureAddition)
     {
         TotalCount++;
-        TotalWeight += sample->Weight;
+        TotalWeight += sample.Weight;
 
         if (failureAddition > 0.0)
         {
             FailCount++;
-            FailWeight += failureAddition * sample->Weight;
-            MaxFailWeight = std::max(MaxFailWeight, sample->Weight);
+            FailWeight += failureAddition * sample.Weight;
+            MaxFailWeight = std::max(MaxFailWeight, sample.Weight);
 
             designPointBuilder.addSample(sample, failureAddition);
         }
 
-        if (this->NearestSample == nullptr || std::abs(sample->Z) < std::abs(this->NearestSample->Z))
+        if (std::abs(sample.Z) < std::abs(this->NearestSample.Z))
         {
             this->NearestSample = sample;
         }

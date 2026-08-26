@@ -20,26 +20,55 @@
 // All rights reserved.
 //
 #pragma once
-#include <memory>
+
+#include <vector>
 
 #include "ModelSample.h"
-#include "ZValueConverter.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Models
 {
-    class DefaultValueConverter : public ZValueConverter
+    /**
+     * \brief Keeps model samples alive
+     */
+
+    class ModelSampleStorage
     {
+    private:
+        std::vector<ModelSample> samples;
+
     public:
-        void updateZValue(ModelSample& sample) override
+        /**
+         * \brief Creates a registration to keep model samples alive
+         * \param size The maximum number of model samples to be kept alive
+         */
+        ModelSampleStorage(size_t size)
         {
-            if (sample.OutputValues.empty())
+            samples.reserve(size);
+        }
+
+        /**
+         * \brief Keeps a sample alive and returns a pointer to a model sample
+         * \param sample Model sample
+         * \return Pointer to model sample
+         */
+        ModelSample* keep(const ModelSample& sample)
+        {
+            if (samples.size() == samples.capacity())
             {
-                sample.Z = std::nan("");
+                throw Reliability::ProbabilisticLibraryException("Maximum number of model samples is exceeded");
             }
-            else
-            {
-                sample.Z = sample.OutputValues[0];
-            }
+
+            samples.push_back(sample);
+            return &samples.back();
+        }
+
+        /**
+         * \brief Stops keeping the already registered model samples alive
+         */
+        void clear()
+        {
+            samples.clear();
         }
     };
 }

@@ -23,6 +23,7 @@
 #include "DirectionReliabilityDS.h"
 #include "PrecomputeDirections.h"
 #include "../Model/RandomSampleGenerator.h"
+#include "../Model/SampleStorage.h"
 #include "../Math/SpecialFunctions.h"
 #include <omp.h>
 #include <algorithm>
@@ -40,9 +41,11 @@ namespace Deltares::Reliability
         double minBetaDirection = 200; // initialize convergence indicator and loops
         auto designPointBuilder = DesignPointBuilder (nStochasts, Settings->designPointMethod, Settings->StochastSet);
         int parSamples = 0;
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
 
         std::vector<double> betaValues;
-        std::vector<std::shared_ptr<Models::Sample>> samples;
+        std::vector<Models::Sample*> samples;
+        Models::SampleStorage storage = Models::SampleStorage(chunkSize);
 
         modelRunner->updateStochastSettings(Settings->StochastSet);
 
@@ -53,7 +56,7 @@ namespace Deltares::Reliability
         randomSampleGenerator.Settings->StochastSet = Settings->StochastSet;
         randomSampleGenerator.initialize();
 
-        std::shared_ptr<Models::Sample> zeroSample = std::make_shared<Models::Sample>(nStochasts);
+        Models::Sample zeroSample = Models::Sample(nStochasts);
         double z0 = modelRunner->getZValue(zeroSample);
         double z0Fac = getZFactor(z0);
 
@@ -74,7 +77,6 @@ namespace Deltares::Reliability
             }
         }
 
-        int chunkSize = modelRunner->Settings->MaxChunkSize;
         if (modelRunner->ProxySettings->IsProxyModel)
         {
             // the early return for proxy models has results depending on the chunk size
@@ -91,11 +93,12 @@ namespace Deltares::Reliability
                 if (modelRunner->shouldExitPrematurely(samples))
                 {
                     // return the result so far
-                    return modelRunner->getDesignPoint(designPointBuilder.getSample(),
-                        StandardNormal::getUFromQ(pf), convergenceReport);
+                    auto designPointSample = designPointBuilder.getSample();
+                    return modelRunner->getDesignPoint(designPointSample, StandardNormal::getUFromQ(pf), convergenceReport);
                 }
 
                 samples.clear();
+                storage.clear();
 
                 int runs = std::min(chunkSize, Settings->MaximumDirections - parSamples * chunkSize);
 
@@ -103,8 +106,8 @@ namespace Deltares::Reliability
                 for (int i = 0; i < runs; i++)
                 {
                     auto sample = randomSampleGenerator.getRandomSample();
-                    sample->IterationIndex = directionIndex + i;
-                    samples.push_back(sample);
+                    sample.IterationIndex = directionIndex + i;
+                    samples.push_back(storage.keep(sample));
                 }
 
                 betaValues = getDirectionBetas(*modelRunner, samples, z0, minBetaDirection);
@@ -117,25 +120,25 @@ namespace Deltares::Reliability
                 continue;
             }
 
-            std::shared_ptr<Models::Sample> u = samples[directionIndex % chunkSize];
+            Models::Sample u = *samples[directionIndex % chunkSize];
 
             double betaDirection = std::abs(betaValues[directionIndex % chunkSize]);
 
             // get the sample at the limit state
-            auto uSurface = std::make_shared<Models::Sample>(u->getSampleAtBeta(betaDirection));
+            auto uSurface = u.getSampleAtBeta(betaDirection);
 
             // calculate failure probability
             if (betaDirection >= 0 && betaDirection < StandardNormal::BetaMax * nStochasts)
             {
-                uSurface->Weight = SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
+                uSurface.Weight = SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
 
-                qtot += uSurface->Weight;
+                qtot += uSurface.Weight;
 
                 designPointBuilder.addSample(uSurface);
             }
             else
             {
-                uSurface->Weight = 0;
+                uSurface.Weight = 0;
             }
 
             validSamples++;
@@ -149,8 +152,8 @@ namespace Deltares::Reliability
             bool enoughSamples = directionIndex >= Settings->MinimumDirections;
             convergenceReport->TotalDirections = directionIndex+1;
 
-            sumWeights += uSurface->Weight;
-            sumWeights2 += uSurface->Weight * uSurface->Weight;
+            sumWeights += uSurface.Weight;
+            sumWeights2 += uSurface.Weight * uSurface.Weight;
 
             if (qtot > 0)
             {
@@ -162,7 +165,7 @@ namespace Deltares::Reliability
 
                 std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
                 report->ReportMatchesEvaluation = false;
-                report->Contribution = uSurface->Weight;
+                report->Contribution = uSurface.Weight;
                 report->Reliability = beta;
                 report->Variation = convergence;
 
@@ -177,7 +180,7 @@ namespace Deltares::Reliability
             {
                 std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
                 report->ReportMatchesEvaluation = false;
-                report->Variation = uSurface->Weight;
+                report->Variation = uSurface.Weight;
 
                 modelRunner->reportResult(report);
             }
@@ -211,7 +214,7 @@ namespace Deltares::Reliability
     }
 
     std::vector<double> DirectionalSampling::getDirectionBetas(Models::ModelRunner& modelRunner,
-        const std::vector<std::shared_ptr<Models::Sample>>& samples, double z0, double threshold)
+        std::vector<Models::Sample*>& samples, double z0, double threshold)
     {
         const size_t nSamples = samples.size();
         auto betaValues = std::vector<double>(nSamples);

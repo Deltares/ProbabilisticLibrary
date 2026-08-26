@@ -69,21 +69,21 @@ namespace Deltares::Probabilistic::Test
     private:
         static std::shared_ptr<Models::ModelRunner> CreateModelRunner(size_t nStochasts, std::shared_ptr<Models::ZModel> zModel);
 
-        void zfunc(std::shared_ptr<Models::ModelSample> sample) const;
-        void zfuncWithDeterminist(std::shared_ptr<Models::ModelSample> sample) const;
-        void zfuncTwoBranches(std::shared_ptr<Models::ModelSample> sample) const;
-        void zfuncTwoBranchesProxy(std::shared_ptr<Models::ModelSample> sample) const;
-        void zfuncPolynome(std::shared_ptr<Models::ModelSample> sample) const;
-        static void zfuncDiscrete(std::shared_ptr<Models::ModelSample> sample);
+        void zfunc(Models::ModelSample& sample) const;
+        void zfuncWithDeterminist(Models::ModelSample& sample) const;
+        void zfuncTwoBranches(Models::ModelSample& sample) const;
+        void zfuncTwoBranchesProxy(Models::ModelSample& sample) const;
+        void zfuncPolynome(Models::ModelSample& sample) const;
+        static void zfuncDiscrete(Models::ModelSample& sample);
 
-        static void sum(std::shared_ptr<Models::ModelSample> sample);
-        static void linear(std::shared_ptr<Models::ModelSample> sample);
-        static void linearAutoStart(std::shared_ptr<Models::ModelSample> sample);
-        static void linearProbability(std::shared_ptr<Models::ModelSample> sample);
-        static void linearReliability(std::shared_ptr<Models::ModelSample> sample);
-        static void linearOutputOnly(std::shared_ptr<Models::ModelSample> sample);
-        static void linearMultiple(std::shared_ptr<Models::ModelSample> sample);
-        static void quadratic(std::shared_ptr<Models::ModelSample> sample);
+        static void sum(Models::ModelSample& sample);
+        static void linear(Models::ModelSample& sample);
+        static void linearAutoStart(Models::ModelSample& sample);
+        static void linearProbability(Models::ModelSample& sample);
+        static void linearReliability(Models::ModelSample& sample);
+        static void linearOutputOnly(Models::ModelSample& sample);
+        static void linearMultiple(Models::ModelSample& sample);
+        static void quadratic(Models::ModelSample& sample);
 
         static std::shared_ptr<Statistics::Stochast>  getUniformStochast(double min = 0, double max = 1);
         static std::shared_ptr<Statistics::Stochast>  getUniformVariableStochast(const std::shared_ptr<Statistics::Stochast>& source, double min, double max);

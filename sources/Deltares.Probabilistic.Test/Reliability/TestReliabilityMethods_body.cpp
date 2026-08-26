@@ -102,7 +102,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(false, project.isValid());
         EXPECT_EQ("model is not assigned.", report1.messages[0]->Text);
 
-        project.model = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return v->Values[0]; });
+        project.model = std::make_shared<ZModel>([](ModelSample& v) { return v.Values[0]; });
 
         EXPECT_EQ(true, project.isValid());
 

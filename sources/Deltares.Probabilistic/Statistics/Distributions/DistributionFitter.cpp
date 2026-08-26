@@ -57,19 +57,12 @@ namespace Deltares::Statistics
         }
 
         const auto model = std::make_shared<Models::ZModel>([this, values, &stochast, properties]
-            (const std::shared_ptr<Models::ModelSample>& sample)
-            { return getLogLikelihood(*sample, values, stochast, properties); });
+        (Models::ModelSample& sample)
+        { return getLogLikelihood(sample, values, stochast, properties); });
 
-        const std::shared_ptr<Models::ModelSample> sample = gridSearch.getOptimizedSample(searchArea, model);
+        Models::ModelSample sample = gridSearch.getOptimizedSample(searchArea, model);
 
-        if (sample != nullptr)
-        {
-            return sample->Values;
-        }
-        else
-        {
-            return Numeric::NumericSupport::select(minimum, [](double x) {return std::nan(""); });
-        }
+        return sample.Values;
     }
 
     void DistributionFitter::getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,
@@ -82,7 +75,7 @@ namespace Deltares::Statistics
 
         if (distributionObj->isValid(stochast))
         {
-            sample.Z = - getSumLogLikelihood(values, stochast);
+            sample.Z = -getSumLogLikelihood(values, stochast);
         }
         else
         {

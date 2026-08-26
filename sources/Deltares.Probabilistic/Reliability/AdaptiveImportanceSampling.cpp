@@ -55,12 +55,12 @@ namespace Deltares::Reliability
         startPointCalculator.Settings = this->Settings->startPointSettings;
         startPointCalculator.Settings->StochastSet = importanceSampling->Settings->StochastSet;
 
-        const std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
+        Sample startPoint = startPointCalculator.getStartPoint(*modelRunner);
         this->lastStartPoint = startPoint;
 
         if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
         {
-            const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
+            const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint.getBeta());
             startDesignPoint->Identifier = "Start point";
             previousDesignPoints.push_back(startDesignPoint);
         }
@@ -250,7 +250,7 @@ namespace Deltares::Reliability
         else
         {
             // get new cluster centers
-            std::vector<std::shared_ptr<Sample>> newClusterCenters = this->getClusterCenters(this->clusterSamples);
+            std::vector<Sample> newClusterCenters = this->getClusterCenters(this->clusterSamples);
 
             // check whether there is a change
             bool hasChanged = newClusterCenters.size() != this->importanceSampling->Settings->Clusters.size();
@@ -258,7 +258,7 @@ namespace Deltares::Reliability
             {
                 for (size_t i = 0; i < newClusterCenters.size(); i++)
                 {
-                    hasChanged |= !newClusterCenters[i]->areValuesEqual(this->importanceSampling->Settings->Clusters[i]);
+                    hasChanged |= !newClusterCenters[i].areValuesEqual(this->importanceSampling->Settings->Clusters[i]);
                 }
             }
 
@@ -268,7 +268,7 @@ namespace Deltares::Reliability
             {
                 this->importanceSampling->Settings->Clusters.clear();
 
-                for (std::shared_ptr<Sample> center : this->getClusterCenters(this->clusterSamples))
+                for (Sample center : this->getClusterCenters(this->clusterSamples))
                 {
                     this->importanceSampling->Settings->Clusters.push_back(center);
                 }
@@ -301,9 +301,9 @@ namespace Deltares::Reliability
             return true;
         case CopyDesignPoint:
         {
-            std::shared_ptr<Sample> newStartPoint = this->getStartPoint(modelRunner, designPoint);
+            Sample newStartPoint = this->getStartPoint(modelRunner, designPoint);
 
-            if (this->lastStartPoint != nullptr && !this->lastStartPoint->areValuesEqual(newStartPoint))
+            if (!this->lastStartPoint.areValuesEqual(newStartPoint))
             {
                 this->lastStartPoint = newStartPoint;
                 importanceSampling->Settings->StochastSet->setStartPoint(newStartPoint);
@@ -321,17 +321,17 @@ namespace Deltares::Reliability
         }
     }
 
-    std::shared_ptr<Sample> AdaptiveImportanceSampling::getStartPoint(const std::shared_ptr<ModelRunner>& modelRunner,
+    Sample AdaptiveImportanceSampling::getStartPoint(const std::shared_ptr<ModelRunner>& modelRunner,
         const std::shared_ptr<DesignPoint>& designPoint)
     {
-        if (!this->nextLoopsAllowed(designPoint->Beta) && this->lastStartPoint != nullptr)
+        if (!this->nextLoopsAllowed(designPoint->Beta))
         {
             // reuse last start point
             return this->lastStartPoint;
         }
         else
         {
-            std::shared_ptr<Sample> newSample = designPoint->convergenceReport->FailedSamples > 0
+            Sample newSample = designPoint->convergenceReport->FailedSamples > 0
                 ? modelRunner->getSampleFromStochastPoint(designPoint)
                 : designPoint->convergenceReport->NearestSample;
 
@@ -345,14 +345,14 @@ namespace Deltares::Reliability
 
                 newSample = modelRunner->getSampleFromStochastPoint(directionDesignPoint);
             }
-            else if (Settings->StartValueStepSize > 0 && this->lastStartPoint != nullptr)
+            else if (Settings->StartValueStepSize > 0)
             {
                 // avoid a new start point very close to the old start point
-                for (size_t i = 0; i < newSample->Values.size(); i++)
+                for (size_t i = 0; i < newSample.Values.size(); i++)
                 {
-                    const double diff = newSample->Values[i] - this->lastStartPoint->Values[i];
+                    const double diff = newSample.Values[i] - this->lastStartPoint.Values[i];
                     const double steps = std::round(diff / Settings->StartValueStepSize);
-                    newSample->Values[i] = this->lastStartPoint->Values[i] + steps * Settings->StartValueStepSize;
+                    newSample.Values[i] = this->lastStartPoint.Values[i] + steps * Settings->StartValueStepSize;
                 }
             }
 
@@ -360,12 +360,12 @@ namespace Deltares::Reliability
         }
     }
 
-    std::vector<std::shared_ptr<Sample>>
-    AdaptiveImportanceSampling::getClusterCenters(const std::vector<std::shared_ptr<Sample>>& samples) const
+    std::vector<Sample>
+    AdaptiveImportanceSampling::getClusterCenters(const std::vector<Sample>& samples) const
     {
         if (samples.empty())
         {
-            return std::vector< std::shared_ptr<Sample>>();
+            return std::vector< Sample>();
         }
         else
         {
@@ -379,10 +379,10 @@ namespace Deltares::Reliability
 
     void AdaptiveImportanceSampling::reportVarianceLoop(ModelRunner& modelRunner, const int loopCounter) const
     {
-        for (const std::shared_ptr<Sample>& center : importanceSampling->Settings->Clusters)
+        for (Sample& center : importanceSampling->Settings->Clusters)
         {
             modelRunner.reportMessage(Logging::MessageType::Info,
-                "Cluster = (" + Numeric::NumericSupport::ConvertToString(center->Values, ", ") + ")");
+                "Cluster = (" + Numeric::NumericSupport::ConvertToString(center.Values, ", ") + ")");
         }
         const auto text = std::format("Calculating variance loop #{:}.", loopCounter);
         modelRunner.doTextualProgress(ProgressType::Global, text);
@@ -392,7 +392,7 @@ namespace Deltares::Reliability
     {
         if (this->Settings->Clustering)
         {
-            importanceSampling->setSampleLambda([this](std::shared_ptr<Sample> sample)
+            importanceSampling->setSampleLambda([this](Sample sample)
             {
                 if (this->clusterSamples.size() < this->Settings->clusterSettings->MaxSamples)
                 {

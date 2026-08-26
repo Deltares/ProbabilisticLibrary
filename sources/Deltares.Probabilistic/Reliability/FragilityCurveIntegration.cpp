@@ -79,10 +79,10 @@ namespace Deltares::Reliability
             // Multiply this probability with the probability of the fragility curve stochast value
             const double addition = step->Weight * prob;
 
-            auto sample = std::make_shared<Models::Sample>(std::vector<double> { step->U, uFrag });
+            auto sample = Models::Sample(std::vector<double> { step->U, uFrag });
 
             const double beta = std::hypot(step->U, uFrag);
-            sample->Weight = Statistics::StandardNormal::getQFromU(beta);
+            sample.Weight = Statistics::StandardNormal::getQFromU(beta);
 
             designPointBuilder.addSample(sample);
 
@@ -99,15 +99,15 @@ namespace Deltares::Reliability
         auto designPoint = std::make_shared<DesignPoint>();
         designPoint->Beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-        std::shared_ptr<Models::Sample> designPointSample = designPointBuilder.getSample();
+        Models::Sample designPointSample = designPointBuilder.getSample();
 
         // Set the contribution of the conditional stochast
-        double alphaParameter = -designPointSample->Values[0] / designPoint->Beta; // u = - beta * alpha
+        double alphaParameter = -designPointSample.Values[0] / designPoint->Beta; // u = - beta * alpha
         auto alpha = std::make_shared<Models::StochastPointAlpha>();
         alpha->Stochast = parameter;
         alpha->Alpha = alphaParameter;
         alpha->AlphaCorrelated = alphaParameter;
-        alpha->U = designPointSample->Values[0];
+        alpha->U = designPointSample.Values[0];
         alpha->X = parameter->getXFromU(alpha->U);
         designPoint->Alphas.push_back(alpha);
 
@@ -118,7 +118,7 @@ namespace Deltares::Reliability
             {
                 auto alphaCurve = std::make_shared<Models::StochastPointAlpha>();
                 alphaCurve->Stochast = fCurve;
-                alphaCurve->U = designPointSample->Values[1];
+                alphaCurve->U = designPointSample.Values[1];
 
                 // correct for negative beta and fragility curve
                 // if beta is negative, the design point is the most likely point which succeeds. Therefore the succeeding probability should have been used
@@ -174,7 +174,7 @@ namespace Deltares::Reliability
             double pdf = cdfHigh - cdfLow;
             double parU = u + stepSize / 2;
 
-            std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double>{ parU, 0 });
+            Models::Sample sample = Models::Sample(std::vector<double>{ parU, 0 });
 
             double prob = modelRunner->getZValue(sample);
             double uFrag = Statistics::StandardNormal::getUFromQ(prob);
@@ -182,10 +182,10 @@ namespace Deltares::Reliability
             // Multiply this probability with the probability of the fragility curve stochast value
             double addition = pdf * prob;
 
-            std::shared_ptr<Models::Sample> fragilitySample = std::make_shared<Models::Sample>(std::vector<double>{ parU, uFrag });
+            Models::Sample fragilitySample = Models::Sample(std::vector<double>{ parU, uFrag });
 
             double betaSample = std::sqrt(parU * parU + uFrag * uFrag);
-            fragilitySample->Weight = Statistics::StandardNormal::getQFromU(betaSample);
+            fragilitySample.Weight = Statistics::StandardNormal::getQFromU(betaSample);
 
             designPointBuilder.addSample(fragilitySample);
 
@@ -197,7 +197,7 @@ namespace Deltares::Reliability
             count++;
         }
 
-        std::shared_ptr<Models::Sample> designPointSample = designPointBuilder.getSample();
+        Models::Sample designPointSample = designPointBuilder.getSample();
 
         double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
@@ -206,14 +206,14 @@ namespace Deltares::Reliability
         // instead of the failing probability of the fragility curve. To correct this, the negative u-value is used.
         if (beta < 0)
         {
-            designPointSample->Values[1] = -designPointSample->Values[1];
+            designPointSample.Values[1] = -designPointSample.Values[1];
         }
 
         if (modelRunner->getVaryingStochastCount() == 1)
         {
-            double alphaFragilityCurve = - designPointSample->Values[1] / beta; // u = - beta * alpha
+            double alphaFragilityCurve = - designPointSample.Values[1] / beta; // u = - beta * alpha
             std::vector<double> alphas = std::vector{ alphaFragilityCurve };
-            designPointSample = std::make_shared<Models::Sample>(alphas);
+            designPointSample = Models::Sample(alphas);
         }
 
         std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(designPointSample, beta, std::make_shared<ConvergenceReport>());

@@ -28,7 +28,7 @@ namespace Deltares::Reliability
     {
     public:
         HohenbichlerZ(const double betaV, const double pfU, const double r);
-        void zfunc(std::shared_ptr<Deltares::Models::ModelSample> s) const;
+        void zfunc(Deltares::Models::ModelSample& s) const;
     private:
         const double beta2;
         const double pf1;

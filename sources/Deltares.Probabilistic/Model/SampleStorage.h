@@ -20,37 +20,56 @@
 // All rights reserved.
 //
 #pragma once
+
 #include <vector>
 
-#include "ProxyMethod.h"
-#include "ProxyCoefficients.h"
-#include "../Model/ModelSample.h"
-#include "../Model/ZModel.h"
+#include "Sample.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
-namespace Deltares::Proxies
+namespace Deltares::Models
 {
     /**
-     * \brief Combines a proxy model and settings
+     * \brief Keeps samples alive
      */
-    class LinearProxyMethod : public ProxyMethod
+
+    class SampleStorage
     {
-    protected:
+    private:
+        std::vector<Sample> samples;
+
+    public:
         /**
-         * \brief Trains the proxy method for one particular output value
-         * \param trainingSamples Samples which are used for training
-         * \param proxyValues Values to be proxied
+         * \brief Creates a registration to keep samples alive
+         * \param size The maximum number of samples to be kept alive
          */
-        ProxyCoefficient trainValue(std::vector<Models::ModelSample*>& trainingSamples,
-                                    std::vector<double> proxyValues) override;
+        SampleStorage(size_t size)
+        {
+            samples.reserve(size);
+        }
 
         /**
-         * \brief Gets the output value for one particular output value calculated by the proxy
-         * \param inputValues Inout values of the sample
-         * \param proxyCoefficient Coefficients for the output value
+         * \brief Keeps a sample alive and returns a pointer to a sample
+         * \param sample Sample
+         * \return Pointer to sample
          */
-        double invokeValue(std::vector<double> inputValues, ProxyCoefficient proxyCoefficient) override;
+        Sample* keep(const Sample& sample)
+        {
+            if (samples.size() == samples.capacity())
+            {
+                throw Reliability::ProbabilisticLibraryException("Maximum number of samples is exceeded");
+            }
 
+            samples.push_back(sample);
+            return &samples.back();
+        }
+
+        /**
+         * \brief Stops keeping the already registered samples alive
+         */
+        void clear()
+        {
+            samples.clear();
+        }
     };
 }
-
 

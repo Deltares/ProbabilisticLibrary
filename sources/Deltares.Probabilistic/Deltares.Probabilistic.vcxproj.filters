@@ -275,6 +275,7 @@
     <ClCompile Include="Reliability\NumericalIntegrationShared.cpp" />
     <ClCompile Include="Reliability\ZGetter.cpp" />
     <ClCompile Include="Combine\ComputeBetaSection.cpp" />
+    <ClCompile Include="Math\StatisticsCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -580,7 +581,8 @@
     <ClInclude Include="Combine\IndexPair.h" />
     <ClInclude Include="Combine\ComputeBetaSection.h" />
     <ClInclude Include="Math\StatisticsCalculator.h" />
-    <ClInclude Include="Math\StatisticsCalculator.cpp" />
+    <ClInclude Include="Model\SampleStorage.h" />
+    <ClInclude Include="Model\ModelSampleStorage.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

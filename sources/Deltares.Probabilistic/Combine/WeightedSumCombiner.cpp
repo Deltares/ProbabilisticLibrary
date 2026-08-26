@@ -65,14 +65,14 @@ namespace Deltares::Reliability
                 }
             }
 
-            std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(u);
-            sample->Weight = scenarios[i]->probability * designPoints[i]->getFailureProbability();
+            Models::Sample sample = Models::Sample(u);
+            sample.Weight = scenarios[i]->probability * designPoints[i]->getFailureProbability();
 
             designPointBuilder.addSample(sample);
         }
 
-        std::shared_ptr<Models::Sample> combinedSample = designPointBuilder.getSample();
-        combinedSample = std::make_shared<Models::Sample>(combinedSample->getSampleAtBeta(combinedBeta));
+        Models::Sample combinedSample = designPointBuilder.getSample();
+        combinedSample = combinedSample.getSampleAtBeta(combinedBeta);
 
         // create final design point
         std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
@@ -82,7 +82,7 @@ namespace Deltares::Reliability
 
         for (size_t i = 0; i < parameters.size(); i++)
         {
-            const double alphaValue = -combinedSample->Values[i] / combinedDesignPoint->Beta;
+            const double alphaValue = -combinedSample.Values[i] / combinedDesignPoint->Beta;
             std::shared_ptr<Models::StochastPointAlpha> alpha = std::make_shared<Models::StochastPointAlpha>();
             alpha->Stochast = parameters[i];
             alpha->Alpha = alphaValue;

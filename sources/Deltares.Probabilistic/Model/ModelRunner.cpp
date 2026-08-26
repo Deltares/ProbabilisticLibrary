@@ -28,8 +28,8 @@
 #include "../Proxies/ProxyModel.h"
 #include <format>
 
+#include "ModelSampleStorage.h"
 #include "../Reliability/FragilityCurve.h"
-#include "../Reliability/ProbabilityLimitStateFunction.h"
 
 namespace Deltares::Models
 {
@@ -129,31 +129,31 @@ namespace Deltares::Models
     }
 
 
-    std::shared_ptr<ModelSample> ModelRunner::getModelSample(const std::shared_ptr<Sample>& sample) const
+    ModelSample ModelRunner::getModelSample(Sample& sample) const
     {
         std::vector<double> xValues = this->uConverter->getXValues(sample);
 
         // create a sample with values in x-space
-        std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
+        ModelSample xSample = SampleProvider::getModelSample(xValues);
 
-        xSample->AllowProxy = sample->AllowProxy;
-        xSample->IterationIndex = sample->IterationIndex;
-        xSample->threadId = sample->threadId;
-        xSample->Weight = sample->Weight;
-        xSample->IsRestartRequired = sample->IsRestartRequired;
-        xSample->Beta = sample->getBeta();
-        xSample->OutputValues.resize(this->zModel->outputParameters.size());
+        xSample.AllowProxy = sample.AllowProxy;
+        xSample.IterationIndex = sample.IterationIndex;
+        xSample.threadId = sample.threadId;
+        xSample.Weight = sample.Weight;
+        xSample.IsRestartRequired = sample.IsRestartRequired;
+        xSample.Beta = sample.getBeta();
+        xSample.OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
     }
 
-    std::shared_ptr<ModelSample> ModelRunner::getModelSampleFromType(Statistics::RunValuesType type) const
+    ModelSample ModelRunner::getModelSampleFromType(Statistics::RunValuesType type) const
     {
         std::vector<double> xValues = this->uConverter->getValuesFromType(type);
 
         // create a sample with values in x-space
-        std::shared_ptr<ModelSample> xSample = SampleProvider::getModelSample(xValues);
-        xSample->OutputValues.resize(this->zModel->outputParameters.size());
+        ModelSample xSample = SampleProvider::getModelSample(xValues);
+        xSample.OutputValues.resize(this->zModel->outputParameters.size());
 
         return xSample;
     }
@@ -163,17 +163,17 @@ namespace Deltares::Models
      * \param sample Sample to be calculated
      * \return Z-value of the sample
      */
-    double ModelRunner::getZValue(const std::shared_ptr<Sample>& sample)
+    double ModelRunner::getZValue(Sample& sample)
     {
-        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+        ModelSample xSample = getModelSample(sample);
 
         this->zModel->invoke(xSample);
 
         registerEvaluation(xSample);
 
-        sample->Z = xSample->Z;
+        sample.Z = xSample.Z;
 
-        return sample->Z;
+        return sample.Z;
     }
 
     /**
@@ -181,9 +181,9 @@ namespace Deltares::Models
      * \param sample Sample to be calculated
      * \return Evaluation report of the sample calculation
      */
-    Evaluation ModelRunner::getEvaluation(const std::shared_ptr<Sample>& sample) const
+    Evaluation ModelRunner::getEvaluation(Sample& sample) const
     {
-        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+        ModelSample xSample = getModelSample(sample);
 
         this->zModel->invoke(xSample);
 
@@ -208,7 +208,7 @@ namespace Deltares::Models
      */
     Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type) const
     {
-        std::shared_ptr<ModelSample> xSample = getModelSampleFromType(type);
+        ModelSample xSample = getModelSampleFromType(type);
 
         this->zModel->invoke(xSample);
 
@@ -217,7 +217,7 @@ namespace Deltares::Models
         return evaluation;
     }
 
-    std::shared_ptr<Sample> ModelRunner::getSampleFromStochastPoint(const std::shared_ptr<Models::StochastPoint>& stochastPoint) const
+    Sample ModelRunner::getSampleFromStochastPoint(const std::shared_ptr<Models::StochastPoint>& stochastPoint) const
     {
         return this->uConverter->getSampleFromStochastPoint(stochastPoint);
     }
@@ -229,19 +229,19 @@ namespace Deltares::Models
      */
     void ModelRunner::runDesignPoint(const std::shared_ptr<Reliability::DesignPoint>& designPoint)
     {
-        std::shared_ptr<Sample> sample = designPoint->getSample();
-        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+        Sample sample = designPoint->getSample();
+        ModelSample xSample = getModelSample(sample);
 
-        xSample->ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
-        xSample->LoggingCounter = runDesignPointCounter++;
+        xSample.ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
+        xSample.LoggingCounter = runDesignPointCounter++;
 
         this->zModel->invoke(xSample);
 
         registerEvaluation(xSample);
 
-        for (size_t i = 0; i < xSample->Values.size(); i++)
+        for (size_t i = 0; i < xSample.Values.size(); i++)
         {
-            designPoint->Alphas[i]->X = xSample->Values[i];
+            designPoint->Alphas[i]->X = xSample.Values[i];
         }
     }
 
@@ -250,13 +250,17 @@ namespace Deltares::Models
      * \param samples Samples to be calculated
      * \return Z-values of the samples
      */
-    std::vector<double> ModelRunner::getZValues(const std::vector<std::shared_ptr<Sample>>& samples)
+    std::vector<double> ModelRunner::getZValues(std::vector<Sample*>& samples)
     {
-        std::vector<std::shared_ptr<ModelSample>> xSamples;
+        std::vector<ModelSample*> xSamples;
+        ModelSampleStorage storage = ModelSampleStorage(samples.size());
 
-        for (const auto& sample : samples)
+        xSamples.reserve(samples.size());
+
+        for (auto sample : samples)
         {
-            xSamples.push_back(getModelSample(sample));
+            ModelSample xSample = getModelSample(*sample);
+            xSamples.push_back(storage.keep(xSample));
         }
 
         this->zModel->invoke(xSamples);
@@ -265,7 +269,7 @@ namespace Deltares::Models
 
         for (size_t i = 0; i < xSamples.size(); i++)
         {
-            registerEvaluation(xSamples[i]);
+            registerEvaluation(*xSamples[i]);
 
             samples[i]->Z = xSamples[i]->Z;
             samples[i]->AllowProxy = xSamples[i]->AllowProxy;
@@ -299,25 +303,25 @@ namespace Deltares::Models
      * \param sample Sample indicating the direction
      * \return Beta
      */
-    double ModelRunner::getBeta(const std::shared_ptr<Sample>& sample) const
+    double ModelRunner::getBeta(Sample& sample) const
     {
-        std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+        ModelSample xSample = getModelSample(sample);
 
         return this->zModel->getBeta(xSample);
     }
 
-    Evaluation ModelRunner::getEvaluationFromSample(const std::shared_ptr<ModelSample>& sample)
+    Evaluation ModelRunner::getEvaluationFromSample(ModelSample& sample)
     {
         Evaluation evaluation = Evaluation();
 
-        evaluation.Z = sample->Z;
-        evaluation.Beta = sample->Beta;
-        evaluation.Iteration = sample->IterationIndex;
-        evaluation.Weight = sample->Weight;
-        evaluation.usedProxy = sample->UsedProxy;
-        evaluation.InputValues = sample->Values;
-        evaluation.OutputValues = sample->OutputValues;
-        evaluation.Tag = sample->Tag;
+        evaluation.Z = sample.Z;
+        evaluation.Beta = sample.Beta;
+        evaluation.Iteration = sample.IterationIndex;
+        evaluation.Weight = sample.Weight;
+        evaluation.usedProxy = sample.UsedProxy;
+        evaluation.InputValues = sample.Values;
+        evaluation.OutputValues = sample.OutputValues;
+        evaluation.Tag = sample.Tag;
 
         return evaluation;
     }
@@ -326,7 +330,7 @@ namespace Deltares::Models
      * \brief Registers an evaluation for a calculated sample
      * \param sample Calculated sample
      */
-    void ModelRunner::registerEvaluation(const std::shared_ptr<ModelSample>& sample)
+    void ModelRunner::registerEvaluation(ModelSample& sample)
     {
         if (this->Settings->SaveEvaluations)
         {
@@ -350,9 +354,9 @@ namespace Deltares::Models
      * \param samples Already calculated samples
      * \return Indication
      */
-    bool ModelRunner::shouldExitPrematurely(const std::vector<std::shared_ptr<Sample>>& samples) const
+    bool ModelRunner::shouldExitPrematurely(const std::vector<Sample*>& samples) const
     {
-        for (const std::shared_ptr<Sample>& sample : samples)
+        for (Sample* sample : samples)
         {
             if (sample->IsRestartRequired)
             {
@@ -475,14 +479,15 @@ namespace Deltares::Models
      * \param identifier Identifying text
      * \return Design point
      */
-    std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(const std::shared_ptr<Sample>& sample, double beta, const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport, const std::string& identifier) const
+    std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(Sample& sample, double beta, const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport, const std::string& identifier)
     {
         Evaluation evaluation;
         bool evaluationAssigned = false;
 
         if (this->uConverter->haveSampleValuesChanged())
         {
-            evaluation = this->getEvaluation(std::make_shared<Sample>(sample->getSampleAtBeta(beta)));
+            Sample betaSample = sample.getSampleAtBeta(beta);
+            evaluation = this->getEvaluation(betaSample);
             evaluationAssigned = true;
         }
 
@@ -583,7 +588,7 @@ namespace Deltares::Models
         return result;
     }
 
-    void  ModelRunner::registerSample(const std::shared_ptr<Uncertainty::CorrelationMatrixBuilder>& correlationMatrixBuilder, const std::shared_ptr<Sample>& sample) const
+    void ModelRunner::registerSample(const std::shared_ptr<Uncertainty::CorrelationMatrixBuilder>& correlationMatrixBuilder, Sample& sample) const
     {
         this->uConverter->registerSample(correlationMatrixBuilder, sample);
     }

@@ -19,11 +19,10 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-
 #include "PrecomputeDirections.h"
-
 #include "ReliabilityMethod.h"
 #include "ZGetter.h"
+#include "../Model/SampleStorage.h"
 
 namespace Deltares::Reliability
 {
@@ -50,12 +49,12 @@ namespace Deltares::Reliability
 
         // store intermediate values
         std::vector<double> uValues(nSamples);
-        std::vector<std::shared_ptr<Models::Sample>> uDirections(nSamples);
+        std::vector<Models::Sample> uDirections(nSamples);
         for (size_t i = 0; i < nSamples; i++)
         {
             if (shouldCompute[i])
             {
-                uDirections[i] = std::make_shared<Models::Sample>(directions[i].getDirection().getNormalizedSample());
+                uDirections[i] = directions[i].getDirection().getNormalizedSample();
             }
         }
 
@@ -64,13 +63,16 @@ namespace Deltares::Reliability
             //
             // collect samples
             //
-            std::vector<std::shared_ptr<Models::Sample>> uSamples;
+            Models::SampleStorage storage = Models::SampleStorage(nSamples);
+            std::vector<Models::Sample*> uSamples;
+
             for (size_t i = 0; i < nSamples; i++)
             {
                 if (shouldCompute[i])
                 {
                     uValues[i] = directions[i].GetPrecomputeUvalue();
-                    uSamples.push_back(model.GetSample(*uDirections[i], uValues[i]));
+                    Models::Sample sample = model.GetSample(uDirections[i], uValues[i]);
+                    uSamples.push_back(storage.keep(sample));
                 }
             }
 

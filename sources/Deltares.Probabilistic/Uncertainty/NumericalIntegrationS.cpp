@@ -39,7 +39,6 @@ namespace Deltares::Uncertainty
         this->calculatedSamples.clear();
 
         modelRunner->updateStochastSettings(Settings->StochastSet);
-
         int nStochasts = modelRunner->getVaryingStochastCount();
 
         // Numerical integration isn't possible with a large set of stochastic parameters
@@ -54,6 +53,17 @@ namespace Deltares::Uncertainty
         {
             modelRunner->reportMessage(Logging::MessageType::Warning,
                 "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
+        }
+
+        if (!this->Settings->RequestedQuantiles.empty())
+        {
+            int size = 1;
+            for (auto stochastSetting : Settings->StochastSet->VaryingStochastSettings)
+            {
+                size *= stochastSetting->Intervals + 1;
+            }
+
+            this->calculatedSampleStorage = SampleStorage(size);
         }
 
         std::vector<double> zSamples;
@@ -83,7 +93,7 @@ namespace Deltares::Uncertainty
 
             if (quantileIndex >= 0)
             {
-                auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
+                auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(*this->calculatedSamples[quantileIndex]));
                 evaluation->Quantile = quantile->getProbabilityOfNonFailure();
                 result.quantileEvaluations.push_back(evaluation);
             }
@@ -135,23 +145,24 @@ namespace Deltares::Uncertainty
         {
             std::vector<Numeric::WeightedValue> values;
 
-            std::vector<std::shared_ptr<Sample>> samples;
+            std::vector<Sample*> samples;
+            SampleStorage storage = SampleStorage(uValues.size());
 
             for (size_t j = 0; j < uValues.size() - 1; j++)
             {
-                std::shared_ptr<Sample> sample = std::make_shared<Models::Sample>(parentSample.clone());
-                sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
+                Sample sample = parentSample.clone();
+                sample.Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                 double contribution = pq.getDifference(uValues[j + 1]);
-                sample->Weight = density * contribution * nSamples * (static_cast<int>(uValues.size()) - 1);
+                sample.Weight = density * contribution * nSamples * (static_cast<int>(uValues.size()) - 1);
 
-                samples.push_back(sample);
+                samples.push_back(storage.keep(sample));
             }
 
             // compute the z-value(s)
             const std::vector<double> zValues = modelRunner.getZValues(samples);
 
-            for (const auto& sample : samples)
+            for (Sample* sample : samples)
             {
                 if (!std::isnan(sample->Z))
                 {
@@ -159,13 +170,13 @@ namespace Deltares::Uncertainty
 
                     if (registerSamplesForCorrelation)
                     {
-                        modelRunner.registerSample(this->correlationMatrixBuilder, sample);
+                        modelRunner.registerSample(this->correlationMatrixBuilder, *sample);
                     }
                 }
 
                 if (!this->Settings->RequestedQuantiles.empty())
                 {
-                    this->calculatedSamples.push_back(sample);
+                    this->calculatedSamples.push_back(this->calculatedSampleStorage.keep(*sample));
                 }
             }
 

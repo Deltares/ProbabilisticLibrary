@@ -27,33 +27,33 @@
 
 namespace Deltares::Models
 {
-    std::shared_ptr<Sample> StochastPoint::getSample()
+    Sample StochastPoint::getSample() const
     {
-        std::shared_ptr<Sample> sample = std::make_shared<Sample>(Alphas.size());
+        Sample sample = Sample(Alphas.size());
 
         for (size_t i = 0; i < Alphas.size(); i++)
         {
-            sample->Values[i] = this->Alphas[i]->U;
+            sample.Values[i] = this->Alphas[i]->U;
         }
 
         return sample;
     }
 
-    std::shared_ptr<Sample> StochastPoint::getSampleForStochasts(std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
+    Sample StochastPoint::getSampleForStochasts(std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
     {
         std::unordered_set<size_t> usedIndices;
 
-        std::shared_ptr<Sample> sample = std::make_shared<Sample>(stochasts.size());
+        Sample sample = Sample(stochasts.size());
 
         for (size_t i = 0; i < stochasts.size(); i++)
         {
-            sample->Values[i] = 0;
+            sample.Values[i] = 0;
 
             for (size_t j = 0; j < this->Alphas.size(); j++)
             {
                 if (this->Alphas[j]->Stochast == stochasts[i] && !usedIndices.contains(j))
                 {
-                    sample->Values[i] = this->Alphas[j]->U;
+                    sample.Values[i] = this->Alphas[j]->U;
                     usedIndices.insert(j);
                     break;
                 }
@@ -63,7 +63,7 @@ namespace Deltares::Models
         return sample;
     }
 
-    std::shared_ptr<ModelSample> StochastPoint::getModelSample()
+    ModelSample StochastPoint::getModelSample()
     {
         std::vector<double> values(Alphas.size());
         for (size_t i = 0; i < Alphas.size(); i++)
@@ -71,7 +71,7 @@ namespace Deltares::Models
             values[i] = this->Alphas[i]->X;
         }
 
-        return std::make_shared<ModelSample>(values);
+        return ModelSample(values);
     }
 
     std::vector<std::shared_ptr<StochastPointAlpha>> StochastPoint::getAlphas(const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts) const

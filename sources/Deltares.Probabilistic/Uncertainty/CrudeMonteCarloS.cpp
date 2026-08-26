@@ -25,6 +25,7 @@
 #include <algorithm>
 
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "CrudeMonteCarloSettingsS.h"
 #include "UncertaintyResult.h"
@@ -48,14 +49,17 @@ namespace Deltares::Uncertainty
 
         std::vector<double> zValues; // copy of z for all parallel threads as double
 
-        std::vector<std::shared_ptr<Sample>> samples;
+        std::vector<Sample*> samples;
         std::vector<double> zSamples;
         size_t zIndex = 0;
         int nSamples = 0;
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
 
         bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
 
         const int requiredSamples = std::clamp(Settings->getRequiredSamples(), Settings->MinimumSamples, Settings->MaximumSamples);
+
+        SampleStorage storage = SampleStorage(chunkSize);
 
         for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
         {
@@ -64,14 +68,14 @@ namespace Deltares::Uncertainty
             if (zIndex >= samples.size())
             {
                 samples.clear();
+                storage.clear();
 
-                int chunkSize = modelRunner->Settings->MaxChunkSize;
                 int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
 
                 for (int i = 0; i < runs; i++)
                 {
-                    std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                    samples.push_back(sample);
+                    Sample sample = randomSampleGenerator.getRandomSample();
+                    samples.push_back(storage.keep(sample));
                 }
 
                 modelRunner->getZValues(samples);
@@ -90,7 +94,7 @@ namespace Deltares::Uncertainty
 
             if (registerSamplesForCorrelation)
             {
-                modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
+                modelRunner->registerSample(this->correlationMatrixBuilder, *samples[zIndex]);
             }
 
             nSamples++;
@@ -113,7 +117,7 @@ namespace Deltares::Uncertainty
                 randomSampleGenerator.restart();
                 randomSampleGenerator.proceed(quantileIndex);
 
-                std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
+                Sample sample = randomSampleGenerator.getRandomSample();
                 auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(sample));
                 evaluation->Quantile = p;
                 result.quantileEvaluations.push_back(evaluation);

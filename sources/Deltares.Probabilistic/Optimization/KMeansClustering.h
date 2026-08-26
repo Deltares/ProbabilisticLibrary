@@ -45,7 +45,7 @@ namespace Deltares::Optimization
          * \param samples Samples for which the clustering is generated
          * \return Centers of the clusters
          */
-        std::vector<std::shared_ptr<Models::Sample>> getClusterCenters(std::vector<std::shared_ptr<Models::Sample>> samples);
+        std::vector<Models::Sample> getClusterCenters(std::vector<Models::Sample> samples);
     private:
         /**
          * \brief Internal class for cluster administration
@@ -53,26 +53,26 @@ namespace Deltares::Optimization
         class Cluster
         {
         public:
-            std::shared_ptr<Models::Sample> Center = nullptr;
-            std::vector<std::shared_ptr<Models::Sample>> Samples;
-            std::vector<std::shared_ptr<Models::Sample>> PreviousSamples;
+            Models::Sample Center = Models::Sample();
+            std::vector<Models::Sample> Samples;
+            std::vector<Models::Sample> PreviousSamples;
 
             double getSumSquared() const;
             void updateMean();
         };
 
-        std::vector<std::shared_ptr<Cluster>> FixedCluster(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options);
-        std::vector<std::shared_ptr<Cluster>> DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::RandomValueGenerator& randomGenerator);
-        std::vector<std::shared_ptr<Cluster>> InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::RandomValueGenerator& randomGenerator);
-        std::vector<std::shared_ptr<Cluster>> InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, Numeric::RandomValueGenerator& randomGenerator, bool sampleHasWeighting);
+        std::vector<std::shared_ptr<Cluster>> FixedCluster(std::vector<Models::Sample>& samples, const ClusterSettings& options);
+        std::vector<std::shared_ptr<Cluster>> DoClustering(std::vector<Models::Sample>& samples, const ClusterSettings& options, Numeric::RandomValueGenerator& randomGenerator);
+        std::vector<std::shared_ptr<Cluster>> InitializeClusters(std::vector<Models::Sample>& samples, const ClusterSettings& options, Numeric::RandomValueGenerator& randomGenerator);
+        std::vector<std::shared_ptr<Cluster>> InitPlusPlus(int numberClusters, std::vector<Models::Sample>& samples, Numeric::RandomValueGenerator& randomGenerator, bool sampleHasWeighting);
         int ProporSelect(std::vector<double>& values, Numeric::RandomValueGenerator& randomGenerator);
         bool updateClustering(const std::vector<std::shared_ptr<Cluster>>& clusters);
-        static std::shared_ptr<Cluster> getNearestCluster(const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
+        static std::shared_ptr<Cluster> getNearestCluster(Models::Sample& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
         static double SilhouetteCoefficient(const std::vector<std::shared_ptr<Cluster>>& clusters);
-        static double IntraClusterDistance(const std::shared_ptr<Cluster>& cluster, const std::shared_ptr<Models::Sample>& sample);
+        static double IntraClusterDistance(const std::shared_ptr<Cluster>& cluster, Models::Sample& sample);
         static double InterClusterDistance(const std::shared_ptr<Cluster>& cluster,
-            const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
-        static std::vector<std::shared_ptr<Models::Sample>> getCentersFromClusters(const std::vector<std::shared_ptr<Cluster>>& clusters);
+            Models::Sample& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
+        static std::vector<Models::Sample> getCentersFromClusters(const std::vector<std::shared_ptr<Cluster>>& clusters);
 
         const double margin = 1E-8;
     };

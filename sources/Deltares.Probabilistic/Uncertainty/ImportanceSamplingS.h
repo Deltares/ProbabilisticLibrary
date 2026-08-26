@@ -46,7 +46,7 @@ namespace Deltares::Uncertainty
         UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
     private:
         static std::vector<double> getFactors(const Reliability::StochastSettingsSet& stochastSettings);
-        std::shared_ptr<Models::Sample> getModifiedSample(const Models::Sample& sample, const Models::Sample& center) const;
+        Models::Sample getModifiedSample(Models::Sample& sample, Models::Sample& center) const;
         void updateCumulativeWeights(const std::vector<double>& zValues, const std::vector<double>& weights,
             std::vector<double>& cumulativeWeights, const Models::Sample& sample) const;
         static void adjustWeights(std::vector<double>& weights, const double weight_difference);

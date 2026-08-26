@@ -30,7 +30,7 @@ namespace Deltares::Reliability
 {
     using namespace Deltares::Models;
 
-    void DesignPointModel::calculate(std::shared_ptr<ModelSample> sample)
+    void DesignPointModel::calculate(ModelSample& sample)
     {
         // construct the tangent line of the circle with radius beta and in coordinates (- alfa1 * beta, -alfa2 * beta, ...)
         // then detect whether on which side (x1, x2, .. ) is located
@@ -48,9 +48,9 @@ namespace Deltares::Reliability
 
         double result = this->designPoint->Beta;
 
-        for (size_t i = 0; i < sample->Values.size(); i++)
+        for (size_t i = 0; i < sample.Values.size(); i++)
         {
-            result += sample->Values[i] * alphas[i];
+            result += sample.Values[i] * alphas[i];
         }
 
         if (this->ignored && this->inverted)
@@ -66,14 +66,14 @@ namespace Deltares::Reliability
             result = result > 0 ? nan("") : result;
         }
 
-        sample->Z = result;
+        sample.Z = result;
     }
 
-    double DesignPointModel::getDirectionBeta(std::shared_ptr<ModelSample> sample)
+    double DesignPointModel::getDirectionBeta(ModelSample& sample)
     {
         this->calculate(sample);
 
-        return Numeric::NumericSupport::interpolate(0, this->designPoint->Beta, 0, sample->Z, 1, true);
+        return Numeric::NumericSupport::interpolate(0, this->designPoint->Beta, 0, sample.Z, 1, true);
     }
 
     void DesignPointModel::setParameters(std::vector<std::shared_ptr<Statistics::Stochast>>& normalizedStochasts, std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Statistics::Stochast>> stochastsMap, std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Reliability::DesignPoint>> designPointsMap)

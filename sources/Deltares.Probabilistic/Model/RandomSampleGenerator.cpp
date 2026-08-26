@@ -53,7 +53,7 @@ namespace Deltares::Models
      * \brief Gets a random sample
      * \returns Random sample
      */
-    std::shared_ptr<Sample> RandomSampleGenerator::getRandomSample()
+    Sample RandomSampleGenerator::getRandomSample()
     {
         const int size = this->getSampleSize();
 
@@ -64,13 +64,13 @@ namespace Deltares::Models
             randomValues[i] = random.next();
         }
 
-        std::shared_ptr<Sample> sample = sampleProvider->getSample();
+        Sample sample = sampleProvider->getSample();
 
         for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
         {
             const int variableIndex = this->Settings->SkipUnvaryingParameters ? this->Settings->StochastSet->VaryingStochastSettings[i]->StochastIndex : i;
             const double x = randomValues[variableIndex];
-            sample->Values[i] = Deltares::Statistics::StandardNormal::getUFromQ(x);
+            sample.Values[i] = Deltares::Statistics::StandardNormal::getUFromQ(x);
         }
 
         return sample;

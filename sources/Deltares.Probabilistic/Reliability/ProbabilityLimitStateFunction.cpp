@@ -23,12 +23,12 @@
 
 namespace Deltares::Reliability
 {
-    void ProbabilityLimitStateFunction::updateZValue(std::shared_ptr<Models::ModelSample> sample)
+    void ProbabilityLimitStateFunction::updateZValue(Models::ModelSample& sample)
     {
-        double x = sample->Values[0];
+        double x = sample.Values[0];
         double u = fragilityCurve->getUFromX(x);
 
-        sample->Z = Statistics::StandardNormal::getQFromU(u);
+        sample.Z = Statistics::StandardNormal::getQFromU(u);
     }
 }
 

@@ -32,12 +32,12 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<Models::ModelRunner> TestWaartsConvexFailureDomain::WaartsModel()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
         {
-            const double u1 = v->Values[0];
-            const double u2 = v->Values[1];
-            v->Z = 0.1 * pow(u1 - u2, 2) - (u1 + u2) / std::numbers::sqrt2 + 2.5;
-            return v->Z;
+            const double u1 = v.Values[0];
+            const double u2 = v.Values[1];
+            v.Z = 0.1 * pow(u1 - u2, 2) - (u1 + u2) / std::numbers::sqrt2 + 2.5;
+            return v.Z;
         });
 
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();

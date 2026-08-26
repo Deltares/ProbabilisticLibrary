@@ -30,11 +30,11 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<Models::ModelRunner> TestWaartsDiscontinuousLimitState::WaartsModel()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
         {
             double Z;
-            const double r = v->Values[0];
-            const double s = v->Values[1];
+            const double r = v.Values[0];
+            const double s = v.Values[1];
             if (r >= s)
             {
                 Z = -0.5 + sqrt(r - s);
@@ -44,7 +44,7 @@ namespace Deltares::Probabilistic::Test
                 Z = -0.5;
 
             }
-            v->Z = Z;
+            v.Z = Z;
             return Z;
         });
 

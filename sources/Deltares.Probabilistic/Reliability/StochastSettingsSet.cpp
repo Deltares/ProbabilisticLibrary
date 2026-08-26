@@ -42,18 +42,18 @@ namespace Deltares::Reliability
         this->AreStartValuesCorrelated = false;
     }
 
-    std::shared_ptr<Models::Sample> StochastSettingsSet::getStartPoint()
+    Models::Sample StochastSettingsSet::getStartPoint()
     {
-        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(this->getVaryingStochastCount());
+        Models::Sample sample = Models::Sample(this->getVaryingStochastCount());
 
-        if (this->startPoint != nullptr)
+        if (this->useStartPoint)
         {
             int index = 0;
             for (int i = 0; i < this->getStochastCount(); i++)
             {
                 if (this->stochastSettings[i]->isVarying)
                 {
-                    sample->Values[index++] = this->startPoint->Values[i];
+                    sample.Values[index++] = this->startPoint.Values[i];
                 }
             }
             return sample;
@@ -62,33 +62,33 @@ namespace Deltares::Reliability
         {
             for (int i = 0; i < this->getVaryingStochastCount(); i++)
             {
-                sample->Values[i] = this->VaryingStochastSettings[i]->UncorrelatedStartValue;
+                sample.Values[i] = this->VaryingStochastSettings[i]->UncorrelatedStartValue;
             }
 
             return sample;
         }
     }
 
-    void StochastSettingsSet::setStartPoint(const std::shared_ptr<Models::Sample> startPoint)
+    void StochastSettingsSet::setStartPoint(const Models::Sample& startPoint)
     {
-        this->startPoint = nullptr;
+        this->useStartPoint = false;
 
-        if (startPoint->Values.size() == this->VaryingStochastSettings.size())
+        if (startPoint.Values.size() == this->VaryingStochastSettings.size())
         {
             for (size_t i = 0; i < this->VaryingStochastSettings.size(); i++)
             {
-                this->VaryingStochastSettings[i]->StartValue = startPoint->Values[i];
-                this->VaryingStochastSettings[i]->UncorrelatedStartValue = startPoint->Values[i];
+                this->VaryingStochastSettings[i]->StartValue = startPoint.Values[i];
+                this->VaryingStochastSettings[i]->UncorrelatedStartValue = startPoint.Values[i];
 
                 this->AreStartValuesCorrelated = false;
             }
         }
-        else if (startPoint->Values.size() == this->stochastSettings.size())
+        else if (startPoint.Values.size() == this->stochastSettings.size())
         {
             for (size_t i = 0; i < this->stochastSettings.size(); i++)
             {
-                stochastSettings[i]->StartValue = startPoint->Values[i];
-                stochastSettings[i]->UncorrelatedStartValue = startPoint->Values[i];
+                stochastSettings[i]->StartValue = startPoint.Values[i];
+                stochastSettings[i]->UncorrelatedStartValue = startPoint.Values[i];
 
                 this->AreStartValuesCorrelated = false;
             }
@@ -96,6 +96,7 @@ namespace Deltares::Reliability
         else
         {
             this->startPoint = startPoint;
+            this->useStartPoint = true;
         }
     }
 }

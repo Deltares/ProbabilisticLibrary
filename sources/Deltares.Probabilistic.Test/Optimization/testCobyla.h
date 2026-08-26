@@ -29,7 +29,7 @@ namespace Deltares::Probabilistic::Test
     public:
         testModel() = default;
         testModel(double offset_1, double offset_2) : offset1(offset_1), offset2(offset_2) {}
-        double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
+        double GetZValue(Models::Sample& sample) const override;
     private:
         const double offset1 = -1.0;
         const double offset2 = 0.0;
@@ -38,8 +38,8 @@ namespace Deltares::Probabilistic::Test
     class testModelWithConstraint : public Optimization::optimizationModel
     {
     public:
-        double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
-        double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) override;
+        double GetZValue(Models::Sample& sample) const override;
+        double GetConstraintValue(Models::Sample& sample) override;
         unsigned GetNumberOfConstraints() const override { return 1; }
     };
 

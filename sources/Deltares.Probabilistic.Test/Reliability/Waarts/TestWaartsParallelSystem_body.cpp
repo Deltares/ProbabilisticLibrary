@@ -32,13 +32,13 @@ namespace Deltares::Probabilistic::Test
     std::shared_ptr<Models::ModelRunner> TestWaartsParallelSystem::WaartsModel()
     {
         constexpr int nrStochasts = 5;
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
         {
-            const double u1 = v->Values[0];
-            const double u2 = v->Values[1];
-            const double u3 = v->Values[2];
-            const double u4 = v->Values[3];
-            const double u5 = v->Values[4];
+            const double u1 = v.Values[0];
+            const double u2 = v.Values[1];
+            const double u3 = v.Values[2];
+            const double u4 = v.Values[3];
+            const double u5 = v.Values[4];
 
             const double g1 = 2.677 - u1 - u2;
             const double g2 = 2.500 - u2 - u3;
@@ -46,7 +46,7 @@ namespace Deltares::Probabilistic::Test
             const double g4 = 2.250 - u4 - u5;
             const double parallelSystem = Numeric::NumericSupport::getMaximum({ g1, g2, g3, g4 });
 
-            v->Z = parallelSystem;
+            v.Z = parallelSystem;
             return parallelSystem;
         });
 

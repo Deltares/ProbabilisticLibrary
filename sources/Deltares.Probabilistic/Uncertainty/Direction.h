@@ -41,15 +41,15 @@ namespace Deltares::Uncertainty
     class Direction
     {
     public:
-        Direction(const std::shared_ptr<Models::Sample>& sample, int index, bool Valid)
+        Direction(Models::Sample& sample, int index, bool Valid)
             : Valid(Valid), index(index), sample(sample)
         {
-            sample->IterationIndex = index;
+            sample.IterationIndex = index;
         }
 
         void AddResult(double distance, double z);
         double GetDistanceAtZ(double z) const;
-        std::shared_ptr<Models::Sample> CreateNewSampleAt(double z, double maxBeta);
+        Models::Sample CreateNewSampleAt(double z, double maxBeta);
         bool IsValid() const { return Valid; }
 
         /**
@@ -72,7 +72,7 @@ namespace Deltares::Uncertainty
         double lastDifference = 0;
         double lastDistance = 0;
         int index = 0;
-        std::shared_ptr<Models::Sample> sample;
+        Models::Sample sample;
         std::vector<double> distances = std::vector<double>();
         std::vector<double> zValues = std::vector<double>();
     };

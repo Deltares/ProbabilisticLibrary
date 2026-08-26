@@ -54,7 +54,7 @@ namespace Deltares::Models
          * \brief Gets a random sample
          * \returns random sample
          */
-        std::shared_ptr<Sample> getRandomSample();
+        Sample getRandomSample();
 
         /**
          * \brief Proceeds the random sample generator for an equivalent of a number of samples

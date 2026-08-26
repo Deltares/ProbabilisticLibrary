@@ -27,25 +27,25 @@
 using namespace Deltares::Reliability;
 using namespace Deltares::Models;
 
-void funcWrapper::FDelegate(std::shared_ptr<ModelSample> s)
+void funcWrapper::FDelegate(ModelSample& s)
 {
-    designPointOptions dp = s->ExtendedLogging ? designPointOptions::dpOutTRUE : designPointOptions::dpOutFALSE;
+    designPointOptions dp = s.ExtendedLogging ? designPointOptions::dpOutTRUE : designPointOptions::dpOutFALSE;
 
-    computationSettings compSetting{ dp, compId, s->threadId, s->LoggingCounter };
+    computationSettings compSetting{ dp, compId, s.threadId, s.LoggingCounter };
     tError e = tError();
-    double result = zfunc(s->Values.data(), &compSetting, &e);
+    double result = zfunc(s.Values.data(), &compSetting, &e);
     if (e.errorCode != 0)
     {
         error_messages.push_back((e.errorMessage));
-        s->Z = std::nan("");
+        s.Z = std::nan("");
     }
     else
     {
-        s->Z = result;
+        s.Z = result;
     }
 }
 
-void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<ModelSample>> samples)
+void funcWrapper::FDelegateParallel(std::vector<ModelSample*> samples)
 {
     auto errorMessagePerThread = std::vector<std::string>(omp_get_num_threads());
 

@@ -50,14 +50,15 @@ namespace Deltares::Reliability
             return static_cast<int>(this->VaryingStochastSettings.size());
         }
 
-        std::shared_ptr<Models::Sample> getStartPoint();
-        void setStartPoint(std::shared_ptr<Models::Sample> startPoint);
+        Models::Sample getStartPoint();
+        void setStartPoint(const Models::Sample& startPoint);
 
         bool AreStartValuesCorrelated = true;
 
     private:
         void loadStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint);
-        std::shared_ptr<Models::Sample> startPoint = nullptr;
+        Models::Sample startPoint = Models::Sample(0);
+        bool useStartPoint = false;
     };
 }
 

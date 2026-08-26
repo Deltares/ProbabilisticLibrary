@@ -25,6 +25,7 @@
 
 #include "../Statistics/StandardNormal.h"
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "../Math/NumericSupport.h"
 #include "ConvergenceReport.h"
@@ -47,7 +48,7 @@ namespace Deltares::Reliability
         double qRange = 1;
         double zRemainder = 1;
 
-        std::shared_ptr<Sample> remainderSample = sampleProvider->getSample();
+        Sample remainderSample = sampleProvider->getSample();
 
         for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
         {
@@ -62,11 +63,11 @@ namespace Deltares::Reliability
 
                 if (probLow > probHigh)
                 {
-                    remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
+                    remainderSample.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
                 }
                 else
                 {
-                    remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
+                    remainderSample.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
                 }
             }
         }
@@ -101,7 +102,11 @@ namespace Deltares::Reliability
         double nFailed = 0.0;
         int nSamples = 0;
         const std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-        std::vector<std::shared_ptr<Sample>> samples;
+
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
+
+        SampleStorage storage = SampleStorage(chunkSize);
+        std::vector<Sample*> samples;
         size_t zIndex = 0;
 
         bool addRemainder = qRange != 1.0;
@@ -114,26 +119,27 @@ namespace Deltares::Reliability
 
             if (initial || zIndex >= samples.size())
             {
+                storage.clear();
                 samples.clear();
 
-                int chunkSize = modelRunner->Settings->MaxChunkSize;
                 int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
                 if (initial)
                 {
-                    samples.push_back(sampleProvider->getSample());
+                    Sample sample = sampleProvider->getSample();
+                    samples.push_back(storage.keep(sample));
                     runs = runs - 1;
                 }
 
                 for (int i = 0; i < runs; i++)
                 {
-                    std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
+                    Sample sample = randomSampleGenerator.getRandomSample();
                     if (qRange < 1)
                     {
                         applyLimits(sample);
                     }
 
-                    samples.push_back(sample);
+                    samples.push_back(storage.keep(sample));
                 }
 
                 zValues = modelRunner->getZValues(samples);
@@ -169,7 +175,7 @@ namespace Deltares::Reliability
             }
 
             double z = zValues[zIndex];
-            std::shared_ptr<Sample> u = samples[zIndex];
+            Sample u = *samples[zIndex];
 
             if (std::isnan(z))
             {
@@ -223,16 +229,16 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    void CrudeMonteCarlo::applyLimits(const std::shared_ptr<Sample>& sample) const
+    void CrudeMonteCarlo::applyLimits(Sample& sample) const
     {
-        for (int i = 0; i < sample->getSize(); i++)
+        for (int i = 0; i < sample.getSize(); i++)
         {
             std::shared_ptr<StochastSettings> settings = this->Settings->StochastSet->VaryingStochastSettings[i];
             if (!settings->isMinMaxDefault())
             {
-                double q = Statistics::StandardNormal::getPFromU(sample->Values[i]);
+                double q = Statistics::StandardNormal::getPFromU(sample.Values[i]);
                 q = settings->XMinValue + q * (settings->XMaxValue - settings->XMinValue);
-                sample->Values[i] = Statistics::StandardNormal::getUFromP(q);
+                sample.Values[i] = Statistics::StandardNormal::getUFromP(q);
             }
         }
     }

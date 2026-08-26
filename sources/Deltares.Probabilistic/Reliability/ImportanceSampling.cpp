@@ -29,6 +29,7 @@
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "ConvergenceReport.h"
 #include "ReliabilityReport.h"
@@ -73,9 +74,11 @@ namespace Deltares::Reliability
         bool initial = true;
         bool reported = false;
         bool addProbability = Settings->runSettings->shouldAddProbability();
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
 
-        std::vector<std::shared_ptr<Sample>> samples; // copy of u for all parallel threads as double
-        std::vector<double> zValues; // copy of z for all parallel threads as double
+        SampleStorage storage = SampleStorage(chunkSize);
+        std::vector<Sample*> samples;
+        std::vector<double> zValues; 
 
         // list of all clusters
         std::shared_ptr<DesignPoint> startDesignPoint = nullptr;
@@ -108,17 +111,16 @@ namespace Deltares::Reliability
 
             if (initial || zIndex >= zValues.size())
             {
+                storage.clear();
                 samples.clear();
                 clusters.clear();
-
-                int chunkSize = modelRunner->Settings->MaxChunkSize;
 
                 int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
                 if (initial)
                 {
                     auto initialSample = sampleProvider->getSample();
-                    samples.push_back(initialSample);
+                    samples.push_back(storage.keep(initialSample));
                     clusters.push_back(nullptr);
                     runs = runs - 1;
                 }
@@ -128,25 +130,25 @@ namespace Deltares::Reliability
                 {
                     // get values for stochastic parameters
                     clusterIndex++;
-                    if (clusterIndex >= clusterResults.size())
+                    if (clusterIndex >= static_cast<int>(clusterResults.size()))
                     {
                         clusterIndex = 0;
                     }
 
                     std::shared_ptr<ImportanceSamplingCluster> cluster = clusterResults[clusterIndex];
 
-                    const std::shared_ptr<Sample> sample = sampleCreator.getRandomSample();
+                    Sample sample = sampleCreator.getRandomSample();
 
-                    std::shared_ptr<Sample> modifiedSample = std::make_shared<Models::Sample>(sample->clone());
+                    Sample modifiedSample = sample.clone();
 
                     for (int k = 0; k < nStochasts; k++)
                     {
-                        modifiedSample->Values[k] = factors[k] * sample->Values[k] + cluster->Center->Values[k];
+                        modifiedSample.Values[k] = factors[k] * sample.Values[k] + cluster->Center.Values[k];
                     }
 
-                    modifiedSample->Weight = ImportanceSamplingSupport::getWeight(*modifiedSample, *sample, dimensionality);
+                    modifiedSample.Weight = ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
 
-                    samples.push_back(modifiedSample);
+                    samples.push_back(storage.keep(modifiedSample));
                     clusters.push_back(cluster);
                 }
 
@@ -171,7 +173,8 @@ namespace Deltares::Reliability
                 if (modelRunner->shouldExitPrematurely(samples))
                 {
                     // return the result so far
-                    auto designPoint = modelRunner->getDesignPoint(combinedCluster->designPointBuilder.getSample(),
+                    auto designPointSample = combinedCluster->designPointBuilder.getSample();
+                    auto designPoint = modelRunner->getDesignPoint(designPointSample,
                         Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure), convergenceReport);
                     if (startDesignPoint != nullptr)
                     {
@@ -220,10 +223,10 @@ namespace Deltares::Reliability
                 continue;
             }
 
-            std::shared_ptr<Sample> sample = samples[zIndex];
+            Sample sample = *samples[zIndex];
 
             double failureAddition = 0.0;
-            if (isNearestCluster(*sample, sampleCluster, clusterResults))
+            if (isNearestCluster(sample, sampleCluster, clusterResults))
             {
                 failureAddition = getFailureAddition(z, Settings->runSettings->modelReturnType);
                 if (z0Fac < 0.0)
@@ -251,9 +254,9 @@ namespace Deltares::Reliability
             // if there is at least one failure and at least one non-failure observed
             if (probFailure > 0)
             {
-                std::shared_ptr<Sample> designPoint = combinedCluster->designPointBuilder.getSample();
+                Sample designPoint = combinedCluster->designPointBuilder.getSample();
                 std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = findMostContributingCluster(clusterResults);
-                double designPointWeight = ImportanceSamplingSupport::getSampleWeight(*designPoint, *mostContributingCluster->Center, dimensionality, factors);
+                double designPointWeight = ImportanceSamplingSupport::getSampleWeight(designPoint, mostContributingCluster->Center, dimensionality, factors);
 
                 convergenceReport->IsConverged = checkConvergence(*modelRunner, probFailure, designPointWeight, combinedCluster->TotalCount, sampleIndex);
                 convergenceReport->FailWeight = combinedCluster->FailWeight;
@@ -273,10 +276,10 @@ namespace Deltares::Reliability
         double probFailure = getProbabilityOfFailure(clusterResults);
         double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-        std::shared_ptr<Sample> minSample = combinedCluster->designPointBuilder.getSample();
+        Sample minSample = combinedCluster->designPointBuilder.getSample();
 
         std::shared_ptr<ImportanceSamplingCluster> mostContributingCluster = findMostContributingCluster(clusterResults);
-        double designPointWeight = ImportanceSamplingSupport::getSampleWeight(*minSample, *mostContributingCluster->Center, dimensionality, factors);
+        double designPointWeight = ImportanceSamplingSupport::getSampleWeight(minSample, mostContributingCluster->Center, dimensionality, factors);
         convergenceReport->Convergence = ImportanceSamplingSupport::getConvergence(probFailure, designPointWeight, combinedCluster->TotalCount);
         convergenceReport->NearestSample = combinedCluster->NearestSample;
 
@@ -293,7 +296,7 @@ namespace Deltares::Reliability
             {
                 std::string clusterIdentifier = std::format("Cluster {0:}", i + 1);
                 double clusterBeta = Statistics::StandardNormal::getUFromQ(clusterResults[i]->ProbFailure);
-                std::shared_ptr<Sample> clusterSample = clusterResults[i]->designPointBuilder.getSample();
+                Sample clusterSample = clusterResults[i]->designPointBuilder.getSample();
                 std::shared_ptr<DesignPoint> clusterDesignPoint = modelRunner->getDesignPoint(clusterSample, clusterBeta, convergenceReport, clusterIdentifier);
 
                 designPoint->ContributingDesignPoints.push_back(clusterDesignPoint);
@@ -442,11 +445,11 @@ namespace Deltares::Reliability
             startPointCalculator.Settings = this->Settings->startPointSettings;
             startPointCalculator.Settings->StochastSet = this->Settings->StochastSet;
 
-            std::shared_ptr<Sample> startPoint = startPointCalculator.getStartPoint(modelRunner);
+            Sample startPoint = startPointCalculator.getStartPoint(modelRunner);
 
             if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
             {
-                startDesignPoint = modelRunner.getDesignPoint(startPoint, startPoint->getBeta());
+                startDesignPoint = modelRunner.getDesignPoint(startPoint, startPoint.getBeta());
                 startDesignPoint->Identifier = "Start point";
             }
 

@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #pragma once
-#include <memory>
 #include "../Model/Sample.h"
 
 namespace Deltares::Reliability
@@ -28,9 +27,9 @@ namespace Deltares::Reliability
     class BetaValueTask
     {
     public:
-        BetaValueTask(std::shared_ptr<Models::Sample>& UValues, const double z0) :
+        BetaValueTask(Models::Sample& UValues, const double z0) :
             UValues(UValues), invertZ(z0 < 0.0), z0(z0) {}
-        std::shared_ptr<Models::Sample>& UValues;
+        Models::Sample& UValues;
         bool invertZ;
         double z0;
     };

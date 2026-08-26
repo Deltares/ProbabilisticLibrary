@@ -30,7 +30,7 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProject() const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v) { return zfunc(v); });
+        auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& v) { return zfunc(v); });
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Normal;
         std::vector<double> params{ 0.0, 1.0 };
@@ -46,37 +46,37 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProject(size_t nStochasts)
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearAutoStart(v); });
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linearAutoStart(v); });
         return CreateModelRunner(nStochasts, z);
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProbabilityProject(size_t nStochasts)
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { linearProbability(v); });
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { linearProbability(v); });
         return CreateModelRunner(nStochasts, z);
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearProbabilityInverseProject(size_t nStochasts)
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { linearProbability(v); v->Z = 1.0 - v->Z; });
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { linearProbability(v); v.Z = 1.0 - v.Z; });
         return CreateModelRunner(nStochasts, z);
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearReliabilityProject(size_t nStochasts)
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { linearReliability(v); });
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { linearReliability(v); });
         return CreateModelRunner(nStochasts, z);
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearReliabilityInverseProject(size_t nStochasts)
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { linearReliability(v); v->Z = - v->Z; });
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { linearReliability(v); v.Z = - v.Z; });
         return CreateModelRunner(nStochasts, z);
     }
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearOutputOnlyProject()
     {
-        auto zModel = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> sample) { return linearOutputOnly(sample); });
+        auto zModel = std::make_shared<Models::ZModel>([](Models::ModelSample& sample) { return linearOutputOnly(sample); });
         zModel->zValueConverter = std::make_shared<Deltares::Models::DefaultValueConverter>();
 
         return CreateModelRunner(2, zModel);
@@ -84,7 +84,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearOutputProject()
     {
-        std::shared_ptr<Models::ZModel> z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linearMultiple(v); });
+        std::shared_ptr<Models::ZModel> z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linearMultiple(v); });
         return CreateModelRunner(2, z);
     }
 
@@ -107,7 +107,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearArrayProject()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linear(v); });
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linear(v); });
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -125,7 +125,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildLinearVaryingArrayProject()
     {
-        std::shared_ptr<Models::ZModel> z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return linear(v); });
+        std::shared_ptr<Models::ZModel> z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linear(v); });
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>();
         s->modelParameter->isArray = true;
@@ -150,7 +150,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildQuadraticProject()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return quadratic(v); });
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return quadratic(v); });
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -168,7 +168,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::getQualitativeProject()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v) { return zfuncDiscrete(v); });
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return zfuncDiscrete(v); });
         std::shared_ptr<Reliability::ReliabilityProject> project = std::make_shared<Reliability::ReliabilityProject>();
 
         project->stochasts.push_back(getUniformStochast());
@@ -191,7 +191,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist) const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& v)
         { return zfuncWithDeterminist(v); });
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         stochast.push_back(getNormalStochast(0.0, 1.0));
@@ -206,7 +206,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithDeterministAndCopula(double valueDeterminist) const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& v)
         { return zfuncWithDeterminist(v); });
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         stochast.push_back(getNormalStochast(0.0, 1.0));
@@ -223,7 +223,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithPolynome() const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& v)
         { return zfuncPolynome(v); });
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         stochast.push_back(getDeterministicStochast(1.0));
@@ -239,7 +239,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<Models::ModelRunner> projectBuilder::BuildProjectWithPolynome2() const
     {
-        auto z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& v)
         { return zfuncPolynome(v); });
         auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
         stochast.push_back(getLogNormalStochast(1.0, 0.5));
@@ -258,12 +258,12 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Models::ZModel> z;
         if (useProxy)
         {
-            z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+            z = std::make_shared<Models::ZModel>([this](Models::ModelSample& v)
             { return zfuncTwoBranchesProxy(v); });
         }
         else
         {
-            z = std::make_shared<Models::ZModel>([this](std::shared_ptr<Models::ModelSample> v)
+            z = std::make_shared<Models::ZModel>([this](Models::ModelSample& v)
             { return zfuncTwoBranches(v); });
         }
 
@@ -297,149 +297,149 @@ namespace Deltares::Probabilistic::Test
         return fragilityCurve;
     }
 
-    void projectBuilder::sum(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::sum(Models::ModelSample& sample)
     {
-        sample->Z = 0.0;
-        for (double value : sample->Values)
+        sample.Z = 0.0;
+        for (double value : sample.Values)
         {
-            sample->Z += value;
+            sample.Z += value;
         }
     }
 
-    void projectBuilder::linear(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linear(Models::ModelSample& sample)
     {
-        sample->Z = 1.8;
-        for (double value : sample->Values)
+        sample.Z = 1.8;
+        for (double value : sample.Values)
         {
-            sample->Z -= value;
+            sample.Z -= value;
         }
     }
 
-    void projectBuilder::linearAutoStart(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linearAutoStart(Models::ModelSample& sample)
     {
-        sample->Z = sample->Values.size() * 0.9;
-        for (double value : sample->Values)
+        sample.Z = sample.Values.size() * 0.9;
+        for (double value : sample.Values)
         {
-            sample->Z -= value;
+            sample.Z -= value;
         }
     }
 
-    void projectBuilder::linearProbability(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linearProbability(Models::ModelSample& sample)
     {
         double val = 2.7;
-        for (double value : sample->Values)
+        for (double value : sample.Values)
         {
             val -= value;
         }
 
-        sample->Z = (1.0 - val) / 2.0;
+        sample.Z = (1.0 - val) / 2.0;
 
-        if (sample->Z < 0)
+        if (sample.Z < 0)
         {
-            sample->Z = 0.0;
+            sample.Z = 0.0;
         }
-        else if (sample->Z > 1.0)
+        else if (sample.Z > 1.0)
         {
-            sample->Z = 1.0;
+            sample.Z = 1.0;
         }
     }
 
-    void projectBuilder::linearReliability(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linearReliability(Models::ModelSample& sample)
     {
         linearProbability(sample);
-        sample->Z = Statistics::StandardNormal::getUFromQ(sample->Z);
+        sample.Z = Statistics::StandardNormal::getUFromQ(sample.Z);
     }
 
-    void projectBuilder::linearOutputOnly(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linearOutputOnly(Models::ModelSample& sample)
     {
         double z = 1.8;
-        for (double value : sample->Values)
+        for (double value : sample.Values)
         {
             z -= value;
         }
 
-        sample->OutputValues.resize(1);
-        sample->OutputValues[0] = z;
+        sample.OutputValues.resize(1);
+        sample.OutputValues[0] = z;
     }
 
-    void projectBuilder::linearMultiple(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::linearMultiple(Models::ModelSample& sample)
     {
-        sample->Z = 1.8;
-        for (double value : sample->Values)
+        sample.Z = 1.8;
+        for (double value : sample.Values)
         {
-            sample->Z -= value;
+            sample.Z -= value;
         }
 
         // register twice in output values
-        sample->OutputValues.resize(2);
-        sample->OutputValues[0] = sample->Z;
-        sample->OutputValues[1] = sample->Z;
+        sample.OutputValues.resize(2);
+        sample.OutputValues[0] = sample.Z;
+        sample.OutputValues[1] = sample.Z;
     }
 
-    void projectBuilder::quadratic(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::quadratic(Models::ModelSample& sample)
     {
-        sample->Z = 1.0;
-        for (double value : sample->Values)
+        sample.Z = 1.0;
+        for (double value : sample.Values)
         {
-            sample->Z -= value * value;
+            sample.Z -= value * value;
         }
     }
 
-    void projectBuilder::zfunc(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfunc(Models::ModelSample& sample) const
     {
-        sample->Z = 3.0 + sample->Values[1] - 1.25 * sample->Values[0];
+        sample.Z = 3.0 + sample.Values[1] - 1.25 * sample.Values[0];
         if (logZtoScreen)
         {
-            std::cout << "u, z = " << sample->Values[0] << " , " << sample->Values[1] << " , " << sample->Z << std::endl;
+            std::cout << "u, z = " << sample.Values[0] << " , " << sample.Values[1] << " , " << sample.Z << std::endl;
         }
     }
 
-    void projectBuilder::zfuncWithDeterminist(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfuncWithDeterminist(Models::ModelSample& sample) const
     {
-        sample->Z = sample->Values[1] + sample->Values[0] - 1.25 * sample->Values[2];
+        sample.Z = sample.Values[1] + sample.Values[0] - 1.25 * sample.Values[2];
         if (logZtoScreen)
         {
-            std::cout << "u, z = " << sample->Values[0] << " , " << sample->Values[1] << " , " << sample->Z << std::endl;
+            std::cout << "u, z = " << sample.Values[0] << " , " << sample.Values[1] << " , " << sample.Z << std::endl;
         }
     }
 
-    void projectBuilder::zfuncPolynome(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfuncPolynome(Models::ModelSample& sample) const
     {
-        double x = sample->Values[0];
-        double y = sample->Values[1];
-        double z = sample->Values[2];
-        double u = sample->Values[3];
+        double x = sample.Values[0];
+        double y = sample.Values[1];
+        double z = sample.Values[2];
+        double u = sample.Values[3];
 
         double p = x + 0.3 * y * y + 0.2 * z * z * z + 0.125 * u * u * u * u;
 
-        sample->Z = 24 - p;
+        sample.Z = 24 - p;
     }
 
-    void projectBuilder::zfuncTwoBranches(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfuncTwoBranches(Models::ModelSample& sample) const
     {
-        double a = sample->Values[0];
-        double b = sample->Values[1];
-        double c = sample->Values[2];
-        sample->Z = c <= 5.0 ? a - b - c : c - b;
+        double a = sample.Values[0];
+        double b = sample.Values[1];
+        double c = sample.Values[2];
+        sample.Z = c <= 5.0 ? a - b - c : c - b;
     }
 
-    void projectBuilder::zfuncTwoBranchesProxy(std::shared_ptr<Models::ModelSample> sample) const
+    void projectBuilder::zfuncTwoBranchesProxy(Models::ModelSample& sample) const
     {
         const std::vector coeff = { 215.49, -41.012, -1.1379, -2.652, 2.0742, -0.53193, 0.23794 };
         double z = coeff[0];
-        for (size_t i = 0; i < sample->Values.size(); i++)
+        for (size_t i = 0; i < sample.Values.size(); i++)
         {
-            auto x = sample->Values[i];
+            auto x = sample.Values[i];
             z += coeff[i + 1] * x + coeff[i + 4] * pow(x, 2);
         }
-        sample->Z = z;
+        sample.Z = z;
     }
 
-    void projectBuilder::zfuncDiscrete(std::shared_ptr<Models::ModelSample> sample)
+    void projectBuilder::zfuncDiscrete(Models::ModelSample& sample)
     {
-        double a = sample->Values[0];
-        double b = sample->Values[1];
-        double scen = sample->Values[2];
+        double a = sample.Values[0];
+        double b = sample.Values[1];
+        double scen = sample.Values[2];
         double z;
         if (scen == 1.0)
         {
@@ -453,7 +453,7 @@ namespace Deltares::Probabilistic::Test
         {
             z = 2.2 - (a + b);
         }
-        sample->Z = 1.8 - z;
+        sample.Z = 1.8 - z;
     }
 
     std::shared_ptr<Uncertainty::UncertaintyProject> projectBuilder::getUncertaintyProject(std::shared_ptr<Reliability::ReliabilityProject> project)

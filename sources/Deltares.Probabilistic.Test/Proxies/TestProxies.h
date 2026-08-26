@@ -33,7 +33,7 @@ namespace Deltares::Probabilistic::Test
         void testLinearOutputOnlyModel() const;
     private:
         const double margin = 0.001;
-        void testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::Sample> sample) const;
+        void testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, Models::Sample& sample) const;
     };
 };
 

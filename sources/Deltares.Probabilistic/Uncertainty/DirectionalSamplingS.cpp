@@ -28,6 +28,7 @@
 #include "../Math/SpecialFunctions.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/GradientCalculator.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "../Statistics/DistributionType.h"
@@ -47,8 +48,8 @@ namespace Deltares::Uncertainty
 
         // Step 1: Calculate Z0, the model result at u = 0.
 
-        auto u0 = std::make_shared<Sample>(nStochasts);
-        u0->IterationIndex = -1;
+        auto u0 = Sample(nStochasts);
+        u0.IterationIndex = -1;
         double Z0 = modelRunner->getZValue(u0);
 
         // Step 2: Calculate beta_q, the reliability index corresponding to the given quantile value / exceeding probability
@@ -75,7 +76,7 @@ namespace Deltares::Uncertainty
 
         auto result = modelRunner->getUncertaintyResult(stochast);
 
-        for (const std::shared_ptr<Statistics::ProbabilityValue> &quantile : this->Settings->RequestedQuantiles)
+        for (const std::shared_ptr<Statistics::ProbabilityValue>& quantile : this->Settings->RequestedQuantiles)
         {
             if (this->evaluations.contains(quantile))
             {
@@ -107,27 +108,27 @@ namespace Deltares::Uncertainty
         randomSampleGenerator.sampleProvider = sampleProvider;
         randomSampleGenerator.initialize();
 
-        std::vector<std::shared_ptr<Sample>> samples;
+        std::vector<Sample*> samples;
 
         int nDirections = this->Settings->getRequiredSamples(modelRunner.getVaryingStochastCount());
         nDirections = std::min(nDirections, this->Settings->NumberDirections);
 
-        for (int i = 0; i < nDirections; i++)
-        {
-            std::shared_ptr<Sample> randomSample = randomSampleGenerator.getRandomSample();
-            samples.push_back(randomSample);
-        }
+        SampleStorage storage = SampleStorage(nDirections);
 
         // Calculate the corresponding distance d of the origin using the length of the samples list
 
         double initialDistance = getBetaDistance(std::abs(quantile->Reliability), nStochasts, this->Settings->modelType);
         initialDistance = std::max(0.1, initialDistance);
 
-        // Normalize the value of Samples via d
-        for (size_t i = 0; i < samples.size(); i++)
+        for (size_t i = 0; static_cast<int>(i) < nDirections; i++)
         {
-            samples[i] = std::make_shared<Sample>(samples[i]->getSampleAtBeta(initialDistance));
-            samples[i]->IterationIndex = static_cast<int>(i);
+            Sample randomSample = randomSampleGenerator.getRandomSample();
+
+            // Normalize the value of Samples via d
+            Sample betaSample = randomSample.getSampleAtBeta(initialDistance);
+            betaSample.IterationIndex = static_cast<int>(i);
+
+            samples.push_back(storage.keep(betaSample));
         }
 
         std::vector<double> zValues = modelRunner.getZValues(samples);
@@ -153,7 +154,7 @@ namespace Deltares::Uncertainty
         {
             const bool isValid = quantile->Reliability > beta0 ? zValues[i] > Z0 : zValues[i] < Z0;
             // If the direction is invalid, the direction will not be used in the calculation
-            std::shared_ptr<Direction> direction = std::make_shared<Direction>(samples[i], i, isValid);
+            std::shared_ptr<Direction> direction = std::make_shared<Direction>(*samples[i], i, isValid);
             direction->AddResult(0, Z0);
             direction->AddResult(initialDistance, zValues[i]);
             directions.push_back(direction);
@@ -169,7 +170,8 @@ namespace Deltares::Uncertainty
         double error = std::numeric_limits<double>::max();
         double quantile95 = Statistics::StandardNormal::getUFromP(0.95);
 
-        std::shared_ptr<Sample> lowestSample = nullptr;
+        Sample* lowestSample = nullptr;
+        SampleStorage lowestSampleStorage = SampleStorage(1);
 
         int j = 0; //iteration over N
         while (j < this->Settings->MaximumIterations && error > this->Settings->VariationCoefficientFailure)
@@ -182,23 +184,24 @@ namespace Deltares::Uncertainty
             { return predict(predZi, directions, probability0, nStochasts); });
 
             //for each new scale in direction i values, the new z values are calculated (zValues[i,j])
-            std::vector<std::shared_ptr<Sample>> newSamples;
-            std::vector<std::shared_ptr<Sample>> calculateSamples;
+            std::vector<Sample*> newSamples;
+            std::vector<Sample*> calculateSamples;
+            SampleStorage newStorage = SampleStorage(directions.size());
 
             for (size_t i = 0; i < directions.size(); i++)
             {
-                std::shared_ptr<Sample> newSample = directions[i]->CreateNewSampleAt(zPredicted, maxBetaDirection);
-                newSamples.push_back(newSample);
+                Sample newSample = directions[i]->CreateNewSampleAt(zPredicted, maxBetaDirection);
+                newSamples.push_back(newStorage.keep(newSample));
                 if (directions[i]->IsValid())
                 {
-                    newSample->IterationIndex = static_cast<int>(i);
-                    calculateSamples.push_back(newSample); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
+                    newSamples.back()->IterationIndex = static_cast<int>(i);
+                    calculateSamples.push_back(newSamples.back()); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
                 }
             }
 
             modelRunner.getZValues(calculateSamples);
 
-            std::vector<double> newZValues = Sample::select(newSamples, [](std::shared_ptr<Sample> p) {return p->Z; });
+            std::vector<double> newZValues = Sample::select(newSamples, [](Sample* p) {return p->Z; });
 
             //add the newZvalues to the list of zValues
             for (size_t i = 0; i < directions.size(); i++)
@@ -220,7 +223,13 @@ namespace Deltares::Uncertainty
             j++;
             zValues = newZValues;
 
-            lowestSample = selectSampleWithLowestBeta(calculateSamples);
+            if (!calculateSamples.empty())
+            {
+                lowestSample = selectSampleWithLowestBeta(calculateSamples);
+
+                lowestSampleStorage.clear();
+                lowestSample = lowestSampleStorage.keep(*lowestSample);
+            }
 
             performedIterations++;
             modelRunner.reportProgress(performedIterations, Settings->MaximumIterations + 1);
@@ -228,7 +237,7 @@ namespace Deltares::Uncertainty
 
         if (lowestSample != nullptr)
         {
-            auto evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluation(lowestSample));
+            auto evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluation(*lowestSample));
             this->evaluations[quantile] = evaluation;
         }
 
@@ -236,9 +245,9 @@ namespace Deltares::Uncertainty
     }
 
     // select the sample with the lowest beta as representative
-    std::shared_ptr<Sample> DirectionalSamplingS::selectSampleWithLowestBeta(const std::vector<std::shared_ptr<Sample>>& calculate_samples)
+    Sample* DirectionalSamplingS::selectSampleWithLowestBeta(const std::vector<Sample*>& calculate_samples)
     {
-        std::shared_ptr<Sample> lowest_sample = nullptr;
+        Sample* lowest_sample = nullptr;
         if (!calculate_samples.empty())
         {
             lowest_sample = calculate_samples[0];

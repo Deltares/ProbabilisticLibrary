@@ -147,7 +147,7 @@ namespace Deltares::Proxies
         /**
          * \brief Settings for performing model runs
          */
-        std::vector<std::shared_ptr<Models::ModelSample>> TrainingSamples;
+        std::vector<Models::ModelSample*> TrainingSamples;
 
         void validate(Logging::ValidationReport& report) const override
         {

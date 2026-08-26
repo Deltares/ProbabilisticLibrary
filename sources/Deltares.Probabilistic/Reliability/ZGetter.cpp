@@ -24,18 +24,18 @@
 
 namespace Deltares::Reliability
 {
-    std::shared_ptr<Models::Sample> ZGetter::GetSample(Models::Sample& uDirection, double factor, bool allowProxy) const
+    Models::Sample ZGetter::GetSample(Models::Sample& uDirection, double factor, bool allowProxy) const
     {
-        std::shared_ptr<Models::Sample> u = std::make_shared<Models::Sample>(uDirection.getMultipliedSample(factor));
-        u->AllowProxy = allowProxy;
+        Models::Sample u = uDirection.getMultipliedSample(factor);
+        u.AllowProxy = allowProxy;
 
         if (settings.UseInitialValues)
         {
-            for (size_t i = 0; i < u->Values.size(); i++)
+            for (size_t i = 0; i < u.Values.size(); i++)
             {
                 if (!settings.StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
                 {
-                    u->Values[i] = settings.StochastSet->VaryingStochastSettings[i]->StartValue;
+                    u.Values[i] = settings.StochastSet->VaryingStochastSettings[i]->StartValue;
                 }
             }
         }
@@ -45,12 +45,12 @@ namespace Deltares::Reliability
 
     double ZGetter::GetZ(Models::Sample& uDirection, double factor, bool inverted, bool allowProxy) const
     {
-        const auto u = GetSample(uDirection, factor, allowProxy);
+        auto u = GetSample(uDirection, factor, allowProxy);
 
         return GetZValueCorrected(u, inverted);
     }
 
-    double ZGetter::GetZValueCorrected(const std::shared_ptr<Models::Sample>& u, bool invertZ) const
+    double ZGetter::GetZValueCorrected(Models::Sample& u, bool invertZ) const
     {
         double z = modelRunner.getZValue(u);
         if (invertZ)

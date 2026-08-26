@@ -43,12 +43,12 @@ namespace Deltares::Reliability
         startPointCalculator.Settings = this->Settings->StartPointSettings;
         startPointCalculator.Settings->StochastSet = this->Settings->StochastSet;
 
-        const std::shared_ptr<Models::Sample> startPoint = startPointCalculator.getStartPoint(*modelRunner);
+        Models::Sample startPoint = startPointCalculator.getStartPoint(*modelRunner);
 
         if (Settings->StartPointSettings->StartMethod != StartMethodType::FixedValue)
         {
             const std::shared_ptr<DesignPoint> startDesignPoint =
-                modelRunner->getDesignPoint(startPoint, startPoint->getBeta(), std::make_shared<ConvergenceReport>());
+                modelRunner->getDesignPoint(startPoint, startPoint.getBeta(), std::make_shared<ConvergenceReport>());
             startDesignPoint->Identifier = "Start point";
             previousDesignPoints.push_back(startDesignPoint);
         }
@@ -62,7 +62,8 @@ namespace Deltares::Reliability
         {
             modelRunner->clearLists();
 
-            designPoint = getDesignPoint(modelRunner, std::make_shared<Models::Sample>(startPoint->clone()), relaxationFactor, relaxationIndex);
+            auto startPointSample = startPoint.clone();
+            designPoint = getDesignPoint(modelRunner, startPointSample, relaxationFactor, relaxationIndex);
 
             if (designPoint->convergenceReport->IsConverged)
             {
@@ -92,7 +93,7 @@ namespace Deltares::Reliability
     }
 
     std::shared_ptr<DesignPoint> FORM::getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner,
-        const std::shared_ptr<Models::Sample>& startPoint, const double relaxationFactor, const int relaxationIndex)
+        Models::Sample& startPoint, const double relaxationFactor, const int relaxationIndex)
     {
         constexpr double minGradientLength = 1E-08;
 
@@ -112,18 +113,18 @@ namespace Deltares::Reliability
         int iteration = 0;
         double beta = nan("");
 
-        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(startPoint->clone());
-        std::shared_ptr<Models::Sample> resultSample = std::make_shared<Models::Sample>(startPoint->clone());
+        Models::Sample sample = startPoint.clone();
+        Models::Sample resultSample = startPoint.clone();
 
         auto gradientCalculator = Models::GradientCalculator();
         gradientCalculator.Settings = this->Settings->GradientSettings;
 
         auto lastBetas = std::vector<double>();
-        auto lastSamples = std::vector<std::shared_ptr<Models::Sample>>();
+        auto lastSamples = std::vector<Models::Sample>();
 
         while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
         {
-            sample->IterationIndex = iteration;
+            sample.IterationIndex = iteration;
             zGradient = gradientCalculator.getGradient(*modelRunner, sample);
 
             // check whether there are valid results
@@ -132,7 +133,7 @@ namespace Deltares::Reliability
             {
                 // return the result so far
                 modelRunner->reportMessage(Logging::MessageType::Error,
-                    std::format("Model did not provide valid results, limit state value = {0:.5G}", sample->Z));
+                    std::format("Model did not provide valid results, limit state value = {0:.5G}", sample.Z));
 
                 std::shared_ptr<ReliabilityReport> reportInvalid = getReport(iteration, nan(""));
 
@@ -145,10 +146,10 @@ namespace Deltares::Reliability
             double zSum = 0;
             for (int i = 0; i < nStochasts; i++)
             {
-                zSum += sample->Values[i] * zGradient[i];
+                zSum += sample.Values[i] * zGradient[i];
             }
 
-            const double z0 = sample->Z - zSum;
+            const double z0 = sample.Z - zSum;
 
             // Standard deviation Z 
             double zGradientLength = NumericSupport::GetLength(zGradient);
@@ -160,7 +161,7 @@ namespace Deltares::Reliability
                 const std::shared_ptr<ReliabilityReport> reportTooSmall = getReport(iteration, beta);
                 modelRunner->reportResult(reportTooSmall);
 
-                const double betaNoVariation = getZFactor(sample->Z) * Statistics::StandardNormal::BetaMax;
+                const double betaNoVariation = getZFactor(sample.Z) * Statistics::StandardNormal::BetaMax;
                 return modelRunner->getDesignPoint(sample, betaNoVariation, convergenceReport);
             }
 
@@ -205,21 +206,21 @@ namespace Deltares::Reliability
                 return modelRunner->getDesignPoint(sample, beta, convergenceReport);
             }
 
-            convergenceReport->IsConverged = isConverged(*modelRunner, *sample, *convergenceReport, beta, zGradientLength);
+            convergenceReport->IsConverged = isConverged(*modelRunner, sample, *convergenceReport, beta, zGradientLength);
             convergenceReport->ZMargin = zGradientLength * this->Settings->EpsilonBeta;
             convergenceReport->TotalIterations = iteration + 1;
 
             // no convergence, next iteration
             if (!convergenceReport->IsConverged)
             {
-                const std::shared_ptr<Models::Sample> newSample = std::make_shared<Models::Sample>(nStochasts);
+                Models::Sample newSample = Models::Sample(nStochasts);
 
                 for (int k = 0; k < nStochasts; k++)
                 {
                     const double alpha = zGradient[k] / zGradientLength;
                     const double uNewValue = -alpha * beta;
 
-                    newSample->Values[k] = relaxationFactor * uNewValue + (1 - relaxationFactor) * sample->Values[k];
+                    newSample.Values[k] = relaxationFactor * uNewValue + (1 - relaxationFactor) * sample.Values[k];
                 }
 
                 sample = newSample;
@@ -230,7 +231,7 @@ namespace Deltares::Reliability
             // compute design values
             std::vector<double> uValues = NumericSupport::select(zGradient, [betaFac, zGradientLength](double p) { return - p * betaFac / zGradientLength; });
 
-            resultSample = std::make_shared<Models::Sample>(uValues);
+            resultSample = Models::Sample(uValues);
 
             iteration++;
         }
@@ -281,9 +282,9 @@ namespace Deltares::Reliability
         return report;
     }
 
-    std::pair<double, std::shared_ptr<Models::Sample>> FORM::estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector<std::shared_ptr<Models::Sample>>& last10u)
+    std::pair<double, Models::Sample> FORM::estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector<Models::Sample>& last10u)
     {
-        const size_t nStochasts = last10u[0]->getSize();
+        const size_t nStochasts = last10u[0].getSize();
         const size_t nIter = last10u.size();
         double rNIter = 1.0 / static_cast<double>(nIter);
         double sumUk = 0.0;
@@ -293,7 +294,7 @@ namespace Deltares::Reliability
             uk[k] = 0.0;
             for (size_t iter = 0; iter < nIter; iter++)
             {
-                uk[k] += last10u[iter]->Values[k];
+                uk[k] += last10u[iter].Values[k];
             }
             uk[k] *= rNIter;
             sumUk += pow(uk[k], 2);
@@ -309,11 +310,11 @@ namespace Deltares::Reliability
         double signBeta = (meanBeta > 0.0 ? 1.0 : -1.0);
         double beta = signBeta * sqrt(sumUk);
 
-        auto alpha = std::make_shared<Models::Sample>(nStochasts);
+        auto alpha = Models::Sample(nStochasts);
 
         for (size_t k = 0; k < nStochasts; k++)
         {
-            alpha->Values[k] = uk[k];
+            alpha.Values[k] = uk[k];
         }
         return { beta, alpha };
     }

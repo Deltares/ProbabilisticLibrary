@@ -42,8 +42,8 @@ class funcWrapper
 {
 public:
     funcWrapper(const int id, zFuncExtern func) : compId(id), zfunc(func) { ; }
-    void FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s);
-    void FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models::ModelSample>> s);
+    void FDelegate(Deltares::Models::ModelSample& s);
+    void FDelegateParallel(std::vector<Deltares::Models::ModelSample*> s);
     std::vector<std::string> error_messages;
 private:
     const int compId;
