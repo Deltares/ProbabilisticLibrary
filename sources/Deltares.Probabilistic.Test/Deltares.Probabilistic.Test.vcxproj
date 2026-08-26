@@ -211,7 +211,7 @@
     <ClInclude Include="Utils\TestExceptions.h" />
     <ClInclude Include="Utils\TestExceptions_body.cpp" />
     <ClInclude Include="Utils\TestString.h" />
-    <ClInclude Include="Utils\TestString.cpp" />
+    <ClInclude Include="Utils\TestString_body.cpp" />
     <ClInclude Include="unittests_body.cpp" />
   </ItemGroup>
   <ItemGroup>

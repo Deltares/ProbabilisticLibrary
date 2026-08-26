@@ -1492,17 +1492,12 @@ TEST(UnitTests, testCreateDestroyAllEntries)
 
 TEST(UnitTests, testProjectEntriesIsModelProject)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsStochast();
+    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsModelProject();
 }
 
 TEST(UnitTests, testProjectEntriesIsModelSettingsType)
 {
     Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();
-}
-
-TEST(UnitTests, testProjectEntriesIsStochast)
-{
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsStochast();
 }
 
 TEST(IntegrationTests, testProjectHandlerRunProject)

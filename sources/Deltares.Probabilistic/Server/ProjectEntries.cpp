@@ -104,11 +104,5 @@ namespace Deltares::Server
             object_type == SensitivitySettings;
     }
 
-    bool ProjectEntries::IsStochast(ObjectType object_type)
-    {
-        return object_type == Stochast ||
-            object_type == FragilityCurve;
-    }
-
 }
 

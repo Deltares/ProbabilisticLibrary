@@ -73,6 +73,7 @@ namespace Deltares::Server
 
                 correlationMatrix->Init(correlationMatrixStochasts);
             }
+            else StoredObjectHandler::SetArrayIntValue(correlationMatrix, property_, values, size);
         }
 
         double GetIndexedIndexedValue(const std::shared_ptr<Statistics::CopulaCorrelation>& correlationMatrix, const std::string& property_, int index1, int index2) override

@@ -126,7 +126,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions) /bigobj</AdditionalOptions>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
