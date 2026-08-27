@@ -96,13 +96,5 @@ namespace Deltares::Server
             object_type == SensitivityProject;
     }
 
-    bool ProjectEntries::IsModelSettingsType(ObjectType object_type)
-    {
-        return object_type == Settings ||
-            object_type == RunProjectSettings ||
-            object_type == UncertaintySettings ||
-            object_type == SensitivitySettings;
-    }
-
 }
 

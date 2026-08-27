@@ -97,29 +97,20 @@ namespace Deltares::Server
         HandlerAdmin admin;
 
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
-        std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveIntegrationSettings>> fragilityCurveSettings;
+        //std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveIntegrationSettings>> fragilityCurveSettings;
         std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
         std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineProject>> excludingCombineProjects;
         std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineSettings>> excludingCombineSettings;
         std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
         std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
-        std::unordered_map<int, std::shared_ptr<Models::RunProjectSettings>> runProjectSettings;
         std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
-        std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivitySettings>> sensitivitySettingsValues;
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
-        std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
-
-        std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
 
         std::unordered_map <std::string, std::vector<double>> tempValues;
 
-        int tempIntValue = 0;
-
         std::shared_ptr<Models::ModelProject> GetProject(int id);
-        std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
         std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
 
         bool IsSupported(ObjectType objectType);

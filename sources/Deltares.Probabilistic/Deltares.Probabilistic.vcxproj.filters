@@ -615,6 +615,12 @@
     <ClInclude Include="Server\Handlers\CorrelationMatrixHandler.h" />
     <ClInclude Include="Server\Handlers\CopulaCorrelationHandler.h" />
     <ClInclude Include="Server\Handlers\StochastSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\ModelProjectSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\RunProjectSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\SensitivitySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\UncertaintySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\ReliabilitySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\FragilityCurveSettingsHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -70,15 +70,8 @@ namespace Deltares::Server
         case ObjectType::Project:
             projects[id] = std::make_shared<ReliabilityProject>();
             break;
-        case ObjectType::Settings:
-            settingsValues[id] = std::make_shared<Settings>();
-            settingsValuesIds[settingsValues[id]] = id;
-            break;
         case ObjectType::FragilityCurveProject:
             fragilityCurveProjects[id] = std::make_shared<FragilityCurveProject>();
-            break;
-        case ObjectType::FragilityCurveSettings:
-            fragilityCurveSettings[id] = std::make_shared<FragilityCurveIntegrationSettings>();
             break;
         case ObjectType::CombineProject:
             combineProjects[id] = std::make_shared<CombineProject>();
@@ -95,20 +88,11 @@ namespace Deltares::Server
         case ObjectType::RunProject:
             runProjects[id] = std::make_shared<Models::RunProject>();
             break;
-        case ObjectType::RunProjectSettings:
-            runProjectSettings[id] = std::make_shared<Models::RunProjectSettings>();
-            break;
         case ObjectType::UncertaintyProject:
             uncertaintyProjects[id] = std::make_shared<Uncertainty::UncertaintyProject>();
             break;
-        case ObjectType::UncertaintySettings:
-            uncertaintySettingsValues[id] = std::make_shared<Uncertainty::SettingsS>();
-            break;
         case ObjectType::SensitivityProject:
             sensitivityProjects[id] = std::make_shared<Sensitivity::SensitivityProject>();
-            break;
-        case ObjectType::SensitivitySettings:
-            sensitivitySettingsValues[id] = std::make_shared<Sensitivity::SensitivitySettings>();
             break;
         case ObjectType::LengthEffectProject:
             lengthEffectProjects[id] = std::make_shared<LengthEffectProject>();
@@ -139,19 +123,14 @@ namespace Deltares::Server
         switch (objectType)
         {
         case ObjectType::Project: projects.erase(id); break;
-        case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
         case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
-        case ObjectType::FragilityCurveSettings: fragilityCurveSettings.erase(id); break;
         case ObjectType::CombineProject: combineProjects.erase(id); break;
         case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
         case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
         case ObjectType::ExcludingCombineSettings: excludingCombineSettings.erase(id); break;
         case ObjectType::RunProject: runProjects.erase(id); break;
-        case ObjectType::RunProjectSettings: runProjectSettings.erase(id); break;
         case ObjectType::UncertaintyProject: uncertaintyProjects.erase(id); break;
-        case ObjectType::UncertaintySettings: uncertaintySettingsValues.erase(id); break;
         case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
-        case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
         case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
         default: throw ProbabilisticLibraryException("object type");
         }
@@ -173,56 +152,7 @@ namespace Deltares::Server
             return admin.GetValue(id, property_);
         }
 
-        if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "relaxation_factor") return settings->RelaxationFactor;
-            else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
-            else if (property_ == "variance_factor") return settings->VarianceFactor;
-            else if (property_ == "fraction_failed") return settings->FractionFailed;
-            else if (property_ == "epsilon_beta") return settings->EpsilonBeta;
-            else if (property_ == "epsilon_weight_sample") return settings->EpsilonWeightSample;
-            else if (property_ == "epsilon_u_step_size") return settings->DirectionSettings->EpsilonUStepSize;
-            else if (property_ == "epsilon_z_step_size") return settings->DirectionSettings->EpsilonZStepSize;
-            else if (property_ == "dsdu") return settings->DirectionSettings->Dsdu;
-            else if (property_ == "maximum_length_u") return settings->DirectionSettings->MaximumLengthU;
-            else if (property_ == "maximum_length_start_point") return settings->StartPointSettings->MaximumLengthStartPoint;
-            else if (property_ == "radius_sphere_search") return settings->StartPointSettings->RadiusSphereSearch;
-            else if (property_ == "markov_chain_deviation") return settings->MarkovChainDeviation;
-            else if (property_ == "subset_fraction") return settings->SubsetFraction;
-            else if (property_ == "step_size") return settings->GradientSettings->StepSize;
-            else if (property_ == "fragility_curve_step_size") return settings->FragilityCurveStepSize;
-            else if (property_ == "start_value_step_size") return settings->StartValueStepSize;
-            else if (property_ == "loop_variance_increment") return settings->LoopVarianceIncrement;
-            else if (property_ == "max_beta") return settings->MaxBeta;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "variation_coefficient") return settings->VariationCoefficient;
-            else if (property_ == "probability_for_convergence") return settings->ProbabilityForConvergence;
-            else if (property_ == "minimum_u") return settings->MinimumU;
-            else if (property_ == "maximum_u") return settings->MaximumU;
-            else if (property_ == "step_size") return settings->GradientSettings->StepSize;
-            else if (property_ == "step_size_factor") return settings->StepSizeFactor;
-            else if (property_ == "global_step_size") return settings->GlobalStepSize;
-        }
-        else if (objectType == ObjectType::FragilityCurveSettings)
-        {
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
-
-            if (property_ == "step_size") return settings->StepSize;
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "low_value") return settings->LowValue;
-            else if (property_ == "high_value") return settings->HighValue;
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
+        if (objectType == ObjectType::LengthEffectProject)
         {
             std::shared_ptr<LengthEffectProject> length_effect = lengthEffectProjects[id];
 
@@ -240,56 +170,7 @@ namespace Deltares::Server
             admin.SetValue(id, property_, value);
         }
 
-        if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "relaxation_factor") settings->RelaxationFactor = value;
-            else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
-            else if (property_ == "variance_factor") settings->VarianceFactor = value;
-            else if (property_ == "fraction_failed") settings->FractionFailed = value;
-            else if (property_ == "epsilon_weight_sample") settings->EpsilonWeightSample = value;
-            else if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
-            else if (property_ == "epsilon_u_step_size") settings->DirectionSettings->EpsilonUStepSize = value;
-            else if (property_ == "epsilon_z_step_size") settings->DirectionSettings->EpsilonZStepSize = value;
-            else if (property_ == "dsdu") settings->DirectionSettings->Dsdu = value;
-            else if (property_ == "maximum_length_u") settings->DirectionSettings->MaximumLengthU = value;
-            else if (property_ == "maximum_length_start_point") settings->StartPointSettings->MaximumLengthStartPoint = value;
-            else if (property_ == "radius_sphere_search") settings->StartPointSettings->RadiusSphereSearch = value;
-            else if (property_ == "markov_chain_deviation") settings->MarkovChainDeviation = value;
-            else if (property_ == "subset_fraction") settings->SubsetFraction = value;
-            else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
-            else if (property_ == "fragility_curve_step_size") settings->FragilityCurveStepSize = value;
-            else if (property_ == "start_value_step_size") settings->StartValueStepSize = value;
-            else if (property_ == "loop_variance_increment") settings->LoopVarianceIncrement = value;
-            else if (property_ == "max_beta") settings->MaxBeta = value;
-        }
-        else if (objectType == ObjectType::FragilityCurveSettings)
-        {
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
-
-            if (property_ == "step_size") settings->StepSize = value;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
-            else if (property_ == "probability_for_convergence") settings->ProbabilityForConvergence = value;
-            else if (property_ == "minimum_u") settings->MinimumU = value;
-            else if (property_ == "maximum_u") settings->MaximumU = value;
-            else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
-            else if (property_ == "step_size_factor") settings->StepSizeFactor = value;
-            else if (property_ == "global_step_size") settings->GlobalStepSize = value;
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "low_value") settings->LowValue = value;
-            else if (property_ == "high_value") settings->HighValue = value;
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
+        if (objectType == ObjectType::LengthEffectProject)
         {
             std::shared_ptr<LengthEffectProject> length_effect = lengthEffectProjects[id];
 
@@ -339,52 +220,6 @@ namespace Deltares::Server
             if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
             else if (property_ == "sensitivity_parameters_count") return static_cast<int>(project->sensitivityParameters.size());
         }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
-            else if (property_ == "minimum_samples") return settings->MinimumSamples;
-            else if (property_ == "maximum_samples") return settings->MaximumSamples;
-            else if (property_ == "maximum_samples_no_result") return settings->MaximumSamplesNoResult;
-            else if (property_ == "minimum_iterations") return settings->MinimumIterations;
-            else if (property_ == "maximum_iterations") return settings->MaximumIterations;
-            else if (property_ == "minimum_directions") return settings->MinimumDirections;
-            else if (property_ == "maximum_directions") return settings->MaximumDirections;
-            else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
-            else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
-            else if (property_ == "minimum_failed_samples") return settings->MinimumFailedSamples;
-            else if (property_ == "random_seed") return settings->RandomSettings->Seed;
-            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
-            else if (property_ == "max_messages") return settings->RunSettings->MaxMessages;
-            else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
-            else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
-            else if (property_ == "max_clusters") return settings->MaxClusters;
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
-            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
-            else if (property_ == "iterations") return settings->Iterations;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
-            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
-            else if (property_ == "minimum_samples") return settings->MinimumSamples;
-            else if (property_ == "maximum_samples") return settings->MaximumSamples;
-            else if (property_ == "maximum_iterations") return settings->MaximumIterations;
-            else if (property_ == "minimum_directions") return settings->MinimumDirections;
-            else if (property_ == "maximum_directions") return settings->MaximumDirections;
-            else if (property_ == "random_seed") return settings->RandomSettings->Seed;
-            else if (property_ == "required_samples")
-                return Uncertainty::CrudeMonteCarloSettingsS::getRequiredSamples(settings->ProbabilityForConvergence, settings->VariationCoefficient);
-            else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
-        }
         else if (objectType == ObjectType::LengthEffectProject)
         {
             std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
@@ -409,12 +244,6 @@ namespace Deltares::Server
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
             if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()));
-        }
-        else if (ProjectEntries::IsModelSettingsType(objectType))
-        {
-            std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
-
-            if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(settings->getValidationReport()));
         }
 
         if (objectType == ObjectType::Project)
@@ -502,8 +331,7 @@ namespace Deltares::Server
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
-            if (property_ == "settings") project->setSettings(GetSettings(value));
-            else if (property_ == "correlation_matrix") project->correlation = admin.correlationMatrixHandler.GetObject(value);
+            if (property_ == "correlation_matrix") project->correlation = admin.correlationMatrixHandler.GetObject(value);
             else if (property_ == "copula_correlation") project->correlation = admin.copulaCorrelationHandler.GetObject(value);
             else if (property_ == "share_project") project->shareStochasts(GetProject(value));
             else if (property_ == "total_model_runs") project->modelRuns = value;
@@ -516,62 +344,32 @@ namespace Deltares::Server
             if (property_ == "integrand") project->integrand = admin.stochastHandler.GetObject(value);
             else if (property_ == "fragility_curve") project->fragilityCurve = admin.fragilityCurveHandler.GetObject(value);
             else if (property_ == "fragility_curve_normalized") project->fragilityCurveNormalized = admin.fragilityCurveHandler.GetObject(value);
-            else if (property_ == "settings") project->settings = fragilityCurveSettings[value];
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
-            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
-            else if (property_ == "minimum_samples") settings->MinimumSamples = value;
-            else if (property_ == "maximum_samples") settings->MaximumSamples = value;
-            else if (property_ == "maximum_samples_no_result") settings->MaximumSamplesNoResult = value;
-            else if (property_ == "minimum_iterations") settings->MinimumIterations = value;
-            else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
-            else if (property_ == "minimum_directions") settings->MinimumDirections = value;
-            else if (property_ == "maximum_directions") settings->MaximumDirections = value;
-            else if (property_ == "minimum_variance_loops") settings->MinimumVarianceLoops = value;
-            else if (property_ == "maximum_variance_loops") settings->MaximumVarianceLoops = value;
-            else if (property_ == "minimum_failed_samples") settings->MinimumFailedSamples = value;
-            else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
-            else if (property_ == "max_clusters") settings->MaxClusters = value;
-            else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
-            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
-            else if (property_ == "max_messages") settings->RunSettings->MaxMessages = value;
-            else if (property_ == "max_steps_sphere_search") settings->StartPointSettings->maxStepsSphereSearch = value;
-            else if (property_ == "start_point")
-            {
-                std::shared_ptr<DesignPoint> designPoint = admin.designPointHandler.GetObject(value);
-                settings->StochastSet->setStartPoint(designPoint->getSample());
-            }
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
-            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
-            else if (property_ == "iterations") settings->Iterations = value;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
-            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
-            else if (property_ == "minimum_samples") settings->MinimumSamples = value;
-            else if (property_ == "maximum_samples") settings->MaximumSamples = value;
-            else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
-            else if (property_ == "minimum_directions") settings->MinimumDirections = value;
-            else if (property_ == "maximum_directions") settings->MaximumDirections = value;
-            else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
+            else if (property_ == "settings") project->settings = admin.fragilityCurveSettingsHandler.GetObject(value);
         }
         else if (objectType == ObjectType::Project)
         {
             std::shared_ptr<ReliabilityProject> reliabilityProject = projects[id];
 
-            if (property_ == "limit_state_function") reliabilityProject->limitStateFunction = GetLimitStateFunction(value);
+            if (property_ == "settings") reliabilityProject->setSettings(admin.reliabilitySettingsHandler.GetObject(value));
+            else if (property_ == "limit_state_function") reliabilityProject->limitStateFunction = GetLimitStateFunction(value);
+        }
+        else if (objectType == ObjectType::UncertaintyProject)
+        {
+            std::shared_ptr<Uncertainty::UncertaintyProject> uncertaintyProject = uncertaintyProjects[id];
+
+            if (property_ == "settings") uncertaintyProject->setSettings(admin.uncertaintySettingsHandler.GetObject(value));
+        }
+        else if (objectType == ObjectType::SensitivityProject)
+        {
+            std::shared_ptr<Sensitivity::SensitivityProject> sensitivityProject = sensitivityProjects[id];
+
+            if (property_ == "settings") sensitivityProject->setSettings(admin.sensitivitySettingsHandler.GetObject(value));
+        }
+        else if (objectType == ObjectType::RunProject)
+        {
+            std::shared_ptr<Models::RunProject> runProject = runProjects[id];
+
+            if (property_ == "settings") runProject->setSettings(admin.runProjectSettingsHandler.GetObject(value));
         }
         else if (objectType == ObjectType::CombineProject)
         {
@@ -643,41 +441,8 @@ namespace Deltares::Server
 
             if (property_ == "is_valid") return project->isValid();
         }
-        else if (ProjectEntries::IsModelSettingsType(objectType))
-        {
-            std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
 
-            if (property_ == "is_valid") return settings->isValid();
-            else if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
-            else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
-            else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
-            else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
-            else if (property_ == "allow_repository") return settings->RunSettings->AllowRepository;
-            else if (property_ == "use_z_from_sample") return settings->RunSettings->UseZFromSample;
-        }
-
-        if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
-            else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
-            else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
-            else if (property_ == "is_repeatable_random") return settings->RandomSettings->IsRepeatableRandom;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> setting = settingsValues[id];
-
-            if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
-            else if (property_ == "is_repeatable_random") return setting->RandomSettings->IsRepeatableRandom;
-            else if (property_ == "filter_at_non_convergence") return setting->FilterAtNonConvergence;
-            else if (property_ == "clustering") return setting->Clustering;
-            else if (property_ == "optimize_number_clusters") return setting->OptimizeNumberOfClusters;
-            else if (property_ == "auto_maximum_samples") return setting->AutoMaximumSamples;
-            else if (property_ == "start_point_on_limit_state") return setting->StartPointOnLimitState;
-        }
-        else if (objectType == ObjectType::CombineProject)
+        if (objectType == ObjectType::CombineProject)
         {
             std::shared_ptr<CombineProject> project = combineProjects[id];
 
@@ -708,40 +473,6 @@ namespace Deltares::Server
 
             if (property_ == "callback_assigned") if (project->model != nullptr) project->model->callbackAssigned = value;
         }
-        else if (ProjectEntries::IsModelSettingsType(objectType))
-        {
-            std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
-
-            if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
-            else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
-            else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
-            else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
-            else if (property_ == "allow_repository") settings->RunSettings->AllowRepository = value;
-            else if (property_ == "use_z_from_sample") settings->RunSettings->UseZFromSample = value;
-            else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
-        }
-
-        if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
-            else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
-            else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
-            else if (property_ == "is_repeatable_random") settings->RandomSettings->IsRepeatableRandom = value;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> setting = settingsValues[id];
-
-            if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
-            else if (property_ == "is_repeatable_random") setting->RandomSettings->IsRepeatableRandom = value;
-            else if (property_ == "filter_at_non_convergence") setting->FilterAtNonConvergence = value;
-            else if (property_ == "clustering") setting->Clustering = value;
-            else if (property_ == "optimize_number_clusters") setting->OptimizeNumberOfClusters = value;
-            else if (property_ == "auto_maximum_samples") setting->AutoMaximumSamples = value;
-            else if (property_ == "start_point_on_limit_state") setting->StartPointOnLimitState = value;
-        }
     }
 
     std::string ProjectHandler::GetStringValue(int id, const std::string& property_)
@@ -753,44 +484,7 @@ namespace Deltares::Server
             return admin.GetStringValue(id, property_);
         }
 
-        if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
-            else if (property_ == "handle_invalid_type") return Models::RunSettings::getHandleInvalidTypeString(settings->RunSettings->handleInvalidType);
-            else if (property_ == "reliability_result") return Settings::getReliabilityResultTypeString(settings->ReliabilityResult);
-            else if (property_ == "model_return_type") return Models::RunSettings::getModelReturnTypeString(settings->RunSettings->modelReturnType);
-            else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
-            else if (property_ == "fragility_curve_design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->fragilityCurveDesignPointMethod);
-            else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
-            else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
-            else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
-            else if (property_ == "model_varying_type") return DirectionReliabilitySettings::getModelVaryingTypeString(settings->DirectionSettings->modelVaryingType);
-            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
-        }
-        else if (objectType == ObjectType::FragilityCurveSettings)
-        {
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
-
-            if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
-        }
-        else if (objectType == ObjectType::RunProjectSettings)
-        {
-            std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
-
-            if (property_ == "run_values_type") return Models::RunProjectSettings::getRunValuesTypeString(settings->runValuesType);
-            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "uncertainty_method") return Uncertainty::SettingsS::getUncertaintyMethodTypeString(settings->UncertaintyMethod);
-            else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
-            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
+        if (objectType == ObjectType::UncertaintyProject)
         {
             std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
@@ -801,13 +495,6 @@ namespace Deltares::Server
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
             if (property_ == "parameter") return project->parameter;
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "sensitivity_method") return Sensitivity::SensitivitySettings::getSensitivityMethodTypeString(settings->SensitivityMethod);
-            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
         }
         else if (objectType == ObjectType::CombineSettings)
         {
@@ -846,50 +533,6 @@ namespace Deltares::Server
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
             if (property_ == "parameter") project->parameter = value;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
-            else if (property_ == "reliability_result") settings->ReliabilityResult = Settings::getReliabilityResultType(value);
-            else if (property_ == "handle_invalid_type") settings->RunSettings->handleInvalidType = Models::RunSettings::getHandleInvalidType(value);
-            else if (property_ == "model_return_type") settings->RunSettings->modelReturnType = Models::RunSettings::getModelReturnType(value);
-            else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
-            else if (property_ == "fragility_curve_design_point_method") settings->fragilityCurveDesignPointMethod = DesignPointBuilder::getDesignPointMethod(value);
-            else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
-            else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
-            else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
-            else if (property_ == "model_varying_type") settings->DirectionSettings->modelVaryingType = DirectionReliabilitySettings::getModelVaryingType(value);
-            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
-        }
-        else if (objectType == ObjectType::FragilityCurveSettings)
-        {
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
-
-            if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
-        }
-        else if (objectType == ObjectType::RunProjectSettings)
-        {
-            std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
-
-            if (property_ == "run_values_type") settings->runValuesType = Models::RunProjectSettings::getRunValuesType(value);
-            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "uncertainty_method") settings->UncertaintyMethod = Uncertainty::SettingsS::getUncertaintyMethodType(value);
-            else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
-            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "sensitivity_method") settings->SensitivityMethod = Sensitivity::SensitivitySettings::getSensitivityMethodType(value);
-            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
         }
         else if (objectType == ObjectType::CombineSettings)
         {
@@ -1007,40 +650,6 @@ namespace Deltares::Server
                 for (int i = 0; i < size; i++)
                 {
                     project->sensitivityParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
-                }
-            }
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "stochast_settings")
-            {
-                settings->StochastSet->stochastSettings.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->StochastSet->stochastSettings.push_back(admin.stochastSettingsHandler.GetObject(values[i]));
-                }
-            }
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "stochast_settings")
-            {
-                settings->StochastSet->stochastSettings.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->StochastSet->stochastSettings.push_back(admin.stochastSettingsHandler.GetObject(values[i]));
-                }
-            }
-            else if (property_ == "quantiles")
-            {
-                settings->RequestedQuantiles.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->RequestedQuantiles.push_back(admin.probabilityValueHandler.GetObject(values[i]));
                 }
             }
         }
@@ -1198,12 +807,6 @@ namespace Deltares::Server
 
             if (property_ == "results") return admin.sensitivityResultHandler.GetObjectId(project->sensitivityResults[index]);
             else if (property_ == "sensitivity_parameters") return admin.modelParameterHandler.GetObjectId(project->sensitivityParameters[index]);
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "quantiles") return admin.probabilityValueHandler.GetObjectId(settings->RequestedQuantiles[index]);
         }
 
         return 0;
@@ -1402,30 +1005,6 @@ namespace Deltares::Server
         else if (sensitivityProjects.contains(id))
         {
             return std::static_pointer_cast<Models::ModelProject>(sensitivityProjects[id]);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
-    std::shared_ptr<Models::ModelProjectSettings> ProjectHandler::GetSettings(int id)
-    {
-        if (settingsValues.contains(id))
-        {
-            return settingsValues[id];
-        }
-        else if (runProjectSettings.contains(id))
-        {
-            return runProjectSettings[id];
-        }
-        else if (uncertaintySettingsValues.contains(id))
-        {
-            return uncertaintySettingsValues[id];
-        }
-        else if (sensitivitySettingsValues.contains(id))
-        {
-            return sensitivitySettingsValues[id];
         }
         else
         {

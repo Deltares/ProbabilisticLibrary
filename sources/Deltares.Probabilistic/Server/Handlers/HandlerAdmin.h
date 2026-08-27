@@ -33,6 +33,7 @@
 #include "DiscreteValueHandler.h"
 #include "EvaluationHandler.h"
 #include "FragilityCurveHandler.h"
+#include "FragilityCurveSettingsHandler.h"
 #include "FragilityValueHandler.h"
 #include "HistogramValueHandler.h"
 #include "LimitStateFunctionHandler.h"
@@ -52,6 +53,11 @@
 #include "StochastSettingsHandler.h"
 #include "UncertaintyResultHandler.h"
 #include "ValidationReportHandler.h"
+#include "ModelProjectSettingsHandler.h"
+#include "RunProjectSettingsHandler.h"
+#include "SensitivitySettingsHandler.h"
+#include "UncertaintySettingsHandler.h"
+#include "ReliabilitySettingsHandler.h"
 
 namespace Deltares::Server
 {
@@ -89,6 +95,12 @@ namespace Deltares::Server
         SensitivityResultHandler sensitivityResultHandler;
         SensitivityValueHandler sensitivityValueHandler;
         StochastSettingsHandler stochastSettingsHandler;
+        ModelProjectSettingsHandler modelProjectSettingsHandler;
+        RunProjectSettingsHandler runProjectSettingsHandler;
+        SensitivitySettingsHandler sensitivitySettingsHandler;
+        UncertaintySettingsHandler uncertaintySettingsHandler;
+        ReliabilitySettingsHandler reliabilitySettingsHandler;
+        FragilityCurveSettingsHandler fragilityCurveSettingsHandler;
 
         int GetNewId()
         {

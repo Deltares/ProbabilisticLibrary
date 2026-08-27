@@ -216,18 +216,5 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(ProjectEntries::IsModelProjectType(RunProject));
         EXPECT_TRUE(ProjectEntries::IsModelProjectType(SensitivityProject));
     }
-
-    void UnitTestProjectHandler::TestProjectEntriesIsModelSettingsType()
-    {
-        using namespace Deltares::Server;
-        using enum ObjectType;
-
-        EXPECT_FALSE(ProjectEntries::IsModelSettingsType(Alpha));
-        EXPECT_FALSE(ProjectEntries::IsModelSettingsType(CombineSettings));
-        EXPECT_TRUE(ProjectEntries::IsModelSettingsType(Settings));
-        EXPECT_TRUE(ProjectEntries::IsModelSettingsType(UncertaintySettings));
-        EXPECT_TRUE(ProjectEntries::IsModelSettingsType(RunProjectSettings));
-        EXPECT_TRUE(ProjectEntries::IsModelSettingsType(SensitivitySettings));
-    }
 }
 

@@ -76,6 +76,17 @@ namespace Deltares::Server
 
         stochastSettingsHandler.stochastHandler = &stochastHandler;
 
+        modelProjectSettingsHandler.validationReportHandler = &validationReportHandler;
+
+        runProjectSettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
+        sensitivitySettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
+        uncertaintySettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
+        uncertaintySettingsHandler.stochastSettingsHandler = &stochastSettingsHandler;
+        uncertaintySettingsHandler.probabilityValueHandler = &probabilityValueHandler;
+        reliabilitySettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
+        reliabilitySettingsHandler.stochastSettingsHandler = &stochastSettingsHandler;
+        reliabilitySettingsHandler.designPointCallback = [this](int id) {return this->designPointHandler.GetObject(id); };
+
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
         handlers[ObjectType::FragilityValue] = &fragilityValueHandler;
@@ -104,6 +115,11 @@ namespace Deltares::Server
         handlers[ObjectType::UncertaintyResult] = &uncertaintyResultHandler;
         handlers[ObjectType::SensitivityResult] = &sensitivityResultHandler;
         handlers[ObjectType::SensitivityValue] = &sensitivityValueHandler;
+        handlers[ObjectType::RunProjectSettings] = &runProjectSettingsHandler;
+        handlers[ObjectType::SensitivitySettings] = &sensitivitySettingsHandler;
+        handlers[ObjectType::UncertaintySettings] = &uncertaintySettingsHandler;
+        handlers[ObjectType::Settings] = &reliabilitySettingsHandler;
+        handlers[ObjectType::FragilityCurveSettings] = &fragilityCurveSettingsHandler;
         handlers[ObjectType::StochastSettings] = &stochastSettingsHandler;
 
         for (const auto& [objectType, handler] : handlers)
@@ -143,6 +159,11 @@ namespace Deltares::Server
             objectType == ObjectType::UncertaintyResult ||
             objectType == ObjectType::SensitivityResult ||
             objectType == ObjectType::SensitivityValue ||
+            objectType == ObjectType::RunProjectSettings ||
+            objectType == ObjectType::SensitivitySettings ||
+            objectType == ObjectType::UncertaintySettings ||
+            objectType == ObjectType::Settings ||
+            objectType == ObjectType::FragilityCurveSettings ||
             objectType == ObjectType::StochastSettings;
     }
 }

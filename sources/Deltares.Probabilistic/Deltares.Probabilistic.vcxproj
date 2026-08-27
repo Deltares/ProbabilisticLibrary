@@ -159,6 +159,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\FragilityCurveSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\UncertaintySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\SensitivitySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\RunProjectSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\ModelProjectSettingsHandler.h" />
     <ClInclude Include="Server\Handlers\StochastSettingsHandler.h" />
     <ClInclude Include="Server\Handlers\CopulaCorrelationHandler.h" />
     <ClInclude Include="Server\Handlers\CorrelationMatrixHandler.h" />
@@ -236,6 +241,7 @@
     <ClInclude Include="Statistics\Distributions\DistributionSupport.h" />
     <ClInclude Include="Server\Handlers\FragilityCurveHandler.h" />
     <ClInclude Include="Server\Handlers\SensitivityResultHandler.h" />
+    <ClInclude Include="Server\Handlers\ReliabilitySettingsHandler.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />
