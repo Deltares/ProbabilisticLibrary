@@ -98,11 +98,8 @@ namespace Deltares::Server
 
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
-        //std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveIntegrationSettings>> fragilityCurveSettings;
         std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineProject>> excludingCombineProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineSettings>> excludingCombineSettings;
         std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
         std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
         std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;

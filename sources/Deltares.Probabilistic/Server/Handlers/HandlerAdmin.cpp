@@ -120,6 +120,8 @@ namespace Deltares::Server
         handlers[ObjectType::UncertaintySettings] = &uncertaintySettingsHandler;
         handlers[ObjectType::Settings] = &reliabilitySettingsHandler;
         handlers[ObjectType::FragilityCurveSettings] = &fragilityCurveSettingsHandler;
+        handlers[ObjectType::CombineSettings] = &combineSettingsHandler;
+        handlers[ObjectType::ExcludingCombineSettings] = &excludingCombineSettingsHandler;
         handlers[ObjectType::StochastSettings] = &stochastSettingsHandler;
 
         for (const auto& [objectType, handler] : handlers)
@@ -164,6 +166,8 @@ namespace Deltares::Server
             objectType == ObjectType::UncertaintySettings ||
             objectType == ObjectType::Settings ||
             objectType == ObjectType::FragilityCurveSettings ||
+            objectType == ObjectType::CombineSettings ||
+            objectType == ObjectType::ExcludingCombineSettings ||
             objectType == ObjectType::StochastSettings;
     }
 }

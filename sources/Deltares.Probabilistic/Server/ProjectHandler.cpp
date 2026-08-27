@@ -76,14 +76,8 @@ namespace Deltares::Server
         case ObjectType::CombineProject:
             combineProjects[id] = std::make_shared<CombineProject>();
             break;
-        case ObjectType::CombineSettings:
-            combineSettingsValues[id] = std::make_shared<CombineSettings>();
-            break;
         case ObjectType::ExcludingCombineProject:
             excludingCombineProjects[id] = std::make_shared<ExcludingCombineProject>();
-            break;
-        case ObjectType::ExcludingCombineSettings:
-            excludingCombineSettings[id] = std::make_shared<ExcludingCombineSettings>();
             break;
         case ObjectType::RunProject:
             runProjects[id] = std::make_shared<Models::RunProject>();
@@ -125,9 +119,7 @@ namespace Deltares::Server
         case ObjectType::Project: projects.erase(id); break;
         case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
         case ObjectType::CombineProject: combineProjects.erase(id); break;
-        case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
         case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
-        case ObjectType::ExcludingCombineSettings: excludingCombineSettings.erase(id); break;
         case ObjectType::RunProject: runProjects.erase(id); break;
         case ObjectType::UncertaintyProject: uncertaintyProjects.erase(id); break;
         case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
@@ -375,7 +367,7 @@ namespace Deltares::Server
         {
             std::shared_ptr<CombineProject> combineProject = combineProjects[id];
 
-            if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
+            if (property_ == "settings") combineProject->settings = admin.combineSettingsHandler.GetObject(value);
             else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = admin.selfCorrelationMatrixHandler.GetObject(value);
             else if (property_ == "design_point_correlation_matrix")
             {
@@ -393,7 +385,7 @@ namespace Deltares::Server
         {
             std::shared_ptr<ExcludingCombineProject> combineProject = excludingCombineProjects[id];
 
-            if (property_ == "settings") combineProject->settings = excludingCombineSettings[value];
+            if (property_ == "settings") combineProject->settings = admin.excludingCombineSettingsHandler.GetObject(value);
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
@@ -496,19 +488,6 @@ namespace Deltares::Server
 
             if (property_ == "parameter") return project->parameter;
         }
-        else if (objectType == ObjectType::CombineSettings)
-        {
-            std::shared_ptr<CombineSettings> settings = combineSettingsValues[id];
-
-            if (property_ == "combine_method") return DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
-            else if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(settings->combineType);
-        }
-        else if (objectType == ObjectType::ExcludingCombineSettings)
-        {
-            std::shared_ptr<ExcludingCombineSettings> settings = excludingCombineSettings[id];
-
-            if (property_ == "combiner_method") return DesignPointCombiner::getExcludingCombinerMethodString(settings->combinerMethod);
-        }
 
         return "";
     }
@@ -533,19 +512,6 @@ namespace Deltares::Server
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
             if (property_ == "parameter") project->parameter = value;
-        }
-        else if (objectType == ObjectType::CombineSettings)
-        {
-            std::shared_ptr<CombineSettings> settings = combineSettingsValues[id];
-
-            if (property_ == "combine_method") settings->combinerMethod = DesignPointCombiner::getCombinerMethod(value);
-            else if (property_ == "combine_type") settings->combineType = DesignPointCombiner::getCombineType(value);
-        }
-        else if (objectType == ObjectType::ExcludingCombineSettings)
-        {
-            std::shared_ptr<ExcludingCombineSettings> settings = excludingCombineSettings[id];
-
-            if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getExcludingCombinerMethod(value);
         }
         else if (ProjectEntries::IsModelProjectType(objectType))
         {

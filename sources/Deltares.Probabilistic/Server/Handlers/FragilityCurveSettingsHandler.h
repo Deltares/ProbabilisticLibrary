@@ -22,7 +22,6 @@
 #pragma once
 #include <string>
 
-#include "ModelProjectSettingsHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
 #include "../../Reliability/FragilityCurveIntegrationSettings.h"

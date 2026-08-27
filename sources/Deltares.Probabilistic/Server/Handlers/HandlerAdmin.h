@@ -24,6 +24,8 @@
 #include <unordered_map>
 
 #include "CombinedLimitStateFunctionHandler.h"
+#include "CombineSettingsHandler.h"
+#include "ExcludingCombineSettingsHandler.h"
 #include "ContributingStochastHandler.h"
 #include "../ProjectEntries.h"
 #include "ConvergenceReportHandler.h"
@@ -101,6 +103,8 @@ namespace Deltares::Server
         UncertaintySettingsHandler uncertaintySettingsHandler;
         ReliabilitySettingsHandler reliabilitySettingsHandler;
         FragilityCurveSettingsHandler fragilityCurveSettingsHandler;
+        CombineSettingsHandler combineSettingsHandler;
+        ExcludingCombineSettingsHandler excludingCombineSettingsHandler;
 
         int GetNewId()
         {

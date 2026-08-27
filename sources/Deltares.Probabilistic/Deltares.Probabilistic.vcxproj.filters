@@ -621,6 +621,8 @@
     <ClInclude Include="Server\Handlers\UncertaintySettingsHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilitySettingsHandler.h" />
     <ClInclude Include="Server\Handlers\FragilityCurveSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\CombineSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\ExcludingCombineSettingsHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
