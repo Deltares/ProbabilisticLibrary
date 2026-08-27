@@ -50,6 +50,7 @@ namespace Deltares::Server
         void SetValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, double value) override
         {
             if (property_ == "fixed_value") fragilityCurve->fixedValue = value;
+            else if (property_ == "design_point_x") argValue = value;
             else stochastHandler->SetValue(fragilityCurve, property_, value);
         }
 
@@ -61,14 +62,10 @@ namespace Deltares::Server
                 argValue = std::nan("");
 
                 std::shared_ptr<Models::StochastPoint> stochastPoint = fragilityCurve->getDesignPoint(x);
-
-                //std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<DesignPoint>(*stochastPoint);
-                //return GetDesignPointId(designPoint, newId);
-
-                // TODO
-                return 0;
+                std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<Reliability::DesignPoint>(*stochastPoint);
+                return designPointIdCallback(designPoint);
             }
-            else stochastHandler->GetIdValue(fragilityCurve, property_);
+            else return stochastHandler->GetIdValue(fragilityCurve, property_);
         }
 
         int GetIndexedIdValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, int index) override
@@ -115,6 +112,11 @@ namespace Deltares::Server
             return stochastHandler->SetArrayValue(fragilityCurve, property_, values, size);
         }
 
+        void SetArrayIntValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, int* values, int size) override
+        {
+            return stochastHandler->SetArrayIntValue(fragilityCurve, property_, values, size);
+        }
+
         double GetArgValue(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, const std::string& property_, double argument) override
         {
             return stochastHandler->GetArgValue(fragilityCurve, property_, argument);
@@ -126,6 +128,7 @@ namespace Deltares::Server
         }
 
         StochastHandler* stochastHandler = nullptr;
+        GetObjectIdCallBack<Reliability::DesignPoint> designPointIdCallback = nullptr;
 
     private:
         double argValue = nan("");

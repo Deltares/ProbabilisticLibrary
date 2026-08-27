@@ -40,6 +40,7 @@ namespace Deltares::Server
         contributingStochastHandler.stochastIdCallback = [this](std::shared_ptr<Statistics::Stochast> stochast) {return this->stochastHandler.GetObjectId(stochast); };
 
         fragilityCurveHandler.stochastHandler = &stochastHandler;
+        fragilityCurveHandler.designPointIdCallback = [this](std::shared_ptr<Reliability::DesignPoint> designPoint) {return this->designPointHandler.GetObjectId(designPoint); };
 
         fragilityValueHandler.designPointCallback = [this](int id) {return this->designPointHandler.GetObject(id); };
         fragilityValueHandler.designPointIdCallback = [this](std::shared_ptr<Reliability::DesignPoint> designPoint) {return this->designPointHandler.GetObjectId(designPoint); };
@@ -73,6 +74,8 @@ namespace Deltares::Server
 
         sensitivityValueHandler.stochastHandler = &stochastHandler;
 
+        stochastSettingsHandler.stochastHandler = &stochastHandler;
+
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
         handlers[ObjectType::FragilityValue] = &fragilityValueHandler;
@@ -101,6 +104,7 @@ namespace Deltares::Server
         handlers[ObjectType::UncertaintyResult] = &uncertaintyResultHandler;
         handlers[ObjectType::SensitivityResult] = &sensitivityResultHandler;
         handlers[ObjectType::SensitivityValue] = &sensitivityValueHandler;
+        handlers[ObjectType::StochastSettings] = &stochastSettingsHandler;
 
         for (const auto& [objectType, handler] : handlers)
         {
@@ -138,7 +142,8 @@ namespace Deltares::Server
             objectType == ObjectType::DesignPoint ||
             objectType == ObjectType::UncertaintyResult ||
             objectType == ObjectType::SensitivityResult ||
-            objectType == ObjectType::SensitivityValue;
+            objectType == ObjectType::SensitivityValue ||
+            objectType == ObjectType::StochastSettings;
     }
 }
 

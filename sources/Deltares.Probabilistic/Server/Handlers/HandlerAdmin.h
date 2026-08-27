@@ -49,6 +49,7 @@
 #include "StochastHandler.h"
 #include "StochastPointAlphaHandler.h"
 #include "StochastPointHandler.h"
+#include "StochastSettingsHandler.h"
 #include "UncertaintyResultHandler.h"
 #include "ValidationReportHandler.h"
 
@@ -87,6 +88,7 @@ namespace Deltares::Server
         UncertaintyResultHandler uncertaintyResultHandler;
         SensitivityResultHandler sensitivityResultHandler;
         SensitivityValueHandler sensitivityValueHandler;
+        StochastSettingsHandler stochastSettingsHandler;
 
         int GetNewId()
         {

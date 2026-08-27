@@ -614,6 +614,7 @@
     <ClInclude Include="Server\Handlers\SelfCorrelationMatrixHandler.h" />
     <ClInclude Include="Server\Handlers\CorrelationMatrixHandler.h" />
     <ClInclude Include="Server\Handlers\CopulaCorrelationHandler.h" />
+    <ClInclude Include="Server\Handlers\StochastSettingsHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

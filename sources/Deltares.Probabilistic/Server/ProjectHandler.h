@@ -87,8 +87,6 @@ namespace Deltares::Server
         void SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack) override;
         void Execute(int id, const std::string& method_) override;
 
-        int GetCorrelationMatrixId(const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix, int newid);
-        int GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId);
         int GetStatus(const std::string& command) const;
 
     protected:
@@ -100,7 +98,6 @@ namespace Deltares::Server
 
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
         std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
-        std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveIntegrationSettings>> fragilityCurveSettings;
         std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;

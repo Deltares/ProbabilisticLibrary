@@ -74,9 +74,6 @@ namespace Deltares::Server
             settingsValues[id] = std::make_shared<Settings>();
             settingsValuesIds[settingsValues[id]] = id;
             break;
-        case ObjectType::StochastSettings:
-            stochastSettingsValues[id] = std::make_shared<StochastSettings>();
-            break;
         case ObjectType::FragilityCurveProject:
             fragilityCurveProjects[id] = std::make_shared<FragilityCurveProject>();
             break;
@@ -143,7 +140,6 @@ namespace Deltares::Server
         {
         case ObjectType::Project: projects.erase(id); break;
         case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
-        case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
         case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
         case ObjectType::FragilityCurveSettings: fragilityCurveSettings.erase(id); break;
         case ObjectType::CombineProject: combineProjects.erase(id); break;
@@ -200,15 +196,6 @@ namespace Deltares::Server
             else if (property_ == "start_value_step_size") return settings->StartValueStepSize;
             else if (property_ == "loop_variance_increment") return settings->LoopVarianceIncrement;
             else if (property_ == "max_beta") return settings->MaxBeta;
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "min_value") return stochastSettings->MinValue;
-            else if (property_ == "max_value") return stochastSettings->MaxValue;
-            else if (property_ == "start_value") return stochastSettings->StartValue;
-            else if (property_ == "variance_factor") return stochastSettings->VarianceFactor;
         }
         else if (objectType == ObjectType::UncertaintySettings)
         {
@@ -301,15 +288,6 @@ namespace Deltares::Server
 
             if (property_ == "low_value") settings->LowValue = value;
             else if (property_ == "high_value") settings->HighValue = value;
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "min_value") stochastSettings->MinValue = value;
-            else if (property_ == "max_value") stochastSettings->MaxValue = value;
-            else if (property_ == "start_value") stochastSettings->StartValue = value;
-            else if (property_ == "variance_factor") stochastSettings->VarianceFactor = value;
         }
         else if (objectType == ObjectType::LengthEffectProject)
         {
@@ -407,12 +385,6 @@ namespace Deltares::Server
                 return Uncertainty::CrudeMonteCarloSettingsS::getRequiredSamples(settings->ProbabilityForConvergence, settings->VariationCoefficient);
             else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
         }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "intervals") return stochastSettings->Intervals;
-        }
         else if (objectType == ObjectType::LengthEffectProject)
         {
             std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
@@ -431,8 +403,6 @@ namespace Deltares::Server
         {
             return admin.GetIdValue(id, property_);
         }
-
-        int newId = this->GetNewId();
 
         if (ProjectEntries::IsModelProjectType(objectType))
         {
@@ -473,12 +443,6 @@ namespace Deltares::Server
             std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
             if (property_ == "result") return admin.sensitivityResultHandler.GetObjectId(project->sensitivityResult);
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "variable") return admin.stochastHandler.GetObjectId(stochastSettings->stochast);
         }
         else if (objectType == ObjectType::FragilityCurveProject)
         {
@@ -603,13 +567,6 @@ namespace Deltares::Server
             else if (property_ == "maximum_directions") settings->MaximumDirections = value;
             else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
         }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "variable") stochastSettings->stochast = value > 0 ? admin.stochastHandler.GetObject(value) : nullptr;
-            else if (property_ == "intervals") stochastSettings->Intervals = value;
-        }
         else if (objectType == ObjectType::Project)
         {
             std::shared_ptr<ReliabilityProject> reliabilityProject = projects[id];
@@ -699,14 +656,7 @@ namespace Deltares::Server
             else if (property_ == "use_z_from_sample") return settings->RunSettings->UseZFromSample;
         }
 
-        if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "is_initialization_allowed") return stochastSettings->IsInitializationAllowed;
-            else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
+        if (objectType == ObjectType::UncertaintySettings)
         {
             std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
@@ -771,14 +721,7 @@ namespace Deltares::Server
             else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
         }
 
-        if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "is_initialization_allowed") stochastSettings->IsInitializationAllowed = value;
-            else if (property_ == "is_variance_allowed") stochastSettings->IsVarianceAllowed = value;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
+        if (objectType == ObjectType::UncertaintySettings)
         {
             std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
@@ -1076,7 +1019,7 @@ namespace Deltares::Server
                 settings->StochastSet->stochastSettings.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    settings->StochastSet->stochastSettings.push_back(stochastSettingsValues[values[i]]);
+                    settings->StochastSet->stochastSettings.push_back(admin.stochastSettingsHandler.GetObject(values[i]));
                 }
             }
         }
@@ -1089,7 +1032,7 @@ namespace Deltares::Server
                 settings->StochastSet->stochastSettings.clear();
                 for (int i = 0; i < size; i++)
                 {
-                    settings->StochastSet->stochastSettings.push_back(stochastSettingsValues[values[i]]);
+                    settings->StochastSet->stochastSettings.push_back(admin.stochastSettingsHandler.GetObject(values[i]));
                 }
             }
             else if (property_ == "quantiles")
@@ -1388,6 +1331,12 @@ namespace Deltares::Server
     void ProjectHandler::Execute(int id, const std::string& method_)
     {
         ObjectType objectType = admin.GetObjectType(id);
+
+        if (IsSupported(objectType))
+        {
+            admin.Execute(id, method_);
+            return;
+        }
 
         if (ProjectEntries::IsModelProjectType(objectType))
         {
