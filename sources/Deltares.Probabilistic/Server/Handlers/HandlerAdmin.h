@@ -24,6 +24,7 @@
 #include <unordered_map>
 
 #include "CombinedLimitStateFunctionHandler.h"
+#include "CombineProjectHandler.h"
 #include "CombineSettingsHandler.h"
 #include "ExcludingCombineSettingsHandler.h"
 #include "ContributingStochastHandler.h"
@@ -34,10 +35,12 @@
 #include "DesignPointHandler.h"
 #include "DiscreteValueHandler.h"
 #include "EvaluationHandler.h"
+#include "ExcludingCombineProjectHandler.h"
 #include "FragilityCurveHandler.h"
 #include "FragilityCurveSettingsHandler.h"
 #include "FragilityValueHandler.h"
 #include "HistogramValueHandler.h"
+#include "LengthEffectProjectHandler.h"
 #include "LimitStateFunctionHandler.h"
 #include "MessageHandler.h"
 #include "ModelParameterHandler.h"
@@ -105,6 +108,9 @@ namespace Deltares::Server
         FragilityCurveSettingsHandler fragilityCurveSettingsHandler;
         CombineSettingsHandler combineSettingsHandler;
         ExcludingCombineSettingsHandler excludingCombineSettingsHandler;
+        CombineProjectHandler combineProjectHandler;
+        ExcludingCombineProjectHandler excludingCombineProjectHandler;
+        LengthEffectProjectHandler lengthEffectProjectHandler;
 
         int GetNewId()
         {
@@ -278,6 +284,12 @@ namespace Deltares::Server
         {
             ObjectType objectType = admin.GetObjectType(id);
             handlers[objectType]->Execute(id, method_);
+        }
+
+        void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetProgressCallBacks(id, progress, detailed, textual);
         }
 
     private:

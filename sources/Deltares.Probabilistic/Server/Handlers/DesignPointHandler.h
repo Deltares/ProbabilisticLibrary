@@ -23,6 +23,7 @@
 
 #include <string>
 
+#include "ConvergenceReportHandler.h"
 #include "EvaluationHandler.h"
 #include "MessageHandler.h"
 #include "ReliabilityResultHandler.h"

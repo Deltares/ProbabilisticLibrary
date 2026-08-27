@@ -65,19 +65,11 @@ namespace Deltares::Server
 
         switch (objectType)
         {
-        case ObjectType::StandardNormal:
-            break; // nothing to do
         case ObjectType::Project:
             projects[id] = std::make_shared<ReliabilityProject>();
             break;
         case ObjectType::FragilityCurveProject:
             fragilityCurveProjects[id] = std::make_shared<FragilityCurveProject>();
-            break;
-        case ObjectType::CombineProject:
-            combineProjects[id] = std::make_shared<CombineProject>();
-            break;
-        case ObjectType::ExcludingCombineProject:
-            excludingCombineProjects[id] = std::make_shared<ExcludingCombineProject>();
             break;
         case ObjectType::RunProject:
             runProjects[id] = std::make_shared<Models::RunProject>();
@@ -87,9 +79,6 @@ namespace Deltares::Server
             break;
         case ObjectType::SensitivityProject:
             sensitivityProjects[id] = std::make_shared<Sensitivity::SensitivityProject>();
-            break;
-        case ObjectType::LengthEffectProject:
-            lengthEffectProjects[id] = std::make_shared<LengthEffectProject>();
             break;
         default: throw ProbabilisticLibraryException("object type");
         }
@@ -118,12 +107,9 @@ namespace Deltares::Server
         {
         case ObjectType::Project: projects.erase(id); break;
         case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
-        case ObjectType::CombineProject: combineProjects.erase(id); break;
-        case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
         case ObjectType::RunProject: runProjects.erase(id); break;
         case ObjectType::UncertaintyProject: uncertaintyProjects.erase(id); break;
         case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
-        case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
         default: throw ProbabilisticLibraryException("object type");
         }
 
@@ -144,12 +130,6 @@ namespace Deltares::Server
             return admin.GetValue(id, property_);
         }
 
-        if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> length_effect = lengthEffectProjects[id];
-
-            if (property_ == "length") return length_effect->length;
-        }
         return std::nan("");
     }
 
@@ -162,12 +142,6 @@ namespace Deltares::Server
             admin.SetValue(id, property_, value);
         }
 
-        if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> length_effect = lengthEffectProjects[id];
-
-            if (property_ == "length") length_effect->length = value;
-        }
     }
 
     int ProjectHandler::GetIntValue(int id, const std::string& property_)
@@ -211,12 +185,6 @@ namespace Deltares::Server
 
             if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
             else if (property_ == "sensitivity_parameters_count") return static_cast<int>(project->sensitivityParameters.size());
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
-
-            if (property_ == "correlation_lengths_count") return static_cast<int>(project->correlationLengths.size());
         }
 
         return 0;
@@ -273,38 +241,6 @@ namespace Deltares::Server
             else if (property_ == "integrand") return admin.stochastHandler.GetObjectId(project->integrand);
             else if (property_ == "fragility_curve") admin.fragilityCurveHandler.GetObjectId(project->fragilityCurve);
             else if (property_ == "fragility_curve_normalized") admin.fragilityCurveHandler.GetObjectId(project->fragilityCurveNormalized);
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> combineProject = combineProjects[id];
-
-            if (property_ == "design_point") return admin.designPointHandler.GetObjectId(combineProject->designPoint);
-            else if (property_ == "design_point_correlation_matrix")
-            {
-                if (std::dynamic_pointer_cast<CopulaCorrelation>(combineProject->correlationMatrix) != nullptr)
-                {
-                    return admin.copulaCorrelationHandler.GetObjectId(std::dynamic_pointer_cast<CopulaCorrelation>(combineProject->correlationMatrix));
-                }
-                else
-                {
-                    return admin.correlationMatrixHandler.GetObjectId(std::dynamic_pointer_cast<CorrelationMatrix>(combineProject->correlationMatrix));
-                }
-            }
-            else if (property_ == "correlation_matrix") return admin.selfCorrelationMatrixHandler.GetObjectId(combineProject->selfCorrelationMatrix);
-            else if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()));
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> combineProject = excludingCombineProjects[id];
-
-            if (property_ == "design_point") return admin.designPointHandler.GetObjectId(combineProject->designPoint);
-            else if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()));
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
-
-            if (property_ == "design_point") return admin.designPointHandler.GetObjectId(project->designPoint);
         }
 
         return 0;
@@ -363,37 +299,6 @@ namespace Deltares::Server
 
             if (property_ == "settings") runProject->setSettings(admin.runProjectSettingsHandler.GetObject(value));
         }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> combineProject = combineProjects[id];
-
-            if (property_ == "settings") combineProject->settings = admin.combineSettingsHandler.GetObject(value);
-            else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = admin.selfCorrelationMatrixHandler.GetObject(value);
-            else if (property_ == "design_point_correlation_matrix")
-            {
-                if (admin.copulaCorrelationHandler.Contains(value))
-                {
-                    combineProject->correlationMatrix = admin.copulaCorrelationHandler.GetObject(value);
-                }
-                else
-                {
-                    combineProject->correlationMatrix = admin.correlationMatrixHandler.GetObject(value);
-                }
-            }
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> combineProject = excludingCombineProjects[id];
-
-            if (property_ == "settings") combineProject->settings = admin.excludingCombineSettingsHandler.GetObject(value);
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
-
-            if (property_ == "correlation_matrix") project->selfCorrelationMatrix = admin.selfCorrelationMatrixHandler.GetObject(value);
-            else if (property_ == "design_point_cross_section") project->designPointCrossSection = admin.designPointHandler.GetObject(value);
-        }
     }
 
     double ProjectHandler::GetIntArgValue(int id1, int id2, const std::string& property_)
@@ -432,19 +337,6 @@ namespace Deltares::Server
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
             if (property_ == "is_valid") return project->isValid();
-        }
-
-        if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> project = combineProjects[id];
-
-            if (property_ == "is_valid") return project->is_valid();
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
-
-            if (property_ == "is_valid") return project->is_valid();
         }
 
         return false;
@@ -531,18 +423,6 @@ namespace Deltares::Server
             return;
         }
 
-        if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> lengthEffect = lengthEffectProjects[id];
-            if (property_ == "correlation_lengths")
-            {
-                lengthEffect->correlationLengths.clear();
-                for (size_t i = 0; i < size; i++)
-                {
-                    lengthEffect->correlationLengths.push_back(values[i]);
-                }
-            }
-        }
     }
 
     std::vector<int> ProjectHandler::GetArrayIntValue(int id, const std::string& property_)
@@ -619,43 +499,6 @@ namespace Deltares::Server
                 }
             }
         }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> project = combineProjects[id];
-
-            if (property_ == "design_points")
-            {
-                project->designPoints.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->designPoints.push_back(admin.designPointHandler.GetObject(values[i]));
-                }
-            }
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
-
-            if (property_ == "design_points")
-            {
-                project->designPoints.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->designPoints.push_back(admin.designPointHandler.GetObject(values[i]));
-                }
-            }
-            else if (property_ == "scenarios")
-            {
-                project->scenarios.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->scenarios.push_back(admin.scenarioHandler.GetObject(values[i]));
-                }
-            }
-        }
     }
 
     double ProjectHandler::GetArgValue(int id, const std::string& property_, double argument)
@@ -687,15 +530,6 @@ namespace Deltares::Server
         if (IsSupported(objectType))
         {
             return admin.GetIndexedValue(id, property_, index);
-        }
-
-        if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> lengthEffect = lengthEffectProjects[id];
-            if (property_ == "correlation_lengths")
-            {
-                return lengthEffect->correlationLengths[index];
-            }
         }
 
         return std::nan("");
@@ -843,15 +677,15 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
+        if (IsSupported(objectType))
+        {
+            admin.SetProgressCallBacks(id, progress, detailed, textual);
+            return;
+        }
+
         if (ProjectEntries::IsModelProjectType(objectType))
         {
             std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            project->progressIndicator = std::make_shared<Models::ProgressIndicator>(progress, detailed, textual);
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> project = combineProjects[id];
 
             project->progressIndicator = std::make_shared<Models::ProgressIndicator>(progress, detailed, textual);
         }
@@ -917,24 +751,6 @@ namespace Deltares::Server
         else if (objectType == ObjectType::FragilityCurveProject)
         {
             std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
-
-            if (method_ == "run") project->run();
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> project = combineProjects[id];
-
-            if (method_ == "run") project->run();
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
-
-            if (method_ == "run") project->run();
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
 
             if (method_ == "run") project->run();
         }

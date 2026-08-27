@@ -623,6 +623,9 @@
     <ClInclude Include="Server\Handlers\FragilityCurveSettingsHandler.h" />
     <ClInclude Include="Server\Handlers\CombineSettingsHandler.h" />
     <ClInclude Include="Server\Handlers\ExcludingCombineSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\LengthEffectProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\CombineProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\ExcludingCombineProjectHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

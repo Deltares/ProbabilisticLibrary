@@ -25,23 +25,12 @@
 #include "ProjectEntries.h"
 #include "../Reliability/ReliabilityProject.h"
 #include "../Reliability/FragilityCurveProject.h"
-#include "../Reliability/FragilityCurveIntegrationSettings.h"
 #include "../Reliability/LimitStateFunction.h"
 #include "../Reliability/CombinedLimitStateFunction.h"
 #include "../Reliability/Settings.h"
 #include "../Model/RunProject.h"
-#include "../Model/RunProjectSettings.h"
 #include "../Uncertainty/UncertaintyProject.h"
-#include "../Uncertainty/SettingsS.h"
 #include "../Sensitivity/SensitivityProject.h"
-#include "../Sensitivity/SensitivitySettings.h"
-#include "../Sensitivity/SensitivityResult.h"
-#include "../Sensitivity/SensitivityValue.h"
-#include "../Combine/CombineProject.h"
-#include "../Combine/CombineSettings.h"
-#include "../Combine/ExcludingCombineProject.h"
-#include "../Combine/ExcludingCombineSettings.h"
-#include "../Combine/LengthEffectProject.h"
 #include "Handlers/HandlerAdmin.h"
 
 namespace Deltares::Server
@@ -98,9 +87,6 @@ namespace Deltares::Server
 
         std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
         std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineProject>> excludingCombineProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
         std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
         std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
         std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;

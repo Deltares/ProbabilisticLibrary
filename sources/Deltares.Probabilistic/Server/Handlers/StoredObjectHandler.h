@@ -320,6 +320,17 @@ namespace Deltares::Server
         }
 
         virtual void Execute(const std::shared_ptr<T>& object, const std::string& method_) {}
+
+        // progress callback
+
+        void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetProgressCallBacks(object, progress, detailed, textual);
+        }
+
+        virtual void SetProgressCallBacks(const std::shared_ptr<T>& object, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) {}
+
     };
 }
 

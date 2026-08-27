@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\ExcludingCombineProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\CombineProjectHandler.h" />
     <ClInclude Include="Server\Handlers\ExcludingCombineSettingsHandler.h" />
     <ClInclude Include="Server\Handlers\CombineSettingsHandler.h" />
     <ClInclude Include="Server\Handlers\FragilityCurveSettingsHandler.h" />
@@ -244,6 +246,7 @@
     <ClInclude Include="Server\Handlers\FragilityCurveHandler.h" />
     <ClInclude Include="Server\Handlers\SensitivityResultHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilitySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\LengthEffectProjectHandler.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />

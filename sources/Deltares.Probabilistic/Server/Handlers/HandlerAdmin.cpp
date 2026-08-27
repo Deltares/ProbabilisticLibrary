@@ -87,6 +87,21 @@ namespace Deltares::Server
         reliabilitySettingsHandler.stochastSettingsHandler = &stochastSettingsHandler;
         reliabilitySettingsHandler.designPointCallback = [this](int id) {return this->designPointHandler.GetObject(id); };
 
+        combineProjectHandler.combineSettingsHandler = &combineSettingsHandler;
+        combineProjectHandler.designPointHandler = &designPointHandler;
+        combineProjectHandler.correlationMatrixHandler = &correlationMatrixHandler;
+        combineProjectHandler.copulaCorrelationHandler = &copulaCorrelationHandler;
+        combineProjectHandler.selfCorrelationMatrixHandler = &selfCorrelationMatrixHandler;
+        combineProjectHandler.validationReportHandler = &validationReportHandler;
+
+        excludingCombineProjectHandler.excludingCombineSettingsHandler = &excludingCombineSettingsHandler;
+        excludingCombineProjectHandler.designPointHandler = &designPointHandler;
+        excludingCombineProjectHandler.scenarioHandler = &scenarioHandler;
+        excludingCombineProjectHandler.validationReportHandler = &validationReportHandler;
+
+        lengthEffectProjectHandler.designPointHandler = &designPointHandler;
+        lengthEffectProjectHandler.selfCorrelationMatrixHandler = &selfCorrelationMatrixHandler;
+
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
         handlers[ObjectType::FragilityValue] = &fragilityValueHandler;
@@ -123,6 +138,9 @@ namespace Deltares::Server
         handlers[ObjectType::CombineSettings] = &combineSettingsHandler;
         handlers[ObjectType::ExcludingCombineSettings] = &excludingCombineSettingsHandler;
         handlers[ObjectType::StochastSettings] = &stochastSettingsHandler;
+        handlers[ObjectType::CombineProject] = &combineProjectHandler;
+        handlers[ObjectType::ExcludingCombineProject] = &excludingCombineProjectHandler;
+        handlers[ObjectType::LengthEffectProject] = &lengthEffectProjectHandler;
 
         for (const auto& [objectType, handler] : handlers)
         {
@@ -168,7 +186,10 @@ namespace Deltares::Server
             objectType == ObjectType::FragilityCurveSettings ||
             objectType == ObjectType::CombineSettings ||
             objectType == ObjectType::ExcludingCombineSettings ||
-            objectType == ObjectType::StochastSettings;
+            objectType == ObjectType::StochastSettings ||
+            objectType == ObjectType::CombineProject ||
+            objectType == ObjectType::ExcludingCombineProject ||
+            objectType == ObjectType::LengthEffectProject;
     }
 }
 
