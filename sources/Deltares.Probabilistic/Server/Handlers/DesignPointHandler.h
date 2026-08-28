@@ -98,8 +98,8 @@ namespace Deltares::Server
 
         void SetIntValue(const std::shared_ptr<Reliability::DesignPoint>& designPoint, const std::string& property_, int value) override
         {
-            //if (property_ == "ids") designPoint->Ids = GetDesignPointIds(value);
-            if (property_ == "total_iterations") designPoint->convergenceReport->TotalIterations = value;
+            if (property_ == "ids") designPoint->Ids = designPointIdsCallback(value);
+            else if (property_ == "total_iterations") designPoint->convergenceReport->TotalIterations = value;
             else if (property_ == "total_directions") designPoint->convergenceReport->TotalDirections = value;
             else if (property_ == "total_model_runs") designPoint->convergenceReport->TotalModelRuns = value;
             else StoredObjectHandler::SetIntValue(designPoint, property_, value);
@@ -157,6 +157,8 @@ namespace Deltares::Server
         ReliabilityResultHandler* reliabilityResultHandler = nullptr;
         MessageHandler* messageHandler = nullptr;
         StochastPointAlphaHandler* alphaHandler = nullptr;
+
+        GetObjectCallBack<Reliability::DesignPointIds> designPointIdsCallback = nullptr;
     };
 }
 

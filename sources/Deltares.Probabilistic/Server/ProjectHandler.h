@@ -28,7 +28,52 @@
 #include "../Reliability/CombinedLimitStateFunction.h"
 #include "../Reliability/Settings.h"
 #include "../Model/RunProject.h"
-#include "Handlers/HandlerAdmin.h"
+
+#include "Handlers/CombineProjectHandler.h"
+#include "Handlers/CombineSettingsHandler.h"
+#include "Handlers/ExcludingCombineSettingsHandler.h"
+#include "Handlers/ContributingStochastHandler.h"
+#include "Handlers/ConvergenceReportHandler.h"
+#include "Handlers/CopulaCorrelationHandler.h"
+#include "Handlers/CorrelationMatrixHandler.h"
+#include "Handlers/DesignPointHandler.h"
+#include "Handlers/DiscreteValueHandler.h"
+#include "Handlers/EvaluationHandler.h"
+#include "Handlers/ExcludingCombineProjectHandler.h"
+#include "Handlers/FragilityCurveHandler.h"
+#include "Handlers/FragilityCurveProjectHandler.h"
+#include "Handlers/FragilityCurveSettingsHandler.h"
+#include "Handlers/FragilityValueHandler.h"
+#include "Handlers/HistogramValueHandler.h"
+#include "Handlers/LengthEffectProjectHandler.h"
+#include "Handlers/LimitStateFunctionHandler.h"
+#include "Handlers/CombinedLimitStateFunctionHandler.h"
+#include "Handlers/MessageHandler.h"
+#include "Handlers/ModelParameterHandler.h"
+#include "Handlers/ModelProjectHandler.h"
+#include "Handlers/ProbabilityLimitStateFunctionHandler.h"
+#include "Handlers/ProbabilityValueHandler.h"
+#include "Handlers/ReliabilityResultHandler.h"
+#include "Handlers/ScenarioHandler.h"
+#include "Handlers/SelfCorrelationMatrixHandler.h"
+#include "Handlers/SensitivityResultHandler.h"
+#include "Handlers/SensitivityValueHandler.h"
+#include "Handlers/StandardNormalHandler.h"
+#include "Handlers/StochastHandler.h"
+#include "Handlers/StochastPointAlphaHandler.h"
+#include "Handlers/StochastPointHandler.h"
+#include "Handlers/StochastSettingsHandler.h"
+#include "Handlers/UncertaintyResultHandler.h"
+#include "Handlers/ValidationReportHandler.h"
+#include "Handlers/ModelProjectSettingsHandler.h"
+#include "Handlers/RunProjectSettingsHandler.h"
+#include "Handlers/SensitivitySettingsHandler.h"
+#include "Handlers/UncertaintySettingsHandler.h"
+#include "Handlers/ReliabilitySettingsHandler.h"
+#include "Handlers/RunProjectHandler.h"
+#include "Handlers/ReliabilityProjectHandler.h"
+#include "Handlers/SensitivityProjectHandler.h"
+#include "Handlers/UncertaintyProjectHandler.h"
 
 namespace Deltares::Server
 {
@@ -79,7 +124,60 @@ namespace Deltares::Server
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
 
-        HandlerAdmin admin;
+        ObjectHandlerAdmin admin;
 
+        void InitializeHandlers();
+
+        HistogramValueHandler histogramValueHandler;
+        DiscreteValueHandler discreteValueHandler;
+        FragilityValueHandler fragilityValueHandler;
+        MessageHandler messageHandler;
+        EvaluationHandler evaluationHandler;
+        ProbabilityValueHandler probabilityValueHandler;
+        StandardNormalHandler standardNormalHandler;
+        StochastHandler stochastHandler;
+        FragilityCurveHandler fragilityCurveHandler;
+        ScenarioHandler scenarioHandler;
+        ValidationReportHandler validationReportHandler;
+        ModelParameterHandler modelParameterHandler;
+        LimitStateFunctionHandler limitStateFunctionHandler;
+        ProbabilityLimitStateFunctionHandler probabilityLimitStateFunctionHandler;
+        CombinedLimitStateFunctionHandler combinedLimitStateFunctionHandler;
+        ReliabilityResultHandler reliabilityResultHandler;
+        ConvergenceReportHandler convergenceReportHandler;
+        ContributingStochastHandler contributingStochastHandler;
+        ConditionalValueHandler conditionalValueHandler;
+        CorrelationMatrixHandler correlationMatrixHandler;
+        CopulaCorrelationHandler copulaCorrelationHandler;
+        SelfCorrelationMatrixHandler selfCorrelationMatrixHandler;
+        StochastPointAlphaHandler alphaHandler;
+        StochastPointHandler stochastPointHandler;
+        DesignPointHandler designPointHandler;
+        UncertaintyResultHandler uncertaintyResultHandler;
+        SensitivityResultHandler sensitivityResultHandler;
+        SensitivityValueHandler sensitivityValueHandler;
+        StochastSettingsHandler stochastSettingsHandler;
+        ModelProjectSettingsHandler modelProjectSettingsHandler;
+        RunProjectSettingsHandler runProjectSettingsHandler;
+        SensitivitySettingsHandler sensitivitySettingsHandler;
+        UncertaintySettingsHandler uncertaintySettingsHandler;
+        ReliabilitySettingsHandler reliabilitySettingsHandler;
+        FragilityCurveSettingsHandler fragilityCurveSettingsHandler;
+        CombineSettingsHandler combineSettingsHandler;
+        ExcludingCombineSettingsHandler excludingCombineSettingsHandler;
+        CombineProjectHandler combineProjectHandler;
+        ExcludingCombineProjectHandler excludingCombineProjectHandler;
+        LengthEffectProjectHandler lengthEffectProjectHandler;
+        ModelProjectHandler modelProjectHandler;
+        RunProjectHandler runProjectHandler;
+        ReliabilityProjectHandler reliabilityProjectHandler;
+        SensitivityProjectHandler sensitivityProjectHandler;
+        UncertaintyProjectHandler uncertaintyProjectHandler;
+        FragilityCurveProjectHandler fragilityCurveProjectHandler;
+
+        std::unordered_map<ObjectType, ObjectHandler*> handlers;
+
+        std::shared_ptr<Models::ModelProject> GetProject(int id);
+        std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
     };
 }
