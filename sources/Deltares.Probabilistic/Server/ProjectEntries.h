@@ -96,6 +96,13 @@ namespace Deltares::Server
         static ObjectType GetType(const std::string& object_type);
 
         /// <summary>
+        /// Converts an object type to a string
+        /// <param name="object_type"> Object type </param>
+        /// <returns> corresponding name </returns>
+        /// </summary>
+        static std::string GetObjectTypeString(ObjectType object_type);
+
+        /// <summary>
         /// map with all entries ; is public for testing purpose
         /// </summary>
         static const std::map<std::string, ObjectType, std::less<>> all_entries;

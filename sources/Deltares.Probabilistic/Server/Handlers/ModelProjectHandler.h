@@ -40,20 +40,33 @@ namespace Deltares::Server
     public:
         ObjectType GetObjectType() override
         {
-            return ObjectType::Settings;
+            return ObjectType::Project;
         }
 
         int GetIdValue(const std::shared_ptr<Models::ModelProject>& project, const std::string& property_) override
         {
             if (property_ == "validate") return validationReportHandler->GetObjectId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()));
+            else if (property_ == "correlation_matrix")
+            {
+                if (std::dynamic_pointer_cast<Statistics::CopulaCorrelation>(project->correlation) != nullptr)
+                {
+                    return copulaCorrelationHandler->GetObjectId(std::dynamic_pointer_cast<Statistics::CopulaCorrelation>(project->correlation));
+                }
+                else
+                {
+                    return correlationMatrixHandler->GetObjectId(std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(project->correlation));
+                }
+            }
             else return StoredObjectHandler::GetIdValue(project, property_);
         }
 
         int GetIntValue(const std::shared_ptr<Models::ModelProject>& project, const std::string& property_) override
         {
             if (property_ == "index") return project->model->Index;
-            else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
+            else if (property_ == "variables_count") return static_cast<int>(project->stochasts.size());
             else if (property_ == "total_model_runs") return project->modelRuns;
+            else if (property_ == "input_parameters_count") return static_cast<int>(project->model->inputParameters.size());
+            else if (property_ == "output_parameters_count") return static_cast<int>(project->model->outputParameters.size());
             else return StoredObjectHandler::GetIntValue(project, property_);
         }
 
@@ -92,7 +105,9 @@ namespace Deltares::Server
 
         int GetIndexedIdValue(const std::shared_ptr<Models::ModelProject>& project, const std::string& property_, int index) override
         {
-            if (property_ == "stochasts") return stochastHandler->GetObjectId(project->stochasts[index]);
+            if (property_ == "variables") return stochastHandler->GetObjectId(project->stochasts[index]);
+            else if (property_ == "input_parameters") return modelParameterHandler->GetObjectId(project->model->inputParameters[index]);
+            else if (property_ == "output_parameters") return modelParameterHandler->GetObjectId(project->model->outputParameters[index]);
             else return StoredObjectHandler::GetIndexedIdValue(project, property_, index);
         }
 

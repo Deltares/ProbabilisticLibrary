@@ -41,7 +41,8 @@ namespace Deltares::Server
 
         int GetIdValue(const std::shared_ptr<Sensitivity::SensitivityProject>& project, const std::string& property_) override
         {
-            if (property_ == "result") return sensitivityResultHandler->GetObjectId(project->sensitivityResult);
+            if (property_ == "settings") return sensitivitySettingsHandler->GetObjectId(project->settings);
+            else if (property_ == "result") return sensitivityResultHandler->GetObjectId(project->sensitivityResult);
             else return modelProjectHandler->GetIdValue(project, property_);
         }
 

@@ -83,6 +83,19 @@ namespace Deltares::Server
         throw Reliability::ProbabilisticLibraryException("type not supported: " + object_type);
     }
 
+    std::string ProjectEntries::GetObjectTypeString(ObjectType object_type)
+    {
+        for (const auto& [objectTypeString, objectType] : all_entries)
+        {
+            if (object_type == objectType)
+            {
+                return objectTypeString;
+            }
+        }
+
+        throw Reliability::ProbabilisticLibraryException("Unknown object type");
+    }
+
     bool ProjectEntries::CanHandle(const std::string& object_type)
     {
         return all_entries.contains(object_type);

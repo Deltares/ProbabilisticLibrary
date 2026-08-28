@@ -129,7 +129,10 @@ namespace Deltares::Server
             return GetValue(object, property_);
         }
 
-        virtual double GetValue(const std::shared_ptr<T>& object, const std::string& property_) { return 0; }
+        virtual double GetValue(const std::shared_ptr<T>& object, const std::string& property_)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetValue(int id, const std::string& property_, double value) override
         {
@@ -137,7 +140,10 @@ namespace Deltares::Server
             return SetValue(object, property_, value);
         }
 
-        virtual void SetValue(const std::shared_ptr<T>& object, const std::string& property_, double value) {}
+        virtual void SetValue(const std::shared_ptr<T>& object, const std::string& property_, double value)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // indexed double
 
@@ -147,7 +153,10 @@ namespace Deltares::Server
             return GetIndexedValue(object, property_, index);
         }
 
-        virtual double GetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index) { return 0; }
+        virtual double GetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetIndexedValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetIndexedValue(int id, const std::string& property_, int index, double value) override
         {
@@ -155,7 +164,10 @@ namespace Deltares::Server
             return SetIndexedValue(object, property_, index, value);
         }
 
-        virtual void SetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index, double value) {}
+        virtual void SetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index, double value)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetIndexedValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // indexed indexed double
 
@@ -165,7 +177,10 @@ namespace Deltares::Server
             return GetIndexedIndexedValue(object, property_, index1, index2);
         }
 
-        virtual double GetIndexedIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2) { return 0; }
+        virtual double GetIndexedIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetIndexedIndexedValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2, double value) override
         {
@@ -173,7 +188,10 @@ namespace Deltares::Server
             return SetIndexedIndexedValue(object, property_, index1, index2, value);
         }
 
-        virtual void SetIndexedIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2, double value) {}
+        virtual void SetIndexedIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2, double value)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetIndexedIndexedValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // indexed indexed int
 
@@ -183,7 +201,10 @@ namespace Deltares::Server
             return SetIndexedIndexedIntValue(object, property_, index1, index2, value);
         }
 
-        virtual void SetIndexedIndexedIntValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2, int value) {}
+        virtual void SetIndexedIndexedIntValue(const std::shared_ptr<T>& object, const std::string& property_, int index1, int index2, int value)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetIndexedIndexedIntValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // arg
 
@@ -193,7 +214,10 @@ namespace Deltares::Server
             return GetArgValue(object, property_, argument);
         }
 
-        virtual double GetArgValue(const std::shared_ptr<T>& object, const std::string& property_, double argument) { return 0; }
+        virtual double GetArgValue(const std::shared_ptr<T>& object, const std::string& property_, double argument)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetArgValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetArgValue(int id, const std::string& property_, double argument, double value) override
         {
@@ -201,7 +225,10 @@ namespace Deltares::Server
             return SetArgValue(object, property_, argument, value);
         }
 
-        virtual void SetArgValue(const std::shared_ptr<T>& object, const std::string& property_, double argument, double value) {}
+        virtual void SetArgValue(const std::shared_ptr<T>& object, const std::string& property_, double argument, double value)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetArgValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // int arg
 
@@ -211,7 +238,10 @@ namespace Deltares::Server
             return GetIntArgValue(object, argument, property_);
         }
 
-        virtual double GetIntArgValue(const std::shared_ptr<T>& object, int argument, const std::string& property_) { return 0; }
+        virtual double GetIntArgValue(const std::shared_ptr<T>& object, int argument, const std::string& property_)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetIntArgValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetIntArgValue(int id, int argument, const std::string& property_, double value) override
         {
@@ -219,7 +249,10 @@ namespace Deltares::Server
             return SetIntArgValue(object, argument, property_, value);
         }
 
-        virtual void SetIntArgValue(const std::shared_ptr<T>& object, int argument, const std::string& property_, double value) {}
+        virtual void SetIntArgValue(const std::shared_ptr<T>& object, int argument, const std::string& property_, double value)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetIntArgValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // int
 
@@ -229,7 +262,10 @@ namespace Deltares::Server
             return GetIntValue(object, property_);
         }
 
-        virtual int GetIntValue(const std::shared_ptr<T>& object, const std::string& property_) { return 0; }
+        virtual int GetIntValue(const std::shared_ptr<T>& object, const std::string& property_)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetIntValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetIntValue(int id, const std::string& property_, int value) override
         {
@@ -237,7 +273,10 @@ namespace Deltares::Server
             return SetIntValue(object, property_, value);
         }
 
-        virtual void SetIntValue(const std::shared_ptr<T>& object, const std::string& property_, int value) {}
+        virtual void SetIntValue(const std::shared_ptr<T>& object, const std::string& property_, int value)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetIntValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // id
 
@@ -247,7 +286,10 @@ namespace Deltares::Server
             return GetIdValue(object, property_);
         }
 
-        virtual int GetIdValue(const std::shared_ptr<T>& object, const std::string& property_) { return 0; }
+        virtual int GetIdValue(const std::shared_ptr<T>& object, const std::string& property_)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetIdValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         int GetIndexedIdValue(int id, const std::string& property_, int index) override
         {
@@ -255,7 +297,10 @@ namespace Deltares::Server
             return GetIndexedIdValue(object, property_, index);
         }
 
-        virtual int GetIndexedIdValue(const std::shared_ptr<T>& object, const std::string& property_, int index) { return 0; }
+        virtual int GetIndexedIdValue(const std::shared_ptr<T>& object, const std::string& property_, int index)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetIndexedIdValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // array
 
@@ -265,7 +310,10 @@ namespace Deltares::Server
             return SetArrayValue(object, property_, values, size);
         }
 
-        virtual void SetArrayValue(const std::shared_ptr<T>& object, const std::string& property_, double* value, int size) {}
+        virtual void SetArrayValue(const std::shared_ptr<T>& object, const std::string& property_, double* value, int size)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetArrayValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetArrayIntValue(int id, const std::string& property_, int* values, int size) override
         {
@@ -273,7 +321,10 @@ namespace Deltares::Server
             return SetArrayIntValue(object, property_, values, size);
         }
 
-        virtual void SetArrayIntValue(const std::shared_ptr<T>& object, const std::string& property_, int* values, int size) {}
+        virtual void SetArrayIntValue(const std::shared_ptr<T>& object, const std::string& property_, int* values, int size)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetArrayIntValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // bool
 
@@ -283,7 +334,10 @@ namespace Deltares::Server
             return GetBoolValue(object, property_);
         }
 
-        virtual bool GetBoolValue(const std::shared_ptr<T>& object, const std::string& property_) { return false; }
+        virtual bool GetBoolValue(const std::shared_ptr<T>& object, const std::string& property_)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetBoolValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetBoolValue(int id, const std::string& property_, bool value) override
         {
@@ -291,7 +345,10 @@ namespace Deltares::Server
             return SetBoolValue(object, property_, value);
         }
 
-        virtual void SetBoolValue(const std::shared_ptr<T>& object, const std::string& property_, bool value) { }
+        virtual void SetBoolValue(const std::shared_ptr<T>& object, const std::string& property_, bool value)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetBoolValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // std::string
 
@@ -301,7 +358,10 @@ namespace Deltares::Server
             return GetStringValue(object, property_);
         }
 
-        virtual std::string GetStringValue(const std::shared_ptr<T>& object, const std::string& property_) { return ""; }
+        virtual std::string GetStringValue(const std::shared_ptr<T>& object, const std::string& property_)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetStringValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetStringValue(int id, const std::string& property_, const std::string& value) override
         {
@@ -309,7 +369,10 @@ namespace Deltares::Server
             return SetStringValue(object, property_, value);
         }
 
-        virtual void SetStringValue(const std::shared_ptr<T>& object, const std::string& property_, const std::string& value) {}
+        virtual void SetStringValue(const std::shared_ptr<T>& object, const std::string& property_, const std::string& value)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetStringValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // method
 
@@ -319,7 +382,10 @@ namespace Deltares::Server
             return Execute(object, method_);
         }
 
-        virtual void Execute(const std::shared_ptr<T>& object, const std::string& method_) {}
+        virtual void Execute(const std::shared_ptr<T>& object, const std::string& method_)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetStringValue: unknown method " + method_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         // callbacks
 
@@ -329,7 +395,10 @@ namespace Deltares::Server
             return SetCallBack(object, property_, callBack);
         }
 
-        virtual void SetCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ZValuesCallBack callBack) {}
+        virtual void SetCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ZValuesCallBack callBack)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetCallBack: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) override
         {
@@ -337,7 +406,10 @@ namespace Deltares::Server
             return SetProgressCallBacks(object, progress, detailed, textual);
         }
 
-        virtual void SetProgressCallBacks(const std::shared_ptr<T>& object, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) {}
+        virtual void SetProgressCallBacks(const std::shared_ptr<T>& object, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
+        {
+            throw Reliability::ProbabilisticLibraryException("SetProgressCallBacks");
+        }
 
         void SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callBack) override
         {
@@ -345,7 +417,10 @@ namespace Deltares::Server
             return SetMultipleCallBack(object, property_, callBack);
         }
 
-        virtual void SetMultipleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ZValuesMultipleCallBack callBack) {}
+        virtual void SetMultipleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ZValuesMultipleCallBack callBack)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetMultipleCallBack: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callBack) override
         {
@@ -353,7 +428,10 @@ namespace Deltares::Server
             return SetEmptyCallBack(object, property_, callBack);
         }
 
-        virtual void SetEmptyCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::EmptyCallBack callBack) {}
+        virtual void SetEmptyCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::EmptyCallBack callBack)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetEmptyCallBack: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callBack) override
         {
@@ -361,7 +439,10 @@ namespace Deltares::Server
             return SetModelSampleCallBack(object, property_, callBack);
         }
 
-        virtual void SetModelSampleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ModelSampleCallback callBack) {}
+        virtual void SetModelSampleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ModelSampleCallback callBack)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetModelSampleCallBack: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
 
         void SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack) override
         {
@@ -369,7 +450,10 @@ namespace Deltares::Server
             return SetMultipleModelSampleCallBack(object, property_, callBack);
         }
 
-        virtual void SetMultipleModelSampleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::MultipleModelSampleCallback callBack) {}
+        virtual void SetMultipleModelSampleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::MultipleModelSampleCallback callBack)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetMultipleModelSampleCallBack: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
     };
 }
 

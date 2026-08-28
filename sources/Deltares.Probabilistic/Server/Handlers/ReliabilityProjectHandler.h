@@ -43,6 +43,7 @@ namespace Deltares::Server
         {
             if (property_ == "limit_state_function") return limitStateFunctionHandler->GetObjectId(project->limitStateFunction);
             else if (property_ == "design_point") return designPointHandler->GetObjectId(project->designPoint);
+            else if (property_ == "settings") return reliabilitySettingsHandler->GetObjectId(project->settings);
             else return modelProjectHandler->GetIdValue(project, property_);
         }
 

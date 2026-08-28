@@ -41,7 +41,8 @@ namespace Deltares::Server
 
         int GetIdValue(const std::shared_ptr<Models::RunProject>& project, const std::string& property_) override
         {
-            if (property_ == "realization") return evaluationHandler->GetObjectId(project->evaluation);
+            if (property_ == "settings") return runProjectSettingsHandler->GetObjectId(project->settings);
+            else if (property_ == "realization") return evaluationHandler->GetObjectId(project->evaluation);
             else return modelProjectHandler->GetIdValue(project, property_);
         }
 

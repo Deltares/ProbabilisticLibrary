@@ -44,6 +44,7 @@ namespace Deltares::Server
             if (property_ == "uncertainty_stochast") return stochastHandler->GetObjectId(project->uncertaintyResult->stochast);
             else if (property_ == "uncertainty_result") return uncertaintyResultHandler->GetObjectId(project->uncertaintyResult);
             else if (property_ == "output_correlation_matrix") return correlationMatrixHandler->GetObjectId(project->outputCorrelationMatrix);
+            else if (property_ == "settings") return uncertaintySettingsHandler->GetObjectId(project->settings);
             else return modelProjectHandler->GetIdValue(project, property_);
         }
 

@@ -23,7 +23,6 @@
 #include <string>
 
 #include "ModelProjectSettingsHandler.h"
-#include "ProbabilityValueHandler.h"
 #include "StochastSettingsHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
@@ -103,6 +102,7 @@ namespace Deltares::Server
             else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
             else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
             else if (property_ == "minimum_failed_samples") return settings->MinimumFailedSamples;
+            else if (property_ == "stochast_settings_count") return static_cast<int>(settings->StochastSet->stochastSettings.size());
             else if (property_ == "random_seed") return settings->RandomSettings->Seed;
             else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
             else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
@@ -191,6 +191,12 @@ namespace Deltares::Server
             else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
             else if (property_ == "model_varying_type") settings->DirectionSettings->modelVaryingType = Reliability::DirectionReliabilitySettings::getModelVaryingType(value);
             else modelProjectSettingsHandler->SetStringValue(settings, property_, value);
+        }
+
+        int GetIndexedIdValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_, int index) override
+        {
+            if (property_ == "stochast_settings") return stochastSettingsHandler->GetObjectId(settings->StochastSet->stochastSettings[index]);
+            else return StoredObjectHandler::GetIndexedIdValue(settings, property_, index);
         }
 
         void SetArrayIntValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_, int* values, int size) override

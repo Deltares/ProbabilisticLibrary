@@ -41,14 +41,14 @@ namespace Deltares::Server
 
         std::string GetStringValue(const std::shared_ptr<Reliability::CombineSettings>& settings, const std::string& property_) override
         {
-            if (property_ == "combine_method") return Reliability::DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
+            if (property_ == "combiner_method") return Reliability::DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
             else if (property_ == "combine_type") return Reliability::DesignPointCombiner::getCombineTypeString(settings->combineType);
             else return StoredObjectHandler::GetStringValue(settings, property_);
         }
 
         void SetStringValue(const std::shared_ptr<Reliability::CombineSettings>& settings, const std::string& property_, const std::string& value) override
         {
-            if (property_ == "combine_method") settings->combinerMethod = Reliability::DesignPointCombiner::getCombinerMethod(value);
+            if (property_ == "combiner_method") settings->combinerMethod = Reliability::DesignPointCombiner::getCombinerMethod(value);
             else if (property_ == "combine_type") settings->combineType = Reliability::DesignPointCombiner::getCombineType(value);
             else StoredObjectHandler::SetStringValue(settings, property_, value);
         }

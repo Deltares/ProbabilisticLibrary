@@ -75,6 +75,7 @@ namespace Deltares::Server
             else if (property_ == "required_samples")
                 return Uncertainty::CrudeMonteCarloSettingsS::getRequiredSamples(settings->ProbabilityForConvergence, settings->VariationCoefficient);
             else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
+            else if (property_ == "stochast_settings_count") return static_cast<int>(settings->StochastSet->stochastSettings.size());
             else return modelProjectSettingsHandler->GetIntValue(settings, property_);
         }
 
@@ -153,6 +154,7 @@ namespace Deltares::Server
         int GetIndexedIdValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_, int index) override
         {
             if (property_ == "quantiles") return probabilityValueHandler->GetObjectId(settings->RequestedQuantiles[index]);
+            else if (property_ == "stochast_settings") return stochastSettingsHandler->GetObjectId(settings->StochastSet->stochastSettings[index]);
             else return StoredObjectHandler::GetIndexedIdValue(settings, property_, index);
         }
 

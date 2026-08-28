@@ -94,6 +94,7 @@ namespace Deltares::Server
         }
 
         ModelProjectSettingsHandler* modelProjectSettingsHandler = nullptr;
+        StochastSettingsHandler* stochastSettingsHandler = nullptr;
     };
 }
 
