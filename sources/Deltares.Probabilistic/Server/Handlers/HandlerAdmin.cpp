@@ -102,6 +102,40 @@ namespace Deltares::Server
         lengthEffectProjectHandler.designPointHandler = &designPointHandler;
         lengthEffectProjectHandler.selfCorrelationMatrixHandler = &selfCorrelationMatrixHandler;
 
+        fragilityCurveProjectHandler.designPointHandler = &designPointHandler;
+        fragilityCurveProjectHandler.stochastHandler = &stochastHandler;
+        fragilityCurveProjectHandler.fragilityCurveHandler = &fragilityCurveHandler;
+        fragilityCurveProjectHandler.fragilityCurveSettingsHandler = &fragilityCurveSettingsHandler;
+
+        modelProjectHandler.validationReportHandler = &validationReportHandler;
+        modelProjectHandler.modelParameterHandler = &modelParameterHandler;
+        modelProjectHandler.stochastHandler = &stochastHandler;
+        modelProjectHandler.correlationMatrixHandler = &correlationMatrixHandler;
+        modelProjectHandler.copulaCorrelationHandler = &copulaCorrelationHandler;
+        modelProjectHandler.modelProjectCallback = [this](int id){ return this->GetProject(id); };
+
+        runProjectHandler.modelProjectHandler = &modelProjectHandler;
+        runProjectHandler.runProjectSettingsHandler = &runProjectSettingsHandler;
+        runProjectHandler.evaluationHandler = &evaluationHandler;
+
+        sensitivityProjectHandler.modelProjectHandler = &modelProjectHandler;
+        sensitivityProjectHandler.sensitivitySettingsHandler = &sensitivitySettingsHandler;
+        sensitivityProjectHandler.sensitivityResultHandler = &sensitivityResultHandler;
+        sensitivityProjectHandler.modelParameterHandler = &modelParameterHandler;
+
+        uncertaintyProjectHandler.modelProjectHandler = &modelProjectHandler;
+        uncertaintyProjectHandler.modelParameterHandler = &modelParameterHandler;
+        uncertaintyProjectHandler.uncertaintySettingsHandler = &uncertaintySettingsHandler;
+        uncertaintyProjectHandler.uncertaintyResultHandler = &uncertaintyResultHandler;
+        uncertaintyProjectHandler.stochastHandler = &stochastHandler;
+        uncertaintyProjectHandler.correlationMatrixHandler = &correlationMatrixHandler;
+
+        reliabilityProjectHandler.modelProjectHandler = &modelProjectHandler;
+        reliabilityProjectHandler.reliabilitySettingsHandler = &reliabilitySettingsHandler;
+        reliabilityProjectHandler.limitStateFunctionHandler = &limitStateFunctionHandler;
+        reliabilityProjectHandler.designPointHandler = &designPointHandler;
+        reliabilityProjectHandler.limitStateFunctionCallback = [this](int id) { return this->GetLimitStateFunction(id); };
+
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
         handlers[ObjectType::FragilityValue] = &fragilityValueHandler;
@@ -141,6 +175,11 @@ namespace Deltares::Server
         handlers[ObjectType::CombineProject] = &combineProjectHandler;
         handlers[ObjectType::ExcludingCombineProject] = &excludingCombineProjectHandler;
         handlers[ObjectType::LengthEffectProject] = &lengthEffectProjectHandler;
+        handlers[ObjectType::FragilityCurveProject] = &fragilityCurveProjectHandler;
+        handlers[ObjectType::RunProject] = &runProjectHandler;
+        handlers[ObjectType::SensitivityProject] = &sensitivityProjectHandler;
+        handlers[ObjectType::UncertaintyProject] = &uncertaintyProjectHandler;
+        handlers[ObjectType::Project] = &reliabilityProjectHandler;
 
         for (const auto& [objectType, handler] : handlers)
         {
@@ -189,7 +228,56 @@ namespace Deltares::Server
             objectType == ObjectType::StochastSettings ||
             objectType == ObjectType::CombineProject ||
             objectType == ObjectType::ExcludingCombineProject ||
-            objectType == ObjectType::LengthEffectProject;
+            objectType == ObjectType::LengthEffectProject ||
+            objectType == ObjectType::Project ||
+            objectType == ObjectType::RunProject ||
+            objectType == ObjectType::UncertaintyProject ||
+            objectType == ObjectType::SensitivityProject ||
+            objectType == ObjectType::FragilityCurveProject;
+    }
+
+    std::shared_ptr<Models::ModelProject> HandlerAdmin::GetProject(int id)
+    {
+        if (runProjectHandler.Contains(id))
+        {
+            return runProjectHandler.GetObject(id);
+        }
+        else if (sensitivityProjectHandler.Contains(id))
+        {
+            return sensitivityProjectHandler.GetObject(id);
+        }
+        else if (uncertaintyProjectHandler.Contains(id))
+        {
+            return uncertaintyProjectHandler.GetObject(id);
+        }
+        else if (reliabilityProjectHandler.Contains(id))
+        {
+            return reliabilityProjectHandler.GetObject(id);
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+
+    std::shared_ptr<Reliability::LimitStateFunction> HandlerAdmin::GetLimitStateFunction(int id)
+    {
+        if (limitStateFunctionHandler.Contains(id))
+        {
+            return limitStateFunctionHandler.GetObject(id);
+        }
+        else if (combinedLimitStateFunctionHandler.Contains(id))
+        {
+            return combinedLimitStateFunctionHandler.GetObject(id);
+        }
+        else if (probabilityLimitStateFunctionHandler.Contains(id))
+        {
+            return probabilityLimitStateFunctionHandler.GetObject(id);
+        }
+        else
+        {
+            return nullptr;
+        }
     }
 }
 

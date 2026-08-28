@@ -85,15 +85,6 @@ namespace Deltares::Server
         std::mutex mtx;
         HandlerAdmin admin;
 
-        std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
-        std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
-        std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
-        std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
-        std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
-
-        std::unordered_map <std::string, std::vector<double>> tempValues;
-
-        std::shared_ptr<Models::ModelProject> GetProject(int id);
         std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
 
         bool IsSupported(ObjectType objectType);

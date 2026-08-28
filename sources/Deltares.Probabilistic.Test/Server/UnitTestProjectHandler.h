@@ -34,7 +34,6 @@ namespace Deltares::Probabilistic::Test
         static void TestSettings();
         static void TestProjectEntries();
         static void TestCreateDestroyAllEntries();
-        static void TestProjectEntriesIsModelProject();
     };
 }
 

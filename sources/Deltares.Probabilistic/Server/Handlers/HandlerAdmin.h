@@ -37,6 +37,7 @@
 #include "EvaluationHandler.h"
 #include "ExcludingCombineProjectHandler.h"
 #include "FragilityCurveHandler.h"
+#include "FragilityCurveProjectHandler.h"
 #include "FragilityCurveSettingsHandler.h"
 #include "FragilityValueHandler.h"
 #include "HistogramValueHandler.h"
@@ -44,6 +45,7 @@
 #include "LimitStateFunctionHandler.h"
 #include "MessageHandler.h"
 #include "ModelParameterHandler.h"
+#include "ModelProjectHandler.h"
 #include "ProbabilityLimitStateFunctionHandler.h"
 #include "ProbabilityValueHandler.h"
 #include "ReliabilityResultHandler.h"
@@ -63,6 +65,10 @@
 #include "SensitivitySettingsHandler.h"
 #include "UncertaintySettingsHandler.h"
 #include "ReliabilitySettingsHandler.h"
+#include "RunProjectHandler.h"
+#include "ReliabilityProjectHandler.h"
+#include "SensitivityProjectHandler.h"
+#include "UncertaintyProjectHandler.h"
 
 namespace Deltares::Server
 {
@@ -111,6 +117,12 @@ namespace Deltares::Server
         CombineProjectHandler combineProjectHandler;
         ExcludingCombineProjectHandler excludingCombineProjectHandler;
         LengthEffectProjectHandler lengthEffectProjectHandler;
+        ModelProjectHandler modelProjectHandler;
+        RunProjectHandler runProjectHandler;
+        ReliabilityProjectHandler reliabilityProjectHandler;
+        SensitivityProjectHandler sensitivityProjectHandler;
+        UncertaintyProjectHandler uncertaintyProjectHandler;
+        FragilityCurveProjectHandler fragilityCurveProjectHandler;
 
         int GetNewId()
         {
@@ -292,10 +304,44 @@ namespace Deltares::Server
             handlers[objectType]->SetProgressCallBacks(id, progress, detailed, textual);
         }
 
+        void SetCallBack(int id, const std::string& property_, Models::ZValuesCallBack callback)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetCallBack(id, property_, callback);
+        }
+
+        void SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callback)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetMultipleCallBack(id, property_, callback);
+        }
+
+        void SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callback)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetEmptyCallBack(id, property_, callback);
+
+        }
+
+        void SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callback)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetModelSampleCallBack(id, property_, callback);
+
+        }
+
+        void SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callback)
+        {
+            ObjectType objectType = admin.GetObjectType(id);
+            handlers[objectType]->SetMultipleModelSampleCallBack(id, property_, callback);
+        }
+
     private:
 
         ObjectHandlerAdmin admin;
         std::unordered_map<ObjectType, ObjectHandler*> handlers;
 
+        std::shared_ptr<Models::ModelProject> GetProject(int id);
+        std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
     };
 }

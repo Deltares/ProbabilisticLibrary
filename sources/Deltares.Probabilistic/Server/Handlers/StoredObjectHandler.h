@@ -321,7 +321,15 @@ namespace Deltares::Server
 
         virtual void Execute(const std::shared_ptr<T>& object, const std::string& method_) {}
 
-        // progress callback
+        // callbacks
+
+        void SetCallBack(int id, const std::string& property_, Models::ZValuesCallBack callBack) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetCallBack(object, property_, callBack);
+        }
+
+        virtual void SetCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ZValuesCallBack callBack) {}
 
         void SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) override
         {
@@ -331,6 +339,37 @@ namespace Deltares::Server
 
         virtual void SetProgressCallBacks(const std::shared_ptr<T>& object, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual) {}
 
+        void SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callBack) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetMultipleCallBack(object, property_, callBack);
+        }
+
+        virtual void SetMultipleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ZValuesMultipleCallBack callBack) {}
+
+        void SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callBack) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetEmptyCallBack(object, property_, callBack);
+        }
+
+        virtual void SetEmptyCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::EmptyCallBack callBack) {}
+
+        void SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callBack) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetModelSampleCallBack(object, property_, callBack);
+        }
+
+        virtual void SetModelSampleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::ModelSampleCallback callBack) {}
+
+        void SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return SetMultipleModelSampleCallBack(object, property_, callBack);
+        }
+
+        virtual void SetMultipleModelSampleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::MultipleModelSampleCallback callBack) {}
     };
 }
 

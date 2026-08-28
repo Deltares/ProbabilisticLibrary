@@ -22,7 +22,6 @@
 #include "ProjectHandler.h"
 
 #include "../Reliability/ProbabilityLimitStateFunction.h"
-#include "../Statistics/CopulaCorrelation.h"
 
 namespace Deltares::Server
 {
@@ -63,26 +62,6 @@ namespace Deltares::Server
 
         admin.RegisterType(id, objectType);
 
-        switch (objectType)
-        {
-        case ObjectType::Project:
-            projects[id] = std::make_shared<ReliabilityProject>();
-            break;
-        case ObjectType::FragilityCurveProject:
-            fragilityCurveProjects[id] = std::make_shared<FragilityCurveProject>();
-            break;
-        case ObjectType::RunProject:
-            runProjects[id] = std::make_shared<Models::RunProject>();
-            break;
-        case ObjectType::UncertaintyProject:
-            uncertaintyProjects[id] = std::make_shared<Uncertainty::UncertaintyProject>();
-            break;
-        case ObjectType::SensitivityProject:
-            sensitivityProjects[id] = std::make_shared<Sensitivity::SensitivityProject>();
-            break;
-        default: throw ProbabilisticLibraryException("object type");
-        }
-
         return id;
     }
 
@@ -100,20 +79,7 @@ namespace Deltares::Server
         if (IsSupported(objectType))
         {
             admin.Destroy(id);
-            return;
         }
-
-        switch (objectType)
-        {
-        case ObjectType::Project: projects.erase(id); break;
-        case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
-        case ObjectType::RunProject: runProjects.erase(id); break;
-        case ObjectType::UncertaintyProject: uncertaintyProjects.erase(id); break;
-        case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
-        default: throw ProbabilisticLibraryException("object type");
-        }
-
-        admin.Remove(id);
     }
 
     bool ProjectHandler::ShouldClose()
@@ -153,40 +119,6 @@ namespace Deltares::Server
             return admin.GetIntValue(id, property_);
         }
 
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "index") return project->model->Index;
-            else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
-            else if (property_ == "total_model_runs") return project->modelRuns;
-        }
-
-        if (objectType == ObjectType::Project)
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "index") return project->model->Index;
-            else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
-            else if (property_ == "total_model_runs") return project->modelRuns;
-        }
-
-        if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "uncertainty_stochasts_count") return static_cast<int>(project->uncertaintyResults.size());
-            else if (property_ == "uncertainty_results_count") return static_cast<int>(project->uncertaintyResults.size());
-            else if (property_ == "uncertainty_parameters_count") return static_cast<int>(project->uncertaintyParameters.size());
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
-            else if (property_ == "sensitivity_parameters_count") return static_cast<int>(project->sensitivityParameters.size());
-        }
-
         return 0;
     }
 
@@ -197,50 +129,6 @@ namespace Deltares::Server
         if (IsSupported(objectType))
         {
             return admin.GetIdValue(id, property_);
-        }
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "validate") return admin.validationReportHandler.GetObjectId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()));
-        }
-
-        if (objectType == ObjectType::Project)
-        {
-            std::shared_ptr<ReliabilityProject> project = projects[id];
-
-            if (property_ == "limit_state_function") return admin.limitStateFunctionHandler.GetObjectId(project->limitStateFunction);
-            else if (property_ == "design_point") return admin.designPointHandler.GetObjectId(project->designPoint);
-        }
-        else if (objectType == ObjectType::RunProject)
-        {
-            std::shared_ptr<Models::RunProject> project = runProjects[id];
-
-            if (property_ == "realization") return admin.evaluationHandler.GetObjectId(project->evaluation);
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "uncertainty_stochast") return admin.stochastHandler.GetObjectId(project->uncertaintyResult->stochast);
-            else if (property_ == "uncertainty_result") return admin.uncertaintyResultHandler.GetObjectId(project->uncertaintyResult);
-            else if (property_ == "output_correlation_matrix") return admin.correlationMatrixHandler.GetObjectId(project->outputCorrelationMatrix);
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "result") return admin.sensitivityResultHandler.GetObjectId(project->sensitivityResult);
-        }
-        else if (objectType == ObjectType::FragilityCurveProject)
-        {
-            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
-
-            if (property_ == "design_point") return admin.designPointHandler.GetObjectId(project->designPoint);
-            else if (property_ == "integrand") return admin.stochastHandler.GetObjectId(project->integrand);
-            else if (property_ == "fragility_curve") admin.fragilityCurveHandler.GetObjectId(project->fragilityCurve);
-            else if (property_ == "fragility_curve_normalized") admin.fragilityCurveHandler.GetObjectId(project->fragilityCurveNormalized);
         }
 
         return 0;
@@ -255,50 +143,6 @@ namespace Deltares::Server
             return admin.SetIntValue(id, property_, value);
         }
 
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "correlation_matrix") project->correlation = admin.correlationMatrixHandler.GetObject(value);
-            else if (property_ == "copula_correlation") project->correlation = admin.copulaCorrelationHandler.GetObject(value);
-            else if (property_ == "share_project") project->shareStochasts(GetProject(value));
-            else if (property_ == "total_model_runs") project->modelRuns = value;
-        }
-
-        if (objectType == ObjectType::FragilityCurveProject)
-        {
-            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
-
-            if (property_ == "integrand") project->integrand = admin.stochastHandler.GetObject(value);
-            else if (property_ == "fragility_curve") project->fragilityCurve = admin.fragilityCurveHandler.GetObject(value);
-            else if (property_ == "fragility_curve_normalized") project->fragilityCurveNormalized = admin.fragilityCurveHandler.GetObject(value);
-            else if (property_ == "settings") project->settings = admin.fragilityCurveSettingsHandler.GetObject(value);
-        }
-        else if (objectType == ObjectType::Project)
-        {
-            std::shared_ptr<ReliabilityProject> reliabilityProject = projects[id];
-
-            if (property_ == "settings") reliabilityProject->setSettings(admin.reliabilitySettingsHandler.GetObject(value));
-            else if (property_ == "limit_state_function") reliabilityProject->limitStateFunction = GetLimitStateFunction(value);
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> uncertaintyProject = uncertaintyProjects[id];
-
-            if (property_ == "settings") uncertaintyProject->setSettings(admin.uncertaintySettingsHandler.GetObject(value));
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> sensitivityProject = sensitivityProjects[id];
-
-            if (property_ == "settings") sensitivityProject->setSettings(admin.sensitivitySettingsHandler.GetObject(value));
-        }
-        else if (objectType == ObjectType::RunProject)
-        {
-            std::shared_ptr<Models::RunProject> runProject = runProjects[id];
-
-            if (property_ == "settings") runProject->setSettings(admin.runProjectSettingsHandler.GetObject(value));
-        }
     }
 
     double ProjectHandler::GetIntArgValue(int id1, int id2, const std::string& property_)
@@ -332,13 +176,6 @@ namespace Deltares::Server
             return admin.GetBoolValue(id, property_);
         }
 
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "is_valid") return project->isValid();
-        }
-
         return false;
     }
 
@@ -350,13 +187,6 @@ namespace Deltares::Server
         {
             return admin.SetBoolValue(id, property_, value);
         }
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "callback_assigned") if (project->model != nullptr) project->model->callbackAssigned = value;
-        }
     }
 
     std::string ProjectHandler::GetStringValue(int id, const std::string& property_)
@@ -366,19 +196,6 @@ namespace Deltares::Server
         if (IsSupported(objectType))
         {
             return admin.GetStringValue(id, property_);
-        }
-
-        if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "parameter") return project->parameter;
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "parameter") return project->parameter;
         }
 
         return "";
@@ -392,25 +209,6 @@ namespace Deltares::Server
         {
             return admin.SetStringValue(id, property_, value);
         }
-
-        if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "parameter") project->parameter = value;
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "parameter") project->parameter = value;
-        }
-        else if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model_name") project->model->name = value;
-        }
     }
 
     void ProjectHandler::SetArrayValue(int id, const std::string& property_, double* values, int size)
@@ -420,7 +218,6 @@ namespace Deltares::Server
         if (IsSupported(objectType))
         {
             admin.SetArrayValue(id, property_, values, size);
-            return;
         }
 
     }
@@ -438,66 +235,6 @@ namespace Deltares::Server
         {
             admin.SetArrayIntValue(id, property_, values, size);
             return;
-        }
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "variables")
-            {
-                project->stochasts.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->stochasts.push_back(admin.stochastHandler.GetObject(values[i]));
-                }
-            }
-            else if (property_ == "input_parameters")
-            {
-                project->model->inputParameters.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->model->inputParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
-                }
-                project->updateStochasts();
-            }
-            else if (property_ == "output_parameters")
-            {
-                project->model->outputParameters.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->model->outputParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
-                }
-            }
-        }
-
-        if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "uncertainty_parameters")
-            {
-                project->uncertaintyParameters.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->uncertaintyParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
-                }
-            }
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "sensitivity_parameters")
-            {
-                project->sensitivityParameters.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->sensitivityParameters.push_back(admin.modelParameterHandler.GetObject(values[i]));
-                }
-            }
         }
     }
 
@@ -586,29 +323,6 @@ namespace Deltares::Server
             return admin.GetIndexedIdValue(id, property_, index);
         }
 
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "stochasts") return admin.stochastHandler.GetObjectId(project->stochasts[index]);
-        }
-
-        if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "uncertainty_stochasts") return admin.stochastHandler.GetObjectId(project->uncertaintyResults[index]->stochast);
-            else if (property_ == "uncertainty_results") return admin.uncertaintyResultHandler.GetObjectId(project->uncertaintyResults[index]);
-            else if (property_ == "uncertainty_parameters") return admin.modelParameterHandler.GetObjectId(project->uncertaintyParameters[index]);
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "results") return admin.sensitivityResultHandler.GetObjectId(project->sensitivityResults[index]);
-            else if (property_ == "sensitivity_parameters") return admin.modelParameterHandler.GetObjectId(project->sensitivityParameters[index]);
-        }
-
         return 0;
     }
 
@@ -616,60 +330,33 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (ProjectEntries::IsModelProjectType(objectType))
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model") project->model = std::make_shared<Models::ZModel>(callBack);
+            admin.SetCallBack(id, property_, callBack);
+            return;
         }
+
     }
 
     void ProjectHandler::SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callBack)
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (ProjectEntries::IsModelProjectType(objectType))
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setMultipleCallback(callBack);
-            }
+            admin.SetMultipleCallBack(id, property_, callBack);
+            return;
         }
+
     }
 
     void ProjectHandler::SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callBack)
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (ProjectEntries::IsModelProjectType(objectType))
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "run_samples")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setRunMethod(callBack);
-            }
-            else if (property_ == "next")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setNextCalculation(callBack);
-            }
+            admin.SetEmptyCallBack(id, property_, callBack);
         }
     }
 
@@ -682,32 +369,16 @@ namespace Deltares::Server
             admin.SetProgressCallBacks(id, progress, detailed, textual);
             return;
         }
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            project->progressIndicator = std::make_shared<Models::ProgressIndicator>(progress, detailed, textual);
-        }
     }
 
     void ProjectHandler::SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callBack)
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (ProjectEntries::IsModelProjectType(objectType))
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setModelSampleCallback(callBack);
-            }
+            admin.SetModelSampleCallBack(id, property_, callBack);
+            return;
         }
     }
 
@@ -715,19 +386,9 @@ namespace Deltares::Server
     {
         ObjectType objectType = admin.GetObjectType(id);
 
-        if (ProjectEntries::IsModelProjectType(objectType))
+        if (IsSupported(objectType))
         {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setMultipleModelSampleCallback(callBack);
-            }
+            admin.SetMultipleModelSampleCallBack(id, property_, callBack);
         }
     }
 
@@ -738,21 +399,6 @@ namespace Deltares::Server
         if (IsSupported(objectType))
         {
             admin.Execute(id, method_);
-            return;
-        }
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (method_ == "run") project->run();
-            else if (method_ == "stop") project->stop();
-        }
-        else if (objectType == ObjectType::FragilityCurveProject)
-        {
-            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
-
-            if (method_ == "run") project->run();
         }
     }
 
@@ -770,49 +416,6 @@ namespace Deltares::Server
         return nullptr;
     }
 
-    std::shared_ptr<Models::ModelProject> ProjectHandler::GetProject(int id)
-    {
-        if (projects.contains(id))
-        {
-            return std::static_pointer_cast<Models::ModelProject>(projects[id]);
-        }
-        else if (runProjects.contains(id))
-        {
-            return std::static_pointer_cast<Models::ModelProject>(runProjects[id]);
-        }
-        else if (uncertaintyProjects.contains(id))
-        {
-            return std::static_pointer_cast<Models::ModelProject>(uncertaintyProjects[id]);
-        }
-        else if (sensitivityProjects.contains(id))
-        {
-            return std::static_pointer_cast<Models::ModelProject>(sensitivityProjects[id]);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
-    std::shared_ptr<LimitStateFunction> ProjectHandler::GetLimitStateFunction(int id)
-    {
-        if (admin.limitStateFunctionHandler.Contains(id))
-        {
-            return admin.limitStateFunctionHandler.GetObject(id);
-        }
-        else if (admin.combinedLimitStateFunctionHandler.Contains(id))
-        {
-            return admin.combinedLimitStateFunctionHandler.GetObject(id);
-        }
-        else if (admin.probabilityLimitStateFunctionHandler.Contains(id))
-        {
-            return admin.probabilityLimitStateFunctionHandler.GetObject(id);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
 
 }
 

@@ -87,14 +87,5 @@ namespace Deltares::Server
     {
         return all_entries.contains(object_type);
     }
-
-    bool ProjectEntries::IsModelProjectType(ObjectType object_type)
-    {
-        return object_type == Project ||
-            object_type == RunProject ||
-            object_type == UncertaintyProject ||
-            object_type == SensitivityProject;
-    }
-
 }
 

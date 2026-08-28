@@ -203,18 +203,5 @@ namespace Deltares::Probabilistic::Test
         }
         EXPECT_EQ(handler.GetStatus("count_entries"), 0);
     }
-
-    void UnitTestProjectHandler::TestProjectEntriesIsModelProject()
-    {
-        using namespace Deltares::Server;
-        using enum ObjectType;
-
-        EXPECT_FALSE(ProjectEntries::IsModelProjectType(Alpha));
-        EXPECT_FALSE(ProjectEntries::IsModelProjectType(CombineProject));
-        EXPECT_TRUE(ProjectEntries::IsModelProjectType(Project));
-        EXPECT_TRUE(ProjectEntries::IsModelProjectType(UncertaintyProject));
-        EXPECT_TRUE(ProjectEntries::IsModelProjectType(RunProject));
-        EXPECT_TRUE(ProjectEntries::IsModelProjectType(SensitivityProject));
-    }
 }
 

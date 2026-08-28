@@ -1490,11 +1490,6 @@ TEST(UnitTests, testCreateDestroyAllEntries)
     Deltares::Probabilistic::Test::UnitTestProjectHandler::TestCreateDestroyAllEntries();
 }
 
-TEST(UnitTests, testProjectEntriesIsModelProject)
-{
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsModelProject();
-}
-
 TEST(UnitTests, testProjectEntriesIsModelSettingsType)
 {
     Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();

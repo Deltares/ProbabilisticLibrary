@@ -159,6 +159,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\UncertaintyProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\SensitivityProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\ReliabilityProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\RunProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\ModelProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\FragilityCurveProjectHandler.h" />
     <ClInclude Include="Server\Handlers\ExcludingCombineProjectHandler.h" />
     <ClInclude Include="Server\Handlers\CombineProjectHandler.h" />
     <ClInclude Include="Server\Handlers\ExcludingCombineSettingsHandler.h" />
