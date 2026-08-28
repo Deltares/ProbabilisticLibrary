@@ -129,8 +129,6 @@ namespace Deltares::Server
             return admin.GetNewId();
         }
 
-        bool IsSupported(ObjectType objectType);
-
         void RegisterType(int id, ObjectType objectType)
         {
             admin.RegisterType(id, objectType);
@@ -153,8 +151,11 @@ namespace Deltares::Server
 
         void Destroy(int id)
         {
-            ObjectType objectType = admin.GetObjectType(id);
-            handlers[objectType]->Destroy(id);
+            if (admin.Contains(id))
+            {
+                ObjectType objectType = admin.GetObjectType(id);
+                handlers[objectType]->Destroy(id);
+            }
         }
 
         void Remove(int id)

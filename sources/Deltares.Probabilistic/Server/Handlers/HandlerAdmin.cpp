@@ -187,55 +187,6 @@ namespace Deltares::Server
         }
     }
 
-    bool HandlerAdmin::IsSupported(ObjectType objectType)
-    {
-        return
-            objectType == ObjectType::HistogramValue ||
-            objectType == ObjectType::DiscreteValue ||
-            objectType == ObjectType::FragilityValue ||
-            objectType == ObjectType::Message ||
-            objectType == ObjectType::Evaluation ||
-            objectType == ObjectType::ProbabilityValue ||
-            objectType == ObjectType::StandardNormal ||
-            objectType == ObjectType::Stochast ||
-            objectType == ObjectType::FragilityCurve ||
-            objectType == ObjectType::Scenario ||
-            objectType == ObjectType::ValidationReport ||
-            objectType == ObjectType::ModelParameter ||
-            objectType == ObjectType::LimitStateFunction ||
-            objectType == ObjectType::ProbabilityLimitStateFunction ||
-            objectType == ObjectType::CombinedLimitStateFunction ||
-            objectType == ObjectType::ReliabilityResult ||
-            objectType == ObjectType::ConvergenceReport ||
-            objectType == ObjectType::ContributingStochast ||
-            objectType == ObjectType::ConditionalValue ||
-            objectType == ObjectType::CorrelationMatrix ||
-            objectType == ObjectType::CopulaCorrelation ||
-            objectType == ObjectType::SelfCorrelationMatrix ||
-            objectType == ObjectType::Alpha ||
-            objectType == ObjectType::StochastPoint ||
-            objectType == ObjectType::DesignPoint ||
-            objectType == ObjectType::UncertaintyResult ||
-            objectType == ObjectType::SensitivityResult ||
-            objectType == ObjectType::SensitivityValue ||
-            objectType == ObjectType::RunProjectSettings ||
-            objectType == ObjectType::SensitivitySettings ||
-            objectType == ObjectType::UncertaintySettings ||
-            objectType == ObjectType::Settings ||
-            objectType == ObjectType::FragilityCurveSettings ||
-            objectType == ObjectType::CombineSettings ||
-            objectType == ObjectType::ExcludingCombineSettings ||
-            objectType == ObjectType::StochastSettings ||
-            objectType == ObjectType::CombineProject ||
-            objectType == ObjectType::ExcludingCombineProject ||
-            objectType == ObjectType::LengthEffectProject ||
-            objectType == ObjectType::Project ||
-            objectType == ObjectType::RunProject ||
-            objectType == ObjectType::UncertaintyProject ||
-            objectType == ObjectType::SensitivityProject ||
-            objectType == ObjectType::FragilityCurveProject;
-    }
-
     std::shared_ptr<Models::ModelProject> HandlerAdmin::GetProject(int id)
     {
         if (runProjectHandler.Contains(id))

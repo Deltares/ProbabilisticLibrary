@@ -24,13 +24,10 @@
 #include "BaseHandler.h"
 #include "ProjectEntries.h"
 #include "../Reliability/ReliabilityProject.h"
-#include "../Reliability/FragilityCurveProject.h"
 #include "../Reliability/LimitStateFunction.h"
 #include "../Reliability/CombinedLimitStateFunction.h"
 #include "../Reliability/Settings.h"
 #include "../Model/RunProject.h"
-#include "../Uncertainty/UncertaintyProject.h"
-#include "../Sensitivity/SensitivityProject.h"
 #include "Handlers/HandlerAdmin.h"
 
 namespace Deltares::Server
@@ -82,12 +79,7 @@ namespace Deltares::Server
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
 
-        std::mutex mtx;
         HandlerAdmin admin;
-
-        std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
-
-        bool IsSupported(ObjectType objectType);
 
     };
 }

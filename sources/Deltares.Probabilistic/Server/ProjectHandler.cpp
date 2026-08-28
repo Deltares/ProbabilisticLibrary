@@ -21,8 +21,6 @@
 //
 #include "ProjectHandler.h"
 
-#include "../Reliability/ProbabilityLimitStateFunction.h"
-
 namespace Deltares::Server
 {
     using namespace Deltares::Statistics;
@@ -42,44 +40,16 @@ namespace Deltares::Server
         return admin.GetNewId();
     }
 
-    bool ProjectHandler::IsSupported(ObjectType objectType)
-    {
-        return admin.IsSupported(objectType);
-    }
-
     int ProjectHandler::Create(const std::string& object_type)
     {
         ObjectType objectType = ProjectEntries::GetType(object_type);
 
-        if (admin.IsSupported(objectType))
-        {
-            return admin.Create(objectType);
-        }
-
-        int id = this->GetNewId();
-
-        std::lock_guard lock(mtx);
-
-        admin.RegisterType(id, objectType);
-
-        return id;
+        return admin.Create(objectType);
     }
 
     void ProjectHandler::Destroy(int id)
     {
-        std::lock_guard lock(mtx);
-
-        if (!admin.Contains(id))
-        {
-            return;
-        }
-
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.Destroy(id);
-        }
+        admin.Destroy(id);
     }
 
     bool ProjectHandler::ShouldClose()
@@ -89,137 +59,62 @@ namespace Deltares::Server
 
     double ProjectHandler::GetValue(int id, const std::string& property_)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetValue(id, property_);
-        }
-
-        return std::nan("");
+        return admin.GetValue(id, property_);
     }
 
     void ProjectHandler::SetValue(int id, const std::string& property_, double value)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetValue(id, property_, value);
-        }
-
+        admin.SetValue(id, property_, value);
     }
 
     int ProjectHandler::GetIntValue(int id, const std::string& property_)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetIntValue(id, property_);
-        }
-
-        return 0;
+        return admin.GetIntValue(id, property_);
     }
 
     int ProjectHandler::GetIdValue(int id, const std::string& property_)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetIdValue(id, property_);
-        }
-
-        return 0;
+        return admin.GetIdValue(id, property_);
     }
 
     void ProjectHandler::SetIntValue(int id, const std::string& property_, int value)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.SetIntValue(id, property_, value);
-        }
-
+        return admin.SetIntValue(id, property_, value);
     }
 
     double ProjectHandler::GetIntArgValue(int id1, int id2, const std::string& property_)
     {
-        ObjectType objectType = admin.GetObjectType(id1);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetIntArgValue(id1, id2, property_);
-        }
-
-        return std::nan("");
+        return admin.GetIntArgValue(id1, id2, property_);
     }
 
     void ProjectHandler::SetIntArgValue(int id1, int id2, const std::string& property_, double value)
     {
-        ObjectType objectType = admin.GetObjectType(id1);
-
-        if (IsSupported(objectType))
-        {
-            return admin.SetIntArgValue(id1, id2, property_, value);
-        }
+        return admin.SetIntArgValue(id1, id2, property_, value);
     }
 
     bool ProjectHandler::GetBoolValue(int id, const std::string& property_)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetBoolValue(id, property_);
-        }
-
-        return false;
+        return admin.GetBoolValue(id, property_);
     }
 
     void ProjectHandler::SetBoolValue(int id, const std::string& property_, bool value)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.SetBoolValue(id, property_, value);
-        }
+        return admin.SetBoolValue(id, property_, value);
     }
 
     std::string ProjectHandler::GetStringValue(int id, const std::string& property_)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetStringValue(id, property_);
-        }
-
-        return "";
+        return admin.GetStringValue(id, property_);
     }
 
     void ProjectHandler::SetStringValue(int id, const std::string& property_, const std::string& value)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.SetStringValue(id, property_, value);
-        }
+        return admin.SetStringValue(id, property_, value);
     }
 
     void ProjectHandler::SetArrayValue(int id, const std::string& property_, double* values, int size)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetArrayValue(id, property_, values, size);
-        }
-
+        admin.SetArrayValue(id, property_, values, size);
     }
 
     std::vector<int> ProjectHandler::GetArrayIntValue(int id, const std::string& property_)
@@ -229,47 +124,22 @@ namespace Deltares::Server
 
     void ProjectHandler::SetArrayIntValue(int id, const std::string& property_, int* values, int size)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetArrayIntValue(id, property_, values, size);
-            return;
-        }
+        admin.SetArrayIntValue(id, property_, values, size);
     }
 
     double ProjectHandler::GetArgValue(int id, const std::string& property_, double argument)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetArgValue(id, property_, argument);
-        }
-
-        return std::nan("");
+        return admin.GetArgValue(id, property_, argument);
     }
 
     void ProjectHandler::SetArgValue(int id, const std::string& property_, double argument, double value)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetArgValue(id, property_, argument, value);
-        }
+        admin.SetArgValue(id, property_, argument, value);
     }
 
     double ProjectHandler::GetIndexedValue(int id, const std::string& property_, int index)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetIndexedValue(id, property_, index);
-        }
-
-        return std::nan("");
+        return admin.GetIndexedValue(id, property_, index);
     }
 
     void ProjectHandler::SetIndexedValue(int id, const std::string& property_, int index, double value)
@@ -279,34 +149,17 @@ namespace Deltares::Server
 
     double ProjectHandler::GetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetIndexedIndexedValue(id, property_, index1, index2);
-        }
-
-        return std::nan("");
+        return admin.GetIndexedIndexedValue(id, property_, index1, index2);
     }
 
     void ProjectHandler::SetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2, double value)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetIndexedIndexedValue(id, property_, index1, index2, value);
-        }
+        admin.SetIndexedIndexedValue(id, property_, index1, index2, value);
     }
 
     void ProjectHandler::SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.SetIndexedIndexedIntValue(id, property_, index1, index2, value);
-        }
+        return admin.SetIndexedIndexedIntValue(id, property_, index1, index2, value);
     }
 
     int ProjectHandler::GetIndexedIntValue(int id, const std::string& property_, int index)
@@ -316,90 +169,42 @@ namespace Deltares::Server
 
     int ProjectHandler::GetIndexedIdValue(int id, const std::string& property_, int index)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            return admin.GetIndexedIdValue(id, property_, index);
-        }
-
-        return 0;
+        return admin.GetIndexedIdValue(id, property_, index);
     }
 
     void ProjectHandler::SetCallBack(int id, const std::string& property_, Models::ZValuesCallBack callBack)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetCallBack(id, property_, callBack);
-            return;
-        }
-
+        admin.SetCallBack(id, property_, callBack);
     }
 
     void ProjectHandler::SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callBack)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetMultipleCallBack(id, property_, callBack);
-            return;
-        }
-
+        admin.SetMultipleCallBack(id, property_, callBack);
     }
 
     void ProjectHandler::SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callBack)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetEmptyCallBack(id, property_, callBack);
-        }
+        admin.SetEmptyCallBack(id, property_, callBack);
     }
 
     void ProjectHandler::SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetProgressCallBacks(id, progress, detailed, textual);
-            return;
-        }
+        admin.SetProgressCallBacks(id, progress, detailed, textual);
     }
 
     void ProjectHandler::SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callBack)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetModelSampleCallBack(id, property_, callBack);
-            return;
-        }
+        admin.SetModelSampleCallBack(id, property_, callBack);
     }
 
     void ProjectHandler::SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.SetMultipleModelSampleCallBack(id, property_, callBack);
-        }
+        admin.SetMultipleModelSampleCallBack(id, property_, callBack);
     }
 
     void ProjectHandler::Execute(int id, const std::string& method_)
     {
-        ObjectType objectType = admin.GetObjectType(id);
-
-        if (IsSupported(objectType))
-        {
-            admin.Execute(id, method_);
-        }
+        admin.Execute(id, method_);
     }
 
     int ProjectHandler::GetStatus(const std::string& command) const
