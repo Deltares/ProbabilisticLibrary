@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "testKMean.h"
+#include "TestKMean.h"
 #include "../../Deltares.Probabilistic/Optimization/KMeansClustering.h"
 #include "../../Deltares.Probabilistic/Model/Sample.h"
 

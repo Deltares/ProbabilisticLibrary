@@ -22,8 +22,8 @@
 #include <cmath>
 #include <numbers>
 #include <gtest/gtest.h>
-#include "testMatrixInverse.h"
-#include "../Utils/testutils.h"
+#include "TestMatrixInverse.h"
+#include "../Utils/TestUtils.h"
 
 namespace Deltares::Probabilistic::Test
 {

@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include <gtest/gtest.h>
-#include "testNumericSupport.h"
+#include "TestNumericSupport.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
 #include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
 

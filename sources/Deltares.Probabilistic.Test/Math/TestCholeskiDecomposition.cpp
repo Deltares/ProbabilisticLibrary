@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include <gtest/gtest.h>
-#include "testCholeskiDecomposition.h"
+#include "TestCholeskiDecomposition.h"
 #include "../Utils/testutils.h"
 
 namespace Deltares::Probabilistic::Test

@@ -21,7 +21,7 @@
 //
 #include <complex>
 #include <gtest/gtest.h>
-#include "testStatisticsCalculator.h"
+#include "TestStatisticsCalculator.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
 #include "../../Deltares.Probabilistic/Math/StatisticsCalculator.h"
 

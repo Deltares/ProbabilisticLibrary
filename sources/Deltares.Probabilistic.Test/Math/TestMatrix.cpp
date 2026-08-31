@@ -20,9 +20,9 @@
 // All rights reserved.
 //
 
-#include "testMatrix.h"
+#include "TestMatrix.h"
 #include <gtest/gtest.h>
-#include "../Utils/testutils.h"
+#include "../Utils/TestUtils.h"
 #include <sstream>
 
 namespace Deltares::Probabilistic::Test

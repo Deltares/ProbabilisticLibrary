@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 #include <cmath>
 #include "../../Deltares.Probabilistic/Math/Vector1D.h"
-#include "testVector1D.h"
+#include "TestVector1D.h"
 
 namespace Deltares::Probabilistic::Test
 {

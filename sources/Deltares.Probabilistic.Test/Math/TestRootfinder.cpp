@@ -21,7 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include <cmath>
-#include "testRootfinder.h"
+#include "TestRootfinder.h"
 #include "../../Deltares.Probabilistic/Math/RootFinders/BisectionRootFinder.h"
 #include "../../Deltares.Probabilistic/Math/RootFinders/LinearRootFinder.h"
 #include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"

@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include <gtest/gtest.h>
-#include "testRandom.h"
+#include "TestRandom.h"
 #include "../../Deltares.Probabilistic/Math/RandomValueGenerator.h"
 
 namespace Deltares::Probabilistic::Test
