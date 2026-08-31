@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include <gtest/gtest.h>
-#include "testCobyla.h"
+#include "TestCobyla.h"
 
 using namespace Deltares::Optimization;
 

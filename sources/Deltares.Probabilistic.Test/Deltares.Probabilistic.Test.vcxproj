@@ -132,7 +132,7 @@
     <ClInclude Include="Math\TestVector1D.h" />
     <ClInclude Include="Math\TestSpecialFunctions.h" />
     <ClInclude Include="Math\TestStatisticsCalculator.h" />
-    <ClInclude Include="Optimization\testCobyla.h" />
+    <ClInclude Include="Optimization\TestCobyla.h" />
     <ClInclude Include="ProjectBuilder.h" />
     <ClInclude Include="Model\TestRunModel.h" />
     <ClInclude Include="Reliability\TestStartPointCalculator.h" />
@@ -185,7 +185,7 @@
     <ClCompile Include="Math\TestVector1D.cpp" />
     <ClCompile Include="Math\TestSpecialFunctions.cpp" />
     <ClCompile Include="Math\TestStatisticsCalculator.cpp" />
-    <ClCompile Include="Optimization\testCobyla.cpp" />
+    <ClCompile Include="Optimization\TestCobyla.cpp" />
     <ClCompile Include="ProjectBuilder.cpp" />
     <ClCompile Include="Model\TestRunModel.cpp" />
     <ClCompile Include="Reliability\TestStartPointCalculator.cpp" />

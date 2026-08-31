@@ -48,7 +48,7 @@
 #include "Model/TestRunModel.h"
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
-#include "Optimization/testCobyla.h"
+#include "Optimization/TestCobyla.h"
 #include "Proxies/TestProxies.h"
 #include "Utils/TestExceptions.h"
 #include "Utils/TestString.h"
