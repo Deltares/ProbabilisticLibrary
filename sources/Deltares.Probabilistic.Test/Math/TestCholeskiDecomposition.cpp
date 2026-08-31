@@ -21,7 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include "TestCholeskiDecomposition.h"
-#include "../Utils/testutils.h"
+#include "../Utils/TestUtils.h"
 
 namespace Deltares::Probabilistic::Test
 {

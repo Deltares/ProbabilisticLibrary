@@ -21,15 +21,10 @@
 //
 #include "TestUncertainty.h"
 
-#include "../projectBuilder.h"
+#include "../ProjectBuilder.h"
 
 #include "../../Deltares.Probabilistic/Uncertainty/UncertaintyProject.h"
-#include "../../Deltares.Probabilistic/Uncertainty/CrudeMonteCarloS.h"
-#include "../../Deltares.Probabilistic/Uncertainty/ImportanceSamplingS.h"
-#include "../../Deltares.Probabilistic/Uncertainty/NumericalIntegrationS.h"
-#include "../../Deltares.Probabilistic/Uncertainty/DirectionalSamplingS.h"
 #include "../../Deltares.Probabilistic/Uncertainty/FORMS.h"
-#include "../../Deltares.Probabilistic/Uncertainty/FOSM.h"
 
 #include <gtest/gtest.h>
 

@@ -21,7 +21,7 @@
 //
 #include "TestProxies.h"
 
-#include "../projectBuilder.h"
+#include "../ProjectBuilder.h"
 
 #include "../../Deltares.Probabilistic/Proxies/ProxyModel.h"
 

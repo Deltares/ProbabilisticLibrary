@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #pragma once
-#include "../Utils/testutils.h"
+#include "../Utils/TestUtils.h"
 #include "../../Deltares.Probabilistic/Combine/CombineElements.h"
 #include "../../Deltares.Probabilistic/Combine/UpScaling.h"
 

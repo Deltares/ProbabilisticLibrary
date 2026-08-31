@@ -31,7 +31,7 @@
 #include "../../Deltares.Probabilistic/Reliability/FragilityCurveIntegration.h"
 #include "../../Deltares.Probabilistic/Reliability/NumericalIntegration.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
-#include "../projectBuilder.h"
+#include "../ProjectBuilder.h"
 
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;

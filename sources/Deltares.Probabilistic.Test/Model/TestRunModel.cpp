@@ -21,7 +21,7 @@
 //
 #include "TestRunModel.h"
 
-#include "../projectBuilder.h"
+#include "../ProjectBuilder.h"
 
 #include "../../Deltares.Probabilistic/Model/RunProject.h"
 

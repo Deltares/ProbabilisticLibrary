@@ -24,7 +24,7 @@
 #include <cstdio>
 #include <gtest/gtest.h>
 #include "HohenbichlerTests.h"
-#include "../Utils/testutils.h"
+#include "../Utils/TestUtils.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerFORM.h"
 

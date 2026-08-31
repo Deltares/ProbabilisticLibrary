@@ -23,7 +23,7 @@
 #include <cmath>
 #include "TestStartPointCalculator.h"
 #include "../../Deltares.Probabilistic/Reliability/StartPointCalculator.h"
-#include "../projectBuilder.h"
+#include "../ProjectBuilder.h"
 
 namespace Deltares::Probabilistic::Test
 {

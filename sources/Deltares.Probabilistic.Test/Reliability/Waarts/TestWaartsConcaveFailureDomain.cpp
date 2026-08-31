@@ -21,7 +21,7 @@
 //
 
 #include "TestWaartsConcaveFailureDomain.h"
-#include "../../projectBuilder.h"
+#include "../../ProjectBuilder.h"
 #include "../../../Deltares.Probabilistic/Model/ModelSample.h"
 #include "../../../Deltares.Probabilistic/Model/ZModel.h"
 #include "../../../Deltares.Probabilistic/Statistics/Stochast.h"

@@ -21,7 +21,7 @@
 //
 #include "TestSensitivity.h"
 
-#include "../projectBuilder.h"
+#include "../ProjectBuilder.h"
 
 #include "../../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
 #include "../../Deltares.Probabilistic/Sensitivity/SobolSequence.h"
