@@ -45,20 +45,20 @@ namespace Deltares::Optimization
 
         auto myfunc = [&model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
         {
-            auto s = std::make_shared<Models::Sample>(dim_x);
+            auto s = Models::Sample(static_cast<int>(dim_x));
             for (unsigned i = 0; i < dim_x; i++)
             {
-                s->Values[i] = x[i];
+                s.Values[i] = x[i];
             }
             return model.GetZValue(s);
         };
 
         auto myfuncC = [&model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
             {
-                auto s = std::make_shared<Models::Sample>(dim_x);
+                auto s = Models::Sample(static_cast<int>(dim_x));
                 for (unsigned i = 0; i < dim_x; i++)
                 {
-                    s->Values[i] = x[i];
+                    s.Values[i] = x[i];
                 }
                 return model.GetConstraintValue(s);
             };

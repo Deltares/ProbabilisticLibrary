@@ -31,9 +31,9 @@
 
 namespace Deltares::Models
 {
-    using ZLambda = std::function<void(std::shared_ptr<ModelSample>)>;
-    using ZMultipleLambda = std::function<void(std::vector<std::shared_ptr<ModelSample>>)>;
-    using ZBetaLambda = std::function<double(std::shared_ptr<ModelSample>)>;
+    using ZLambda = std::function<void(ModelSample&)>;
+    using ZMultipleLambda = std::function<void(std::vector<ModelSample*>)>;
+    using ZBetaLambda = std::function<double(ModelSample&)>;
 
     using ZValuesCallBack = void(*)(const double* data, int size, double* outputValues);
     using ZValuesMultipleCallBack = void(*)(int arraySize, double** data, int inputSize, double** outputValues);
@@ -145,14 +145,14 @@ namespace Deltares::Models
         /**
          * \brief Calculates a sample
          */
-        virtual void invoke(const std::shared_ptr<ModelSample>& sample);
+        virtual void invoke(ModelSample& sample);
 
         /**
          * \brief Calculates a number of samples
          */
-        virtual void invoke(const std::vector<std::shared_ptr<ModelSample>>& samples);
+        virtual void invoke(const std::vector<ModelSample*>& samples);
 
-        double getBeta(std::shared_ptr<ModelSample> sample) const;
+        double getBeta(ModelSample& sample) const;
 
         bool canCalculateBeta() const
         {
@@ -227,12 +227,12 @@ namespace Deltares::Models
         /**
          * \brief Calculates a sample
          */
-        void invokeLambda(std::shared_ptr<ModelSample> sample) const;
+        void invokeLambda(ModelSample& sample) const;
 
         /**
          * \brief Calculates a number of samples
          */
-        void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples) const;
+        void invokeMultipleLambda(std::vector<ModelSample*>& samples) const;
 
         /**
          * \brief Handles the calculation time
@@ -278,7 +278,7 @@ namespace Deltares::Models
          * \brief Handles an invalid sample
          * \param sample The sample which can be invalid
          */
-        void handleInvalidSample(const std::shared_ptr<ModelSample>& sample) const;
+        void handleInvalidSample(ModelSample& sample) const;
     };
 }
 

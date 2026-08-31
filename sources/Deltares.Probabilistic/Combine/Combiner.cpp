@@ -71,7 +71,7 @@ namespace Deltares::Reliability
 
         project->correlation = model->getCorrelationMatrix(selfCorrelationMatrix);
 
-        Models::ZLambda zFunction = [model](const std::shared_ptr<Models::ModelSample>& sample)
+        Models::ZLambda zFunction = [model](Models::ModelSample& sample)
         {
             model->calculate(sample);
         };
@@ -80,7 +80,7 @@ namespace Deltares::Reliability
 
         if (model->canCalculateBetaDirection())
         {
-            Models::ZBetaLambda zBetaFunction = [model](const std::shared_ptr<Models::ModelSample>& sample)
+            Models::ZBetaLambda zBetaFunction = [model](Models::ModelSample& sample)
             {
                 return model->getBetaDirection(sample);
             };

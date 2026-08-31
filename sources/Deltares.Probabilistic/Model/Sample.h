@@ -38,21 +38,22 @@ namespace Deltares::Models
         bool extended = false;
 
     public:
-        Sample(int size, bool extended = false)
+        Sample() = default;
+
+        Sample(size_t size, bool extended = false)
+            : size(static_cast<int>(size)), extended(extended), Values(size, 0.0)
         {
-            this->size = size;
-            this->extended = extended;
-            for (int i = 0; i < size; i++)
-            {
-                Values.push_back(0.0);
-            }
+        }
+
+        Sample(int size, bool extended = false)
+            : size(size), extended(extended), Values(size, 0.0)
+        {
         }
 
         Sample(std::vector<double> values, bool extended = false)
+            : size(static_cast<int>(values.size())), extended(extended)
         {
-            this->size = static_cast<int>(values.size());
             this->Values = values;
-            this->extended = extended;
         }
 
         /**
@@ -90,8 +91,8 @@ namespace Deltares::Models
         int getSize() const;
 
         double getBeta() const;
-        double getDistance(const std::shared_ptr<Sample>& other) const;
-        double getDistance2(const std::shared_ptr<Sample>& other) const;
+        double getDistance(Sample& other) const;
+        double getDistance2(Sample& other) const;
         void setInitialValues(double beta);
         Sample clone() const;
         Sample getNormalizedSample() const { return getSampleAtBeta(1.0); }
@@ -112,7 +113,7 @@ namespace Deltares::Models
         Sample getReducedSample() const;
 
         void correctSmallValues(double tolerance = 1E-10);
-        bool areValuesEqual(std::shared_ptr<Sample> other);
+        bool areValuesEqual(Sample& other);
 
         /**
          * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
@@ -120,7 +121,25 @@ namespace Deltares::Models
          * \param function Operation on a sample
          * \return Resulting numeric values
          */
-        static std::vector<double> select(std::vector<std::shared_ptr<Sample>>& samples, std::function<double(std::shared_ptr<Sample>)> function)
+        static std::vector<double> select(std::vector<Sample>& samples, std::function<double(Sample)> function)
+        {
+            std::vector<double> result(samples.size());
+
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                result[i] = function(samples[i]);
+            }
+
+            return result;
+        }
+
+        /**
+         * \brief Performs an operation on a sample resulting in a numeric value for a collection of samples
+         * \param samples Collection of samples
+         * \param function Operation on a sample
+         * \return Resulting numeric values
+         */
+        static std::vector<double> select(std::vector<Sample*>& samples, std::function<double(Sample*)> function)
         {
             std::vector<double> result(samples.size());
 

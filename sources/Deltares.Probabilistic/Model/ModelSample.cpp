@@ -21,6 +21,8 @@
 //
 #include "ModelSample.h"
 
+#include "../Math/NumericSupport.h"
+
 namespace Deltares::Models
 {
     void ModelSample::clear()
@@ -36,16 +38,31 @@ namespace Deltares::Models
         Tag = 0;
     }
 
-    /**
-     * \brief Copies the results from another sample
-     */
-    void ModelSample::copyFrom(const std::shared_ptr<ModelSample>& source)
+    ModelSample ModelSample::clone()
     {
-        this->Z = source->Z;
-        this->OutputValues = std::vector<double>(source->OutputValues.size());
+        ModelSample clone = ModelSample(Numeric::NumericSupport::select(this->Values, [] (double x) {return x; }));
+        clone.copyFrom(*this);
+
+        clone.AllowProxy = this->AllowProxy;
+        clone.Beta = this->Beta;
+        clone.ExtendedLogging = this->ExtendedLogging;
+        clone.IsRestartRequired = this->IsRestartRequired;
+        clone.IterationIndex = this->IterationIndex;
+        clone.Tag = this->Tag;
+        clone.UsedProxy = this->UsedProxy;
+        clone.Weight = this->Weight;
+        clone.threadId = this->threadId;
+
+        return clone;
+    }
+
+    void ModelSample::copyFrom(ModelSample& source)
+    {
+        this->Z = source.Z;
+        this->OutputValues = std::vector<double>(source.OutputValues.size());
         for (size_t i = 0; i < this->OutputValues.size(); i++)
         {
-            this->OutputValues[i] = source->OutputValues[i];
+            this->OutputValues[i] = source.OutputValues[i];
         }
     }
 
@@ -97,16 +114,16 @@ namespace Deltares::Models
         Tag = sampleStruct->Tag;
     }
 
-    bool ModelSample::hasSameValues(std::shared_ptr<ModelSample> other)
+    bool ModelSample::hasSameValues(ModelSample& other)
     {
-        if (this->Values.size() != other->Values.size())
+        if (this->Values.size() != other.Values.size())
         {
             return false;
         }
 
         for (int i = 0; i < this->Values.size(); i++)
         {
-            if (this->Values[i] != other->Values[i])
+            if (this->Values[i] != other.Values[i])
             {
                 return false;
             }

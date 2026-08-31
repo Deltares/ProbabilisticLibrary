@@ -30,17 +30,17 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<Models::ModelRunner> TestWaartsNoisyLimitState::WaartsModel()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
         {
             double summation = 0.0;
-            for (const auto value : v->Values)
+            for (const auto value : v.Values)
             {
                 summation += sin(100.0 * value);
             }
 
-            v->Z = v->Values[0] + 2.0 * v->Values[1] + 2.0 * v->Values[2] + v->Values[3] - 5.0 * v->Values[4]
-                - 5.0 * v->Values[5] + 0.001 * summation;
-            return v->Z;
+            v.Z = v.Values[0] + 2.0 * v.Values[1] + 2.0 * v.Values[2] + v.Values[3] - 5.0 * v.Values[4]
+                - 5.0 * v.Values[5] + 0.001 * summation;
+            return v.Z;
         });
 
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();

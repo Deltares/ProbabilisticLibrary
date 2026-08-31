@@ -33,7 +33,7 @@ namespace Deltares::Reliability
     class ImportanceSamplingCluster
     {
     public:
-        std::shared_ptr<Models::Sample> Center = nullptr;
+        Models::Sample Center = Models::Sample(0);
         DesignPointBuilder designPointBuilder = DesignPointBuilder();
 
         double ProbFailure = 0.0;
@@ -46,9 +46,9 @@ namespace Deltares::Reliability
 
         void initialize(int nStochasts, double z0Fac, bool z0Ignore, DesignPointMethod method, bool addProbability,
                         std::shared_ptr<StochastSettingsSet> stochastSet);
-        void addSample(std::shared_ptr<Deltares::Models::Sample> sample, double failureAddition);
+        void addSample(Models::Sample& sample, double failureAddition);
 
-        std::shared_ptr<Models::Sample> NearestSample = nullptr; // result sample which is nearest to the limit state
+        Models::Sample NearestSample = Models::Sample(); // result sample which is nearest to the limit state
     private:
         double z0Fac = 0;
         bool z0Ignore = false;

@@ -61,11 +61,11 @@ namespace Deltares::Models
         }
     }
 
-    void ParameterSelector::updateZValue(std::shared_ptr<ModelSample> sample)
+    void ParameterSelector::updateZValue(ModelSample& sample)
     {
         if (!useSampleZValue)
         {
-            sample->Z = parameterIndexFromInput ? sample->Values[parameterIndex] : sample->OutputValues[parameterIndex];
+            sample.Z = parameterIndexFromInput ? sample.Values[parameterIndex] : sample.OutputValues[parameterIndex];
         }
     }
 }

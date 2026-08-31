@@ -34,7 +34,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Models::ModelRunner> modelRunner = projectBuilder::BuildLinearProject(2);
 
-        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> {1.0, 0.5});
+        Models::Sample sample = Models::Sample(std::vector<double> {1.0, 0.5});
 
         modelRunner->ProxySettings->InitializationType = Proxies::ProxyInitializationType::Single;
         modelRunner->ProxySettings->MethodType = Proxies::ProxyMethodType::FirstOrder;
@@ -46,7 +46,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Models::ModelRunner> modelRunner = projectBuilder::BuildLinearOutputOnlyProject();
 
-        std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(std::vector<double> {1.0, 0.5});
+        Models::Sample sample = Models::Sample(std::vector<double> {1.0, 0.5});
 
         modelRunner->ProxySettings->InitializationType = Proxies::ProxyInitializationType::Single;
         modelRunner->ProxySettings->MethodType = Proxies::ProxyMethodType::FirstOrder;
@@ -54,7 +54,7 @@ namespace Deltares::Probabilistic::Test
         testProxy(modelRunner, sample);
     }
 
-    void TestProxies::testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Models::Sample> sample) const
+    void TestProxies::testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, Models::Sample& sample) const
     {
         modelRunner->useProxy(false);
 

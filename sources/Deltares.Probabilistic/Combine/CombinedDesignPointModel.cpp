@@ -155,25 +155,25 @@ namespace Deltares::Reliability
         return correlationMatrix;
     }
 
-    void CombinedDesignPointModel::calculate(std::shared_ptr<ModelSample> sample)
+    void CombinedDesignPointModel::calculate(ModelSample& sample)
     {
         double result = this->combineType == combineAndOr::combOr ? std::numeric_limits<double>::max() : - std::numeric_limits<double>::max();
 
         for (std::shared_ptr<DesignPointModel> designPointModel : designPointModels)
         {
             designPointModel->calculate(sample);
-            if (std::isnan(sample->Z))
+            if (std::isnan(sample.Z))
             {
                 result = nan("");
                 break;
             }
             else
             {
-                result = this->combineType == combineAndOr::combOr ? std::min(result, sample->Z) : std::max(result, sample->Z);
+                result = this->combineType == combineAndOr::combOr ? std::min(result, sample.Z) : std::max(result, sample.Z);
             }
         }
 
-        sample->Z = result;
+        sample.Z = result;
     }
 
     double CombinedDesignPointModel::getStartValue(std::shared_ptr<Statistics::Stochast> stochast)
@@ -230,13 +230,13 @@ namespace Deltares::Reliability
         return true;
     }
 
-    double CombinedDesignPointModel::getBetaDirection(std::shared_ptr<ModelSample> sample)
+    double CombinedDesignPointModel::getBetaDirection(ModelSample& sample)
     {
         if (this->combineType == combineAndOr::combOr)
         {
             double beta = std::numeric_limits<double>::max();
 
-            for (const std::shared_ptr<DesignPointModel> designPointModel : designPointModels)
+            for (const std::shared_ptr<DesignPointModel>& designPointModel : designPointModels)
             {
                 double designPointBeta = designPointModel->getDirectionBeta(sample);
 
@@ -252,7 +252,7 @@ namespace Deltares::Reliability
         {
             double beta = 0;
 
-            for (const std::shared_ptr<DesignPointModel> designPointModel : designPointModels)
+            for (const std::shared_ptr<DesignPointModel>& designPointModel : designPointModels)
             {
                 double designPointBeta = designPointModel->getDirectionBeta(sample);
 

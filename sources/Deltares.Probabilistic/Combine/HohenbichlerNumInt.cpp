@@ -39,16 +39,16 @@ namespace Deltares::Reliability
     {
         auto nVar = stochasts.size();
 
-        const auto reorderedDesignPoint1 = designPoint1->getSampleForStochasts(stochasts);
-        const auto reorderedDesignPoint2 = designPoint2->getSampleForStochasts(stochasts);
+        auto reorderedDesignPoint1 = designPoint1->getSampleForStochasts(stochasts);
+        auto reorderedDesignPoint2 = designPoint2->getSampleForStochasts(stochasts);
 
         double rho = 0.0;
         for (size_t i = 0; i < nVar; i++)
         {
-            reorderedDesignPoint1->Values[i] /= -designPoint1->Beta;
-            reorderedDesignPoint2->Values[i] /= -designPoint2->Beta;
+            reorderedDesignPoint1.Values[i] /= -designPoint1->Beta;
+            reorderedDesignPoint2.Values[i] /= -designPoint2->Beta;
             auto corr = selfCorrelation->getSelfCorrelation(stochasts[i], designPoint1, designPoint2);
-            rho += reorderedDesignPoint1->Values[i] * reorderedDesignPoint2->Values[i] * corr;
+            rho += reorderedDesignPoint1.Values[i] * reorderedDesignPoint2.Values[i] * corr;
         }
         const double betaNew = BetaHohenbichler(designPoint1->Beta, designPoint2->Beta, rho, system);
 
@@ -68,8 +68,8 @@ namespace Deltares::Reliability
             double rhoCompl = sqrt(1.0 - rhoSCi * rhoSCi);
 
             // [1a] perturbation of beta-values
-            auto dpj1 = GetRealization(designPoint1->Beta + reorderedDesignPoint1->Values[i] * epsilon, parameters1); // copy alphas
-            auto dpj2 = GetRealization(designPoint2->Beta + reorderedDesignPoint2->Values[i] * epsilon * rhoSCi, parameters2);
+            auto dpj1 = GetRealization(designPoint1->Beta + reorderedDesignPoint1.Values[i] * epsilon, parameters1); // copy alphas
+            auto dpj2 = GetRealization(designPoint2->Beta + reorderedDesignPoint2.Values[i] * epsilon * rhoSCi, parameters2);
 
             // [1b] Hohenbichler computation with perturbed beta-values
             double betaj1 = BetaHohenbichler(dpj1.Beta, dpj2.Beta, rho, system);
@@ -81,7 +81,7 @@ namespace Deltares::Reliability
             // [2a] perturbation of beta - values
 
             auto dpx1 = GetRealization(designPoint1->Beta, parameters1); // copy alphas
-            auto dpx2 = GetRealization(designPoint2->Beta + reorderedDesignPoint2->Values[i] * epsilon * rhoCompl, parameters2);
+            auto dpx2 = GetRealization(designPoint2->Beta + reorderedDesignPoint2.Values[i] * epsilon * rhoCompl, parameters2);
 
             // [2b] Hohenbichler computation with perturbed beta - values
             double betax1 = BetaHohenbichler(dpx1.Beta, dpx2.Beta, rho, system);

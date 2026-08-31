@@ -154,8 +154,8 @@ void probcalcf2c(const basicSettings* method, fdistribs distributions[], corrStr
         }
 
         auto relMethod = createReliabilityMethod::selectMethod(*method, number_of_stochasts, stochasts);
-        auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
-                                               [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }
+        auto zModel = std::make_shared<ZModel>([&fw](ModelSample v) { return fw.FDelegate(v); },
+                                               [&fw](std::vector<ModelSample*> v) { return fw.FDelegateParallel(v); }
         );
 
         auto corr = std::make_shared<CorrelationMatrix>(false);

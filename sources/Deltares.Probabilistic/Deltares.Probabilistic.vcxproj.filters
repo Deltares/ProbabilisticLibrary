@@ -584,6 +584,8 @@
     <ClInclude Include="Combine\IndexPair.h" />
     <ClInclude Include="Combine\ComputeBetaSection.h" />
     <ClInclude Include="Math\StatisticsCalculator.h" />
+    <ClInclude Include="Model\SampleStorage.h" />
+    <ClInclude Include="Model\ModelSampleStorage.h" />
     <ClInclude Include="Server\Handlers\HistogramValueHandler.h" />
     <ClInclude Include="Server\Handlers\ObjectHandler.h" />
     <ClInclude Include="Server\Handlers\ObjectHandlerAdmin.h" />

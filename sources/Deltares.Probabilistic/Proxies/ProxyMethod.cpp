@@ -25,41 +25,41 @@
 
 namespace Deltares::Proxies
 {
-    void ProxyMethod::invoke(const std::shared_ptr<Models::ModelSample>& sample, ProxyCoefficients& proxyCoefficients)
+    void ProxyMethod::invoke(Models::ModelSample& sample, ProxyCoefficients& proxyCoefficients)
     {
         size_t outputSize = proxyCoefficients.coefficients.size();
-        sample->OutputValues = std::vector<double>(outputSize);
+        sample.OutputValues = std::vector<double>(outputSize);
 
-        for (size_t index = 0; index < sample->OutputValues.size(); index++)
+        for (size_t index = 0; index < sample.OutputValues.size(); index++)
         {
             if (proxyCoefficients.coefficients[index].valid)
             {
-                sample->OutputValues[index] = invokeValue(sample->Values, proxyCoefficients.coefficients[index]);
+                sample.OutputValues[index] = invokeValue(sample.Values, proxyCoefficients.coefficients[index]);
             }
             else
             {
-                sample->OutputValues[index] = std::nan("");
+                sample.OutputValues[index] = std::nan("");
             }
         }
 
         if (proxyCoefficients.zCoefficients.valid)
         {
-            sample->Z = invokeValue(sample->Values, proxyCoefficients.zCoefficients);
+            sample.Z = invokeValue(sample.Values, proxyCoefficients.zCoefficients);
         }
         else
         {
-            sample->Z = std::nan("");
+            sample.Z = std::nan("");
         }
     }
 
-    ProxyCoefficients ProxyMethod::train(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples)
+    ProxyCoefficients ProxyMethod::train(std::vector<Models::ModelSample*>& trainingSamples)
     {
         ProxyCoefficients proxyCoefficients;
 
         for (size_t index = 0; index < trainingSamples[0]->OutputValues.size(); index++)
         {
             std::vector<double> proxyValues = Models::ModelSample::select(
-                trainingSamples, [index](std::shared_ptr<Models::ModelSample> p) { return p->OutputValues[index]; });
+                trainingSamples, [index](Models::ModelSample* p) { return p->OutputValues[index]; });
 
             if (std::ranges::all_of(proxyValues, [](double x) {return Numeric::NumericSupport::isValidValue(x); }))
             {
@@ -72,7 +72,7 @@ namespace Deltares::Proxies
         }
 
         std::vector<double> zValues = Models::ModelSample::select(
-            trainingSamples, [](std::shared_ptr<Models::ModelSample> p) { return p->Z; });
+            trainingSamples, [](Models::ModelSample* p) { return p->Z; });
 
         if (std::ranges::all_of(zValues, [](double x) {return Numeric::NumericSupport::isValidValue(x); }))
         {

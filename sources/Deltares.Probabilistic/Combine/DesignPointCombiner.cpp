@@ -94,7 +94,7 @@ namespace Deltares::Reliability
             Models::UConverter uConverter = Models::UConverter(stochasts, correlationMatrix);
             uConverter.initializeForRun();
 
-            std::shared_ptr<Models::Sample> sample = combinedDesignPoint.getSample();
+            Models::Sample sample = combinedDesignPoint.getSample();
             std::shared_ptr<Models::StochastPoint> stochastPoint = uConverter.GetStochastPoint(sample, combinedDesignPoint.Beta);
 
             for (size_t i = 0; i < combinedDesignPoint.Alphas.size(); i++)

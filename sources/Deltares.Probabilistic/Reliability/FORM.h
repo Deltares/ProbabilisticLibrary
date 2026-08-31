@@ -38,12 +38,12 @@ namespace Deltares::Reliability
         }
 
     private:
-        std::shared_ptr<DesignPoint> getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startSample,
+        std::shared_ptr<DesignPoint> getDesignPoint(const std::shared_ptr<Models::ModelRunner>& modelRunner, Models::Sample& startSample,
             const double relaxationFactor, const int relaxationIndex);
         static bool areAllResultsValid(const std::vector<double>& values);
         bool isConverged(Models::ModelRunner& modelRunner, const Models::Sample& sample, ConvergenceReport& convergenceReport, double beta, double zGradientLength) const;
         std::shared_ptr<ReliabilityReport> getReport(int iteration, double reliability) const;
-        static std::pair<double, std::shared_ptr<Models::Sample>> estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector< std::shared_ptr<Models::Sample>>& last10u);
+        static std::pair<double, Models::Sample> estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector<Models::Sample>& last10u);
         const int histU = 10; // keep last 10 u values for history / statistics
     };
 }

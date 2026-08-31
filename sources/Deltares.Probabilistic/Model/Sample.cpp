@@ -36,14 +36,14 @@ namespace Deltares::Models
         return Numeric::NumericSupport::GetLength(Values);
     }
 
-    double Sample::getDistance(const std::shared_ptr<Sample>& other) const
+    double Sample::getDistance(Sample& other) const
     {
-        return Numeric::NumericSupport::getDistance(this->Values, other->Values);
+        return Numeric::NumericSupport::getDistance(this->Values, other.Values);
     }
 
-    double Sample::getDistance2(const std::shared_ptr<Sample>& other) const
+    double Sample::getDistance2(Sample& other) const
     {
-        return Numeric::NumericSupport::getDistance2(this->Values, other->Values);
+        return Numeric::NumericSupport::getDistance2(this->Values, other.Values);
     }
 
     void Sample::setInitialValues(double beta)
@@ -106,16 +106,16 @@ namespace Deltares::Models
         }
     }
 
-    bool Sample::areValuesEqual(std::shared_ptr<Sample> other)
+    bool Sample::areValuesEqual(Sample& other)
     {
-        if (this->Values.size() != other->Values.size())
+        if (this->Values.size() != other.Values.size())
         {
             return false;
         }
 
         for (size_t i = 0; i < this->Values.size(); i++)
         {
-            if (this->Values[i] != other->Values[i])
+            if (this->Values[i] != other.Values[i])
             {
                 return false;
             }
@@ -126,7 +126,12 @@ namespace Deltares::Models
 
     Sample Sample::clone() const
     {
-        Sample clonedSample = Sample(this->Values, this->extended);
+        Sample clonedSample = Sample(this->size, this->extended);
+
+        for (int i = 0; i < size; i++)
+        {
+            clonedSample.Values[i] = this->Values[i];
+        }
 
         clonedSample.AllowProxy = this->AllowProxy;
         clonedSample.IterationIndex = this->IterationIndex;

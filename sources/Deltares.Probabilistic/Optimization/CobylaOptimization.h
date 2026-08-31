@@ -55,8 +55,8 @@ namespace Deltares::Optimization
     class optimizationModel
     {
     public:
-        virtual double GetZValue(const std::shared_ptr<Models::Sample> sample) const { return -1; }
-        virtual double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) { return -1; }
+        virtual double GetZValue(Models::Sample& sample) const { return -1; }
+        virtual double GetConstraintValue(Models::Sample& sample) { return -1; }
         virtual unsigned GetNumberOfConstraints() const { return 0; }
     };
 

@@ -30,7 +30,7 @@ namespace Deltares::Reliability
         beta2(betaV), pf1(pfU), rho(r), sqrt_one_minus_rho2(sqrt(1.0 - r * r)) {}
 
     //> ZHohenbichler: Z-function for Hohenbichler with input parameters x and output parameter z
-    void HohenbichlerZ::zfunc(std::shared_ptr<Deltares::Models::ModelSample> s) const
+    void HohenbichlerZ::zfunc(Deltares::Models::ModelSample& s) const
     {
         //
         // u     : u-value (standard normal distributed)
@@ -39,11 +39,11 @@ namespace Deltares::Reliability
         // pf1   : Probability of failure for stochastic variable 1 (smallest probability of failure)
         // rho   : Correlation coefficient between Z_1 and Z_2
         //
-        const double u = s->Values[0];
-        const double w = s->Values[1];
+        const double u = s.Values[0];
+        const double w = s.Values[1];
         double phiU = StandardNormal::getPFromU(u);
         double uAccent = StandardNormal::getUFromQ(pf1 * phiU);
         auto z = beta2 - rho * uAccent - sqrt_one_minus_rho2 * w;
-        s->Z = z;
+        s.Z = z;
     }
 }

@@ -78,7 +78,7 @@ namespace Deltares::Uncertainty
         }
     }
 
-    std::shared_ptr<Sample> Direction::CreateNewSampleAt(double z, double maxBeta)
+    Sample Direction::CreateNewSampleAt(double z, double maxBeta)
     {
         double distance = NumericSupport::interpolate(z, zValues, distances, true); //interpolates the distance (d) for the given z value in the direction
 
@@ -92,8 +92,8 @@ namespace Deltares::Uncertainty
         }
         else
         {
-            std::shared_ptr<Sample> newSample = std::make_shared<Models::Sample>(sample->getSampleAtBeta(distance));
-            newSample->IterationIndex = this->index;
+            Sample newSample = sample.getSampleAtBeta(distance);
+            newSample.IterationIndex = this->index;
             return newSample;
         }
     }

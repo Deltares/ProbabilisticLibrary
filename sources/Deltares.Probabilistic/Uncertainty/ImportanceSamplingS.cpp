@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "ImportanceSamplingSettingsS.h"
 #include "../Reliability/ImportanceSamplingSupport.h"
@@ -52,8 +53,8 @@ namespace Deltares::Uncertainty
         // for convergence, simulate that this is a reliability calculation with failure at given probability
         designPointBuilder = DesignPointBuilder(nParameters, DesignPointMethod::CenterOfGravity, Settings->StochastSet);
 
-        std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
-        std::vector<std::shared_ptr<Sample>> samples;
+        Sample uMin = Sample(nParameters);
+        std::vector<Sample*> samples;
         std::vector<double> zValues;
         std::vector<double> weights;
         std::vector<double> cumulativeWeights;
@@ -61,11 +62,14 @@ namespace Deltares::Uncertainty
         size_t zIndex = 0;
         int nSamples = 0;
         double sumWeights = 0;
-        std::vector<std::shared_ptr<Sample>> allSamples;
+        std::vector<Sample> allSamples;
+        int chunkSize = modelRunner->Settings->MaxChunkSize;
+
+        SampleStorage storage = SampleStorage(chunkSize);
 
         bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
 
-        std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
+        Sample center = Settings->StochastSet->getStartPoint();
 
         factors = getFactors(*Settings->StochastSet);
         dimensionality = ImportanceSamplingSupport::getDimensionality(factors);
@@ -79,15 +83,15 @@ namespace Deltares::Uncertainty
             if (zIndex >= samples.size())
             {
                 samples.clear();
+                storage.clear();
 
-                int chunkSize = modelRunner->Settings->MaxChunkSize;
                 int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
 
                 for (int i = 0; i < runs; i++)
                 {
-                    std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                    std::shared_ptr<Sample> modifiedSample = getModifiedSample(*sample, *center);
-                    samples.push_back(modifiedSample);
+                    Sample sample = randomSampleGenerator.getRandomSample();
+                    Sample modifiedSample = getModifiedSample(sample, center);
+                    samples.push_back(storage.keep(modifiedSample));
                 }
 
                 std::vector<double> zSampleValues = modelRunner->getZValues(samples);
@@ -95,23 +99,23 @@ namespace Deltares::Uncertainty
                 zIndex = 0;
             }
 
-            std::shared_ptr<Sample> sample = samples[zIndex];
+            Sample sample = *samples[zIndex];
 
-            if (std::isnan(sample->Z))
+            if (std::isnan(sample.Z))
             {
                 continue;
             }
 
-            zValues.push_back(sample->Z);
-            weights.push_back(sample->Weight);
-            sumWeights += sample->Weight;
+            zValues.push_back(sample.Z);
+            weights.push_back(sample.Weight);
+            sumWeights += sample.Weight;
             isDesignPointSamples.push_back(false);
-            cumulativeWeights.push_back(sample->Weight);
+            cumulativeWeights.push_back(sample.Weight);
             allSamples.push_back(sample);
 
             nSamples++;
 
-            updateCumulativeWeights(zValues, weights, cumulativeWeights, *sample);
+            updateCumulativeWeights(zValues, weights, cumulativeWeights, sample);
 
             if (registerSamplesForCorrelation)
             {
@@ -138,7 +142,7 @@ namespace Deltares::Uncertainty
                 }
             }
 
-            converged = getConverged(sampleIndex, *center, nSamples);
+            converged = getConverged(sampleIndex, center, nSamples);
         }
 
         adjustWeights(weights, nSamples - sumWeights);
@@ -158,8 +162,8 @@ namespace Deltares::Uncertainty
                 randomSampleGenerator.restart();
                 randomSampleGenerator.proceed(quantile_index);
 
-                std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                std::shared_ptr<Sample> modifiedSample = getModifiedSample(*sample, *center);
+                Sample sample = randomSampleGenerator.getRandomSample();
+                Sample modifiedSample = getModifiedSample(sample, center);
                 auto evaluation = std::make_shared<Evaluation>(modelRunner->getEvaluation(modifiedSample));
                 evaluation->Quantile = p;
                 result.quantileEvaluations.push_back(evaluation);
@@ -215,7 +219,7 @@ namespace Deltares::Uncertainty
             const auto designPoint = designPointBuilder.getSample();
 
             const double designPointWeight =
-                ImportanceSamplingSupport::getSampleWeight(*designPoint, center, dimensionality, factors);
+                ImportanceSamplingSupport::getSampleWeight(designPoint, center, dimensionality, factors);
 
             const double convergence = ImportanceSamplingSupport::getConvergence(
                  Settings->normalizedProbabilityForConvergence(), designPointWeight, nSamples);
@@ -253,16 +257,16 @@ namespace Deltares::Uncertainty
         return factors;
     }
 
-    std::shared_ptr<Sample> ImportanceSamplingS::getModifiedSample(const Sample& sample, const Sample& center) const
+    Sample ImportanceSamplingS::getModifiedSample(Sample& sample, Sample& center) const
     {
-        std::shared_ptr<Sample> modifiedSample = std::make_shared<Models::Sample>(sample.clone());
+        Sample modifiedSample = sample.clone();
 
         for (int k = 0; k < sample.getSize(); k++)
         {
-            modifiedSample->Values[k] = factors[k] * sample.Values[k] + center.Values[k];
+            modifiedSample.Values[k] = factors[k] * sample.Values[k] + center.Values[k];
         }
 
-        modifiedSample->Weight = ImportanceSamplingSupport::getWeight(*modifiedSample, sample, dimensionality);
+        modifiedSample.Weight = ImportanceSamplingSupport::getWeight(modifiedSample, sample, dimensionality);
 
         return modifiedSample;
     }

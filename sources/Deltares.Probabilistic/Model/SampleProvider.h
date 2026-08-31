@@ -39,14 +39,14 @@ namespace Deltares::Models
         explicit SampleProvider(const Reliability::StochastSettingsSet& stochastSettings) :
             sampleSize(stochastSettings.getVaryingStochastCount()), modelSampleSize(stochastSettings.getStochastCount()) {}
 
-        std::shared_ptr<Sample> getSample()
+        Sample getSample() const
         {
-            return std::make_shared<Sample>(sampleSize);
+            return {sampleSize};
         }
 
-        static std::shared_ptr<ModelSample> getModelSample(std::vector<double>& values)
+        static ModelSample getModelSample(std::vector<double>& values)
         {
-            return std::make_shared<ModelSample>(values);
+            return ModelSample(values);
         }
 
     private:

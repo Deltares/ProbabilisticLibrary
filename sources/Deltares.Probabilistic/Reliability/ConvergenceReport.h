@@ -42,7 +42,7 @@ namespace Deltares::Reliability
         int TotalIterations = -1;
         int TotalModelRuns = 0;
 
-        std::shared_ptr<Models::Sample> NearestSample = nullptr;
+        Models::Sample NearestSample = Models::Sample();
 
         double getSmallestFraction()
         {

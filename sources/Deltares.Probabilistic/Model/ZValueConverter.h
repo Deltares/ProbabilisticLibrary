@@ -31,7 +31,7 @@ namespace Deltares::Models
     {
     public:
         virtual void initialize(std::vector<std::shared_ptr<ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<ModelInputParameter>>& outputParameters) {}
-        virtual void updateZValue(std::shared_ptr<ModelSample> sample) {}
+        virtual void updateZValue(ModelSample& sample) {}
         virtual std::string getIdentifier() { return "z"; }
     };
 }

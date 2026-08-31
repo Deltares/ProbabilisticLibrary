@@ -55,24 +55,24 @@ namespace Deltares::Probabilistic::Test
         inputdata.push_back({ 0.59, 0.12 });
         inputdata.push_back({ 0.68, 0.21 });
         inputdata.push_back({ 0.61, 0.13 });
-        auto samples = std::vector < std::shared_ptr<Models::Sample>>();
+        auto samples = std::vector <Models::Sample>();
         for (const auto & input : inputdata)
         {
-            auto s = std::make_shared<Models::Sample>(2);
-            s->Weight = 1.0;
-            s->Values = input;
+            auto s = Models::Sample(2);
+            s.Weight = 1.0;
+            s.Values = input;
             samples.push_back(s);
         }
         auto kmean = Optimization::KMeansClustering();
         kmean.Settings->MaxClusters = 3;
         kmean.Settings->OptimizeNumberOfClusters = true;
         auto result = kmean.getClusterCenters(samples);
-        EXPECT_NEAR(result[0]->Values[0], 0.748, margin);
-        EXPECT_NEAR(result[0]->Values[1], 0.170, margin);
-        EXPECT_NEAR(result[1]->Values[0], 0.601, margin);
-        EXPECT_NEAR(result[1]->Values[1], 0.117, margin);
-        EXPECT_NEAR(result[2]->Values[0], 0.675, margin);
-        EXPECT_NEAR(result[2]->Values[1], 0.222, margin);
+        EXPECT_NEAR(result[0].Values[0], 0.748, margin);
+        EXPECT_NEAR(result[0].Values[1], 0.170, margin);
+        EXPECT_NEAR(result[1].Values[0], 0.601, margin);
+        EXPECT_NEAR(result[1].Values[1], 0.117, margin);
+        EXPECT_NEAR(result[2].Values[0], 0.675, margin);
+        EXPECT_NEAR(result[2].Values[1], 0.222, margin);
     }
 
 }

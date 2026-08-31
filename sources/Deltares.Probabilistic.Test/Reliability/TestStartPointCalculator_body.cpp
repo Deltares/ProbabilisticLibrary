@@ -47,9 +47,9 @@ namespace Deltares::Probabilistic::Test
 
         auto r = calculator.getStartPoint(*modelRunner);
 
-        ASSERT_EQ(r->Values.size(), 2);
-        EXPECT_EQ(r->Values[0], 1.0);
-        EXPECT_EQ(r->Values[1], 1.0);
+        ASSERT_EQ(r.Values.size(), 2);
+        EXPECT_EQ(r.Values[0], 1.0);
+        EXPECT_EQ(r.Values[1], 1.0);
     }
 
     void TestStartPointCalculator::testMethodRaySearch() const
@@ -64,9 +64,9 @@ namespace Deltares::Probabilistic::Test
 
         auto r = calculator.getStartPoint(*modelRunner);
 
-        ASSERT_EQ(r->Values.size(), 2);
-        EXPECT_NEAR(r->Values[0], 12.0, margin);
-        EXPECT_NEAR(r->Values[1], 12.0, margin);
+        ASSERT_EQ(r.Values.size(), 2);
+        EXPECT_NEAR(r.Values[0], 12.0, margin);
+        EXPECT_NEAR(r.Values[1], 12.0, margin);
     }
 
     void TestStartPointCalculator::testMethodSphereSearch() const
@@ -79,11 +79,11 @@ namespace Deltares::Probabilistic::Test
 
         auto r = calculator.getStartPoint(*modelRunner);
 
-        ASSERT_EQ(r->Values.size(), 2);
+        ASSERT_EQ(r.Values.size(), 2);
         auto z = modelRunner->getZValue(r);
         EXPECT_TRUE(std::abs(z) < margin);
-        EXPECT_NEAR(r->Values[0], 2.4, margin);
-        EXPECT_NEAR(r->Values[1], 0.0, margin);
+        EXPECT_NEAR(r.Values[0], 2.4, margin);
+        EXPECT_NEAR(r.Values[1], 0.0, margin);
     }
 
     void TestStartPointCalculator::testMethodSphereSearchAllDirections() const
@@ -98,11 +98,11 @@ namespace Deltares::Probabilistic::Test
 
         auto r = calculator.getStartPoint(*modelRunner);
 
-        ASSERT_EQ(r->Values.size(), 2);
+        ASSERT_EQ(r.Values.size(), 2);
         auto z = modelRunner->getZValue(r);
         EXPECT_TRUE(std::abs(z) < margin);
-        EXPECT_NEAR(r->Values[0], 1.64172137689, margin);
-        EXPECT_NEAR(r->Values[1], -0.94784827888, margin);
+        EXPECT_NEAR(r.Values[0], 1.64172137689, margin);
+        EXPECT_NEAR(r.Values[1], -0.94784827888, margin);
     }
 
     void TestStartPointCalculator::testMethodSphereSearchWithDeterminist() const
@@ -115,9 +115,9 @@ namespace Deltares::Probabilistic::Test
 
         auto r = calculator.getStartPoint(*modelRunner);
 
-        ASSERT_EQ(r->Values.size(), 2);
-        EXPECT_NEAR(r->Values[1], 2.4, margin);
-        EXPECT_NEAR(r->Values[0], 0.0, margin);
+        ASSERT_EQ(r.Values.size(), 2);
+        EXPECT_NEAR(r.Values[1], 2.4, margin);
+        EXPECT_NEAR(r.Values[0], 0.0, margin);
     }
 
 }

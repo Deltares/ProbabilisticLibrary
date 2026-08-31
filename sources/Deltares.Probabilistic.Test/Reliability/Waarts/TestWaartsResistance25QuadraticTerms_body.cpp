@@ -31,14 +31,14 @@ namespace Deltares::Probabilistic::Test
     std::shared_ptr<Models::ModelRunner> TestWaartsResistance25QuadraticTerms::WaartsModel()
     {
         constexpr int numberOfQuadraticTerms = 25;
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
         {
-            double Z = v->Values[0];
+            double Z = v.Values[0];
             for(int i = 1; i <= numberOfQuadraticTerms; i++)
             {
-                Z -= pow(v->Values[i], 2) / static_cast<double>(i);
+                Z -= pow(v.Values[i], 2) / static_cast<double>(i);
             }
-            v->Z = Z;
+            v.Z = Z;
             return Z;
         });
 

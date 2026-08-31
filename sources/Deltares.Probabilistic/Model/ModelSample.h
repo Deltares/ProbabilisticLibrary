@@ -58,7 +58,7 @@ namespace Deltares::Models
 
         int Tag = 0;
 
-        bool hasSameValues(std::shared_ptr<ModelSample> other);
+        bool hasSameValues(ModelSample& other);
 
         /**
          * \brief Resets all contents of the sample to its default values
@@ -67,11 +67,18 @@ namespace Deltares::Models
         void clear();
 
         /**
-         * \brief Copies the results from another sample
+         * \brief Gets a clone of this model sample
+         * \return Clone
          */
-        void copyFrom(const std::shared_ptr<ModelSample>& source);
+        ModelSample clone();
 
-        void fillModelSampleStruct(ModelSampleStruct* modelSample) const;
+        /**
+         * \brief Copies the results from another sample
+         * \param source The model sample to copy from
+         */
+        void copyFrom(ModelSample& source);
+
+        void fillModelSampleStruct(ModelSampleStruct* sampleStruct) const;
 
         void setModelSampleStruct(const ModelSampleStruct* sampleStruct);
 
@@ -81,8 +88,8 @@ namespace Deltares::Models
          * \param function Operation on a sample
          * \return Resulting numeric values
          */
-        template <std::predicate<std::shared_ptr<ModelSample> const&> SampleFunction>
-        static std::vector<double> select(const std::vector<std::shared_ptr<ModelSample>>& samples, const SampleFunction& function)
+        template <std::predicate<ModelSample* const&> SampleFunction>
+        static std::vector<double> select(const std::vector<ModelSample*>& samples, const SampleFunction& function)
         {
             std::vector<double> result(samples.size());
 

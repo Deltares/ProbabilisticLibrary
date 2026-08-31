@@ -24,41 +24,47 @@
 
 namespace Deltares::Optimization
 {
-    std::shared_ptr<Models::ModelSample> GridSearch::getOptimizedSample(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model)
+    Models::ModelSample GridSearch::getOptimizedSample(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model)
     {
-        std::shared_ptr<Models::ModelSample> sample = findGridExtreme(searchArea, model, nullptr, 0);
+        std::vector<double> defaultValues;
+        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
+        {
+            defaultValues.push_back(std::nan(""));
+        }
+
+        Models::ModelSample initialSample = Models::ModelSample(defaultValues);
+        initialSample.Z = std::numeric_limits<double>::infinity();
+
+        Models::ModelSample sample = findGridExtreme(searchArea, model, initialSample, 0);
         counter = 0;
         reusedCounter = 0;
 
-        if (sample != nullptr)
+        int gridMoves = 0;
+        while (gridMoves < MaxGridMoves && isSampleOnEdge(searchArea, sample))
         {
-            int gridMoves = 0;
-            while (gridMoves < MaxGridMoves && isSampleOnEdge(searchArea, sample))
-            {
-                moveSampleToCenter(searchArea, sample);
-                sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves);
-                gridMoves++;
+            moveSampleToCenter(searchArea, sample);
+            sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves);
+            gridMoves++;
 
-                counter = 0;
-                reusedCounter = 0;
-            }
+            counter = 0;
+            reusedCounter = 0;
+        }
 
-            int refinements = 0;
-            while (canRefine(searchArea, refinements))
-            {
-                refineGrid(searchArea, refinements, sample);
-                sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves + refinements);
-                refinements++;
+        int refinements = 0;
+        while (canRefine(searchArea, refinements))
+        {
+            refineGrid(searchArea, refinements, sample);
+            sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves + refinements);
+            refinements++;
 
-                counter = 0;
-                reusedCounter = 0;
-            }
+            counter = 0;
+            reusedCounter = 0;
         }
 
         return sample;
     }
 
-    std::shared_ptr<Models::ModelSample> GridSearch::findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model, std::shared_ptr<Models::ModelSample> minSample, int iteration)
+    Models::ModelSample GridSearch::findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model, Models::ModelSample& minSample, int iteration)
     {
         std::vector<std::vector<double>> inputValues;
         for (std::shared_ptr<SearchParameterSettings> dimension : searchArea->Dimensions)
@@ -81,13 +87,13 @@ namespace Deltares::Optimization
             gridCounter++;
             gridIntervalCounter++;
 
-            const std::shared_ptr<Models::ModelSample> sample = std::make_shared<Models::ModelSample>(combination);
+            Models::ModelSample sample = Models::ModelSample(combination);
 
             model->invoke(sample);
 
             counter++;
 
-            if (!std::isnan(sample->Z) && (minSample == nullptr || sample->Z < minSample->Z))
+            if (!std::isnan(sample.Z) && sample.Z < minSample.Z)
             {
                 minSample = sample;
             }
@@ -96,7 +102,7 @@ namespace Deltares::Optimization
         return minSample;
     }
 
-    bool GridSearch::isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ModelSample> sample)
+    bool GridSearch::isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ModelSample& sample)
     {
         for (int i = 0; i < searchArea->Dimensions.size(); i++)
         {
@@ -104,7 +110,8 @@ namespace Deltares::Optimization
             {
                 const double tolerance = getTolerance(searchArea->Dimensions[i]);
 
-                if (Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MinValue, sample->Values[i], tolerance) || Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MaxValue, sample->Values[i], tolerance))
+                if (Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MinValue, sample.Values[i], tolerance)
+                    || Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MaxValue, sample.Values[i], tolerance))
                 {
                     return true;
                 }
@@ -114,7 +121,7 @@ namespace Deltares::Optimization
         return false;
     }
 
-    void GridSearch::moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ModelSample> sample)
+    void GridSearch::moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ModelSample& sample)
     {
         bool moved = false;
 
@@ -128,14 +135,14 @@ namespace Deltares::Optimization
 
                 const double tolerance = getTolerance(searchArea->Dimensions[i]);
 
-                if (Numeric::NumericSupport::areEqual(dimension->MinValue, sample->Values[i], tolerance))
+                if (Numeric::NumericSupport::areEqual(dimension->MinValue, sample.Values[i], tolerance))
                 {
                     dimension->MinValue -= shift;
                     dimension->MaxValue -= shift;
                     dimension->UseValues = UseValuesType::MinValue;
                     moved = true;
                 }
-                else if (Numeric::NumericSupport::areEqual(dimension->MaxValue, sample->Values[i], tolerance))
+                else if (Numeric::NumericSupport::areEqual(dimension->MaxValue, sample.Values[i], tolerance))
                 {
                     dimension->MinValue += shift;
                     dimension->MaxValue += shift;
@@ -167,7 +174,7 @@ namespace Deltares::Optimization
         return false;
     }
 
-    void GridSearch::refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, std::shared_ptr<Models::ModelSample> sample)
+    void GridSearch::refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, Models::ModelSample& sample)
     {
         for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
         {
@@ -176,16 +183,16 @@ namespace Deltares::Optimization
             {
                 // when refinement is allowed, create values for the new grid higher, lower and equal the original sample
                 // the values higher and lower are exactly between the sample and its neighbors in the previous grid
-                double newInterval = dimension->getInterval() / 2; 
-                dimension->MinValue = sample->Values[i] - newInterval;
-                dimension->MaxValue = sample->Values[i] + newInterval;
+                double newInterval = dimension->getInterval() / 2;
+                dimension->MinValue = sample.Values[i] - newInterval;
+                dimension->MaxValue = sample.Values[i] + newInterval;
                 dimension->NumberOfValues = 3;
             }
             else
             {
                 // when refinement is not allowed, repeat the value from the original value
-                dimension->MinValue = sample->Values[i];
-                dimension->MaxValue = sample->Values[i];
+                dimension->MinValue = sample.Values[i];
+                dimension->MaxValue = sample.Values[i];
                 dimension->NumberOfValues = 1;
             }
 
@@ -195,11 +202,11 @@ namespace Deltares::Optimization
 
     double GridSearch::getTolerance(std::shared_ptr<SearchParameterSettings> dimension)
     {
-        if (dimension->NumberOfValues > 0) 
+        if (dimension->NumberOfValues > 0)
         {
             return std::fabs((dimension->MaxValue - dimension->MinValue)) / (10 * dimension->NumberOfValues);
         }
-        else 
+        else
         {
             return 0;
         }

@@ -25,6 +25,7 @@
 
 #include "SensitivityValue.h"
 #include "../Model/Sample.h"
+#include "../Model/SampleStorage.h"
 #include "../Statistics/Stochast.h"
 
 namespace Deltares::Sensitivity
@@ -39,19 +40,21 @@ namespace Deltares::Sensitivity
         double uLow = StandardNormal::getUFromP(Settings->LowValue);
         double uHigh = StandardNormal::getUFromP(Settings->HighValue);
 
-        std::vector<std::shared_ptr<Sample>> samples;
+        SampleStorage storage = SampleStorage(2 * nStochasts + 1);
+        std::vector<Sample*> samples;
 
-        samples.push_back(std::make_shared<Sample>(nStochasts));
+        Sample zeroSample = Sample(nStochasts);
+        samples.push_back(storage.keep(zeroSample));
 
         for (int i = 0; i < nStochasts; i++)
         {
-            std::shared_ptr<Sample> lowSample = std::make_shared<Sample>(nStochasts);
-            lowSample->Values[i] = uLow;
-            samples.push_back(lowSample);
+            Sample lowSample = Sample(nStochasts);
+            lowSample.Values[i] = uLow;
+            samples.push_back(storage.keep(lowSample));
 
-            std::shared_ptr<Sample> highSample = std::make_shared<Sample>(nStochasts);
-            highSample->Values[i] = uHigh;
-            samples.push_back(highSample);
+            Sample highSample = Sample(nStochasts);
+            highSample.Values[i] = uHigh;
+            samples.push_back(storage.keep(highSample));
         }
 
         std::vector<double> z = modelRunner->getZValues(samples);

@@ -94,24 +94,24 @@ namespace Deltares::Reliability
         return -1;
     }
 
-    void LimitStateFunction::updateZValue(std::shared_ptr<Models::ModelSample> sample)
+    void LimitStateFunction::updateZValue(Models::ModelSample& sample)
     {
         if (!this->useSampleZValue)
         {
-            double criticalResultValue = this->criticalParameterIndexFromInput ? sample->Values[this->criticalParameterIndex] : sample->OutputValues[this->criticalParameterIndex];
+            double criticalResultValue = this->criticalParameterIndexFromInput ? sample.Values[this->criticalParameterIndex] : sample.OutputValues[this->criticalParameterIndex];
             double criticalCompareValue = this->criticalValue;
             if (this->useCompareParameter)
             {
-                criticalCompareValue = this->compareParameterIndexFromInput ? sample->Values[this->compareParameterIndex] : sample->OutputValues[this->compareParameterIndex];
+                criticalCompareValue = this->compareParameterIndexFromInput ? sample.Values[this->compareParameterIndex] : sample.OutputValues[this->compareParameterIndex];
             }
 
             if (this->compareType == CompareType::LessThan)
             {
-                sample->Z = criticalResultValue - criticalCompareValue;
+                sample.Z = criticalResultValue - criticalCompareValue;
             }
             else
             {
-                sample->Z = criticalCompareValue - criticalResultValue;
+                sample.Z = criticalCompareValue - criticalResultValue;
             }
         }
     }

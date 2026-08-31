@@ -113,7 +113,7 @@ namespace Deltares::Reliability
         const bool monotone = Settings.modelVaryingType == ModelVaryingType::Monotone;
         const auto dirCalcSettings = DirectionCalculationSettings(directionTask.invertZ, Settings.Dsdu, Settings.MaximumLengthU);
         auto model = ZGetter(modelRunner, Settings);
-        auto directionCalculation = DirectionCalculation(model, *directionTask.UValues, dirCalcSettings);
+        auto directionCalculation = DirectionCalculation(model, directionTask.UValues, dirCalcSettings);
         double prevzHigh = directionCalculation.GetZ(0, zValues);
 
         for (int k = 0; k <= sectionsCount; k++)

@@ -30,11 +30,11 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<Models::ModelRunner> TestWaartsTwoBranches::WaartsModel()
     {
-        auto z = std::make_shared<Models::ZModel>([](std::shared_ptr<Models::ModelSample> v)
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
         {
-            const double x1 = v->Values[0];
-            const double x2 = v->Values[1];
-            const double x3 = v->Values[2];
+            const double x1 = v.Values[0];
+            const double x2 = v.Values[1];
+            const double x3 = v.Values[2];
             double Z;
             if (x3 <= 5.0)
             {
@@ -44,7 +44,7 @@ namespace Deltares::Probabilistic::Test
             {
                 Z = x3 - x2;
             }
-            v->Z = Z;
+            v.Z = Z;
             return Z;
         });
 

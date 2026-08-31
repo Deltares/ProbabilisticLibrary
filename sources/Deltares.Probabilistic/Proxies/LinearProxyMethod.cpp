@@ -39,7 +39,7 @@ namespace Deltares::Proxies
         return z;
     }
 
-    ProxyCoefficient LinearProxyMethod::trainValue(std::vector<std::shared_ptr<Models::ModelSample>>& trainingSamples, std::vector<double> proxyValues)
+    ProxyCoefficient LinearProxyMethod::trainValue(std::vector<Models::ModelSample*>& trainingSamples, std::vector<double> proxyValues)
     {
         Numeric::Vector1D results(trainingSamples.size());
         Numeric::Vector1D weights(trainingSamples.size());

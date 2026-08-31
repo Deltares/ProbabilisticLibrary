@@ -26,7 +26,7 @@
 
 namespace Deltares::Reliability
 {
-    typedef std::function<void(std::shared_ptr<Models::Sample>)> RegisterSampleLambda;
+    typedef std::function<void(Models::Sample)> RegisterSampleLambda;
     typedef std::function<bool(std::shared_ptr<ImportanceSamplingCluster>)> BreakLoopLambda;
 
     class ImportanceSampling : public ReliabilityMethod
