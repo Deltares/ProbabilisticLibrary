@@ -25,6 +25,11 @@ namespace Deltares::Models
 {
     void ModelProject::updateStochasts()
     {
+        for (std::shared_ptr<Statistics::Stochast> stochast : this->stochasts)
+        {
+            existingStochasts[stochast->name] = stochast;
+        }
+
         this->stochasts.clear();
 
         if (model != nullptr)
@@ -46,7 +51,6 @@ namespace Deltares::Models
                     stochast = std::make_shared<Statistics::Stochast>();
                     stochast->name = parameter->name;
                     stochast->setMean(parameter->defaultValue);
-                    existingStochasts[stochast->name] = stochast;
                 }
 
                 stochast->modelParameter = parameter;
