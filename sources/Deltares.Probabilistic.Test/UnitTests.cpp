@@ -40,7 +40,7 @@
 #include "Combin/ComputeBetaSectionTests.h"
 #include "Statistics/TestStandardNormal.h"
 #include "Statistics/TestCopula.h"
-#include "Distributions/testDistributions.h"
+#include "Distributions/TestDistributions.h"
 #include "Statistics/TestXfromU.h"
 #include "Statistics/TestStochast.h"
 #include "Math/testMatrix.h"

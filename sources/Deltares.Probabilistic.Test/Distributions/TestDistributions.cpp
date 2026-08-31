@@ -21,7 +21,7 @@
 //
 #include <numbers>
 #include <gtest/gtest.h>
-#include "testDistributions.h"
+#include "TestDistributions.h"
 #include "../../Deltares.Probabilistic/Math/RandomValueGenerator.h"
 
 namespace Deltares::Probabilistic::Test

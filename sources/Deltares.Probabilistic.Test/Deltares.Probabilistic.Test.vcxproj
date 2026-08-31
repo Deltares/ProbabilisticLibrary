@@ -113,7 +113,7 @@
     <ClInclude Include="Combin\IntEqualElementsTests.h" />
     <ClInclude Include="Combin\UpscaleTests.h" />
     <ClInclude Include="Combin\ComputeBetaSectionTests.h" />
-    <ClInclude Include="Distributions\testDistributions.h" />
+    <ClInclude Include="Distributions\TestDistributions.h" />
     <ClInclude Include="Proxies\TestProxies.h" />
     <ClInclude Include="Statistics\TestStandardNormal.h" />
     <ClInclude Include="Statistics\TestCopula.h" />
@@ -166,7 +166,7 @@
     <ClCompile Include="Combin\IntEqualElementsTests.cpp" />
     <ClCompile Include="Combin\UpscaleTests.cpp" />
     <ClCompile Include="Combin\ComputeBetaSectionTests.cpp" />
-    <ClCompile Include="Distributions\testDistributions.cpp" />
+    <ClCompile Include="Distributions\TestDistributions.cpp" />
     <ClCompile Include="Proxies\TestProxies.cpp" />
     <ClCompile Include="Statistics\TestStandardNormal.cpp" />
     <ClCompile Include="Statistics\TestCopula.cpp" />
