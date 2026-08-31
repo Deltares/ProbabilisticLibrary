@@ -69,1445 +69,1446 @@
 #include "Server/UnitTestProjectHandler.h"
 #include "Server/IntegrationTestProjectHandler.h"
 
+using namespace Deltares::Probabilistic::Test;
+
 int main(int argc, char** argv)
 {
-    ::testing::InitGoogleTest(&argc, argv);
-    //::testing::GTEST_FLAG(filter) = Deltares::Probabilistic::Test::"ReliabilityMethodTest.testClustersAdpImpSampling";
+    testing::InitGoogleTest(&argc, argv);
+    //::testing::GTEST_FLAG(filter) = "ReliabilityMethodTest.testClustersAdpImpSampling";
     return RUN_ALL_TESTS();
 }
 
 TEST(UnitTests, testCombiner)
 {
-    auto h = Deltares::Probabilistic::Test::CombinerTest();
+    auto h = CombinerTest();
     h.allCombinerTests();
 }
 
 TEST(UnitTests, testCombinTwoElements)
 {
-    auto h = Deltares::Probabilistic::Test::CombinElementsTests();
+    auto h = CombinElementsTests();
     h.runAllCombineTwoElementsTests();
 }
 
 TEST(UnitTests, testCombinMultipleElements)
 {
-    auto h = Deltares::Probabilistic::Test::CombinElementsTests();
+    auto h = CombinElementsTests();
     h.runAllCombineMultipleElementsTests();
 }
 
 TEST(UnitTests, testLengthEffect)
 {
-    auto h = Deltares::Probabilistic::Test::CombinElementsTests();
+    auto h = CombinElementsTests();
     h.runAllLengthEffectTests();
 }
 
 TEST(UnitTests, testComputeBetaSectionTest1)
 {
-    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test1();
+    ComputeBetaSectionTests::Test1();
 }
 
 TEST(UnitTests, testComputeBetaSectionTest2)
 {
-    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test2();
+    ComputeBetaSectionTests::Test2();
 }
 
 TEST(UnitTests, testComputeBetaSectionTest3)
 {
-    Deltares::Probabilistic::Test::ComputeBetaSectionTests::Test3();
+    ComputeBetaSectionTests::Test3();
 }
 
 TEST(UnitTests, AllUpscaleInTimeTests)
 {
-    auto h = Deltares::Probabilistic::Test::UpscaleTests();
+    auto h = UpscaleTests();
     h.runAllUpscaleInTimeTests();
 }
 
 TEST(UnitTests, AllEquivalentAlphaTests)
 {
-    auto h = Deltares::Probabilistic::Test::UpscaleTests();
+    auto h = UpscaleTests();
     h.runAllEquivalentAlphaTests();
 }
 
 TEST(UnitTests, AllUpscaleToLargestBlockTests)
 {
-    auto h = Deltares::Probabilistic::Test::UpscaleTests();
+    auto h = UpscaleTests();
     h.runAllUpscaleToLargestBlockTests();
 }
 
 TEST(UnitTests, testIntEqualElements)
 {
-    auto h = Deltares::Probabilistic::Test::IntEqualElementsTests();
+    auto h = IntEqualElementsTests();
     h.allIntegrateEqualElementsTests();
 }
 
 TEST(UnitTests, testHohenbichler)
 {
-    auto h = Deltares::Probabilistic::Test::HohenbichlerTest();
+    auto h = HohenbichlerTest();
     h.allHohenbichlerTests();
 }
 
 TEST(UnitTests, testCholeskiDecomp)
 {
-    auto tstCholeskiDecomp = Deltares::Probabilistic::Test::TestCholeskiDecomposition();
+    auto tstCholeskiDecomp = TestCholeskiDecomposition();
     tstCholeskiDecomp.allCholeskyDecompositionTests();
 }
 
 TEST(UnitTests, testMatinv)
 {
-    auto tstMatInv = Deltares::Probabilistic::Test::TestMatrixInverse();
-    tstMatInv.all_matinv_tests();
+    TestMatrixInverse::all_matinv_tests();
 }
 
 TEST(UnitTests, testMatmul)
 {
-    auto tstMatMul = Deltares::Probabilistic::Test::TestMatrixMultiplication();
+    auto tstMatMul = TestMatrixMultiplication();
     tstMatMul.all_matmul_tests();
 }
 
 TEST(MatrixTest, qr_decomposition)
 {
-    Deltares::Probabilistic::Test::TestMatrix::qr_decomposition();
+    TestMatrix::qr_decomposition();
 }
 
 TEST(MatrixTest, linear_equations)
 {
-    Deltares::Probabilistic::Test::TestMatrix::linear_equations();
+    TestMatrix::linear_equations();
 }
 
 TEST(MatrixTest, linear_equations_overdetermined)
 {
-    Deltares::Probabilistic::Test::TestMatrix::linear_equations_overdetermined();
+    TestMatrix::linear_equations_overdetermined();
 }
 
 TEST(MatrixTest, multiply_with_double)
 {
-    Deltares::Probabilistic::Test::TestMatrix::multiply();
+    TestMatrix::multiply();
 }
 
 TEST(MatrixTest, add_two_matrices)
 {
-    Deltares::Probabilistic::Test::TestMatrix::add();
+    TestMatrix::add();
 }
 
 TEST(MatrixTest, stream_operator_test)
 {
-    Deltares::Probabilistic::Test::TestMatrix::matrixStreamOperatorTest();
+    TestMatrix::matrixStreamOperatorTest();
 }
 
 TEST(ProxiesTest, linear_model)
 {
-    auto testProxies = Deltares::Probabilistic::Test::TestProxies();
+    auto testProxies = TestProxies();
     testProxies.testLinearModel();
 }
 
 TEST(ProxiesTest, linear_output_only_model)
 {
-    auto testProxies = Deltares::Probabilistic::Test::TestProxies();
+    auto testProxies = TestProxies();
     testProxies.testLinearOutputOnlyModel();
 }
 
 TEST(UnitTests, testNumericalSupport)
 {
-    Deltares::Probabilistic::Test::TestNumericSupport::allNumericSupportTests();
+    TestNumericSupport::allNumericSupportTests();
 }
 
 TEST(UnitTests, testKMeanClustering)
 {
-    auto h = Deltares::Probabilistic::Test::TestKMean();
+    auto h = TestKMean();
     h.allKMeanTests();
 }
 
 TEST(UnitTests, testStartPointCalculator)
 {
-    auto tstStartPoint = Deltares::Probabilistic::Test::TestStartPointCalculator();
+    auto tstStartPoint = TestStartPointCalculator();
     tstStartPoint.allStartPointTests();
 }
 
 TEST(UnitTests, testNumIntSharedDefaults)
 {
-    Deltares::Probabilistic::Test::TestNumIntShared::testDefaults();
+    TestNumIntShared::testDefaults();
 }
 
 TEST(UnitTests, testNumIntSharedGivenURange1)
 {
-    Deltares::Probabilistic::Test::TestNumIntShared::testGivenURange();
+    TestNumIntShared::testGivenURange();
 }
 
 TEST(UnitTests, testNumIntSharedGivenURange2)
 {
-    Deltares::Probabilistic::Test::TestNumIntShared::testGivenURange2();
+    TestNumIntShared::testGivenURange2();
 }
 
 TEST(UnitTests, testExceptions)
 {
-    Deltares::Probabilistic::Test::TestExceptions::testProblibExceptions();
+    TestExceptions::testProblibExceptions();
 }
 
 TEST(UnitTests, testDouble2String)
 {
-    Deltares::Probabilistic::Test::TestString::testDouble2Str();
+    TestString::testDouble2Str();
 }
 
 TEST(UnitTests, testDoubles2String)
 {
-    Deltares::Probabilistic::Test::TestString::testDoubles2Str();
+    TestString::testDoubles2Str();
 }
 
 TEST(ReliabilityMethodTest, TestFORM)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testFORM();
+    TestReliabilityMethods::testFORM();
 }
 
 TEST(ReliabilityMethodTest, TestFORMArray)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testFORMArray();
+    TestReliabilityMethods::testFORMArray();
 }
 
 TEST(ReliabilityMethodTest, TestFORMVaryingArray)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testFORMVaryingArray();
+    TestReliabilityMethods::testFORMVaryingArray();
 }
 
 TEST(ReliabilityMethodTest, TestValidation)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testValidation();
+    TestReliabilityMethods::testValidation();
 }
 
 TEST(ReliabilityMethodTest, TestLatinHyperCube)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testLatinHyperCube();
+    TestReliabilityMethods::testLatinHyperCube();
 }
 
 TEST(ReliabilityMethodTest, TestCobylaReliability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testCobylaReliability();
+    TestReliabilityMethods::testCobylaReliability();
 }
 
 TEST(ReliabilityMethodTest, TestNumBisection1)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumericalBisection();
+    TestReliabilityMethods::testNumericalBisection();
 }
 
 TEST(ReliabilityMethodTest, TestNumBisection2)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumericalBisectionLinear();
+    TestReliabilityMethods::testNumericalBisectionLinear();
 }
 
 TEST(ReliabilityMethodTest, TestNumIntZValueProbability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumIntZValueProbability();
+    TestReliabilityMethods::testNumIntZValueProbability();
 }
 
 TEST(ReliabilityMethodTest, TestNumIntProbabilityInverse)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumericalBisectionLinear();
+    TestReliabilityMethods::testNumericalBisectionLinear();
 }
 
 TEST(ReliabilityMethodTest, TestSubSetSimulationReliabilityNearestToMean)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testSubSetSimulationReliabilityNearestToMean();
+    TestReliabilityMethods::testSubSetSimulationReliabilityNearestToMean();
 }
 
 TEST(ReliabilityMethodTest, TestSubSetSimulationReliabilityCenterOfGravity)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testSubSetSimulationReliabilityCenterOfGravity();
+    TestReliabilityMethods::testSubSetSimulationReliabilityCenterOfGravity();
 }
 
 TEST(ReliabilityMethodTest, TestFDIRReliability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testFDIRReliability();
+    TestReliabilityMethods::testFDIRReliability();
 }
 
 TEST(ReliabilityMethodTest, TestDSFIReliability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDSFIReliability();
+    TestReliabilityMethods::testDSFIReliability();
 }
 
 TEST(ReliabilityMethodTest, TestFragilityCurveIntegration)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testFragilityCurveIntegration();
+    TestReliabilityMethods::testFragilityCurveIntegration();
 }
 
 TEST(ReliabilityMethodTest, TestNumericalIntegrationReliability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testNumericalIntegrationReliability();
+    TestReliabilityMethods::testNumericalIntegrationReliability();
 }
 
 TEST(ReliabilityMethodTest, TestCrudeMCReliability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloReliability();
+    TestReliabilityMethods::testCrudeMonteCarloReliability();
 }
 
 TEST(ReliabilityMethodTest, TestCrudeMonteCarloZValueProbability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloZValueProbability();
+    TestReliabilityMethods::testCrudeMonteCarloZValueProbability();
 }
 
 TEST(ReliabilityMethodTest, testCrudeMonteCarloProbabilityInverse)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloProbabilityInverse();
+    TestReliabilityMethods::testCrudeMonteCarloProbabilityInverse();
 }
 
 TEST(ReliabilityMethodTest, testCrudeMCwithCopula)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
+    TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability();
 }
 
 TEST(ReliabilityMethodTest, testCrudeMCwithQualitativeProject)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testCrudeMonteCarloWithQualitativeProject();
+    TestReliabilityMethods::testCrudeMonteCarloWithQualitativeProject();
 }
 
 TEST(ReliabilityMethodTest, TestImportanceSamplingZValueProbability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testImportanceSamplingZValueProbability();
+    TestReliabilityMethods::testImportanceSamplingZValueProbability();
 }
 
 TEST(ReliabilityMethodTest, TestImportanceSamplingProbabilityInverse)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testImportanceSamplingProbabilityInverse();
+    TestReliabilityMethods::testImportanceSamplingProbabilityInverse();
 }
 
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSampling)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSampling();
+    TestReliabilityMethods::testAdaptiveImportanceSampling();
 }
 
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingVarianceFactor)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSamplingVarianceFactor();
+    TestReliabilityMethods::testAdaptiveImportanceSamplingVarianceFactor();
 }
 
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingProbability)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testAdaptiveImportanceSamplingZValueProbability();
+    TestReliabilityMethods::testAdaptiveImportanceSamplingZValueProbability();
 }
 
 TEST(ReliabilityMethodTest, TestClustersAdpImpSampling)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testClustersAdpImpSampling();
+    TestReliabilityMethods::testClustersAdpImpSampling();
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranches)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Monotone, 1.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Monotone, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingProxyModels)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(true, Deltares::Reliability::ModelVaryingType::Monotone, 1.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(true, Deltares::Reliability::ModelVaryingType::Monotone, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesNotMonotone)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Varying, 1.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Varying, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingProxyModelsNotMonotone)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(true, Deltares::Reliability::ModelVaryingType::Varying, 1.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(true, Deltares::Reliability::ModelVaryingType::Varying, 1.0);
 }
 
 TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesLargerStepsize)
 {
-    Deltares::Probabilistic::Test::TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Monotone, 3.0);
+    TestReliabilityMethods::testDirSamplingProxyModels(false, Deltares::Reliability::ModelVaryingType::Monotone, 3.0);
 }
 TEST(DistributionTests, testConditionalStochast)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testConditionalStochast();
+    TestDistributions::testConditionalStochast();
 }
 
 TEST(DistributionTests, testComposite)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testComposite();
+    TestDistributions::testComposite();
 }
 
 TEST(DistributionTests, testCompositeConditionalStochast)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testCompositeConditionalStochast();
+    TestDistributions::testCompositeConditionalStochast();
 }
 
 TEST(DistributionTests, testCompositeConditionalTruncatedStochast)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testCompositeConditionalTruncatedStochast();
+    TestDistributions::testCompositeConditionalTruncatedStochast();
 }
 
 TEST(DistributionTests, testCompositeStochast)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testCompositeStochast();
+    TestDistributions::testCompositeStochast();
 }
 
 TEST(DistributionTests, testCompositeTruncatedStochast)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testCompositeTruncatedStochast();
+    TestDistributions::testCompositeTruncatedStochast();
 }
 
 TEST(DistributionTests, testConditionalWeibull)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibull();
+    TestDistributions::testConditionalWeibull();
 }
 
 TEST(DistributionTests, testConditionalWeibullCdfPdf)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibullCdfPdf();
+    TestDistributions::testConditionalWeibullCdfPdf();
 }
 
 TEST(DistributionTests, testConditionalWeibullCdfPdf2)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibullCdfPdf2();
+    TestDistributions::testConditionalWeibullCdfPdf2();
 }
 
 TEST(DistributionTests, testConditionalWeibullMeanDeviation)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibullMeanDeviation();
+    TestDistributions::testConditionalWeibullMeanDeviation();
 }
 
 TEST(DistributionTests, testConditionalWeibullNonIntegerShape)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibullNonIntegerShape();
+    TestDistributions::testConditionalWeibullNonIntegerShape();
 }
 
 TEST(DistributionTests, testDesignValue)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testDesignValue();
+    TestDistributions::testDesignValue();
 }
 
 TEST(DistributionTests, testNormal)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testNormal();
+    TestDistributions::testNormal();
 }
 
 TEST(DistributionTests, testLogNormal)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testLogNormal();
+    TestDistributions::testLogNormal();
 }
 
 TEST(DistributionTests, testUniform)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testUniform();
+    TestDistributions::testUniform();
 }
 
 TEST(DistributionTests, testTriangular)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testTriangular();
+    TestDistributions::testTriangular();
 }
 
 TEST(DistributionTests, testTrapezoidal)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testTrapezoidal();
+    TestDistributions::testTrapezoidal();
 }
 
 TEST(DistributionTests, testExponential)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testExponential();
+    TestDistributions::testExponential();
 }
 
 TEST(DistributionTests, testGamma)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testGamma();
+    TestDistributions::testGamma();
 }
 
 TEST(DistributionTests, testBeta)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testBeta();
+    TestDistributions::testBeta();
 }
 
 TEST(DistributionTests, testGumbel)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testGumbel();
+    TestDistributions::testGumbel();
 }
 
 TEST(DistributionTests, testWeibull)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testWeibull();
+    TestDistributions::testWeibull();
 }
 
 TEST(DistributionTests, testFrechet)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testFrechet();
+    TestDistributions::testFrechet();
 }
 
 TEST(DistributionTests, testGEV)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testGEV();
+    TestDistributions::testGEV();
 }
 
 TEST(DistributionTests, testPareto)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testPareto();
+    TestDistributions::testPareto();
 }
 
 TEST(DistributionTests, testGeneralizedPareto)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testGeneralizedPareto();
+    TestDistributions::testGeneralizedPareto();
 }
 
 TEST(DistributionTests, testRayleigh)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testRayleigh();
+    TestDistributions::testRayleigh();
 }
 
 TEST(DistributionTests, testRayleighN)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testRayleighN();
+    TestDistributions::testRayleighN();
 }
 
 TEST(DistributionTests, testBernoulli)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testBernoulli();
+    TestDistributions::testBernoulli();
 }
 
 TEST(DistributionTests, testPoisson)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testPoisson();
+    TestDistributions::testPoisson();
 }
 
 TEST(DistributionTests, testStudentT)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testStudentT();
+    TestDistributions::testStudentT();
 }
 
 TEST(DistributionTests, testStudentTwithInterpolation)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testStudentTwithInterpolation();
+    TestDistributions::testStudentTwithInterpolation();
 }
 
 TEST(DistributionTests, testValidation)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testValidation();
+    TestDistributions::testValidation();
 }
 
 TEST(DistributionTests, testVariationCoefficient)
 {
-    Deltares::Probabilistic::Test::TestDistributions::testVariationCoefficient();
+    TestDistributions::testVariationCoefficient();
 }
 
 TEST(XfromUTests, testNormal)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestNormal();
+    TestXfromU::TestNormal();
 }
 
 TEST(XfromUTests, testUniform)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestUniform();
+    TestXfromU::TestUniform();
 }
 
 TEST(XfromUTests, testTriangular)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestTriangular();
+    TestXfromU::TestTriangular();
 }
 
 TEST(XfromUTests, testExponential)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestExponential();
+    TestXfromU::TestExponential();
 }
 
 TEST(XfromUTests, testGumbel)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestGumbel();
+    TestXfromU::TestGumbel();
 }
 
 TEST(XfromUTests, testWeibull)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestWeibull();
+    TestXfromU::TestWeibull();
 }
 
 TEST(XfromUTests, testPareto)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestPareto();
+    TestXfromU::TestPareto();
 }
 
 TEST(XfromUTests, testRayleigh)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestRayleigh();
+    TestXfromU::TestRayleigh();
 }
 
 TEST(XfromUTests, testRayleighN)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestRayleighN();
+    TestXfromU::TestRayleighN();
 }
 
 TEST(XfromUTests, testTruncatedNormal)
 {
-    Deltares::Probabilistic::Test::TestXfromU::TestTruncatedNormal();
+    TestXfromU::TestTruncatedNormal();
 }
 
 TEST(UnitTests, testStandardNormal)
 {
-    auto tstStdNormal = Deltares::Probabilistic::Test::TestStandardNormal();
+    auto tstStdNormal = TestStandardNormal();
     tstStdNormal.allStandardNormalTests();
 }
 
 TEST(UnitTests, testSortStochast)
 {
-    Deltares::Probabilistic::Test::TestStochast::testSortFragilityCurves();
+    TestStochast::testSortFragilityCurves();
 }
 
 TEST(UnitTests, testCompositeGetVariableSourceStochast)
 {
-    Deltares::Probabilistic::Test::TestStochast::testCompositeGetVariableSource();
+    TestStochast::testCompositeGetVariableSource();
 }
 
 TEST(UnitTests, testStochastCopyFrom)
 {
-    Deltares::Probabilistic::Test::TestStochast::testCopyFrom();
+    TestStochast::testCopyFrom();
 }
 
 TEST(CopulasTest, testClayton)
 {
-    Deltares::Probabilistic::Test::TestCopula::testClayton();
+    TestCopula::testClayton();
 }
 
 TEST(CopulasTest, testFrank)
 {
-    Deltares::Probabilistic::Test::TestCopula::testFrank();
+    TestCopula::testFrank();
 }
 
 TEST(CopulasTest, testFrankExtremeTheta)
 {
-    Deltares::Probabilistic::Test::TestCopula::testFrankExtremeTheta();
+    TestCopula::testFrankExtremeTheta();
 }
 
 TEST(CopulasTest, testGaussian)
 {
-    Deltares::Probabilistic::Test::TestCopula::testGaussian();
+    TestCopula::testGaussian();
 }
 
 TEST(CopulasTest, testGumbel)
 {
-    Deltares::Probabilistic::Test::TestCopula::testGumbel();
+    TestCopula::testGumbel();
 }
 
 TEST(CopulasTest, testValidation)
 {
-    Deltares::Probabilistic::Test::TestCopula::testValidation();
+    TestCopula::testValidation();
 }
 
 TEST(CopulasTest, testValidationMessages)
 {
-    Deltares::Probabilistic::Test::TestCopula::testValidationMessages();
+    TestCopula::testValidationMessages();
 }
 
 TEST(CopulasTest, testGaussianValidationMessages)
 {
-    Deltares::Probabilistic::Test::TestCopula::testGaussianValidationMessages();
+    TestCopula::testGaussianValidationMessages();
 }
 
 TEST(UnitTests, testUncCrudeMonteCarloAddOne)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloAddOne();
+    TestUncertainty::testCrudeMonteCarloAddOne();
 }
 
 TEST(UnitTests, testUncCrudeMonteCarloLinear)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinear();
+    TestUncertainty::testCrudeMonteCarloLinear();
 }
 
 TEST(UnitTests, testUncCrudeMonteCarloLinearNonRepeatable)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearNonRepeatable();
+    TestUncertainty::testCrudeMonteCarloLinearNonRepeatable();
 }
 
 TEST(UnitTests, testUncCrudeMonteCarloLinearOutput)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearOutput();
+    TestUncertainty::testCrudeMonteCarloLinearOutput();
 }
 
 TEST(UnitTests, testUncCrudeMonteCarloLinearManySamples)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearManySamples();
+    TestUncertainty::testCrudeMonteCarloLinearManySamples();
 }
 
 TEST(UnitTests, testUncCrudeMonteCarloLinearAutoSamples)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testCrudeMonteCarloLinearAutoSamples();
+    TestUncertainty::testCrudeMonteCarloLinearAutoSamples();
 }
 
 TEST(UnitTests, testUncImportanceSamplingAddOne)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testImportanceSamplingAddOne();
+    TestUncertainty::testImportanceSamplingAddOne();
 }
 
 TEST(UnitTests, testUncNumericalIntegration)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testNumericalIntegration();
+    TestUncertainty::testNumericalIntegration();
 }
 
 TEST(UnitTests, testUncDirectionalSampling)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testDirectionalSampling();
+    TestUncertainty::testDirectionalSampling();
 }
 
 TEST(UnitTests, testUncFORM)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testFORM();
+    TestUncertainty::testFORM();
 }
 
 TEST(UnitTests, testUncFORMoneFragilityValueAsResult)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testFORMoneFragilityValueAsResult();
+    TestUncertainty::testFORMoneFragilityValueAsResult();
 }
 
 TEST(UnitTests, testUncFOSM)
 {
-    Deltares::Probabilistic::Test::TestUncertainty::testFOSM();
+    TestUncertainty::testFOSM();
 }
 
 TEST(UnitTests, testSensitivity)
 {
-    auto tstSensitivity = Deltares::Probabilistic::Test::TestSensitivity();
+    auto tstSensitivity = TestSensitivity();
     tstSensitivity.allSensitivityTests();
 }
 
 TEST(UnitTests, testRunModel)
 {
-    auto tstModel = Deltares::Probabilistic::Test::TestRunModel();
+    auto tstModel = TestRunModel();
     tstModel.allModelTests();
 }
 
 TEST(UnitTests, testRandom)
 {
-    Deltares::Probabilistic::Test::TestRandom::allRandomTests();
+    TestRandom::allRandomTests();
 }
 
 TEST(UnitTests, testRootfinder)
 {
-    auto tstRF = Deltares::Probabilistic::Test::TestRootfinder();
+    auto tstRF = TestRootfinder();
     tstRF.all_rootfinder_tests();
 }
 
 TEST(UnitTests, testStatisticsCalculator)
 {
-    Deltares::Probabilistic::Test::testStatisticsCalculator::allStatisticsCalculatorTests();
+    testStatisticsCalculator::allStatisticsCalculatorTests();
 }
 
 TEST(UnitTests, testVector1D)
 {
-    auto tstVector1D = Deltares::Probabilistic::Test::TestVector1D();
+    auto tstVector1D = TestVector1D();
     tstVector1D.allVector1Dtests();
 }
 
 TEST(UnitTests, testIncompleteGamma)
 {
-    Deltares::Probabilistic::Test::TestSpecialFunctions::incompleteGammaTest();
+    TestSpecialFunctions::incompleteGammaTest();
 }
 
 TEST(UnitTests, testIncompleteGammaExceptionalCases)
 {
-    Deltares::Probabilistic::Test::TestSpecialFunctions::incompleteGammaExceptionalCasesTest();
+    TestSpecialFunctions::incompleteGammaExceptionalCasesTest();
 }
 
 TEST(UnitTests, testCobylaOptimization)
 {
-    auto tstCobylaOpt = Deltares::Probabilistic::Test::TestCobyla();
+    auto tstCobylaOpt = TestCobyla();
     tstCobylaOpt.allCobylaTests();
 }
 
 TEST(WaartsTests, testLinearResistanceFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testLinearResistanceCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testLinearResistanceDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegration)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfGravity)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.runNumInt(Deltares::Reliability::DesignPointMethod::CenterOfGravity);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationCenterOfAngles)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.runNumInt(Deltares::Reliability::DesignPointMethod::CenterOfAngles);
 }
 
 TEST(WaartsTests, testLinearResistanceNumericalIntegrationNearestToMean)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.runNumInt(Deltares::Reliability::DesignPointMethod::NearestToMean);
 }
 
 TEST(WaartsTests, testLinearResistanceImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testLinearResistanceAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testLinearResistanceFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testLinearResistanceDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsLinearResistance();
+    auto tester = TestWaartsLinearResistance();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testNoisyLimitStateFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsNoisyLimitState();
+    auto tester = TestWaartsNoisyLimitState();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testNoisyLimitStateCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsNoisyLimitState();
+    auto tester = TestWaartsNoisyLimitState();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testNoisyLimitStateDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsNoisyLimitState();
+    auto tester = TestWaartsNoisyLimitState();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testNoisyLimitStateImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsNoisyLimitState();
+    auto tester = TestWaartsNoisyLimitState();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testNoisyLimitStateAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsNoisyLimitState();
+    auto tester = TestWaartsNoisyLimitState();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testNoisyLimitStateFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsNoisyLimitState();
+    auto tester = TestWaartsNoisyLimitState();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testNoisyLimitStateDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsNoisyLimitState();
+    auto tester = TestWaartsNoisyLimitState();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testResistanceOneQuadraticFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceOneQuadraticTerm();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testResistanceOneQuadraticCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceOneQuadraticTerm();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testResistanceOneQuadraticDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceOneQuadraticTerm();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testResistanceOneQuadraticNumericalIntegration)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceOneQuadraticTerm();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, testResistanceOneQuadraticImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceOneQuadraticTerm();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testResistanceOneQuadraticAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceOneQuadraticTerm();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testResistanceOneQuadraticFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceOneQuadraticTerm();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testResistanceOneQuadraticDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceOneQuadraticTerm();
+    auto tester = TestWaartsResistanceOneQuadraticTerm();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testResistanceTenQuadraticTermsFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceTenQuadraticTerms();
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testResistanceTenQuadraticTermsCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceTenQuadraticTerms();
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testResistanceTenQuadraticTermsDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceTenQuadraticTerms();
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testResistanceTenQuadraticTermsImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceTenQuadraticTerms();
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testResistanceTenQuadraticTermsAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceTenQuadraticTerms();
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testResistanceTenQuadraticTermsFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceTenQuadraticTerms();
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testResistanceTenQuadraticTermsDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistanceTenQuadraticTerms();
+    auto tester = TestWaartsResistanceTenQuadraticTerms();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTerms();
+    auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTerms();
+    auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTerms();
+    auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTerms();
+    auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTerms();
+    auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTerms();
+    auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTerms();
+    auto tester = TestWaartsResistance25QuadraticTerms();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testConvexFailureDomainFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConvexFailureDomain();
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testConvexFailureDomainCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConvexFailureDomain();
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testConvexFailureDomainDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConvexFailureDomain();
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testConvexFailureDomainNumericalIntegration)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConvexFailureDomain();
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, testConvexFailureDomainImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConvexFailureDomain();
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testConvexFailureDomainAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConvexFailureDomain();
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testConvexFailureDomainFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConvexFailureDomain();
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testConvexFailureDomainDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConvexFailureDomain();
+    auto tester = TestWaartsConvexFailureDomain();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testOblateSpheroidFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsOblateSpheroid();
+    auto tester = TestWaartsOblateSpheroid();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testOblateSpheroidCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsOblateSpheroid();
+    auto tester = TestWaartsOblateSpheroid();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testOblateSpheroidDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsOblateSpheroid();
+    auto tester = TestWaartsOblateSpheroid();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testOblateSpheroidImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsOblateSpheroid();
+    auto tester = TestWaartsOblateSpheroid();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testOblateSpheroidAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsOblateSpheroid();
+    auto tester = TestWaartsOblateSpheroid();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testOblateSpheroidFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsOblateSpheroid();
+    auto tester = TestWaartsOblateSpheroid();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testOblateSpheroidDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsOblateSpheroid();
+    auto tester = TestWaartsOblateSpheroid();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testSaddleSurfaceFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSaddleSurface();
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testSaddleSurfaceCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSaddleSurface();
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testSaddleSurfaceDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSaddleSurface();
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testSaddleSurfaceNumericalIntegration)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSaddleSurface();
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, testSaddleSurfaceImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSaddleSurface();
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testSaddleSurfaceAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSaddleSurface();
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testSaddleSurfaceFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSaddleSurface();
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testSaddleSurfaceDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSaddleSurface();
+    auto tester = TestWaartsSaddleSurface();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testDiscontinuousFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsDiscontinuousLimitState();
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testDiscontinuousCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsDiscontinuousLimitState();
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testDiscontinuousDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsDiscontinuousLimitState();
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testDiscontinuousNumericalIntegration)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsDiscontinuousLimitState();
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, testDiscontinuousImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsDiscontinuousLimitState();
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testDiscontinuousAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsDiscontinuousLimitState();
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testDiscontinuousFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsDiscontinuousLimitState();
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testDiscontinuousDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsDiscontinuousLimitState();
+    auto tester = TestWaartsDiscontinuousLimitState();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testTwoBranchesFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsTwoBranches();
+    auto tester = TestWaartsTwoBranches();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testTwoBranchesCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsTwoBranches();
+    auto tester = TestWaartsTwoBranches();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testTwoBranchesDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsTwoBranches();
+    auto tester = TestWaartsTwoBranches();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testTwoBranchesNumericalIntegration)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsTwoBranches();
+    auto tester = TestWaartsTwoBranches();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, testTwoBranchesAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsTwoBranches();
+    auto tester = TestWaartsTwoBranches();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testTwoBranchesFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsTwoBranches();
+    auto tester = TestWaartsTwoBranches();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testTwoBranchesDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsTwoBranches();
+    auto tester = TestWaartsTwoBranches();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testConcaveFailureDomainFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConcaveFailureDomain();
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testConcaveFailureDomainCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConcaveFailureDomain();
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testConcaveFailureDomainDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConcaveFailureDomain();
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testConcaveFailureDomainNumericalIntegration)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConcaveFailureDomain();
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, testConcaveFailureDomainImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConcaveFailureDomain();
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testConcaveFailureDomainAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConcaveFailureDomain();
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testConcaveFailureDomainFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConcaveFailureDomain();
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testConcaveFailureDomainDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsConcaveFailureDomain();
+    auto tester = TestWaartsConcaveFailureDomain();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testSeriesSystemFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSeriesSystem();
+    auto tester = TestWaartsSeriesSystem();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testSeriesSystemCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSeriesSystem();
+    auto tester = TestWaartsSeriesSystem();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testSeriesSystemDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSeriesSystem();
+    auto tester = TestWaartsSeriesSystem();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testSeriesSystemNumericalIntegration)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSeriesSystem();
+    auto tester = TestWaartsSeriesSystem();
     tester.WaartsNumericalIntegration();
 }
 
 TEST(WaartsTests, testSeriesSystemImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSeriesSystem();
+    auto tester = TestWaartsSeriesSystem();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testSeriesSystemAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSeriesSystem();
+    auto tester = TestWaartsSeriesSystem();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testSeriesSystemDomainFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSeriesSystem();
+    auto tester = TestWaartsSeriesSystem();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testSeriesSystemDomainDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsSeriesSystem();
+    auto tester = TestWaartsSeriesSystem();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testParallelSystemFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsParallelSystem();
+    auto tester = TestWaartsParallelSystem();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testParallelSystemCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsParallelSystem();
+    auto tester = TestWaartsParallelSystem();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testParallelSystemDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsParallelSystem();
+    auto tester = TestWaartsParallelSystem();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testParallelSystemImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsParallelSystem();
+    auto tester = TestWaartsParallelSystem();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testParallelSystemAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsParallelSystem();
+    auto tester = TestWaartsParallelSystem();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testParallelSystemDomainFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsParallelSystem();
+    auto tester = TestWaartsParallelSystem();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testParallelSystemDomainDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsParallelSystem();
+    auto tester = TestWaartsParallelSystem();
     tester.WaartsDSFI();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsSparseFORM)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTermsSparse();
+    auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsFORM();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsSparseCrudeMonteCarlo)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTermsSparse();
+    auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsCrudeMonteCarlo();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsSparseDirectionalSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTermsSparse();
+    auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsDirectionalSampling();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsSparseImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTermsSparse();
+    auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsImportanceSampling();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsSparseAdaptiveImportanceSampling)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTermsSparse();
+    auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsAdaptiveImportanceSampling();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsSparseFDIR)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTermsSparse();
+    auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsFDIR();
 }
 
 TEST(WaartsTests, testResistance25QuadraticTermsSparseDSFI)
 {
-    auto tester = Deltares::Probabilistic::Test::TestWaartsResistance25QuadraticTermsSparse();
+    auto tester = TestWaartsResistance25QuadraticTermsSparse();
     tester.WaartsDSFI();
 }
 
 TEST(UnitTests, testProjectHandlerGetSetMessage)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestSetAndGetMessage();
+    UnitTestProjectHandler::TestSetAndGetMessage();
 }
 
 TEST(UnitTests, testProjectHandlerStandardNormal)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestStandardNormal();
+    UnitTestProjectHandler::TestStandardNormal();
 }
 
 TEST(UnitTests, testProjectHandlerProbabilityValue)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProbabilityValue();
+    UnitTestProjectHandler::TestProbabilityValue();
 }
 
 TEST(UnitTests, testProjectHandlerStochast)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestStochast();
+    UnitTestProjectHandler::TestStochast();
 }
 
 TEST(UnitTests, testProjectHandlerCopula)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestCopula();
+    UnitTestProjectHandler::TestCopula();
 }
 
 TEST(UnitTests, testProjectHandlerSettings)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestSettings();
+    UnitTestProjectHandler::TestSettings();
 }
 
 TEST(UnitTests, testProjectEntries)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();
+    UnitTestProjectHandler::TestProjectEntries();
 }
 
 TEST(UnitTests, testCreateDestroyAllEntries)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestCreateDestroyAllEntries();
+    UnitTestProjectHandler::TestCreateDestroyAllEntries();
 }
 
 TEST(UnitTests, testProjectEntriesIsModelProject)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsStochast();
+    UnitTestProjectHandler::TestProjectEntriesIsStochast();
 }
 
 TEST(UnitTests, testProjectEntriesIsModelSettingsType)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntries();
+    UnitTestProjectHandler::TestProjectEntries();
 }
 
 TEST(UnitTests, testProjectEntriesIsStochast)
 {
-    Deltares::Probabilistic::Test::UnitTestProjectHandler::TestProjectEntriesIsStochast();
+    UnitTestProjectHandler::TestProjectEntriesIsStochast();
 }
 
 TEST(IntegrationTests, testProjectHandlerRunProject)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProject();
+    IntegrationTestProjectHandler::TestRunProject();
 }
 
 TEST(IntegrationTests, testProjectHandlerReliabilityProjectSequentialZ)
@@ -1530,30 +1531,30 @@ TEST(IntegrationTests, testProjectHandlerReliabilityProjectBothZfuncs)
 
 TEST(IntegrationTests, testProjectHandlerReliabilityProjectCMC)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProjectCMC();
+    IntegrationTestProjectHandler::TestReliabilityProjectCMC();
 }
 
 TEST(IntegrationTests, testProjectHandlerSensitivityProject)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestSensitivityProject();
+    IntegrationTestProjectHandler::TestSensitivityProject();
 }
 
 TEST(IntegrationTests, testProjectHandlerUncertaintyProject)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestUncertaintyProject();
+    IntegrationTestProjectHandler::TestUncertaintyProject();
 }
 
 TEST(IntegrationTests, testProjectHandlerRunProjectMultipleOutput)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestRunProjectMultipleOutput();
+    IntegrationTestProjectHandler::TestRunProjectMultipleOutput();
 }
 
 TEST(IntegrationTests, testProjectHandlerCombine)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestCombineProject();
+    IntegrationTestProjectHandler::TestCombineProject();
 }
 
 TEST(IntegrationTests, testProjectHandlerReliabilityZValues)
 {
-    Deltares::Probabilistic::Test::IntegrationTestProjectHandler::TestReliabilityProjectZValues();
+    IntegrationTestProjectHandler::TestReliabilityProjectZValues();
 }
