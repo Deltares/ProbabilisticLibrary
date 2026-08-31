@@ -28,6 +28,7 @@ file(GLOB probabilistic_files
     "Statistics/Distributions/*.h"
     "Optimization/*.h"
     "Server/*.h"
+    "Server/Handlers/*.h"
     "Logging/*.h"
     "Utils/*.h"
 )
