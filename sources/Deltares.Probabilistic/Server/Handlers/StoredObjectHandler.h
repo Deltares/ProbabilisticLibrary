@@ -24,6 +24,7 @@
 #include <unordered_map>
 #include "ObjectHandler.h"
 #include "../ProjectEntries.h"
+#include "../../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Server
 {
