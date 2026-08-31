@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include <gtest/gtest.h>
-#include "projectBuilder.h"
+#include "ProjectBuilder.h"
 #include "../Deltares.Probabilistic/Model/DefaultValueConverter.h"
 #include <iostream>
 

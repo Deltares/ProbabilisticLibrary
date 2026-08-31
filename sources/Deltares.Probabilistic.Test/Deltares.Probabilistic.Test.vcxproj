@@ -134,7 +134,7 @@
     <ClInclude Include="Math\TestSpecialFunctions.h" />
     <ClInclude Include="Math\TestStatisticsCalculator.h" />
     <ClInclude Include="Optimization\testCobyla.h" />
-    <ClInclude Include="projectBuilder.h" />
+    <ClInclude Include="ProjectBuilder.h" />
     <ClInclude Include="Model\TestRunModel.h" />
     <ClInclude Include="Reliability\TestStartPointCalculator.h" />
     <ClInclude Include="Reliability\TestNumIntShared.h" />
@@ -187,7 +187,7 @@
     <ClCompile Include="Math\TestSpecialFunctions.cpp" />
     <ClCompile Include="Math\TestStatisticsCalculator.cpp" />
     <ClCompile Include="Optimization\testCobyla.cpp" />
-    <ClCompile Include="projectBuilder.cpp" />
+    <ClCompile Include="ProjectBuilder.cpp" />
     <ClCompile Include="Model\TestRunModel.cpp" />
     <ClCompile Include="Reliability\TestStartPointCalculator.cpp" />
     <ClCompile Include="Reliability\TestNumIntShared.cpp" />
@@ -209,7 +209,7 @@
     <ClCompile Include="Reliability\TestReliabilityMethods.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />
-    <ClCompile Include="unittests.cpp" />
+    <ClCompile Include="UnitTests.cpp" />
     <ClCompile Include="Utils\testutils.cpp" />
     <ClCompile Include="Utils\TestExceptions.cpp" />
     <ClCompile Include="Utils\TestString.cpp" />
