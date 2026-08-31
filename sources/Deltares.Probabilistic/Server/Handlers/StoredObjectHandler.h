@@ -45,6 +45,7 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<T>, int> objectIds;
 
         ObjectHandlerAdmin* admin = nullptr;
+        std::mutex mtx;
 
     public:
 
@@ -61,6 +62,8 @@ namespace Deltares::Server
 
             int id = admin->GetNewId();
 
+            std::lock_guard lock(mtx);
+
             objects[id] = value;
             objectIds[value] = id;
 
@@ -74,6 +77,8 @@ namespace Deltares::Server
             auto it = objects.find(id);
             if (it != objects.end())
             {
+                std::lock_guard lock(mtx);
+
                 objectIds.erase(it->second);
                 objects.erase(it);
 
