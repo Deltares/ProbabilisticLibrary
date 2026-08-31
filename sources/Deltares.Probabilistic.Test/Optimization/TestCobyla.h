@@ -43,7 +43,7 @@ namespace Deltares::Probabilistic::Test
         unsigned GetNumberOfConstraints() const override { return 1; }
     };
 
-    class testCobyla
+    class TestCobyla
     {
     public:
         void allCobylaTests();

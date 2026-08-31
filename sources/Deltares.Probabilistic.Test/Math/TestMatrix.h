@@ -23,7 +23,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class matrix_tests
+    class TestMatrix
     {
     public:
         static void qr_decomposition();

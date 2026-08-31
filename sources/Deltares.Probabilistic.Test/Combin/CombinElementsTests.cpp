@@ -30,7 +30,7 @@ namespace Deltares::Probabilistic::Test
 {
     using namespace Deltares::Reliability;
 
-    void combinElementsTests::runAllCombineTwoElementsTests()
+    void CombinElementsTests::runAllCombineTwoElementsTests()
     {
         testCombineTwoElementsNoCorrelation1();
         testCombineTwoElementsNoCorrelation2();
@@ -72,7 +72,7 @@ namespace Deltares::Probabilistic::Test
         testCombineTwoElementsPartialCorrelation99a();
     }
 
-    void combinElementsTests::runAllCombineMultipleElementsTests()
+    void CombinElementsTests::runAllCombineMultipleElementsTests()
     {
         testCombineMultipleElementsProb1();
         testCombineMultipleElementsProb2();
@@ -85,7 +85,7 @@ namespace Deltares::Probabilistic::Test
         testCombineThreeElementsPartialCorrelation4();
     }
 
-    void combinElementsTests::runAllLengthEffectTests()
+    void CombinElementsTests::runAllLengthEffectTests()
     {
         testLengthEffectFourStochasts();
         upscaleLengthTests11();
@@ -101,7 +101,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= 2.5, and design point alpha= (0, 1)
     // RhoP = (0, 0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsNoCorrelation1()
+    void CombinElementsTests::testCombineTwoElementsNoCorrelation1()
     {
         constexpr size_t nStochast = 2; // number of stochastic variables
         auto elm1 = alphaBeta(3.0, {1.0, 0.0});
@@ -127,7 +127,7 @@ namespace Deltares::Probabilistic::Test
     // RhoP = (0, 0)
     // The resulting beta and alphas of the combination should be equal to their expected values
     // NB. The results of this test can be compared to the preceding test to verify that the order of the elements does not affect the outcome.
-    void combinElementsTests::testCombineTwoElementsNoCorrelation2()
+    void CombinElementsTests::testCombineTwoElementsNoCorrelation2()
     {
         auto elm1 = alphaBeta(2.5, {0.0, 1.0});
         auto elm2 = alphaBeta(3.0, {1.0, 0.0});
@@ -154,7 +154,7 @@ namespace Deltares::Probabilistic::Test
     // NB: The results of this test can be compared to the two preceding ones to verify that now the alpha(1) and alpha(2)
     // of the combination are in reversed order. The reason is that for the same alpha1() and alpha2() the beta1 and beta2 were reversed.
     // In this way it is verified that the "beta-order" of the stochastic variables has an effect.
-    void combinElementsTests::testCombineTwoElementsNoCorrelation3()
+    void CombinElementsTests::testCombineTwoElementsNoCorrelation3()
     {
         auto elm1 = alphaBeta(2.5, {1.0, 0.0});
         auto elm2 = alphaBeta(3.0, {0.0, 1.0});
@@ -180,7 +180,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= 3.0, and design point alpha= (0, 1)
     // RhoP = (0, 0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsNoCorrelation4()
+    void CombinElementsTests::testCombineTwoElementsNoCorrelation4()
     {
         auto elm1 = alphaBeta(2.5, {1.0, 0.0});
         auto elm2 = alphaBeta(3.0, {0.0, 1.0});
@@ -204,7 +204,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= -3.0, and design point alpha= (0, 1)
     // RhoP = (0, 0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsNoCorrelation5()
+    void CombinElementsTests::testCombineTwoElementsNoCorrelation5()
     {
         auto elm1 = alphaBeta(-2.5, {1.0, 0.0});
         auto elm2 = alphaBeta(-3.0, {0.0, 1.0});
@@ -228,7 +228,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= 0.0, and design point alpha= (0, 1)
     // RhoP = (0, 0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsNoCorrelation6()
+    void CombinElementsTests::testCombineTwoElementsNoCorrelation6()
     {
         auto elm1 = alphaBeta(0.0, {1.0, 0.0});
         auto elm2 = alphaBeta(0.0, {0.0, 1.0});
@@ -253,7 +253,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= 2.5, and design point alpha= (0.8, 0.6)
     // RhoP = (0.5, 0.5)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation1()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation1()
     {
         auto elm1 = alphaBeta(3.0, {0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {0.8, 0.6});
@@ -274,7 +274,7 @@ namespace Deltares::Probabilistic::Test
     // RhoP = (1.0, 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
     // NB. With RhoP=(1, 1) the robustness of the function is tested for full correlation of the stochastic variables.
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation2()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation2()
     {
         auto elm1 = alphaBeta(3.0, {0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {0.8, 0.6});
@@ -296,7 +296,7 @@ namespace Deltares::Probabilistic::Test
     // The resulting beta and alphas of the combination should be equal to their expected values
     // NB. Particularly, with this RhoP=(1, 1) the robustness of the function is tested for full correlation of the stochastic variables.
     //     Because of equal beta of the two elements, the alpha(1) and alpha(2) for the combination must have the same value.
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation3()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation3()
     {
         auto elm1 = alphaBeta(2.5, {0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {0.8, 0.6});
@@ -319,7 +319,7 @@ namespace Deltares::Probabilistic::Test
     // The resulting beta and alphas of the combination should be equal to their expected values
     // NB. Fully correlated stochastic variables, but uncorrelated elements.
     // NB. A negative value is assigned to alpha1(1) of the first element.
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation4()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation4()
     {
         auto elm1 = alphaBeta(2.5, {-0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {0.8, 0.6});
@@ -346,7 +346,7 @@ namespace Deltares::Probabilistic::Test
     // The resulting beta and alphas of the combination should be equal to their expected values
     // NB. Negative values are assigned to alpha1(1) of the first element and alpha2(1) of the second element.
     //     It is verified that the alphaC(1) of the combination is also negative.
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation5()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation5()
     {
         auto elm1 = alphaBeta(2.5, {-0.6, 0.8});
         auto elm2 = alphaBeta(2.5, {-0.8, 0.6});
@@ -370,7 +370,7 @@ namespace Deltares::Probabilistic::Test
     // NB. Present number of stochastic variables is 4
     // NB. Correlated stochastic variables, but uncorrelated elements.
     // NB. Positive and negative values in the alpha1() and alpha2().
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation6()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation6()
     {
         auto elm1 = alphaBeta(2.5, {-0.5,  0.5, -0.5, 0.5});
         auto elm2 = alphaBeta(2.5, {-0.5, -0.5,  0.5, 0.5});
@@ -398,7 +398,7 @@ namespace Deltares::Probabilistic::Test
     // The alpha of the combination of the these two elements is not well-defined and is not verified
     // NB. Merely one stochastic variable in the elements
     // NB. Negative correlation of the two elements.
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation7()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation7()
     {
         auto elm1 = alphaBeta(2.5, {-1.0});
         auto elm2 = alphaBeta(2.5, { 1.0});
@@ -421,7 +421,7 @@ namespace Deltares::Probabilistic::Test
     // The alpha of the combination of the these two elements is not well-defined and is not verified
     // NB. Merely one stochastic variable in the elements
     // NB. Negative correlation of the two elements.
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation8()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation8()
     {
         auto elm1 = alphaBeta(2.5, { 1.0});
         auto elm2 = alphaBeta(2.5, {-1.0});
@@ -447,7 +447,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 3: Standard case with different alpha() values.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013.
     //     See also the associated test in testCombineTwoElementsPartialCorrelation10
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation9()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation9()
     {
         auto elm1 = alphaBeta(3.5, {0.436, 0.900});
         auto elm2 = alphaBeta(3.5, {0.900, 0.436});
@@ -475,7 +475,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 3: Standard case with different alpha() values.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     //     See also the associated test in testCombineTwoElementsPartialCorrelation9
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation10()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation10()
     {
         auto elm1 = alphaBeta(3.5, {0.436, 0.900, 0.000});
         auto elm2 = alphaBeta(3.5, {0.900, 0.000, 0.436});
@@ -504,7 +504,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 1: Standardcase.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     //     See also the associated test in testCombineTwoElementsPartialCorrelation12
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation11()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation11()
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8});
         auto elm2 = elm1;
@@ -530,7 +530,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 1: Standardcase.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     //     See also the associated test in testCombineTwoElementsPartialCorrelation11
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation12()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation12()
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
         auto elm2 = alphaBeta(3.5, {0.6, 0.0, 0.8});
@@ -557,7 +557,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 2: Standardcase with different beta-values.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     //     See also the associated test in testCombineTwoElementsPartialCorrelation14
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation13()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation13()
     {
     //  For "old" combineTwoElementsPartialCorrelation, without correction of the alpha_equivalent
         auto elm1 = alphaBeta(3.5, {0.6, 0.8});
@@ -584,7 +584,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 2: Standardcase with different beta-values.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     //     See also the associated test in testCombineTwoElementsPartialCorrelation13
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation14()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation14()
     {
     //  For "old" combineTwoElementsPartialCorrelation, without correction of the alpha_equivalent
         auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
@@ -610,7 +610,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= 9.5, and design point alpha= ( 0.8, 0.6 )
     // RhoP = ( 1.0, 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation15()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation15()
     {
         auto elm1 = alphaBeta(3.5, {0.8, 0.6});
         auto elm2 = alphaBeta(9.5, {0.8, 0.6});
@@ -630,7 +630,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= 3.5, and dimension 10 of design point alpha
     // RhoP = ( 1.0, ..., 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation99()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation99()
     {
         constexpr size_t nStochast = 10;
         auto elm1 = alphaBeta(3.0, {0.6, 0.8, 0.4, 0.0, 0.2, 0.7, 0.3, 0.8, 0.9, 1.0});
@@ -665,7 +665,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 2: Standardcase with different beta-values. \n
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013 \n
     //     See also the associated test in testCombineTwoElementsPartialCorrelation13 \n
-    void combinElementsTests::testCombineTwoElementsPCorWithNonContrAlphas()
+    void CombinElementsTests::testCombineTwoElementsPCorWithNonContrAlphas()
     {
         auto elm1 = alphaBeta(3.5, {0.0, 0.6, 0.0, 0.8, 0.0});
         auto elm2 = alphaBeta(3.8, elm1.getAlpha());
@@ -681,7 +681,7 @@ namespace Deltares::Probabilistic::Test
     }
 
     // > test combineMultipleElementsProb
-    void combinElementsTests::testCombineMultipleElementsProb1()
+    void CombinElementsTests::testCombineMultipleElementsProb1()
     {
         auto Elements = elements(1);
         Elements[0] = {3.5, {1.0, 0.0, 0.0}};
@@ -696,7 +696,7 @@ namespace Deltares::Probabilistic::Test
     }
 
     // test combineMultipleElementsProb
-    void combinElementsTests::testCombineMultipleElementsProb2()
+    void CombinElementsTests::testCombineMultipleElementsProb2()
     {
         constexpr size_t nElements = 2;
 
@@ -718,7 +718,7 @@ namespace Deltares::Probabilistic::Test
     }
 
     // test combineMultipleElementsProb
-    void combinElementsTests::testCombineMultipleElementsProb3()
+    void CombinElementsTests::testCombineMultipleElementsProb3()
     {
         constexpr size_t nElements = 10;
 
@@ -740,7 +740,7 @@ namespace Deltares::Probabilistic::Test
     }
 
     // test combineMultipleElementsProb
-    void combinElementsTests::testCombineMultipleElementsProb4()
+    void CombinElementsTests::testCombineMultipleElementsProb4()
     {
         constexpr size_t nElements = 2;
 
@@ -758,7 +758,7 @@ namespace Deltares::Probabilistic::Test
     }
 
     // test combineMultipleElementsProb
-    void combinElementsTests::testCombineMultipleElementsProb5()
+    void CombinElementsTests::testCombineMultipleElementsProb5()
     {
         constexpr size_t nElements = 10;
 
@@ -780,7 +780,7 @@ namespace Deltares::Probabilistic::Test
 
     // Test of combine multiple elements spatial correlated
     // This test gives the results as calculated with the method residual correlation
-    void combinElementsTests::testCombineMultipleElementsSpatialCorrelated1()
+    void CombinElementsTests::testCombineMultipleElementsSpatialCorrelated1()
     {
         constexpr int nElements = 20; // Number of elements
 
@@ -808,7 +808,7 @@ namespace Deltares::Probabilistic::Test
 
     // Test of combine multiple elements spatial correlated
     // This test gives the results as calculated with the method residual correlation
-    void combinElementsTests::testCombineMultipleElementsSpatialCorrelated2()
+    void CombinElementsTests::testCombineMultipleElementsSpatialCorrelated2()
     {
         constexpr size_t nStochast = 4; // Number of stochastic variables
         constexpr size_t nElements = 20; // Number of elements
@@ -841,7 +841,7 @@ namespace Deltares::Probabilistic::Test
 
     // Test of combine multiple elements spatial correlated
     // This test gives the results as calculated with the method residual correlation
-    void combinElementsTests::testCombineMultipleElementsSpatialCorrelated3()
+    void CombinElementsTests::testCombineMultipleElementsSpatialCorrelated3()
     {
         constexpr size_t nElements = 20; // Number of elements
         auto crossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
@@ -858,7 +858,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(nFail, 0);
     }
 
-    void combinElementsTests::testLengthEffectFourStochasts()
+    void CombinElementsTests::testLengthEffectFourStochasts()
     {
         const int nStochasts = 4;
         std::vector< std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
@@ -903,7 +903,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(1, dp.ContributingDesignPoints.size());
     }
 
-    void combinElementsTests::upscaleLengthTests11()
+    void CombinElementsTests::upscaleLengthTests11()
     {
         Numeric::Vector1D alpha_cross_section = { 0.0, 0.6, 0.0, -0.8, 0.0 };
         alpha_cross_section.normalize();
@@ -922,7 +922,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void combinElementsTests::upscaleLengthTests16()
+    void CombinElementsTests::upscaleLengthTests16()
     {
         Numeric::Vector1D alpha_cross_section = { 1.0, -2.0, 4.0, 0.0, -3.0 };
         alpha_cross_section.normalize();
@@ -944,7 +944,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void combinElementsTests::testCombineElementsFullCorrelation(const combineAndOr andOr)
+    void CombinElementsTests::testCombineElementsFullCorrelation(const combineAndOr andOr)
     {
         constexpr size_t nr_elements = 10;
         auto Elements = elements(nr_elements);
@@ -960,12 +960,12 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(ab.n, 0);
     }
 
-    void combinElementsTests::testCombineElementsFullCorrelation1()
+    void CombinElementsTests::testCombineElementsFullCorrelation1()
     {
         testCombineElementsFullCorrelation(combineAndOr::combOr);
     }
 
-    void combinElementsTests::testCombineElementsFullCorrelation2()
+    void CombinElementsTests::testCombineElementsFullCorrelation2()
     {
         testCombineElementsFullCorrelation(combineAndOr::combAnd);
     }
@@ -976,7 +976,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= 2.5, and design point alpha= (-1.0, 0.0)
     // RhoP = (1.0, 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsNegativeCorrelation1()
+    void CombinElementsTests::testCombineTwoElementsNegativeCorrelation1()
     {
         auto elm1 = alphaBeta(3.0, { 1.0, 0.0});
         auto elm2 = alphaBeta(2.5, {-1.0, 0.0});
@@ -1002,7 +1002,7 @@ namespace Deltares::Probabilistic::Test
     // Element 2 with beta= 2.5, and design point alpha= (-1.0, 0.0)
     // RhoP = (1.0, 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineTwoElementsNegativeCorrelation2()
+    void CombinElementsTests::testCombineTwoElementsNegativeCorrelation2()
     {
         auto elm1 = alphaBeta(3.0, { 1.0, 0.0});
         auto elm2 = alphaBeta(2.5, {-1.0, 0.0});
@@ -1025,7 +1025,7 @@ namespace Deltares::Probabilistic::Test
     // Element 3 with beta= 3.5, and design point alpha= Normalised( 0.9  , 0.0, 0.0, 0.436)
     // RhoP = ( 1.0, 1.0, 1.0, 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineThreeElementsPartialCorrelation1()
+    void CombinElementsTests::testCombineThreeElementsPartialCorrelation1()
     {
         auto elm1 = alphaBeta(3.5, {0.436, 0.900, 0.000, 0.000});
         auto elm2 = alphaBeta(3.5, {0.900, 0.000, 0.436, 0.000});
@@ -1053,7 +1053,7 @@ namespace Deltares::Probabilistic::Test
     // Element 3 with beta= 3.5, and design point alpha= Normalised( 0.8, 0.0, 0.0, 0.6)
     // RhoP = ( 1.0, 1.0, 1.0, 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineThreeElementsPartialCorrelation2()
+    void CombinElementsTests::testCombineThreeElementsPartialCorrelation2()
     {
         auto elm1 = alphaBeta(3.5, {0.8, 0.6, 0.0, 0.0});
         auto elm2 = alphaBeta(3.5, {0.8, 0.0, 0.6, 0.0});
@@ -1081,7 +1081,7 @@ namespace Deltares::Probabilistic::Test
     // Element 3 with beta= 3.5, and design point alpha= Normalised( 0.8, 0.0, 0.0, 0.6)
     // RhoP = ( 1.0, 1.0, 1.0, 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineThreeElementsPartialCorrelation3()
+    void CombinElementsTests::testCombineThreeElementsPartialCorrelation3()
     {
         auto elm1 = alphaBeta(3.3, {1.0, 0.0, 0.0});
         auto elm2 = alphaBeta(3.3, {0.0, 1.0, 0.0});
@@ -1114,7 +1114,7 @@ namespace Deltares::Probabilistic::Test
     // Element 3 with beta= 3.5, and design point alpha= Normalised( 0.8, 0.0, 0.0, 0.6)
     // RhoP = ( 1.0, 1.0, 1.0, 1.0)
     // The resulting beta and alphas of the combination should be equal to their expected values
-    void combinElementsTests::testCombineThreeElementsPartialCorrelation4()
+    void CombinElementsTests::testCombineThreeElementsPartialCorrelation4()
     {
         auto elm1 = alphaBeta(3.3, {0.8, 0.5, 0.33});
         auto elm2 = alphaBeta(3.3, {0.6, 0.7, 0.39});
@@ -1148,7 +1148,7 @@ namespace Deltares::Probabilistic::Test
     // test to reproduce behaviour of issue: HRING-1329
     // beta < 0 and rho=1 for most important alpha value
     // condensed alpha's from a crashing piping calculation
-    void combinElementsTests::testCombineTwoElementsPartialCorrelationPiping()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelationPiping()
     {
         auto elm1 = alphaBeta(-0.672801079367189, {0.955916666381498, 0.269308913244088, 0.117030065288253});
         auto elm2 = alphaBeta(-1.66664947542178, {0.941548934494231, 0.336876242987242, 2.938671066518333e-5});
@@ -1162,7 +1162,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(C.n, 0);
     }
 
-    void combinElementsTests::TestCombineTwoElementsPartialCorrelationRealCaseA()
+    void CombinElementsTests::TestCombineTwoElementsPartialCorrelationRealCaseA()
      {
         constexpr int nr_stochasts = 12;
         auto elm1 = alphaBeta(5.399971745953011, {0.06022086662, 0.02505312816, 0.495556994, 0.2495783788, -0.1659764886,
@@ -1181,7 +1181,7 @@ namespace Deltares::Probabilistic::Test
          test_utilities.checkAlphaBeta(result.ab, ref, 1e-6);
      }
 
-    void combinElementsTests::TestCombineTwoElementsPartialCorrelationRealCaseB()
+    void CombinElementsTests::TestCombineTwoElementsPartialCorrelationRealCaseB()
      {
         constexpr int nr_stochasts = 12;
         auto elm1 = alphaBeta(5.39982938128391, {6.069041097195603e-2, 2.511615065692600e-2, 0.496800218126342,
@@ -1201,7 +1201,7 @@ namespace Deltares::Probabilistic::Test
         test_utilities.checkAlphaBeta(result.ab, ref, 1e-6);
     }
 
-    void combinElementsTests::TestCombineTwoElementsPartialCorrelationRealCaseC()
+    void CombinElementsTests::TestCombineTwoElementsPartialCorrelationRealCaseC()
     {
         constexpr int nr_stochasts = 2;
         auto rho_p = Numeric::Vector1D(nr_stochasts);
@@ -1305,7 +1305,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 3: Standard case with different alpha() values. \n
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013 \n
     // See also the associated test in testCombineTwoElementsPartialCorrelation9() \n
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation9a()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation9a()
     {
         auto elm1 = alphaBeta(3.5, {0.436, 0.9, 0.0});
         auto elm2 = alphaBeta(3.5, {0.9, 0.0, 0.436});
@@ -1334,7 +1334,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 3: Standard case with different alpha() values.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     // See also the associated test in testCombineTwoElementsPartialCorrelation10()
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation10a()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation10a()
     {
         auto elm1 = alphaBeta(3.5, {0.436, 0.9});
         auto elm2 = alphaBeta(3.5, {0.9, 0.436});
@@ -1363,7 +1363,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 1: Standardcase.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     // See also testCombineTwoElementsPartialCorrelation11()
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation11a()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation11a()
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8});
         auto elm2 = elm1;
@@ -1390,7 +1390,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 1: Standardcase.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     // See also testCombineTwoElementsPartialCorrelation12()
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation12a()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation12a()
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
         auto elm2 = alphaBeta(3.5, {0.6, 0.0, 0.8});
@@ -1417,7 +1417,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 2: Standardcase with different beta-values.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     //     See also the associated test in testCombineTwoElementsPartialCorrelation13()
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation13a()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation13a()
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8});
         auto elm2 = alphaBeta(3.8, {0.6, 0.8});
@@ -1444,7 +1444,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 2: Standardcase with different beta-values.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     //     See also the associated test in testCombineTwoElementsPartialCorrelation14
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation14a()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation14a()
     {
         auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
         auto elm2 = alphaBeta(3.8, {0.6, 0.0, 0.8});
@@ -1471,7 +1471,7 @@ namespace Deltares::Probabilistic::Test
     //     Testcase 2: Standardcase with different beta-values.
     //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
     //     See also the associated test in testCombineTwoElementsPartialCorrelation99
-    void combinElementsTests::testCombineTwoElementsPartialCorrelation99a()
+    void CombinElementsTests::testCombineTwoElementsPartialCorrelation99a()
     {
         auto elm1 = alphaBeta(3.0, {0.6, 0.8, 0.4, 0.0, 0.2, 0.7, 0.3, 0.8, 0.9, 1.0});
         auto elm2 = alphaBeta(3.5, {0.1, 0.0, 0.7, 0.9, 0.8, 0.1, 0.9, 0.5, 0.3, 0.0});

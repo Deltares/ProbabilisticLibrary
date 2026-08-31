@@ -45,17 +45,17 @@ namespace Deltares::Probabilistic::Test
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         for (int i = 0; i < 2; i++)
         {
-            stochasts.push_back(projectBuilder::getDeterministicStochast(0.0)); // not used stochast
+            stochasts.push_back(ProjectBuilder::getDeterministicStochast(0.0)); // not used stochast
         }
         for (int i = 0; i < numberOfQuadraticTerms; i++)
         {
-            stochasts.push_back(projectBuilder::getNormalStochast(0.2, 0.1));
+            stochasts.push_back(ProjectBuilder::getNormalStochast(0.2, 0.1));
         }
         for (int i = 0; i < 2; i++)
         {
-            stochasts.push_back(projectBuilder::getDeterministicStochast(0.0)); // not used stochast
+            stochasts.push_back(ProjectBuilder::getDeterministicStochast(0.0)); // not used stochast
         }
-        stochasts.push_back(projectBuilder::getNormalStochast(0.5, 0.1));
+        stochasts.push_back(ProjectBuilder::getNormalStochast(0.5, 0.1));
 
         return getModelRunner(z, stochasts, 30);
     }

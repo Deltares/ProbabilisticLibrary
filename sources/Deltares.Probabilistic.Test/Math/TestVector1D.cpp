@@ -27,14 +27,14 @@
 namespace Deltares::Probabilistic::Test
 {
 
-    void vector1D_tests::allVector1Dtests() const
+    void TestVector1D::allVector1Dtests() const
     {
         vector_sum_test();
         vector_normalize_test();
         minmax_test();
     }
 
-    void vector1D_tests::vector_sum_test() const
+    void TestVector1D::vector_sum_test() const
     {
         auto v1 = Numeric::Vector1D(2);
         auto v2 = Numeric::Vector1D(2);
@@ -48,7 +48,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_DOUBLE_EQ(inner, 12.0);
     }
 
-    void vector1D_tests::vector_normalize_test() const
+    void TestVector1D::vector_normalize_test() const
     {
         auto v = Numeric::Vector1D({ 0.1, 0.2, 0.3 });
         v.normalize();
@@ -59,7 +59,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(s, 1.0, 1e-10);
     }
 
-    void vector1D_tests::minmax_test() const
+    void TestVector1D::minmax_test() const
     {
         auto v = Numeric::Vector1D({ 0.1, 0.2, 0.3 });
         double max = v.maxval();

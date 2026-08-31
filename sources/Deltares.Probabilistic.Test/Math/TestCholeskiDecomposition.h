@@ -24,7 +24,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class choleski_decomp_tests
+    class TestCholeskiDecomposition
     {
     public:
         void allCholeskyDecompositionTests() const;

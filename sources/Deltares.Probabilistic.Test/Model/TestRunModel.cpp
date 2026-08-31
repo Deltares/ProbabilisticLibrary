@@ -40,7 +40,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestRunModel::testRunModelMedianValues() const
     {
-        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
+        std::shared_ptr<Models::RunProject> project = ProjectBuilder::getRunProject(ProjectBuilder::getTriangularLinearProject());
 
         project->settings->runValuesType = Statistics::MedianValues;
 
@@ -53,7 +53,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestRunModel::testRunModelMeanValues() const
     {
-        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
+        std::shared_ptr<Models::RunProject> project = ProjectBuilder::getRunProject(ProjectBuilder::getTriangularLinearProject());
 
         project->settings->runValuesType = Statistics::MeanValues;
 
@@ -66,7 +66,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestRunModel::testRunModelDesignValues() const
     {
-        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
+        std::shared_ptr<Models::RunProject> project = ProjectBuilder::getRunProject(ProjectBuilder::getTriangularLinearProject());
 
         project->settings->runValuesType = Statistics::DesignValues;
 
@@ -97,7 +97,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestRunModel::testRunModelArraysVariable() const
     {
-        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getArrayVariableProject());
+        std::shared_ptr<Models::RunProject> project = ProjectBuilder::getRunProject(ProjectBuilder::getArrayVariableProject());
 
         project->settings->runValuesType = Statistics::MeanValues;
 
@@ -119,7 +119,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestRunModel::testRunModelVariableSourceIsNotVarying() const
     {
-        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getArrayVariableProject());
+        std::shared_ptr<Models::RunProject> project = ProjectBuilder::getRunProject(ProjectBuilder::getArrayVariableProject());
 
         project->settings->runValuesType = Statistics::MeanValues;
 
@@ -153,7 +153,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestRunModel::testRunModelVariableWithArrayVariables() const
     {
-        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getArrayVariableProject());
+        std::shared_ptr<Models::RunProject> project = ProjectBuilder::getRunProject(ProjectBuilder::getArrayVariableProject());
 
         project->settings->runValuesType = Statistics::MeanValues;
 

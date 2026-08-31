@@ -28,7 +28,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class testutils
+    class TestUtils
     {
     public:
         bool compareFiles(const std::string& refFile, const std::string& newFile) const;

@@ -27,14 +27,14 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void matmul_tests::all_matmul_tests() const
+    void TestMatrixMultiplication::all_matmul_tests() const
     {
         matmul_test1();
         matmul_test2();
         matvec_test();
     }
 
-    void matmul_tests::matmul_test1() const
+    void TestMatrixMultiplication::matmul_test1() const
     {
         auto m1 = Numeric::Matrix(3, 3);
         auto m2 = Numeric::Matrix(3, 2);
@@ -70,7 +70,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void matmul_tests::matmul_test2() const
+    void TestMatrixMultiplication::matmul_test2() const
     {
         auto m1 = Numeric::Matrix(3, 3);
         auto m2 = Numeric::Matrix(5, 5);
@@ -88,7 +88,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(success, 1);
     }
 
-    void matmul_tests::matvec_test() const
+    void TestMatrixMultiplication::matvec_test() const
     {
         auto m = Numeric::Matrix(2, 2); // identity matrix
         m(0, 0) = 1.0;

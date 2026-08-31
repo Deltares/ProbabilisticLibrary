@@ -43,7 +43,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = FORM();
 
-        auto modelRunner = projectBuilder::BuildLinearProject(2);
+        auto modelRunner = ProjectBuilder::BuildLinearProject(2);
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -61,7 +61,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = FORM();
 
-        auto modelRunner = projectBuilder::BuildLinearArrayProject();
+        auto modelRunner = ProjectBuilder::BuildLinearArrayProject();
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -77,7 +77,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = FORM();
 
-        auto modelRunner = projectBuilder::BuildLinearVaryingArrayProject();
+        auto modelRunner = ProjectBuilder::BuildLinearVaryingArrayProject();
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -131,7 +131,7 @@ namespace Deltares::Probabilistic::Test
             auto calculator = LatinHyperCube();
             calculator.Settings->RunSettings->MaxChunkSize = chunkSize;
 
-            auto modelRunner = projectBuilder().BuildProject();
+            auto modelRunner = ProjectBuilder().BuildProject();
 
             auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -149,7 +149,7 @@ namespace Deltares::Probabilistic::Test
         calculator.Settings->MaximumIterations = 20;
         calculator.Settings->designPointMethod = DesignPointMethod::NearestToMean;
 
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -162,7 +162,7 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testNumericalBisectionLinear()
     {
         auto calculator = std::make_shared<NumericalBisection>();
-        auto project = projectBuilder::getLinearProject();
+        auto project = ProjectBuilder::getLinearProject();
         project->reliabilityMethod = calculator;
         project->settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityNumericalBisection;
         project->settings->MaximumIterations = 20;
@@ -180,7 +180,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = CobylaReliability();
 
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -197,7 +197,7 @@ namespace Deltares::Probabilistic::Test
         calculator.Settings->SampleMethod = AdaptiveConditional;
         calculator.Settings->designPointMethod = DesignPointMethod::NearestToMean;
 
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -214,7 +214,7 @@ namespace Deltares::Probabilistic::Test
         calculator.Settings->SampleMethod = AdaptiveConditional;
         calculator.Settings->designPointMethod = DesignPointMethod::CenterOfGravity;
 
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -229,7 +229,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = FORMThenDirectionalSampling();
 
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -244,7 +244,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = DirectionalSamplingThenFORM();
 
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -259,7 +259,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto calculator = FragilityCurveIntegration();
 
-        auto fragilityCurve = projectBuilder::BuildFragilityCurve();
+        auto fragilityCurve = ProjectBuilder::BuildFragilityCurve();
 
         std::shared_ptr<Stochast> h = std::make_shared<Stochast>(DistributionType::Normal, std::vector{ 5.0, 1.0 });
 
@@ -281,7 +281,7 @@ namespace Deltares::Probabilistic::Test
         {
             auto calculator = NumericalIntegration();
 
-            auto modelRunner = projectBuilder().BuildProjectWithDeterminist(testValue);
+            auto modelRunner = ProjectBuilder().BuildProjectWithDeterminist(testValue);
 
             auto designPoint = calculator.getDesignPoint(modelRunner);
             const double sign = testValue > 0.0 ? 1.0 : -1.0;
@@ -297,7 +297,7 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testCrudeMonteCarloReliability()
     {
         auto calculator = CrudeMonteCarlo();
-        auto modelRunner = projectBuilder().BuildProjectWithDeterminist(0.0);
+        auto modelRunner = ProjectBuilder().BuildProjectWithDeterminist(0.0);
         calculator.Settings->MinimumSamples = 10000;
         calculator.Settings->MaximumSamples = 100000;
         auto designPoint = calculator.getDesignPoint(modelRunner);
@@ -365,7 +365,7 @@ namespace Deltares::Probabilistic::Test
         else
         {
             runSettings->modelReturnType = ModelReturnType::ZValue;
-            auto modelRunner3 = projectBuilder().BuildLinearProject(3);
+            auto modelRunner3 = ProjectBuilder().BuildLinearProject(3);
             designPoint3 = calculator.getDesignPoint(modelRunner3);
             ASSERT_EQ(designPoint3->Alphas.size(), 3);
         }
@@ -373,7 +373,7 @@ namespace Deltares::Probabilistic::Test
         // now use a model which returns a probability
 
         runSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
-        auto modelRunner = projectBuilder().BuildLinearProbabilityProject(2);
+        auto modelRunner = ProjectBuilder().BuildLinearProbabilityProject(2);
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
         EXPECT_NEAR(designPoint->Beta, 3.25, 0.02);
@@ -421,11 +421,11 @@ namespace Deltares::Probabilistic::Test
     {
         runSettings->modelReturnType = ModelReturnType::ProbabilityFailure;
 
-        auto modelRunnerProbability = projectBuilder().BuildLinearProbabilityProject(2);
+        auto modelRunnerProbability = ProjectBuilder().BuildLinearProbabilityProject(2);
         auto designPointProbability = calculator.getDesignPoint(modelRunnerProbability);
         ASSERT_EQ(designPointProbability->Alphas.size(), 3);
 
-        auto modelRunnerProbabilityInverse = projectBuilder().BuildLinearProbabilityInverseProject(2);
+        auto modelRunnerProbabilityInverse = ProjectBuilder().BuildLinearProbabilityInverseProject(2);
         auto designPointProbabilityInverse = calculator.getDesignPoint(modelRunnerProbabilityInverse);
         ASSERT_EQ(designPointProbabilityInverse->Alphas.size(), designPointProbability->Alphas.size());
         EXPECT_NEAR(designPointProbabilityInverse->Beta, -designPointProbability->Beta, 1e-5);
@@ -438,7 +438,7 @@ namespace Deltares::Probabilistic::Test
 
         runSettings->modelReturnType = ModelReturnType::ReliabilityIndex;
 
-        auto modelRunnerReliability = projectBuilder().BuildLinearReliabilityProject(2);
+        auto modelRunnerReliability = ProjectBuilder().BuildLinearReliabilityProject(2);
         auto designPointReliability = calculator.getDesignPoint(modelRunnerReliability);
         ASSERT_EQ(designPointReliability->Alphas.size(), designPointProbability->Alphas.size());
         EXPECT_NEAR(designPointReliability->Beta, designPointProbability->Beta, 1e-5);
@@ -449,7 +449,7 @@ namespace Deltares::Probabilistic::Test
             EXPECT_NEAR(designPointReliability->Alphas[i]->X, designPointProbability->Alphas[i]->X, 0.05);
         }
 
-        auto modelRunnerReliabilityInverse = projectBuilder().BuildLinearReliabilityInverseProject(2);
+        auto modelRunnerReliabilityInverse = ProjectBuilder().BuildLinearReliabilityInverseProject(2);
         auto designPointReliabilityInverse = calculator.getDesignPoint(modelRunnerReliabilityInverse);
         ASSERT_EQ(designPointReliabilityInverse->Alphas.size(), designPointProbability->Alphas.size());
         EXPECT_NEAR(designPointReliabilityInverse->Beta, -designPointProbability->Beta, 1e-5);
@@ -464,7 +464,7 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testCrudeMonteCarloWithCopulaReliability()
     {
         auto calculator = CrudeMonteCarlo();
-        auto modelRunner = projectBuilder().BuildProjectWithDeterministAndCopula(0.0);
+        auto modelRunner = ProjectBuilder().BuildProjectWithDeterministAndCopula(0.0);
         calculator.Settings->MinimumSamples = 10000;
         calculator.Settings->MaximumSamples = 100000;
         auto designPoint = calculator.getDesignPoint(modelRunner);
@@ -475,7 +475,7 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testCrudeMonteCarloWithQualitativeProject()
     {
         auto calculator = CrudeMonteCarlo();
-        auto modelRunner = projectBuilder::getQualitativeProject();
+        auto modelRunner = ProjectBuilder::getQualitativeProject();
         calculator.Settings->MinimumSamples = 10000;
         calculator.Settings->MaximumSamples = 10000;
         auto designPoint = calculator.getDesignPoint(modelRunner);
@@ -492,7 +492,7 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testAdaptiveImportanceSampling()
     {
         auto calculator = AdaptiveImportanceSampling();
-        auto modelRunner = projectBuilder().BuildProjectWithPolynome();
+        auto modelRunner = ProjectBuilder().BuildProjectWithPolynome();
         calculator.Settings->importanceSamplingSettings->MinimumSamples = 100;
         calculator.Settings->importanceSamplingSettings->MaximumSamples = 100;
         auto designPoint = calculator.getDesignPoint(modelRunner);
@@ -503,7 +503,7 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testAdaptiveImportanceSamplingVarianceFactor()
     {
         auto calculator = AdaptiveImportanceSampling();
-        auto modelRunner = projectBuilder().BuildProjectWithPolynome2();
+        auto modelRunner = ProjectBuilder().BuildProjectWithPolynome2();
         calculator.Settings->importanceSamplingSettings->MinimumSamples = 1000;
         calculator.Settings->importanceSamplingSettings->MaximumSamples = 1000;
         calculator.Settings->VarianceFactor = 0.5;
@@ -533,7 +533,7 @@ namespace Deltares::Probabilistic::Test
         for (int seed = 0; seed < 5; seed++)
         {
             auto calculator = AdaptiveImportanceSampling();
-            auto modelRunner = projectBuilder::BuildQuadraticProject();
+            auto modelRunner = ProjectBuilder::BuildQuadraticProject();
             calculator.Settings->importanceSamplingSettings->MinimumSamples = 5000;
             calculator.Settings->importanceSamplingSettings->MaximumSamples = 10000;
             calculator.Settings->MinVarianceLoops = 2;
@@ -565,7 +565,7 @@ namespace Deltares::Probabilistic::Test
     void TestReliabilityMethods::testDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType, const double dsdu)
     {
         auto calculator = DirectionalSampling();
-        auto modelRunner = projectBuilder().BuildProjectTwoBranches(useProxy);
+        auto modelRunner = ProjectBuilder().BuildProjectTwoBranches(useProxy);
         calculator.Settings->MinimumDirections = 10;
         calculator.Settings->MaximumDirections = 500;
         calculator.Settings->VariationCoefficient = 0.1;

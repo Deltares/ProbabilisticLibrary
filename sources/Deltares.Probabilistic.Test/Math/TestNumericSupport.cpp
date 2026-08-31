@@ -26,7 +26,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void testNumericSupport::allNumericSupportTests()
+    void TestNumericSupport::allNumericSupportTests()
     {
         testLinearInterpolate();
         testLogLinearInterpolate();
@@ -36,7 +36,7 @@ namespace Deltares::Probabilistic::Test
         testLimit();
     }
 
-    void testNumericSupport::testLinearInterpolate()
+    void TestNumericSupport::testLinearInterpolate()
     {
         constexpr double margin = 1e-9;
         auto x = std::vector{ 0.0, 1.0 };
@@ -51,7 +51,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result, 4.0, margin);
     }
 
-    void testNumericSupport::testLogLinearInterpolate()
+    void TestNumericSupport::testLogLinearInterpolate()
     {
         using enum Numeric::InterpolationType;
         constexpr double margin = 1e-9;
@@ -67,7 +67,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result, 4.0, margin);
     }
 
-    void testNumericSupport::testHarmonicInterpolate()
+    void TestNumericSupport::testHarmonicInterpolate()
     {
         using enum Numeric::InterpolationType;
         constexpr double margin = 1e-9;
@@ -83,7 +83,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result, 4.0, margin);
     }
 
-    void testNumericSupport::testMinMaxFunctions()
+    void TestNumericSupport::testMinMaxFunctions()
     {
         auto numbers = std::vector { -2.0, 2.0, -3.0, 3.0, 1.0, -1.0, 0.0 };
 
@@ -107,13 +107,13 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(locmax, 6);
     }
 
-    void testNumericSupport::testGetFraction()
+    void TestNumericSupport::testGetFraction()
     {
         auto q = Numeric::NumericSupport::getFraction(3.4, 4.3);
         EXPECT_NEAR(q, 3.4 * 4.3, 1e-9);
     }
 
-    void testNumericSupport::testLimit()
+    void TestNumericSupport::testLimit()
     {
         auto y = Numeric::NumericSupport::limit(0.5, 1.0, 2.0);
         EXPECT_EQ(y, 1.0) << "expect value equal to lower limit";

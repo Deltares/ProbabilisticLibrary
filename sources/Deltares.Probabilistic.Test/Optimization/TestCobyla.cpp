@@ -26,14 +26,14 @@ using namespace Deltares::Optimization;
 
 namespace Deltares::Probabilistic::Test
 {
-    void testCobyla::allCobylaTests()
+    void TestCobyla::allCobylaTests()
     {
         test_with_constraint1();
         test_no_constraints1();
         test_no_constraints2();
     }
 
-    void testCobyla::test_no_constraints1()
+    void TestCobyla::test_no_constraints1()
     {
         auto cb = CobylaOptimization();
         auto model = testModel();
@@ -47,7 +47,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(result.success);
     }
 
-    void testCobyla::test_no_constraints2()
+    void TestCobyla::test_no_constraints2()
     {
         auto cb = CobylaOptimization();
         auto model = testModel(2, 3);
@@ -61,7 +61,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(result.success);
     }
 
-    void testCobyla::test_with_constraint1()
+    void TestCobyla::test_with_constraint1()
     {
         auto cb = CobylaOptimization();
         auto model = testModelWithConstraint();

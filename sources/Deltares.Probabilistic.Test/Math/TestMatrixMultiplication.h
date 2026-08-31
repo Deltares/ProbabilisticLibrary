@@ -23,7 +23,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class matmul_tests
+    class TestMatrixMultiplication
     {
     public:
         void all_matmul_tests() const;

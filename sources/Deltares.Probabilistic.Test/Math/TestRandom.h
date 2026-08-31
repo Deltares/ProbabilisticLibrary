@@ -23,7 +23,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class testRandom
+    class TestRandom
     {
     public:
         static void allRandomTests();

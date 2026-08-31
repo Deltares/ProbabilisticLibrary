@@ -23,7 +23,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class vector1D_tests
+    class TestVector1D
     {
     public:
         void allVector1Dtests() const;

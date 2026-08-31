@@ -44,8 +44,8 @@ namespace Deltares::Probabilistic::Test
         });
 
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
-        stochasts.push_back(projectBuilder::getNormalStochast(0.5, 0.1));
-        auto st = projectBuilder::getNormalStochast(0.2, 0.1);
+        stochasts.push_back(ProjectBuilder::getNormalStochast(0.5, 0.1));
+        auto st = ProjectBuilder::getNormalStochast(0.2, 0.1);
         st->modelParameter->isArray = true;
         st->modelParameter->arraySize = numberOfQuadraticTerms;
         stochasts.push_back(st);

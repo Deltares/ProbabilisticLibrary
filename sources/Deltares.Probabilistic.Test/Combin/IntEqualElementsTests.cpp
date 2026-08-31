@@ -26,7 +26,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void intEqualElements_tests::allIntegrateEqualElementsTests()
+    void IntEqualElementsTests::allIntegrateEqualElementsTests()
     {
         integrateEqualElementsTests1();
         integrateEqualElementsTests2();
@@ -38,7 +38,7 @@ namespace Deltares::Probabilistic::Test
     // Here the part governed by integrateEqualElements().
     // Beta=5.0, rhoT= 0.0, and nrElements= 10
     // The resulting betaT can analytically be computed and compared to the numerically computed result.
-    void intEqualElements_tests::integrateEqualElementsTests1()
+    void IntEqualElementsTests::integrateEqualElementsTests1()
     {
         const double beta = 5.0;
         const double rhoT = 0.0;
@@ -56,7 +56,7 @@ namespace Deltares::Probabilistic::Test
     // Here the part governed by integrateEqualElements().
     // Beta=5.0, rhoT= 0.5, and nrElements= 10
     // The resulting betaT is computed and compared to its expected value
-    void intEqualElements_tests::integrateEqualElementsTests2()
+    void IntEqualElementsTests::integrateEqualElementsTests2()
     {
         const double beta = 5.0;
         const double rhoT = 0.5;
@@ -73,7 +73,7 @@ namespace Deltares::Probabilistic::Test
     // Test with a high rhoT.
     // Beta=5.0, rhoT= 0.999999, and nrElements= 10
     // The resulting betaT is computed and compared to its expected value
-    void intEqualElements_tests::integrateEqualElementsTests3()
+    void IntEqualElementsTests::integrateEqualElementsTests3()
     {
         const double beta = 5.0;
         const double rhoT = 0.999999;
@@ -90,7 +90,7 @@ namespace Deltares::Probabilistic::Test
     // Test with a high rhoT and large number of elements.
     // Beta=5.0, rhoT= 0.999999, and nrElements= 10000
     // The resulting betaT is computed and compared to its expected value
-    void intEqualElements_tests::integrateEqualElementsTests4()
+    void IntEqualElementsTests::integrateEqualElementsTests4()
     {
         const double beta = 5.0;
         const double rhoT = 0.999999;

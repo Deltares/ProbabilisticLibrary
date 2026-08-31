@@ -23,7 +23,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class testNumericSupport
+    class TestNumericSupport
     {
     public:
         static void allNumericSupportTests();

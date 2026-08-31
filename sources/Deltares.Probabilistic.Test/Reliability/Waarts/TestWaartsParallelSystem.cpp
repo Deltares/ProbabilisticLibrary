@@ -53,7 +53,7 @@ namespace Deltares::Probabilistic::Test
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         for(int i = 0; i < nrStochasts; i++)
         {
-            stochasts.push_back(projectBuilder::getNormalStochast(0.0, 1.0));
+            stochasts.push_back(ProjectBuilder::getNormalStochast(0.0, 1.0));
         }
         return getModelRunner(z, stochasts);
     }

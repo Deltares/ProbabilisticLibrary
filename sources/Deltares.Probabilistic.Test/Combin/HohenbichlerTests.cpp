@@ -277,7 +277,7 @@ namespace Deltares::Probabilistic::Test
 
         fileStream.close();
 
-        auto tester = testutils();
+        auto tester = TestUtils();
         auto refFile = tester.refFileWithPath(__FILE__, "../RefData/Test_RhoLimit.tek.ref");
         auto result = tester.compareFiles(refFile, filename);
         ASSERT_TRUE(result);

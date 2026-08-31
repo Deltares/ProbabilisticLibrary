@@ -75,7 +75,7 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        testutils::checkAlphaBeta(element, elementORG, 0.001);
+        TestUtils::checkAlphaBeta(element, elementORG, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
@@ -95,7 +95,7 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        testutils::checkAlphaBeta(element, ref, 0.001);
+        TestUtils::checkAlphaBeta(element, ref, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
@@ -115,7 +115,7 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        testutils::checkAlphaBeta(element, ref, 0.001);
+        TestUtils::checkAlphaBeta(element, ref, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
@@ -135,7 +135,7 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        testutils::checkAlphaBeta(element, ref, 0.001);
+        TestUtils::checkAlphaBeta(element, ref, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
@@ -155,7 +155,7 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        testutils::checkAlphaBeta(element, ref, 0.001);
+        TestUtils::checkAlphaBeta(element, ref, 0.001);
     }
 
     // Testing the upscaling of probabilities in time.
@@ -174,7 +174,7 @@ namespace Deltares::Probabilistic::Test
 
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
 
-        testutils::checkAlphaBeta(element, ref, 1.0e-6);
+        TestUtils::checkAlphaBeta(element, ref, 1.0e-6);
     }
 
     // case from issue HRING-1349
@@ -258,7 +258,7 @@ namespace Deltares::Probabilistic::Test
         auto element_3 = Reliability::combineElements::combineTwoElementsPartialCorrelation(
             original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
 
-        testutils::checkAlphaBeta(element, element_3.ab, 1.0e-3);
+        TestUtils::checkAlphaBeta(element, element_3.ab, 1.0e-3);
         EXPECT_EQ(element_3.n, 0);
     }
 
@@ -300,7 +300,7 @@ namespace Deltares::Probabilistic::Test
         auto C = Reliability::combineElements::combineTwoElementsPartialCorrelation(
             original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
 
-        testutils::checkAlphaBeta(elm, C.ab, 1e-3);
+        TestUtils::checkAlphaBeta(elm, C.ab, 1e-3);
         EXPECT_EQ(C.n, 0);
     }
 
@@ -321,7 +321,7 @@ namespace Deltares::Probabilistic::Test
         auto C = Reliability::combineElements::combineTwoElementsPartialCorrelation(
             ORG, ORG, inRhoT, Reliability::combineAndOr::combOr);
 
-        testutils::checkAlphaBeta(elm, C.ab, 1e-3);
+        TestUtils::checkAlphaBeta(elm, C.ab, 1e-3);
         EXPECT_EQ(C.n, 0);
     }
 
@@ -363,7 +363,7 @@ namespace Deltares::Probabilistic::Test
         upscaler.upscaleInTime(nr_elements, element, in_rho_t);
         auto C = Reliability::combineElements::combineTwoElementsPartialCorrelation(
             original_element, original_element, in_rho_t, Reliability::combineAndOr::combOr);
-        testutils::checkAlphaBeta(element, C.ab, 1e-3, 2e-2);
+        TestUtils::checkAlphaBeta(element, C.ab, 1e-3, 2e-2);
         EXPECT_EQ(C.n, 0);
     }
 
@@ -388,7 +388,7 @@ namespace Deltares::Probabilistic::Test
 
         auto result = upscaler.upscaleToLargestBlock(input);
 
-        testutils::checkAlphaBeta(result.largest_block, input.small_block, 0.001);
+        TestUtils::checkAlphaBeta(result.largest_block, input.small_block, 0.001);
     }
 
     // Testing the upscaling of probabilities to the largest block duration.
@@ -412,7 +412,7 @@ namespace Deltares::Probabilistic::Test
 
         auto result = upscaler.upscaleToLargestBlock(input);
 
-        testutils::checkAlphaBeta(result.largest_block, input.small_block, 0.001);
+        TestUtils::checkAlphaBeta(result.largest_block, input.small_block, 0.001);
     }
 
     // Testing the upscaling of probabilities to the largest block duration.
@@ -439,7 +439,7 @@ namespace Deltares::Probabilistic::Test
 
         auto result = upscaler.upscaleToLargestBlock(input);
 
-        testutils::checkAlphaBeta(result.largest_block, ref, 0.001);
+        TestUtils::checkAlphaBeta(result.largest_block, ref, 0.001);
     }
 
     // test that represents a situation with two time scales
@@ -465,7 +465,7 @@ namespace Deltares::Probabilistic::Test
 
         const auto [largest_block, durations_largest_block] = upscaler.upscaleToLargestBlock(input);
 
-        testutils::checkAlphaBeta(largest_block, ref, 1e-5);
+        TestUtils::checkAlphaBeta(largest_block, ref, 1e-5);
     }
 
 }

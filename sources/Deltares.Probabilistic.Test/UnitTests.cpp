@@ -84,19 +84,19 @@ TEST(UnitTests, testCombiner)
 
 TEST(UnitTests, testCombinTwoElements)
 {
-    auto h = Deltares::Probabilistic::Test::combinElementsTests();
+    auto h = Deltares::Probabilistic::Test::CombinElementsTests();
     h.runAllCombineTwoElementsTests();
 }
 
 TEST(UnitTests, testCombinMultipleElements)
 {
-    auto h = Deltares::Probabilistic::Test::combinElementsTests();
+    auto h = Deltares::Probabilistic::Test::CombinElementsTests();
     h.runAllCombineMultipleElementsTests();
 }
 
 TEST(UnitTests, testLengthEffect)
 {
-    auto h = Deltares::Probabilistic::Test::combinElementsTests();
+    auto h = Deltares::Probabilistic::Test::CombinElementsTests();
     h.runAllLengthEffectTests();
 }
 
@@ -135,7 +135,7 @@ TEST(UnitTests, AllUpscaleToLargestBlockTests)
 
 TEST(UnitTests, testIntEqualElements)
 {
-    auto h = Deltares::Probabilistic::Test::intEqualElements_tests();
+    auto h = Deltares::Probabilistic::Test::IntEqualElementsTests();
     h.allIntegrateEqualElementsTests();
 }
 
@@ -147,50 +147,50 @@ TEST(UnitTests, testHohenbichler)
 
 TEST(UnitTests, testCholeskiDecomp)
 {
-    auto tstCholeskiDecomp = Deltares::Probabilistic::Test::choleski_decomp_tests();
+    auto tstCholeskiDecomp = Deltares::Probabilistic::Test::TestCholeskiDecomposition();
     tstCholeskiDecomp.allCholeskyDecompositionTests();
 }
 
 TEST(UnitTests, testMatinv)
 {
-    auto tstMatInv = Deltares::Probabilistic::Test::matinv_tests();
+    auto tstMatInv = Deltares::Probabilistic::Test::TestMatrixInverse();
     tstMatInv.all_matinv_tests();
 }
 
 TEST(UnitTests, testMatmul)
 {
-    auto tstMatMul = Deltares::Probabilistic::Test::matmul_tests();
+    auto tstMatMul = Deltares::Probabilistic::Test::TestMatrixMultiplication();
     tstMatMul.all_matmul_tests();
 }
 
 TEST(MatrixTest, qr_decomposition)
 {
-    Deltares::Probabilistic::Test::matrix_tests::qr_decomposition();
+    Deltares::Probabilistic::Test::TestMatrix::qr_decomposition();
 }
 
 TEST(MatrixTest, linear_equations)
 {
-    Deltares::Probabilistic::Test::matrix_tests::linear_equations();
+    Deltares::Probabilistic::Test::TestMatrix::linear_equations();
 }
 
 TEST(MatrixTest, linear_equations_overdetermined)
 {
-    Deltares::Probabilistic::Test::matrix_tests::linear_equations_overdetermined();
+    Deltares::Probabilistic::Test::TestMatrix::linear_equations_overdetermined();
 }
 
 TEST(MatrixTest, multiply_with_double)
 {
-    Deltares::Probabilistic::Test::matrix_tests::multiply();
+    Deltares::Probabilistic::Test::TestMatrix::multiply();
 }
 
 TEST(MatrixTest, add_two_matrices)
 {
-    Deltares::Probabilistic::Test::matrix_tests::add();
+    Deltares::Probabilistic::Test::TestMatrix::add();
 }
 
 TEST(MatrixTest, stream_operator_test)
 {
-    Deltares::Probabilistic::Test::matrix_tests::matrixStreamOperatorTest();
+    Deltares::Probabilistic::Test::TestMatrix::matrixStreamOperatorTest();
 }
 
 TEST(ProxiesTest, linear_model)
@@ -207,12 +207,12 @@ TEST(ProxiesTest, linear_output_only_model)
 
 TEST(UnitTests, testNumericalSupport)
 {
-    Deltares::Probabilistic::Test::testNumericSupport::allNumericSupportTests();
+    Deltares::Probabilistic::Test::TestNumericSupport::allNumericSupportTests();
 }
 
 TEST(UnitTests, testKMeanClustering)
 {
-    auto h = Deltares::Probabilistic::Test::testKMean();
+    auto h = Deltares::Probabilistic::Test::TestKMean();
     h.allKMeanTests();
 }
 
@@ -413,172 +413,172 @@ TEST(ReliabilityMethodTest, TestDirSamplingTwoBranchesLargerStepsize)
 }
 TEST(DistributionTests, testConditionalStochast)
 {
-    Deltares::Probabilistic::Test::testDistributions::testConditionalStochast();
+    Deltares::Probabilistic::Test::TestDistributions::testConditionalStochast();
 }
 
 TEST(DistributionTests, testComposite)
 {
-    Deltares::Probabilistic::Test::testDistributions::testComposite();
+    Deltares::Probabilistic::Test::TestDistributions::testComposite();
 }
 
 TEST(DistributionTests, testCompositeConditionalStochast)
 {
-    Deltares::Probabilistic::Test::testDistributions::testCompositeConditionalStochast();
+    Deltares::Probabilistic::Test::TestDistributions::testCompositeConditionalStochast();
 }
 
 TEST(DistributionTests, testCompositeConditionalTruncatedStochast)
 {
-    Deltares::Probabilistic::Test::testDistributions::testCompositeConditionalTruncatedStochast();
+    Deltares::Probabilistic::Test::TestDistributions::testCompositeConditionalTruncatedStochast();
 }
 
 TEST(DistributionTests, testCompositeStochast)
 {
-    Deltares::Probabilistic::Test::testDistributions::testCompositeStochast();
+    Deltares::Probabilistic::Test::TestDistributions::testCompositeStochast();
 }
 
 TEST(DistributionTests, testCompositeTruncatedStochast)
 {
-    Deltares::Probabilistic::Test::testDistributions::testCompositeTruncatedStochast();
+    Deltares::Probabilistic::Test::TestDistributions::testCompositeTruncatedStochast();
 }
 
 TEST(DistributionTests, testConditionalWeibull)
 {
-    Deltares::Probabilistic::Test::testDistributions::testConditionalWeibull();
+    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibull();
 }
 
 TEST(DistributionTests, testConditionalWeibullCdfPdf)
 {
-    Deltares::Probabilistic::Test::testDistributions::testConditionalWeibullCdfPdf();
+    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibullCdfPdf();
 }
 
 TEST(DistributionTests, testConditionalWeibullCdfPdf2)
 {
-    Deltares::Probabilistic::Test::testDistributions::testConditionalWeibullCdfPdf2();
+    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibullCdfPdf2();
 }
 
 TEST(DistributionTests, testConditionalWeibullMeanDeviation)
 {
-    Deltares::Probabilistic::Test::testDistributions::testConditionalWeibullMeanDeviation();
+    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibullMeanDeviation();
 }
 
 TEST(DistributionTests, testConditionalWeibullNonIntegerShape)
 {
-    Deltares::Probabilistic::Test::testDistributions::testConditionalWeibullNonIntegerShape();
+    Deltares::Probabilistic::Test::TestDistributions::testConditionalWeibullNonIntegerShape();
 }
 
 TEST(DistributionTests, testDesignValue)
 {
-    Deltares::Probabilistic::Test::testDistributions::testDesignValue();
+    Deltares::Probabilistic::Test::TestDistributions::testDesignValue();
 }
 
 TEST(DistributionTests, testNormal)
 {
-    Deltares::Probabilistic::Test::testDistributions::testNormal();
+    Deltares::Probabilistic::Test::TestDistributions::testNormal();
 }
 
 TEST(DistributionTests, testLogNormal)
 {
-    Deltares::Probabilistic::Test::testDistributions::testLogNormal();
+    Deltares::Probabilistic::Test::TestDistributions::testLogNormal();
 }
 
 TEST(DistributionTests, testUniform)
 {
-    Deltares::Probabilistic::Test::testDistributions::testUniform();
+    Deltares::Probabilistic::Test::TestDistributions::testUniform();
 }
 
 TEST(DistributionTests, testTriangular)
 {
-    Deltares::Probabilistic::Test::testDistributions::testTriangular();
+    Deltares::Probabilistic::Test::TestDistributions::testTriangular();
 }
 
 TEST(DistributionTests, testTrapezoidal)
 {
-    Deltares::Probabilistic::Test::testDistributions::testTrapezoidal();
+    Deltares::Probabilistic::Test::TestDistributions::testTrapezoidal();
 }
 
 TEST(DistributionTests, testExponential)
 {
-    Deltares::Probabilistic::Test::testDistributions::testExponential();
+    Deltares::Probabilistic::Test::TestDistributions::testExponential();
 }
 
 TEST(DistributionTests, testGamma)
 {
-    Deltares::Probabilistic::Test::testDistributions::testGamma();
+    Deltares::Probabilistic::Test::TestDistributions::testGamma();
 }
 
 TEST(DistributionTests, testBeta)
 {
-    Deltares::Probabilistic::Test::testDistributions::testBeta();
+    Deltares::Probabilistic::Test::TestDistributions::testBeta();
 }
 
 TEST(DistributionTests, testGumbel)
 {
-    Deltares::Probabilistic::Test::testDistributions::testGumbel();
+    Deltares::Probabilistic::Test::TestDistributions::testGumbel();
 }
 
 TEST(DistributionTests, testWeibull)
 {
-    Deltares::Probabilistic::Test::testDistributions::testWeibull();
+    Deltares::Probabilistic::Test::TestDistributions::testWeibull();
 }
 
 TEST(DistributionTests, testFrechet)
 {
-    Deltares::Probabilistic::Test::testDistributions::testFrechet();
+    Deltares::Probabilistic::Test::TestDistributions::testFrechet();
 }
 
 TEST(DistributionTests, testGEV)
 {
-    Deltares::Probabilistic::Test::testDistributions::testGEV();
+    Deltares::Probabilistic::Test::TestDistributions::testGEV();
 }
 
 TEST(DistributionTests, testPareto)
 {
-    Deltares::Probabilistic::Test::testDistributions::testPareto();
+    Deltares::Probabilistic::Test::TestDistributions::testPareto();
 }
 
 TEST(DistributionTests, testGeneralizedPareto)
 {
-    Deltares::Probabilistic::Test::testDistributions::testGeneralizedPareto();
+    Deltares::Probabilistic::Test::TestDistributions::testGeneralizedPareto();
 }
 
 TEST(DistributionTests, testRayleigh)
 {
-    Deltares::Probabilistic::Test::testDistributions::testRayleigh();
+    Deltares::Probabilistic::Test::TestDistributions::testRayleigh();
 }
 
 TEST(DistributionTests, testRayleighN)
 {
-    Deltares::Probabilistic::Test::testDistributions::testRayleighN();
+    Deltares::Probabilistic::Test::TestDistributions::testRayleighN();
 }
 
 TEST(DistributionTests, testBernoulli)
 {
-    Deltares::Probabilistic::Test::testDistributions::testBernoulli();
+    Deltares::Probabilistic::Test::TestDistributions::testBernoulli();
 }
 
 TEST(DistributionTests, testPoisson)
 {
-    Deltares::Probabilistic::Test::testDistributions::testPoisson();
+    Deltares::Probabilistic::Test::TestDistributions::testPoisson();
 }
 
 TEST(DistributionTests, testStudentT)
 {
-    Deltares::Probabilistic::Test::testDistributions::testStudentT();
+    Deltares::Probabilistic::Test::TestDistributions::testStudentT();
 }
 
 TEST(DistributionTests, testStudentTwithInterpolation)
 {
-    Deltares::Probabilistic::Test::testDistributions::testStudentTwithInterpolation();
+    Deltares::Probabilistic::Test::TestDistributions::testStudentTwithInterpolation();
 }
 
 TEST(DistributionTests, testValidation)
 {
-    Deltares::Probabilistic::Test::testDistributions::testValidation();
+    Deltares::Probabilistic::Test::TestDistributions::testValidation();
 }
 
 TEST(DistributionTests, testVariationCoefficient)
 {
-    Deltares::Probabilistic::Test::testDistributions::testVariationCoefficient();
+    Deltares::Probabilistic::Test::TestDistributions::testVariationCoefficient();
 }
 
 TEST(XfromUTests, testNormal)
@@ -766,12 +766,12 @@ TEST(UnitTests, testRunModel)
 
 TEST(UnitTests, testRandom)
 {
-    Deltares::Probabilistic::Test::testRandom::allRandomTests();
+    Deltares::Probabilistic::Test::TestRandom::allRandomTests();
 }
 
 TEST(UnitTests, testRootfinder)
 {
-    auto tstRF = Deltares::Probabilistic::Test::rootfinder_tests();
+    auto tstRF = Deltares::Probabilistic::Test::TestRootfinder();
     tstRF.all_rootfinder_tests();
 }
 
@@ -782,7 +782,7 @@ TEST(UnitTests, testStatisticsCalculator)
 
 TEST(UnitTests, testVector1D)
 {
-    auto tstVector1D = Deltares::Probabilistic::Test::vector1D_tests();
+    auto tstVector1D = Deltares::Probabilistic::Test::TestVector1D();
     tstVector1D.allVector1Dtests();
 }
 
@@ -798,7 +798,7 @@ TEST(UnitTests, testIncompleteGammaExceptionalCases)
 
 TEST(UnitTests, testCobylaOptimization)
 {
-    auto tstCobylaOpt = Deltares::Probabilistic::Test::testCobyla();
+    auto tstCobylaOpt = Deltares::Probabilistic::Test::TestCobyla();
     tstCobylaOpt.allCobylaTests();
 }
 

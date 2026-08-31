@@ -27,7 +27,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void matrix_tests::qr_decomposition()
+    void TestMatrix::qr_decomposition()
     {
         auto matrix_values =
         {
@@ -38,7 +38,7 @@ namespace Deltares::Probabilistic::Test
              2.000,    0.000,   3.000
         };
 
-        Numeric::Matrix m1 = testutils::convert1dmatrix(matrix_values, 5, 3, false);
+        Numeric::Matrix m1 = TestUtils::convert1dmatrix(matrix_values, 5, 3, false);
 
         Numeric::QRMatrix qr = m1.qr_decompose();
 
@@ -51,7 +51,7 @@ namespace Deltares::Probabilistic::Test
             0.141, -0.017, -0.106, -0.171, -0.969
         };
 
-        Numeric::Matrix expected_q = testutils::convert1dmatrix(expected_q_values, 5, 5, false);
+        Numeric::Matrix expected_q = TestUtils::convert1dmatrix(expected_q_values, 5, 5, false);
 
         for (size_t i = 0; i < m1.getRowCount(); i++)
         {
@@ -70,7 +70,7 @@ namespace Deltares::Probabilistic::Test
             0.000,   0.000, -0.000
         };
 
-        Numeric::Matrix expected_r = testutils::convert1dmatrix(expected_r_values, 5, 3, false);
+        Numeric::Matrix expected_r = TestUtils::convert1dmatrix(expected_r_values, 5, 3, false);
 
         for (size_t i = 0; i < m1.getRowCount(); i++)
         {
@@ -92,7 +92,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void matrix_tests::linear_equations()
+    void TestMatrix::linear_equations()
     {
         // solving Ax= b
 
@@ -103,7 +103,7 @@ namespace Deltares::Probabilistic::Test
             1.0,  1.0,  1.0
         };
 
-        Numeric::Matrix A = testutils::convert1dmatrix(a_values, 3, 3, false);
+        Numeric::Matrix A = TestUtils::convert1dmatrix(a_values, 3, 3, false);
 
         Numeric::Vector1D b = Numeric::Vector1D({ 3.0, 0.0, 3.0 });
 
@@ -120,7 +120,7 @@ namespace Deltares::Probabilistic::Test
 
     }
 
-    void matrix_tests::linear_equations_overdetermined()
+    void TestMatrix::linear_equations_overdetermined()
     {
         // solving Ax= b
         // example taken from https://www.math.uwaterloo.ca/~jmckinno/Math225/Week6/Lecture2i.pdf
@@ -132,7 +132,7 @@ namespace Deltares::Probabilistic::Test
              2.0,  2.0
         };
 
-        Numeric::Matrix A = testutils::convert1dmatrix(a_values, 3, 2, false);
+        Numeric::Matrix A = TestUtils::convert1dmatrix(a_values, 3, 2, false);
 
         Numeric::Vector1D b = Numeric::Vector1D({ -2.0, 4.0, 1.0 });
 
@@ -149,7 +149,7 @@ namespace Deltares::Probabilistic::Test
 
     }
 
-    void matrix_tests::multiply()
+    void TestMatrix::multiply()
     {
         const auto a_values =
         {
@@ -160,7 +160,7 @@ namespace Deltares::Probabilistic::Test
 
         constexpr size_t m_rows = 3;
         constexpr size_t m_columns = 2;
-        Numeric::Matrix A = testutils::convert1dmatrix(a_values, m_rows, m_columns, false);
+        Numeric::Matrix A = TestUtils::convert1dmatrix(a_values, m_rows, m_columns, false);
 
         constexpr double factor = 2.0;
         const auto B = A * factor;
@@ -177,7 +177,7 @@ namespace Deltares::Probabilistic::Test
 
     }
 
-    void matrix_tests::add()
+    void TestMatrix::add()
     {
         const auto a_values =
         {
@@ -188,8 +188,8 @@ namespace Deltares::Probabilistic::Test
 
         constexpr size_t m_rows = 3;
         constexpr size_t m_columns = 2;
-        Numeric::Matrix A = testutils::convert1dmatrix(a_values, m_rows, m_columns, false);
-        Numeric::Matrix B = testutils::convert1dmatrix(a_values, m_rows, m_columns, false);
+        Numeric::Matrix A = TestUtils::convert1dmatrix(a_values, m_rows, m_columns, false);
+        Numeric::Matrix B = TestUtils::convert1dmatrix(a_values, m_rows, m_columns, false);
 
         const auto C = A + B;
 
@@ -202,7 +202,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void matrix_tests::matrixStreamOperatorTest()
+    void TestMatrix::matrixStreamOperatorTest()
     {
         Numeric::Matrix m(2, 3);
 

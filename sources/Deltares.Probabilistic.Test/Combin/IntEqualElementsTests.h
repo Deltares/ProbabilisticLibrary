@@ -24,7 +24,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class intEqualElements_tests
+    class IntEqualElementsTests
     {
     public:
         void allIntegrateEqualElementsTests();

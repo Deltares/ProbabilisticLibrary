@@ -31,7 +31,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class projectBuilder
+    class ProjectBuilder
     {
     public:
         std::shared_ptr<Models::ModelRunner> BuildProject() const;

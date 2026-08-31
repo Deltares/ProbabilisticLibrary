@@ -24,7 +24,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class testKMean
+    class TestKMean
     {
     public:
         void allKMeanTests();

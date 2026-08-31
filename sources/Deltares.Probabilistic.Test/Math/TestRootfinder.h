@@ -23,7 +23,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class rootfinder_tests
+    class TestRootfinder
     {
     public:
         void all_rootfinder_tests();

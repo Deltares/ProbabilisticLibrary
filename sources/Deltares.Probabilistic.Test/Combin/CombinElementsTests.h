@@ -26,7 +26,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class combinElementsTests
+    class CombinElementsTests
     {
     public:
         void runAllCombineTwoElementsTests();
@@ -89,7 +89,7 @@ namespace Deltares::Probabilistic::Test
         void testCombineTwoElementsPartialCorrelation99a();
         Reliability::combineElements combiner = Reliability::combineElements();
         Reliability::upscaling upscaler = Reliability::upscaling();
-        testutils test_utilities = testutils();
+        TestUtils test_utilities = TestUtils();
     };
 }
 

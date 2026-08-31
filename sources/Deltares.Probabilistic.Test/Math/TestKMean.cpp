@@ -27,12 +27,12 @@ using namespace Deltares::Numeric;
 
 namespace Deltares::Probabilistic::Test
 {
-    void testKMean::allKMeanTests()
+    void TestKMean::allKMeanTests()
     {
         test1();
     }
 
-    void testKMean::test1()
+    void TestKMean::test1()
     {
         auto inputdata = std::vector<std::vector<double>>();
         inputdata.push_back({ 0.65, 0.22 });

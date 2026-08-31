@@ -38,7 +38,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestStartPointCalculator::TestMethodOne()
     {
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
@@ -54,7 +54,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestStartPointCalculator::testMethodRaySearch() const
     {
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
@@ -71,7 +71,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestStartPointCalculator::testMethodSphereSearch() const
     {
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
@@ -88,7 +88,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestStartPointCalculator::testMethodSphereSearchAllDirections() const
     {
-        auto modelRunner = projectBuilder().BuildProject();
+        auto modelRunner = ProjectBuilder().BuildProject();
         auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
@@ -107,7 +107,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestStartPointCalculator::testMethodSphereSearchWithDeterminist() const
     {
-        auto modelRunner = projectBuilder().BuildProjectWithDeterminist(3.0);
+        auto modelRunner = ProjectBuilder().BuildProjectWithDeterminist(3.0);
         auto calculator = Reliability::StartPointCalculator();
 
         modelRunner->updateStochastSettings(calculator.Settings->StochastSet);

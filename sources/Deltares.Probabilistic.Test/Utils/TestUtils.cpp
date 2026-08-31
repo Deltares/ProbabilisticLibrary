@@ -28,14 +28,14 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    std::string testutils::refFileWithPath(const std::string& sourceFile, const std::string& relativePath)
+    std::string TestUtils::refFileWithPath(const std::string& sourceFile, const std::string& relativePath)
     {
         auto found = sourceFile.find_last_of("/\\");
         auto base = sourceFile.substr(0, found+1);
         return base + relativePath;
     }
 
-    bool testutils::compareFiles(const std::string& refFile, const std::string& newFile) const
+    bool TestUtils::compareFiles(const std::string& refFile, const std::string& newFile) const
     {
         auto sref = readWholeFile(refFile);
         auto snew = readWholeFile(newFile);
@@ -50,7 +50,7 @@ namespace Deltares::Probabilistic::Test
         return true;
     }
 
-    std::vector<std::string> testutils::readWholeFile(const std::string& file)
+    std::vector<std::string> TestUtils::readWholeFile(const std::string& file)
     {
         auto in = std::ifstream(file, std::ios::in);
 
@@ -69,7 +69,7 @@ namespace Deltares::Probabilistic::Test
     // returns true if the provided string looks like a string
     // only checks the first character.
     // used to avoid exceptions later on
-    bool testutils::looksLikeAnumber(const std::string& s)
+    bool TestUtils::looksLikeAnumber(const std::string& s)
     {
         if (std::isdigit(s.at(0))) return true;
         if (s.at(0) == '-') return true;
@@ -80,7 +80,7 @@ namespace Deltares::Probabilistic::Test
 
     // returns true if both strings are equal by a word by word comparison
     // if that word is a number, allow small differences
-    bool testutils::compareLine(const std::string& ref, const std::string& nw) const
+    bool TestUtils::compareLine(const std::string& ref, const std::string& nw) const
     {
         if (ref == nw) return true;
         auto r = mySplit(ref);
@@ -108,7 +108,7 @@ namespace Deltares::Probabilistic::Test
         return true;
     }
 
-    std::vector<std::string> testutils::mySplit(const std::string& str)
+    std::vector<std::string> TestUtils::mySplit(const std::string& str)
     {
         auto s = std::vector<std::string>();
         size_t i = 0;
@@ -128,12 +128,12 @@ namespace Deltares::Probabilistic::Test
         return s;
     }
 
-    void testutils::checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin)
+    void TestUtils::checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double margin)
     {
         checkAlphaBeta(computed, ref, margin, margin);
     }
 
-    void testutils::checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double m1, const double m2)
+    void TestUtils::checkAlphaBeta(const Reliability::alphaBeta& computed, const Reliability::alphaBeta& ref, const double m1, const double m2)
     {
         EXPECT_NEAR(computed.getBeta(), ref.getBeta(), m1);
         EXPECT_EQ(computed.size(), ref.size());
@@ -143,14 +143,14 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m)
+    Numeric::Matrix TestUtils::convert1dmatrix(const std::initializer_list<double>& m)
     {
         size_t s = static_cast<size_t>(sqrt(static_cast<double>(m.size())));
 
         return convert1dmatrix(m, s, s, true);
     }
 
-    Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m, size_t rows, size_t columns, bool mirrored)
+    Numeric::Matrix TestUtils::convert1dmatrix(const std::initializer_list<double>& m, size_t rows, size_t columns, bool mirrored)
     {
         auto vm = std::vector<double>(m);
         auto cm = Numeric::Matrix(rows, columns);

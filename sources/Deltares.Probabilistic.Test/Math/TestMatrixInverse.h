@@ -25,7 +25,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class matinv_tests
+    class TestMatrixInverse
     {
     public:
         static void all_matinv_tests();

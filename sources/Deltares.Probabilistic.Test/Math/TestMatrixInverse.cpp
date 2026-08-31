@@ -27,7 +27,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void matinv_tests::all_matinv_tests()
+    void TestMatrixInverse::all_matinv_tests()
     {
         matinv_test1();
         matinv_singular_test();
@@ -35,7 +35,7 @@ namespace Deltares::Probabilistic::Test
         matinv_small_element_test();
     }
 
-    Numeric::Matrix matinv_tests::get3x3posDefiniteMatrix()
+    Numeric::Matrix TestMatrixInverse::get3x3posDefiniteMatrix()
     {
         auto m1 = Numeric::Matrix(3, 3);
         m1(0, 0) = 0.2;
@@ -50,7 +50,7 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
-    void matinv_tests::isIdentityMatrix(const Numeric::Matrix& m)
+    void TestMatrixInverse::isIdentityMatrix(const Numeric::Matrix& m)
     {
         EXPECT_EQ(m.getRowCount(), m.getColumnCount()) << "expects a square matrix";
 
@@ -71,7 +71,7 @@ namespace Deltares::Probabilistic::Test
 
     }
 
-    void matinv_tests::matinv_test1()
+    void TestMatrixInverse::matinv_test1()
     {
         auto m1 = get3x3posDefiniteMatrix();
         auto m2 = m1.Inverse();
@@ -79,7 +79,7 @@ namespace Deltares::Probabilistic::Test
         isIdentityMatrix(m3);
     }
 
-    Numeric::Matrix matinv_tests::get2x2singularMatrix()
+    Numeric::Matrix TestMatrixInverse::get2x2singularMatrix()
     {
         auto m1 = Numeric::Matrix(2, 2);
         m1(0, 0) = 3.0;
@@ -89,7 +89,7 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
-    void matinv_tests::matinv_singular_test()
+    void TestMatrixInverse::matinv_singular_test()
     {
         auto m1 = get2x2singularMatrix();
         try
@@ -110,7 +110,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(m1(1, 1), 8.0);
     }
 
-    Numeric::Matrix matinv_tests::get2x2matrixSmallElement()
+    Numeric::Matrix TestMatrixInverse::get2x2matrixSmallElement()
     {
         auto m1 = Numeric::Matrix(2, 2);
         m1(0, 0) = 3.0e-12;
@@ -120,7 +120,7 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
-    void matinv_tests::matinv_small_element_test()
+    void TestMatrixInverse::matinv_small_element_test()
     {
         const auto m1 = get2x2matrixSmallElement();
         const auto m2 = m1.Inverse();
@@ -130,7 +130,7 @@ namespace Deltares::Probabilistic::Test
         isIdentityMatrix(m3);
     }
 
-    Numeric::Matrix matinv_tests::get2x2symmetricMatrix()
+    Numeric::Matrix TestMatrixInverse::get2x2symmetricMatrix()
     {
         auto m1 = Numeric::Matrix(2, 2);
         m1(0, 0) = 1.0;
@@ -140,7 +140,7 @@ namespace Deltares::Probabilistic::Test
         return m1;
     }
 
-    Numeric::Matrix matinv_tests::get16x16Matrix()
+    Numeric::Matrix TestMatrixInverse::get16x16Matrix()
     {
         auto matrix =
         {
@@ -161,11 +161,11 @@ namespace Deltares::Probabilistic::Test
              0.53365, 0.56781, 0.60051, 0.42408, 0.42194, 0.61061, 0.16791, 0.56624, 0.90008, 0.17834, 0.73246, 0.69917, 0.54583, 0.47759, 1.0, 0.44484 ,
              0.51922, 0.17373, 0.38451, 0.44136, 0.4356, 0.51864, 0.21016, 0.21682, 0.63933, 0.20875, 0.73609, 0.23277, 0.65442, 0.71153, 0.44484, 1.0
         };
-        auto m1 = testutils::convert1dmatrix(matrix);
+        auto m1 = TestUtils::convert1dmatrix(matrix);
         return m1;
     }
 
-    void matinv_tests::positive_definite_tests()
+    void TestMatrixInverse::positive_definite_tests()
     {
         auto m1 = get3x3posDefiniteMatrix();
         auto m1check = m1.IsPositiveDefinite();

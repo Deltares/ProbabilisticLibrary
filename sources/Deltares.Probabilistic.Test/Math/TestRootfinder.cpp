@@ -28,7 +28,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void rootfinder_tests::all_rootfinder_tests()
+    void TestRootfinder::all_rootfinder_tests()
     {
         bisection_test();
         bisection_test2();
@@ -40,26 +40,26 @@ namespace Deltares::Probabilistic::Test
         linear_root_finder_nod_test();
     }
 
-    double rootfinder_tests::testLinearFunc(double x) const
+    double TestRootfinder::testLinearFunc(double x) const
     {
         return a + b * x;
     }
 
-    double rootfinder_tests::testConstFunc([[maybe_unused]] double x)
+    double TestRootfinder::testConstFunc([[maybe_unused]] double x)
     {
         cnt++;
         if (cnt > 1000) throw Reliability::ProbabilisticLibraryException("too many function calls");
         return 1.0;
     }
 
-    double rootfinder_tests::testNodFunc(double x)
+    double TestRootfinder::testNodFunc(double x)
     {
         cnt++;
         if (cnt > 1000) throw Reliability::ProbabilisticLibraryException("too many function calls");
         return (x < 0 ? a : a + b * x);
     }
 
-    void rootfinder_tests::bisection_test()
+    void TestRootfinder::bisection_test()
     {
         a = 3.0;
         b = 0.5;
@@ -69,7 +69,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(result, -6.0, 1e-12);
     }
 
-    void rootfinder_tests::bisection_test2()
+    void TestRootfinder::bisection_test2()
     {
         a = 3.0;
         b = 0.5;
@@ -79,7 +79,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(result, -6.0, 1e-12);
     }
 
-    void rootfinder_tests::bisection_const_test()
+    void TestRootfinder::bisection_const_test()
     {
         cnt = 0;
         auto bisectionRF = Numeric::BisectionRootFinder();
@@ -91,7 +91,7 @@ namespace Deltares::Probabilistic::Test
             });
     }
 
-    void rootfinder_tests::bisection_nod_test()
+    void TestRootfinder::bisection_nod_test()
     {
         cnt = 0;
         a = -1.0;
@@ -106,7 +106,7 @@ namespace Deltares::Probabilistic::Test
             });
     }
 
-    void rootfinder_tests::linear_root_finder_test()
+    void TestRootfinder::linear_root_finder_test()
     {
         a = 3.0;
         b = 0.5;
@@ -116,7 +116,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(result, -6.0, 1e-12);
     }
 
-    void rootfinder_tests::linear_root_finder_test2()
+    void TestRootfinder::linear_root_finder_test2()
     {
         a = 3.0;
         b = 0.5;
@@ -126,7 +126,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(result, -6.0, 1e-12);
     }
 
-    void rootfinder_tests::linear_root_finder_const_test()
+    void TestRootfinder::linear_root_finder_const_test()
     {
         cnt = 0;
         auto linear_root_finder = Numeric::LinearRootFinder(1e-6, 25);
@@ -138,7 +138,7 @@ namespace Deltares::Probabilistic::Test
             });
     }
 
-    void rootfinder_tests::linear_root_finder_nod_test()
+    void TestRootfinder::linear_root_finder_nod_test()
     {
         cnt = 0;
         a = -1.0;

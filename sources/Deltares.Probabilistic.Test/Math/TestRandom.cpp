@@ -25,7 +25,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void testRandom::allRandomTests()
+    void TestRandom::allRandomTests()
     {
         mersenneTwisterTest1();
         initializationTest();
@@ -33,7 +33,7 @@ namespace Deltares::Probabilistic::Test
         twoInstances();
     }
 
-    void testRandom::mersenneTwisterTest1()
+    void TestRandom::mersenneTwisterTest1()
     {
         constexpr double margin = 1e-12;
         auto mt = Numeric::RandomValueGenerator();
@@ -47,7 +47,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(sum, 510.36972065202127, margin);
     }
 
-    void testRandom::initializationTest()
+    void TestRandom::initializationTest()
     {
         auto mt = Numeric::RandomValueGenerator();
         mt.initialize(false, 0);
@@ -56,7 +56,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_TRUE(val2 >= 0.0 && val2 <= 1.0);
     }
 
-    void testRandom::repetitiveTest()
+    void TestRandom::repetitiveTest()
     {
         auto mt = Numeric::RandomValueGenerator();
 
@@ -103,7 +103,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    void testRandom::twoInstances()
+    void TestRandom::twoInstances()
     {
         auto mt1 = Numeric::RandomValueGenerator();
         mt1.initialize(true, 0);
