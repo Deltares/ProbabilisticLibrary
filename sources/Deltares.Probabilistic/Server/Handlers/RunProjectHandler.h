@@ -22,6 +22,7 @@
 #pragma once
 #include <string>
 
+#include "RunProjectSettingsHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
 #include "../../Model/RunProject.h"

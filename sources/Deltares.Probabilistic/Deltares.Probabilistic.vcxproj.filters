@@ -276,6 +276,9 @@
     <ClCompile Include="Reliability\ZGetter.cpp" />
     <ClCompile Include="Combine\ComputeBetaSection.cpp" />
     <ClCompile Include="Math\StatisticsCalculator.cpp" />
+    <ClCompile Include="Server\Handlers\StatisticsHandlers.cpp" />
+    <ClCompile Include="Server\Handlers\ModelHandlers.cpp" />
+    <ClCompile Include="Server\Handlers\ReliabilityHandlers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -630,6 +633,9 @@
     <ClInclude Include="Server\Handlers\ReliabilityProjectHandler.h" />
     <ClInclude Include="Server\Handlers\SensitivityProjectHandler.h" />
     <ClInclude Include="Server\Handlers\UncertaintyProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\StatisticsHandlers.h" />
+    <ClInclude Include="Server\Handlers\ModelHandlers.h" />
+    <ClInclude Include="Server\Handlers\ReliabilityHandlers.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

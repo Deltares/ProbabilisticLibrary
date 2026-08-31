@@ -246,161 +246,55 @@ namespace Deltares::Server
 
     void ProjectHandler::InitializeHandlers()
     {
-        validationReportHandler.messageHandler = &messageHandler;
-        scenarioHandler.stochastHandler = &stochastHandler;
+        modelHandlers.InitializeHandlers(handlers);
+        statisticsHandlers.InitializeHandlers(handlers, &modelHandlers);
+        reliabilityHandlers.InitializeHandlers(handlers, &modelHandlers, &statisticsHandlers);
 
-        stochastHandler.validationReportHandler = &validationReportHandler;
-        stochastHandler.discreteValueHandler = &discreteValueHandler;
-        stochastHandler.histogramValueHandler = &histogramValueHandler;
-        stochastHandler.fragilityValueHandler = &fragilityValueHandler;
-        stochastHandler.conditionalValueHandler = &conditionalValueHandler;
-        stochastHandler.contributingStochastHandler = &contributingStochastHandler;
+        reliabilityHandlers.fragilityCurveHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->reliabilityHandlers.designPointHandler.GetObjectId(designPoint); };
 
-        contributingStochastHandler.stochastCallback = [this](const int id) {return this->stochastHandler.GetObject(id); };
-        contributingStochastHandler.stochastIdCallback = [this](const std::shared_ptr<Statistics::Stochast>& stochast) {return this->stochastHandler.GetObjectId(stochast); };
+        statisticsHandlers.fragilityValueHandler.designPointCallback = [this](const int id) {return this->reliabilityHandlers.designPointHandler.GetObject(id); };
+        statisticsHandlers.fragilityValueHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->reliabilityHandlers.designPointHandler.GetObjectId(designPoint); };
 
-        fragilityCurveHandler.stochastHandler = &stochastHandler;
-        fragilityCurveHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->designPointHandler.GetObjectId(designPoint); };
+        statisticsHandlers.alphaHandler.fragilityCurveHandler = &reliabilityHandlers.fragilityCurveHandler;
 
-        fragilityValueHandler.designPointCallback = [this](const int id) {return this->designPointHandler.GetObject(id); };
-        fragilityValueHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->designPointHandler.GetObjectId(designPoint); };
+        reliabilityHandlers.designPointHandler.designPointIdsCallback = [this](const int id) {return this->GetDesignPointIds(id); };
 
-        correlationMatrixHandler.stochastHandler = &stochastHandler;
-        copulaCorrelationHandler.stochastHandler = &stochastHandler;
-        selfCorrelationMatrixHandler.stochastHandler = &stochastHandler;
-
-        alphaHandler.stochastHandler = &stochastHandler;
-        alphaHandler.fragilityCurveHandler = &fragilityCurveHandler;
-
-        designPointHandler.convergenceReportHandler = &convergenceReportHandler;
-        designPointHandler.evaluationHandler = &evaluationHandler;
-        designPointHandler.reliabilityResultHandler = &reliabilityResultHandler;
-        designPointHandler.messageHandler = &messageHandler;
-        designPointHandler.alphaHandler = &alphaHandler;
-        designPointHandler.designPointIdsCallback = [this](const int id) {return this->GetDesignPointIds(id); };
-
-        stochastPointHandler.alphaHandler = &alphaHandler;
-
-        probabilityLimitStateFunctionHandler.fragilityCurveHandler = &fragilityCurveHandler;
-
-        combinedLimitStateFunctionHandler.limitStateFunctionHandler = &limitStateFunctionHandler;
-
-        uncertaintyResultHandler.stochastHandler = &stochastHandler;
-        uncertaintyResultHandler.evaluationHandler = &evaluationHandler;
-        uncertaintyResultHandler.messageHandler = &messageHandler;
+        uncertaintyResultHandler.stochastHandler = &statisticsHandlers.stochastHandler;
+        uncertaintyResultHandler.evaluationHandler = &modelHandlers.evaluationHandler;
+        uncertaintyResultHandler.messageHandler = &modelHandlers.messageHandler;
 
         sensitivityResultHandler.sensitivityValueHandler = &sensitivityValueHandler;
-        sensitivityResultHandler.evaluationHandler = &evaluationHandler;
-        sensitivityResultHandler.messageHandler = &messageHandler;
+        sensitivityResultHandler.evaluationHandler = &modelHandlers.evaluationHandler;
+        sensitivityResultHandler.messageHandler = &modelHandlers.messageHandler;
 
-        sensitivityValueHandler.stochastHandler = &stochastHandler;
+        sensitivityValueHandler.stochastHandler = &statisticsHandlers.stochastHandler;
 
-        stochastSettingsHandler.stochastHandler = &stochastHandler;
+        sensitivitySettingsHandler.modelProjectSettingsHandler = &statisticsHandlers.modelProjectSettingsHandler;
+        uncertaintySettingsHandler.modelProjectSettingsHandler = &statisticsHandlers.modelProjectSettingsHandler;
+        uncertaintySettingsHandler.stochastSettingsHandler = &statisticsHandlers.stochastSettingsHandler;
+        uncertaintySettingsHandler.probabilityValueHandler = &statisticsHandlers.probabilityValueHandler;
 
-        modelProjectSettingsHandler.validationReportHandler = &validationReportHandler;
+        statisticsHandlers.modelProjectHandler.modelProjectCallback = [this](const int id) { return this->GetProject(id); };
 
-        runProjectSettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
-        sensitivitySettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
-        uncertaintySettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
-        uncertaintySettingsHandler.stochastSettingsHandler = &stochastSettingsHandler;
-        uncertaintySettingsHandler.probabilityValueHandler = &probabilityValueHandler;
-        reliabilitySettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
-        reliabilitySettingsHandler.stochastSettingsHandler = &stochastSettingsHandler;
-        reliabilitySettingsHandler.designPointCallback = [this](const int id) {return this->designPointHandler.GetObject(id); };
-
-        combineProjectHandler.combineSettingsHandler = &combineSettingsHandler;
-        combineProjectHandler.designPointHandler = &designPointHandler;
-        combineProjectHandler.correlationMatrixHandler = &correlationMatrixHandler;
-        combineProjectHandler.copulaCorrelationHandler = &copulaCorrelationHandler;
-        combineProjectHandler.selfCorrelationMatrixHandler = &selfCorrelationMatrixHandler;
-        combineProjectHandler.validationReportHandler = &validationReportHandler;
-
-        excludingCombineProjectHandler.excludingCombineSettingsHandler = &excludingCombineSettingsHandler;
-        excludingCombineProjectHandler.designPointHandler = &designPointHandler;
-        excludingCombineProjectHandler.scenarioHandler = &scenarioHandler;
-        excludingCombineProjectHandler.validationReportHandler = &validationReportHandler;
-
-        lengthEffectProjectHandler.designPointHandler = &designPointHandler;
-        lengthEffectProjectHandler.selfCorrelationMatrixHandler = &selfCorrelationMatrixHandler;
-
-        fragilityCurveProjectHandler.designPointHandler = &designPointHandler;
-        fragilityCurveProjectHandler.stochastHandler = &stochastHandler;
-        fragilityCurveProjectHandler.fragilityCurveHandler = &fragilityCurveHandler;
-        fragilityCurveProjectHandler.fragilityCurveSettingsHandler = &fragilityCurveSettingsHandler;
-
-        modelProjectHandler.validationReportHandler = &validationReportHandler;
-        modelProjectHandler.modelParameterHandler = &modelParameterHandler;
-        modelProjectHandler.stochastHandler = &stochastHandler;
-        modelProjectHandler.correlationMatrixHandler = &correlationMatrixHandler;
-        modelProjectHandler.copulaCorrelationHandler = &copulaCorrelationHandler;
-        modelProjectHandler.modelProjectCallback = [this](const int id) { return this->GetProject(id); };
-
-        runProjectHandler.modelProjectHandler = &modelProjectHandler;
-        runProjectHandler.runProjectSettingsHandler = &runProjectSettingsHandler;
-        runProjectHandler.evaluationHandler = &evaluationHandler;
-
-        sensitivityProjectHandler.modelProjectHandler = &modelProjectHandler;
+        sensitivityProjectHandler.modelProjectHandler = &statisticsHandlers.modelProjectHandler;
         sensitivityProjectHandler.sensitivitySettingsHandler = &sensitivitySettingsHandler;
         sensitivityProjectHandler.sensitivityResultHandler = &sensitivityResultHandler;
-        sensitivityProjectHandler.modelParameterHandler = &modelParameterHandler;
+        sensitivityProjectHandler.modelParameterHandler = &modelHandlers.modelParameterHandler;
 
-        uncertaintyProjectHandler.modelProjectHandler = &modelProjectHandler;
-        uncertaintyProjectHandler.modelParameterHandler = &modelParameterHandler;
+        uncertaintyProjectHandler.modelProjectHandler = &statisticsHandlers.modelProjectHandler;
+        uncertaintyProjectHandler.modelParameterHandler = &modelHandlers.modelParameterHandler;
         uncertaintyProjectHandler.uncertaintySettingsHandler = &uncertaintySettingsHandler;
         uncertaintyProjectHandler.uncertaintyResultHandler = &uncertaintyResultHandler;
-        uncertaintyProjectHandler.stochastHandler = &stochastHandler;
-        uncertaintyProjectHandler.correlationMatrixHandler = &correlationMatrixHandler;
+        uncertaintyProjectHandler.stochastHandler = &statisticsHandlers.stochastHandler;
+        uncertaintyProjectHandler.correlationMatrixHandler = &statisticsHandlers.correlationMatrixHandler;
 
-        reliabilityProjectHandler.modelProjectHandler = &modelProjectHandler;
-        reliabilityProjectHandler.reliabilitySettingsHandler = &reliabilitySettingsHandler;
-        reliabilityProjectHandler.limitStateFunctionHandler = &limitStateFunctionHandler;
-        reliabilityProjectHandler.designPointHandler = &designPointHandler;
-        reliabilityProjectHandler.limitStateFunctionCallback = [this](int id) { return this->GetLimitStateFunction(id); };
-
-        handlers[ObjectType::HistogramValue] = &histogramValueHandler;
-        handlers[ObjectType::DiscreteValue] = &discreteValueHandler;
-        handlers[ObjectType::FragilityValue] = &fragilityValueHandler;
-        handlers[ObjectType::Message] = &messageHandler;
-        handlers[ObjectType::Evaluation] = &evaluationHandler;
-        handlers[ObjectType::ProbabilityValue] = &probabilityValueHandler;
-        handlers[ObjectType::StandardNormal] = &standardNormalHandler;
-        handlers[ObjectType::Stochast] = &stochastHandler;
-        handlers[ObjectType::Scenario] = &scenarioHandler;
-        handlers[ObjectType::FragilityCurve] = &fragilityCurveHandler;
-        handlers[ObjectType::ValidationReport] = &validationReportHandler;
-        handlers[ObjectType::ModelParameter] = &modelParameterHandler;
-        handlers[ObjectType::LimitStateFunction] = &limitStateFunctionHandler;
-        handlers[ObjectType::ProbabilityLimitStateFunction] = &probabilityLimitStateFunctionHandler;
-        handlers[ObjectType::CombinedLimitStateFunction] = &combinedLimitStateFunctionHandler;
-        handlers[ObjectType::ReliabilityResult] = &reliabilityResultHandler;
-        handlers[ObjectType::ConvergenceReport] = &convergenceReportHandler;
-        handlers[ObjectType::ConditionalValue] = &conditionalValueHandler;
-        handlers[ObjectType::ContributingStochast] = &contributingStochastHandler;
-        handlers[ObjectType::CorrelationMatrix] = &correlationMatrixHandler;
-        handlers[ObjectType::CopulaCorrelation] = &copulaCorrelationHandler;
-        handlers[ObjectType::SelfCorrelationMatrix] = &selfCorrelationMatrixHandler;
-        handlers[ObjectType::Alpha] = &alphaHandler;
-        handlers[ObjectType::StochastPoint] = &stochastPointHandler;
-        handlers[ObjectType::DesignPoint] = &designPointHandler;
         handlers[ObjectType::UncertaintyResult] = &uncertaintyResultHandler;
         handlers[ObjectType::SensitivityResult] = &sensitivityResultHandler;
         handlers[ObjectType::SensitivityValue] = &sensitivityValueHandler;
-        handlers[ObjectType::RunProjectSettings] = &runProjectSettingsHandler;
         handlers[ObjectType::SensitivitySettings] = &sensitivitySettingsHandler;
         handlers[ObjectType::UncertaintySettings] = &uncertaintySettingsHandler;
-        handlers[ObjectType::Settings] = &reliabilitySettingsHandler;
-        handlers[ObjectType::FragilityCurveSettings] = &fragilityCurveSettingsHandler;
-        handlers[ObjectType::CombineSettings] = &combineSettingsHandler;
-        handlers[ObjectType::ExcludingCombineSettings] = &excludingCombineSettingsHandler;
-        handlers[ObjectType::StochastSettings] = &stochastSettingsHandler;
-        handlers[ObjectType::CombineProject] = &combineProjectHandler;
-        handlers[ObjectType::ExcludingCombineProject] = &excludingCombineProjectHandler;
-        handlers[ObjectType::LengthEffectProject] = &lengthEffectProjectHandler;
-        handlers[ObjectType::FragilityCurveProject] = &fragilityCurveProjectHandler;
-        handlers[ObjectType::RunProject] = &runProjectHandler;
         handlers[ObjectType::SensitivityProject] = &sensitivityProjectHandler;
         handlers[ObjectType::UncertaintyProject] = &uncertaintyProjectHandler;
-        handlers[ObjectType::Project] = &reliabilityProjectHandler;
 
         for (const auto& [objectType, handler] : handlers)
         {
@@ -410,9 +304,9 @@ namespace Deltares::Server
 
     std::shared_ptr<Models::ModelProject> ProjectHandler::GetProject(int id)
     {
-        if (runProjectHandler.Contains(id))
+        if (statisticsHandlers.runProjectHandler.Contains(id))
         {
-            return runProjectHandler.GetObject(id);
+            return statisticsHandlers.runProjectHandler.GetObject(id);
         }
         else if (sensitivityProjectHandler.Contains(id))
         {
@@ -422,29 +316,9 @@ namespace Deltares::Server
         {
             return uncertaintyProjectHandler.GetObject(id);
         }
-        else if (reliabilityProjectHandler.Contains(id))
+        else if (reliabilityHandlers.reliabilityProjectHandler.Contains(id))
         {
-            return reliabilityProjectHandler.GetObject(id);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
-    std::shared_ptr<Reliability::LimitStateFunction> ProjectHandler::GetLimitStateFunction(int id)
-    {
-        if (limitStateFunctionHandler.Contains(id))
-        {
-            return limitStateFunctionHandler.GetObject(id);
-        }
-        else if (combinedLimitStateFunctionHandler.Contains(id))
-        {
-            return combinedLimitStateFunctionHandler.GetObject(id);
-        }
-        else if (probabilityLimitStateFunctionHandler.Contains(id))
-        {
-            return probabilityLimitStateFunctionHandler.GetObject(id);
+            return reliabilityHandlers.reliabilityProjectHandler.GetObject(id);
         }
         else
         {

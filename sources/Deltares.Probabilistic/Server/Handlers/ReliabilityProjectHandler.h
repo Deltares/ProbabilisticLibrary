@@ -23,6 +23,9 @@
 #include <string>
 
 #include "StoredObjectHandler.h"
+#include "LimitStateFunctionHandler.h"
+#include "DesignPointHandler.h"
+#include "ReliabilitySettingsHandler.h"
 #include "../../Server/ProjectEntries.h"
 #include "../../Reliability/ReliabilityProject.h"
 
