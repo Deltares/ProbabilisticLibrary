@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "testutils.h"
+#include "TestUtils.h"
 #include <gtest/gtest.h>
 #include <cmath>
 #include <fstream>

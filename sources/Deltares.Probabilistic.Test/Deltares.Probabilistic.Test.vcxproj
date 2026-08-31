@@ -155,7 +155,7 @@
     <ClInclude Include="Reliability\TestReliabilityMethods.h" />
     <ClInclude Include="Uncertainty\TestUncertainty.h" />
     <ClInclude Include="Sensitivity\TestSensitivity.h" />
-    <ClInclude Include="Utils\testutils.h" />
+    <ClInclude Include="Utils\TestUtils.h" />
     <ClInclude Include="Utils\TestExceptions.h" />
     <ClInclude Include="Utils\TestString.h" />
   </ItemGroup>
@@ -209,7 +209,7 @@
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />
     <ClCompile Include="UnitTests.cpp" />
-    <ClCompile Include="Utils\testutils.cpp" />
+    <ClCompile Include="Utils\TestUtils.cpp" />
     <ClCompile Include="Utils\TestExceptions.cpp" />
     <ClCompile Include="Utils\TestString.cpp" />
   </ItemGroup>
