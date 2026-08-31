@@ -52,6 +52,13 @@ namespace Deltares::Server
             else return StoredObjectHandler::GetBoolValue(project, property_);
         }
 
+        int GetIntValue(const std::shared_ptr<Reliability::ExcludingCombineProject>& project, const std::string& property_) override
+        {
+            if (property_ == "design_points_count") return static_cast<int>(project->designPoints.size());
+            else if (property_ == "scenarios_count") return static_cast<int>(project->scenarios.size());
+            else return StoredObjectHandler::GetIdValue(project, property_);
+        }
+
         int GetIdValue(const std::shared_ptr<Reliability::ExcludingCombineProject>& project, const std::string& property_) override
         {
             if (property_ == "design_point") return designPointHandler->GetObjectId(project->designPoint);
