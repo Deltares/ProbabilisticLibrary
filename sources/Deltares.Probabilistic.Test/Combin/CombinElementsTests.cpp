@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 #include <cmath>
 #include <memory>
-#include "combinElements_tests.h"
+#include "CombinElementsTests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "../../Deltares.Probabilistic/Combine/LengthEffect.h"
 

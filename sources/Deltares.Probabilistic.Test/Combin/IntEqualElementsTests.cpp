@@ -21,7 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include <cmath>
-#include "intEqualElements_tests.h"
+#include "IntEqualElementsTests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 
 namespace Deltares::Probabilistic::Test

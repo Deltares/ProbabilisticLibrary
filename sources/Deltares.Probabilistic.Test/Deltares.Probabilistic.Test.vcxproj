@@ -107,11 +107,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Combin\combinElements_tests.h" />
-    <ClInclude Include="Combin\combiner_tests.h" />
-    <ClInclude Include="Combin\hohenbichlerCombiner_tests.h" />
-    <ClInclude Include="Combin\hohenbichler_tests.h" />
-    <ClInclude Include="Combin\intEqualElements_tests.h" />
+    <ClInclude Include="Combin\CombinElements_tests.h" />
+    <ClInclude Include="Combin\CombinerTests.h" />
+    <ClInclude Include="Combin\HohenbichlerTests.h" />
+    <ClInclude Include="Combin\IntEqualElementsTests.h" />
     <ClInclude Include="Combin\UpscaleTests.h" />
     <ClInclude Include="Combin\ComputeBetaSectionTests.h" />
     <ClInclude Include="Distributions\testDistributions.h" />
@@ -161,10 +160,10 @@
     <ClInclude Include="Utils\TestString.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Combin\combinElements_tests.cpp" />
-    <ClCompile Include="Combin\combiner_tests.cpp" />
-    <ClCompile Include="Combin\hohenbichler_tests.cpp" />
-    <ClCompile Include="Combin\intEqualElements_tests.cpp" />
+    <ClCompile Include="Combin\CombinElementsTests.cpp" />
+    <ClCompile Include="Combin\CombinerTests.cpp" />
+    <ClCompile Include="Combin\HohenbichlerTests.cpp" />
+    <ClCompile Include="Combin\IntEqualElementsTests.cpp" />
     <ClCompile Include="Combin\UpscaleTests.cpp" />
     <ClCompile Include="Combin\ComputeBetaSectionTests.cpp" />
     <ClCompile Include="Distributions\testDistributions.cpp" />

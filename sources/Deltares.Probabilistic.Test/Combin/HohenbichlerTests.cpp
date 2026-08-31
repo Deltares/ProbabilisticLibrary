@@ -23,7 +23,7 @@
 #include <filesystem>
 #include <cstdio>
 #include <gtest/gtest.h>
-#include "hohenbichler_tests.h"
+#include "HohenbichlerTests.h"
 #include "../Utils/testutils.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerFORM.h"
