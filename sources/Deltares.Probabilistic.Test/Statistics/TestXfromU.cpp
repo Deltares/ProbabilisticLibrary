@@ -157,7 +157,7 @@ namespace Deltares::Probabilistic::Test
     void TestXfromU::TestRange(Statistics::Distribution& distribution, Statistics::StochastProperties& properties, const double margin,
         const int start, const int stop)
     {
-        for (int i = -start; i <= stop; i++)
+        for (int i = start; i <= stop; i++)
         {
             const double u = i;
             const double x = distribution.getXFromU(properties, u);
