@@ -39,6 +39,7 @@ add_library(Deltares.Probabilistic
 )
 if (WIN32)
     target_link_options(Deltares.Probabilistic PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+    target_compile_options(Deltares.Probabilistic PRIVATE "/bigobj")
 endif()
 set_target_properties(Deltares.Probabilistic
   PROPERTIES
