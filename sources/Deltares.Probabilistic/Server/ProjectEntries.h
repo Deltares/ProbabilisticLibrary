@@ -96,25 +96,11 @@ namespace Deltares::Server
         static ObjectType GetType(const std::string& object_type);
 
         /// <summary>
-        /// checks if object type is one of the model projects
+        /// Converts an object type to a string
+        /// <param name="object_type"> Object type </param>
+        /// <returns> corresponding name </returns>
         /// </summary>
-        /// <param name="object_type"> enum object type </param>
-        /// <returns> true if it is a model project </returns>
-        static bool IsModelProjectType(ObjectType object_type);
-
-        /// <summary>
-        /// checks if object type is one of the model settings type
-        /// </summary>
-        /// <param name="object_type"> enum object type </param>
-        /// <returns> true if it is a model settings type </returns>
-        static bool IsModelSettingsType(ObjectType object_type);
-
-        /// <summary>
-        /// checks if object type is one of the stochast types
-        /// </summary>
-        /// <param name="object_type"> enum object type </param>
-        /// <returns> true if it is a stochast type </returns>
-        static bool IsStochast(ObjectType object_type);
+        static std::string GetObjectTypeString(ObjectType object_type);
 
         /// <summary>
         /// map with all entries ; is public for testing purpose

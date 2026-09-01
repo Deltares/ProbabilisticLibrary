@@ -25,6 +25,11 @@ namespace Deltares::Models
 {
     void ModelProject::updateStochasts()
     {
+        for (std::shared_ptr<Statistics::Stochast> stochast : this->stochasts)
+        {
+            existingStochasts[stochast->name] = stochast;
+        }
+
         this->stochasts.clear();
 
         if (model != nullptr)
@@ -46,12 +51,33 @@ namespace Deltares::Models
                     stochast = std::make_shared<Statistics::Stochast>();
                     stochast->name = parameter->name;
                     stochast->setMean(parameter->defaultValue);
-                    existingStochasts[stochast->name] = stochast;
                 }
 
                 stochast->modelParameter = parameter;
 
                 this->stochasts.push_back(stochast);
+            }
+        }
+    }
+
+    void ModelProject::addStochasts(const std::vector<std::shared_ptr<Statistics::Stochast>>& newStochasts)
+    {
+        for (size_t i = 0; i < newStochasts.size(); i++)
+        {
+            if (i < this->stochasts.size())
+            {
+                this->stochasts[i] = newStochasts[i];
+            }
+            else
+            {
+                this->stochasts.push_back(newStochasts[i]);
+            }
+
+            if (model != nullptr && i < this->model->inputParameters.size() && newStochasts[i]->modelParameter != nullptr)
+            {
+                this->model->inputParameters[i]->isArray = newStochasts[i]->modelParameter->isArray;
+                this->model->inputParameters[i]->arraySize = newStochasts[i]->modelParameter->arraySize;
+                newStochasts[i]->modelParameter = this->model->inputParameters[i];
             }
         }
     }

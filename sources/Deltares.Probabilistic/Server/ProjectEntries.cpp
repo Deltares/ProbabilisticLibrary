@@ -83,32 +83,22 @@ namespace Deltares::Server
         throw Reliability::ProbabilisticLibraryException("type not supported: " + object_type);
     }
 
+    std::string ProjectEntries::GetObjectTypeString(ObjectType object_type)
+    {
+        for (const auto& [objectTypeString, objectType] : all_entries)
+        {
+            if (object_type == objectType)
+            {
+                return objectTypeString;
+            }
+        }
+
+        throw Reliability::ProbabilisticLibraryException("Unknown object type");
+    }
+
     bool ProjectEntries::CanHandle(const std::string& object_type)
     {
         return all_entries.contains(object_type);
     }
-
-    bool ProjectEntries::IsModelProjectType(ObjectType object_type)
-    {
-        return object_type == Project ||
-            object_type == RunProject ||
-            object_type == UncertaintyProject ||
-            object_type == SensitivityProject;
-    }
-
-    bool ProjectEntries::IsModelSettingsType(ObjectType object_type)
-    {
-        return object_type == Settings ||
-            object_type == RunProjectSettings ||
-            object_type == UncertaintySettings ||
-            object_type == SensitivitySettings;
-    }
-
-    bool ProjectEntries::IsStochast(ObjectType object_type)
-    {
-        return object_type == Stochast ||
-            object_type == FragilityCurve;
-    }
-
 }
 

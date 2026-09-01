@@ -553,7 +553,7 @@ class ModelProject(FrozenObject):
         interface.SetStringValue(self._project_id, 'model_name', self._model.name)
 
         variables = []
-        variable_ids = interface.GetArrayIdValue(self._project_id, 'stochasts')
+        variable_ids = interface.GetArrayIdValue(self._project_id, 'variables')
         for variable_id in variable_ids:
             variable = None
             for known_variable in self._known_variables:

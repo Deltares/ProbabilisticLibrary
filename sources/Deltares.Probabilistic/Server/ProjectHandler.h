@@ -21,42 +21,33 @@
 //
 #pragma once
 
+#include <thread>
+#include <mutex>
+
 #include "BaseHandler.h"
 #include "ProjectEntries.h"
 #include "../Reliability/ReliabilityProject.h"
-#include "../Reliability/FragilityCurve.h"
-#include "../Reliability/FragilityCurveProject.h"
-#include "../Reliability/FragilityCurveIntegrationSettings.h"
-#include "../Reliability/LimitStateFunction.h"
-#include "../Reliability/CombinedLimitStateFunction.h"
-#include "../Reliability/Settings.h"
-#include "../Model/Evaluation.h"
 #include "../Model/RunProject.h"
-#include "../Model/RunProjectSettings.h"
-#include "../Uncertainty/UncertaintyProject.h"
-#include "../Uncertainty/SettingsS.h"
-#include "../Sensitivity/SensitivityProject.h"
-#include "../Sensitivity/SensitivitySettings.h"
-#include "../Sensitivity/SensitivityResult.h"
-#include "../Sensitivity/SensitivityValue.h"
-#include "../Combine/CombineProject.h"
-#include "../Combine/CombineSettings.h"
-#include "../Combine/ExcludingCombineProject.h"
-#include "../Combine/ExcludingCombineSettings.h"
-#include "../Combine/LengthEffectProject.h"
-#include "../Statistics/Stochast.h"
-#include "../Statistics/DiscreteValue.h"
 
-namespace Deltares::Reliability
-{
-    class ProbabilityLimitStateFunction;
-}
+#include "Handlers/ModelHandlers.h"
+#include "Handlers/ProbabilityValueHandler.h"
+#include "Handlers/SensitivityResultHandler.h"
+#include "Handlers/SensitivityValueHandler.h"
+#include "Handlers/UncertaintyResultHandler.h"
+#include "Handlers/ReliabilityHandlers.h"
+#include "Handlers/SensitivitySettingsHandler.h"
+#include "Handlers/UncertaintySettingsHandler.h"
+#include "Handlers/SensitivityProjectHandler.h"
+#include "Handlers/StatisticsHandlers.h"
+#include "Handlers/UncertaintyProjectHandler.h"
 
 namespace Deltares::Server
 {
     class ProjectHandler : public BaseHandler
     {
     public:
+        ProjectHandler();
+
         bool CanHandle(const std::string& object_type) override;
         int GetNewId() override;
         int Create(const std::string& object_type) override;
@@ -93,118 +84,37 @@ namespace Deltares::Server
         void SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack) override;
         void Execute(int id, const std::string& method_) override;
 
-        int GetProbabilityValueId(const std::shared_ptr<Statistics::ProbabilityValue>& probability, int newId);
-        int GetValidationReportId(const std::shared_ptr<Logging::ValidationReport>& validationReport, int newId);
-        int GetStochastId(const std::shared_ptr<Statistics::Stochast>& stochast, int newId);
-        int GetModelParameterId(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, int newId);
-        int GetFragilityCurveId(const std::shared_ptr<Reliability::FragilityCurve>& fragilityCurve, int newId);
-        int GetCorrelationMatrixId(const std::shared_ptr<Statistics::BaseCorrelation>& correlationMatrix, int newid);
-        int GetLimitStateFunctionId(const std::shared_ptr<Reliability::LimitStateFunction>& limitStateFunction, int newid);
-        int GetDesignPointId(const std::shared_ptr<Reliability::DesignPoint>& designPoint, int newId);
-        int GetAlphaId(const std::shared_ptr<Models::StochastPointAlpha>& alpha, int newId);
-        int GetConvergenceReportId(const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport, int newId);
-        int GetUncertaintyResultId(const std::shared_ptr<Uncertainty::UncertaintyResult>& result, int newId);
-        int GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId);
-        int GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId);
-        int GetHistogramValueId(const std::shared_ptr<Statistics::HistogramValue>& histogramValue, int newId);
-        int GetDiscreteValueId(const std::shared_ptr<Statistics::DiscreteValue>& discreteValue, int newId);
-        int GetFragilityValueId(const std::shared_ptr<Statistics::FragilityValue>& fragilityValue, int newId);
-        int GetContributingStochastId(const std::shared_ptr<Statistics::ContributingStochast>& contributingStochast, int newId);
-        int GetConditionalValueId(const std::shared_ptr<Statistics::VariableStochastValue>& conditionalValue, int newId);
-        int GetEvaluationId(const std::shared_ptr<Models::Evaluation>& evaluation, int newId);
-        int GetReliabilityResultId(const std::shared_ptr<Reliability::ReliabilityResult>& result, int newId);
-        int GetMessageId(const std::shared_ptr<Logging::Message>& message, int newId);
-        int GetSelfCorrelationMatrixId(const std::shared_ptr<Statistics::SelfCorrelationMatrix>& correlationMatrix, int newId);
         int GetStatus(const std::string& command) const;
 
-        std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
-        {
-            return designPoints[id];
-        }
+        ModelHandlers modelHandlers;
+        StatisticsHandlers statisticsHandlers;
+        ReliabilityHandlers reliabilityHandlers;
+
     protected:
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
     private:
 
-        int new_id = 0;
+        ObjectHandlerAdmin admin;
+        std::thread::id mainThreadId = std::this_thread::get_id();
+
+        bool isMultiThread = false;
+        bool isMultiThreadDetected = false;
         std::mutex mtx;
+        std::vector<int> destroyObjects;
 
-        std::unordered_map<int, ObjectType> types;
+        void InitializeHandlers();
 
-        std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
-        std::unordered_map<int, std::shared_ptr<Statistics::ProbabilityValue>> probabilityValues;
-        std::unordered_map<int, std::shared_ptr<Logging::Message>> messages;
-        std::unordered_map<int, std::shared_ptr<Logging::ValidationReport>> validationReports;
-        std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
-        std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
-        std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;
-        std::unordered_map<int, std::shared_ptr<Reliability::CombinedLimitStateFunction>> combinedLimitStateFunctions;
-        std::unordered_map<int, std::shared_ptr<Reliability::ProbabilityLimitStateFunction>> probabilityLimitStateFunctions;
-        std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
-        std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
-        std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
-        std::unordered_map<int, std::shared_ptr<Statistics::ContributingStochast>> contributingStochasts;
-        std::unordered_map<int, std::shared_ptr<Statistics::VariableStochastValue>> conditionalValues;
-        std::unordered_map<int, std::shared_ptr<Statistics::BaseCorrelation>> correlations;
-        std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
-        std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
-        std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
-        std::unordered_map<int, std::shared_ptr<Models::StochastPoint>> stochastPoints;
-        std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
-        std::unordered_map<int, std::shared_ptr<Models::StochastPointAlpha>> alphas;
-        std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
-        std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveIntegrationSettings>> fragilityCurveSettings;
-        std::unordered_map<int, std::shared_ptr<Models::Evaluation>> evaluations;
-        std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
-        std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
-        std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineProject>> excludingCombineProjects;
-        std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineSettings>> excludingCombineSettings;
-        std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
-        std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
-        std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
-        std::unordered_map<int, std::shared_ptr<Models::RunProjectSettings>> runProjectSettings;
-        std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
-        std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivitySettings>> sensitivitySettingsValues;
-        std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityResult>> sensitivityResults;
-        std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityValue>> sensitivityValues;
-        std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
-        std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
-        std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyResult>> uncertaintyResults;
-        std::unordered_map<int, std::shared_ptr<Reliability::ConvergenceReport>> convergenceReports;
+        UncertaintyResultHandler uncertaintyResultHandler;
+        SensitivityResultHandler sensitivityResultHandler;
+        SensitivityValueHandler sensitivityValueHandler;
+        SensitivitySettingsHandler sensitivitySettingsHandler;
+        UncertaintySettingsHandler uncertaintySettingsHandler;
+        SensitivityProjectHandler sensitivityProjectHandler;
+        UncertaintyProjectHandler uncertaintyProjectHandler;
 
-        std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
-        std::unordered_map<std::shared_ptr<Reliability::CombinedLimitStateFunction>, int> combinedLimitStateFunctionIds;
-        std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
-        std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
-        std::unordered_map<std::shared_ptr<Uncertainty::UncertaintyResult>, int> uncertaintyResultsIds;
-        std::unordered_map<std::shared_ptr<Sensitivity::SensitivityResult>, int> sensitivityResultsIds;
-        std::unordered_map<std::shared_ptr<Sensitivity::SensitivityValue>, int> sensitivityValuesIds;
-        std::unordered_map<std::shared_ptr<Models::StochastPointAlpha>, int> alphaIds;
-        std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
-        std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
-        std::unordered_map<std::shared_ptr<Models::ModelInputParameter>, int> modelParameterIds;
-        std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, int> probabilityValueIds;
-        std::unordered_map<std::shared_ptr<Statistics::BaseCorrelation>, int> correlationIds;
-        std::unordered_map<std::shared_ptr<Statistics::SelfCorrelationMatrix>, int> selfCorrelationIds;
-        std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
-        std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
-        std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
-        std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
-        std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
-        std::unordered_map<std::shared_ptr<Models::Evaluation>, int> evaluationIds;
-        std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
-        std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
-        std::unordered_map<std::shared_ptr<Reliability::ConvergenceReport>, int> convergenceReportIds;
-
-        std::unordered_map <std::string, std::vector<double>> tempValues;
-
-        double argValue = nan("");
-        int tempIntValue = 0;
+        std::unordered_map<ObjectType, ObjectHandler*> handlers;
 
         std::shared_ptr<Models::ModelProject> GetProject(int id);
-        std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
-        std::shared_ptr<Statistics::Stochast> GetStochast(int id);
-        std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
+        void DestroyObjects();
     };
 }

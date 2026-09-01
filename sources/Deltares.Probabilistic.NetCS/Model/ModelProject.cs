@@ -50,8 +50,6 @@ namespace Deltares.Probabilistic.Model
 
         public ModelProject()
         {
-            this.id = Interface.Create("model_project");
-            SetCallBacks();
         }
 
         internal ModelProject(int id)

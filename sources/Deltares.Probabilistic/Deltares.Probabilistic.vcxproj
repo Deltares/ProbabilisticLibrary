@@ -126,7 +126,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions) /bigobj</AdditionalOptions>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
@@ -159,6 +159,52 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\ReliabilityHandlers.h" />
+    <ClInclude Include="Server\Handlers\StatisticsHandlers.h" />
+    <ClInclude Include="Server\Handlers\UncertaintyProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\SensitivityProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\ReliabilityProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\RunProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\ModelProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\FragilityCurveProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\ExcludingCombineProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\CombineProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\ExcludingCombineSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\CombineSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\FragilityCurveSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\UncertaintySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\SensitivitySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\RunProjectSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\ModelProjectSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\StochastSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\CopulaCorrelationHandler.h" />
+    <ClInclude Include="Server\Handlers\CorrelationMatrixHandler.h" />
+    <ClInclude Include="Server\Handlers\SelfCorrelationMatrixHandler.h" />
+    <ClInclude Include="Server\Handlers\SensitivityValueHandler.h" />
+    <ClInclude Include="Server\Handlers\UncertaintyResultHandler.h" />
+    <ClInclude Include="Server\Handlers\CombinedLimitStateFunctionHandler.h" />
+    <ClInclude Include="Server\Handlers\ProbabilityLimitStateFunctionHandler.h" />
+    <ClInclude Include="Server\Handlers\StochastPointHandler.h" />
+    <ClInclude Include="Server\Handlers\StochastPointAlphaHandler.h" />
+    <ClInclude Include="Server\Handlers\DesignPointHandler.h" />
+    <ClInclude Include="Server\Handlers\ContributingStochastHandler.h" />
+    <ClInclude Include="Server\Handlers\ConditionalValueHandler.h" />
+    <ClInclude Include="Server\Handlers\StochastHandler.h" />
+    <ClInclude Include="Server\Handlers\ScenarioHandler.h" />
+    <ClInclude Include="Server\Handlers\ReliabilityResultHandler.h" />
+    <ClInclude Include="Server\Handlers\EvaluationHandler.h" />
+    <ClInclude Include="Server\Handlers\LimitStateFunctionHandler.h" />
+    <ClInclude Include="Server\Handlers\ModelParameterHandler.h" />
+    <ClInclude Include="Server\Handlers\ValidationReportHandler.h" />
+    <ClInclude Include="Server\Handlers\StandardNormalHandler.h" />
+    <ClInclude Include="Server\Handlers\ProbabilityValueHandler.h" />
+    <ClInclude Include="Server\Handlers\StoredObjectHandler.h" />
+    <ClInclude Include="Server\Handlers\MessageHandler.h" />
+    <ClInclude Include="Server\Handlers\FragilityValueHandler.h" />
+    <ClInclude Include="Server\Handlers\DiscreteValueHandler.h" />
+    <ClInclude Include="Server\Handlers\ObjectHandlerAdmin.h" />
+    <ClInclude Include="Server\Handlers\ObjectHandler.h" />
+    <ClInclude Include="Server\Handlers\HistogramValueHandler.h" />
     <ClInclude Include="Reliability\ProbabilityLimitStateFunction.h" />
     <ClInclude Include="Combine\ExcludingCombineSettings.h" />
     <ClInclude Include="Combine\ExcludingCombineProject.h" />
@@ -205,7 +251,12 @@
     <ClInclude Include="Sensitivity\SobolDirection.h" />
     <ClInclude Include="Sensitivity\SobolResource.h" />
     <ClInclude Include="Sensitivity\SobolDirectionLoader.h" />
+    <ClInclude Include="Server\Handlers\ModelHandlers.h" />
     <ClInclude Include="Statistics\Distributions\DistributionSupport.h" />
+    <ClInclude Include="Server\Handlers\FragilityCurveHandler.h" />
+    <ClInclude Include="Server\Handlers\SensitivityResultHandler.h" />
+    <ClInclude Include="Server\Handlers\ReliabilitySettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\LengthEffectProjectHandler.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />
@@ -419,8 +470,11 @@
     <ClInclude Include="Logging\ValidationReport.h" />
     <ClInclude Include="Model\DefaultValueConverter.h" />
     <ClInclude Include="Math\StatisticsCalculator.h" />
+    <ClInclude Include="Server\Handlers\ConvergenceReportHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Server\Handlers\ReliabilityHandlers.cpp" />
+    <ClCompile Include="Server\Handlers\StatisticsHandlers.cpp" />
     <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />
     <ClCompile Include="Combine\ExcludingCombineSettings.cpp" />
     <ClCompile Include="Combine\ExcludingCombineProject.cpp" />
@@ -456,6 +510,7 @@
     <ClCompile Include="Sensitivity\SobolSequence.cpp" />
     <ClCompile Include="Sensitivity\SobolResource.cpp" />
     <ClCompile Include="Sensitivity\SobolDirectionLoader.cpp" />
+    <ClCompile Include="Server\Handlers\ModelHandlers.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionSupport.cpp" />
     <ClCompile Include="Uncertainty\UncertaintyResult.cpp" />
     <ClCompile Include="Model\RunProject.cpp" />

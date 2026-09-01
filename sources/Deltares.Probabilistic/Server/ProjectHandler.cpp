@@ -21,13 +21,12 @@
 //
 #include "ProjectHandler.h"
 
-#include "../Reliability/ProbabilityLimitStateFunction.h"
-#include "../Statistics/CopulaCorrelation.h"
-
 namespace Deltares::Server
 {
-    using namespace Deltares::Statistics;
-    using namespace Deltares::Reliability;
+    ProjectHandler::ProjectHandler()
+    {
+        InitializeHandlers();
+    }
 
     bool ProjectHandler::CanHandle(const std::string& object_type)
     {
@@ -36,1940 +35,149 @@ namespace Deltares::Server
 
     int ProjectHandler::GetNewId()
     {
-        std::lock_guard lock(mtx);
-        new_id++;
-        return new_id;
+        return admin.GetNewId();
     }
 
-    int ProjectHandler::Create(const std::string& object_type)
+    int ProjectHandler::Create(const std::string& objectTypeString)
     {
-        int id = this->GetNewId();
-
-        std::lock_guard lock(mtx);
-
-        types[id] = ProjectEntries::GetType(object_type);
-
-        switch (types[id])
+        if (isMultiThread)
         {
-        case ObjectType::StandardNormal:
-            break; // nothing to do
-        case ObjectType::ProbabilityValue:
-            probabilityValues[id] = std::make_shared<ProbabilityValue>();
-            probabilityValueIds[probabilityValues[id]] = id;
-            break;
-        case ObjectType::Message:
-            messages[id] = std::make_shared<Logging::Message>();
-            messageIds[messages[id]] = id;
-            break;
-        case ObjectType::Project:
-            projects[id] = std::make_shared<ReliabilityProject>();
-            break;
-        case ObjectType::ModelParameter:
-            modelParameters[id] = std::make_shared<Models::ModelInputParameter>();
-            modelParameterIds[modelParameters[id]] = id;
-            break;
-        case ObjectType::LimitStateFunction:
-            limitStateFunctions[id] = std::make_shared<LimitStateFunction>();
-            limitStateFunctionIds[limitStateFunctions[id]] = id;
-            break;
-        case ObjectType::CombinedLimitStateFunction:
-            combinedLimitStateFunctions[id] = std::make_shared<CombinedLimitStateFunction>();
-            combinedLimitStateFunctionIds[combinedLimitStateFunctions[id]] = id;
-            break;
-        case ObjectType::ProbabilityLimitStateFunction:
-            probabilityLimitStateFunctions[id] = std::make_shared<ProbabilityLimitStateFunction>();
-            break;
-        case ObjectType::Stochast:
-            stochasts[id] = std::make_shared<Stochast>();
-            stochastIds[stochasts[id]] = id;
-            break;
-        case ObjectType::DiscreteValue:
-            discreteValues[id] = std::make_shared<DiscreteValue>();
-            discreteValueIds[discreteValues[id]] = id;
-            break;
-        case ObjectType::HistogramValue:
-            histogramValues[id] = std::make_shared<HistogramValue>();
-            histogramValueIds[histogramValues[id]] = id;
-            break;
-        case ObjectType::FragilityValue:
-            fragilityValues[id] = std::make_shared<FragilityValue>();
-            fragilityValueIds[fragilityValues[id]] = id;
-            break;
-        case ObjectType::ContributingStochast:
-            contributingStochasts[id] = std::make_shared<ContributingStochast>();
-            contributingStochastIds[contributingStochasts[id]] = id;
-            break;
-        case ObjectType::ConditionalValue:
-            conditionalValues[id] = std::make_shared<VariableStochastValue>();
-            conditionalValueIds[conditionalValues[id]] = id;
-            break;
-        case ObjectType::CorrelationMatrix:
-            correlations[id] = std::make_shared<CorrelationMatrix>(true);
-            correlationIds[correlations[id]] = id;
-            break;
-        case ObjectType::CopulaCorrelation:
-            correlations[id] = std::make_shared<CopulaCorrelation>();
-            correlationIds[correlations[id]] = id;
-            break;
-        case ObjectType::Scenario:
-            scenarios[id] = std::make_shared<Scenario>();
-            break;
-        case ObjectType::Settings:
-            settingsValues[id] = std::make_shared<Settings>();
-            settingsValuesIds[settingsValues[id]] = id;
-            break;
-        case ObjectType::StochastSettings:
-            stochastSettingsValues[id] = std::make_shared<StochastSettings>();
-            break;
-        case ObjectType::StochastPoint:
-            stochastPoints[id] = std::make_shared<Models::StochastPoint>();
-            break;
-        case ObjectType::DesignPoint:
-            designPoints[id] = std::make_shared<DesignPoint>();
-            designPointIds[designPoints[id]] = id;
-            break;
-        case ObjectType::Alpha:
-            alphas[id] = std::make_shared<Models::StochastPointAlpha>();
-            alphaIds[alphas[id]] = id;
-            break;
-        case ObjectType::FragilityCurve:
-            fragilityCurves[id] = std::make_shared<FragilityCurve>();
-            fragilityCurveIds[fragilityCurves[id]] = id;
-            break;
-        case ObjectType::FragilityCurveProject:
-            fragilityCurveProjects[id] = std::make_shared<FragilityCurveProject>();
-            break;
-        case ObjectType::FragilityCurveSettings:
-            fragilityCurveSettings[id] = std::make_shared<FragilityCurveIntegrationSettings>();
-            break;
-        case ObjectType::Evaluation:
-            evaluations[id] = std::make_shared<Models::Evaluation>();
-            evaluationIds[evaluations[id]] = id;
-            break;
-        case ObjectType::ReliabilityResult:
-            reliabilityResults[id] = std::make_shared<ReliabilityResult>();
-            reliabilityResultIds[reliabilityResults[id]] = id;
-            break;
-        case ObjectType::CombineProject:
-            combineProjects[id] = std::make_shared<CombineProject>();
-            break;
-        case ObjectType::CombineSettings:
-            combineSettingsValues[id] = std::make_shared<CombineSettings>();
-            break;
-        case ObjectType::ExcludingCombineProject:
-            excludingCombineProjects[id] = std::make_shared<ExcludingCombineProject>();
-            break;
-        case ObjectType::ExcludingCombineSettings:
-            excludingCombineSettings[id] = std::make_shared<ExcludingCombineSettings>();
-            break;
-        case ObjectType::SelfCorrelationMatrix:
-            selfCorrelationMatrices[id] = std::make_shared<SelfCorrelationMatrix>();
-            selfCorrelationIds[selfCorrelationMatrices[id]] = id;
-            break;
-        case ObjectType::RunProject:
-            runProjects[id] = std::make_shared<Models::RunProject>();
-            break;
-        case ObjectType::RunProjectSettings:
-            runProjectSettings[id] = std::make_shared<Models::RunProjectSettings>();
-            break;
-        case ObjectType::UncertaintyProject:
-            uncertaintyProjects[id] = std::make_shared<Uncertainty::UncertaintyProject>();
-            break;
-        case ObjectType::UncertaintySettings:
-            uncertaintySettingsValues[id] = std::make_shared<Uncertainty::SettingsS>();
-            break;
-        case ObjectType::UncertaintyResult:
-            uncertaintyResults[id] = std::make_shared<Uncertainty::UncertaintyResult>();
-            uncertaintyResultsIds[uncertaintyResults[id]] = id;
-            break;
-        case ObjectType::SensitivityProject:
-            sensitivityProjects[id] = std::make_shared<Sensitivity::SensitivityProject>();
-            break;
-        case ObjectType::SensitivitySettings:
-            sensitivitySettingsValues[id] = std::make_shared<Sensitivity::SensitivitySettings>();
-            break;
-        case ObjectType::SensitivityResult:
-            sensitivityResults[id] = std::make_shared<Sensitivity::SensitivityResult>();
-            sensitivityResultsIds[sensitivityResults[id]] = id;
-            break;
-        case ObjectType::SensitivityValue:
-            sensitivityValues[id] = std::make_shared<Sensitivity::SensitivityValue>();
-            sensitivityValuesIds[sensitivityValues[id]] = id;
-            break;
-        case ObjectType::LengthEffectProject:
-            lengthEffectProjects[id] = std::make_shared<LengthEffectProject>();
-            break;
-        case ObjectType::ConvergenceReport:
-            convergenceReports[id] = std::make_shared<ConvergenceReport>();
-            convergenceReportIds[convergenceReports[id]] = id;
-            break;
-        default: throw ProbabilisticLibraryException("object type");
+            DestroyObjects();
         }
 
-        return id;
+        ObjectType objectType = ProjectEntries::GetType(objectTypeString);
+        return handlers[objectType]->Create();
     }
 
     void ProjectHandler::Destroy(int id)
     {
+        if (!isMultiThreadDetected)
+        {
+            isMultiThread = std::this_thread::get_id() != mainThreadId;
+            isMultiThreadDetected = true;
+        }
+
+        if (isMultiThread)
+        {
+            std::lock_guard lock(mtx);
+            destroyObjects.push_back(id);
+        }
+        else
+        {
+            if (admin.Contains(id))
+            {
+                ObjectType objectType = admin.GetObjectType(id);
+                handlers[objectType]->Destroy(id);
+            }
+        }
+    }
+
+    void ProjectHandler::DestroyObjects()
+    {
         std::lock_guard lock(mtx);
 
-        const auto it = types.find(id);
-        if (it == types.end()) return;
-
-        switch (it->second)
+        if (!destroyObjects.empty())
         {
-        case ObjectType::StandardNormal: break;
-        case ObjectType::ProbabilityValue: probabilityValueIds.erase(probabilityValues[id]); probabilityValues.erase(id); break;
-        case ObjectType::Message: messageIds.erase(messages[id]); messages.erase(id); break;
-        case ObjectType::ValidationReport: validationReports.erase(id); break;
-        case ObjectType::Project: projects.erase(id); break;
-        case ObjectType::ModelParameter: modelParameterIds.erase(modelParameters[id]); modelParameters.erase(id); break;
-        case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
-        case ObjectType::CombinedLimitStateFunction: combinedLimitStateFunctionIds.erase(combinedLimitStateFunctions[id]); combinedLimitStateFunctions.erase(id); break;
-        case ObjectType::ProbabilityLimitStateFunction: probabilityLimitStateFunctions.erase(id); break;
-        case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
-        case ObjectType::DiscreteValue: discreteValueIds.erase(discreteValues[id]); discreteValues.erase(id); break;
-        case ObjectType::HistogramValue: histogramValueIds.erase(histogramValues[id]); histogramValues.erase(id); break;
-        case ObjectType::FragilityValue: fragilityValueIds.erase(fragilityValues[id]); fragilityValues.erase(id); break;
-        case ObjectType::ContributingStochast: contributingStochastIds.erase(contributingStochasts[id]); contributingStochasts.erase(id); break;
-        case ObjectType::ConditionalValue: conditionalValueIds.erase(conditionalValues[id]);  conditionalValues.erase(id); break;
-        case ObjectType::CorrelationMatrix:
-        case ObjectType::CopulaCorrelation:
-            correlationIds.erase(correlations[id]); correlations.erase(id); break;
-        case ObjectType::Scenario: scenarios.erase(id); break;
-        case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
-        case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
-        case ObjectType::StochastPoint: stochastPoints.erase(id); break;
-        case ObjectType::DesignPoint: designPointIds.erase(designPoints[id]); designPoints.erase(id); break;
-        case ObjectType::Alpha: alphaIds.erase(alphas[id]); alphas.erase(id); break;
-        case ObjectType::FragilityCurve:  fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
-        case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
-        case ObjectType::FragilityCurveSettings: fragilityCurveSettings.erase(id); break;
-        case ObjectType::Evaluation: evaluationIds.erase(evaluations[id]); evaluations.erase(id); break;
-        case ObjectType::ReliabilityResult: reliabilityResultIds.erase(reliabilityResults[id]); reliabilityResults.erase(id); break;
-        case ObjectType::CombineProject: combineProjects.erase(id); break;
-        case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
-        case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
-        case ObjectType::ExcludingCombineSettings: excludingCombineSettings.erase(id); break;
-        case ObjectType::SelfCorrelationMatrix: selfCorrelationIds.erase(selfCorrelationMatrices[id]); selfCorrelationMatrices.erase(id); break;
-        case ObjectType::RunProject: runProjects.erase(id); break;
-        case ObjectType::RunProjectSettings: runProjectSettings.erase(id); break;
-        case ObjectType::UncertaintyProject: uncertaintyProjects.erase(id); break;
-        case ObjectType::UncertaintySettings: uncertaintySettingsValues.erase(id); break;
-        case ObjectType::UncertaintyResult: uncertaintyResultsIds.erase(uncertaintyResults[id]); uncertaintyResults.erase(id); break;
-        case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
-        case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
-        case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
-        case ObjectType::SensitivityValue: sensitivityValuesIds.erase(sensitivityValues[id]); sensitivityValues.erase(id); break;
-        case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
-        case ObjectType::ConvergenceReport: convergenceReportIds.erase(convergenceReports[id]); convergenceReports.erase(id); break;
-        default: throw ProbabilisticLibraryException("object type");
+            for (int id : destroyObjects)
+            {
+                if (admin.Contains(id))
+                {
+                    ObjectType objectType = admin.GetObjectType(id);
+                    handlers[objectType]->Destroy(id);
+                }
+            }
+
+            destroyObjects.clear();
         }
-        types.erase(id);
     }
 
     bool ProjectHandler::ShouldClose()
     {
-        return types.empty();
+        return admin.IsEmpty();
     }
 
     double ProjectHandler::GetValue(int id, const std::string& property_)
     {
-        ObjectType objectType = types[id];
-
-        if (objectType == ObjectType::StandardNormal)
-        {
-            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
-
-            if (property_ == "u_max") return StandardNormal::UMax;
-            else if (property_ == "beta_max") return StandardNormal::BetaMax;
-        }
-        else if (objectType == ObjectType::ProbabilityValue)
-        {
-            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
-
-            if (property_ == "reliability_index") return probabilityValue->Reliability;
-            else if (property_ == "probability_of_failure") return probabilityValue->getProbabilityOfFailure();
-            else if (property_ == "probability_of_non_failure") return probabilityValue->getProbabilityOfNonFailure();
-            else if (property_ == "return_period") return probabilityValue->getReturnPeriod();
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "location") return stochast->getProperties()->Location;
-            else if (property_ == "scale") return stochast->getProperties()->Scale;
-            else if (property_ == "shape") return stochast->getProperties()->Shape;
-            else if (property_ == "shape_b") return stochast->getProperties()->ShapeB;
-            else if (property_ == "shift") return stochast->getProperties()->Shift;
-            else if (property_ == "shift_b") return stochast->getProperties()->ShiftB;
-            else if (property_ == "minimum") return stochast->getProperties()->Minimum;
-            else if (property_ == "maximum") return stochast->getProperties()->Maximum;
-            else if (property_ == "mean") return stochast->getMean();
-            else if (property_ == "deviation") return stochast->getDeviation();
-            else if (property_ == "variation") return stochast->getVariation();
-            else if (property_ == "design_quantile") return stochast->designQuantile;
-            else if (property_ == "design_factor") return stochast->designFactor;
-            else if (property_ == "design_value") return stochast->getDesignValue();
-            else if (property_ == "ks_test") return stochast->getKSTest(tempValues["data"]);
-            else if (property_ == "x_from_u_and_source") return stochast->getXFromUAndSource(tempValues["u_and_x"][1], tempValues["u_and_x"][0]);
-            else if (property_ == "u_from_x_and_source") return stochast->getUFromXAndSource(tempValues["x_and_source"][1], tempValues["x_and_source"][0]);
-            else if (property_ == "fixed_value") return std::dynamic_pointer_cast<FragilityCurve>(stochast)->fixedValue;
-            else return std::nan("");
-        }
-        else if (objectType == ObjectType::DiscreteValue)
-        {
-            std::shared_ptr<DiscreteValue> discreteValue = discreteValues[id];
-
-            if (property_ == "x") return discreteValue->X;
-            else if (property_ == "amount") return discreteValue->Amount;
-            else if (property_ == "normalized_amount") return discreteValue->NormalizedAmount;
-            else if (property_ == "cumulative_amount") return discreteValue->CumulativeNormalizedAmount;
-        }
-        else if (objectType == ObjectType::HistogramValue)
-        {
-            std::shared_ptr<HistogramValue> histogramValue = histogramValues[id];
-
-            if (property_ == "lower_bound") return histogramValue->LowerBound;
-            else if (property_ == "upper_bound") return histogramValue->UpperBound;
-            else if (property_ == "amount") return histogramValue->Amount;
-        }
-        else if (objectType == ObjectType::FragilityValue)
-        {
-            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
-
-            if (property_ == "x") return fragilityValue->X;
-            else if (property_ == "reliability_index") return fragilityValue->Reliability;
-            else if (property_ == "probability_of_failure") return fragilityValue->getProbabilityOfFailure();
-            else if (property_ == "probability_of_non_failure") return fragilityValue->getProbabilityOfNonFailure();
-            else if (property_ == "return_period") return fragilityValue->getReturnPeriod();
-        }
-        else if (objectType == ObjectType::ContributingStochast)
-        {
-            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
-
-            if (property_ == "probability") return contributingStochast->Probability;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "critical_value") return limitStateFunction->criticalValue;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "default_value") return parameter->defaultValue;
-        }
-        else if (objectType == ObjectType::ConditionalValue)
-        {
-            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
-
-            if (property_ == "x") return conditionalValue->X;
-            else if (property_ == "location") return conditionalValue->Stochast->Location;
-            else if (property_ == "scale") return conditionalValue->Stochast->Scale;
-            else if (property_ == "shape") return conditionalValue->Stochast->Shape;
-            else if (property_ == "shape_b") return conditionalValue->Stochast->ShapeB;
-            else if (property_ == "shift") return conditionalValue->Stochast->Shift;
-            else if (property_ == "shift_b") return conditionalValue->Stochast->ShiftB;
-            else if (property_ == "minimum") return conditionalValue->Stochast->Minimum;
-            else if (property_ == "maximum") return conditionalValue->Stochast->Maximum;
-            else if (property_ == "mean") return conditionalValue->mean;
-            else if (property_ == "deviation") return conditionalValue->deviation;
-            else return std::nan("");
-        }
-        else if (objectType == ObjectType::Scenario)
-        {
-            std::shared_ptr<Scenario> scenario = scenarios[id];
-
-            if (property_ == "probability") return scenario->probability;
-            else if (property_ == "physical_value") return scenario->parameterValue;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "relaxation_factor") return settings->RelaxationFactor;
-            else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
-            else if (property_ == "variance_factor") return settings->VarianceFactor;
-            else if (property_ == "fraction_failed") return settings->FractionFailed;
-            else if (property_ == "epsilon_beta") return settings->EpsilonBeta;
-            else if (property_ == "epsilon_weight_sample") return settings->EpsilonWeightSample;
-            else if (property_ == "epsilon_u_step_size") return settings->DirectionSettings->EpsilonUStepSize;
-            else if (property_ == "epsilon_z_step_size") return settings->DirectionSettings->EpsilonZStepSize;
-            else if (property_ == "dsdu") return settings->DirectionSettings->Dsdu;
-            else if (property_ == "maximum_length_u") return settings->DirectionSettings->MaximumLengthU;
-            else if (property_ == "maximum_length_start_point") return settings->StartPointSettings->MaximumLengthStartPoint;
-            else if (property_ == "radius_sphere_search") return settings->StartPointSettings->RadiusSphereSearch;
-            else if (property_ == "markov_chain_deviation") return settings->MarkovChainDeviation;
-            else if (property_ == "subset_fraction") return settings->SubsetFraction;
-            else if (property_ == "step_size") return settings->GradientSettings->StepSize;
-            else if (property_ == "fragility_curve_step_size") return settings->FragilityCurveStepSize;
-            else if (property_ == "start_value_step_size") return settings->StartValueStepSize;
-            else if (property_ == "loop_variance_increment") return settings->LoopVarianceIncrement;
-            else if (property_ == "max_beta") return settings->MaxBeta;
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "min_value") return stochastSettings->MinValue;
-            else if (property_ == "max_value") return stochastSettings->MaxValue;
-            else if (property_ == "start_value") return stochastSettings->StartValue;
-            else if (property_ == "variance_factor") return stochastSettings->VarianceFactor;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "variation_coefficient") return settings->VariationCoefficient;
-            else if (property_ == "probability_for_convergence") return settings->ProbabilityForConvergence;
-            else if (property_ == "minimum_u") return settings->MinimumU;
-            else if (property_ == "maximum_u") return settings->MaximumU;
-            else if (property_ == "step_size") return settings->GradientSettings->StepSize;
-            else if (property_ == "step_size_factor") return settings->StepSizeFactor;
-            else if (property_ == "global_step_size") return settings->GlobalStepSize;
-        }
-        else if (objectType == ObjectType::FragilityCurveSettings)
-        {
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
-
-            if (property_ == "step_size") return settings->StepSize;
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "low_value") return settings->LowValue;
-            else if (property_ == "high_value") return settings->HighValue;
-        }
-        else if (objectType == ObjectType::StochastPoint)
-        {
-            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
-
-            if (property_ == "beta") return stochastPoint->Beta;
-            else if (property_ == "reliability_index") return stochastPoint->Beta;
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "beta") return designPoint->Beta;
-            else if (property_ == "reliability_index") return designPoint->Beta;
-            else if (property_ == "probability_failure") return designPoint->getFailureProbability();
-            else if (property_ == "probability_non_failure") return designPoint->getNonFailureProbability();
-            else if (property_ == "return_period") return designPoint->getReturnPeriod();
-            else if (property_ == "convergence" && designPoint->convergenceReport != nullptr)
-            {
-                return designPoint->convergenceReport->Convergence;
-            }
-        }
-        else if (objectType == ObjectType::Alpha)
-        {
-            std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
-
-            if (property_ == "alpha") return alpha->Alpha;
-            else if (property_ == "alpha_correlated") return alpha->AlphaCorrelated;
-            else if (property_ == "u") return alpha->U;
-            else if (property_ == "x") return alpha->X;
-            else if (property_ == "influence_factor") return alpha->InfluenceFactor;
-        }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "z") return evaluation->Z;
-            else if (property_ == "quantile") return evaluation->Quantile;
-            else if (property_ == "beta") return evaluation->Beta;
-            else if (property_ == "weight") return evaluation->Weight;
-        }
-        else if (objectType == ObjectType::ReliabilityResult)
-        {
-            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
-
-            if (property_ == "reliability_index") return result->Reliability;
-            else if (property_ == "convergence") return std::isnan(result->ConvBeta) ? result->Variation : result->ConvBeta;
-            else if (property_ == "variation") return result->Variation;
-            else if (property_ == "contribution") return result->Contribution;
-        }
-        else if (objectType == ObjectType::SensitivityValue)
-        {
-            std::shared_ptr<Sensitivity::SensitivityValue> sensitivity_value = sensitivityValues[id];
-
-            if (property_ == "low") return sensitivity_value->low;
-            else if (property_ == "medium") return sensitivity_value->medium;
-            else if (property_ == "high") return sensitivity_value->high;
-            else if (property_ == "first_order_index") return sensitivity_value->firstOrderIndex;
-            else if (property_ == "total_index") return sensitivity_value->totalIndex;
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> length_effect = lengthEffectProjects[id];
-
-            if (property_ == "length") return length_effect->length;
-        }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "convergence") return convergence_report->Convergence;
-            else if (property_ == "fail_fraction") return convergence_report->FailFraction;
-            else if (property_ == "fail_weight") return convergence_report->FailWeight;
-            else if (property_ == "max_weight") return convergence_report->MaxWeight;
-            else if (property_ == "relaxation_factor") return convergence_report->RelaxationFactor;
-            else if (property_ == "variance_factor") return convergence_report->VarianceFactor;
-            else if (property_ == "z_margin") return convergence_report->ZMargin;
-        }
-        return std::nan("");
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetValue(id, property_);
     }
 
     void ProjectHandler::SetValue(int id, const std::string& property_, double value)
     {
-        ObjectType objectType = types[id];
-
-        if (objectType == ObjectType::ProbabilityValue)
-        {
-            std::shared_ptr<ProbabilityValue> probabilityValue = probabilityValues[id];
-
-            if (property_ == "reliability_index") probabilityValue->Reliability = value;
-            else if (property_ == "probability_of_failure") probabilityValue->setProbabilityOfFailure(value);
-            else if (property_ == "probability_of_non_failure") probabilityValue->setProbabilityOfNonFailure(value);
-            else if (property_ == "return_period") probabilityValue->setReturnPeriod(value);
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "location") stochast->getProperties()->Location = value;
-            else if (property_ == "scale") stochast->getProperties()->Scale = value;
-            else if (property_ == "shape") stochast->getProperties()->Shape = value;
-            else if (property_ == "shape_b") stochast->getProperties()->ShapeB = value;
-            else if (property_ == "shift") stochast->getProperties()->Shift = value;
-            else if (property_ == "set_shift") stochast->setShift(value);
-            else if (property_ == "shift_b") stochast->getProperties()->ShiftB = value;
-            else if (property_ == "minimum") stochast->getProperties()->Minimum = value;
-            else if (property_ == "maximum") stochast->getProperties()->Maximum = value;
-            else if (property_ == "mean") stochast->setMean(value);
-            else if (property_ == "deviation") stochast->setDeviation(value);
-            else if (property_ == "variation") stochast->setVariation(value);
-            else if (property_ == "design_quantile") stochast->designQuantile = value;
-            else if (property_ == "design_factor") stochast->designFactor = value;
-            else if (property_ == "design_value") stochast->setDesignValue(value);
-            else if (property_ == "shift_for_fit") argValue = value;
-            else if (property_ == "fixed_value") std::dynamic_pointer_cast<FragilityCurve>(stochast)->fixedValue = value;
-            else if (property_ == "design_point_x") argValue = value;
-            else if (property_ == "conditional_x") argValue = value;
-        }
-        else if (objectType == ObjectType::DiscreteValue)
-        {
-            std::shared_ptr<DiscreteValue> discreteValue = discreteValues[id];
-
-            if (property_ == "x") discreteValue->X = value;
-            else if (property_ == "amount") discreteValue->Amount = value;
-
-            discreteValue->setDirty();
-        }
-        else if (objectType == ObjectType::HistogramValue)
-        {
-            std::shared_ptr<HistogramValue> histogramValue = histogramValues[id];
-
-            if (property_ == "lower_bound") histogramValue->LowerBound = value;
-            else if (property_ == "upper_bound") histogramValue->UpperBound = value;
-            else if (property_ == "amount") histogramValue->Amount = value;
-
-            histogramValue->setDirty();
-        }
-        else if (objectType == ObjectType::FragilityValue)
-        {
-            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
-
-            if (property_ == "x") fragilityValue->X = value;
-            else if (property_ == "reliability_index") fragilityValue->Reliability = value;
-            else if (property_ == "probability_of_failure") fragilityValue->setProbabilityOfFailure(value);
-            else if (property_ == "probability_of_non_failure") fragilityValue->setProbabilityOfNonFailure(value);
-            else if (property_ == "return_period") fragilityValue->setReturnPeriod(value);
-
-            fragilityValue->setDirty();
-        }
-        else if (objectType == ObjectType::ContributingStochast)
-        {
-            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
-
-            if (property_ == "probability") contributingStochast->Probability = value;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "critical_value") limitStateFunction->criticalValue = value;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "default_value") parameter->defaultValue = value;
-        }
-        else if (objectType == ObjectType::ConditionalValue)
-        {
-            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
-
-            if (property_ == "x") conditionalValue->X = value;
-            else if (property_ == "location") conditionalValue->Stochast->Location = value;
-            else if (property_ == "scale") conditionalValue->Stochast->Scale = value;
-            else if (property_ == "shape") conditionalValue->Stochast->Shape = value;
-            else if (property_ == "shape_b") conditionalValue->Stochast->ShapeB = value;
-            else if (property_ == "shift") conditionalValue->Stochast->Shift = value;
-            else if (property_ == "shift_b") conditionalValue->Stochast->ShiftB = value;
-            else if (property_ == "minimum") conditionalValue->Stochast->Minimum = value;
-            else if (property_ == "maximum") conditionalValue->Stochast->Maximum = value;
-            else if (property_ == "mean") conditionalValue->mean = value;
-            else if (property_ == "deviation") conditionalValue->deviation = value;
-        }
-        else if (objectType == ObjectType::Scenario)
-        {
-            std::shared_ptr<Scenario> scenario = scenarios[id];
-
-            if (property_ == "probability") scenario->probability = value;
-            else if (property_ == "physical_value") scenario->parameterValue = value;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "relaxation_factor") settings->RelaxationFactor = value;
-            else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
-            else if (property_ == "variance_factor") settings->VarianceFactor = value;
-            else if (property_ == "fraction_failed") settings->FractionFailed = value;
-            else if (property_ == "epsilon_weight_sample") settings->EpsilonWeightSample = value;
-            else if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
-            else if (property_ == "epsilon_u_step_size") settings->DirectionSettings->EpsilonUStepSize = value;
-            else if (property_ == "epsilon_z_step_size") settings->DirectionSettings->EpsilonZStepSize = value;
-            else if (property_ == "dsdu") settings->DirectionSettings->Dsdu = value;
-            else if (property_ == "maximum_length_u") settings->DirectionSettings->MaximumLengthU = value;
-            else if (property_ == "maximum_length_start_point") settings->StartPointSettings->MaximumLengthStartPoint = value;
-            else if (property_ == "radius_sphere_search") settings->StartPointSettings->RadiusSphereSearch = value;
-            else if (property_ == "markov_chain_deviation") settings->MarkovChainDeviation = value;
-            else if (property_ == "subset_fraction") settings->SubsetFraction = value;
-            else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
-            else if (property_ == "fragility_curve_step_size") settings->FragilityCurveStepSize = value;
-            else if (property_ == "start_value_step_size") settings->StartValueStepSize = value;
-            else if (property_ == "loop_variance_increment") settings->LoopVarianceIncrement = value;
-            else if (property_ == "max_beta") settings->MaxBeta = value;
-        }
-        else if (objectType == ObjectType::FragilityCurveSettings)
-        {
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
-
-            if (property_ == "step_size") settings->StepSize = value;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
-            else if (property_ == "probability_for_convergence") settings->ProbabilityForConvergence = value;
-            else if (property_ == "minimum_u") settings->MinimumU = value;
-            else if (property_ == "maximum_u") settings->MaximumU = value;
-            else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
-            else if (property_ == "step_size_factor") settings->StepSizeFactor = value;
-            else if (property_ == "global_step_size") settings->GlobalStepSize = value;
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "low_value") settings->LowValue = value;
-            else if (property_ == "high_value") settings->HighValue = value;
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "min_value") stochastSettings->MinValue = value;
-            else if (property_ == "max_value") stochastSettings->MaxValue = value;
-            else if (property_ == "start_value") stochastSettings->StartValue = value;
-            else if (property_ == "variance_factor") stochastSettings->VarianceFactor = value;
-        }
-        else if (objectType == ObjectType::StochastPoint)
-        {
-            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
-
-            if (property_ == "beta") stochastPoint->Beta = value;
-            else if (property_ == "reliability_index") stochastPoint->Beta = value;
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "beta") designPoint->Beta = value;
-            else if (property_ == "reliability_index") designPoint->Beta = value;
-            else if (property_ == "convergence")
-            {
-                if (designPoint->convergenceReport == nullptr) designPoint->convergenceReport = std::make_shared<ConvergenceReport>();
-                designPoint->convergenceReport->Convergence = value;
-            }
-        }
-        else if (objectType == ObjectType::Alpha)
-        {
-            std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
-
-            if (property_ == "alpha") alpha->Alpha = value;
-            else if (property_ == "u") alpha->U = value;
-            else if (property_ == "x") alpha->X = value;
-            else if (property_ == "alpha_correlated") alpha->AlphaCorrelated = value;
-            else if (property_ == "influence_factor") alpha->InfluenceFactor = value;
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> length_effect = lengthEffectProjects[id];
-
-            if (property_ == "length") length_effect->length = value;
-        }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "z") evaluation->Z = value;
-            else if (property_ == "quantile") evaluation->Quantile = value;
-            else if (property_ == "beta") evaluation->Beta = value;
-            else if (property_ == "weight") evaluation->Weight = value;
-        }
-        else if (objectType == ObjectType::ReliabilityResult)
-        {
-            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
-
-            if (property_ == "reliability_index") result->Reliability = value;
-            else if (property_ == "convergence") result->ConvBeta = value;
-            else if (property_ == "variation") result->Variation = value;
-            else if (property_ == "contribution") result->Contribution = value;
-        }
-        else if (objectType == ObjectType::SensitivityValue)
-        {
-            std::shared_ptr<Sensitivity::SensitivityValue> sensitivity_value = sensitivityValues[id];
-
-            if (property_ == "low") sensitivity_value->low = value;
-            else if (property_ == "medium") sensitivity_value->medium = value;
-            else if (property_ == "high") sensitivity_value->high = value;
-            else if (property_ == "first_order_index") sensitivity_value->firstOrderIndex = value;
-            else if (property_ == "total_index") sensitivity_value->totalIndex = value;
-        }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "convergence") convergence_report->Convergence = value;
-            else if (property_ == "fail_fraction") convergence_report->FailFraction = value;
-            else if (property_ == "fail_weight") convergence_report->FailWeight = value;
-            else if (property_ == "max_weight") convergence_report->MaxWeight = value;
-            else if (property_ == "relaxation_factor") convergence_report->RelaxationFactor = value;
-            else if (property_ == "variance_factor") convergence_report->VarianceFactor = value;
-            else if (property_ == "z_margin") convergence_report->ZMargin = value;
-        }
-    }
-
-    int ProjectHandler::GetIntValue(int id, const std::string& property_)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "index") return project->model->Index;
-            else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
-            else if (property_ == "total_model_runs") return project->modelRuns;
-        }
-
-        if (objectType == ObjectType::ValidationReport)
-        {
-            std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
-
-            if (property_ == "messages_count") return static_cast<int>(validationReport->messages.size());
-        }
-        else if (objectType == ObjectType::Project)
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "index") return project->model->Index;
-            else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
-            else if (property_ == "total_model_runs") return project->modelRuns;
-        }
-
-        if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "index") return parameter->index;
-            else if (property_ == "array_size") return parameter->arraySize;
-        }
-        else if (objectType == ObjectType::Alpha)
-        {
-            std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
-
-            if (property_ == "index") return alpha->Index;
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "uncertainty_stochasts_count") return static_cast<int>(project->uncertaintyResults.size());
-            else if (property_ == "uncertainty_results_count") return static_cast<int>(project->uncertaintyResults.size());
-            else if (property_ == "uncertainty_parameters_count") return static_cast<int>(project->uncertaintyParameters.size());
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
-            else if (property_ == "sensitivity_parameters_count") return static_cast<int>(project->sensitivityParameters.size());
-        }
-        else if (objectType == ObjectType::SensitivityResult)
-        {
-            std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
-
-            if (property_ == "values_count") return static_cast<int>(result->values.size());
-            else if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
-            else if (property_ == "messages_count") return static_cast<int>(result->messages.size());
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "observations") return stochast->getProperties()->Observations;
-            else if (property_ == "array_size") return stochast->modelParameter->arraySize;
-            else if (property_ == "histogram_values_count") return static_cast<int>(stochast->getProperties()->HistogramValues.size());
-            else if (property_ == "discrete_values_count") return static_cast<int>(stochast->getProperties()->DiscreteValues.size());
-            else if (property_ == "fragility_values_count") return static_cast<int>(stochast->getProperties()->FragilityValues.size());
-            else if (property_ == "contributing_stochasts_count") return static_cast<int>(stochast->getProperties()->ContributingStochasts.size());
-            else if (property_ == "conditional_values_count") return static_cast<int>(stochast->ValueSet->StochastValues.size());
-            else if (property_ == "array_variables_count") return static_cast<int>(stochast->ArrayVariables.size());
-            else if (property_ == "special_values_count") tempValues["special_values"] = stochast->getSpecialXValues(); return static_cast<int>(tempValues["special_values"].size());
-        }
-        else if (objectType == ObjectType::CorrelationMatrix)
-        {
-            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
-
-            if (property_ == "count_correlations") return matrix->CountCorrelations();
-            else if (property_ == "variables_count") return matrix->GetDimension();
-        }
-        else if (objectType == ObjectType::ConditionalValue)
-        {
-            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
-
-            if (property_ == "observations") return conditionalValue->Stochast->Observations;
-        }
-        else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "variables_count") return correlationMatrix->GetDimension();
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "limit_state_functions_count") return static_cast<int>(limitStateFunction->limitStateFunctions.size());
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
-            else if (property_ == "minimum_samples") return settings->MinimumSamples;
-            else if (property_ == "maximum_samples") return settings->MaximumSamples;
-            else if (property_ == "maximum_samples_no_result") return settings->MaximumSamplesNoResult;
-            else if (property_ == "minimum_iterations") return settings->MinimumIterations;
-            else if (property_ == "maximum_iterations") return settings->MaximumIterations;
-            else if (property_ == "minimum_directions") return settings->MinimumDirections;
-            else if (property_ == "maximum_directions") return settings->MaximumDirections;
-            else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
-            else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
-            else if (property_ == "minimum_failed_samples") return settings->MinimumFailedSamples;
-            else if (property_ == "random_seed") return settings->RandomSettings->Seed;
-            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
-            else if (property_ == "max_messages") return settings->RunSettings->MaxMessages;
-            else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
-            else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
-            else if (property_ == "max_clusters") return settings->MaxClusters;
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
-            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
-            else if (property_ == "iterations") return settings->Iterations;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
-            else if (property_ == "max_chunk_size") return settings->RunSettings->MaxChunkSize;
-            else if (property_ == "minimum_samples") return settings->MinimumSamples;
-            else if (property_ == "maximum_samples") return settings->MaximumSamples;
-            else if (property_ == "maximum_iterations") return settings->MaximumIterations;
-            else if (property_ == "minimum_directions") return settings->MinimumDirections;
-            else if (property_ == "maximum_directions") return settings->MaximumDirections;
-            else if (property_ == "random_seed") return settings->RandomSettings->Seed;
-            else if (property_ == "required_samples")
-                return Uncertainty::CrudeMonteCarloSettingsS::getRequiredSamples(settings->ProbabilityForConvergence, settings->VariationCoefficient);
-            else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
-        }
-        else if (objectType == ObjectType::UncertaintyResult)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
-
-            if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
-            else if (property_ == "quantile_evaluations_count") return static_cast<int>(result->quantileEvaluations.size());
-            else if (property_ == "messages_count") return static_cast<int>(result->messages.size());
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "intervals") return stochastSettings->Intervals;
-        }
-        else if (objectType == ObjectType::StochastPoint)
-        {
-            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
-
-            if (property_ == "alphas_count") return static_cast<int>(stochastPoint->Alphas.size());
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (designPoint->convergenceReport != nullptr)
-            {
-                if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
-                else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
-                else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
-            }
-            if (property_ == "contributing_design_points_count") return static_cast<int>(designPoint->ContributingDesignPoints.size());
-            else if (property_ == "alphas_count") return static_cast<int>(designPoint->Alphas.size());
-            else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
-            else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
-            else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
-            else if (property_ == "evaluations_count") return static_cast<int>(designPoint->Evaluations.size());
-            else if (property_ == "reliability_results_count") return static_cast<int>(designPoint->ReliabilityResults.size());
-            else if (property_ == "messages_count") return static_cast<int>(designPoint->Messages.size());
-        }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "iteration") return evaluation->Iteration;
-            else if (property_ == "tag") return evaluation->Tag;
-            else if (property_ == "input_values_count") return static_cast<int>(evaluation->InputValues.size());
-            else if (property_ == "output_values_count") return static_cast<int>(evaluation->OutputValues.size());
-        }
-        else if (objectType == ObjectType::ReliabilityResult)
-        {
-            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
-
-            if (property_ == "index") return result->Index;
-            else if (property_ == "samples") return static_cast<int>(result->Samples);
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
-
-            if (property_ == "correlation_lengths_count") return static_cast<int>(project->correlationLengths.size());
-        }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "failed_samples") return convergence_report->FailedSamples;
-        }
-
-        return 0;
-    }
-
-    int ProjectHandler::GetIdValue(int id, const std::string& property_)
-    {
-        ObjectType objectType = types[id];
-
-        int newId = this->GetNewId();
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
-        }
-        else if (ProjectEntries::IsModelSettingsType(objectType))
-        {
-            std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
-
-            if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(settings->getValidationReport()), newId);
-        }
-
-        if (objectType == ObjectType::Project)
-        {
-            std::shared_ptr<ReliabilityProject> project = projects[id];
-
-            if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction, newId);
-            else if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
-        }
-        else if (objectType == ObjectType::RunProject)
-        {
-            std::shared_ptr<Models::RunProject> project = runProjects[id];
-
-            if (property_ == "realization") return GetEvaluationId(project->evaluation, newId);
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "uncertainty_stochast") return GetStochastId(project->uncertaintyResult->stochast, newId);
-            else if (property_ == "uncertainty_result") return GetUncertaintyResultId(project->uncertaintyResult, newId);
-            else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix, newId);
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "result") return GetSensitivityResultId(project->sensitivityResult, newId);
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "conditional_source") return GetStochastId(stochast->VariableSource, newId);
-            else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(stochast->getValidationReport()), newId);
-            else if (property_ == "validate_fit")
-            {
-                std::shared_ptr<Stochast> prior = tempIntValue > 0 ? stochasts[tempIntValue] : nullptr;
-                Logging::ValidationReport report = stochast->getFitValidationReport(tempValues["data"], prior, argValue);
-                if (!report.isValid())
-                {
-                    tempValues.erase("data");
-                    tempIntValue = 0;
-                    argValue = std::nan("");
-                }
-                return GetValidationReportId(std::make_shared<Logging::ValidationReport>(report), newId);
-            }
-            else if (property_ == "conditional_x")
-            {
-                double x = argValue;
-                argValue = std::nan("");
-
-                std::shared_ptr<Stochast> conditionalStochast = stochast->getVariableStochast(x);
-                return GetStochastId(conditionalStochast, newId);
-            }
-            else if (property_ == "design_point_x")
-            {
-                double x = argValue;
-                argValue = std::nan("");
-
-                std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
-                std::shared_ptr<Models::StochastPoint> stochastPoint = fragilityCurve->getDesignPoint(x);
-                std::shared_ptr<DesignPoint> designPoint = std::make_shared<DesignPoint>(*stochastPoint);
-
-                return GetDesignPointId(designPoint, newId);
-            }
-        }
-        else if (objectType == ObjectType::FragilityValue)
-        {
-            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
-
-            if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<DesignPoint>(fragilityValue->designPoint), newId);
-        }
-        else if (objectType == ObjectType::ContributingStochast)
-        {
-            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
-
-            if (property_ == "variable") return GetStochastId(std::static_pointer_cast<Stochast>(contributingStochast->Stochast), newId);
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "variable") return GetStochastId(stochastSettings->stochast, newId);
-        }
-        else if (objectType == ObjectType::Alpha)
-        {
-            std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
-
-            if (property_ == "variable")
-            {
-                if (alpha->Stochast == nullptr) return 0;
-
-                if (stochastIds.contains(alpha->Stochast))
-                {
-                    return GetStochastId(alpha->Stochast, newId);
-                }
-                else
-                {
-                    std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(alpha->Stochast);
-                    if (fragilityCurve != nullptr)
-                    {
-                        return GetFragilityCurveId(fragilityCurve, newId);
-                    }
-                    else
-                    {
-                        return GetStochastId(alpha->Stochast, newId);
-                    }
-                }
-            }
-        }
-        else if (objectType == ObjectType::UncertaintyResult)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
-
-            if (property_ == "variable") return GetStochastId(result->stochast, newId);
-        }
-        else if (objectType == ObjectType::ProbabilityLimitStateFunction)
-        {
-            std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
-
-            if (property_ == "fragility_curve") return GetFragilityCurveId(probabilityLimitStateFunction->fragilityCurve, newId);
-        }
-        else if (objectType == ObjectType::SensitivityValue)
-        {
-            std::shared_ptr<Sensitivity::SensitivityValue> result = sensitivityValues[id];
-
-            if (property_ == "variable") return GetStochastId(result->stochast, newId);
-        }
-        else if (objectType == ObjectType::Scenario)
-        {
-            std::shared_ptr<Scenario> scenario = scenarios[id];
-
-            if (property_ == "parameter") return GetStochastId(scenario->parameter, newId);
-        }
-        else if (objectType == ObjectType::FragilityCurveProject)
-        {
-            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
-
-            if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
-            else if (property_ == "integrand") return GetStochastId(project->integrand, newId);
-            else if (property_ == "fragility_curve") GetFragilityCurveId(project->fragilityCurve, newId);
-            else if (property_ == "fragility_curve_normalized") GetFragilityCurveId(project->fragilityCurveNormalized, newId);
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> combineProject = combineProjects[id];
-
-            if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
-            else if (property_ == "design_point_correlation_matrix") return GetCorrelationMatrixId(combineProject->correlationMatrix, newId);
-            else if (property_ == "correlation_matrix") return GetSelfCorrelationMatrixId(combineProject->selfCorrelationMatrix, newId);
-            else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> combineProject = excludingCombineProjects[id];
-
-            if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
-            else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
-
-            if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "convergence_report") return GetConvergenceReportId(designPoint->convergenceReport, newId);
-        }
-
-        return 0;
-    }
-
-    void ProjectHandler::SetIntValue(int id, const std::string& property_, int value)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "settings") project->setSettings(GetSettings(value));
-            else if (property_ == "correlation_matrix") project->correlation = correlations[value];
-            else if (property_ == "copula_correlation") project->correlation = correlations[value];
-            else if (property_ == "share_project") project->shareStochasts(GetProject(value));
-            else if (property_ == "total_model_runs") project->modelRuns = value;
-        }
-
-        if (objectType == ObjectType::FragilityCurveProject)
-        {
-            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
-
-            if (property_ == "integrand") project->integrand = stochasts[value];
-            else if (property_ == "fragility_curve") project->fragilityCurve = fragilityCurves[value];
-            else if (property_ == "fragility_curve_normalized") project->fragilityCurveNormalized = fragilityCurves[value];
-            else if (property_ == "settings") project->settings = fragilityCurveSettings[value];
-        }
-        else if (objectType == ObjectType::ProbabilityLimitStateFunction)
-        {
-            std::shared_ptr<ProbabilityLimitStateFunction> probabilityLimitStateFunction = probabilityLimitStateFunctions[id];
-
-            if (property_ == "fragility_curve") probabilityLimitStateFunction->fragilityCurve = fragilityCurves[value];
-        }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "iteration") evaluation->Iteration = value;
-            else if (property_ == "tag") evaluation->Tag = value;
-        }
-        else if (objectType == ObjectType::ReliabilityResult)
-        {
-            std::shared_ptr<ReliabilityResult> result = reliabilityResults[id];
-
-            if (property_ == "index") result->Index = value;
-            else if (property_ == "samples") result->Samples = value;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "index") parameter->index = value;
-            else if (property_ == "array_size") parameter->arraySize = value;
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "observations") stochast->getProperties()->Observations = value;
-            else if (property_ == "array_size") stochast->modelParameter->arraySize = value;
-            else if (property_ == "copy_from") stochast->copyFrom(stochasts[value]);
-            else if (property_ == "conditional_source") stochast->VariableSource = stochasts[value];
-            else if (property_ == "histogram_values") stochast->getProperties()->HistogramValues.push_back(histogramValues[value]);
-            else if (property_ == "fragility_values") stochast->getProperties()->FragilityValues.push_back(fragilityValues[value]);
-            else if (property_ == "discrete_values") stochast->getProperties()->DiscreteValues.push_back(discreteValues[value]);
-            else if (property_ == "prior") tempIntValue = value;
-        }
-        else if (objectType == ObjectType::FragilityValue)
-        {
-            std::shared_ptr<FragilityValue> fragilityValue = fragilityValues[id];
-
-            if (property_ == "design_point")
-            {
-                fragilityValue->designPoint = designPoints.contains(value) ? designPoints[value] : nullptr;
-            }
-        }
-        else if (objectType == ObjectType::ContributingStochast)
-        {
-            std::shared_ptr<ContributingStochast> contributingStochast = contributingStochasts[id];
-
-            if (property_ == "variable") contributingStochast->Stochast = value > 0 ? stochasts[value] : nullptr;
-        }
-        else if (objectType == ObjectType::ConditionalValue)
-        {
-            std::shared_ptr<VariableStochastValue> conditionalValue = conditionalValues[id];
-
-            if (property_ == "observations") conditionalValue->Stochast->Observations = value;
-        }
-        else if (objectType == ObjectType::Scenario)
-        {
-            std::shared_ptr<Scenario> scenario = scenarios[id];
-
-            if (property_ == "parameter") scenario->parameter = stochasts[value];
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
-            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
-            else if (property_ == "minimum_samples") settings->MinimumSamples = value;
-            else if (property_ == "maximum_samples") settings->MaximumSamples = value;
-            else if (property_ == "maximum_samples_no_result") settings->MaximumSamplesNoResult = value;
-            else if (property_ == "minimum_iterations") settings->MinimumIterations = value;
-            else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
-            else if (property_ == "minimum_directions") settings->MinimumDirections = value;
-            else if (property_ == "maximum_directions") settings->MaximumDirections = value;
-            else if (property_ == "minimum_variance_loops") settings->MinimumVarianceLoops = value;
-            else if (property_ == "maximum_variance_loops") settings->MaximumVarianceLoops = value;
-            else if (property_ == "minimum_failed_samples") settings->MinimumFailedSamples = value;
-            else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
-            else if (property_ == "max_clusters") settings->MaxClusters = value;
-            else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
-            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
-            else if (property_ == "max_messages") settings->RunSettings->MaxMessages = value;
-            else if (property_ == "max_steps_sphere_search") settings->StartPointSettings->maxStepsSphereSearch = value;
-            else if (property_ == "start_point")
-            {
-                std::shared_ptr<DesignPoint> designPoint = GetDesignPoint(value);
-                settings->StochastSet->setStartPoint(designPoint->getSample());
-            }
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
-            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
-            else if (property_ == "iterations") settings->Iterations = value;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
-            else if (property_ == "max_chunk_size") settings->RunSettings->MaxChunkSize = value;
-            else if (property_ == "minimum_samples") settings->MinimumSamples = value;
-            else if (property_ == "maximum_samples") settings->MaximumSamples = value;
-            else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
-            else if (property_ == "minimum_directions") settings->MinimumDirections = value;
-            else if (property_ == "maximum_directions") settings->MaximumDirections = value;
-            else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "variable") stochastSettings->stochast = value > 0 ? stochasts[value] : nullptr;
-            else if (property_ == "intervals") stochastSettings->Intervals = value;
-        }
-        else if (objectType == ObjectType::Project)
-        {
-            std::shared_ptr<ReliabilityProject> reliabilityProject = projects[id];
-
-            if (property_ == "limit_state_function") reliabilityProject->limitStateFunction = GetLimitStateFunction(value);
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> combineProject = combineProjects[id];
-
-            if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
-            else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = selfCorrelationMatrices[value];
-            else if (property_ == "design_point_correlation_matrix") combineProject->correlationMatrix = correlations[value];
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> combineProject = excludingCombineProjects[id];
-
-            if (property_ == "settings") combineProject->settings = excludingCombineSettings[value];
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "ids") designPoint->Ids = GetDesignPointIds(value);
-            else if (property_ == "total_iterations") designPoint->convergenceReport->TotalIterations = value;
-            else if (property_ == "total_directions") designPoint->convergenceReport->TotalDirections = value;
-            else if (property_ == "total_model_runs") designPoint->convergenceReport->TotalModelRuns = value;
-        }
-        else if (objectType == ObjectType::Alpha)
-        {
-            std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
-
-            if (property_ == "variable") alpha->Stochast = value > 0 ? stochasts[value] : nullptr;
-            else if (property_ == "index") alpha->Index = value;
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
-
-            if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
-            else if (property_ == "design_point_cross_section") project->designPointCrossSection = designPoints[value];
-        }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "failed_samples") convergence_report->FailedSamples = value;
-        }
-        else if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            if (property_ == "correlation_stochast") tempIntValue = value;
-        }
-    }
-
-    double ProjectHandler::GetIntArgValue(int id1, int id2, const std::string& property_)
-    {
-        ObjectType objectType = types[id1];
-
-        if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            std::shared_ptr<SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
-            std::shared_ptr<Stochast> stochast = stochasts[id2];
-
-            if (property_ == "rho") return correlationMatrix->getSelfCorrelation(stochast);
-        }
-        return std::nan("");
-    }
-
-    void ProjectHandler::SetIntArgValue(int id1, int id2, const std::string& property_, double value)
-    {
-        ObjectType objectType = types[id1];
-
-        if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            std::shared_ptr<SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
-            std::shared_ptr<Stochast> stochast = stochasts[id2];
-
-            if (property_ == "rho") correlationMatrix->setSelfCorrelation(stochast, value);
-        }
-    }
-
-    bool ProjectHandler::GetBoolValue(int id, const std::string& property_)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "is_valid") return project->isValid();
-        }
-        else if (ProjectEntries::IsModelSettingsType(objectType))
-        {
-            std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
-
-            if (property_ == "is_valid") return settings->isValid();
-            else if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
-            else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
-            else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
-            else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
-            else if (property_ == "allow_repository") return settings->RunSettings->AllowRepository;
-            else if (property_ == "use_z_from_sample") return settings->RunSettings->UseZFromSample;
-        }
-
-        if (objectType == ObjectType::ValidationReport)
-        {
-            std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
-
-            if (property_ == "is_valid") return validationReport->isValid();
-        }
-        else if (objectType == ObjectType::FragilityCurve)
-        {
-            std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
-
-            if (property_ == "inverted") return fragilityCurve->inverted;
-            else if (property_ == "fixed") return fragilityCurve->fixed;
-        }
-
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "inverted") return stochast->isInverted();
-            else if (property_ == "truncated") return stochast->isTruncated();
-            else if (property_ == "conditional") return stochast->IsVariableStochast;
-            else if (property_ == "can_fit") return stochast->canFit(false, false);
-            else if (property_ == "can_fit_prior") return stochast->canFit(false, true);
-            else if (property_ == "can_truncate") return stochast->canTruncate();
-            else if (property_ == "can_invert") return stochast->canInvert();
-            else if (property_ == "fixed") return std::dynamic_pointer_cast<Reliability::FragilityCurve>(stochast)->fixed;
-            else if (property_ == "is_array") return stochast->modelParameter->isArray;
-            else if (property_ == "is_varying") return stochast->isVarying();
-            else if (property_ == "is_qualitative") return stochast->isQualitative();
-            else if (property_ == "is_valid") return stochast->isValid();
-            else if (property_ == "is_used_mean") return true;
-            else if (property_ == "is_used_deviation") return stochast->getDistributionType() != DistributionType::Deterministic;
-            else if (property_ == "is_used_location") return stochast->hasParameter(DistributionPropertyType::Location);
-            else if (property_ == "is_used_scale") return stochast->hasParameter(DistributionPropertyType::Scale);
-            else if (property_ == "is_used_minimum") return stochast->hasParameter(DistributionPropertyType::Minimum);
-            else if (property_ == "is_used_maximum") return stochast->hasParameter(DistributionPropertyType::Maximum);
-            else if (property_ == "is_used_shift") return stochast->hasParameter(DistributionPropertyType::Shift);
-            else if (property_ == "is_used_shift_b") return stochast->hasParameter(DistributionPropertyType::ShiftB);
-            else if (property_ == "is_used_shape") return stochast->hasParameter(DistributionPropertyType::Shape);
-            else if (property_ == "is_used_shape_b") return stochast->hasParameter(DistributionPropertyType::ShapeB);
-            else if (property_ == "is_used_observations") return stochast->hasParameter(DistributionPropertyType::Observations);
-        }
-        else if (objectType == ObjectType::CorrelationMatrix)
-        {
-            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
-
-            if (property_ == "is_identity") return matrix->IsIdentity();
-            else if (property_ == "has_conflicting_correlations") return matrix->HasConflictingCorrelations();
-            else if (property_ == "is_valid") return matrix->IsValid();
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "is_array") return parameter->isArray;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "use_compare_parameter") return limitStateFunction->useCompareParameter;
-            else if (property_ == "normalize") return limitStateFunction->normalize;
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "normalize") return limitStateFunction->normalize;
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "is_initialization_allowed") return stochastSettings->IsInitializationAllowed;
-            else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "is_converged") return designPoint->convergenceReport != nullptr && designPoint->convergenceReport->IsConverged;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
-            else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
-            else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
-            else if (property_ == "is_repeatable_random") return settings->RandomSettings->IsRepeatableRandom;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> setting = settingsValues[id];
-
-            if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
-            else if (property_ == "is_repeatable_random") return setting->RandomSettings->IsRepeatableRandom;
-            else if (property_ == "filter_at_non_convergence") return setting->FilterAtNonConvergence;
-            else if (property_ == "clustering") return setting->Clustering;
-            else if (property_ == "optimize_number_clusters") return setting->OptimizeNumberOfClusters;
-            else if (property_ == "auto_maximum_samples") return setting->AutoMaximumSamples;
-            else if (property_ == "start_point_on_limit_state") return setting->StartPointOnLimitState;
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> project = combineProjects[id];
-
-            if (property_ == "is_valid") return project->is_valid();
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
-
-            if (property_ == "is_valid") return project->is_valid();
-        }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "is_converged") return convergence_report->IsConverged;
-        }
-
-        return false;
-    }
-
-    void ProjectHandler::SetBoolValue(int id, const std::string& property_, bool value)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "callback_assigned") if (project->model != nullptr) project->model->callbackAssigned = value;
-        }
-        else if (ProjectEntries::IsModelSettingsType(objectType))
-        {
-            std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
-
-            if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
-            else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
-            else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
-            else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
-            else if (property_ == "allow_repository") settings->RunSettings->AllowRepository = value;
-            else if (property_ == "use_z_from_sample") settings->RunSettings->UseZFromSample = value;
-            else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "inverted") stochast->setInverted(value);
-            else if (property_ == "truncated") stochast->setTruncated(value);
-            else if (property_ == "conditional") stochast->IsVariableStochast = value;
-            else if (property_ == "is_array") stochast->modelParameter->isArray = value;
-        }
-
-        if (objectType == ObjectType::FragilityCurve)
-        {
-            std::shared_ptr<FragilityCurve> fragilityCurve = fragilityCurves[id];
-
-            if (property_ == "inverted") fragilityCurve->inverted = value;
-            else if (property_ == "fixed") fragilityCurve->fixed = value;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "is_array") parameter->isArray = value;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "use_compare_parameter") limitStateFunction->useCompareParameter = value;
-            else if (property_ == "normalize") limitStateFunction->normalize = value;
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "normalize") limitStateFunction->normalize = value;
-        }
-        else if (objectType == ObjectType::StochastSettings)
-        {
-            std::shared_ptr<StochastSettings> stochastSettings = stochastSettingsValues[id];
-
-            if (property_ == "is_initialization_allowed") stochastSettings->IsInitializationAllowed = value;
-            else if (property_ == "is_variance_allowed") stochastSettings->IsVarianceAllowed = value;
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
-            else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
-            else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
-            else if (property_ == "is_repeatable_random") settings->RandomSettings->IsRepeatableRandom = value;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> setting = settingsValues[id];
-
-            if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
-            else if (property_ == "is_repeatable_random") setting->RandomSettings->IsRepeatableRandom = value;
-            else if (property_ == "filter_at_non_convergence") setting->FilterAtNonConvergence = value;
-            else if (property_ == "clustering") setting->Clustering = value;
-            else if (property_ == "optimize_number_clusters") setting->OptimizeNumberOfClusters = value;
-            else if (property_ == "auto_maximum_samples") setting->AutoMaximumSamples = value;
-            else if (property_ == "start_point_on_limit_state") setting->StartPointOnLimitState = value;
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "is_converged") designPoint->convergenceReport->IsConverged = value;
-        }
-        else if (objectType == ObjectType::ConvergenceReport)
-        {
-            std::shared_ptr<ConvergenceReport> convergence_report = convergenceReports[id];
-
-            if (property_ == "is_converged") convergence_report->IsConverged = value;
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetValue(id, property_, value);
     }
 
     std::string ProjectHandler::GetStringValue(int id, const std::string& property_)
     {
-        ObjectType objectType = types[id];
-
-        if (objectType == ObjectType::Message)
-        {
-            std::shared_ptr<Logging::Message> message = messages[id];
-
-            if (property_ == "type") return Logging::Message::getMessageTypeString(message->Type);
-            else if (property_ == "text") return message->Text;
-            else if (property_ == "subject") return message->Subject;
-            else return "";
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
-
-            if (property_ == "name") return parameter->name;
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "distribution") return Stochast::getDistributionTypeString(stochast->getDistributionType());
-            else if (property_ == "constant_parameter") return Stochast::getConstantParameterTypeString(stochast->constantParameterType);
-            else if (property_ == "name") return stochast->name;
-            else return "";
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
-
-            if (property_ == "parameter") return limitStateFunction->criticalParameter;
-            else if (property_ == "compare_parameter") return limitStateFunction->compareParameter;
-            else if (property_ == "compare_type") return LimitStateFunction::GetCompareTypeString(limitStateFunction->compareType);
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(limitStateFunction->combineType);
-        }
-        else if (objectType == ObjectType::Scenario)
-        {
-            std::shared_ptr<Scenario> scenario = scenarios[id];
-
-            if (property_ == "name") return scenario->name;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
-            else if (property_ == "handle_invalid_type") return Models::RunSettings::getHandleInvalidTypeString(settings->RunSettings->handleInvalidType);
-            else if (property_ == "reliability_result") return Settings::getReliabilityResultTypeString(settings->ReliabilityResult);
-            else if (property_ == "model_return_type") return Models::RunSettings::getModelReturnTypeString(settings->RunSettings->modelReturnType);
-            else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
-            else if (property_ == "fragility_curve_design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->fragilityCurveDesignPointMethod);
-            else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
-            else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
-            else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
-            else if (property_ == "model_varying_type") return DirectionReliabilitySettings::getModelVaryingTypeString(settings->DirectionSettings->modelVaryingType);
-            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
-        }
-        else if (objectType == ObjectType::FragilityCurveSettings)
-        {
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
-
-            if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
-        }
-        else if (objectType == ObjectType::RunProjectSettings)
-        {
-            std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
-
-            if (property_ == "run_values_type") return Models::RunProjectSettings::getRunValuesTypeString(settings->runValuesType);
-            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "uncertainty_method") return Uncertainty::SettingsS::getUncertaintyMethodTypeString(settings->UncertaintyMethod);
-            else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
-            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "parameter") return project->parameter;
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "parameter") return project->parameter;
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "sensitivity_method") return Sensitivity::SensitivitySettings::getSensitivityMethodTypeString(settings->SensitivityMethod);
-            else if (property_ == "lowest_message_type") return Logging::Message::getMessageTypeString(settings->RunSettings->LowestMessageType);
-        }
-        else if (objectType == ObjectType::CombineSettings)
-        {
-            std::shared_ptr<CombineSettings> settings = combineSettingsValues[id];
-
-            if (property_ == "combine_method") return DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
-            else if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(settings->combineType);
-        }
-        else if (objectType == ObjectType::ExcludingCombineSettings)
-        {
-            std::shared_ptr<ExcludingCombineSettings> settings = excludingCombineSettings[id];
-
-            if (property_ == "combiner_method") return DesignPointCombiner::getExcludingCombinerMethodString(settings->combinerMethod);
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "identifier") return designPoint->Identifier;
-        }
-        else if (objectType == ObjectType::Alpha)
-        {
-            std::shared_ptr<Models::StochastPointAlpha> alpha = alphas[id];
-
-            if (property_ == "identifier") return alpha->getIdentifier();
-        }
-        else if (objectType == ObjectType::UncertaintyResult)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
-
-            if (property_ == "identifier") return result->getIdentifier();
-        }
-        else if (objectType == ObjectType::SensitivityResult)
-        {
-            std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
-
-            if (property_ == "identifier") return result->identifier;
-        }
-
-        return "";
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetStringValue(id, property_);
     }
 
     void ProjectHandler::SetStringValue(int id, const std::string& property_, const std::string& value)
     {
-        ObjectType objectType = types[id];
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetStringValue(id, property_, value);
+    }
 
-        if (objectType == ObjectType::Message)
-        {
-            std::shared_ptr<Logging::Message> message = messages[id];
+    int ProjectHandler::GetIntValue(int id, const std::string& property_)
+    {
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetIntValue(id, property_);
+    }
 
-            if (property_ == "type") message->Type = Logging::Message::getMessageType(value);
-            else if (property_ == "text") message->Text = value;
-            else if (property_ == "subject") message->Subject = value;
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
+    int ProjectHandler::GetIdValue(int id, const std::string& property_)
+    {
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetIdValue(id, property_);
+    }
 
-            if (property_ == "distribution") stochast->setDistributionType(Stochast::getDistributionType(value));
-            else if (property_ == "constant_parameter") stochast->constantParameterType = Stochast::getConstantParameterType(value);
-            else if (property_ == "name") stochast->name = value;
-        }
-        else if (objectType == ObjectType::ModelParameter)
-        {
-            std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+    void ProjectHandler::SetIntValue(int id, const std::string& property_, int value)
+    {
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetIntValue(id, property_, value);
+    }
 
-            if (property_ == "name") parameter->name = value;
-        }
-        else if (objectType == ObjectType::LimitStateFunction)
-        {
-            std::shared_ptr<LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+    bool ProjectHandler::GetBoolValue(int id, const std::string& property_)
+    {
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetBoolValue(id, property_);
+    }
 
-            if (property_ == "parameter") limitStateFunction->criticalParameter = value;
-            else if (property_ == "compare_parameter") limitStateFunction->compareParameter = value;
-            else if (property_ == "compare_type") limitStateFunction->compareType = LimitStateFunction::GetCompareType(value);
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
+    void ProjectHandler::SetBoolValue(int id, const std::string& property_, bool value)
+    {
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetBoolValue(id, property_, value);
+    }
 
-            if (property_ == "combine_type") limitStateFunction->combineType = DesignPointCombiner::getCombineType(value);
-        }
-        else if (objectType == ObjectType::Scenario)
-        {
-            std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+    double ProjectHandler::GetIntArgValue(int id1, int id2, const std::string& property_)
+    {
+        ObjectType objectType = admin.GetObjectType(id1);
+        return handlers[objectType]->GetIntArgValue(id1, id2, property_);
+    }
 
-            if (property_ == "name") scenario->name = value;
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
+    void ProjectHandler::SetIntArgValue(int id1, int id2, const std::string& property_, double value)
+    {
+        ObjectType objectType = admin.GetObjectType(id1);
+        return handlers[objectType]->SetIntArgValue(id1, id2, property_, value);
+    }
 
-            if (property_ == "parameter") project->parameter = value;
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+    int ProjectHandler::GetIndexedIntValue(int id, const std::string& property_, int index)
+    {
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetIndexedIntValue(id, property_, index);
+    }
 
-            if (property_ == "parameter") project->parameter = value;
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
-            else if (property_ == "reliability_result") settings->ReliabilityResult = Settings::getReliabilityResultType(value);
-            else if (property_ == "handle_invalid_type") settings->RunSettings->handleInvalidType = Models::RunSettings::getHandleInvalidType(value);
-            else if (property_ == "model_return_type") settings->RunSettings->modelReturnType = Models::RunSettings::getModelReturnType(value);
-            else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
-            else if (property_ == "fragility_curve_design_point_method") settings->fragilityCurveDesignPointMethod = DesignPointBuilder::getDesignPointMethod(value);
-            else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
-            else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
-            else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
-            else if (property_ == "model_varying_type") settings->DirectionSettings->modelVaryingType = DirectionReliabilitySettings::getModelVaryingType(value);
-            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
-        }
-        else if (objectType == ObjectType::FragilityCurveSettings)
-        {
-            std::shared_ptr<FragilityCurveIntegrationSettings> settings = fragilityCurveSettings[id];
-
-            if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
-        }
-        else if (objectType == ObjectType::RunProjectSettings)
-        {
-            std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
-
-            if (property_ == "run_values_type") settings->runValuesType = Models::RunProjectSettings::getRunValuesType(value);
-            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "uncertainty_method") settings->UncertaintyMethod = Uncertainty::SettingsS::getUncertaintyMethodType(value);
-            else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
-            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
-        }
-        else if (objectType == ObjectType::SensitivitySettings)
-        {
-            std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-            if (property_ == "sensitivity_method") settings->SensitivityMethod = Sensitivity::SensitivitySettings::getSensitivityMethodType(value);
-            else if (property_ == "lowest_message_type") settings->RunSettings->LowestMessageType = Logging::Message::getMessageType(value);
-        }
-        else if (objectType == ObjectType::CombineSettings)
-        {
-            std::shared_ptr<CombineSettings> settings = combineSettingsValues[id];
-
-            if (property_ == "combine_method") settings->combinerMethod = DesignPointCombiner::getCombinerMethod(value);
-            else if (property_ == "combine_type") settings->combineType = DesignPointCombiner::getCombineType(value);
-        }
-        else if (objectType == ObjectType::ExcludingCombineSettings)
-        {
-            std::shared_ptr<ExcludingCombineSettings> settings = excludingCombineSettings[id];
-
-            if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getExcludingCombinerMethod(value);
-        }
-        else if (objectType == ObjectType::SensitivityResult)
-        {
-            std::shared_ptr<Sensitivity::SensitivityResult> sensitivityResult = sensitivityResults[id];
-
-            if (property_ == "identifier") sensitivityResult->identifier = value;
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "identifier") designPoint->Identifier = value;
-        }
-        else if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model_name") project->model->name = value;
-        }
+    int ProjectHandler::GetIndexedIdValue(int id, const std::string& property_, int index)
+    {
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetIndexedIdValue(id, property_, index);
     }
 
     void ProjectHandler::SetArrayValue(int id, const std::string& property_, double* values, int size)
     {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            std::vector<double> dataValues(size);
-            for (int i = 0; i < size; i++)
-            {
-                dataValues[i] = values[i];
-            }
-
-            if (property_ == "fit") tempValues["data"] = dataValues;
-            else if (property_ == "data") tempValues["data"] = dataValues;
-            else if (property_ == "weights") tempValues["weights"] = dataValues;
-            else if (property_ == "u_and_x") tempValues["u_and_x"] = dataValues;
-            else if (property_ == "x_and_source") tempValues["x_and_source"] = dataValues;
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> lengthEffect = lengthEffectProjects[id];
-            if (property_ == "correlation_lengths")
-            {
-                lengthEffect->correlationLengths.clear();
-                for (size_t i = 0; i < size; i++)
-                {
-                    lengthEffect->correlationLengths.push_back(values[i]);
-                }
-            }
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetArrayValue(id, property_, values, size);
     }
 
     std::vector<int> ProjectHandler::GetArrayIntValue(int id, const std::string& property_)
@@ -1979,322 +187,26 @@ namespace Deltares::Server
 
     void ProjectHandler::SetArrayIntValue(int id, const std::string& property_, int* values, int size)
     {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "variables")
-            {
-                project->stochasts.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->stochasts.push_back(stochasts[values[i]]);
-                }
-            }
-            else if (property_ == "input_parameters")
-            {
-                project->model->inputParameters.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->model->inputParameters.push_back(modelParameters[values[i]]);
-                }
-                project->updateStochasts();
-            }
-            else if (property_ == "output_parameters")
-            {
-                project->model->outputParameters.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->model->outputParameters.push_back(modelParameters[values[i]]);
-                }
-            }
-        }
-
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "discrete_values")
-            {
-                stochast->getProperties()->setDirty();
-                stochast->getProperties()->DiscreteValues.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->getProperties()->DiscreteValues.push_back(discreteValues[values[i]]);
-                }
-            }
-            else if (property_ == "histogram_values")
-            {
-                stochast->getProperties()->setDirty();
-                stochast->getProperties()->HistogramValues.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->getProperties()->HistogramValues.push_back(histogramValues[values[i]]);
-                }
-            }
-            else if (property_ == "fragility_values")
-            {
-                stochast->getProperties()->setDirty();
-                stochast->getProperties()->FragilityValues.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->getProperties()->FragilityValues.push_back(fragilityValues[values[i]]);
-                }
-            }
-            else if (property_ == "contributing_stochasts")
-            {
-                stochast->getProperties()->setDirty();
-                stochast->getProperties()->ContributingStochasts.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->getProperties()->ContributingStochasts.push_back(contributingStochasts[values[i]]);
-                }
-            }
-            else if (property_ == "conditional_values")
-            {
-                stochast->ValueSet->StochastValues.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->ValueSet->StochastValues.push_back(conditionalValues[values[i]]);
-                }
-            }
-            else if (property_ == "array_variables")
-            {
-                stochast->ArrayVariables.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->ArrayVariables.push_back(stochasts[values[i]]);
-                }
-            }
-        }
-        else if (objectType == ObjectType::StochastPoint)
-        {
-            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
-
-            if (property_ == "alphas")
-            {
-                stochastPoint->Alphas.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochastPoint->Alphas.push_back(alphas[values[i]]);
-                }
-            }
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "alphas")
-            {
-                designPoint->Alphas.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    designPoint->Alphas.push_back(alphas[values[i]]);
-                }
-            }
-        }
-        else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "variables")
-            {
-                std::vector<std::shared_ptr<Stochast>> correlationMatrixStochasts;
-                for (int i = 0; i < size; i++)
-                {
-                    correlationMatrixStochasts.push_back(stochasts[values[i]]);
-                }
-
-                correlationMatrix->Init(correlationMatrixStochasts);
-            }
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "limit_state_functions")
-            {
-                limitStateFunction->limitStateFunctions.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    limitStateFunction->limitStateFunctions.push_back(GetLimitStateFunction(values[i]));
-                }
-            }
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "uncertainty_parameters")
-            {
-                project->uncertaintyParameters.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->uncertaintyParameters.push_back(modelParameters[values[i]]);
-                }
-            }
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "sensitivity_parameters")
-            {
-                project->sensitivityParameters.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->sensitivityParameters.push_back(modelParameters[values[i]]);
-                }
-            }
-        }
-        else if (objectType == ObjectType::Settings)
-        {
-            std::shared_ptr<Settings> settings = settingsValues[id];
-
-            if (property_ == "stochast_settings")
-            {
-                settings->StochastSet->stochastSettings.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->StochastSet->stochastSettings.push_back(stochastSettingsValues[values[i]]);
-                }
-            }
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "stochast_settings")
-            {
-                settings->StochastSet->stochastSettings.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->StochastSet->stochastSettings.push_back(stochastSettingsValues[values[i]]);
-                }
-            }
-            else if (property_ == "quantiles")
-            {
-                settings->RequestedQuantiles.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->RequestedQuantiles.push_back(probabilityValues[values[i]]);
-                }
-            }
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> project = combineProjects[id];
-
-            if (property_ == "design_points")
-            {
-                project->designPoints.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->designPoints.push_back(designPoints[values[i]]);
-                }
-            }
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
-
-            if (property_ == "design_points")
-            {
-                project->designPoints.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->designPoints.push_back(designPoints[values[i]]);
-                }
-            }
-            else if (property_ == "scenarios")
-            {
-                project->scenarios.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->scenarios.push_back(scenarios[values[i]]);
-                }
-            }
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetArrayIntValue(id, property_, values, size);
     }
 
     double ProjectHandler::GetArgValue(int id, const std::string& property_, double argument)
     {
-        ObjectType objectType = types[id];
-
-        if (objectType == ObjectType::StandardNormal)
-        {
-            if (property_ == "u_from_q") return StandardNormal::getUFromQ(argument);
-            else if (property_ == "u_from_p") return StandardNormal::getUFromP(argument);
-            else if (property_ == "q_from_u") return StandardNormal::getQFromU(argument);
-            else if (property_ == "p_from_u") return StandardNormal::getPFromU(argument);
-            else if (property_ == "t_from_p") return StandardNormal::getTFromP(argument);
-            else if (property_ == "p_from_t") return StandardNormal::getPFromT(argument);
-            else if (property_ == "t_from_u") return StandardNormal::getTFromU(argument);
-            else if (property_ == "u_from_t") return StandardNormal::getUFromT(argument);
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "quantile") return stochast->getQuantile(argument);
-            else if (property_ == "x_from_u") return stochast->getXFromU(argument);
-            else if (property_ == "u_from_x") return stochast->getUFromX(argument);
-            else if (property_ == "x_from_p") return stochast->getXFromP(argument);
-            else if (property_ == "p_from_x") return stochast->getPFromX(argument);
-            else if (property_ == "pdf") return stochast->getPDF(argument);
-            else if (property_ == "cdf") return stochast->getCDF(argument);
-        }
-
-        return std::nan("");
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetArgValue(id, property_, argument);
     }
 
     void ProjectHandler::SetArgValue(int id, const std::string& property_, double argument, double value)
     {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "x_at_u") stochast->setXAtU(value, argument, ConstantParameterType::VariationCoefficient);
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetArgValue(id, property_, argument, value);
     }
 
     double ProjectHandler::GetIndexedValue(int id, const std::string& property_, int index)
     {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            if (property_ == "special_values")
-            {
-                return tempValues["special_values"][index];
-            }
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> lengthEffect = lengthEffectProjects[id];
-            if (property_ == "correlation_lengths")
-            {
-                return lengthEffect->correlationLengths[index];
-            }
-        }
-        else if (objectType == ObjectType::Evaluation)
-        {
-            std::shared_ptr<Models::Evaluation> evaluation = evaluations[id];
-
-            if (property_ == "input_values") return evaluation->InputValues[index];
-            else if (property_ == "output_values") return evaluation->OutputValues[index];
-        }
-
-        return std::nan("");
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetIndexedValue(id, property_, index);
     }
 
     void ProjectHandler::SetIndexedValue(int id, const std::string& property_, int index, double value)
@@ -2304,812 +216,148 @@ namespace Deltares::Server
 
     double ProjectHandler::GetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2)
     {
-        ObjectType objectType = types[id];
-
-        if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "correlation") return correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]).value;
-            else if (property_ == "correlation_index") return correlationMatrix->GetCorrelation(index1, index2).value;
-        }
-        else if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix = selfCorrelationMatrices[id];
-
-            if (property_ == "correlation")
-            {
-                int stochastId = tempIntValue;
-                tempIntValue = 0;
-                return selfCorrelationMatrix->getSelfCorrelation(stochasts[stochastId], designPoints[index1], designPoints[index2]);
-            }
-        }
-
-        return std::nan("");
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetIndexedIndexedValue(id, property_, index1, index2);
     }
 
     void ProjectHandler::SetIndexedIndexedValue(int id, const std::string& property_, int index1, int index2, double value)
     {
-        ObjectType objectType = types[id];
-
-        if (objectType == ObjectType::CorrelationMatrix)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "correlation") correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, CorrelationType::Gaussian);
-            else if (property_ == "correlation_index") correlationMatrix->SetCorrelation(index1, index2, value, CorrelationType::Gaussian);
-        }
-        else if (objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "correlation")
-            {
-                CorrelationType type = static_cast<CorrelationType>(tempIntValue);
-                correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value, type);
-            }
-        }
-        else if (objectType == ObjectType::SelfCorrelationMatrix)
-        {
-            std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix = selfCorrelationMatrices[id];
-
-            if (property_ == "correlation")
-            {
-                int stochastId = tempIntValue;
-                tempIntValue = 0;
-                selfCorrelationMatrix->setSelfCorrelation(stochasts[stochastId], designPoints[index1], designPoints[index2], value);
-            }
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->SetIndexedIndexedValue(id, property_, index1, index2, value);
     }
 
     void ProjectHandler::SetIndexedIndexedIntValue(int id, const std::string& property_, int index1, int index2, int value)
     {
-        ObjectType objectType = types[id];
-
-        if (objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "correlation")
-            {
-                tempIntValue = value;
-            }
-        }
-    }
-
-    int ProjectHandler::GetIndexedIntValue(int id, const std::string& property_, int index)
-    {
-        return 0;
-    }
-
-    int ProjectHandler::GetIndexedIdValue(int id, const std::string& property_, int index)
-    {
-        ObjectType objectType = types[id];
-        int newId = this->GetNewId();
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "stochasts") return GetStochastId(project->stochasts[index], newId);
-        }
-
-        if (objectType == ObjectType::ValidationReport)
-        {
-            std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
-
-            if (property_ == "messages") return GetMessageId(validationReport->messages[index], newId);
-        }
-        else if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (property_ == "histogram_values") return GetHistogramValueId(stochast->getProperties()->HistogramValues[index], newId);
-            else if (property_ == "discrete_values") return GetDiscreteValueId(stochast->getProperties()->DiscreteValues[index], newId);
-            else if (property_ == "fragility_values") return GetFragilityValueId(stochast->getProperties()->FragilityValues[index], newId);
-            else if (property_ == "contributing_stochasts") return GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index], newId);
-            else if (property_ == "conditional_values") return GetConditionalValueId(stochast->ValueSet->StochastValues[index], newId);
-            else if (property_ == "array_variables") return GetStochastId(stochast->ArrayVariables[index], newId);
-        }
-        else if (objectType == ObjectType::CorrelationMatrix || objectType == ObjectType::CopulaCorrelation)
-        {
-            std::shared_ptr<BaseCorrelation> correlationMatrix = correlations[id];
-
-            if (property_ == "variables") return GetStochastId(correlationMatrix->GetStochast(index), newId);
-        }
-        else if (objectType == ObjectType::CombinedLimitStateFunction)
-        {
-            std::shared_ptr<CombinedLimitStateFunction> limitStateFunction = combinedLimitStateFunctions[id];
-
-            if (property_ == "limit_state_functions") return GetLimitStateFunctionId(limitStateFunction->limitStateFunctions[index], newId);
-        }
-        else if (objectType == ObjectType::UncertaintyProject)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-            if (property_ == "uncertainty_stochasts") return GetStochastId(project->uncertaintyResults[index]->stochast, newId);
-            else if (property_ == "uncertainty_results") return GetUncertaintyResultId(project->uncertaintyResults[index], newId);
-            else if (property_ == "uncertainty_parameters") return GetModelParameterId(project->uncertaintyParameters[index], newId);
-        }
-        else if (objectType == ObjectType::SensitivityProject)
-        {
-            std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-            if (property_ == "results") return GetSensitivityResultId(project->sensitivityResults[index], newId);
-            else if (property_ == "sensitivity_parameters") return GetModelParameterId(project->sensitivityParameters[index], newId);
-        }
-        else if (objectType == ObjectType::SensitivityResult)
-        {
-            std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
-
-            if (property_ == "values") return GetSensitivityValueId(result->values[index], newId);
-            else if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
-            else if (property_ == "messages") return GetMessageId(result->messages[index], newId);
-        }
-        else if (objectType == ObjectType::StochastPoint)
-        {
-            std::shared_ptr<Models::StochastPoint> stochastPoint = stochastPoints[id];
-
-            if (property_ == "alphas") return GetAlphaId(stochastPoint->Alphas[index], newId);
-        }
-        else if (objectType == ObjectType::DesignPoint)
-        {
-            std::shared_ptr<DesignPoint> designPoint = designPoints[id];
-
-            if (property_ == "contributing_design_points") return GetDesignPointId(designPoint->ContributingDesignPoints[index], newId);
-            else if (property_ == "alphas") return GetAlphaId(designPoint->Alphas[index], newId);
-            else if (property_ == "evaluations") return GetEvaluationId(designPoint->Evaluations[index], newId);
-            else if (property_ == "reliability_results") return GetReliabilityResultId(designPoint->ReliabilityResults[index], newId);
-            else if (property_ == "messages") return GetMessageId(designPoint->Messages[index], newId);
-        }
-        else if (objectType == ObjectType::UncertaintySettings)
-        {
-            std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
-
-            if (property_ == "quantiles") return GetProbabilityValueId(settings->RequestedQuantiles[index], newId);
-        }
-        else if (objectType == ObjectType::UncertaintyResult)
-        {
-            std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
-
-            if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
-            else if (property_ == "quantile_evaluations") return GetEvaluationId(result->quantileEvaluations[index], newId);
-            else if (property_ == "messages") return GetMessageId(result->messages[index], newId);
-        }
-
-        return 0;
-    }
-
-    void ProjectHandler::SetCallBack(int id, const std::string& property_, Models::ZValuesCallBack callBack)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model") project->model = std::make_shared<Models::ZModel>(callBack);
-        }
-    }
-
-    void ProjectHandler::SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callBack)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setMultipleCallback(callBack);
-            }
-        }
-    }
-
-    void ProjectHandler::SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callBack)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "run_samples")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setRunMethod(callBack);
-            }
-            else if (property_ == "next")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setNextCalculation(callBack);
-            }
-        }
-    }
-
-    void ProjectHandler::SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            project->progressIndicator = std::make_shared<Models::ProgressIndicator>(progress, detailed, textual);
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> project = combineProjects[id];
-
-            project->progressIndicator = std::make_shared<Models::ProgressIndicator>(progress, detailed, textual);
-        }
-    }
-
-    void ProjectHandler::SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callBack)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setModelSampleCallback(callBack);
-            }
-        }
-    }
-
-    void ProjectHandler::SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callBack)
-    {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (property_ == "model")
-            {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
-                project->model->setMultipleModelSampleCallback(callBack);
-            }
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->SetIndexedIndexedIntValue(id, property_, index1, index2, value);
     }
 
     void ProjectHandler::Execute(int id, const std::string& method_)
     {
-        ObjectType objectType = types[id];
-
-        if (ProjectEntries::IsStochast(objectType))
-        {
-            std::shared_ptr<Stochast> stochast = GetStochast(id);
-
-            if (method_ == "initialize_for_run") stochast->initializeForRun();
-            else if (method_ == "initialize_conditional_values") stochast->initializeConditionalValues();
-            else if (method_ == "set_x_at_u_dev") stochast->setXAtU(tempValues["u_and_x"][1], tempValues["u_and_x"][0], ConstantParameterType::Deviation);
-            else if (method_ == "set_x_at_u_var") stochast->setXAtU(tempValues["u_and_x"][1], tempValues["u_and_x"][0], ConstantParameterType::VariationCoefficient);
-            else if (method_ == "fit")
-            {
-                double shift = argValue;
-
-                stochast->fit(tempValues["data"], shift);
-
-                argValue = nan("");
-                tempValues.erase("data");
-            }
-            else if (method_ == "fit_weighted")
-            {
-                stochast->fitWeighted(tempValues["data"], tempValues["weights"]);
-
-                tempValues.erase("data");
-                tempValues.erase("weights");
-            }
-            else if (method_ == "fit_prior")
-            {
-                double shift = argValue;
-
-                stochast->fitPrior(tempValues["data"], stochasts[tempIntValue], shift);
-
-                tempIntValue = 0;
-                argValue = nan("");
-                tempValues.erase("data");
-            }
-        }
-        else if (objectType == ObjectType::CorrelationMatrix)
-        {
-            std::shared_ptr<CorrelationMatrix> matrix = std::dynamic_pointer_cast<CorrelationMatrix>(correlations[id]);
-
-            if (method_ == "resolve_conflicting_correlations") matrix->resolveConflictingCorrelations();
-        }
-        else if (ProjectEntries::IsModelProjectType(objectType))
-        {
-            std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-            if (method_ == "run") project->run();
-            else if (method_ == "stop") project->stop();
-        }
-        else if (objectType == ObjectType::FragilityCurveProject)
-        {
-            std::shared_ptr<FragilityCurveProject> project = fragilityCurveProjects[id];
-
-            if (method_ == "run") project->run();
-        }
-        else if (objectType == ObjectType::CombineProject)
-        {
-            std::shared_ptr<CombineProject> project = combineProjects[id];
-
-            if (method_ == "run") project->run();
-        }
-        else if (objectType == ObjectType::ExcludingCombineProject)
-        {
-            std::shared_ptr<ExcludingCombineProject> project = excludingCombineProjects[id];
-
-            if (method_ == "run") project->run();
-        }
-        else if (objectType == ObjectType::LengthEffectProject)
-        {
-            std::shared_ptr<LengthEffectProject> project = lengthEffectProjects[id];
-
-            if (method_ == "run") project->run();
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->Execute(id, method_);
     }
 
-    int ProjectHandler::GetProbabilityValueId(const std::shared_ptr<ProbabilityValue>& probability, int newId)
+    void ProjectHandler::SetProgressCallBacks(int id, Models::ProgressCallBack progress, Models::DetailedProgressCallBack detailed, Models::TextualProgressCallBack textual)
     {
-        if (probability == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!probabilityValueIds.contains(probability))
-            {
-                std::lock_guard lock(mtx);
-
-                probabilityValues[newId] = probability;
-                types[newId] = ObjectType::ProbabilityValue;
-                probabilityValueIds[probability] = newId;
-            }
-
-            return probabilityValueIds[probability];
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetProgressCallBacks(id, progress, detailed, textual);
     }
 
-    int ProjectHandler::GetValidationReportId(const std::shared_ptr<Logging::ValidationReport>& validationReport, int newId)
+    void ProjectHandler::SetCallBack(int id, const std::string& property_, Models::ZValuesCallBack callback)
     {
-        if (validationReport == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            std::lock_guard lock(mtx);
-
-            // assume always a new report is created
-            validationReports[newId] = validationReport;
-            types[newId] = ObjectType::ValidationReport;
-            return newId;
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetCallBack(id, property_, callback);
     }
 
-    int ProjectHandler::GetStochastId(const std::shared_ptr<Stochast>& stochast, int newId)
+    void ProjectHandler::SetMultipleCallBack(int id, const std::string& property_, Models::ZValuesMultipleCallBack callback)
     {
-        if (stochast == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!stochastIds.contains(stochast))
-            {
-                std::lock_guard lock(mtx);
-
-                stochasts[newId] = stochast;
-                types[newId] = ObjectType::Stochast;
-                stochastIds[stochast] = newId;
-            }
-
-            return stochastIds[stochast];
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetMultipleCallBack(id, property_, callback);
     }
 
-    int ProjectHandler::GetModelParameterId(const std::shared_ptr<Models::ModelInputParameter>& modelParameter, int newId)
+    void ProjectHandler::SetEmptyCallBack(int id, const std::string& property_, Models::EmptyCallBack callback)
     {
-        if (modelParameter == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!modelParameterIds.contains(modelParameter))
-            {
-                std::lock_guard lock(mtx);
-
-                modelParameters[newId] = modelParameter;
-                types[newId] = ObjectType::ModelParameter;
-                modelParameterIds[modelParameter] = newId;
-            }
-
-            return modelParameterIds[modelParameter];
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetEmptyCallBack(id, property_, callback);
     }
 
-    int ProjectHandler::GetFragilityCurveId(const std::shared_ptr<FragilityCurve>& fragilityCurve, int newId)
+    void ProjectHandler::SetModelSampleCallBack(int id, const std::string& property_, Models::ModelSampleCallback callback)
     {
-        if (fragilityCurve == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!fragilityCurveIds.contains(fragilityCurve))
-            {
-                std::lock_guard lock(mtx);
-
-                fragilityCurves[newId] = fragilityCurve;
-                types[newId] = ObjectType::FragilityCurve;
-                fragilityCurveIds[fragilityCurve] = newId;
-            }
-
-            return fragilityCurveIds[fragilityCurve];
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetModelSampleCallBack(id, property_, callback);
     }
 
-    int ProjectHandler::GetCorrelationMatrixId(const std::shared_ptr<BaseCorrelation>& correlationMatrix, int newId)
+    void ProjectHandler::SetMultipleModelSampleCallBack(int id, const std::string& property_, Models::MultipleModelSampleCallback callback)
     {
-        if (correlationMatrix == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!correlationIds.contains(correlationMatrix))
-            {
-                std::lock_guard lock(mtx);
-
-                correlations[newId] = correlationMatrix;
-                types[newId] = ObjectType::CorrelationMatrix;
-                correlationIds[correlationMatrix] = newId;
-            }
-
-            return correlationIds[correlationMatrix];
-        }
-    }
-
-    int ProjectHandler::GetSelfCorrelationMatrixId(const std::shared_ptr<SelfCorrelationMatrix>& correlationMatrix, int newId)
-    {
-        if (correlationMatrix == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!selfCorrelationIds.contains(correlationMatrix))
-            {
-                std::lock_guard lock(mtx);
-
-                selfCorrelationMatrices[newId] = correlationMatrix;
-                types[newId] = ObjectType::SelfCorrelationMatrix;
-                selfCorrelationIds[correlationMatrix] = newId;
-            }
-
-            return selfCorrelationIds[correlationMatrix];
-        }
+        ObjectType objectType = admin.GetObjectType(id);
+        handlers[objectType]->SetMultipleModelSampleCallBack(id, property_, callback);
     }
 
     int ProjectHandler::GetStatus(const std::string& command) const
     {
         if (command == "count_entries")
         {
-            return static_cast<int>(types.size());
+            return admin.GetSize();
         }
         return -1;
     }
 
-    int ProjectHandler::GetLimitStateFunctionId(const std::shared_ptr<LimitStateFunction>& limitStateFunction, int newId)
+    void ProjectHandler::InitializeHandlers()
     {
-        if (limitStateFunction == nullptr)
+        modelHandlers.InitializeHandlers(handlers);
+        statisticsHandlers.InitializeHandlers(handlers, &modelHandlers);
+        reliabilityHandlers.InitializeHandlers(handlers, &modelHandlers, &statisticsHandlers);
+
+        reliabilityHandlers.fragilityCurveHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->reliabilityHandlers.designPointHandler.GetObjectId(designPoint); };
+
+        statisticsHandlers.fragilityValueHandler.designPointCallback = [this](const int id) {return this->reliabilityHandlers.designPointHandler.GetObject(id); };
+        statisticsHandlers.fragilityValueHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->reliabilityHandlers.designPointHandler.GetObjectId(designPoint); };
+
+        statisticsHandlers.alphaHandler.fragilityCurveHandler = &reliabilityHandlers.fragilityCurveHandler;
+
+        reliabilityHandlers.designPointHandler.designPointIdsCallback = [this](const int id) {return this->GetDesignPointIds(id); };
+
+        uncertaintyResultHandler.stochastHandler = &statisticsHandlers.stochastHandler;
+        uncertaintyResultHandler.evaluationHandler = &modelHandlers.evaluationHandler;
+        uncertaintyResultHandler.messageHandler = &modelHandlers.messageHandler;
+
+        sensitivityResultHandler.sensitivityValueHandler = &sensitivityValueHandler;
+        sensitivityResultHandler.evaluationHandler = &modelHandlers.evaluationHandler;
+        sensitivityResultHandler.messageHandler = &modelHandlers.messageHandler;
+
+        sensitivityValueHandler.stochastHandler = &statisticsHandlers.stochastHandler;
+
+        sensitivitySettingsHandler.modelProjectSettingsHandler = &statisticsHandlers.modelProjectSettingsHandler;
+        uncertaintySettingsHandler.modelProjectSettingsHandler = &statisticsHandlers.modelProjectSettingsHandler;
+        uncertaintySettingsHandler.stochastSettingsHandler = &statisticsHandlers.stochastSettingsHandler;
+        uncertaintySettingsHandler.probabilityValueHandler = &statisticsHandlers.probabilityValueHandler;
+
+        statisticsHandlers.modelProjectHandler.modelProjectCallback = [this](const int id) { return this->GetProject(id); };
+
+        sensitivityProjectHandler.modelProjectHandler = &statisticsHandlers.modelProjectHandler;
+        sensitivityProjectHandler.sensitivitySettingsHandler = &sensitivitySettingsHandler;
+        sensitivityProjectHandler.sensitivityResultHandler = &sensitivityResultHandler;
+        sensitivityProjectHandler.modelParameterHandler = &modelHandlers.modelParameterHandler;
+
+        uncertaintyProjectHandler.modelProjectHandler = &statisticsHandlers.modelProjectHandler;
+        uncertaintyProjectHandler.modelParameterHandler = &modelHandlers.modelParameterHandler;
+        uncertaintyProjectHandler.uncertaintySettingsHandler = &uncertaintySettingsHandler;
+        uncertaintyProjectHandler.uncertaintyResultHandler = &uncertaintyResultHandler;
+        uncertaintyProjectHandler.stochastHandler = &statisticsHandlers.stochastHandler;
+        uncertaintyProjectHandler.correlationMatrixHandler = &statisticsHandlers.correlationMatrixHandler;
+
+        handlers[ObjectType::UncertaintyResult] = &uncertaintyResultHandler;
+        handlers[ObjectType::SensitivityResult] = &sensitivityResultHandler;
+        handlers[ObjectType::SensitivityValue] = &sensitivityValueHandler;
+        handlers[ObjectType::SensitivitySettings] = &sensitivitySettingsHandler;
+        handlers[ObjectType::UncertaintySettings] = &uncertaintySettingsHandler;
+        handlers[ObjectType::SensitivityProject] = &sensitivityProjectHandler;
+        handlers[ObjectType::UncertaintyProject] = &uncertaintyProjectHandler;
+
+        for (const auto& [objectType, handler] : handlers)
         {
-            return 0;
+            handler->SetAdmin(&this->admin);
         }
-        else
-        {
-            if (!limitStateFunctionIds.contains(limitStateFunction))
-            {
-                std::lock_guard lock(mtx);
-
-                limitStateFunctions[newId] = limitStateFunction;
-                types[newId] = ObjectType::LimitStateFunction;
-                limitStateFunctionIds[limitStateFunction] = newId;
-            }
-
-            return limitStateFunctionIds[limitStateFunction];
-        }
-    }
-
-    int ProjectHandler::GetDesignPointId(const std::shared_ptr<DesignPoint>& designPoint, int newId)
-    {
-        if (designPoint == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!designPointIds.contains(designPoint))
-            {
-                std::lock_guard lock(mtx);
-
-                designPoints[newId] = designPoint;
-                types[newId] = ObjectType::DesignPoint;
-                designPointIds[designPoint] = newId;
-            }
-
-            return designPointIds[designPoint];
-        }
-    }
-
-    int ProjectHandler::GetAlphaId(const std::shared_ptr<Models::StochastPointAlpha>& alpha, int newId)
-    {
-        if (!alphaIds.contains(alpha))
-        {
-            std::lock_guard lock(mtx);
-
-            alphas[newId] = alpha;
-            types[newId] = ObjectType::Alpha;
-            alphaIds[alpha] = newId;
-        }
-
-        return alphaIds[alpha];
-    }
-
-    int ProjectHandler::GetConvergenceReportId(const std::shared_ptr<ConvergenceReport>& convergenceReport, int newId)
-    {
-        if (convergenceReport == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!convergenceReportIds.contains(convergenceReport))
-            {
-                std::lock_guard lock(mtx);
-
-                convergenceReports[newId] = convergenceReport;
-                types[newId] = ObjectType::ConvergenceReport;
-                convergenceReportIds[convergenceReport] = newId;
-            }
-
-            return convergenceReportIds[convergenceReport];
-        }
-    }
-
-    int ProjectHandler::GetUncertaintyResultId(const std::shared_ptr<Uncertainty::UncertaintyResult>& result, int newId)
-    {
-        if (result == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!uncertaintyResultsIds.contains(result))
-            {
-                std::lock_guard lock(mtx);
-
-                uncertaintyResults[newId] = result;
-                types[newId] = ObjectType::UncertaintyResult;
-                uncertaintyResultsIds[result] = newId;
-            }
-
-            return uncertaintyResultsIds[result];
-        }
-    }
-
-    int ProjectHandler::GetSensitivityResultId(const std::shared_ptr<Sensitivity::SensitivityResult>& result, int newId)
-    {
-        if (result == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!sensitivityResultsIds.contains(result))
-            {
-                std::lock_guard lock(mtx);
-
-                sensitivityResults[newId] = result;
-                types[newId] = ObjectType::SensitivityResult;
-                sensitivityResultsIds[result] = newId;
-            }
-
-            return sensitivityResultsIds[result];
-        }
-    }
-
-    int ProjectHandler::GetSensitivityValueId(const std::shared_ptr<Sensitivity::SensitivityValue>& result, int newId)
-    {
-        if (result == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!sensitivityValuesIds.contains(result))
-            {
-                std::lock_guard lock(mtx);
-
-                sensitivityValues[newId] = result;
-                types[newId] = ObjectType::SensitivityValue;
-                sensitivityValuesIds[result] = newId;
-            }
-
-            return sensitivityValuesIds[result];
-        }
-    }
-
-    int ProjectHandler::GetHistogramValueId(const std::shared_ptr<HistogramValue>& histogramValue, int newId)
-    {
-        if (!histogramValueIds.contains(histogramValue))
-        {
-            std::lock_guard lock(mtx);
-
-            histogramValues[newId] = histogramValue;
-            types[newId] = ObjectType::HistogramValue;
-            histogramValueIds[histogramValue] = newId;
-        }
-
-        return histogramValueIds[histogramValue];
-    }
-
-    int ProjectHandler::GetDiscreteValueId(const std::shared_ptr<DiscreteValue>& discreteValue, int newId)
-    {
-        if (!discreteValueIds.contains(discreteValue))
-        {
-            std::lock_guard lock(mtx);
-
-            discreteValues[newId] = discreteValue;
-            types[newId] = ObjectType::DiscreteValue;
-            discreteValueIds[discreteValue] = newId;
-        }
-
-        return discreteValueIds[discreteValue];
-    }
-
-    int ProjectHandler::GetFragilityValueId(const std::shared_ptr<FragilityValue>& fragilityValue, int newId)
-    {
-        if (!fragilityValueIds.contains(fragilityValue))
-        {
-            std::lock_guard lock(mtx);
-
-            fragilityValues[newId] = fragilityValue;
-            types[newId] = ObjectType::FragilityValue;
-            fragilityValueIds[fragilityValue] = newId;
-        }
-
-        return fragilityValueIds[fragilityValue];
-    }
-
-    int ProjectHandler::GetContributingStochastId(const std::shared_ptr<ContributingStochast>& contributingStochast, int newId)
-    {
-        if (!contributingStochastIds.contains(contributingStochast))
-        {
-            std::lock_guard lock(mtx);
-
-            contributingStochasts[newId] = contributingStochast;
-            types[newId] = ObjectType::ContributingStochast;
-            contributingStochastIds[contributingStochast] = newId;
-        }
-
-        return contributingStochastIds[contributingStochast];
-    }
-
-    int ProjectHandler::GetConditionalValueId(const std::shared_ptr<VariableStochastValue>& conditionalValue, int newId)
-    {
-        if (!conditionalValueIds.contains(conditionalValue))
-        {
-            std::lock_guard lock(mtx);
-
-            conditionalValues[newId] = conditionalValue;
-            types[newId] = ObjectType::ConditionalValue;
-            conditionalValueIds[conditionalValue] = newId;
-        }
-
-        return conditionalValueIds[conditionalValue];
-    }
-
-    int ProjectHandler::GetEvaluationId(const std::shared_ptr<Models::Evaluation>& evaluation, int newId)
-    {
-        if (evaluation == nullptr)
-        {
-            return 0;
-        }
-        else
-        {
-            if (!evaluationIds.contains(evaluation))
-            {
-                std::lock_guard lock(mtx);
-
-                evaluations[newId] = evaluation;
-                types[newId] = ObjectType::Evaluation;
-                evaluationIds[evaluation] = newId;
-            }
-
-            return evaluationIds[evaluation];
-        }
-    }
-
-    int ProjectHandler::GetReliabilityResultId(const std::shared_ptr<ReliabilityResult>& result, int newId)
-    {
-        if (!reliabilityResultIds.contains(result))
-        {
-            std::lock_guard lock(mtx);
-
-            reliabilityResults[newId] = result;
-            types[newId] = ObjectType::ReliabilityResult;
-            reliabilityResultIds[result] = newId;
-        }
-
-        return reliabilityResultIds[result];
-    }
-
-    int ProjectHandler::GetMessageId(const std::shared_ptr<Logging::Message>& message, int newId)
-    {
-        if (!messageIds.contains(message))
-        {
-            std::lock_guard lock(mtx);
-
-            messages[newId] = message;
-            types[newId] = ObjectType::Message;
-            messageIds[message] = newId;
-        }
-
-        return messageIds[message];
-    }
-
-    std::shared_ptr<DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
-    {
-        return nullptr;
     }
 
     std::shared_ptr<Models::ModelProject> ProjectHandler::GetProject(int id)
     {
-        if (projects.contains(id))
+        if (statisticsHandlers.runProjectHandler.Contains(id))
         {
-            return std::static_pointer_cast<Models::ModelProject>(projects[id]);
+            return statisticsHandlers.runProjectHandler.GetObject(id);
         }
-        else if (runProjects.contains(id))
+        else if (sensitivityProjectHandler.Contains(id))
         {
-            return std::static_pointer_cast<Models::ModelProject>(runProjects[id]);
+            return sensitivityProjectHandler.GetObject(id);
         }
-        else if (uncertaintyProjects.contains(id))
+        else if (uncertaintyProjectHandler.Contains(id))
         {
-            return std::static_pointer_cast<Models::ModelProject>(uncertaintyProjects[id]);
+            return uncertaintyProjectHandler.GetObject(id);
         }
-        else if (sensitivityProjects.contains(id))
+        else if (reliabilityHandlers.reliabilityProjectHandler.Contains(id))
         {
-            return std::static_pointer_cast<Models::ModelProject>(sensitivityProjects[id]);
+            return reliabilityHandlers.reliabilityProjectHandler.GetObject(id);
         }
         else
         {
@@ -3117,65 +365,9 @@ namespace Deltares::Server
         }
     }
 
-    std::shared_ptr<Models::ModelProjectSettings> ProjectHandler::GetSettings(int id)
+    std::shared_ptr<Reliability::DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
     {
-        if (settingsValues.contains(id))
-        {
-            return settingsValues[id];
-        }
-        else if (runProjectSettings.contains(id))
-        {
-            return runProjectSettings[id];
-        }
-        else if (uncertaintySettingsValues.contains(id))
-        {
-            return uncertaintySettingsValues[id];
-        }
-        else if (sensitivitySettingsValues.contains(id))
-        {
-            return sensitivitySettingsValues[id];
-        }
-        else
-        {
-            return nullptr;
-        }
+        return nullptr;
     }
-
-    std::shared_ptr<Stochast> ProjectHandler::GetStochast(int id)
-    {
-        if (stochasts.contains(id))
-        {
-            return stochasts[id];
-        }
-        else if (fragilityCurves.contains(id))
-        {
-            return fragilityCurves[id];
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
-    std::shared_ptr<LimitStateFunction> ProjectHandler::GetLimitStateFunction(int id)
-    {
-        if (limitStateFunctions.contains(id))
-        {
-            return limitStateFunctions[id];
-        }
-        else if (combinedLimitStateFunctions.contains(id))
-        {
-            return combinedLimitStateFunctions[id];
-        }
-        else if (probabilityLimitStateFunctions.contains(id))
-        {
-            return probabilityLimitStateFunctions[id];
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
 }
 
