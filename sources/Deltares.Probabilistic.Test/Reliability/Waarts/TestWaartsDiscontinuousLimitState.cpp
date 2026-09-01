@@ -19,6 +19,90 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestWaartsDiscontinuousLimitState_body.cpp"
 
+#include "TestWaartsDiscontinuousLimitState.h"
+#include "../../ProjectBuilder.h"
+#include "../../../Deltares.Probabilistic/Model/ModelSample.h"
+#include "../../../Deltares.Probabilistic/Model/ZModel.h"
+#include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    std::shared_ptr<Models::ModelRunner> TestWaartsDiscontinuousLimitState::WaartsModel()
+    {
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
+        {
+            double Z;
+            const double r = v.Values[0];
+            const double s = v.Values[1];
+            if (r >= s)
+            {
+                Z = -0.5 + sqrt(r - s);
+            }
+            else
+            {
+                Z = -0.5;
+
+            }
+            v.Z = Z;
+            return Z;
+        });
+
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(ProjectBuilder::getNormalStochast(15.0, 2.5));
+        stochasts.push_back(ProjectBuilder::getNormalStochast(5.0, 0.5));
+        return getModelRunner(z, stochasts);
+    }
+
+    void TestWaartsDiscontinuousLimitState::WaartsCrudeMonteCarlo()
+    {
+        auto modelRunner = WaartsModel();
+        std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::CrudeMonteCarlo>();
+        auto cm = dynamic_cast<Reliability::CrudeMonteCarlo*>(calculator.get());
+        cm->Settings->MaximumSamples = 250000;
+        auto expected = expectedValuesCrudeMonteCarlo();
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
+    }
+
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValues()
+    {
+        auto expected = WaartsResult();
+        expected.beta = 3.83;
+        expected.alpha = { 0.98, -0.20};
+        return expected;
+    }
+
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValuesFORM()
+    {
+        auto expected = expectedValues();
+        expected.beta = -40.0;
+        expected.alpha.clear();
+        expected.converged = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValuesDSFI()
+    {
+        auto expected = expectedValues();
+        expected.alpha = { 0.96, -0.27 };
+        return expected;
+    }
+
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValuesCrudeMonteCarlo()
+    {
+        auto expected = expectedValues();
+        expected.alpha.clear();
+        expected.converged = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsDiscontinuousLimitState::expectedValuesImportanceSampling()
+    {
+        auto expected = expectedValues();
+        expected.converged = false;
+        return expected;
+    }
+    /*
+
+    */
+}

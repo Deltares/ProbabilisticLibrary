@@ -19,6 +19,63 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestWaartsNoisyLimitState_body.cpp"
 
+#include "TestWaartsNoisyLimitState.h"
+#include "../../ProjectBuilder.h"
+#include "../../../Deltares.Probabilistic/Model/ModelSample.h"
+#include "../../../Deltares.Probabilistic/Model/ZModel.h"
+#include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    std::shared_ptr<Models::ModelRunner> TestWaartsNoisyLimitState::WaartsModel()
+    {
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
+        {
+            double summation = 0.0;
+            for (const auto value : v.Values)
+            {
+                summation += sin(100.0 * value);
+            }
+
+            v.Z = v.Values[0] + 2.0 * v.Values[1] + 2.0 * v.Values[2] + v.Values[3] - 5.0 * v.Values[4]
+                - 5.0 * v.Values[5] + 0.001 * summation;
+            return v.Z;
+        });
+
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(ProjectBuilder::getLogNormalStochast(120.0, 12.0));
+        stochasts.push_back(ProjectBuilder::getLogNormalStochast(120.0, 12.0));
+        stochasts.push_back(ProjectBuilder::getLogNormalStochast(120.0, 12.0));
+        stochasts.push_back(ProjectBuilder::getLogNormalStochast(120.0, 12.0));
+        stochasts.push_back(ProjectBuilder::getLogNormalStochast(50.0, 15.0));
+        stochasts.push_back(ProjectBuilder::getLogNormalStochast(40.0, 12.0));
+        return getModelRunner(z, stochasts);
+    }
+
+    WaartsResult TestWaartsNoisyLimitState::expectedValues()
+    {
+        auto expected = WaartsResult();
+        expected.beta = 2.3;
+        expected.beta_margin = 0.1;
+        return expected;
+    }
+
+    WaartsResult TestWaartsNoisyLimitState::expectedValuesCrudeMonteCarlo()
+    {
+        auto expected = expectedValues();
+        expected.converged = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsNoisyLimitState::expectedValuesImportanceSampling()
+    {
+        return expectedValuesCrudeMonteCarlo();
+    }
+
+    WaartsResult TestWaartsNoisyLimitState::expectedValuesAdaptiveImportanceSampling()
+    {
+        return expectedValuesCrudeMonteCarlo();
+    }
+
+}

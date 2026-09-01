@@ -19,6 +19,52 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestWaartsResistanceOneQuadraticTerm_body.cpp"
 
+#include "TestWaartsResistanceOneQuadraticTerm.h"
+#include "../../ProjectBuilder.h"
+#include "../../../Deltares.Probabilistic/Model/ModelSample.h"
+#include "../../../Deltares.Probabilistic/Model/ZModel.h"
+#include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    std::shared_ptr<Models::ModelRunner> TestWaartsResistanceOneQuadraticTerm::WaartsModel()
+    {
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
+        {
+            v.Z = v.Values[0] - pow(v.Values[1], 2);
+            return v.Z;
+        });
+
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(ProjectBuilder::getNormalStochast(11.0, 1.0));
+        stochasts.push_back(ProjectBuilder::getNormalStochast(1.5, 0.5));
+        return getModelRunner(z, stochasts);
+    }
+
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::expectedValues()
+    {
+        auto expected = WaartsResult();
+        expected.beta = 3.45;
+        expected.alpha = { 0.358979, -0.933345 };
+        expected.alpha_margin = 0.1;
+        expected.x = { 9.95, 3.15 };
+        return expected;
+    }
+
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::expectedValuesCrudeMonteCarlo()
+    {
+        auto expected = expectedValues();
+        expected.alpha.clear();
+        expected.x.clear();
+        expected.converged = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsResistanceOneQuadraticTerm::expectedValuesImportanceSampling()
+    {
+        auto expected = expectedValues();
+        expected.converged = false;
+        return expected;
+    }
+}

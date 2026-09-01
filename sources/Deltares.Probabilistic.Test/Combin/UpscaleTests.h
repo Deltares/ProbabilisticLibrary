@@ -21,7 +21,7 @@
 //
 #pragma once
 #include "../../Deltares.Probabilistic/Combine/UpScaling.h"
-#include "../Utils/testutils.h"
+#include "../Utils/TestUtils.h"
 
 namespace Deltares::Probabilistic::Test
 {
@@ -51,7 +51,7 @@ namespace Deltares::Probabilistic::Test
         void upscaleToLargestBlockTests3() const;
         void upscaleToLargestBlockTests4() const;
         Reliability::upscaling upscaler = Reliability::upscaling();
-        testutils test_utilities = testutils();
+        TestUtils test_utilities = TestUtils();
     };
 
 }

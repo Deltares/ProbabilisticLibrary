@@ -19,6 +19,64 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestWaartsLinearResistance_body.cpp"
 
+#include "TestWaartsLinearResistance.h"
+#include "../../ProjectBuilder.h"
+#include "../../../Deltares.Probabilistic/Model/ModelSample.h"
+#include "../../../Deltares.Probabilistic/Model/ZModel.h"
+#include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    std::shared_ptr<Models::ModelRunner> TestWaartsLinearResistance::WaartsModel()
+    {
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
+        {
+            v.Z = v.Values[0] - v.Values[1];
+            return v.Z;
+        });
+
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(ProjectBuilder::getNormalStochast(7.0, 1.0));
+        stochasts.push_back(ProjectBuilder::getNormalStochast(2.0, 1.0));
+        return getModelRunner(z, stochasts);
+    }
+
+    void TestWaartsLinearResistance::runNumInt(const Reliability::DesignPointMethod method)
+    {
+        auto modelRunner = WaartsModel();
+        std::unique_ptr<Reliability::ReliabilityMethod> calculator = std::make_unique<Reliability::NumericalIntegration>();
+        auto form = dynamic_cast<Reliability::NumericalIntegration*>(calculator.get());
+        form->Settings.designPointMethod = method;
+        auto expected = expectedValuesNumericalIntegration();
+        expected.converged = false;
+        RunSingleWaartsTest(modelRunner, *calculator, expected);
+    }
+
+    WaartsResult TestWaartsLinearResistance::expectedValues()
+    {
+        auto expected = WaartsResult();
+        expected.beta = 3.54;
+        expected.alpha = { sqrt(0.5), -sqrt(0.5) };
+        expected.x = { 4.5, 4.5 };
+        return expected;
+    }
+
+    WaartsResult TestWaartsLinearResistance::expectedValuesCrudeMonteCarlo()
+    {
+        auto expected = expectedValues();
+        expected.alpha_margin = 0.15;
+        expected.x_margin = 0.5;
+        expected.converged = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsLinearResistance::expectedValuesImportanceSampling()
+    {
+        auto expected = expectedValues();
+        expected.x_margin = 0.1;
+        expected.converged = false;
+        return expected;
+    }
+
+}
