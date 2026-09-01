@@ -45,7 +45,6 @@ namespace Deltares::Server
         std::unordered_map<std::shared_ptr<T>, int> objectIds;
 
         ObjectHandlerAdmin* admin = nullptr;
-        std::mutex mtx;
 
     public:
 
@@ -62,8 +61,6 @@ namespace Deltares::Server
 
             int id = admin->GetNewId();
 
-            std::lock_guard lock(mtx);
-
             objects[id] = value;
             objectIds[value] = id;
 
@@ -77,8 +74,6 @@ namespace Deltares::Server
             auto it = objects.find(id);
             if (it != objects.end())
             {
-                std::lock_guard lock(mtx);
-
                 objectIds.erase(it->second);
                 objects.erase(it);
 
@@ -173,6 +168,19 @@ namespace Deltares::Server
         virtual void SetIndexedValue(const std::shared_ptr<T>& object, const std::string& property_, int index, double value)
         {
             throw Reliability::ProbabilisticLibraryException("SetIndexedValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
+
+        // indexed int
+
+        int GetIndexedIntValue(int id, const std::string& property_, int index) override
+        {
+            std::shared_ptr<T> object = GetObject(id);
+            return GetIndexedIntValue(object, property_, index);
+        }
+
+        virtual int GetIndexedIntValue(const std::shared_ptr<T>& object, const std::string& property_, int index)
+        {
+            throw Reliability::ProbabilisticLibraryException("GetIndexedIntValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
         }
 
         // indexed indexed double

@@ -61,6 +61,12 @@ namespace Deltares::Server
             else return StoredObjectHandler::GetIntValue(stochastPoint, property_);
         }
 
+        void SetIntValue(const std::shared_ptr<Models::StochastPoint>& stochastPoint, const std::string& property_, int value) override
+        {
+            if (property_ == "add_alpha") stochastPoint->Alphas.push_back(alphaHandler->GetObject(value));
+            else StoredObjectHandler::SetIntValue(stochastPoint, property_, value);
+        }
+
         void SetArrayIntValue(const std::shared_ptr<Models::StochastPoint>& stochastPoint, const std::string& property_, int* values, int size) override
         {
             if (property_ == "alphas")

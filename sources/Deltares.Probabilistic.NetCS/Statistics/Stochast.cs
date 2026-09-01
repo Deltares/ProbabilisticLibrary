@@ -207,7 +207,14 @@ namespace Deltares.Probabilistic.Statistics
 
         private void HistogramValuesChanged(ListOperationType listOperation, HistogramValue item)
         {
-            Interface.SetArrayIntValue(id, "histogram_values", this.histogramValues.Select(p => p.GetId()).ToArray());
+            if (listOperation == ListOperationType.Add)
+            {
+                Interface.SetIntValue(id, "add_histogram_value", item.GetId());
+            }
+            else
+            {
+                Interface.SetArrayIntValue(id, "histogram_values", this.histogramValues.Select(p => p.GetId()).ToArray());
+            }
         }
 
         public IList<DiscreteValue> DiscreteValues
@@ -231,7 +238,14 @@ namespace Deltares.Probabilistic.Statistics
 
         private void DiscreteValuesChanged(ListOperationType listOperation, DiscreteValue item)
         {
-            Interface.SetArrayIntValue(id, "discrete_values", this.discreteValues.Select(p => p.GetId()).ToArray());
+            if (listOperation == ListOperationType.Add)
+            {
+                Interface.SetIntValue(id, "add_discrete_value", item.GetId());
+            }
+            else
+            {
+                Interface.SetArrayIntValue(id, "discrete_values", this.discreteValues.Select(p => p.GetId()).ToArray());
+            }
         }
 
         public IList<FragilityValue> FragilityValues
@@ -257,7 +271,7 @@ namespace Deltares.Probabilistic.Statistics
         {
             if (listOperation == ListOperationType.Add)
             {
-                Interface.SetIntValue(id, "fragility_values", item.GetId());
+                Interface.SetIntValue(id, "add_fragility_value", item.GetId());
             }
             else
             {
@@ -286,7 +300,14 @@ namespace Deltares.Probabilistic.Statistics
 
         private void ContributingStochastsChanged(ListOperationType listOperation, ContributingStochast item)
         {
-            Interface.SetArrayIntValue(id, "contributing_stochasts", this.contributingStochasts.Select(s => s.GetId()).ToArray());
+            if (listOperation == ListOperationType.Add)
+            {
+                Interface.SetIntValue(id, "add_contributing_stochast", item.GetId());
+            }
+            else
+            {
+                Interface.SetArrayIntValue(id, "contributing_stochasts", this.contributingStochasts.Select(s => s.GetId()).ToArray());
+            }
         }
 
         public double DesignQuantile

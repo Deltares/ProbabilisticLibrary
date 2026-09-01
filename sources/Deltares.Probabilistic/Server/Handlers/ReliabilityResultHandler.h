@@ -69,7 +69,7 @@ namespace Deltares::Server
         {
             if (property_ == "index") result->Index = value;
             else if (property_ == "samples") result->Samples = value;
-            else StoredObjectHandler::SetValue(result, property_, value);
+            else StoredObjectHandler::SetIntValue(result, property_, value);
         }
     };
 }

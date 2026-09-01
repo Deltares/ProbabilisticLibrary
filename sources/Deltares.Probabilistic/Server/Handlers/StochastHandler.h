@@ -142,9 +142,11 @@ namespace Deltares::Server
             else if (property_ == "array_size") stochast->modelParameter->arraySize = value;
             else if (property_ == "copy_from") stochast->copyFrom(GetObject(value));
             else if (property_ == "conditional_source") stochast->VariableSource = GetObject(value);
-            else if (property_ == "histogram_values") stochast->getProperties()->HistogramValues.push_back(histogramValueHandler->GetObject(value));
-            else if (property_ == "fragility_values") stochast->getProperties()->FragilityValues.push_back(fragilityValueHandler->GetObject(value));
-            else if (property_ == "discrete_values") stochast->getProperties()->DiscreteValues.push_back(discreteValueHandler->GetObject(value));
+            else if (property_ == "add_histogram_value") stochast->getProperties()->HistogramValues.push_back(histogramValueHandler->GetObject(value));
+            else if (property_ == "add_fragility_value") stochast->getProperties()->FragilityValues.push_back(fragilityValueHandler->GetObject(value));
+            else if (property_ == "add_discrete_value") stochast->getProperties()->DiscreteValues.push_back(discreteValueHandler->GetObject(value));
+            else if (property_ == "add_contributing_stochast") stochast->getProperties()->ContributingStochasts.push_back(contributingStochastHandler->GetObject(value));
+            else if (property_ == "add_conditional_value") stochast->ValueSet->StochastValues.push_back(conditionalValueHandler->GetObject(value));
             else if (property_ == "prior") tempIntValue = value;
             else StoredObjectHandler::SetIntValue(stochast, property_, value);
         }

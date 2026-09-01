@@ -73,17 +73,11 @@ namespace Deltares::Server
 
         int GetIntValue(const std::shared_ptr<Reliability::DesignPoint>& designPoint, const std::string& property_) override
         {
-            if (designPoint->convergenceReport != nullptr)
-            {
-                if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
-                else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
-                else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
-            }
-            if (property_ == "contributing_design_points_count") return static_cast<int>(designPoint->ContributingDesignPoints.size());
+            if (property_ == "total_iterations") return designPoint->convergenceReport != nullptr ? designPoint->convergenceReport->TotalIterations : 0;
+            else if (property_ == "total_directions") return designPoint->convergenceReport != nullptr ? designPoint->convergenceReport->TotalDirections : 0;
+            else if (property_ == "total_model_runs") return designPoint->convergenceReport != nullptr ? designPoint->convergenceReport->TotalModelRuns : 0;
+            else if (property_ == "contributing_design_points_count") return static_cast<int>(designPoint->ContributingDesignPoints.size());
             else if (property_ == "alphas_count") return static_cast<int>(designPoint->Alphas.size());
-            else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
-            else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
-            else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
             else if (property_ == "evaluations_count") return static_cast<int>(designPoint->Evaluations.size());
             else if (property_ == "reliability_results_count") return static_cast<int>(designPoint->ReliabilityResults.size());
             else if (property_ == "messages_count") return static_cast<int>(designPoint->Messages.size());
@@ -99,6 +93,7 @@ namespace Deltares::Server
         void SetIntValue(const std::shared_ptr<Reliability::DesignPoint>& designPoint, const std::string& property_, int value) override
         {
             if (property_ == "ids") designPoint->Ids = designPointIdsCallback(value);
+            else if (property_ == "add_alpha") designPoint->Alphas.push_back(alphaHandler->GetObject(value));
             else if (property_ == "total_iterations") designPoint->convergenceReport->TotalIterations = value;
             else if (property_ == "total_directions") designPoint->convergenceReport->TotalDirections = value;
             else if (property_ == "total_model_runs") designPoint->convergenceReport->TotalModelRuns = value;

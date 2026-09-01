@@ -56,7 +56,7 @@ namespace Deltares::Server
         {
             if (property_ == "design_points_count") return static_cast<int>(project->designPoints.size());
             else if (property_ == "scenarios_count") return static_cast<int>(project->scenarios.size());
-            else return StoredObjectHandler::GetIdValue(project, property_);
+            else return StoredObjectHandler::GetIntValue(project, property_);
         }
 
         int GetIdValue(const std::shared_ptr<Reliability::ExcludingCombineProject>& project, const std::string& property_) override

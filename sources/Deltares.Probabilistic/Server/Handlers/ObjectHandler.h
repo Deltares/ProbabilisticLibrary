@@ -32,6 +32,7 @@ namespace Deltares::Server
     class ObjectHandler
     {
     public:
+        virtual ~ObjectHandler() = default;
         virtual void SetAdmin(ObjectHandlerAdmin* admin) { }
 
         virtual int Create() { return -1; }

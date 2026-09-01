@@ -22,12 +22,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Deltares.Probabilistic.Utils
 {
     public enum ListOperationType
     {
         Add,
+        AddRange,
         Remove,
         Clear
     }
@@ -81,6 +83,17 @@ namespace Deltares.Probabilistic.Utils
                 T firstItem = list[0];
                 list.Clear();
                 callBack?.Invoke(ListOperationType.Clear, firstItem);
+            }
+        }
+
+        public void AddRange(IEnumerable<T> collection)
+        {
+            List<T> range = collection.ToList();
+            if (range.Any())
+            {
+                T firstItem = range[0];
+                list.AddRange(range);
+                callBack?.Invoke(ListOperationType.AddRange, firstItem);
             }
         }
 
@@ -190,6 +203,28 @@ namespace Deltares.Probabilistic.Utils
         void ICollection.CopyTo(Array array, int index)
         {
             ((ICollection)list).CopyTo(array, index);
+        }
+    }
+
+    public static class CallbackListExtension
+    {
+        public static void AddRange<T>(this IList<T> list, IEnumerable<T> collection)
+        {
+            if (list is CallBackList<T> callBackList)
+            {
+                callBackList.AddRange(collection);
+            }
+            else if (list is List<T> list2)
+            {
+                list2.AddRange(collection);
+            }
+            else
+            {
+                foreach (T item in collection)
+                {
+                    list.Add(item);
+                }
+            }
         }
     }
 }

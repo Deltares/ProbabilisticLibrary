@@ -21,6 +21,9 @@
 //
 #pragma once
 
+#include <thread>
+#include <mutex>
+
 #include "BaseHandler.h"
 #include "ProjectEntries.h"
 #include "../Reliability/ReliabilityProject.h"
@@ -92,6 +95,12 @@ namespace Deltares::Server
     private:
 
         ObjectHandlerAdmin admin;
+        std::thread::id mainThreadId = std::this_thread::get_id();
+
+        bool isMultiThread = false;
+        bool isMultiThreadDetected = false;
+        std::mutex mtx;
+        std::vector<int> destroyObjects;
 
         void InitializeHandlers();
 
@@ -106,5 +115,6 @@ namespace Deltares::Server
         std::unordered_map<ObjectType, ObjectHandler*> handlers;
 
         std::shared_ptr<Models::ModelProject> GetProject(int id);
+        void DestroyObjects();
     };
 }

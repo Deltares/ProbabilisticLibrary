@@ -40,16 +40,54 @@ namespace Deltares::Server
 
     int ProjectHandler::Create(const std::string& objectTypeString)
     {
+        if (isMultiThread)
+        {
+            DestroyObjects();
+        }
+
         ObjectType objectType = ProjectEntries::GetType(objectTypeString);
         return handlers[objectType]->Create();
     }
 
     void ProjectHandler::Destroy(int id)
     {
-        if (admin.Contains(id))
+        if (!isMultiThreadDetected)
         {
-            ObjectType objectType = admin.GetObjectType(id);
-            handlers[objectType]->Destroy(id);
+            isMultiThread = std::this_thread::get_id() != mainThreadId;
+            isMultiThreadDetected = true;
+        }
+
+        if (isMultiThread)
+        {
+            std::lock_guard lock(mtx);
+            destroyObjects.push_back(id);
+        }
+        else
+        {
+            if (admin.Contains(id))
+            {
+                ObjectType objectType = admin.GetObjectType(id);
+                handlers[objectType]->Destroy(id);
+            }
+        }
+    }
+
+    void ProjectHandler::DestroyObjects()
+    {
+        std::lock_guard lock(mtx);
+
+        if (!destroyObjects.empty())
+        {
+            for (int id : destroyObjects)
+            {
+                if (admin.Contains(id))
+                {
+                    ObjectType objectType = admin.GetObjectType(id);
+                    handlers[objectType]->Destroy(id);
+                }
+            }
+
+            destroyObjects.clear();
         }
     }
 
@@ -126,7 +164,8 @@ namespace Deltares::Server
 
     int ProjectHandler::GetIndexedIntValue(int id, const std::string& property_, int index)
     {
-        return 0;
+        ObjectType objectType = admin.GetObjectType(id);
+        return handlers[objectType]->GetIndexedIntValue(id, property_, index);
     }
 
     int ProjectHandler::GetIndexedIdValue(int id, const std::string& property_, int index)
