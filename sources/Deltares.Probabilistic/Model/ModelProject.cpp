@@ -60,6 +60,28 @@ namespace Deltares::Models
         }
     }
 
+    void ModelProject::addStochasts(const std::vector<std::shared_ptr<Statistics::Stochast>>& newStochasts)
+    {
+        for (size_t i = 0; i < newStochasts.size(); i++)
+        {
+            if (i < this->stochasts.size())
+            {
+                this->stochasts[i] = newStochasts[i];
+            }
+            else
+            {
+                this->stochasts.push_back(newStochasts[i]);
+            }
+
+            if (model != nullptr && i < this->model->inputParameters.size() && newStochasts[i]->modelParameter != nullptr)
+            {
+                this->model->inputParameters[i]->isArray = newStochasts[i]->modelParameter->isArray;
+                this->model->inputParameters[i]->arraySize = newStochasts[i]->modelParameter->arraySize;
+                newStochasts[i]->modelParameter = this->model->inputParameters[i];
+            }
+        }
+    }
+
     void ModelProject::shareStochasts(std::shared_ptr<ModelProject> source)
     {
         for (const auto& stochast : source->stochasts)

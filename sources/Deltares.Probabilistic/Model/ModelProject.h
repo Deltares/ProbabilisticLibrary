@@ -65,6 +65,12 @@ namespace Deltares::Models
         void updateStochasts();
 
         /**
+         * \brief Replace the generated stochasts from the input parameters with these stochasts
+         * \param newStochasts The stochasts to replace the generated stochasts with
+         */
+        void addStochasts(const std::vector<std::shared_ptr<Statistics::Stochast>>& newStochasts);
+
+        /**
          * \brief Shares the stochasts and correlation matrix with another project
          */
         void shareStochasts(std::shared_ptr<ModelProject> source);

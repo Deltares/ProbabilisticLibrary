@@ -115,11 +115,14 @@ namespace Deltares::Server
         {
             if (property_ == "variables")
             {
-                project->stochasts.clear();
+                auto newStochasts = std::vector<std::shared_ptr<Statistics::Stochast>>(size);
+
                 for (int i = 0; i < size; i++)
                 {
-                    project->stochasts.push_back(stochastHandler->GetObject(values[i]));
+                    newStochasts[i] = stochastHandler->GetObject(values[i]);
                 }
+
+                project->addStochasts(newStochasts);
             }
             else if (property_ == "input_parameters")
             {
