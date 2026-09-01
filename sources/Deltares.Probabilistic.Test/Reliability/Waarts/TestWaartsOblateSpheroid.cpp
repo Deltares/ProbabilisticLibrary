@@ -19,6 +19,67 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestWaartsOblateSpheroid_body.cpp"
 
+#include "TestWaartsOblateSpheroid.h"
+#include "../../ProjectBuilder.h"
+#include "../../../Deltares.Probabilistic/Model/ModelSample.h"
+#include "../../../Deltares.Probabilistic/Model/ZModel.h"
+#include "../../../Deltares.Probabilistic/Statistics/Stochast.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    std::shared_ptr<Models::ModelRunner> TestWaartsOblateSpheroid::WaartsModel()
+    {
+        constexpr int numberOfQuadraticTerms = 10;
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v)
+        {
+            double Z = v.Values[0];
+            for (int i = 1; i <= numberOfQuadraticTerms; i++)
+            {
+                Z -= pow(v.Values[i], 2) / (1.0 + static_cast<double>(i) / 10.0);
+            }
+            v.Z = Z;
+            return Z;
+        });
+
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochasts.push_back(ProjectBuilder::getNormalStochast(10.0, 0.5));
+        for (int i = 1; i <= numberOfQuadraticTerms; i++)
+        {
+            stochasts.push_back(ProjectBuilder::getNormalStochast(0.0, 1.0));
+        }
+        return getModelRunner(z, stochasts);
+    }
+
+    WaartsResult TestWaartsOblateSpheroid::expectedValues()
+    {
+        auto expected = WaartsResult();
+        expected.beta = 1.1;
+        return expected;
+    }
+
+    WaartsResult TestWaartsOblateSpheroid::expectedValuesFORM()
+    {
+        auto expected = expectedValues();
+        expected.beta = 3.38;
+        return expected;
+    }
+
+    WaartsResult TestWaartsOblateSpheroid::expectedValuesFDIR()
+    {
+        return expectedValuesFORM();
+    }
+
+    WaartsResult TestWaartsOblateSpheroid::expectedValuesImportanceSampling()
+    {
+        auto expected = expectedValues();
+        expected.converged = false;
+        return expected;
+    }
+
+    WaartsResult TestWaartsOblateSpheroid::expectedValuesAdaptiveImportanceSampling()
+    {
+        return expectedValuesImportanceSampling();
+    }
+
+}

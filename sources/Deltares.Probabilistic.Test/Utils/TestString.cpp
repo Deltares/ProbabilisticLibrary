@@ -19,5 +19,31 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestString_body.cpp"
+#include <gtest/gtest.h>
+#include "TestString.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryString.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    void TestString::testDouble2Str()
+    {
+        double x = 1.23;
+        std::string value = Reliability::ProbabilisticLibraryString::double2str(x);
+        value = Reliability::ProbabilisticLibraryString::trim(value, " ");
+        EXPECT_EQ(value, "1.23");
+
+        x = 1e-12;
+        value = Reliability::ProbabilisticLibraryString::double2str(x);
+        value = Reliability::ProbabilisticLibraryString::trim(value, " ");
+        EXPECT_EQ(value, "1e-12");
+    }
+
+    void TestString::testDoubles2Str()
+    {
+        const auto x = std::vector({ -1e-12, 1e-12 });
+        const auto value = Reliability::ProbabilisticLibraryString::doubles2strTrimmed(x);
+        EXPECT_EQ(value, "-1e-12_1e-12");
+    }
+
+}
+

@@ -19,6 +19,110 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestStochast_body.cpp"
+#include "TestStochast.h"
+#include "../../Deltares.Probabilistic/Statistics/Stochast.h"
+#include <gtest/gtest.h>
+
+namespace Deltares::Probabilistic::Test
+{
+    void TestStochast::testSortFragilityCurves()
+    {
+        auto stochast = Statistics::Stochast();
+        auto prop = stochast.getProperties();
+        auto val1 = std::make_shared<Statistics::FragilityValue>();
+        val1->X = -1.0;
+        val1->Reliability = 0.1;
+        auto val2 = std::make_shared<Statistics::FragilityValue>();
+        val2->X = 0.0;
+        val2->Reliability = 0.5;
+        auto val3 = std::make_shared<Statistics::FragilityValue>();
+        val3->X = 1.0;
+        val3->Reliability = 0.25;
+        prop->FragilityValues.push_back(val1);
+        prop->FragilityValues.push_back(val2);
+        prop->FragilityValues.push_back(val3);
+
+        // sort on X:
+        prop->sortFragilityValuesOnX();
+        // check that also properties of stochast are sorted:
+        EXPECT_EQ(stochast.getProperties()->FragilityValues[2]->X, 1.0);
+
+        // sort on Reliability:
+        prop->sortFragilityValuesOnReliability();
+        // check that also properties of stochast are sorted:
+        EXPECT_EQ(stochast.getProperties()->FragilityValues[2]->X, 0.0);
+    }
+
+    void TestStochast::testCompositeGetVariableSource()
+    {
+        class myStochast : public Statistics::BaseStochast
+        {
+        public:
+            bool isVariable() override {return true;}
+        };
+
+        // test 1 : find a variable source in the 2nd sub stochast:
+
+        auto stochast = std::make_shared<Statistics::Stochast>();
+        stochast->setDistributionType(Statistics::DistributionType::Composite);
+
+        auto subStochast1 = std::make_shared<myStochast>();
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.4, subStochast1));
+
+        auto subStochast2 = std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Uniform, std::vector<double>{5.0, 6.0});
+        subStochast2->IsVariableStochast = true;
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.6, subStochast2));
+        subStochast2->VariableSource = std::make_shared<Statistics::Stochast>();
+
+        auto src1 = stochast->getVariableSource();
+        EXPECT_TRUE(src1 != nullptr);
+
+        // test 2 : no variable source found
+        stochast->getProperties()->ContributingStochasts.clear();
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.4, subStochast1));
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.6, subStochast1));
+
+        auto src2 = stochast->getVariableSource();
+        EXPECT_TRUE(src2 == nullptr);
+    }
+
+    void TestStochast::testCopyFrom()
+    {
+        constexpr double margin = 1e-9;
+
+        // simple stochast
+
+        auto stochast = std::make_shared<Statistics::Stochast>();
+        stochast->setDistributionType(Statistics::DistributionType::Normal);
+        stochast->getProperties()->Location = 4.5;
+        stochast->getProperties()->Scale = 0.3;
+
+        auto copy = std::make_shared<Statistics::Stochast>();
+        copy->copyFrom(stochast);
+
+        EXPECT_EQ(stochast->getDistributionType(), copy->getDistributionType());
+        EXPECT_NEAR(stochast->getProperties()->Location, copy->getProperties()->Location, margin);
+        EXPECT_NEAR(stochast->getProperties()->Scale, copy->getProperties()->Scale, margin);
+
+        // contributing stochasts
+
+        auto comp_stochast = std::make_shared<Statistics::Stochast>();
+        comp_stochast->setDistributionType(Statistics::DistributionType::Composite);
+        comp_stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.3, std::make_shared<Statistics::Stochast>()));
+        comp_stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<Statistics::ContributingStochast>(0.7, std::make_shared<Statistics::Stochast>()));
+
+        auto copy_comp = std::make_shared<Statistics::Stochast>();
+        copy_comp->copyFrom(comp_stochast);
+
+        EXPECT_EQ(comp_stochast->getDistributionType(), copy_comp->getDistributionType());
+        for (size_t i = 0; i < comp_stochast->getProperties()->ContributingStochasts.size(); i++)
+        {
+            EXPECT_NEAR(comp_stochast->getProperties()->ContributingStochasts[i]->Probability, copy_comp->getProperties()->ContributingStochasts[i]->Probability, margin);
+        }
+
+    }
+
+
+
+}
 

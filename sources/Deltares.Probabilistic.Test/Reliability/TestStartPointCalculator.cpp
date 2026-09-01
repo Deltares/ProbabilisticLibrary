@@ -19,5 +19,105 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestStartPointCalculator_body.cpp"
+#include <gtest/gtest.h>
+#include <cmath>
+#include "TestStartPointCalculator.h"
+#include "../../Deltares.Probabilistic/Reliability/StartPointCalculator.h"
+#include "../ProjectBuilder.h"
+
+namespace Deltares::Probabilistic::Test
+{
+    void TestStartPointCalculator::allStartPointTests() const
+    {
+        TestMethodOne();
+        testMethodRaySearch();
+        testMethodSphereSearch();
+        testMethodSphereSearchAllDirections();
+        testMethodSphereSearchWithDeterminist();
+    }
+
+    void TestStartPointCalculator::TestMethodOne()
+    {
+        auto modelRunner = ProjectBuilder().BuildProject();
+        auto calculator = Reliability::StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = Reliability::StartMethodType::FixedValue;
+        calculator.Settings->startVector = { 1.0, 1.0 };
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r.Values.size(), 2);
+        EXPECT_EQ(r.Values[0], 1.0);
+        EXPECT_EQ(r.Values[1], 1.0);
+    }
+
+    void TestStartPointCalculator::testMethodRaySearch() const
+    {
+        auto modelRunner = ProjectBuilder().BuildProject();
+        auto calculator = Reliability::StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = Reliability::StartMethodType::RaySearch;
+        calculator.Settings->MaximumLengthStartPoint = 20.0;
+        calculator.Settings->dsdu = 3.0;
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r.Values.size(), 2);
+        EXPECT_NEAR(r.Values[0], 12.0, margin);
+        EXPECT_NEAR(r.Values[1], 12.0, margin);
+    }
+
+    void TestStartPointCalculator::testMethodSphereSearch() const
+    {
+        auto modelRunner = ProjectBuilder().BuildProject();
+        auto calculator = Reliability::StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r.Values.size(), 2);
+        auto z = modelRunner->getZValue(r);
+        EXPECT_TRUE(std::abs(z) < margin);
+        EXPECT_NEAR(r.Values[0], 2.4, margin);
+        EXPECT_NEAR(r.Values[1], 0.0, margin);
+    }
+
+    void TestStartPointCalculator::testMethodSphereSearchAllDirections() const
+    {
+        auto modelRunner = ProjectBuilder().BuildProject();
+        auto calculator = Reliability::StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
+        calculator.Settings->allQuadrants = true;
+        calculator.Settings->maxStepsSphereSearch = 16;
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r.Values.size(), 2);
+        auto z = modelRunner->getZValue(r);
+        EXPECT_TRUE(std::abs(z) < margin);
+        EXPECT_NEAR(r.Values[0], 1.64172137689, margin);
+        EXPECT_NEAR(r.Values[1], -0.94784827888, margin);
+    }
+
+    void TestStartPointCalculator::testMethodSphereSearchWithDeterminist() const
+    {
+        auto modelRunner = ProjectBuilder().BuildProjectWithDeterminist(3.0);
+        auto calculator = Reliability::StartPointCalculator();
+
+        modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+        calculator.Settings->StartMethod = Reliability::StartMethodType::SphereSearch;
+
+        auto r = calculator.getStartPoint(*modelRunner);
+
+        ASSERT_EQ(r.Values.size(), 2);
+        EXPECT_NEAR(r.Values[1], 2.4, margin);
+        EXPECT_NEAR(r.Values[0], 0.0, margin);
+    }
+
+}
