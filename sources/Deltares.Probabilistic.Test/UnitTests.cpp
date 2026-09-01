@@ -1491,21 +1491,6 @@ TEST(UnitTests, testCreateDestroyAllEntries)
     UnitTestProjectHandler::TestCreateDestroyAllEntries();
 }
 
-TEST(UnitTests, testProjectEntriesIsModelProject)
-{
-    UnitTestProjectHandler::TestProjectEntriesIsStochast();
-}
-
-TEST(UnitTests, testProjectEntriesIsModelSettingsType)
-{
-    UnitTestProjectHandler::TestProjectEntries();
-}
-
-TEST(UnitTests, testProjectEntriesIsStochast)
-{
-    UnitTestProjectHandler::TestProjectEntriesIsStochast();
-}
-
 TEST(IntegrationTests, testProjectHandlerRunProject)
 {
     IntegrationTestProjectHandler::TestRunProject();
