@@ -32,7 +32,7 @@ namespace Deltares::Server
     /**
      * \brief Handles properties and methods of class RunProjectSettings
      */
-    class RunProjectSettingsHandler : public StoredObjectHandler<Models::RunProjectSettings>
+    class RunProjectSettingsHandler : public DerivedObjectHandler<Models::RunProjectSettings, Models::ModelProjectSettings>
     {
     public:
         ObjectType GetObjectType() override
@@ -40,44 +40,17 @@ namespace Deltares::Server
             return ObjectType::RunProjectSettings;
         }
 
-        int GetIdValue(const std::shared_ptr<Models::RunProjectSettings>& settings, const std::string& property_) override
-        {
-            return modelProjectSettingsHandler->GetIdValue(settings, property_);
-        }
-
-        int GetIntValue(const std::shared_ptr<Models::RunProjectSettings>& settings, const std::string& property_) override
-        {
-            return modelProjectSettingsHandler->GetIntValue(settings, property_);
-        }
-
-        void SetIntValue(const std::shared_ptr<Models::RunProjectSettings>& settings, const std::string& property_, int value) override
-        {
-            modelProjectSettingsHandler->SetIntValue(settings, property_, value);
-        }
-
-        bool GetBoolValue(const std::shared_ptr<Models::RunProjectSettings>& settings, const std::string& property_) override
-        {
-            return modelProjectSettingsHandler->GetBoolValue(settings, property_);
-        }
-
-        void SetBoolValue(const std::shared_ptr<Models::RunProjectSettings>& settings, const std::string& property_, bool value) override
-        {
-            modelProjectSettingsHandler->SetBoolValue(settings, property_, value);
-        }
-
         std::string GetStringValue(const std::shared_ptr<Models::RunProjectSettings>& settings, const std::string& property_) override
         {
             if (property_ == "run_values_type") return Models::RunProjectSettings::getRunValuesTypeString(settings->runValuesType);
-            else return modelProjectSettingsHandler->GetStringValue(settings, property_);
+            else return DerivedObjectHandler::GetStringValue(settings, property_);
         }
 
         void SetStringValue(const std::shared_ptr<Models::RunProjectSettings>& settings, const std::string& property_, const std::string& value) override
         {
             if (property_ == "run_values_type") settings->runValuesType = Models::RunProjectSettings::getRunValuesType(value);
-            else modelProjectSettingsHandler->SetStringValue(settings, property_, value);
+            else DerivedObjectHandler::SetStringValue(settings, property_, value);
         }
-
-        ModelProjectSettingsHandler* modelProjectSettingsHandler = nullptr;
     };
 }
 

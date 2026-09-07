@@ -224,55 +224,25 @@ namespace Deltares::Server
             if (property_ == "discrete_values")
             {
                 stochast->getProperties()->setDirty();
-                stochast->getProperties()->DiscreteValues.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->getProperties()->DiscreteValues.push_back(discreteValueHandler->GetObject(values[i]));
-                }
+                discreteValueHandler->SetIdValues(stochast->getProperties()->DiscreteValues, values, size);
             }
             else if (property_ == "histogram_values")
             {
                 stochast->getProperties()->setDirty();
-                stochast->getProperties()->HistogramValues.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->getProperties()->HistogramValues.push_back(histogramValueHandler->GetObject(values[i]));
-                }
+                histogramValueHandler->SetIdValues(stochast->getProperties()->HistogramValues, values, size);
             }
             else if (property_ == "fragility_values")
             {
                 stochast->getProperties()->setDirty();
-                stochast->getProperties()->FragilityValues.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->getProperties()->FragilityValues.push_back(fragilityValueHandler->GetObject(values[i]));
-                }
+                fragilityValueHandler->SetIdValues(stochast->getProperties()->FragilityValues, values, size);
             }
             else if (property_ == "contributing_stochasts")
             {
                 stochast->getProperties()->setDirty();
-                stochast->getProperties()->ContributingStochasts.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->getProperties()->ContributingStochasts.push_back(contributingStochastHandler->GetObject(values[i]));
-                }
+                contributingStochastHandler->SetIdValues(stochast->getProperties()->ContributingStochasts, values, size);
             }
-            else if (property_ == "conditional_values")
-            {
-                stochast->ValueSet->StochastValues.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->ValueSet->StochastValues.push_back(conditionalValueHandler->GetObject(values[i]));
-                }
-            }
-            else if (property_ == "array_variables")
-            {
-                stochast->ArrayVariables.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    stochast->ArrayVariables.push_back(GetObject(values[i]));
-                }
-            }
+            else if (property_ == "conditional_values") conditionalValueHandler->SetIdValues(stochast->ValueSet->StochastValues, values, size);
+            else if (property_ == "array_variables") SetIdValues(stochast->ArrayVariables, values, size);
             else StoredObjectHandler::SetArrayIntValue(stochast, property_, values, size);
         }
 

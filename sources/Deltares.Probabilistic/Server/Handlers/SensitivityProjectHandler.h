@@ -80,15 +80,7 @@ namespace Deltares::Server
 
         void SetArrayIntValue(const std::shared_ptr<Sensitivity::SensitivityProject>& project, const std::string& property_, int* values, int size) override
         {
-            if (property_ == "sensitivity_parameters")
-            {
-                project->sensitivityParameters.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->sensitivityParameters.push_back(modelParameterHandler->GetObject(values[i]));
-                }
-            }
+            if (property_ == "sensitivity_parameters") modelParameterHandler->SetIdValues(project->sensitivityParameters, values, size);
             else DerivedObjectHandler::SetArrayIntValue(project, property_, values, size);
         }
 

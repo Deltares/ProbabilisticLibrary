@@ -126,14 +126,7 @@ namespace Deltares::Server
 
         void SetArrayIntValue(const std::shared_ptr<Reliability::DesignPoint>& designPoint, const std::string& property_, int* values, int size) override
         {
-            if (property_ == "alphas")
-            {
-                designPoint->Alphas.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    designPoint->Alphas.push_back(alphaHandler->GetObject(values[i]));
-                }
-            }
+            if (property_ == "alphas") alphaHandler->SetIdValues(designPoint->Alphas, values, size);
             else StoredObjectHandler::SetArrayIntValue(designPoint, property_, values, size);
         }
 

@@ -24,11 +24,8 @@
 #include <string>
 
 #include "ExcludingCombineSettingsHandler.h"
-#include "CopulaCorrelationHandler.h"
-#include "CorrelationMatrixHandler.h"
 #include "DesignPointHandler.h"
 #include "ScenarioHandler.h"
-#include "SelfCorrelationMatrixHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Combine/ExcludingCombineProject.h"
 
@@ -74,24 +71,8 @@ namespace Deltares::Server
 
         void SetArrayIntValue(const std::shared_ptr<Reliability::ExcludingCombineProject>& project, const std::string& property_, int* values, int size) override
         {
-            if (property_ == "design_points")
-            {
-                project->designPoints.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->designPoints.push_back(designPointHandler->GetObject(values[i]));
-                }
-            }
-            else if (property_ == "scenarios")
-            {
-                project->scenarios.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->scenarios.push_back(scenarioHandler->GetObject(values[i]));
-                }
-            }
+            if (property_ == "design_points") designPointHandler->SetIdValues(project->designPoints, values, size);
+            else if (property_ == "scenarios") scenarioHandler->SetIdValues(project->scenarios, values, size);
             else StoredObjectHandler::SetArrayIntValue(project, property_, values, size);
         }
 

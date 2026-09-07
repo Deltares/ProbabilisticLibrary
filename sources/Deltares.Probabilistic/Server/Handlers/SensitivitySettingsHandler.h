@@ -32,7 +32,7 @@ namespace Deltares::Server
     /**
      * \brief Handles properties and methods of class SensitivitySettings
      */
-    class SensitivitySettingsHandler : public StoredObjectHandler<Sensitivity::SensitivitySettings>
+    class SensitivitySettingsHandler : public DerivedObjectHandler<Sensitivity::SensitivitySettings, Models::ModelProjectSettings>
     {
     public:
         ObjectType GetObjectType() override
@@ -44,56 +44,40 @@ namespace Deltares::Server
         {
             if (property_ == "low_value") return settings->LowValue;
             else if (property_ == "high_value") return settings->HighValue;
-            else return StoredObjectHandler::GetValue(settings, property_);
+            else return DerivedObjectHandler::GetValue(settings, property_);
         }
 
         void SetValue(const std::shared_ptr<Sensitivity::SensitivitySettings>& settings, const std::string& property_, double value) override
         {
             if (property_ == "low_value") settings->LowValue = value;
             else if (property_ == "high_value") settings->HighValue = value;
-            else StoredObjectHandler::SetValue(settings, property_, value);
+            else DerivedObjectHandler::SetValue(settings, property_, value);
         }
 
         int GetIntValue(const std::shared_ptr<Sensitivity::SensitivitySettings>& settings, const std::string& property_) override
         {
             if (property_ == "iterations") return settings->Iterations;
-            else return modelProjectSettingsHandler->GetIntValue(settings, property_);
+            else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
 
         void SetIntValue(const std::shared_ptr<Sensitivity::SensitivitySettings>& settings, const std::string& property_, int value) override
         {
             if (property_ == "iterations") settings->Iterations = value;
-            else modelProjectSettingsHandler->SetIntValue(settings, property_, value);
-        }
-
-        int GetIdValue(const std::shared_ptr<Sensitivity::SensitivitySettings>& settings, const std::string& property_) override
-        {
-            return modelProjectSettingsHandler->GetIdValue(settings, property_);
-        }
-
-        bool GetBoolValue(const std::shared_ptr<Sensitivity::SensitivitySettings>& settings, const std::string& property_) override
-        {
-            return modelProjectSettingsHandler->GetBoolValue(settings, property_);
-        }
-
-        void SetBoolValue(const std::shared_ptr<Sensitivity::SensitivitySettings>& settings, const std::string& property_, bool value) override
-        {
-            modelProjectSettingsHandler->SetBoolValue(settings, property_, value);
+            else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }
 
         std::string GetStringValue(const std::shared_ptr<Sensitivity::SensitivitySettings>& settings, const std::string& property_) override
         {
             if (property_ == "sensitivity_method") return Sensitivity::SensitivitySettings::getSensitivityMethodTypeString(settings->SensitivityMethod);
-            else return modelProjectSettingsHandler->GetStringValue(settings, property_);
+            else return DerivedObjectHandler::GetStringValue(settings, property_);
         }
 
         void SetStringValue(const std::shared_ptr<Sensitivity::SensitivitySettings>& settings, const std::string& property_, const std::string& value) override
         {
             if (property_ == "sensitivity_method") settings->SensitivityMethod = Sensitivity::SensitivitySettings::getSensitivityMethodType(value);
-            else modelProjectSettingsHandler->SetStringValue(settings, property_, value);
+            else DerivedObjectHandler::SetStringValue(settings, property_, value);
         }
 
-        ModelProjectSettingsHandler* modelProjectSettingsHandler = nullptr;
         StochastSettingsHandler* stochastSettingsHandler = nullptr;
     };
 }

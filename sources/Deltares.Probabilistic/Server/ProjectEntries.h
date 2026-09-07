@@ -83,17 +83,17 @@ namespace Deltares::Server
         /// <summary>
         /// Checks whether the object_type is available
         /// </summary>
-        /// <param name="object_type"> string in lower case with object name </param>
+        /// <param name="object_type_string"> string in lower case with object name </param>
         /// <returns> true if available </returns>
-        static bool CanHandle(const std::string& object_type);
+        static bool CanHandle(const std::string& object_type_string);
 
         /// <summary>
         /// convert string to enum ObjectType
         /// </summary>
-        /// <param name="object_type"> string in lower case with object name </param>
+        /// <param name="object_type_string"> string in lower case with object name </param>
         /// <returns> enum corresponding with name </returns>
         /// <exception cref="probLibException"> object name not available </exception>
-        static ObjectType GetType(const std::string& object_type);
+        static ObjectType GetType(const std::string& object_type_string);
 
         /// <summary>
         /// Converts an object type to a string

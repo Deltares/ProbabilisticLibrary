@@ -32,7 +32,7 @@ namespace Deltares::Server
     /**
      * \brief Handles properties and methods of class UncertaintySettings
      */
-    class UncertaintySettingsHandler : public StoredObjectHandler<Uncertainty::SettingsS>
+    class UncertaintySettingsHandler : public DerivedObjectHandler<Uncertainty::SettingsS, Models::ModelProjectSettings>
     {
     public:
         ObjectType GetObjectType() override
@@ -49,7 +49,7 @@ namespace Deltares::Server
             else if (property_ == "step_size") return settings->GradientSettings->StepSize;
             else if (property_ == "step_size_factor") return settings->StepSizeFactor;
             else if (property_ == "global_step_size") return settings->GlobalStepSize;
-            else return StoredObjectHandler::GetValue(settings, property_);
+            else return DerivedObjectHandler::GetValue(settings, property_);
         }
 
         void SetValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_, double value) override
@@ -61,7 +61,7 @@ namespace Deltares::Server
             else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
             else if (property_ == "step_size_factor") settings->StepSizeFactor = value;
             else if (property_ == "global_step_size") settings->GlobalStepSize = value;
-            else StoredObjectHandler::SetValue(settings, property_, value);
+            else DerivedObjectHandler::SetValue(settings, property_, value);
         }
 
         int GetIntValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_) override
@@ -76,7 +76,7 @@ namespace Deltares::Server
                 return Uncertainty::CrudeMonteCarloSettingsS::getRequiredSamples(settings->ProbabilityForConvergence, settings->VariationCoefficient);
             else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
             else if (property_ == "stochast_settings_count") return static_cast<int>(settings->StochastSet->stochastSettings.size());
-            else return modelProjectSettingsHandler->GetIntValue(settings, property_);
+            else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
 
         void SetIntValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_, int value) override
@@ -87,12 +87,7 @@ namespace Deltares::Server
             else if (property_ == "minimum_directions") settings->MinimumDirections = value;
             else if (property_ == "maximum_directions") settings->MaximumDirections = value;
             else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
-            else modelProjectSettingsHandler->SetIntValue(settings, property_, value);
-        }
-
-        int GetIdValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_) override
-        {
-            return modelProjectSettingsHandler->GetIdValue(settings, property_);
+            else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }
 
         bool GetBoolValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_) override
@@ -101,7 +96,7 @@ namespace Deltares::Server
             else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
             else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
             else if (property_ == "is_repeatable_random") return settings->RandomSettings->IsRepeatableRandom;
-            else return modelProjectSettingsHandler->GetBoolValue(settings, property_);
+            else return DerivedObjectHandler::GetBoolValue(settings, property_);
         }
 
         void SetBoolValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_, bool value) override
@@ -110,55 +105,37 @@ namespace Deltares::Server
             else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
             else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
             else if (property_ == "is_repeatable_random") settings->RandomSettings->IsRepeatableRandom = value;
-            else modelProjectSettingsHandler->SetBoolValue(settings, property_, value);
+            else DerivedObjectHandler::SetBoolValue(settings, property_, value);
         }
 
         std::string GetStringValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_) override
         {
             if (property_ == "uncertainty_method") return Uncertainty::SettingsS::getUncertaintyMethodTypeString(settings->UncertaintyMethod);
             else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
-            else return modelProjectSettingsHandler->GetStringValue(settings, property_);
+            else return DerivedObjectHandler::GetStringValue(settings, property_);
         }
 
         void SetStringValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_, const std::string& value) override
         {
             if (property_ == "uncertainty_method") settings->UncertaintyMethod = Uncertainty::SettingsS::getUncertaintyMethodType(value);
             else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
-            else modelProjectSettingsHandler->SetStringValue(settings, property_, value);
+            else DerivedObjectHandler::SetStringValue(settings, property_, value);
         }
 
         void SetArrayIntValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_, int* values, int size) override
-        {
-            if (property_ == "stochast_settings")
-            {
-                settings->StochastSet->stochastSettings.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->StochastSet->stochastSettings.push_back(stochastSettingsHandler->GetObject(values[i]));
-                }
-            }
-            else if (property_ == "quantiles")
-            {
-                settings->RequestedQuantiles.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->RequestedQuantiles.push_back(probabilityValueHandler->GetObject(values[i]));
-                }
-            }
-            else
-            {
-                StoredObjectHandler::SetArrayIntValue(settings, property_, values, size);
-            }
+        { 
+            if (property_ == "stochast_settings") stochastSettingsHandler->SetIdValues(settings->StochastSet->stochastSettings, values, size);
+            else if (property_ == "quantiles") probabilityValueHandler->SetIdValues(settings->RequestedQuantiles, values, size);
+            else DerivedObjectHandler::SetArrayIntValue(settings, property_, values, size);
         }
 
         int GetIndexedIdValue(const std::shared_ptr<Uncertainty::SettingsS>& settings, const std::string& property_, int index) override
         {
             if (property_ == "quantiles") return probabilityValueHandler->GetObjectId(settings->RequestedQuantiles[index]);
             else if (property_ == "stochast_settings") return stochastSettingsHandler->GetObjectId(settings->StochastSet->stochastSettings[index]);
-            else return StoredObjectHandler::GetIndexedIdValue(settings, property_, index);
+            else return DerivedObjectHandler::GetIndexedIdValue(settings, property_, index);
         }
 
-        ModelProjectSettingsHandler* modelProjectSettingsHandler = nullptr;
         StochastSettingsHandler* stochastSettingsHandler = nullptr;
         ProbabilityValueHandler* probabilityValueHandler = nullptr;
     };

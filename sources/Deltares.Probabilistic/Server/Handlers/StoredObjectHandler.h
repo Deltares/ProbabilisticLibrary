@@ -42,7 +42,7 @@ namespace Deltares::Server
     {
     private:
         std::unordered_map<int, std::shared_ptr<T>> objects;
-        std::unordered_map<std::shared_ptr<T>, int> objectIds;
+        std::unordered_map<std::shared_ptr<T>, int> object_ids;
 
         ObjectHandlerAdmin* admin = nullptr;
 
@@ -52,9 +52,9 @@ namespace Deltares::Server
 
         virtual ObjectType GetObjectType() = 0;
 
-        void AddInheritor(const GetObjectCallBack<T>& objectCallback)
+        void AddInheritor(const GetObjectCallBack<T>& object_callback)
         {
-            inheritors.push_back(objectCallback);
+            inheritors.push_back(object_callback);
         }
 
         void SetAdmin(ObjectHandlerAdmin* admin) override
@@ -69,7 +69,7 @@ namespace Deltares::Server
             int id = admin->GetNewId();
 
             objects[id] = value;
-            objectIds[value] = id;
+            object_ids[value] = id;
 
             admin->RegisterType(id, GetObjectType());
 
@@ -81,14 +81,14 @@ namespace Deltares::Server
             auto it = objects.find(id);
             if (it != objects.end())
             {
-                objectIds.erase(it->second);
+                object_ids.erase(it->second);
                 objects.erase(it);
 
                 admin->Remove(id);
             }
         }
 
-        virtual std::shared_ptr<T> GetObject(int id) const
+        std::shared_ptr<T> GetObject(int id) const
         {
             if (id == 0)
             {
@@ -115,24 +115,35 @@ namespace Deltares::Server
             return nullptr;
         }
 
-        virtual int GetObjectId(const std::shared_ptr<T>& object)
+        std::vector<std::shared_ptr<T>> GetObjects(const int* ids, int size) const
+        {
+            std::vector<std::shared_ptr<T>> id_objects = std::vector<std::shared_ptr<T>>(size);
+            for (int i = 0; i < size; i++)
+            {
+                id_objects[i] = GetObject(ids[i]);
+            }
+
+            return id_objects;
+        }
+
+        int GetObjectId(const std::shared_ptr<T>& object)
         {
             if (object == nullptr)
             {
                 return 0;
             }
 
-            if (!objectIds.contains(object))
+            if (!object_ids.contains(object))
             {
                 int newId = admin->GetNewId();
 
                 objects[newId] = object;
-                objectIds[object] = newId;
+                object_ids[object] = newId;
 
                 admin->RegisterType(newId, GetObjectType());
             }
 
-            return objectIds.at(object);
+            return object_ids.at(object);
         }
 
         bool Contains(int id)
@@ -142,7 +153,7 @@ namespace Deltares::Server
 
         bool ContainsObject(const std::shared_ptr<T>& object)
         {
-            return objectIds.contains(object);
+            return object_ids.contains(object);
         }
 
         // double
@@ -337,6 +348,16 @@ namespace Deltares::Server
         virtual int GetIndexedIdValue(const std::shared_ptr<T>& object, const std::string& property_, int index)
         {
             throw Reliability::ProbabilisticLibraryException("GetIndexedIdValue: unknown property " + property_ + " in " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+        }
+
+        void SetIdValues(std::vector<std::shared_ptr<T>>& list, int* ids, int size)
+        {
+            list.clear();
+            for (int i = 0; i < size; i++)
+            {
+                std::shared_ptr<T> value = GetObject(ids[i]);
+                list.push_back(value);
+            }
         }
 
         // array

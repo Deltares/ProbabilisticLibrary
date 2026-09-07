@@ -41,7 +41,7 @@ namespace Deltares::Server
         designPointHandler.messageHandler = &modelHandlers->messageHandler;
         designPointHandler.alphaHandler = &statisticsHandlers->alphaHandler;
 
-        reliabilitySettingsHandler.modelProjectSettingsHandler = &statisticsHandlers->modelProjectSettingsHandler;
+        reliabilitySettingsHandler.SetBaseHandler(&statisticsHandlers->modelProjectSettingsHandler);
         reliabilitySettingsHandler.stochastSettingsHandler = &statisticsHandlers->stochastSettingsHandler; 
         reliabilitySettingsHandler.designPointCallback = [this](const int id) {return this->designPointHandler.GetObject(id); };
 

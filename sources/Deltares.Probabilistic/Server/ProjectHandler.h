@@ -45,7 +45,7 @@ namespace Deltares::Server
 {
     /**
      * Handles access to object properties in a generic way
-     * Note: The Project handler is single threaded except for destroying objects: this may run in another thread
+     * \remark The Project handler is single threaded except for destroying objects: this may run in another thread
      **/ 
     class ProjectHandler : public BaseHandler
     {
@@ -54,7 +54,7 @@ namespace Deltares::Server
 
         bool CanHandle(const std::string& object_type) override;
         int GetNewId() override;
-        int Create(const std::string& object_type) override;
+        int Create(const std::string& object_type_string) override;
         void Destroy(int id) override;
         bool ShouldClose() override;
         double GetValue(int id, const std::string& property_) override;

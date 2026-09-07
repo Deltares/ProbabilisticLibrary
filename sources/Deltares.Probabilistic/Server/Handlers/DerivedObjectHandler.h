@@ -43,10 +43,16 @@ namespace Deltares::Server
 
             GetObjectCallBack<U> objectCallback = [this](const int id) { return this->GetObject(id); };
             baseHandler->AddInheritor(objectCallback);
+        }
 
-            //baseHandler->inheritors.emplace_back([this](const int id) { return this->GetObject(id); });
+        std::shared_ptr<U> GetBaseObject(int id)
+        {
+            return baseHandler->GetObject(id);
+        }
 
-            //baseHandler->AddInheritor(this);
+        std::vector<std::shared_ptr<U>> GetBaseObjects(int* ids, int size)
+        {
+            return baseHandler->GetObjects(ids, size);
         }
 
         int GetBaseObjectId(const std::shared_ptr<U>& object)
@@ -150,6 +156,11 @@ namespace Deltares::Server
         int GetIndexedIdValue(const std::shared_ptr<T>& object, const std::string& property_, int index) override
         {
             return baseHandler->GetIndexedIdValue(object, property_, index);
+        }
+
+        void SetBaseIdValues(std::vector<std::shared_ptr<U>>& list, int* ids, int size)
+        {
+            baseHandler->SetIdValues(list, ids, size);
         }
 
         // array

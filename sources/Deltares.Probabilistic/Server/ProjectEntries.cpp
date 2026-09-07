@@ -73,14 +73,14 @@ namespace Deltares::Server
         {"convergence_report", ConvergenceReport}
     };
 
-    ObjectType ProjectEntries::GetType(const std::string& object_type)
+    ObjectType ProjectEntries::GetType(const std::string& object_type_string)
     {
-        const auto it = all_entries.find(object_type);
+        const auto it = all_entries.find(object_type_string);
         if (it != all_entries.end())
         {
             return it->second;
         }
-        throw Reliability::ProbabilisticLibraryException("type not supported: " + object_type);
+        throw Reliability::ProbabilisticLibraryException("type not supported: " + object_type_string);
     }
 
     std::string ProjectEntries::GetObjectTypeString(ObjectType object_type)
@@ -96,9 +96,9 @@ namespace Deltares::Server
         throw Reliability::ProbabilisticLibraryException("Unknown object type");
     }
 
-    bool ProjectEntries::CanHandle(const std::string& object_type)
+    bool ProjectEntries::CanHandle(const std::string& object_type_string)
     {
-        return all_entries.contains(object_type);
+        return all_entries.contains(object_type_string);
     }
 }
 

@@ -49,7 +49,7 @@ namespace Deltares::Server
 
         modelProjectSettingsHandler.validationReportHandler = &modelHandlers->validationReportHandler;
 
-        runProjectSettingsHandler.modelProjectSettingsHandler = &modelProjectSettingsHandler;
+        runProjectSettingsHandler.SetBaseHandler(&modelProjectSettingsHandler);
 
         modelProjectHandler.validationReportHandler = &modelHandlers->validationReportHandler;
         modelProjectHandler.modelParameterHandler = &modelHandlers->modelParameterHandler;

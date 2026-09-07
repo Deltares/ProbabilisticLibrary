@@ -34,7 +34,7 @@ namespace Deltares::Server
     /**
      * \brief Handles properties and methods of class ReliabilitySettings
      */
-    class ReliabilitySettingsHandler : public StoredObjectHandler<Reliability::Settings>
+    class ReliabilitySettingsHandler : public DerivedObjectHandler<Reliability::Settings, Models::ModelProjectSettings>
     {
     public:
         ObjectType GetObjectType() override
@@ -63,7 +63,7 @@ namespace Deltares::Server
             else if (property_ == "start_value_step_size") return settings->StartValueStepSize;
             else if (property_ == "loop_variance_increment") return settings->LoopVarianceIncrement;
             else if (property_ == "max_beta") return settings->MaxBeta;
-            else return StoredObjectHandler::GetValue(settings, property_);
+            else return DerivedObjectHandler::GetValue(settings, property_);
         }
 
         void SetValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_, double value) override
@@ -87,7 +87,7 @@ namespace Deltares::Server
             else if (property_ == "start_value_step_size") settings->StartValueStepSize = value;
             else if (property_ == "loop_variance_increment") settings->LoopVarianceIncrement = value;
             else if (property_ == "max_beta") settings->MaxBeta = value;
-            else StoredObjectHandler::SetValue(settings, property_, value);
+            else DerivedObjectHandler::SetValue(settings, property_, value);
         }
 
         int GetIntValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_) override
@@ -107,7 +107,7 @@ namespace Deltares::Server
             else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
             else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
             else if (property_ == "max_clusters") return settings->MaxClusters;
-            else return modelProjectSettingsHandler->GetIntValue(settings, property_);
+            else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
 
         void SetIntValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_, int value) override
@@ -131,12 +131,7 @@ namespace Deltares::Server
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPointCallback(value);
                 settings->StochastSet->setStartPoint(designPoint->getSample());
             }
-            else modelProjectSettingsHandler->SetIntValue(settings, property_, value);
-        }
-
-        int GetIdValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_) override
-        {
-            return modelProjectSettingsHandler->GetIdValue(settings, property_);
+            else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }
 
         bool GetBoolValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_) override
@@ -148,7 +143,7 @@ namespace Deltares::Server
             else if (property_ == "optimize_number_clusters") return settings->OptimizeNumberOfClusters;
             else if (property_ == "auto_maximum_samples") return settings->AutoMaximumSamples;
             else if (property_ == "start_point_on_limit_state") return settings->StartPointOnLimitState;
-            else return modelProjectSettingsHandler->GetBoolValue(settings, property_);
+            else return DerivedObjectHandler::GetBoolValue(settings, property_);
         }
 
         void SetBoolValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_, bool value) override
@@ -160,7 +155,7 @@ namespace Deltares::Server
             else if (property_ == "optimize_number_clusters") settings->OptimizeNumberOfClusters = value;
             else if (property_ == "auto_maximum_samples") settings->AutoMaximumSamples = value;
             else if (property_ == "start_point_on_limit_state") settings->StartPointOnLimitState = value;
-            else modelProjectSettingsHandler->SetBoolValue(settings, property_, value);
+            else DerivedObjectHandler::SetBoolValue(settings, property_, value);
         }
 
         std::string GetStringValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_) override
@@ -175,7 +170,7 @@ namespace Deltares::Server
             else if (property_ == "start_method") return Reliability::StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
             else if (property_ == "gradient_type") return Models::GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
             else if (property_ == "model_varying_type") return Reliability::DirectionReliabilitySettings::getModelVaryingTypeString(settings->DirectionSettings->modelVaryingType);
-            else return modelProjectSettingsHandler->GetStringValue(settings, property_);
+            else return DerivedObjectHandler::GetStringValue(settings, property_);
         }
 
         void SetStringValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_, const std::string& value) override
@@ -190,32 +185,21 @@ namespace Deltares::Server
             else if (property_ == "start_method") settings->StartPointSettings->StartMethod = Reliability::StartPointCalculatorSettings::getStartPointMethod(value);
             else if (property_ == "gradient_type") settings->GradientSettings->gradientType = Models::GradientSettings::getGradientType(value);
             else if (property_ == "model_varying_type") settings->DirectionSettings->modelVaryingType = Reliability::DirectionReliabilitySettings::getModelVaryingType(value);
-            else modelProjectSettingsHandler->SetStringValue(settings, property_, value);
+            else DerivedObjectHandler::SetStringValue(settings, property_, value);
         }
 
         int GetIndexedIdValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_, int index) override
         {
             if (property_ == "stochast_settings") return stochastSettingsHandler->GetObjectId(settings->StochastSet->stochastSettings[index]);
-            else return StoredObjectHandler::GetIndexedIdValue(settings, property_, index);
+            else return DerivedObjectHandler::GetIndexedIdValue(settings, property_, index);
         }
 
         void SetArrayIntValue(const std::shared_ptr<Reliability::Settings>& settings, const std::string& property_, int* values, int size) override
         {
-            if (property_ == "stochast_settings")
-            {
-                settings->StochastSet->stochastSettings.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    settings->StochastSet->stochastSettings.push_back(stochastSettingsHandler->GetObject(values[i]));
-                }
-            }
-            else
-            {
-                StoredObjectHandler::SetArrayIntValue(settings, property_, values, size);
-            }
+            if (property_ == "stochast_settings") stochastSettingsHandler->SetIdValues(settings->StochastSet->stochastSettings, values, size);
+            else DerivedObjectHandler::SetArrayIntValue(settings, property_, values, size);
         }
 
-        ModelProjectSettingsHandler* modelProjectSettingsHandler = nullptr;
         StochastSettingsHandler* stochastSettingsHandler = nullptr;
         GetObjectCallBack<Reliability::DesignPoint> designPointCallback = nullptr;
     };

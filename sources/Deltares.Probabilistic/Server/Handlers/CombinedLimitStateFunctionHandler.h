@@ -72,14 +72,7 @@ namespace Deltares::Server
 
         void SetArrayIntValue(const std::shared_ptr<Reliability::CombinedLimitStateFunction>& limitStateFunction, const std::string& property_, int* values, int size) override
         {
-            if (property_ == "limit_state_functions")
-            {
-                limitStateFunction->limitStateFunctions.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    limitStateFunction->limitStateFunctions.push_back(DerivedObjectHandler::GetObject(values[i]));
-                }
-            }
+            if (property_ == "limit_state_functions") SetBaseIdValues(limitStateFunction->limitStateFunctions, values, size);
             else DerivedObjectHandler::SetArrayIntValue(limitStateFunction, property_, values, size);
         }
 

@@ -30,9 +30,9 @@ namespace Deltares::Server
     class BaseHandler
     {
     public:
-        virtual bool CanHandle(const std::string& object_type) { return false; }
+        virtual bool CanHandle(const std::string& object_type_string) { return false; }
         virtual int GetNewId() { return -1; }
-        virtual int Create(const std::string& object_type) { return -1; }
+        virtual int Create(const std::string& object_type_string) { return -1; }
         virtual void Destroy(int id) {}
         virtual void Exit() {}
         virtual bool ShouldClose() { return false; }

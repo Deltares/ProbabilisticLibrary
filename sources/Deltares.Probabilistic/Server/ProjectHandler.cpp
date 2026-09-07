@@ -28,9 +28,9 @@ namespace Deltares::Server
         InitializeHandlers();
     }
 
-    bool ProjectHandler::CanHandle(const std::string& object_type)
+    bool ProjectHandler::CanHandle(const std::string& object_type_string)
     {
-        return ProjectEntries::CanHandle(object_type);
+        return ProjectEntries::CanHandle(object_type_string);
     }
 
     int ProjectHandler::GetNewId()
@@ -38,15 +38,15 @@ namespace Deltares::Server
         return admin.GetNewId();
     }
 
-    int ProjectHandler::Create(const std::string& objectTypeString)
+    int ProjectHandler::Create(const std::string& object_type_string)
     {
         if (isMultiThread)
         {
             DestroyObjects();
         }
 
-        ObjectType objectType = ProjectEntries::GetType(objectTypeString);
-        return handlers[objectType]->Create();
+        ObjectType object_type = ProjectEntries::GetType(object_type_string);
+        return handlers[object_type]->Create();
     }
 
     void ProjectHandler::Destroy(int id)
@@ -313,8 +313,9 @@ namespace Deltares::Server
 
         sensitivityValueHandler.stochastHandler = &statisticsHandlers.stochastHandler;
 
-        sensitivitySettingsHandler.modelProjectSettingsHandler = &statisticsHandlers.modelProjectSettingsHandler;
-        uncertaintySettingsHandler.modelProjectSettingsHandler = &statisticsHandlers.modelProjectSettingsHandler;
+        sensitivitySettingsHandler.SetBaseHandler(&statisticsHandlers.modelProjectSettingsHandler);
+
+        uncertaintySettingsHandler.SetBaseHandler(&statisticsHandlers.modelProjectSettingsHandler);
         uncertaintySettingsHandler.stochastSettingsHandler = &statisticsHandlers.stochastSettingsHandler;
         uncertaintySettingsHandler.probabilityValueHandler = &statisticsHandlers.probabilityValueHandler;
 
