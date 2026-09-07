@@ -63,7 +63,5 @@ namespace Deltares::Server
         LengthEffectProjectHandler lengthEffectProjectHandler;
         ReliabilityProjectHandler reliabilityProjectHandler;
         FragilityCurveProjectHandler fragilityCurveProjectHandler;
-    private:
-        std::shared_ptr<Reliability::LimitStateFunction> GetLimitStateFunction(int id);
     };
 }

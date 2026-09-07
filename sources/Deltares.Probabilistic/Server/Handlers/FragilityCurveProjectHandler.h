@@ -24,7 +24,6 @@
 #include <string>
 
 #include "FragilityCurveSettingsHandler.h"
-#include "SelfCorrelationMatrixHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Reliability/FragilityCurveProject.h"
 

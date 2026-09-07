@@ -51,12 +51,15 @@ namespace Deltares::Server
 
     void ProjectHandler::Destroy(int id)
     {
+        // The project handler is single threaded with one possible exception: A garbage collector can run in another thread (true for .Net, false for Python)
+        // It is assumed that a garbage collector always runs in the same thread
         if (!isMultiThreadDetected)
         {
             isMultiThread = std::this_thread::get_id() != mainThreadId;
             isMultiThreadDetected = true;
         }
 
+        // if running in another thread, sore the objects to be destroyed and destroy them in the next Create call
         if (isMultiThread)
         {
             std::lock_guard lock(mtx);
@@ -293,8 +296,6 @@ namespace Deltares::Server
 
         statisticsHandlers.fragilityValueHandler.designPointCallback = [this](const int id) {return this->reliabilityHandlers.designPointHandler.GetObject(id); };
         statisticsHandlers.fragilityValueHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->reliabilityHandlers.designPointHandler.GetObjectId(designPoint); };
-
-        statisticsHandlers.runProjectHandler.SetBaseHandler(&statisticsHandlers.runProjectHandler);
 
         statisticsHandlers.alphaHandler.fragilityCurveHandler = &reliabilityHandlers.fragilityCurveHandler;
 

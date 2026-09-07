@@ -638,6 +638,7 @@
     <ClInclude Include="Server\Handlers\StatisticsHandlers.h" />
     <ClInclude Include="Server\Handlers\ModelHandlers.h" />
     <ClInclude Include="Server\Handlers\ReliabilityHandlers.h" />
+    <ClInclude Include="Server\Handlers\DerivedObjectHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

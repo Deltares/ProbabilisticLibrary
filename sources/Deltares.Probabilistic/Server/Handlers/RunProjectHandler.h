@@ -22,6 +22,7 @@
 #pragma once
 #include <string>
 
+#include "DerivedObjectHandler.h"
 #include "RunProjectSettingsHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
@@ -32,7 +33,7 @@ namespace Deltares::Server
     /**
      * \brief Handles properties and methods of class RunProject
      */
-    class RunProjectHandler : public StoredObjectHandler<Models::RunProject>
+    class RunProjectHandler : public DerivedObjectHandler<Models::RunProject, Models::ModelProject>
     {
     public:
         ObjectType GetObjectType() override
@@ -44,13 +45,13 @@ namespace Deltares::Server
         {
             if (property_ == "settings") return runProjectSettingsHandler->GetObjectId(project->settings);
             else if (property_ == "realization") return evaluationHandler->GetObjectId(project->evaluation);
-            else return StoredObjectHandler::GetIdValue(project, property_);
+            else return DerivedObjectHandler::GetIdValue(project, property_);
         }
 
         void SetIntValue(const std::shared_ptr<Models::RunProject>& project, const std::string& property_, int value) override
         {
             if (property_ == "settings") project->setSettings(runProjectSettingsHandler->GetObject(value));
-            else StoredObjectHandler::SetIntValue(project, property_, value);
+            else DerivedObjectHandler::SetIntValue(project, property_, value);
         }
 
         RunProjectSettingsHandler* runProjectSettingsHandler = nullptr;

@@ -34,7 +34,7 @@ namespace Deltares::Server
     /**
      * \brief Handles properties and methods of class RunProject
      */
-    class ReliabilityProjectHandler : public StoredObjectHandler<Reliability::ReliabilityProject>
+    class ReliabilityProjectHandler : public DerivedObjectHandler<Reliability::ReliabilityProject, Models::ModelProject>
     {
     public:
         ObjectType GetObjectType() override
@@ -47,21 +47,19 @@ namespace Deltares::Server
             if (property_ == "limit_state_function") return limitStateFunctionHandler->GetObjectId(project->limitStateFunction);
             else if (property_ == "design_point") return designPointHandler->GetObjectId(project->designPoint);
             else if (property_ == "settings") return reliabilitySettingsHandler->GetObjectId(project->settings);
-            else return StoredObjectHandler::GetIdValue(project, property_);
+            else return DerivedObjectHandler::GetIdValue(project, property_);
         }
 
         void SetIntValue(const std::shared_ptr<Reliability::ReliabilityProject>& project, const std::string& property_, int value) override
         {
             if (property_ == "settings") project->setSettings(reliabilitySettingsHandler->GetObject(value));
-            else if (property_ == "limit_state_function") project->limitStateFunction = limitStateFunctionCallback(value);
-            else StoredObjectHandler::SetIntValue(project, property_, value);
+            else if (property_ == "limit_state_function") project->limitStateFunction = limitStateFunctionHandler->GetObject(value);
+            else DerivedObjectHandler::SetIntValue(project, property_, value);
         }
 
         ReliabilitySettingsHandler* reliabilitySettingsHandler = nullptr;
         DesignPointHandler* designPointHandler = nullptr;
         LimitStateFunctionHandler* limitStateFunctionHandler = nullptr;
-
-        GetObjectCallBack<Reliability::LimitStateFunction> limitStateFunctionCallback = nullptr;
     };
 }
 

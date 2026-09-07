@@ -43,6 +43,10 @@
 
 namespace Deltares::Server
 {
+    /**
+     * Handles access to object properties in a generic way
+     * Note: The Project handler is single threaded except for destroying objects: this may run in another thread
+     **/ 
     class ProjectHandler : public BaseHandler
     {
     public:

@@ -32,7 +32,7 @@ namespace Deltares::Server
     /**
      * \brief Handles properties and methods of class ProbabilityLimitStateFunction
      */
-    class ProbabilityLimitStateFunctionHandler : public StoredObjectHandler<Reliability::ProbabilityLimitStateFunction>
+    class ProbabilityLimitStateFunctionHandler : public DerivedObjectHandler<Reliability::ProbabilityLimitStateFunction, Reliability::LimitStateFunction>
     {
     public:
         ObjectType GetObjectType() override
@@ -43,13 +43,13 @@ namespace Deltares::Server
         int GetIdValue(const std::shared_ptr<Reliability::ProbabilityLimitStateFunction>& probabilityLimitStateFunction, const std::string& property_) override
         {
             if (property_ == "fragility_curve") return fragilityCurveHandler->GetObjectId(probabilityLimitStateFunction->fragilityCurve);
-            else return StoredObjectHandler::GetIdValue(probabilityLimitStateFunction, property_);
+            else return DerivedObjectHandler::GetIdValue(probabilityLimitStateFunction, property_);
         }
 
         void SetIntValue(const std::shared_ptr<Reliability::ProbabilityLimitStateFunction>& probabilityLimitStateFunction, const std::string& property_, int value) override
         {
             if (property_ == "fragility_curve") probabilityLimitStateFunction->fragilityCurve = fragilityCurveHandler->GetObject(value);
-            else StoredObjectHandler::SetIntValue(probabilityLimitStateFunction, property_, value);
+            else DerivedObjectHandler::SetIntValue(probabilityLimitStateFunction, property_, value);
         }
 
         FragilityCurveHandler* fragilityCurveHandler = nullptr;

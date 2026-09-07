@@ -257,6 +257,7 @@
     <ClInclude Include="Server\Handlers\SensitivityResultHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilitySettingsHandler.h" />
     <ClInclude Include="Server\Handlers\LengthEffectProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\DerivedObjectHandler.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />

@@ -28,11 +28,12 @@ namespace Deltares::Server
 {
     void ReliabilityHandlers::InitializeHandlers(std::unordered_map<ObjectType, ObjectHandler*>& handlers, ModelHandlers* modelHandlers, StatisticsHandlers* statisticsHandlers)
     {
-        fragilityCurveHandler.stochastHandler = &statisticsHandlers->stochastHandler;
+        fragilityCurveHandler.SetBaseHandler(&statisticsHandlers->stochastHandler);
 
         probabilityLimitStateFunctionHandler.fragilityCurveHandler = &fragilityCurveHandler;
 
-        combinedLimitStateFunctionHandler.limitStateFunctionHandler = &limitStateFunctionHandler;
+        combinedLimitStateFunctionHandler.SetBaseHandler(&limitStateFunctionHandler);
+        probabilityLimitStateFunctionHandler.SetBaseHandler(&limitStateFunctionHandler);
 
         designPointHandler.convergenceReportHandler = &convergenceReportHandler;
         designPointHandler.evaluationHandler = &modelHandlers->evaluationHandler;
@@ -67,7 +68,6 @@ namespace Deltares::Server
         reliabilityProjectHandler.reliabilitySettingsHandler = &reliabilitySettingsHandler;
         reliabilityProjectHandler.limitStateFunctionHandler = &limitStateFunctionHandler;
         reliabilityProjectHandler.designPointHandler = &designPointHandler;
-        reliabilityProjectHandler.limitStateFunctionCallback = [this](int id) { return this->GetLimitStateFunction(id); };
 
         handlers[ObjectType::FragilityCurve] = &fragilityCurveHandler;
         handlers[ObjectType::LimitStateFunction] = &limitStateFunctionHandler;
@@ -86,27 +86,5 @@ namespace Deltares::Server
         handlers[ObjectType::FragilityCurveProject] = &fragilityCurveProjectHandler;
         handlers[ObjectType::Project] = &reliabilityProjectHandler;
     }
-
-    std::shared_ptr<Reliability::LimitStateFunction> ReliabilityHandlers::GetLimitStateFunction(int id)
-    {
-        if (limitStateFunctionHandler.Contains(id))
-        {
-            return limitStateFunctionHandler.GetObject(id);
-        }
-        else if (combinedLimitStateFunctionHandler.Contains(id))
-        {
-            return combinedLimitStateFunctionHandler.GetObject(id);
-        }
-        else if (probabilityLimitStateFunctionHandler.Contains(id))
-        {
-            return probabilityLimitStateFunctionHandler.GetObject(id);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
-
 }
 
