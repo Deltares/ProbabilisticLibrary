@@ -57,9 +57,9 @@ namespace Deltares::Server
         modelProjectHandler.correlationMatrixHandler = &correlationMatrixHandler;
         modelProjectHandler.copulaCorrelationHandler = &copulaCorrelationHandler;
 
-        runProjectHandler.modelProjectHandler = &modelProjectHandler;
         runProjectHandler.runProjectSettingsHandler = &runProjectSettingsHandler;
         runProjectHandler.evaluationHandler = &modelHandlers->evaluationHandler;
+        runProjectHandler.SetBaseHandler(&modelProjectHandler);
 
         handlers[ObjectType::HistogramValue] = &histogramValueHandler;
         handlers[ObjectType::DiscreteValue] = &discreteValueHandler;

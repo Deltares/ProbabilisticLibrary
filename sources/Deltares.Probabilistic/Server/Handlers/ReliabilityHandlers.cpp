@@ -64,7 +64,6 @@ namespace Deltares::Server
         fragilityCurveProjectHandler.fragilityCurveHandler = &fragilityCurveHandler;
         fragilityCurveProjectHandler.fragilityCurveSettingsHandler = &fragilityCurveSettingsHandler;
 
-        reliabilityProjectHandler.modelProjectHandler = &statisticsHandlers->modelProjectHandler;
         reliabilityProjectHandler.reliabilitySettingsHandler = &reliabilitySettingsHandler;
         reliabilityProjectHandler.limitStateFunctionHandler = &limitStateFunctionHandler;
         reliabilityProjectHandler.designPointHandler = &designPointHandler;

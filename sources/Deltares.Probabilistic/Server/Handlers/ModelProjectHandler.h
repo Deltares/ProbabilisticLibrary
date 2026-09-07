@@ -74,7 +74,7 @@ namespace Deltares::Server
         {
             if (property_ == "correlation_matrix") project->correlation = correlationMatrixHandler->GetObject(value);
             else if (property_ == "copula_correlation") project->correlation = copulaCorrelationHandler->GetObject(value);
-            else if (property_ == "share_project") project->shareStochasts(modelProjectCallback(value));
+            else if (property_ == "share_project") project->shareStochasts(this->GetObject(value));
             else if (property_ == "total_model_runs") project->modelRuns = value;
             else StoredObjectHandler::SetIntValue(project, property_, value);
         }
@@ -228,7 +228,7 @@ namespace Deltares::Server
         CorrelationMatrixHandler* correlationMatrixHandler = nullptr;
         CopulaCorrelationHandler* copulaCorrelationHandler = nullptr;
 
-        GetObjectCallBack<Models::ModelProject> modelProjectCallback = nullptr;
+        //GetObjectCallBack<Models::ModelProject> modelProjectCallback = nullptr;
     };
 }
 

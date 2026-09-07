@@ -294,9 +294,13 @@ namespace Deltares::Server
         statisticsHandlers.fragilityValueHandler.designPointCallback = [this](const int id) {return this->reliabilityHandlers.designPointHandler.GetObject(id); };
         statisticsHandlers.fragilityValueHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->reliabilityHandlers.designPointHandler.GetObjectId(designPoint); };
 
+        statisticsHandlers.runProjectHandler.SetBaseHandler(&statisticsHandlers.runProjectHandler);
+
         statisticsHandlers.alphaHandler.fragilityCurveHandler = &reliabilityHandlers.fragilityCurveHandler;
 
         reliabilityHandlers.designPointHandler.designPointIdsCallback = [this](const int id) {return this->GetDesignPointIds(id); };
+
+        reliabilityHandlers.reliabilityProjectHandler.SetBaseHandler(&statisticsHandlers.modelProjectHandler);
 
         uncertaintyResultHandler.stochastHandler = &statisticsHandlers.stochastHandler;
         uncertaintyResultHandler.evaluationHandler = &modelHandlers.evaluationHandler;
@@ -313,19 +317,17 @@ namespace Deltares::Server
         uncertaintySettingsHandler.stochastSettingsHandler = &statisticsHandlers.stochastSettingsHandler;
         uncertaintySettingsHandler.probabilityValueHandler = &statisticsHandlers.probabilityValueHandler;
 
-        statisticsHandlers.modelProjectHandler.modelProjectCallback = [this](const int id) { return this->GetProject(id); };
-
-        sensitivityProjectHandler.modelProjectHandler = &statisticsHandlers.modelProjectHandler;
         sensitivityProjectHandler.sensitivitySettingsHandler = &sensitivitySettingsHandler;
         sensitivityProjectHandler.sensitivityResultHandler = &sensitivityResultHandler;
         sensitivityProjectHandler.modelParameterHandler = &modelHandlers.modelParameterHandler;
+        sensitivityProjectHandler.SetBaseHandler(&statisticsHandlers.modelProjectHandler);
 
-        uncertaintyProjectHandler.modelProjectHandler = &statisticsHandlers.modelProjectHandler;
         uncertaintyProjectHandler.modelParameterHandler = &modelHandlers.modelParameterHandler;
         uncertaintyProjectHandler.uncertaintySettingsHandler = &uncertaintySettingsHandler;
         uncertaintyProjectHandler.uncertaintyResultHandler = &uncertaintyResultHandler;
         uncertaintyProjectHandler.stochastHandler = &statisticsHandlers.stochastHandler;
         uncertaintyProjectHandler.correlationMatrixHandler = &statisticsHandlers.correlationMatrixHandler;
+        uncertaintyProjectHandler.SetBaseHandler(&statisticsHandlers.modelProjectHandler);
 
         handlers[ObjectType::UncertaintyResult] = &uncertaintyResultHandler;
         handlers[ObjectType::SensitivityResult] = &sensitivityResultHandler;
