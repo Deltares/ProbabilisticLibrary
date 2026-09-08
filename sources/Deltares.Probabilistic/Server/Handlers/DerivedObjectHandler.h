@@ -26,7 +26,9 @@
 namespace Deltares::Server
 {
     /**
-     * \brief Base class for object handlers which contains a registration of all objects
+     * \brief Handles generic setting and getting of objects of a specific type <T> and falls back to a base handler if not implemented. 
+     * \remark This class is inherited usually for a specific type and overrides setters and getters (GetValue, SetValue, etc.). This class
+     *  will fall back to the base handler for getters and setters. The base handler will be able to find an object with GetObject or GetObjectId in this class. 
      */
     template<typename T, typename U>
         requires std::derived_from<T, U>
@@ -36,7 +38,10 @@ namespace Deltares::Server
         StoredObjectHandler<U>* baseHandler = nullptr;
 
     public:
-
+        /**
+         * Sets the base handler
+         * \param handler Base handler, the type <T> must derive from the base handlers type <U>
+         */
         void SetBaseHandler(StoredObjectHandler<U>* handler)
         {
             baseHandler = handler;

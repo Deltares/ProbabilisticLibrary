@@ -36,7 +36,8 @@ namespace Deltares::Server
     using GetObjectIdCallBack = std::function<int(std::shared_ptr<T>)>;
 
     /**
-     * \brief Base class for object handlers which contains a registration of all objects
+     * \brief Handles generic setting and getting of objects of a specific type <T>
+     * \remark This class is inherited usually for a specific type and overrides setters and getters (GetValue, SetValue, etc.). 
      */
     template<typename T>
     class StoredObjectHandler : public ObjectHandler
@@ -139,6 +140,7 @@ namespace Deltares::Server
                 return object;
             }
 
+            // look in the inheritors if it is present there
             for (const auto& inheritor : inheritedObjectCallbacks)
             {
                 object = inheritor(id);
@@ -190,6 +192,7 @@ namespace Deltares::Server
                 return id;
             }
 
+            // look in the inheritors if it is present there (or generate an id in the inheritor)
             for (const auto& inheritor : inheritedIdCallbacks)
             {
                 id = inheritor(object);
