@@ -85,7 +85,14 @@ public class StochastPoint
 
     private void AlphasChanged(ListOperationType listOperation, StochastPointAlpha item)
     {
-        Interface.SetArrayIntValue(id, "alphas", this.alphas.Select(p => p.GetId()).ToArray());
+        if (listOperation == ListOperationType.Add)
+        {
+            Interface.SetIntValue(id, "add_alpha", item.GetId());
+        }
+        else
+        {
+            Interface.SetArrayIntValue(id, "alphas", this.alphas.Select(p => p.GetId()).ToArray());
+        }
     }
 
     public ModelSample GetModelSample()

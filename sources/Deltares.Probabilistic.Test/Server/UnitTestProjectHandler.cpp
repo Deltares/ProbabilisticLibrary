@@ -203,42 +203,5 @@ namespace Deltares::Probabilistic::Test
         }
         EXPECT_EQ(handler.GetStatus("count_entries"), 0);
     }
-
-    void UnitTestProjectHandler::TestProjectEntriesIsModelProject()
-    {
-        using namespace Deltares::Server;
-        using enum ObjectType;
-
-        EXPECT_FALSE(ProjectEntries::IsModelProjectType(Alpha));
-        EXPECT_FALSE(ProjectEntries::IsModelProjectType(CombineProject));
-        EXPECT_TRUE(ProjectEntries::IsModelProjectType(Project));
-        EXPECT_TRUE(ProjectEntries::IsModelProjectType(UncertaintyProject));
-        EXPECT_TRUE(ProjectEntries::IsModelProjectType(RunProject));
-        EXPECT_TRUE(ProjectEntries::IsModelProjectType(SensitivityProject));
-    }
-
-    void UnitTestProjectHandler::TestProjectEntriesIsModelSettingsType()
-    {
-        using namespace Deltares::Server;
-        using enum ObjectType;
-
-        EXPECT_FALSE(ProjectEntries::IsModelSettingsType(Alpha));
-        EXPECT_FALSE(ProjectEntries::IsModelSettingsType(CombineSettings));
-        EXPECT_TRUE(ProjectEntries::IsModelSettingsType(Settings));
-        EXPECT_TRUE(ProjectEntries::IsModelSettingsType(UncertaintySettings));
-        EXPECT_TRUE(ProjectEntries::IsModelSettingsType(RunProjectSettings));
-        EXPECT_TRUE(ProjectEntries::IsModelSettingsType(SensitivitySettings));
-    }
-
-    void UnitTestProjectHandler::TestProjectEntriesIsStochast()
-    {
-        using namespace Deltares::Server;
-        using enum ObjectType;
-
-        EXPECT_FALSE(ProjectEntries::IsStochast(Alpha));
-        EXPECT_FALSE(ProjectEntries::IsStochast(CombineSettings));
-        EXPECT_TRUE(ProjectEntries::IsStochast(Stochast));
-        EXPECT_TRUE(ProjectEntries::IsStochast(FragilityCurve));
-    }
 }
 

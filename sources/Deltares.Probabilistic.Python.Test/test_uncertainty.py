@@ -461,7 +461,6 @@ class Test_uncertainty(unittest.TestCase):
 
         project.settings.uncertainty_method = UncertaintyMethod.importance_sampling
         project.settings.maximum_samples = 1000
-        project.settings.variance_factor = 1
         project.settings.stochast_settings['D'].start_value = -0.5
         project.settings.stochast_settings['Load'].start_value = 0.5
         project.run();

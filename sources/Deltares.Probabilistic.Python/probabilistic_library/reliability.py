@@ -529,7 +529,7 @@ class Settings(FrozenObject):
 
     @max_clusters.setter
     def max_clusters(self, value : int):
-        interface.SetValue(self._id, 'max_clusters', value)
+        interface.SetIntValue(self._id, 'max_clusters', value)
 
     @property
     def optimize_number_clusters(self) -> bool:

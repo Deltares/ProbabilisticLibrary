@@ -50,6 +50,7 @@ public class TestObjectProperties
     [TestCase(typeof(StochastPointAlpha), "Identifier")]
     [TestCase(typeof(Evaluation))]
     [TestCase(typeof(Message))]
+    [TestCase(typeof(ModelParameter))]
     [TestCase(typeof(ReliabilityProject))]
     [TestCase(typeof(ReliabilitySettings))]
     [TestCase(typeof(LimitStateFunction))]

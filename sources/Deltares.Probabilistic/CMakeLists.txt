@@ -12,6 +12,7 @@ file(GLOB probabilistic_files
     "Statistics/Distributions/*.cpp"
     "Optimization/*.cpp"
     "Server/*.cpp"
+    "Server/Handlers/*.cpp"
     "Logging/*.cpp"
     "Utils/*.cpp"
     "Combine/*.h"
@@ -27,6 +28,7 @@ file(GLOB probabilistic_files
     "Statistics/Distributions/*.h"
     "Optimization/*.h"
     "Server/*.h"
+    "Server/Handlers/*.h"
     "Logging/*.h"
     "Utils/*.h"
 )
@@ -37,6 +39,7 @@ add_library(Deltares.Probabilistic
 )
 if (WIN32)
     target_link_options(Deltares.Probabilistic PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+    target_compile_options(Deltares.Probabilistic PRIVATE "/bigobj")
 endif()
 set_target_properties(Deltares.Probabilistic
   PROPERTIES

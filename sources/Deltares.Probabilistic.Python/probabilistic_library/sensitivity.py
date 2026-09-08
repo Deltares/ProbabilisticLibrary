@@ -57,7 +57,6 @@ class SensitivitySettings(FrozenObject):
 
     def __init__(self):
         self._id = interface.Create('sensitivity_settings')
-        self._stochast_settings = FrozenList()
         self._quantiles = None
         self._synchronizing = False
         super()._freeze()
@@ -171,14 +170,7 @@ class SensitivitySettings(FrozenObject):
             validation_report.print()
 
     def _set_variables(self, variables):
-        new_stochast_settings = []
-        for variable in variables:
-            stochast_setting = self._stochast_settings[str(variable)]
-            if stochast_setting is None:
-                stochast_setting = StochastSettings(variable)
-            new_stochast_settings.append(stochast_setting)
-        self._stochast_settings = FrozenList(new_stochast_settings)
-        interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
+        pass
 
 class SensitivityValue(FrozenObject):
     """Contains the result of a sensitivity analysis for a specific input variable

@@ -260,15 +260,6 @@ class UncertaintySettings(FrozenObject):
         interface.SetStringValue(self._id, 'gradient_type', str(value))
 
     @property
-    def variance_factor(self) -> float:
-        """Variance factor, used by importance sampling"""
-        return interface.GetValue(self._id, 'variance_factor')
-
-    @variance_factor.setter
-    def variance_factor(self, value : float):
-        interface.SetValue(self._id, 'variance_factor', value)
-
-    @property
     def variation_coefficient(self) -> float:
         """Convergence criterion, used by Monte Carlo family algorithms"""
         return interface.GetValue(self._id, 'variation_coefficient')

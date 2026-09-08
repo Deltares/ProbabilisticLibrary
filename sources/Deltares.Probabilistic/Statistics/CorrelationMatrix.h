@@ -41,7 +41,7 @@ namespace Deltares::Statistics
         class CorrelationMatrix : public BaseCorrelation
         {
         public:
-            explicit CorrelationMatrix(const bool allow_validation) : allow_validation(allow_validation) {}
+            explicit CorrelationMatrix(const bool allow_validation = true) : allow_validation(allow_validation) {}
             void Init(const int maxStochasts) override;
             void Init(const std::vector<std::shared_ptr<Stochast>>& stochastList) override;
 

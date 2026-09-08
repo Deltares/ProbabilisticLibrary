@@ -121,6 +121,9 @@ namespace Deltares::Statistics
     {
         Init(static_cast<int>(stochastList.size()));
 
+        stochasts.clear();
+        stochastIndex.clear();
+
         for (size_t i = 0; i < stochastList.size(); i++)
         {
             stochasts.push_back(stochastList[i]);
