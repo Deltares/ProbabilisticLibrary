@@ -47,8 +47,7 @@ namespace Deltares::Server
 
         combineProjectHandler.combineSettingsHandler = &combineSettingsHandler;
         combineProjectHandler.designPointHandler = &designPointHandler;
-        combineProjectHandler.correlationMatrixHandler = &statisticsHandlers->correlationMatrixHandler;
-        combineProjectHandler.copulaCorrelationHandler = &statisticsHandlers->copulaCorrelationHandler;
+        combineProjectHandler.baseCorrelationMatrixHandler = &statisticsHandlers->baseCorrelationMatrixHandler;
         combineProjectHandler.selfCorrelationMatrixHandler = &statisticsHandlers->selfCorrelationMatrixHandler;
         combineProjectHandler.validationReportHandler = &modelHandlers->validationReportHandler;
 

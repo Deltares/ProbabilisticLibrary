@@ -23,6 +23,7 @@
 #include <string>
 
 #include "DerivedObjectHandler.h"
+#include "EvaluationHandler.h"
 #include "RunProjectSettingsHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"

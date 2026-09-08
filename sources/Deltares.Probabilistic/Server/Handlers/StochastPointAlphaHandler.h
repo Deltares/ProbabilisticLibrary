@@ -77,20 +77,7 @@ namespace Deltares::Server
 
         int GetIdValue(const std::shared_ptr<Models::StochastPointAlpha>& alpha, const std::string& property_) override
         {
-            if (property_ == "variable")
-            {
-                if (alpha->Stochast == nullptr) return 0;
-
-                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<Reliability::FragilityCurve>(alpha->Stochast);
-                if (fragilityCurve != nullptr)
-                {
-                    return fragilityCurveHandler->GetObjectId(fragilityCurve);
-                }
-                else
-                {
-                    return stochastHandler->GetObjectId(alpha->Stochast);
-                }
-            }
+            if (property_ == "variable") return stochastHandler->GetObjectId(alpha->Stochast);
             else return StoredObjectHandler::GetIdValue(alpha, property_);
         }
 

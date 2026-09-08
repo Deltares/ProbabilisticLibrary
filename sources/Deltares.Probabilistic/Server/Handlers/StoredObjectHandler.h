@@ -21,6 +21,7 @@
 //
 #pragma once
 
+#include <type_traits>
 #include <unordered_map>
 #include "ObjectHandler.h"
 #include "../ProjectEntries.h"
@@ -46,36 +47,65 @@ namespace Deltares::Server
 
         ObjectHandlerAdmin* admin = nullptr;
 
-        std::vector<GetObjectCallBack<T>> inheritors;
+        std::vector<GetObjectCallBack<T>> inheritedObjectCallbacks;
+        std::vector<GetObjectIdCallBack<T>> inheritedIdCallbacks;
 
     public:
 
         virtual ObjectType GetObjectType() = 0;
 
-        void AddInheritor(const GetObjectCallBack<T>& object_callback)
+        /**
+         * Registers callbacks to inherited handlers
+         * \param object_callback Callback to GetObject method
+         * \param id_callback Callback to GetObjectId method
+         * \remarks This method should only be used by DerivedObjectHandler
+         **/
+        void AddInheritor(const GetObjectCallBack<T>& object_callback, const GetObjectIdCallBack<T>& id_callback)
         {
-            inheritors.push_back(object_callback);
+            inheritedObjectCallbacks.push_back(object_callback);
+            inheritedIdCallbacks.push_back(id_callback);
         }
 
+        /**
+         * Sets the central administration for ids and project types
+         * \param admin Central administration
+         * \remarks This method should only be used by the ProjectHandler
+         */
         void SetAdmin(ObjectHandlerAdmin* admin) override
         {
             this->admin = admin;
         }
 
+        /**
+         * Creates an object of type T and keeps it, so that it can be found with its id
+         * \return Id corresponding with created object
+         */
         int Create() override
         {
-            std::shared_ptr<T> value = std::make_shared<T>();
+            if constexpr (std::is_abstract_v<T>)
+            {
+                throw Reliability::ProbabilisticLibraryException("Cannot create abstract class " + ProjectEntries::GetObjectTypeString(GetObjectType()));
+            }
+            else
+            {
+                std::shared_ptr<T> value = std::make_shared<T>();
 
-            int id = admin->GetNewId();
+                int id = admin->GetNewId();
 
-            objects[id] = value;
-            object_ids[value] = id;
+                objects[id] = value;
+                object_ids[value] = id;
 
-            admin->RegisterType(id, GetObjectType());
+                admin->RegisterType(id, GetObjectType());
 
-            return id;
+                return id;
+            }
         }
 
+        /**
+         * Removes an object from the administration held in this object
+         * \param id Id of the object to be removed
+         * \remarks A call to this method usually originates from a garbage collector
+         */
         void Destroy(int id) override
         {
             auto it = objects.find(id);
@@ -88,7 +118,13 @@ namespace Deltares::Server
             }
         }
 
-        std::shared_ptr<T> GetObject(int id) const
+        /**
+         * Gets the object associated with an id
+         * \param id The id associated with the object
+         * \return The object associated with the id
+         * \remarks Inheritors of type T are also searched for the object (if the handler is a DerivedObjectHandler)
+         */
+        std::shared_ptr<T> GetObject(int id)
         {
             if (id == 0)
             {
@@ -103,7 +139,7 @@ namespace Deltares::Server
                 return object;
             }
 
-            for (const auto& inheritor : inheritors)
+            for (const auto& inheritor : inheritedObjectCallbacks)
             {
                 object = inheritor(id);
                 if (object != nullptr)
@@ -115,7 +151,14 @@ namespace Deltares::Server
             return nullptr;
         }
 
-        std::vector<std::shared_ptr<T>> GetObjects(const int* ids, int size) const
+        /**
+         * Gets objects associated with a vector of ids
+         * \param ids The ids associated with the objects
+         * \param size Number of ids
+         * \return Vector of objects associated with the ids
+         * \remarks Inheritors of type T are also searched for the object (if the handler is a DerivedObjectHandler)
+         */
+        std::vector<std::shared_ptr<T>> GetObjects(const int* ids, int size)
         {
             std::vector<std::shared_ptr<T>> id_objects = std::vector<std::shared_ptr<T>>(size);
             for (int i = 0; i < size; i++)
@@ -126,6 +169,12 @@ namespace Deltares::Server
             return id_objects;
         }
 
+        /**
+         * Gets the id associated with an object
+         * \param object The id associated with the object
+         * \return The id associated with the object, 0 if the object is a nullptr and possibly a new id is created if it was not registered before
+         * \remarks Inheritors of type T are also searched for the id (if the handler is a DerivedObjectHandler)
+         */
         int GetObjectId(const std::shared_ptr<T>& object)
         {
             if (object == nullptr)
@@ -133,27 +182,35 @@ namespace Deltares::Server
                 return 0;
             }
 
-            if (!object_ids.contains(object))
+            auto it = object_ids.find(object);
+            int id = it != object_ids.end() ? it->second : 0;
+
+            if (id != 0)
             {
-                int newId = admin->GetNewId();
-
-                objects[newId] = object;
-                object_ids[object] = newId;
-
-                admin->RegisterType(newId, GetObjectType());
+                return id;
             }
 
-            return object_ids.at(object);
-        }
+            for (const auto& inheritor : inheritedIdCallbacks)
+            {
+                id = inheritor(object);
+                if (id != 0)
+                {
+                    return id;
+                }
+            }
 
-        bool Contains(int id)
-        {
-            return objects.contains(id);
-        }
+            // not found, but the object exists, then generate a new id
+            if (id == 0)
+            {
+                id = admin->GetNewId();
 
-        bool ContainsObject(const std::shared_ptr<T>& object)
-        {
-            return object_ids.contains(object);
+                objects[id] = object;
+                object_ids[object] = id;
+
+                admin->RegisterType(id, GetObjectType());
+            }
+
+            return id;
         }
 
         // double

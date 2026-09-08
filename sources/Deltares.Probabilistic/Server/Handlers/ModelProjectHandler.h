@@ -22,6 +22,7 @@
 #pragma once
 #include <string>
 
+#include "BaseCorrelationMatrixHandler.h"
 #include "CopulaCorrelationHandler.h"
 #include "CorrelationMatrixHandler.h"
 #include "ModelParameterHandler.h"
@@ -46,17 +47,7 @@ namespace Deltares::Server
         int GetIdValue(const std::shared_ptr<Models::ModelProject>& project, const std::string& property_) override
         {
             if (property_ == "validate") return validationReportHandler->GetObjectId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()));
-            else if (property_ == "correlation_matrix")
-            {
-                if (std::dynamic_pointer_cast<Statistics::CopulaCorrelation>(project->correlation) != nullptr)
-                {
-                    return copulaCorrelationHandler->GetObjectId(std::dynamic_pointer_cast<Statistics::CopulaCorrelation>(project->correlation));
-                }
-                else
-                {
-                    return correlationMatrixHandler->GetObjectId(std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(project->correlation));
-                }
-            }
+            else if (property_ == "correlation_matrix") return baseCorrelationMatrixHandler->GetObjectId(project->correlation);
             else return StoredObjectHandler::GetIdValue(project, property_);
         }
 
@@ -116,30 +107,17 @@ namespace Deltares::Server
             if (property_ == "variables")
             {
                 auto newStochasts = std::vector<std::shared_ptr<Statistics::Stochast>>(size);
-
-                for (int i = 0; i < size; i++)
-                {
-                    newStochasts[i] = stochastHandler->GetObject(values[i]);
-                }
-
+                stochastHandler->SetIdValues(newStochasts, values, size);
                 project->addStochasts(newStochasts);
             }
             else if (property_ == "input_parameters")
             {
-                project->model->inputParameters.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->model->inputParameters.push_back(modelParameterHandler->GetObject(values[i]));
-                }
+                modelParameterHandler->SetIdValues(project->model->inputParameters, values, size);
                 project->updateStochasts();
             }
             else if (property_ == "output_parameters")
             {
-                project->model->outputParameters.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->model->outputParameters.push_back(modelParameterHandler->GetObject(values[i]));
-                }
+                modelParameterHandler->SetIdValues(project->model->outputParameters, values, size);
             }
             else StoredObjectHandler::SetArrayIntValue(project, property_, values, size);
         }
@@ -160,11 +138,7 @@ namespace Deltares::Server
         {
             if (property_ == "model")
             {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
+                CreateModelIfNotExistent(project);
                 project->model->setMultipleCallback(callBack);
             }
         }
@@ -173,20 +147,12 @@ namespace Deltares::Server
         {
             if (property_ == "run_samples")
             {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
+                CreateModelIfNotExistent(project);
                 project->model->setRunMethod(callBack);
             }
             else if (property_ == "next")
             {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
+                CreateModelIfNotExistent(project);
                 project->model->setNextCalculation(callBack);
             }
         }
@@ -195,11 +161,7 @@ namespace Deltares::Server
         {
             if (property_ == "model")
             {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
+                CreateModelIfNotExistent(project);
                 project->model->setModelSampleCallback(callBack);
             }
         }
@@ -208,11 +170,7 @@ namespace Deltares::Server
         {
             if (property_ == "model")
             {
-                if (project->model == nullptr)
-                {
-                    project->model = std::make_shared<Models::ZModel>();
-                }
-
+                CreateModelIfNotExistent(project);
                 project->model->setMultipleModelSampleCallback(callBack);
             }
         }
@@ -225,10 +183,18 @@ namespace Deltares::Server
         ValidationReportHandler* validationReportHandler = nullptr;
         ModelParameterHandler* modelParameterHandler = nullptr;
         StochastHandler* stochastHandler = nullptr;
+        BaseCorrelationMatrixHandler* baseCorrelationMatrixHandler = nullptr;
         CorrelationMatrixHandler* correlationMatrixHandler = nullptr;
         CopulaCorrelationHandler* copulaCorrelationHandler = nullptr;
+    private:
 
-        //GetObjectCallBack<Models::ModelProject> modelProjectCallback = nullptr;
+        static void CreateModelIfNotExistent(const std::shared_ptr<Models::ModelProject>& project)
+        {
+            if (project->model == nullptr)
+            {
+                project->model = std::make_shared<Models::ZModel>();
+            }
+        }
     };
 }
 

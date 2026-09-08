@@ -22,8 +22,7 @@
 #pragma once
 #include <string>
 
-#include "ModelProjectSettingsHandler.h"
-#include "StoredObjectHandler.h"
+#include "DerivedObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
 #include "../../Sensitivity/SensitivitySettings.h"
 

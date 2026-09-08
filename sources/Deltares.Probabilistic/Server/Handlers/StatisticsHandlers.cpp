@@ -32,9 +32,12 @@ namespace Deltares::Server
         stochastHandler.conditionalValueHandler = &conditionalValueHandler;
         stochastHandler.contributingStochastHandler = &contributingStochastHandler;
 
-        correlationMatrixHandler.stochastHandler = &stochastHandler;
+        baseCorrelationMatrixHandler.stochastHandler = &stochastHandler;
         copulaCorrelationHandler.stochastHandler = &stochastHandler;
         selfCorrelationMatrixHandler.stochastHandler = &stochastHandler;
+
+        correlationMatrixHandler.SetBaseHandler(&baseCorrelationMatrixHandler);
+        copulaCorrelationHandler.SetBaseHandler(&baseCorrelationMatrixHandler);
 
         contributingStochastHandler.stochastCallback = [this](const int id) {return this->stochastHandler.GetObject(id); };
         contributingStochastHandler.stochastIdCallback = [this](const std::shared_ptr<Statistics::Stochast>& stochast) {return this->stochastHandler.GetObjectId(stochast); };
@@ -54,6 +57,7 @@ namespace Deltares::Server
         modelProjectHandler.validationReportHandler = &modelHandlers->validationReportHandler;
         modelProjectHandler.modelParameterHandler = &modelHandlers->modelParameterHandler;
         modelProjectHandler.stochastHandler = &stochastHandler;
+        modelProjectHandler.baseCorrelationMatrixHandler = &baseCorrelationMatrixHandler;
         modelProjectHandler.correlationMatrixHandler = &correlationMatrixHandler;
         modelProjectHandler.copulaCorrelationHandler = &copulaCorrelationHandler;
 

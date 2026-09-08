@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\BaseCorrelationMatrixHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilityHandlers.h" />
     <ClInclude Include="Server\Handlers\StatisticsHandlers.h" />
     <ClInclude Include="Server\Handlers\UncertaintyProjectHandler.h" />

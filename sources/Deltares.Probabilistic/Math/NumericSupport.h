@@ -85,6 +85,28 @@ namespace Deltares::Numeric
         static double getMaxAbs(const double val1, const double val2);
         static std::vector<double> LinearSpaced(const int length, const double start, const double stop);
         static std::string ConvertToString(std::vector<double>& values, const std::string& separator);
+
+        template<typename T>
+        static std::vector<T> GetVector(T* values, int size)
+        {
+            std::vector<T> list(size);
+            for (int i = 0; i < size; i++)
+            {
+                list[i] = values[i];
+            }
+
+            return list;
+        }
+
+        template<typename T>
+        static void FillVector(std::vector<T>& list, T* values, int size)
+        {
+            list.clear();
+            for (int i = 0; i < size; i++)
+            {
+                list.push_back(values[i]);
+            }
+        }
     };
 }
 

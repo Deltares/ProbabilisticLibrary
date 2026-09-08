@@ -345,30 +345,6 @@ namespace Deltares::Server
         }
     }
 
-    std::shared_ptr<Models::ModelProject> ProjectHandler::GetProject(int id)
-    {
-        if (statisticsHandlers.runProjectHandler.Contains(id))
-        {
-            return statisticsHandlers.runProjectHandler.GetObject(id);
-        }
-        else if (sensitivityProjectHandler.Contains(id))
-        {
-            return sensitivityProjectHandler.GetObject(id);
-        }
-        else if (uncertaintyProjectHandler.Contains(id))
-        {
-            return uncertaintyProjectHandler.GetObject(id);
-        }
-        else if (reliabilityHandlers.reliabilityProjectHandler.Contains(id))
-        {
-            return reliabilityHandlers.reliabilityProjectHandler.GetObject(id);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
     std::shared_ptr<Reliability::DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
     {
         return nullptr;

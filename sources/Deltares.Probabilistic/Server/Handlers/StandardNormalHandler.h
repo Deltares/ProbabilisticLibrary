@@ -22,7 +22,6 @@
 #pragma once
 #include <string>
 
-#include "ObjectHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
 #include "../../Statistics/StandardNormal.h"

@@ -29,6 +29,9 @@
 
 namespace Deltares::Server
 {
+    /**
+     * \brief Base class for object handlers which contains a registration of all objects
+     */
     class ObjectHandler
     {
     public:

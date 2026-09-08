@@ -31,6 +31,7 @@
 #include "StoredObjectHandler.h"
 #include "ValidationReportHandler.h"
 #include "../../Statistics/Stochast.h"
+#include "../../Math/NumericSupport.h"
 
 namespace Deltares::Server
 {
@@ -119,17 +120,14 @@ namespace Deltares::Server
                 Logging::ValidationReport report = stochast->getFitValidationReport(tempValues["data"], prior, argValue);
                 if (!report.isValid())
                 {
-                    tempValues.erase("data");
-                    tempIntValue = 0;
-                    argValue = std::nan("");
+                    clearTempValues();
                 }
                 return validationReportHandler->GetObjectId(std::make_shared<Logging::ValidationReport>(report));
             }
             else if (property_ == "conditional_x")
             {
                 double x = argValue;
-                argValue = std::nan("");
-
+                clearTempValues();
                 std::shared_ptr<Statistics::Stochast> conditionalStochast = stochast->getVariableStochast(x);
                 return GetObjectId(conditionalStochast);
             }
@@ -142,10 +140,26 @@ namespace Deltares::Server
             else if (property_ == "array_size") stochast->modelParameter->arraySize = value;
             else if (property_ == "copy_from") stochast->copyFrom(GetObject(value));
             else if (property_ == "conditional_source") stochast->VariableSource = GetObject(value);
-            else if (property_ == "add_histogram_value") stochast->getProperties()->HistogramValues.push_back(histogramValueHandler->GetObject(value));
-            else if (property_ == "add_fragility_value") stochast->getProperties()->FragilityValues.push_back(fragilityValueHandler->GetObject(value));
-            else if (property_ == "add_discrete_value") stochast->getProperties()->DiscreteValues.push_back(discreteValueHandler->GetObject(value));
-            else if (property_ == "add_contributing_stochast") stochast->getProperties()->ContributingStochasts.push_back(contributingStochastHandler->GetObject(value));
+            else if (property_ == "add_histogram_value")
+            {
+                stochast->getProperties()->setDirty();
+                stochast->getProperties()->HistogramValues.push_back(histogramValueHandler->GetObject(value));
+            }
+            else if (property_ == "add_fragility_value")
+            {
+                stochast->getProperties()->setDirty();
+                stochast->getProperties()->FragilityValues.push_back(fragilityValueHandler->GetObject(value));
+            }
+            else if (property_ == "add_discrete_value")
+            {
+                stochast->getProperties()->setDirty();
+                stochast->getProperties()->DiscreteValues.push_back(discreteValueHandler->GetObject(value));
+            }
+            else if (property_ == "add_contributing_stochast")
+            {
+                stochast->getProperties()->setDirty();
+                stochast->getProperties()->ContributingStochasts.push_back(contributingStochastHandler->GetObject(value));
+            }
             else if (property_ == "add_conditional_value") stochast->ValueSet->StochastValues.push_back(conditionalValueHandler->GetObject(value));
             else if (property_ == "prior") tempIntValue = value;
             else StoredObjectHandler::SetIntValue(stochast, property_, value);
@@ -205,11 +219,7 @@ namespace Deltares::Server
 
         void SetArrayValue(const std::shared_ptr<Statistics::Stochast>& stochast, const std::string& property_, double* values, int size) override
         {
-            std::vector<double> dataValues(size);
-            for (int i = 0; i < size; i++)
-            {
-                dataValues[i] = values[i];
-            }
+            std::vector<double> dataValues = Numeric::NumericSupport::GetVector(values, size);
 
             if (property_ == "fit") tempValues["data"] = dataValues;
             else if (property_ == "data") tempValues["data"] = dataValues;
@@ -288,29 +298,18 @@ namespace Deltares::Server
             else if (method_ == "set_x_at_u_var") stochast->setXAtU(tempValues["u_and_x"][1], tempValues["u_and_x"][0], Statistics::ConstantParameterType::VariationCoefficient);
             else if (method_ == "fit")
             {
-                double shift = argValue;
-
-                stochast->fit(tempValues["data"], shift);
-
-                argValue = nan("");
-                tempValues.erase("data");
+                stochast->fit(tempValues["data"], argValue);
+                clearTempValues();
             }
             else if (method_ == "fit_weighted")
             {
                 stochast->fitWeighted(tempValues["data"], tempValues["weights"]);
-
-                tempValues.erase("data");
-                tempValues.erase("weights");
+                clearTempValues();
             }
             else if (method_ == "fit_prior")
             {
-                double shift = argValue;
-
-                stochast->fitPrior(tempValues["data"], GetObject(tempIntValue), shift);
-
-                tempIntValue = 0;
-                argValue = nan("");
-                tempValues.erase("data");
+                stochast->fitPrior(tempValues["data"], GetObject(tempIntValue), argValue);
+                clearTempValues();
             }
             else
             {
@@ -329,6 +328,14 @@ namespace Deltares::Server
         std::unordered_map <std::string, std::vector<double>> tempValues;
         double argValue = nan("");
         int tempIntValue = 0;
+
+        void clearTempValues()
+        {
+            tempIntValue = 0;
+            argValue = nan("");
+            tempValues.erase("data");
+            tempValues.erase("weights");
+        }
     };
 }
 

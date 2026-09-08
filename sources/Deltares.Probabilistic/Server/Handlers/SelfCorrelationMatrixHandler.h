@@ -24,7 +24,6 @@
 
 #include "StoredObjectHandler.h"
 #include "../../Server/ProjectEntries.h"
-#include "../../Statistics/Stochast.h"
 #include "../../Statistics/SelfCorrelationMatrix.h"
 #include "StochastHandler.h"
 

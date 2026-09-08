@@ -23,9 +23,9 @@
 
 #include <string>
 
+#include "BaseCorrelationMatrixHandler.h"
 #include "CombineSettingsHandler.h"
-#include "CopulaCorrelationHandler.h"
-#include "CorrelationMatrixHandler.h"
+#include "BaseCorrelationMatrixHandler.h"
 #include "DesignPointHandler.h"
 #include "SelfCorrelationMatrixHandler.h"
 #include "StoredObjectHandler.h"
@@ -61,17 +61,7 @@ namespace Deltares::Server
         {
             if (property_ == "settings") return combineSettingsHandler->GetObjectId(project->settings);
             else if (property_ == "design_point") return designPointHandler->GetObjectId(project->designPoint);
-            else if (property_ == "design_point_correlation_matrix")
-            {
-                if (std::dynamic_pointer_cast<Statistics::CopulaCorrelation>(project->correlationMatrix) != nullptr)
-                {
-                    return copulaCorrelationHandler->GetObjectId(std::dynamic_pointer_cast<Statistics::CopulaCorrelation>(project->correlationMatrix));
-                }
-                else
-                {
-                    return correlationMatrixHandler->GetObjectId(std::dynamic_pointer_cast<Statistics::CorrelationMatrix>(project->correlationMatrix));
-                }
-            }
+            else if (property_ == "design_point_correlation_matrix") return baseCorrelationMatrixHandler->GetObjectId(project->correlationMatrix);
             else if (property_ == "correlation_matrix") return selfCorrelationMatrixHandler->GetObjectId(project->selfCorrelationMatrix);
             else if (property_ == "validate") return validationReportHandler->GetObjectId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()));
             else return StoredObjectHandler::GetIdValue(project, property_);
@@ -81,31 +71,13 @@ namespace Deltares::Server
         {
             if (property_ == "settings") project->settings = combineSettingsHandler->GetObject(value);
             else if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrixHandler->GetObject(value);
-            else if (property_ == "design_point_correlation_matrix")
-            {
-                if (copulaCorrelationHandler->Contains(value))
-                {
-                    project->correlationMatrix = copulaCorrelationHandler->GetObject(value);
-                }
-                else
-                {
-                    project->correlationMatrix = correlationMatrixHandler->GetObject(value);
-                }
-            }
+            else if (property_ == "design_point_correlation_matrix") project->correlationMatrix = baseCorrelationMatrixHandler->GetObject(value);
             else StoredObjectHandler::SetIntValue(project, property_, value);
         }
 
         void SetArrayIntValue(const std::shared_ptr<Reliability::CombineProject>& project, const std::string& property_, int* values, int size) override
         {
-            if (property_ == "design_points")
-            {
-                project->designPoints.clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    project->designPoints.push_back(designPointHandler->GetObject(values[i]));
-                }
-            }
+            if (property_ == "design_points") designPointHandler->SetIdValues(project->designPoints, values, size);
             else StoredObjectHandler::SetArrayIntValue(project, property_, values, size);
         }
 
@@ -122,8 +94,7 @@ namespace Deltares::Server
 
         CombineSettingsHandler* combineSettingsHandler = nullptr;
         DesignPointHandler* designPointHandler = nullptr;
-        CorrelationMatrixHandler* correlationMatrixHandler = nullptr;
-        CopulaCorrelationHandler* copulaCorrelationHandler = nullptr;
+        BaseCorrelationMatrixHandler* baseCorrelationMatrixHandler = nullptr;
         SelfCorrelationMatrixHandler* selfCorrelationMatrixHandler = nullptr;
         ValidationReportHandler* validationReportHandler = nullptr;
     };

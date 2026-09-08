@@ -74,14 +74,7 @@ namespace Deltares::Server
 
         void SetArrayValue(const std::shared_ptr<Reliability::LengthEffectProject>& project, const std::string& property_, double* values, int size) override
         {
-            if (property_ == "correlation_lengths")
-            {
-                project->correlationLengths.clear();
-                for (int i = 0; i < size; i++)
-                {
-                    project->correlationLengths.push_back(values[i]);
-                }
-            }
+            if (property_ == "correlation_lengths") Numeric::NumericSupport::FillVector(project->correlationLengths, values, size);
             else StoredObjectHandler::SetArrayValue(project, property_, values, size);
         }
 

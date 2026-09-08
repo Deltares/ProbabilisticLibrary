@@ -29,7 +29,7 @@ namespace Deltares::Server
      * \brief Base class for object handlers which contains a registration of all objects
      */
     template<typename T, typename U>
-    requires std::derived_from<T, U>
+        requires std::derived_from<T, U>
     class DerivedObjectHandler : public StoredObjectHandler<T>
     {
     private:
@@ -42,7 +42,8 @@ namespace Deltares::Server
             baseHandler = handler;
 
             GetObjectCallBack<U> objectCallback = [this](const int id) { return this->GetObject(id); };
-            baseHandler->AddInheritor(objectCallback);
+            GetObjectIdCallBack<U> objectIdCallback = [this](std::shared_ptr<U> object) { return this->GetObjectId(std::dynamic_pointer_cast<T>(object)); };
+            baseHandler->AddInheritor(objectCallback, objectIdCallback);
         }
 
         std::shared_ptr<U> GetBaseObject(int id)
@@ -181,7 +182,7 @@ namespace Deltares::Server
         {
             return baseHandler->GetBoolValue(object, property_);
         }
-         
+
         void SetBoolValue(const std::shared_ptr<T>& object, const std::string& property_, bool value) override
         {
             baseHandler->SetBoolValue(object, property_, value);
@@ -233,7 +234,7 @@ namespace Deltares::Server
             baseHandler->SetModelSampleCallBack(object, property_, callBack);
         }
 
-        void SetMultipleModelSampleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::MultipleModelSampleCallback callBack)
+        void SetMultipleModelSampleCallBack(const std::shared_ptr<T>& object, const std::string& property_, Models::MultipleModelSampleCallback callBack) override
         {
             baseHandler->SetMultipleModelSampleCallBack(object, property_, callBack);
         }

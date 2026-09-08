@@ -118,7 +118,6 @@ namespace Deltares::Server
 
         std::unordered_map<ObjectType, ObjectHandler*> handlers;
 
-        std::shared_ptr<Models::ModelProject> GetProject(int id);
         void DestroyObjects();
     };
 }

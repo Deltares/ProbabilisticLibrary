@@ -26,6 +26,7 @@
 #include "ContributingStochastHandler.h"
 #include "CopulaCorrelationHandler.h"
 #include "CorrelationMatrixHandler.h"
+#include "BaseCorrelationMatrixHandler.h"
 #include "DiscreteValueHandler.h"
 #include "FragilityValueHandler.h"
 #include "HistogramValueHandler.h"
@@ -36,6 +37,8 @@
 #include "StandardNormalHandler.h"
 #include "StochastHandler.h"
 #include "ReliabilityProjectHandler.h"
+#include "RunProjectHandler.h"
+#include "RunProjectSettingsHandler.h"
 #include "StochastPointHandler.h"
 #include "StochastSettingsHandler.h"
 
@@ -55,6 +58,7 @@ namespace Deltares::Server
         ScenarioHandler scenarioHandler;
         ContributingStochastHandler contributingStochastHandler;
         ConditionalValueHandler conditionalValueHandler;
+        BaseCorrelationMatrixHandler baseCorrelationMatrixHandler;
         CorrelationMatrixHandler correlationMatrixHandler;
         CopulaCorrelationHandler copulaCorrelationHandler;
         SelfCorrelationMatrixHandler selfCorrelationMatrixHandler;
