@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 using Deltares.Probabilistic.Logging;
-using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Reliability;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;

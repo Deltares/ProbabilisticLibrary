@@ -24,6 +24,7 @@
 #include <memory>
 #include <functional>
 #include "CobylaOptimizationSettings.h"
+#include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
 
 namespace Deltares::Optimization
@@ -50,6 +51,11 @@ namespace Deltares::Optimization
         int numberOfSamples;
         double minimumValue;
         bool success;
+
+        double getLength()
+        {
+            return Numeric::NumericSupport::GetLength(Input);
+        }
     };
 
     class optimizationModel
