@@ -76,11 +76,6 @@ namespace Deltares::Uncertainty
         static int getRequiredSamples(double probability, double variationCoefficient);
 
         /**
-         * \brief Modifies the variation coefficient so that the number of required samples matches a given value
-         */
-        void setRequiredSamples(int samples);
-
-        /**
          * \brief Settings for generating random values
          */
         std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();

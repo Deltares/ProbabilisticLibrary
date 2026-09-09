@@ -43,6 +43,11 @@ namespace Deltares::Uncertainty
          * \return The sensitivity in the form of a stochastic variable
          */
         UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+    private:
+        /**
+         * \brief Gets the convergence based on a number of samples and the ProbabilityForConvergence
+        */
+        double getConvergence(int samples);
     };
 }
 

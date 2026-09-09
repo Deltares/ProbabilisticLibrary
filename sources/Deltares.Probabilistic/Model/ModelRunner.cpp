@@ -446,9 +446,15 @@ namespace Deltares::Models
             this->progressIndicator->doProgress(progress);
 
             auto text = std::format("{}/{}", step, maxSteps);
-            if (!std::isnan(reliability) || !std::isnan(convergence))
+
+            if (!std::isnan(reliability))
             {
-                text += std::format(", Reliability = {:.3f}, Convergence = {:.3f}", reliability, convergence);
+                text += std::format(", Reliability = {:.3f}", reliability);
+            }
+
+            if (!std::isnan(convergence))
+            {
+                text += std::format(", Convergence = {:.3f}", convergence);
             }
 
             this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);

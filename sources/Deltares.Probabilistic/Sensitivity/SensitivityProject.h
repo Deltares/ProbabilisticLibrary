@@ -56,11 +56,6 @@ namespace Deltares::Sensitivity
         std::shared_ptr<SensitivitySettings> settings = std::make_shared<SensitivitySettings>();
 
         /**
-         * \brief Callback for progress during the calculation
-         */
-        std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
-
-        /**
          * \brief Results of the sensitivity calculation
          */
         std::shared_ptr<SensitivityResult> sensitivityResult = nullptr;

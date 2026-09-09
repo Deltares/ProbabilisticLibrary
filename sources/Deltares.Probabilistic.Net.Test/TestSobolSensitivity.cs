@@ -19,11 +19,11 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Sensitivity;
+using Deltares.Probabilistic.Uncertainty;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Probabilistic.Model;
-using Deltares.Probabilistic.Statistics;
-using Deltares.Probabilistic.Sensitivity;
 
 namespace Deltares.Probabilistic.Test
 {
@@ -46,6 +46,29 @@ namespace Deltares.Probabilistic.Test
 
             ClassicAssert.AreEqual(0.501, result.Values[0].FirstOrderIndex, margin);
             ClassicAssert.AreEqual(0.504, result.Values[0].TotalIndex, margin);
+        }
+
+        [Test]
+        public void TestLinearProgress()
+        {
+            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+
+            ProgressHolder progressHolder = new ProgressHolder();
+            project.ProgressIndicator = new ProgressIndicator(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
+
+            project.Settings.SensitivityMethod = SensitivityMethod.Sobol;
+            project.Run();
+
+            SensitivityResult result = project.Result;
+
+            ClassicAssert.AreEqual(2, result.Values.Count);
+
+            ClassicAssert.AreEqual(0.501, result.Values[0].FirstOrderIndex, margin);
+            ClassicAssert.AreEqual(0.504, result.Values[0].TotalIndex, margin);
+
+            ClassicAssert.AreEqual(8, progressHolder.Invocations);
+            ClassicAssert.AreEqual(1, progressHolder.Progress, margin);
+            ClassicAssert.AreEqual("6000/6000", progressHolder.Text);
         }
 
         [Test]

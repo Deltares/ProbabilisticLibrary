@@ -168,7 +168,7 @@ namespace Deltares::Reliability
                 pf = NumericSupport::Divide(ntot, samplesCount);
 
                 std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
-                report->Step = sampleIndex;
+                report->Step = sampleIndex + 1;
                 report->MaxSteps = Settings->MaximumSamples;
 
                 if (pf > 0 && pf < 1.0)

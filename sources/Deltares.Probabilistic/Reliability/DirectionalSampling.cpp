@@ -166,6 +166,8 @@ namespace Deltares::Reliability
                 std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
                 report->ReportMatchesEvaluation = false;
                 report->Contribution = uSurface.Weight;
+                report->Step = directionIndex + 1;
+                report->MaxSteps = Settings->MaximumDirections;
                 report->Reliability = beta;
                 report->Variation = convergence;
 
@@ -179,6 +181,8 @@ namespace Deltares::Reliability
             else
             {
                 std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
+                report->Step = directionIndex + 1;
+                report->MaxSteps = Settings->MaximumDirections;
                 report->ReportMatchesEvaluation = false;
                 report->Variation = uSurface.Weight;
 
