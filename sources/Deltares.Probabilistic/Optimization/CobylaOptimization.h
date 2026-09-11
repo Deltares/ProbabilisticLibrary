@@ -21,9 +21,8 @@
 //
 #pragma once
 #include <vector>
-#include <memory>
-#include <functional>
 #include "CobylaOptimizationSettings.h"
+#include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
 
 namespace Deltares::Optimization
@@ -50,11 +49,17 @@ namespace Deltares::Optimization
         int numberOfSamples;
         double minimumValue;
         bool success;
+
+        double getLength() const
+        {
+            return Numeric::NumericSupport::GetLength(Input);
+        }
     };
 
-    class optimizationModel
+    class OptimizationModel
     {
     public:
+        virtual ~OptimizationModel() = default;
         virtual double GetZValue(Models::Sample& sample) const { return -1; }
         virtual double GetConstraintValue(Models::Sample& sample) { return -1; }
         virtual unsigned GetNumberOfConstraints() const { return 0; }
@@ -68,7 +73,7 @@ namespace Deltares::Optimization
     {
     public:
         CobylaOptimizationSettings settings;
-        OptimizationSample GetCalibrationPoint(const SearchArea& searchArea, optimizationModel& model) const;
+        OptimizationSample GetCalibrationPoint(const SearchArea& searchArea, OptimizationModel& model) const;
     };
 }
 

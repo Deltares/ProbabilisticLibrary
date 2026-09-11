@@ -20,9 +20,10 @@
 // All rights reserved.
 //
 
+using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Reliability;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Deltares.Probabilistic.Reliability;
 
 namespace Deltares.Probabilistic.Test
 {
@@ -37,6 +38,7 @@ namespace Deltares.Probabilistic.Test
             var project = ProjectBuilder.GetLinearProject();
 
             project.Settings.ReliabilityMethod = ReliabilityMethod.Cobyla;
+            project.Settings.MaximumSamples = 200;
             project.Run();
 
             DesignPoint designPoint = project.DesignPoint;
@@ -45,11 +47,29 @@ namespace Deltares.Probabilistic.Test
         }
 
         [Test]
+        public void TestLinearProgress()
+        {
+            var project = ProjectBuilder.GetLinearProject();
+
+            ProgressHolder progressHolder = new ProgressHolder();
+            project.ProgressIndicator = new ProgressIndicator(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
+
+            project.Settings.ReliabilityMethod = ReliabilityMethod.Cobyla;
+            project.Settings.MaximumSamples = 200;
+            project.Run();
+
+            ClassicAssert.AreEqual(50, progressHolder.Invocations);
+            ClassicAssert.AreEqual(0.25, progressHolder.Progress, margin);
+            ClassicAssert.AreEqual("50/200, Reliability = 2.326", progressHolder.Text);
+        }
+
+        [Test]
         public void TestBligh()
         {
             var project = ProjectBuilder.GetBlighProject();
 
             project.Settings.ReliabilityMethod = ReliabilityMethod.Cobyla;
+            project.Settings.MaximumSamples = 200;
             project.Run();
 
             DesignPoint designPoint = project.DesignPoint;

@@ -25,7 +25,7 @@
 
 namespace Deltares::Optimization
 {
-    OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, optimizationModel& model) const
+    OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, OptimizationModel& model) const
     {
         const unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
         const unsigned m = model.GetNumberOfConstraints();

@@ -37,7 +37,7 @@ namespace Deltares::Reliability
         auto initialSample = sampleProvider.getSample();
         double z0Fac = getZFactor(modelRunner->getZValue(initialSample));
 
-        auto optModel = wrappedOptimizationModel(modelRunner, z0Fac);
+        auto optModel = WrappedOptimizationModel(modelRunner, z0Fac, Settings->MaximumIterations);
         optModel.uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
         auto optimizer = CobylaOptimization();
@@ -55,12 +55,8 @@ namespace Deltares::Reliability
         }
 
         auto result = optimizer.GetCalibrationPoint(searchArea, optModel);
-        double beta = 0.0;
-        for (int i = 0; i < nStochasts; i++)
-        {
-            beta += pow(result.Input[i], 2);
-        }
-        beta = z0Fac * std::sqrt(beta);
+
+        double beta = z0Fac * result.getLength();
 
         auto uMin = optModel.uMean.getSample();
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
@@ -70,9 +66,11 @@ namespace Deltares::Reliability
         return designPoint;
     };
 
-    double wrappedOptimizationModel::GetConstraintValue(Sample& sample)
+    double WrappedOptimizationModel::GetConstraintValue(Sample& sample)
     {
         auto z = modelRunner->getZValue(sample);
+
+        modelRunner->reportProgress(++counter, maxIterations, z0Fac * sample.getBeta());
 
         if (z * z0Fac < 0.0)
         {
@@ -81,14 +79,9 @@ namespace Deltares::Reliability
         return std::abs(z);
     }
 
-    double wrappedOptimizationModel::GetZValue(Sample& sample) const
+    double WrappedOptimizationModel::GetZValue(Sample& sample) const
     {
-        double beta = 0.0;
-        for (const auto & val : sample.Values)
-        {
-            beta += pow(val, 2);
-        }
-        return std::sqrt(beta);
+        return sample.getBeta();
     }
 }
 

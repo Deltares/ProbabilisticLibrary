@@ -98,6 +98,8 @@ namespace Deltares::Uncertainty
             }
 
             nSamples++;
+
+            modelRunner->reportProgress(nSamples, requiredSamples, std::nan(""), getConvergence(nSamples));
         }
 
         auto zWeights = std::vector(zSamples.size(), 1.0);
@@ -134,6 +136,19 @@ namespace Deltares::Uncertainty
         }
 
         return result;
+    }
+
+    double CrudeMonteCarloS::getConvergence(int samples) const
+    {
+        if (Settings->ProbabilityForConvergence > 0.0 && Settings->ProbabilityForConvergence < 1.0)
+        {
+            double probability = std::min(Settings->ProbabilityForConvergence, 1 - Settings->ProbabilityForConvergence);
+            return sqrt((1 - probability) / (samples * probability));
+        }
+        else
+        {
+            return std::nan("");
+        }
     }
 }
 

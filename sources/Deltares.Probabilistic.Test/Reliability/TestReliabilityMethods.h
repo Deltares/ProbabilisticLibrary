@@ -30,6 +30,7 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         static void testFORM();
+        static void testFORMProgress();
         static void testFORMArray();
         static void testFORMVaryingArray();
         static void testValidation();
@@ -46,6 +47,7 @@ namespace Deltares::Probabilistic::Test
         static void testFragilityCurveIntegration();
         static void testNumericalIntegrationReliability();
         static void testCrudeMonteCarloReliability();
+        static void testCrudeMonteCarloProgress();
         static void testCrudeMonteCarloZValueProbability();
         static void testCrudeMonteCarloProbabilityInverse();
         static void testCrudeMonteCarloWithCopulaReliability();

@@ -24,6 +24,7 @@
 #include "../Deltares.Probabilistic/Model/DefaultValueConverter.h"
 #include <iostream>
 
+#include "DefaultProgressIndicator.h"
 #include "../Deltares.Probabilistic/Statistics/CopulaCorrelation.h"
 
 namespace Deltares::Probabilistic::Test
@@ -48,6 +49,12 @@ namespace Deltares::Probabilistic::Test
     {
         auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linearAutoStart(v); });
         return CreateModelRunner(nStochasts, z);
+    }
+
+    std::shared_ptr<Models::ModelRunner> ProjectBuilder::BuildLinearProjectProgress(size_t nStochasts, DefaultProgressIndicator* progress)
+    {
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linearAutoStart(v); });
+        return CreateModelRunner(nStochasts, z, progress);
     }
 
     std::shared_ptr<Models::ModelRunner> ProjectBuilder::BuildLinearProbabilityProject(size_t nStochasts)
@@ -88,7 +95,7 @@ namespace Deltares::Probabilistic::Test
         return CreateModelRunner(2, z);
     }
 
-    std::shared_ptr<Models::ModelRunner> ProjectBuilder::CreateModelRunner(size_t nStochasts, std::shared_ptr<Models::ZModel> zModel)
+    std::shared_ptr<Models::ModelRunner> ProjectBuilder::CreateModelRunner(size_t nStochasts, std::shared_ptr<Models::ZModel> zModel, DefaultProgressIndicator* progress)
     {
         auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
         auto dist = Statistics::DistributionType::Uniform;
@@ -101,7 +108,9 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
         std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, corr);
         uConverter->initializeForRun();
-        std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(zModel, uConverter);
+
+        std::shared_ptr<Models::ProgressIndicator> progress_indicator = getProgressIndicator(progress);
+        std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(zModel, uConverter, progress_indicator);
         return modelRunner;
     }
 
@@ -201,6 +210,25 @@ namespace Deltares::Probabilistic::Test
         auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
         uConverter->initializeForRun();
         auto m = std::make_shared<Models::ModelRunner>(z, uConverter);
+        return m;
+    }
+
+    std::shared_ptr<Models::ModelRunner> ProjectBuilder::BuildProjectWithDeterministAndProgress(
+        double valueDeterminist, DefaultProgressIndicator *progress) const
+    {
+        auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& v)
+        { return zfuncWithDeterminist(v); });
+        auto stochast = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        stochast.push_back(getNormalStochast(0.0, 1.0));
+        stochast.push_back(getDeterministicStochast(valueDeterminist));
+        stochast.push_back(getNormalStochast(0.0, 1.0));
+        auto corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        auto uConverter = std::make_shared<Models::UConverter>(stochast, corr);
+        uConverter->initializeForRun();
+
+        auto progress_indicator = getProgressIndicator(progress);
+
+        auto m = std::make_shared<Models::ModelRunner>(z, uConverter, progress_indicator);
         return m;
     }
 
@@ -646,5 +674,23 @@ namespace Deltares::Probabilistic::Test
     {
         std::vector<double> values = { mean, stddev };
         return std::make_shared<Statistics::Stochast>(Statistics::DistributionType::Gumbel, values);
+    }
+
+    std::shared_ptr<Models::ProgressIndicator> ProjectBuilder::getProgressIndicator(DefaultProgressIndicator* progress)
+    {
+        if (progress == nullptr)
+        {
+            return nullptr;
+        }
+        else
+        {
+            Models::ProgressLambda progress_lambda = [progress](double value) {progress->doProgress(value); };
+            Models::DetailedProgressLambda detailed_lambda = [progress](int step, int max_steps, double reliability, double convergence) {progress->doDetailedProgress(step, max_steps, reliability, convergence); };
+            Models::TextualProgressLambda textual_lambda = [progress](Models::ProgressType type, const char* text) {progress->doTextualProgress(type, text); };
+
+            auto progress_indicator = std::make_shared<Models::ProgressIndicator>(progress_lambda, detailed_lambda, textual_lambda);
+
+            return progress_indicator;
+        }
     }
 }
