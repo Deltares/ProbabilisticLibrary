@@ -47,7 +47,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Gets the convergence based on a number of samples and the ProbabilityForConvergence
         */
-        double getConvergence(int samples);
+        double getConvergence(int samples) const;
     };
 }
 

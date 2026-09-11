@@ -27,11 +27,11 @@
 
 namespace Deltares::Reliability
 {
-    class WrappedOptimizationModel : public Optimization::optimizationModel
+    class WrappedOptimizationModel : public Optimization::OptimizationModel
     {
     public:
-        WrappedOptimizationModel(std::shared_ptr<Models::ModelRunner> model_runner, double z0fac, int maxIterations) :
-            modelRunner(model_runner), z0Fac(z0fac), maxIterations(maxIterations) {}
+        WrappedOptimizationModel(const std::shared_ptr<Models::ModelRunner>& model_runner, double z0fac, int maxIterations) :
+            maxIterations(maxIterations), modelRunner(model_runner), z0Fac(z0fac) {}
         double GetZValue(Models::Sample& sample) const override;
         double GetConstraintValue(Models::Sample& sample) override;
         unsigned GetNumberOfConstraints() const override { return 1; }

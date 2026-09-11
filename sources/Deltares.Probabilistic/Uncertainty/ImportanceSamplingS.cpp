@@ -212,8 +212,8 @@ namespace Deltares::Uncertainty
         }
     }
 
-    // check if convergence is reached (or stop criterion)
-    double ImportanceSamplingS::getConvergence(int sampleIndex, const Sample& center, int nSamples)
+    // calculate convergence indicator when sample index is above minimum samples
+    double ImportanceSamplingS::getConvergence(int sampleIndex, const Sample& center, int nSamples) const
     {
         if (sampleIndex >= Settings->MinimumSamples)
         {
@@ -233,7 +233,7 @@ namespace Deltares::Uncertainty
         }
     }
 
-    bool ImportanceSamplingS::isConverged(double convergence)
+    bool ImportanceSamplingS::isConverged(double convergence) const
     {
         if (std::isnan(convergence))
         {

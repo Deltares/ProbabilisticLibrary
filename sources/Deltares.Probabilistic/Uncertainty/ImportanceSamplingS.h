@@ -52,8 +52,8 @@ namespace Deltares::Uncertainty
         static void adjustWeights(std::vector<double>& weights, const double weight_difference);
         void registerWeights(const std::vector<double>& weights) const;
         void registerSamples(const std::shared_ptr<Statistics::Stochast>& stochast, const std::vector<double>& zValues) const;
-        double getConvergence(int sampleIndex, const Models::Sample& center, int nSamples);
-        bool isConverged(double convergence);
+        double getConvergence(int sampleIndex, const Models::Sample& center, int nSamples) const;
+        bool isConverged(double convergence) const;
         Reliability::DesignPointBuilder designPointBuilder;
         double dimensionality = 0.0;
         std::vector<double> factors;

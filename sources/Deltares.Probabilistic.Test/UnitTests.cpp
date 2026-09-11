@@ -258,6 +258,11 @@ TEST(ReliabilityMethodTest, TestFORM)
     TestReliabilityMethods::testFORM();
 }
 
+TEST(ReliabilityMethodTest, TestFORMProgress)
+{
+    TestReliabilityMethods::testFORMProgress();
+}
+
 TEST(ReliabilityMethodTest, TestFORMArray)
 {
     TestReliabilityMethods::testFORMArray();
@@ -336,6 +341,11 @@ TEST(ReliabilityMethodTest, TestNumericalIntegrationReliability)
 TEST(ReliabilityMethodTest, TestCrudeMCReliability)
 {
     TestReliabilityMethods::testCrudeMonteCarloReliability();
+}
+
+TEST(ReliabilityMethodTest, TestCrudeMonteCarloProgress)
+{
+    TestReliabilityMethods::testCrudeMonteCarloProgress();
 }
 
 TEST(ReliabilityMethodTest, TestCrudeMonteCarloZValueProbability)

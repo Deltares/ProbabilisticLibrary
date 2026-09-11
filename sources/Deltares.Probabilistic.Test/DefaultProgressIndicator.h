@@ -20,38 +20,42 @@
 // All rights reserved.
 //
 #pragma once
-#include "../../Deltares.Probabilistic/Optimization/CobylaOptimization.h"
+
+#include <string>
+
+#include "../Deltares.Probabilistic/Model/ProgressIndicator.h"
 
 namespace Deltares::Probabilistic::Test
 {
-    class testModel : public Optimization::OptimizationModel
+    class DefaultProgressIndicator
     {
     public:
-        testModel() = default;
-        testModel(double offset_1, double offset_2) : offset1(offset_1), offset2(offset_2) {}
-        double GetZValue(Models::Sample& sample) const override;
-    private:
-        const double offset1 = -1.0;
-        const double offset2 = 0.0;
-    };
+        int invocations = 0;
+        double last_progress = std::nan("");
+        int last_step = -1;
+        int last_max_steps = -1;
+        double last_reliability = std::nan("");
+        double last_convergence = std::nan("");
+        std::string last_message = "";
 
-    class testModelWithConstraint : public Optimization::OptimizationModel
-    {
-    public:
-        double GetZValue(Models::Sample& sample) const override;
-        double GetConstraintValue(Models::Sample& sample) override;
-        unsigned GetNumberOfConstraints() const override { return 1; }
-    };
+        void doProgress(double progress)
+        {
+            invocations++;
+            last_progress = progress;
+        }
 
-    class TestCobyla
-    {
-    public:
-        void allCobylaTests();
-    private:
-        static void test_no_constraints1();
-        static void test_no_constraints2();
-        static void test_with_constraint1();
-        const double margin = 1e-2;
+        void doDetailedProgress(int step, int max_steps, double reliability, double convergence)
+        {
+            last_step = step;
+            last_max_steps = max_steps;
+            last_reliability = reliability;
+            last_convergence = convergence;
+        }
+
+        void doTextualProgress(Models::ProgressType progress_type, const char* message)
+        {
+            last_message = std::string(message);
+        }
     };
 }
-
+    

@@ -138,7 +138,7 @@ namespace Deltares::Uncertainty
         return result;
     }
 
-    double CrudeMonteCarloS::getConvergence(int samples)
+    double CrudeMonteCarloS::getConvergence(int samples) const
     {
         if (Settings->ProbabilityForConvergence > 0.0 && Settings->ProbabilityForConvergence < 1.0)
         {

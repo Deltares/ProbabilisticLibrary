@@ -57,6 +57,23 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Alphas[1]->X, 0.9, 1e-2);
     }
 
+    void TestReliabilityMethods::testFORMProgress()
+    {
+        auto calculator = FORM();
+
+        DefaultProgressIndicator progress;
+
+        auto modelRunner = ProjectBuilder::BuildLinearProjectProgress(2, &progress);
+
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+
+        ASSERT_EQ(progress.invocations, 6);
+        ASSERT_EQ(progress.last_progress, 0.1);
+        EXPECT_NEAR(progress.last_reliability, 2.327, 1e-3);
+        EXPECT_NEAR(progress.last_convergence, 0.009, 1e-3);
+        ASSERT_EQ(progress.last_message, "5/50, Reliability = 2.327, Convergence = 0.009");
+    }
+
     void TestReliabilityMethods::testFORMArray()
     {
         auto calculator = FORM();
@@ -303,6 +320,23 @@ namespace Deltares::Probabilistic::Test
         auto designPoint = calculator.getDesignPoint(modelRunner);
         ASSERT_EQ(designPoint->Alphas.size(), 3);
         EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
+    }
+
+    void TestReliabilityMethods::testCrudeMonteCarloProgress()
+    {
+        DefaultProgressIndicator progress;
+
+        auto calculator = CrudeMonteCarlo();
+        auto modelRunner = ProjectBuilder().BuildProjectWithDeterministAndProgress(0.0, &progress);
+        calculator.Settings->MinimumSamples = 10000;
+        calculator.Settings->MaximumSamples = 100000;
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+
+        ASSERT_EQ(progress.invocations, 10000);
+        ASSERT_EQ(progress.last_progress, 0.1);
+        EXPECT_NEAR(progress.last_reliability, -0.012, 1e-3);
+        EXPECT_NEAR(progress.last_convergence, 0.01, 1e-3);
+        ASSERT_EQ(progress.last_message, "10000/100000, Reliability = -0.012, Convergence = 0.010");
     }
 
     void TestReliabilityMethods::testCrudeMonteCarloZValueProbability()
