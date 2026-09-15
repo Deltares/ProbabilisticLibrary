@@ -22,6 +22,7 @@
 #pragma once
 
 #include <string>
+#include <cmath>
 
 #include "../Deltares.Probabilistic/Model/ProgressIndicator.h"
 
