@@ -153,6 +153,7 @@
     <ClInclude Include="Reliability\Waarts\TestWaartsParallelSystem.h" />
     <ClInclude Include="Reliability\Waarts\TestWaartsResistance25QuadraticTermsSparse.h" />
     <ClInclude Include="Reliability\TestReliabilityMethods.h" />
+    <ClInclude Include="DefaultProgressIndicator.h" />
     <ClInclude Include="Uncertainty\TestUncertainty.h" />
     <ClInclude Include="Sensitivity\TestSensitivity.h" />
     <ClInclude Include="Utils\TestUtils.h" />

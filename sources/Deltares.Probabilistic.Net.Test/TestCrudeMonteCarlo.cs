@@ -173,10 +173,6 @@ namespace Deltares.Probabilistic.Test
             project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
             project.Run();
 
-            DesignPoint designPoint = project.DesignPoint;
-
-            ClassicAssert.AreEqual(2.58, designPoint.Beta, margin);
-
             ClassicAssert.AreEqual(10000, progressHolder.Invocations);
             ClassicAssert.AreEqual(1, progressHolder.Progress, margin);
             ClassicAssert.AreEqual("10000/10000, Reliability = 2.583, Convergence = 0.143", progressHolder.Text);

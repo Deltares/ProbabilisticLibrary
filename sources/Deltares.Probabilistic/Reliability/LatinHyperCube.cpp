@@ -283,6 +283,9 @@ namespace Deltares::Reliability
 
             report->Reliability = StandardNormal::getUFromQ(pf);
             report->Variation = convergence;
+            report->Step = samples;
+            report->MaxSteps = Settings->MinimumSamples;
+            report->ConvBeta = convergence;
 
             modelRunner->reportResult(report);
 

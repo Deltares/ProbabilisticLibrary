@@ -125,7 +125,7 @@ namespace Deltares::Reliability
                     const double beta = -Statistics::StandardNormal::getUFromP(probFailure);
 
                     auto report = std::make_shared<ReliabilityReport>();
-                    report->Step = static_cast<int>(j);
+                    report->Step = static_cast<int>(j) + 1;
                     report->MaxSteps = nSamples;
                     report->Reliability = beta;
 

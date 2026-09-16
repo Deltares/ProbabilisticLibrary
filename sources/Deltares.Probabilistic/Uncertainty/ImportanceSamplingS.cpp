@@ -142,7 +142,10 @@ namespace Deltares::Uncertainty
                 }
             }
 
-            converged = getConverged(sampleIndex, center, nSamples);
+            double convergence = getConvergence(sampleIndex, center, nSamples);
+            converged = isConverged(convergence);
+
+            modelRunner->reportProgress(nSamples, Settings->MaximumSamples, std::nan(""), convergence);
         }
 
         adjustWeights(weights, nSamples - sumWeights);
@@ -209,11 +212,9 @@ namespace Deltares::Uncertainty
         }
     }
 
-    // check if convergence is reached (or stop criterion)
-    bool ImportanceSamplingS::getConverged(int sampleIndex, const Sample& center, int nSamples)
+    // calculate convergence indicator when sample index is above minimum samples
+    double ImportanceSamplingS::getConvergence(int sampleIndex, const Sample& center, int nSamples) const
     {
-        bool converged = false;
-
         if (sampleIndex >= Settings->MinimumSamples)
         {
             const auto designPoint = designPointBuilder.getSample();
@@ -223,9 +224,25 @@ namespace Deltares::Uncertainty
 
             const double convergence = ImportanceSamplingSupport::getConvergence(
                  Settings->normalizedProbabilityForConvergence(), designPointWeight, nSamples);
-            converged = convergence < Settings->VariationCoefficient;
+
+            return convergence;
         }
-        return converged;
+        else
+        {
+            return std::nan("");
+        }
+    }
+
+    bool ImportanceSamplingS::isConverged(double convergence) const
+    {
+        if (std::isnan(convergence))
+        {
+            return false;
+        }
+        else
+        {
+            return convergence < Settings->VariationCoefficient;
+        }
     }
 
     void ImportanceSamplingS::registerWeights(const std::vector<double>& weights) const

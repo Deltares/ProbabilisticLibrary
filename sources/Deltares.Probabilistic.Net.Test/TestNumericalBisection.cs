@@ -19,10 +19,11 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-﻿using NUnit.Framework;
-using NUnit.Framework.Legacy;
+using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Reliability;
+﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Deltares.Probabilistic.Test
 {
@@ -44,5 +45,20 @@ namespace Deltares.Probabilistic.Test
             ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
         }
 
+        [Test]
+        public void TestLinearProgress()
+        {
+            var project = ProjectBuilder.GetLinearProject();
+
+            ProgressHolder progressHolder = new ProgressHolder();
+            project.ProgressIndicator = new ProgressIndicator(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
+
+            project.Settings.ReliabilityMethod = ReliabilityMethod.NumericalBisection;
+            project.Run();
+
+            ClassicAssert.AreEqual(11, progressHolder.Invocations);
+            ClassicAssert.AreEqual(0.22, progressHolder.Progress, margin);
+            ClassicAssert.AreEqual("11/50, Reliability = 2.576, Convergence = 0.005", progressHolder.Text);
+        }
     }
 }

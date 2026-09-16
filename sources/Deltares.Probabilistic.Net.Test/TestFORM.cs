@@ -21,7 +21,6 @@
 //
 
 using Deltares.Probabilistic.Logging;
-using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Statistics;
 using NUnit.Framework;

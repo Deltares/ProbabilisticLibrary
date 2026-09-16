@@ -64,11 +64,6 @@ namespace Deltares::Uncertainty
         std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
 
         /**
-         * \brief Callback for progress during the calculation
-         */
-        std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
-
-        /**
          * \brief Results of the sensitivity calculation
          */
         std::shared_ptr<UncertaintyResult> uncertaintyResult = nullptr;
