@@ -20,6 +20,8 @@
 // All rights reserved.
 //
 #include "CobylaReliability.h"
+
+#include "../Model/SampleStorage.h"
 #include "../Optimization/CobylaOptimization.h"
 
 using namespace Deltares::Optimization;
@@ -37,8 +39,7 @@ namespace Deltares::Reliability
         auto initialSample = sampleProvider.getSample();
         double z0Fac = getZFactor(modelRunner->getZValue(initialSample));
 
-        auto optModel = WrappedOptimizationModel(modelRunner, z0Fac, Settings->MaximumIterations);
-        optModel.uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
+        DesignPointBuilder uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
         auto optimizer = CobylaOptimization();
         optimizer.settings.EpsilonBeta = Settings->EpsilonBeta;
@@ -54,17 +55,54 @@ namespace Deltares::Reliability
             searchArea.Dimensions[i].StartValue = startPoint.Values[i];
         }
 
-        auto result = optimizer.GetCalibrationPoint(searchArea, optModel);
+        ZModel zModel = getZModelForModelRunner(modelRunner.get(), &uMean, Settings->MaximumIterations, z0Fac);
+
+        auto result = optimizer.GetCalibrationPoint(searchArea, zModel);
 
         double beta = z0Fac * result.getLength();
 
-        auto uMin = optModel.uMean.getSample();
+        auto uMin = uMean.getSample();
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
         convergenceReport->IsConverged = result.success;
         std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Cobyla Reliability");
 
         return designPoint;
     };
+
+    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner* modelRunner, DesignPointBuilder* uMean, int maxIterations, double z0Fac) const
+    {
+        const ZLambda zLambda = [](ModelSample& modelSample)
+        {
+            Sample sample = Sample(modelSample.Values);
+            modelSample.Z = sample.getBeta();
+        };
+
+        ZModel model = ZModel(zLambda);
+
+        int counter = 0;
+
+        const ZBetaLambda zConstraint = [modelRunner, uMean, maxIterations, z0Fac, &counter](ModelSample& modelSample)
+        {
+            Sample sample = Sample(modelSample.Values);
+            double z = modelRunner->getZValue(sample);
+
+            modelRunner->reportProgress(++counter, maxIterations, z0Fac * sample.getBeta());
+
+            if (z * z0Fac < 0.0)
+            {
+                uMean->addSample(sample);
+            }
+
+            modelSample.Z = z;
+
+            return z;
+        };
+
+        model.setConstraint(zConstraint);
+
+        return model;
+    }
+
 
     double WrappedOptimizationModel::GetConstraintValue(Sample& sample)
     {

@@ -25,10 +25,10 @@
 
 namespace Deltares::Optimization
 {
-    OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, OptimizationModel& model) const
+    OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, Models::ZModel& model) const
     {
         const unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
-        const unsigned m = model.GetNumberOfConstraints();
+        const unsigned m = 1; // model.GetNumberOfConstraints();
 
         auto x0 = std::vector<double>(n);
         auto lb = std::vector<double>(n);
@@ -45,22 +45,29 @@ namespace Deltares::Optimization
 
         auto myfunc = [&model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
         {
-            auto s = Models::Sample(static_cast<int>(dim_x));
+            auto s = Models::ModelSample(static_cast<int>(dim_x));
             for (unsigned i = 0; i < dim_x; i++)
             {
                 s.Values[i] = x[i];
             }
-            return model.GetZValue(s);
+
+            // get value to minimize
+
+            model.invoke(s);
+
+            return s.Z;
         };
 
         auto myfuncC = [&model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
             {
-                auto s = Models::Sample(static_cast<int>(dim_x));
+                auto s = Models::ModelSample(static_cast<int>(dim_x));
                 for (unsigned i = 0; i < dim_x; i++)
                 {
                     s.Values[i] = x[i];
                 }
-                return model.GetConstraintValue(s);
+
+            // get z value
+                return model.getConstraint(s);
             };
 
         auto fc = std::vector<nlopt_constraint>(m);

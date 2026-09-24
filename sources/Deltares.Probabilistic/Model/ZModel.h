@@ -125,6 +125,11 @@ namespace Deltares::Models
             this->zBetaLambda = zBetaLambda;
         }
 
+        void setConstraint(const ZBetaLambda& zConstraint)
+        {
+            this->zConstraint = zConstraint;
+        }
+
         void releaseCallBacks();
 
         /**
@@ -153,6 +158,8 @@ namespace Deltares::Models
         virtual void invoke(const std::vector<ModelSample*>& samples);
 
         double getBeta(ModelSample& sample) const;
+
+        double getConstraint(ModelSample& sample) const;
 
         bool canCalculateBeta() const
         {
@@ -211,6 +218,7 @@ namespace Deltares::Models
         ZLambda zLambda = nullptr;
         ZMultipleLambda zMultipleLambda = nullptr;
         ZBetaLambda zBetaLambda = nullptr;
+        ZBetaLambda zConstraint = nullptr;
         EmptyCallBack runMethod = nullptr;
         EmptyCallBack nextMethod = nullptr;
         int maxProcesses = 1;

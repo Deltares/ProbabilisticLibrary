@@ -337,6 +337,11 @@ namespace Deltares::Models
         return this->zBetaLambda(sample);
     }
 
+    double ZModel::getConstraint(ModelSample& sample) const
+    {
+        return this->zConstraint(sample);
+    }
+
     void ZModel::handleInvalidSample(ModelSample& sample) const
     {
         if (std::isnan(sample.Z))

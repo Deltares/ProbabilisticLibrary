@@ -24,6 +24,7 @@
 #include "CobylaOptimizationSettings.h"
 #include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
+#include "../Model/ZModel.h"
 
 namespace Deltares::Optimization
 {
@@ -73,7 +74,7 @@ namespace Deltares::Optimization
     {
     public:
         CobylaOptimizationSettings settings;
-        OptimizationSample GetCalibrationPoint(const SearchArea& searchArea, OptimizationModel& model) const;
+        OptimizationSample GetCalibrationPoint(const SearchArea& searchArea, Models::ZModel& model) const;
     };
 }
 

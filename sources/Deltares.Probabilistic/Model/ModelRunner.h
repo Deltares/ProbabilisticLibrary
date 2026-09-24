@@ -113,6 +113,7 @@ namespace Deltares::Models
         bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
         void setAllowRepository(bool proxyModel) const;
         Evaluation getEvaluation(Sample& sample) const;
+
     private:
         std::shared_ptr<ZModel> zModel;
         std::shared_ptr<UConverter> uConverter;
