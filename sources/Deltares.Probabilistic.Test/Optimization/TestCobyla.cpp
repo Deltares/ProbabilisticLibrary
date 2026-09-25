@@ -77,23 +77,6 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(result.success);
     }
 
-    double testModel::GetZValue(Models::Sample& sample) const
-    {
-        return 10.0 * std::pow(sample.Values[0] - offset1, 2) + std::pow(sample.Values[1] - offset2, 2);
-    };
-
-    double testModelWithConstraint::GetZValue(Models::Sample& sample) const
-    {
-        double Z = sample.Values[0] * sample.Values[1];
-        return Z;
-    }
-
-    double testModelWithConstraint::GetConstraintValue(Models::Sample& sample)
-    {   // constraint: point lies on unit sphere
-        double C = 1.0 - hypot(sample.Values[0], sample.Values[1]);
-        return std::abs(C);
-    }
-
     Models::ZModel TestCobyla::getTestModel(double offset1, double offset2)
     {
         Models::ZLambda function = [offset1, offset2](Models::ModelSample& sample)
@@ -105,7 +88,6 @@ namespace Deltares::Probabilistic::Test
 
         return model;
     }
-
 
     Models::ZModel TestCobyla::getTestModelWithConstraint()
     {

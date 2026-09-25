@@ -74,7 +74,6 @@ namespace Deltares::Models
         void initializeForRun();
         void clear();
         void clearLists();
-        void releaseCallBacks() const;
         void useProxy(bool useProxy);
         void updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings);
         void setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider);
@@ -107,11 +106,10 @@ namespace Deltares::Models
         void runDesignPoint(const std::shared_ptr<Reliability::DesignPoint>& designPoint);
         Sample getSampleFromStochastPoint(const std::shared_ptr<Models::StochastPoint>& stochastPoint) const;
         void registerSample(const std::shared_ptr<Uncertainty::CorrelationMatrixBuilder>& correlationMatrixBuilder, Sample& sample) const;
-        void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues) const;
         Evaluation getEvaluationFromType(Statistics::RunValuesType type) const;
 
         bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
-        void setAllowRepository(bool proxyModel) const;
+        void setAllowRepository(bool allowRepository) const;
         Evaluation getEvaluation(Sample& sample) const;
 
     private:

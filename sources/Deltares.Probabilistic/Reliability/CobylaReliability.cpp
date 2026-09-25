@@ -104,24 +104,5 @@ namespace Deltares::Reliability
 
         return model;
     }
-
-
-    double WrappedOptimizationModel::GetConstraintValue(Sample& sample)
-    {
-        auto z = modelRunner->getZValue(sample);
-
-        modelRunner->reportProgress(++counter, maxIterations, z0Fac * sample.getBeta());
-
-        if (z * z0Fac < 0.0)
-        {
-            uMean.addSample(sample);
-        }
-        return std::abs(z);
-    }
-
-    double WrappedOptimizationModel::GetZValue(Sample& sample) const
-    {
-        return sample.getBeta();
-    }
 }
 

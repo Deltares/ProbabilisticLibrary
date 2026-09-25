@@ -42,12 +42,6 @@ namespace Deltares::Models
         }
     }
 
-    void ZModel::releaseCallBacks()
-    {
-        this->zLambda = nullptr;
-        this->zMultipleLambda = nullptr;
-    }
-
     ZLambda ZModel::getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda) const
     {
         ZLambda calcValuesLambda = [zValuesLambda, this](ModelSample& sample)

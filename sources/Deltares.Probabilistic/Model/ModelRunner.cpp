@@ -100,14 +100,6 @@ namespace Deltares::Models
         this->messages.clear();
     }
 
-    void ModelRunner::releaseCallBacks() const
-    {
-        if (this->zModel != nullptr)
-        {
-            zModel->releaseCallBacks();
-        }
-    }
-
     void ModelRunner::useProxy(bool useProxy)
     {
         if (useProxy && !usingProxy)

@@ -23,7 +23,6 @@
 #include <vector>
 #include "CobylaOptimizationSettings.h"
 #include "../Math/NumericSupport.h"
-#include "../Model/Sample.h"
 #include "../Model/ZModel.h"
 
 namespace Deltares::Optimization
@@ -55,15 +54,6 @@ namespace Deltares::Optimization
         {
             return Numeric::NumericSupport::GetLength(Input);
         }
-    };
-
-    class OptimizationModel
-    {
-    public:
-        virtual ~OptimizationModel() = default;
-        virtual double GetZValue(Models::Sample& sample) const { return -1; }
-        virtual double GetConstraintValue(Models::Sample& sample) { return -1; }
-        virtual unsigned GetNumberOfConstraints() const { return 0; }
     };
 
     /**

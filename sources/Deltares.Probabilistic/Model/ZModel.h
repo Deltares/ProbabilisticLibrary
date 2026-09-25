@@ -120,22 +120,32 @@ namespace Deltares::Models
          */
         std::shared_ptr<ZValueConverter> zValueConverter = std::make_shared<ZValueConverter>();
 
+        /**
+         * Sets a method which directly calculates a beta value in a direction, only used by combine functions
+         * \param zBetaLambda method calculating beta
+         */
         void setBetaLambda(const ZBetaLambda& zBetaLambda)
         {
             this->zBetaLambda = zBetaLambda;
         }
 
+        /**
+         * Sets the constraint method for use in optimization routines
+         * \param zConstraint constraint method
+         */
         void setConstraint(const ZBetaLambda& zConstraint)
         {
             this->zConstraint = zConstraint;
         }
 
-        bool hasConstraint()
+        /**
+         * Indicates whether a constraint method has been set
+         * @return Indication
+         */
+        bool hasConstraint() const
         {
             return zConstraint != nullptr;
         }
-
-        void releaseCallBacks();
 
         /**
          * \brief defines the maximum number of parallel processes or threads

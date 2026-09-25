@@ -24,25 +24,6 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class testModel : public Optimization::OptimizationModel
-    {
-    public:
-        testModel() = default;
-        testModel(double offset_1, double offset_2) : offset1(offset_1), offset2(offset_2) {}
-        double GetZValue(Models::Sample& sample) const override;
-    private:
-        const double offset1 = -1.0;
-        const double offset2 = 0.0;
-    };
-
-    class testModelWithConstraint : public Optimization::OptimizationModel
-    {
-    public:
-        double GetZValue(Models::Sample& sample) const override;
-        double GetConstraintValue(Models::Sample& sample) override;
-        unsigned GetNumberOfConstraints() const override { return 1; }
-    };
-
     class TestCobyla
     {
     public:
