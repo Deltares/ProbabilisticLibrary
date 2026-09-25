@@ -4,6 +4,6 @@
         <ApplicationName>Probabilistic Library</ApplicationName>
         <Copyright>Copyright © Deltares $([System.DateTime]::Today.ToString(yyyy))</Copyright>
         <BuildCounter>0</BuildCounter>
-        <Version>2026.2.1</Version>
+        <Version>2026.2.2</Version>
     </PropertyGroup>
 </Project>
