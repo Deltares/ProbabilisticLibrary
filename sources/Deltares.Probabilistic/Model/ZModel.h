@@ -130,6 +130,11 @@ namespace Deltares::Models
             this->zConstraint = zConstraint;
         }
 
+        bool hasConstraint()
+        {
+            return zConstraint != nullptr;
+        }
+
         void releaseCallBacks();
 
         /**

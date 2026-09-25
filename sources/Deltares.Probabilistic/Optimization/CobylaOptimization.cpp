@@ -28,7 +28,7 @@ namespace Deltares::Optimization
     OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, Models::ZModel& model) const
     {
         const unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
-        const unsigned m = 1; // model.GetNumberOfConstraints();
+        const unsigned m = model.hasConstraint() ? 1 : 0; // model.GetNumberOfConstraints();
 
         auto x0 = std::vector<double>(n);
         auto lb = std::vector<double>(n);

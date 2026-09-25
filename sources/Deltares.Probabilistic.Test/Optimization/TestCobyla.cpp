@@ -36,7 +36,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::test_no_constraints1()
     {
         auto cb = CobylaOptimization();
-        auto model = testModel();
+        auto model = getTestModel();
         auto searchArea = SearchArea();
         searchArea.Dimensions = std::vector<SearchDimension>(2);
         auto result = cb.GetCalibrationPoint(searchArea, model);
@@ -50,7 +50,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::test_no_constraints2()
     {
         auto cb = CobylaOptimization();
-        auto model = testModel(2, 3);
+        auto model = getTestModel(2, 3);
         auto searchArea = SearchArea();
         searchArea.Dimensions = std::vector<SearchDimension>(2);
         auto result = cb.GetCalibrationPoint(searchArea, model);
@@ -64,7 +64,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::test_with_constraint1()
     {
         auto cb = CobylaOptimization();
-        auto model = testModelWithConstraint();
+        auto model = getTestModelWithConstraint();
         auto searchArea = SearchArea();
         searchArea.Dimensions = std::vector<SearchDimension>(2);
         searchArea.Dimensions[0].StartValue = 1.0;
@@ -92,6 +92,39 @@ namespace Deltares::Probabilistic::Test
     {   // constraint: point lies on unit sphere
         double C = 1.0 - hypot(sample.Values[0], sample.Values[1]);
         return std::abs(C);
+    }
+
+    Models::ZModel TestCobyla::getTestModel(double offset1, double offset2)
+    {
+        Models::ZLambda function = [offset1, offset2](Models::ModelSample& sample)
+        {
+            sample.Z = 10.0 * std::pow(sample.Values[0] - offset1, 2) + std::pow(sample.Values[1] - offset2, 2);
+        };
+
+        Models::ZModel model = Models::ZModel(function);
+
+        return model;
+    }
+
+
+    Models::ZModel TestCobyla::getTestModelWithConstraint()
+    {
+        Models::ZLambda function = [](Models::ModelSample& sample)
+        {
+            sample.Z = sample.Values[0] * sample.Values[1];;
+        };
+
+        Models::ZModel model = Models::ZModel(function);
+
+        Models::ZBetaLambda constraint = [](Models::ModelSample& sample)
+        {
+            double C = 1.0 - hypot(sample.Values[0], sample.Values[1]);
+            return std::abs(C);
+        };
+
+        model.setConstraint(constraint);
+
+        return model;
     }
 
 }

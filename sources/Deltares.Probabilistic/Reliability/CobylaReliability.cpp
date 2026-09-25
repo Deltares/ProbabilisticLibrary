@@ -55,7 +55,10 @@ namespace Deltares::Reliability
             searchArea.Dimensions[i].StartValue = startPoint.Values[i];
         }
 
-        ZModel zModel = getZModelForModelRunner(modelRunner.get(), &uMean, Settings->MaximumIterations, z0Fac);
+        int counter = 0;
+        int* pCounter = &counter;
+
+        ZModel zModel = getZModelForModelRunner(modelRunner.get(), &uMean, Settings->MaximumIterations, z0Fac, pCounter);
 
         auto result = optimizer.GetCalibrationPoint(searchArea, zModel);
 
@@ -69,7 +72,7 @@ namespace Deltares::Reliability
         return designPoint;
     };
 
-    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner* modelRunner, DesignPointBuilder* uMean, int maxIterations, double z0Fac) const
+    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner* modelRunner, DesignPointBuilder* uMean, int maxIterations, double z0Fac, int* counter) const
     {
         const ZLambda zLambda = [](ModelSample& modelSample)
         {
@@ -79,14 +82,12 @@ namespace Deltares::Reliability
 
         ZModel model = ZModel(zLambda);
 
-        int counter = 0;
-
         const ZBetaLambda zConstraint = [modelRunner, uMean, maxIterations, z0Fac, &counter](ModelSample& modelSample)
         {
             Sample sample = Sample(modelSample.Values);
             double z = modelRunner->getZValue(sample);
 
-            modelRunner->reportProgress(++counter, maxIterations, z0Fac * sample.getBeta());
+            modelRunner->reportProgress(++(*counter), maxIterations, z0Fac * sample.getBeta());
 
             if (z * z0Fac < 0.0)
             {
@@ -95,7 +96,8 @@ namespace Deltares::Reliability
 
             modelSample.Z = z;
 
-            return z;
+            // should be z instead of std::abs(z) for better results
+            return std::abs(z);
         };
 
         model.setConstraint(zConstraint);

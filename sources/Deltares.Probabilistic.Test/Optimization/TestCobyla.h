@@ -51,6 +51,10 @@ namespace Deltares::Probabilistic::Test
         static void test_no_constraints1();
         static void test_no_constraints2();
         static void test_with_constraint1();
+
+        static Models::ZModel getTestModel(double offset1 = -1.0, double offset2 = 0.0);
+        static Models::ZModel getTestModelWithConstraint();
+
         const double margin = 1e-2;
     };
 }
