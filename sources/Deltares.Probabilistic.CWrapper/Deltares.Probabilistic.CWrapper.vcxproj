@@ -137,7 +137,8 @@
       </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin\$(TargetName).dll"</Command>
+      <Command>if not exist "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin" mkdir "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin"
+copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin\$(TargetName).dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,7 +161,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir -p "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin"
+      <Command>if not exist "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin" mkdir "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin"
 copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.Python\probabilistic_library\bin\$(TargetName).dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

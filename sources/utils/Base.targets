@@ -1,13 +1,11 @@
 <Project>
   <Import Project="Product.targets"/>
-
   <PropertyGroup>
-      <TargetFramework>net8.0-windows</TargetFramework>
+      <TargetFramework>net8.0</TargetFramework>
       <PlatformTarget>x64</PlatformTarget>
       <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
       <Platforms>x64</Platforms>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugType>None</DebugType>
   </PropertyGroup>
