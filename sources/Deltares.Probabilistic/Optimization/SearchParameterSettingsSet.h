@@ -31,6 +31,14 @@ namespace Deltares::Optimization
     {
     public:
         std::vector<std::shared_ptr<SearchParameterSettings>> Dimensions;
+
+        void setDimensions(size_t nDimensions)
+        {
+            for (size_t i = Dimensions.size(); i < nDimensions; i++)
+            {
+                Dimensions.push_back(std::make_shared<SearchParameterSettings>());
+            }
+        }
     };
 }
 

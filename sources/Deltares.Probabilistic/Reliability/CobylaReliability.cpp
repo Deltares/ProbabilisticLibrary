@@ -46,10 +46,11 @@ namespace Deltares::Reliability
         optimizer.Settings->MaxIterations = Settings->MaximumIterations;
 
         auto searchArea = optimizer.Settings->SearchArea;
-        searchArea->Dimensions = std::vector<std::shared_ptr<SearchParameterSettings>>(nStochasts);
+        searchArea->setDimensions(nStochasts);
         Sample startPoint = Settings->StochastSet->getStartPoint();
         for( int i = 0; i < nStochasts; i++)
         {
+            searchArea->Dimensions[i] = std::make_shared<SearchParameterSettings>();
             searchArea->Dimensions[i]->MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
             searchArea->Dimensions[i]->MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
             searchArea->Dimensions[i]->StartValue = startPoint.Values[i];

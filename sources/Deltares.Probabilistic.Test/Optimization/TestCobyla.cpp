@@ -38,7 +38,7 @@ namespace Deltares::Probabilistic::Test
         auto cb = CobylaOptimization();
         auto model = getTestModel();
         auto searchArea = cb.Settings->SearchArea;
-        searchArea->Dimensions = std::vector<std::shared_ptr<SearchParameterSettings>>(2);
+        searchArea->setDimensions(2);
         auto result = cb.getOptimizedSample(model);
         EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
         EXPECT_NEAR(result->optimizedSample->Values[1], 0.0, 1e-3);
@@ -52,7 +52,7 @@ namespace Deltares::Probabilistic::Test
         auto cb = CobylaOptimization();
         auto model = getTestModel(2, 3);
         auto searchArea = cb.Settings->SearchArea;
-        searchArea->Dimensions = std::vector<std::shared_ptr<SearchParameterSettings>>(2);
+        searchArea->setDimensions(2);
         auto result = cb.getOptimizedSample(model);
         EXPECT_NEAR(result->optimizedSample->Values[0], 2.0, 1e-3);
         EXPECT_NEAR(result->optimizedSample->Values[1], 3.0, 1e-3);
@@ -66,7 +66,7 @@ namespace Deltares::Probabilistic::Test
         auto cb = CobylaOptimization();
         auto model = getTestModelWithConstraint();
         auto searchArea = cb.Settings->SearchArea;
-        searchArea->Dimensions = std::vector<std::shared_ptr<SearchParameterSettings>>(2);
+        searchArea->setDimensions(2);
         searchArea->Dimensions[0]->StartValue = 1.0;
         searchArea->Dimensions[1]->StartValue = 1.0;
         auto result = cb.getOptimizedSample(model);
