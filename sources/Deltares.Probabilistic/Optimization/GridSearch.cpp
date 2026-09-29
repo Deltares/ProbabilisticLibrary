@@ -20,12 +20,16 @@
 // All rights reserved.
 //
 #include "GridSearch.h"
+
+#include "OptimizationResult.h"
 #include "../Math/NumericSupport.h"
 
 namespace Deltares::Optimization
 {
-    Models::ModelSample GridSearch::getOptimizedSample(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model)
+    std::shared_ptr<OptimizationResult> GridSearch::getOptimizedSample(Models::ZModel& model)
     {
+        std::shared_ptr<SearchParameterSettingsSet> searchArea = Settings->SearchArea;
+
         std::vector<double> defaultValues;
         for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
         {
@@ -40,7 +44,7 @@ namespace Deltares::Optimization
         reusedCounter = 0;
 
         int gridMoves = 0;
-        while (gridMoves < MaxGridMoves && isSampleOnEdge(searchArea, sample))
+        while (gridMoves < Settings->MaxGridMoves && isSampleOnEdge(searchArea, sample))
         {
             moveSampleToCenter(searchArea, sample);
             sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves);
@@ -61,10 +65,13 @@ namespace Deltares::Optimization
             reusedCounter = 0;
         }
 
-        return sample;
+        auto result = std::make_shared<OptimizationResult>();
+        result->optimizedSample = std::make_shared<Models::ModelSample>(sample);
+
+        return result;
     }
 
-    Models::ModelSample GridSearch::findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model, Models::ModelSample& minSample, int iteration)
+    Models::ModelSample GridSearch::findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ZModel& model, Models::ModelSample& minSample, int iteration)
     {
         std::vector<std::vector<double>> inputValues;
         for (std::shared_ptr<SearchParameterSettings> dimension : searchArea->Dimensions)
@@ -89,7 +96,7 @@ namespace Deltares::Optimization
 
             Models::ModelSample sample = Models::ModelSample(combination);
 
-            model->invoke(sample);
+            model.invoke(sample);
 
             counter++;
 

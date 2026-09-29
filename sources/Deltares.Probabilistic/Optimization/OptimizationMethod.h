@@ -20,21 +20,28 @@
 // All rights reserved.
 //
 #pragma once
-#include "CobylaOptimizationSettings.h"
-#include "OptimizationMethod.h"
+#include "OptimizationResult.h"
 #include "../Model/ZModel.h"
+#include "../Model/ModelSample.h"
 
 namespace Deltares::Optimization
 {
-    /**
-     * \brief Wrapper for Cobyla optimization algorithm
-     * \note At this moment: this wrapper handles only zero or one constraints
-     */
-    class CobylaOptimization : public OptimizationMethod
+    class OptimizationMethod
     {
+    private:
+        bool stopped = false;
+
+    protected:
+
+        virtual void setStopped();
+
     public:
-        std::shared_ptr<CobylaOptimizationSettings> Settings = std::make_shared<CobylaOptimizationSettings>();
-        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
+        virtual std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) = 0;
+        virtual ~OptimizationMethod() = default;
+
+        virtual bool isValid() { return false; }
+        bool isStopped();
+        void Stop();
     };
 }
 

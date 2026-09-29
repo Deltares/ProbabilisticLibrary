@@ -1,4 +1,4 @@
-/* cobyla : contrained optimization by linear approximation */
+/* cobyla : constrained optimization by linear approximation */
 
 /*
  * Copyright (c) 1992, Michael J. D. Powell (M.J.D.Powell@damtp.cam.ac.uk)
@@ -25,7 +25,7 @@
  */
 
 /*
- * This software is a C version of COBYLA2, a contrained optimization by linear
+ * This software is a C version of COBYLA2, a constrained optimization by linear
  * approximation package developed by Michael J. D. Powell in Fortran.
  *
  * The original source code can be found at :
@@ -90,7 +90,7 @@ static int func_wrap(int ni, int mi, double *x, double *f, double *con, func_wra
 
      (void) mi; /* unused */
 
-     /* in nlopt, we guarante that the function is never evaluated outside
+     /* in nlopt, we guarantee that the function is never evaluated outside
         the lb and ub bounds, so we need force this with xtmp ... note
         that this leads to discontinuity in the first derivative, which
         slows convergence if we don't enable the ENFORCE_BOUNDS feature

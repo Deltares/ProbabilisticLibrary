@@ -279,6 +279,9 @@
     <ClCompile Include="Server\Handlers\StatisticsHandlers.cpp" />
     <ClCompile Include="Server\Handlers\ModelHandlers.cpp" />
     <ClCompile Include="Server\Handlers\ReliabilityHandlers.cpp" />
+    <ClCompile Include="Optimization\OptimizationMethod.cpp" />
+    <ClCompile Include="Optimization\OptimizationProject.cpp" />
+    <ClCompile Include="Optimization\OptimizationSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -640,6 +643,11 @@
     <ClInclude Include="Server\Handlers\ReliabilityHandlers.h" />
     <ClInclude Include="Server\Handlers\DerivedObjectHandler.h" />
     <ClInclude Include="Server\Handlers\BaseCorrelationMatrixHandler.h" />
+    <ClInclude Include="Optimization\OptimizationMethod.h" />
+    <ClInclude Include="Optimization\OptimizationProject.h" />
+    <ClInclude Include="Optimization\OptimizationSettings.h" />
+    <ClInclude Include="Optimization\GridSearchSettings.h" />
+    <ClInclude Include="Optimization\OptimizationResult.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

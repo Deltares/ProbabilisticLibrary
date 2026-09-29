@@ -44,7 +44,7 @@ namespace Deltares::Statistics
 
         auto gridSearch = Optimization::GridSearch();
 
-        auto searchArea = std::make_shared<Optimization::SearchParameterSettingsSet>();
+        auto searchArea = gridSearch.Settings->SearchArea;
         for (size_t i = 0; i < properties.size(); i++)
         {
             auto settings = std::make_shared<Optimization::SearchParameterSettings>();
@@ -56,13 +56,13 @@ namespace Deltares::Statistics
             searchArea->Dimensions.push_back(settings);
         }
 
-        const auto model = std::make_shared<Models::ZModel>([this, values, &stochast, properties]
+        Models::ZModel model = Models::ZModel([this, values, &stochast, properties]
         (Models::ModelSample& sample)
         { return getLogLikelihood(sample, values, stochast, properties); });
 
-        Models::ModelSample sample = gridSearch.getOptimizedSample(searchArea, model);
+        std::shared_ptr<Optimization::OptimizationResult> result = gridSearch.getOptimizedSample(model);
 
-        return sample.Values;
+        return result->optimizedSample->Values;
     }
 
     void DistributionFitter::getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,

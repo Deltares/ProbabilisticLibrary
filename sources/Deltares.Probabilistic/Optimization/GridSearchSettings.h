@@ -20,22 +20,24 @@
 // All rights reserved.
 //
 #pragma once
+
+#include "GridSearch.h"
 #include "SearchParameterSettingsSet.h"
 #include "../Model/Validatable.h"
 
+
 namespace Deltares::Optimization
 {
-    class CobylaOptimizationSettings : public Models::Validatable
+    /**
+     * \brief General settings applicable to all mechanisms
+     */
+    class GridSearchSettings : public Models::Validatable
     {
     public:
-        int MaxIterations = 10000;
-
-        double EpsilonBeta = 0.001;
-
         /**
-         * \brief Settings for individual parameters, such as the start value
+         * \brief Maximum number of grid moves to be performed
          */
-        std::shared_ptr<SearchParameterSettingsSet> SearchArea = std::make_shared<SearchParameterSettingsSet>();
+        int MaxGridMoves = 50;
 
         /**
          * \brief Settings for performing model runs
@@ -43,13 +45,17 @@ namespace Deltares::Optimization
         std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
         /**
+         * \brief Settings for individual parameters, such as the start value
+         */
+        std::shared_ptr<SearchParameterSettingsSet> SearchArea = std::make_shared<SearchParameterSettingsSet>();
+
+        /**
          * \brief Reports whether the settings have valid values
          * \param report Report in which the validity is reported
          */
         void validate(Logging::ValidationReport& report) const override
         {
-            Logging::ValidationSupport::checkMinimum(report, 0, EpsilonBeta, "epsilon beta");
-            Logging::ValidationSupport::checkMinimumInt(report, 1, MaxIterations, "maximum iterations");
+            Logging::ValidationSupport::checkMinimumInt(report, 0, MaxGridMoves, "maximum grid moves");
             RunSettings->validate(report);
         }
     };

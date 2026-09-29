@@ -19,39 +19,50 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
-#include "SearchParameterSettingsSet.h"
-#include "../Model/Validatable.h"
+
+#include "../Model/ModelSample.h"
+#include "../Model/Evaluation.h"
+#include "../Logging/Message.h"
+#include <cmath>
 
 namespace Deltares::Optimization
 {
-    class CobylaOptimizationSettings : public Models::Validatable
+    /**
+     * \brief Contains the results of an optimization calculation
+     */
+    class OptimizationResult
     {
     public:
-        int MaxIterations = 10000;
-
-        double EpsilonBeta = 0.001;
+        /**
+         * \brief List of result values per input variable
+         */
+        bool succeeded = false;
 
         /**
-         * \brief Settings for individual parameters, such as the start value
+         * \brief Minimum value
          */
-        std::shared_ptr<SearchParameterSettingsSet> SearchArea = std::make_shared<SearchParameterSettingsSet>();
+        double minimumValue = std::nan("");
+
+        int totalModelRuns = 0;
+
+        int getTotalModelRuns() { return 0; }
 
         /**
-         * \brief Settings for performing model runs
+         * \brief List of result values per input variable
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        std::shared_ptr<Models::ModelSample> optimizedSample;
 
         /**
-         * \brief Reports whether the settings have valid values
-         * \param report Report in which the validity is reported
+         * \brief List of evaluations calculated during optimization analysis
          */
-        void validate(Logging::ValidationReport& report) const override
-        {
-            Logging::ValidationSupport::checkMinimum(report, 0, EpsilonBeta, "epsilon beta");
-            Logging::ValidationSupport::checkMinimumInt(report, 1, MaxIterations, "maximum iterations");
-            RunSettings->validate(report);
-        }
+        std::vector<std::shared_ptr<Models::Evaluation>> evaluations;
+
+        /**
+         * \brief List of messages raised during optimization analysis
+         */
+        std::vector<std::shared_ptr<Logging::Message>> messages;
     };
 }
 

@@ -41,18 +41,18 @@ namespace Deltares::Reliability
 
         DesignPointBuilder uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
-        auto optimizer = CobylaOptimization();
-        optimizer.settings.EpsilonBeta = Settings->EpsilonBeta;
-        optimizer.settings.MaxIterations = Settings->MaximumIterations;
+        CobylaOptimization optimizer;
+        optimizer.Settings->EpsilonBeta = Settings->EpsilonBeta;
+        optimizer.Settings->MaxIterations = Settings->MaximumIterations;
 
-        auto searchArea = SearchArea();
-        searchArea.Dimensions = std::vector<SearchDimension>(nStochasts);
+        auto searchArea = optimizer.Settings->SearchArea;
+        searchArea->Dimensions = std::vector<std::shared_ptr<SearchParameterSettings>>(nStochasts);
         Sample startPoint = Settings->StochastSet->getStartPoint();
         for( int i = 0; i < nStochasts; i++)
         {
-            searchArea.Dimensions[i].LowerBound = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
-            searchArea.Dimensions[i].UpperBound = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
-            searchArea.Dimensions[i].StartValue = startPoint.Values[i];
+            searchArea->Dimensions[i]->MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
+            searchArea->Dimensions[i]->MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
+            searchArea->Dimensions[i]->StartValue = startPoint.Values[i];
         }
 
         int counter = 0;
@@ -60,13 +60,13 @@ namespace Deltares::Reliability
 
         ZModel zModel = getZModelForModelRunner(modelRunner.get(), &uMean, Settings->MaximumIterations, z0Fac, pCounter);
 
-        auto result = optimizer.GetCalibrationPoint(searchArea, zModel);
+        auto result = optimizer.getOptimizedSample(zModel);
 
-        double beta = z0Fac * result.getLength();
+        double beta = z0Fac * result->minimumValue;
 
         auto uMin = uMean.getSample();
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-        convergenceReport->IsConverged = result.success;
+        convergenceReport->IsConverged = result->succeeded;
         std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Cobyla Reliability");
 
         return designPoint;

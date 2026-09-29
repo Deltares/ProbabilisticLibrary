@@ -37,44 +37,44 @@ namespace Deltares::Probabilistic::Test
     {
         auto cb = CobylaOptimization();
         auto model = getTestModel();
-        auto searchArea = SearchArea();
-        searchArea.Dimensions = std::vector<SearchDimension>(2);
-        auto result = cb.GetCalibrationPoint(searchArea, model);
-        EXPECT_NEAR(result.Input[0], -1.0, 1e-3);
-        EXPECT_NEAR(result.Input[1], 0.0, 1e-3);
-        EXPECT_NEAR(result.minimumValue, 0.0, 1e-3);
-        EXPECT_EQ(result.numberOfSamples, 69);
-        EXPECT_TRUE(result.success);
+        auto searchArea = cb.Settings->SearchArea;
+        searchArea->Dimensions = std::vector<std::shared_ptr<SearchParameterSettings>>(2);
+        auto result = cb.getOptimizedSample(model);
+        EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
+        EXPECT_NEAR(result->optimizedSample->Values[1], 0.0, 1e-3);
+        EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
+        EXPECT_EQ(result->totalModelRuns, 69);
+        EXPECT_TRUE(result->succeeded);
     }
 
     void TestCobyla::test_no_constraints2()
     {
         auto cb = CobylaOptimization();
         auto model = getTestModel(2, 3);
-        auto searchArea = SearchArea();
-        searchArea.Dimensions = std::vector<SearchDimension>(2);
-        auto result = cb.GetCalibrationPoint(searchArea, model);
-        EXPECT_NEAR(result.Input[0], 2.0, 1e-3);
-        EXPECT_NEAR(result.Input[1], 3.0, 1e-3);
-        EXPECT_NEAR(result.minimumValue, 0.0, 1e-3);
-        EXPECT_EQ(result.numberOfSamples, 83);
-        EXPECT_TRUE(result.success);
+        auto searchArea = cb.Settings->SearchArea;
+        searchArea->Dimensions = std::vector<std::shared_ptr<SearchParameterSettings>>(2);
+        auto result = cb.getOptimizedSample(model);
+        EXPECT_NEAR(result->optimizedSample->Values[0], 2.0, 1e-3);
+        EXPECT_NEAR(result->optimizedSample->Values[1], 3.0, 1e-3);
+        EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
+        EXPECT_EQ(result->totalModelRuns, 83);
+        EXPECT_TRUE(result->succeeded);
     }
 
     void TestCobyla::test_with_constraint1()
     {
         auto cb = CobylaOptimization();
         auto model = getTestModelWithConstraint();
-        auto searchArea = SearchArea();
-        searchArea.Dimensions = std::vector<SearchDimension>(2);
-        searchArea.Dimensions[0].StartValue = 1.0;
-        searchArea.Dimensions[1].StartValue = 1.0;
-        auto result = cb.GetCalibrationPoint(searchArea, model);
-        EXPECT_NEAR(result.Input[0], 0.707, 1e-2);
-        EXPECT_NEAR(result.Input[1], -0.707, 1e-2);
-        EXPECT_NEAR(result.minimumValue, -0.5, 1e-3);
-        EXPECT_EQ(result.numberOfSamples, 49);
-        EXPECT_TRUE(result.success);
+        auto searchArea = cb.Settings->SearchArea;
+        searchArea->Dimensions = std::vector<std::shared_ptr<SearchParameterSettings>>(2);
+        searchArea->Dimensions[0]->StartValue = 1.0;
+        searchArea->Dimensions[1]->StartValue = 1.0;
+        auto result = cb.getOptimizedSample(model);
+        EXPECT_NEAR(result->optimizedSample->Values[0], 0.707, 1e-2);
+        EXPECT_NEAR(result->optimizedSample->Values[1], -0.707, 1e-2);
+        EXPECT_NEAR(result->minimumValue, -0.5, 1e-3);
+        EXPECT_EQ(result->totalModelRuns, 49);
+        EXPECT_TRUE(result->succeeded);
     }
 
     Models::ZModel TestCobyla::getTestModel(double offset1, double offset2)

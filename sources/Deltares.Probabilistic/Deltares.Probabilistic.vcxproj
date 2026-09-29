@@ -159,6 +159,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Optimization\GridSearchSettings.h" />
+    <ClInclude Include="Optimization\OptimizationMethod.h" />
+    <ClInclude Include="Optimization\OptimizationProject.h" />
+    <ClInclude Include="Optimization\OptimizationSettings.h" />
+    <ClInclude Include="Optimization\OptimizationResult.h" />
     <ClInclude Include="Server\Handlers\BaseCorrelationMatrixHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilityHandlers.h" />
     <ClInclude Include="Server\Handlers\StatisticsHandlers.h" />
@@ -475,6 +480,9 @@
     <ClInclude Include="Server\Handlers\ConvergenceReportHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Optimization\OptimizationMethod.cpp" />
+    <ClCompile Include="Optimization\OptimizationProject.cpp" />
+    <ClCompile Include="Optimization\OptimizationSettings.cpp" />
     <ClCompile Include="Server\Handlers\ReliabilityHandlers.cpp" />
     <ClCompile Include="Server\Handlers\StatisticsHandlers.cpp" />
     <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />

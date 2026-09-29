@@ -25,9 +25,11 @@
 
 namespace Deltares::Optimization
 {
-    OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, Models::ZModel& model) const
+    std::shared_ptr<OptimizationResult> CobylaOptimization::getOptimizedSample(Models::ZModel& model)
     {
-        const unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
+        auto searchArea = Settings->SearchArea;
+
+        const unsigned n = static_cast<unsigned>(searchArea->Dimensions.size());
         const unsigned m = model.hasConstraint() ? 1 : 0; // model.GetNumberOfConstraints();
 
         auto x0 = std::vector<double>(n);
@@ -36,9 +38,9 @@ namespace Deltares::Optimization
         auto dx = std::vector<double>(n);
         for (unsigned i = 0 ; i < n; i++)
         {
-            x0[i] = searchArea.Dimensions[i].StartValue;
-            lb[i] = searchArea.Dimensions[i].LowerBound;
-            ub[i] = searchArea.Dimensions[i].UpperBound;
+            x0[i] = searchArea->Dimensions[i]->StartValue;
+            lb[i] = searchArea->Dimensions[i]->MinValue;
+            ub[i] = searchArea->Dimensions[i]->MaxValue;
             dx[i] = 0.1;
         }
         long long fData = 0;
@@ -76,41 +78,39 @@ namespace Deltares::Optimization
             fc[0].f = myfuncC;
             fc[0].m = 1;
             fc[0].tol = std::vector<double>(1);
-            fc[0].tol[0] = settings.EpsilonBeta;
+            fc[0].tol[0] = Settings->EpsilonBeta;
         }
         auto h = std::vector<nlopt_constraint>(0);
         double minimum_f_value = 0.0;
         auto stop = nlopt_stopping();
         int number_of_evaluations = 0;
         stop.nevals_p = &number_of_evaluations;
-        stop.xtol_rel = settings.EpsilonBeta;
-        stop.maxeval = settings.MaxIterations;
+        stop.xtol_rel = Settings->EpsilonBeta;
+        stop.maxeval = Settings->MaxIterations;
         unsigned p = 0;
 
         auto status = cobyla_minimize(n, myfunc, &fData, m, fc.data(), p, h.data(),
             lb.data(), ub.data(), x0.data(), &minimum_f_value, &stop, dx.data());
 
-        OptimizationSample s;
-        s.numberOfSamples = *stop.nevals_p;
-        s.minimumValue = minimum_f_value;
+        auto result = std::make_shared<OptimizationResult>();
+        result->totalModelRuns = *stop.nevals_p;
+        result->minimumValue = minimum_f_value;
         switch (status)
         {
         case NLOPT_SUCCESS:
         case NLOPT_STOPVAL_REACHED:
         case NLOPT_FTOL_REACHED:
         case NLOPT_XTOL_REACHED:
-            s.success = true;
+            result->succeeded = true;
             break;
         default:
-            s.success = false;
+            result->succeeded = false;
             break;
         }
 
-        for (unsigned i = 0; i < n; i++)
-        {
-            s.Input.push_back(x0[i]);
-        }
-        return s;
+        result->optimizedSample = std::make_shared<Models::ModelSample>(x0);
+
+        return result;
     };
 }
 
