@@ -93,7 +93,7 @@ namespace Deltares::Optimization
             lb.data(), ub.data(), x0.data(), &minimum_f_value, &stop, dx.data());
 
         auto result = std::make_shared<OptimizationResult>();
-        result->totalModelRuns = *stop.nevals_p;
+        result->modelRuns = *stop.nevals_p;
         result->minimumValue = minimum_f_value;
         switch (status)
         {

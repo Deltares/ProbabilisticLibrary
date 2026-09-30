@@ -43,7 +43,7 @@ namespace Deltares::Optimization
 
         if (this->result != nullptr)
         {
-            this->modelRuns += this->result->getTotalModelRuns();
+            this->modelRuns += this->result->modelRuns;
         }
 
         return this->result;

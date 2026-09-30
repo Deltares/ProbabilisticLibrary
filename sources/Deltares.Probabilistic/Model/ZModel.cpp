@@ -235,7 +235,10 @@ namespace Deltares::Models
         }
         this->handleInvalidSample(sample);
 
-        this->modelRuns++;
+        if (!alreadyExecuted)
+        {
+            this->modelRuns++;
+        }
     }
 
     void ZModel::invokeLambda(ModelSample& sample) const

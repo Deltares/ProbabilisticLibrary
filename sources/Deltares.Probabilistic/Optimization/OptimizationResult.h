@@ -36,21 +36,22 @@ namespace Deltares::Optimization
     {
     public:
         /**
-         * \brief List of result values per input variable
+         * \brief Indicates whether the optimization has succeeded
          */
         bool succeeded = false;
 
         /**
-         * \brief Minimum value
+         * \brief Minimum found model value
          */
         double minimumValue = std::nan("");
 
-        int totalModelRuns = 0;
-
-        int getTotalModelRuns() { return 0; }
+        /**
+         * \brief Number of model runs made to achieve the result
+         */
+        int modelRuns = 0;
 
         /**
-         * \brief List of result values per input variable
+         * \brief Sample corresponding with the minimum result
          */
         std::shared_ptr<Models::ModelSample> optimizedSample;
 

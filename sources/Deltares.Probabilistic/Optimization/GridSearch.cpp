@@ -28,6 +28,8 @@ namespace Deltares::Optimization
 {
     std::shared_ptr<OptimizationResult> GridSearch::getOptimizedSample(Models::ZModel& model)
     {
+        model.resetModelRuns();
+
         std::shared_ptr<SearchParameterSettingsSet> searchArea = Settings->SearchArea;
 
         std::vector<double> defaultValues;
@@ -66,6 +68,9 @@ namespace Deltares::Optimization
         }
 
         auto result = std::make_shared<OptimizationResult>();
+
+        result->succeeded = true; // always succeeds
+        result->modelRuns = model.getModelRuns();
         result->optimizedSample = std::make_shared<Models::ModelSample>(sample);
 
         return result;
@@ -89,7 +94,7 @@ namespace Deltares::Optimization
         int gridCounter = 0;
         int gridIntervalCounter = 0;
 
-        for (auto combination : combinations)
+        for (auto& combination : combinations)
         {
             gridCounter++;
             gridIntervalCounter++;
@@ -111,7 +116,7 @@ namespace Deltares::Optimization
 
     bool GridSearch::isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ModelSample& sample)
     {
-        for (int i = 0; i < searchArea->Dimensions.size(); i++)
+        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
         {
             if (searchArea->Dimensions[i]->Move && searchArea->Dimensions[i]->NumberOfValues > 2)
             {
@@ -132,7 +137,7 @@ namespace Deltares::Optimization
     {
         bool moved = false;
 
-        for (int i = 0; i < searchArea->Dimensions.size(); i++)
+        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
         {
             std::shared_ptr<SearchParameterSettings> dimension = searchArea->Dimensions[i];
 

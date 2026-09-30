@@ -43,7 +43,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
         EXPECT_NEAR(result->optimizedSample->Values[1], 0.0, 1e-3);
         EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
-        EXPECT_EQ(result->totalModelRuns, 69);
+        EXPECT_EQ(result->modelRuns, 69);
         EXPECT_TRUE(result->succeeded);
     }
 
@@ -57,7 +57,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result->optimizedSample->Values[0], 2.0, 1e-3);
         EXPECT_NEAR(result->optimizedSample->Values[1], 3.0, 1e-3);
         EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
-        EXPECT_EQ(result->totalModelRuns, 83);
+        EXPECT_EQ(result->modelRuns, 83);
         EXPECT_TRUE(result->succeeded);
     }
 
@@ -73,7 +73,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result->optimizedSample->Values[0], 0.707, 1e-2);
         EXPECT_NEAR(result->optimizedSample->Values[1], -0.707, 1e-2);
         EXPECT_NEAR(result->minimumValue, -0.5, 1e-3);
-        EXPECT_EQ(result->totalModelRuns, 49);
+        EXPECT_EQ(result->modelRuns, 49);
         EXPECT_TRUE(result->succeeded);
     }
 
