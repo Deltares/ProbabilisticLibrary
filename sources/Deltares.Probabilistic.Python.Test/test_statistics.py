@@ -618,6 +618,11 @@ class Test_statistics(unittest.TestCase):
         stochast.contributing_stochasts.append(ContributingStochast.create(0.4, stochast1))
         stochast.contributing_stochasts.append(ContributingStochast.create(0.6, stochast2))
 
+        self.assertAlmostEqual(0.4, stochast.contributing_stochasts[0].probability, delta=margin)
+        self.assertAlmostEqual(0.6, stochast.contributing_stochasts[1].probability, delta=margin)
+        self.assertEqual(stochast.contributing_stochasts[0].variable, stochast1)
+        self.assertEqual(stochast.contributing_stochasts[1].variable, stochast2)
+
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.125 + 0.6 * 0), stochast.get_u_from_x(1.0), delta=margin)
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.875 + 0.6 * 0.25), stochast.get_u_from_x(7.0), delta=margin)
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 1 + 0.6 * 0.75), stochast.get_u_from_x(9.0), delta=margin)
