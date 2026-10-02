@@ -20,21 +20,19 @@
 // All rights reserved.
 //
 #pragma once
-#include "CobylaOptimizationSettings.h"
-#include "OptimizationMethod.h"
-#include "../Model/ZModel.h"
 
-namespace Deltares::Optimization
+namespace Deltares::Probabilistic::Test
 {
-    /**
-     * \brief Wrapper for Cobyla optimization algorithm
-     * \note At this moment: this wrapper handles only zero or one constraints
-     */
-    class CobylaOptimization : public OptimizationMethod
+    class TestGridSearch
     {
     public:
-        CobylaOptimizationSettings Settings;
-        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
+        void allGridSearchTests();
+    private:
+        static void test_polynome();
+        static void test_polynome_move_grid();
+        static void test_project_polynome_move_grid();
+
+        const double margin = 1e-2;
     };
 }
 

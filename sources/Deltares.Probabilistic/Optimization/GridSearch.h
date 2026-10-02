@@ -25,27 +25,29 @@
 #include <vector>
 #include <memory>
 
+#include "GridSearchSettings.h"
+#include "OptimizationMethod.h"
+#include "OptimizationResult.h"
 #include "SearchParameterSettingsSet.h"
 #include "../Model/ModelSample.h"
 #include "../Model/ModelRunner.h"
 
 namespace Deltares::Optimization
 {
-    class GridSearch
+    class GridSearch : public OptimizationMethod
     {
     public:
         /**
-         * \brief Maximum number of grid moves to be performed
+         * \brief Settings
          */
-        int MaxGridMoves = 50;
+       GridSearchSettings Settings;
 
         /**
          * \brief Finds the parameter combination which results in the minimum value
-         * \param searchArea Definition of parameter space and settings which will be searched
          * \param model Model to invoke, the minimum z-value will be used
          * \return Sample containing values which lead to he minimum value
          */
-        Models::ModelSample getOptimizedSample(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model);
+        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
 
     private:
         /**
@@ -55,7 +57,7 @@ namespace Deltares::Optimization
          * \param minSample The minimum sample found from previous iterations (nullptr if initial)
          * \return Sample containing values which lead to he minimum value (if no sample leading to a lower value is found, minSample will be returned)
          */
-        Models::ModelSample findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model, Models::ModelSample& minSample, int iteration);
+        Models::ModelSample findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ZModel& model, Models::ModelSample& minSample, int iteration);
 
         /**
          * \brief Indicates whether a sample is located on the edge of the search area

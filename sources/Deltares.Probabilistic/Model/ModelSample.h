@@ -37,6 +37,8 @@ namespace Deltares::Models
             this->Values = values;
         }
 
+        ModelSample(size_t size) : Values(size, 0.0) {}
+
         std::vector<double> Values;
         std::vector<double> OutputValues;
 

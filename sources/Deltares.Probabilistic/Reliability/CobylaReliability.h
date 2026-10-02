@@ -27,22 +27,6 @@
 
 namespace Deltares::Reliability
 {
-    class WrappedOptimizationModel : public Optimization::OptimizationModel
-    {
-    public:
-        WrappedOptimizationModel(const std::shared_ptr<Models::ModelRunner>& model_runner, double z0fac, int maxIterations) :
-            maxIterations(maxIterations), modelRunner(model_runner), z0Fac(z0fac) {}
-        double GetZValue(Models::Sample& sample) const override;
-        double GetConstraintValue(Models::Sample& sample) override;
-        unsigned GetNumberOfConstraints() const override { return 1; }
-        DesignPointBuilder uMean = DesignPointBuilder();
-        int maxIterations = 0;
-        int counter = 0;
-    private:
-        std::shared_ptr<Models::ModelRunner> modelRunner;
-        const double z0Fac;
-    };
-
     class CobylaReliability : public ReliabilityMethod
     {
     public:
@@ -53,6 +37,8 @@ namespace Deltares::Reliability
         {
             return Settings->isValid();
         }
+    private:
+        Models::ZModel getZModelForModelRunner(Models::ModelRunner* modelRunner, DesignPointBuilder* uMean, int maxIterations, double z0Fac, int* counter) const;
     };
 }
 

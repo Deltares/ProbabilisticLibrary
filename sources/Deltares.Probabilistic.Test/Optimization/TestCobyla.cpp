@@ -21,6 +21,9 @@
 //
 #include <gtest/gtest.h>
 #include "TestCobyla.h"
+#include "../ZModelBuilder.h"
+#include "../../Deltares.Probabilistic/Optimization/CobylaOptimization.h"
+#include "../../Deltares.Probabilistic/Optimization/OptimizationProject.h"
 
 using namespace Deltares::Optimization;
 
@@ -29,6 +32,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::allCobylaTests()
     {
         test_with_constraint1();
+        test_project_no_constraints1();
         test_no_constraints1();
         test_no_constraints2();
     }
@@ -36,63 +40,66 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::test_no_constraints1()
     {
         auto cb = CobylaOptimization();
-        auto model = testModel();
-        auto searchArea = SearchArea();
-        searchArea.Dimensions = std::vector<SearchDimension>(2);
-        auto result = cb.GetCalibrationPoint(searchArea, model);
-        EXPECT_NEAR(result.Input[0], -1.0, 1e-3);
-        EXPECT_NEAR(result.Input[1], 0.0, 1e-3);
-        EXPECT_NEAR(result.minimumValue, 0.0, 1e-3);
-        EXPECT_EQ(result.numberOfSamples, 69);
-        EXPECT_TRUE(result.success);
+        auto model = ZModelBuilder::getPolynomeModel();
+        auto searchArea = cb.Settings.SearchArea;
+        searchArea->setDimensions(2);
+        auto result = cb.getOptimizedSample(model);
+        EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
+        EXPECT_NEAR(result->optimizedSample->Values[1], 0.0, 1e-3);
+        EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
+        EXPECT_EQ(result->modelRuns, 69);
+        EXPECT_TRUE(result->succeeded);
     }
+
+    void TestCobyla::test_project_no_constraints1()
+    {
+        auto cb = OptimizationProject();
+        cb.zModel = ZModelBuilder::getPolynomeModel();
+        cb.settings->OptimizationMethod = OptimizationMethodType::Cobyla;
+        auto searchArea = cb.settings->SearchArea;
+        searchArea->setDimensions(2);
+
+        cb.run();
+        auto result = cb.result;
+        EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
+        EXPECT_NEAR(result->optimizedSample->Values[1], 0.0, 1e-3);
+        EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
+        EXPECT_EQ(result->modelRuns, 69);
+        EXPECT_TRUE(result->succeeded);
+    }
+
+
 
     void TestCobyla::test_no_constraints2()
     {
         auto cb = CobylaOptimization();
-        auto model = testModel(2, 3);
-        auto searchArea = SearchArea();
-        searchArea.Dimensions = std::vector<SearchDimension>(2);
-        auto result = cb.GetCalibrationPoint(searchArea, model);
-        EXPECT_NEAR(result.Input[0], 2.0, 1e-3);
-        EXPECT_NEAR(result.Input[1], 3.0, 1e-3);
-        EXPECT_NEAR(result.minimumValue, 0.0, 1e-3);
-        EXPECT_EQ(result.numberOfSamples, 83);
-        EXPECT_TRUE(result.success);
+        auto model = ZModelBuilder::getPolynomeModel(2, 3);
+        auto searchArea = cb.Settings.SearchArea;
+        searchArea->setDimensions(2);
+        auto result = cb.getOptimizedSample(model);
+        EXPECT_NEAR(result->optimizedSample->Values[0], 2.0, 1e-3);
+        EXPECT_NEAR(result->optimizedSample->Values[1], 3.0, 1e-3);
+        EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
+        EXPECT_EQ(result->modelRuns, 83);
+        EXPECT_TRUE(result->succeeded);
     }
 
     void TestCobyla::test_with_constraint1()
     {
         auto cb = CobylaOptimization();
-        auto model = testModelWithConstraint();
-        auto searchArea = SearchArea();
-        searchArea.Dimensions = std::vector<SearchDimension>(2);
-        searchArea.Dimensions[0].StartValue = 1.0;
-        searchArea.Dimensions[1].StartValue = 1.0;
-        auto result = cb.GetCalibrationPoint(searchArea, model);
-        EXPECT_NEAR(result.Input[0], 0.707, 1e-2);
-        EXPECT_NEAR(result.Input[1], -0.707, 1e-2);
-        EXPECT_NEAR(result.minimumValue, -0.5, 1e-3);
-        EXPECT_EQ(result.numberOfSamples, 49);
-        EXPECT_TRUE(result.success);
+        auto model = ZModelBuilder::getConstrainedPolynomeModel();
+        auto searchArea = cb.Settings.SearchArea;
+        searchArea->setDimensions(2);
+        searchArea->Dimensions[0]->StartValue = 1.0;
+        searchArea->Dimensions[1]->StartValue = 1.0;
+        auto result = cb.getOptimizedSample(model);
+        EXPECT_NEAR(result->optimizedSample->Values[0], 0.707, 1e-2);
+        EXPECT_NEAR(result->optimizedSample->Values[1], -0.707, 1e-2);
+        EXPECT_NEAR(result->minimumValue, -0.5, 1e-3);
+        EXPECT_EQ(result->modelRuns, 49);
+        EXPECT_TRUE(result->succeeded);
     }
 
-    double testModel::GetZValue(Models::Sample& sample) const
-    {
-        return 10.0 * std::pow(sample.Values[0] - offset1, 2) + std::pow(sample.Values[1] - offset2, 2);
-    };
-
-    double testModelWithConstraint::GetZValue(Models::Sample& sample) const
-    {
-        double Z = sample.Values[0] * sample.Values[1];
-        return Z;
-    }
-
-    double testModelWithConstraint::GetConstraintValue(Models::Sample& sample)
-    {   // constraint: point lies on unit sphere
-        double C = 1.0 - hypot(sample.Values[0], sample.Values[1]);
-        return std::abs(C);
-    }
 
 }
 

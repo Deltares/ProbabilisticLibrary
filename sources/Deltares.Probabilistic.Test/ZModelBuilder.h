@@ -20,21 +20,16 @@
 // All rights reserved.
 //
 #pragma once
-#include "CobylaOptimizationSettings.h"
-#include "OptimizationMethod.h"
-#include "../Model/ZModel.h"
+#include "../Deltares.Probabilistic/Model/ZModel.h"
 
-namespace Deltares::Optimization
+namespace Deltares::Probabilistic::Test
 {
-    /**
-     * \brief Wrapper for Cobyla optimization algorithm
-     * \note At this moment: this wrapper handles only zero or one constraints
-     */
-    class CobylaOptimization : public OptimizationMethod
+    class ZModelBuilder
     {
     public:
-        CobylaOptimizationSettings Settings;
-        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
+
+        static Models::ZModel getPolynomeModel(double offset1 = -1.0, double offset2 = 0.0);
+        static Models::ZModel getConstrainedPolynomeModel();
     };
 }
 
