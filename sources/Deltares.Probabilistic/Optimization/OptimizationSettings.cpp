@@ -45,9 +45,9 @@ namespace Deltares::Optimization
     {
         std::shared_ptr<GridSearch> gridSearch = std::make_shared<GridSearch>();
 
-        gridSearch->Settings->MaxGridMoves = this->MaxGridMoves;
-        gridSearch->Settings->RunSettings = this->RunSettings;
-        gridSearch->Settings->SearchArea = this->SearchArea;
+        gridSearch->Settings.MaxGridMoves = this->MaxGridMoves;
+        gridSearch->Settings.RunSettings = this->RunSettings;
+        gridSearch->Settings.SearchArea = this->SearchArea;
 
         return gridSearch;
     }
@@ -56,9 +56,9 @@ namespace Deltares::Optimization
     {
         std::shared_ptr<CobylaOptimization> cobyla = std::make_shared<CobylaOptimization>();
 
-        cobyla->Settings->EpsilonBeta = this->EpsilonBeta;
-        cobyla->Settings->MaxIterations = this->Iterations;
-        cobyla->Settings->SearchArea = this->SearchArea;
+        cobyla->Settings.EpsilonBeta = this->EpsilonBeta;
+        cobyla->Settings.MaxIterations = this->Iterations;
+        cobyla->Settings.SearchArea = this->SearchArea;
 
         return cobyla;
     }
@@ -71,8 +71,8 @@ namespace Deltares::Optimization
     {
         switch (this->OptimizationMethod)
         {
-        case OptimizationMethodType::GridSearch: GetGridSearchMethod()->Settings->validate(report); break;
-        case OptimizationMethodType::Cobyla: GetCobylaMethod()->Settings->validate(report); break;
+        case OptimizationMethodType::GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
+        case OptimizationMethodType::Cobyla: GetCobylaMethod()->Settings.validate(report); break;
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }

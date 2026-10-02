@@ -40,7 +40,7 @@ namespace Deltares::Optimization
         /**
          * \brief Settings
          */
-        std::shared_ptr<GridSearchSettings> Settings = std::make_shared<GridSearchSettings>();
+       GridSearchSettings Settings;
 
         /**
          * \brief Finds the parameter combination which results in the minimum value

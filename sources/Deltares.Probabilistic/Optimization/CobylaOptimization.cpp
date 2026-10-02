@@ -27,7 +27,7 @@ namespace Deltares::Optimization
 {
     std::shared_ptr<OptimizationResult> CobylaOptimization::getOptimizedSample(Models::ZModel& model)
     {
-        auto searchArea = Settings->SearchArea;
+        auto searchArea = Settings.SearchArea;
 
         const unsigned n = static_cast<unsigned>(searchArea->Dimensions.size());
         const unsigned m = model.hasConstraint() ? 1 : 0; // model.GetNumberOfConstraints();
@@ -78,15 +78,15 @@ namespace Deltares::Optimization
             fc[0].f = myfuncC;
             fc[0].m = 1;
             fc[0].tol = std::vector<double>(1);
-            fc[0].tol[0] = Settings->EpsilonBeta;
+            fc[0].tol[0] = Settings.EpsilonBeta;
         }
         auto h = std::vector<nlopt_constraint>(0);
         double minimum_f_value = 0.0;
         auto stop = nlopt_stopping();
         int number_of_evaluations = 0;
         stop.nevals_p = &number_of_evaluations;
-        stop.xtol_rel = Settings->EpsilonBeta;
-        stop.maxeval = Settings->MaxIterations;
+        stop.xtol_rel = Settings.EpsilonBeta;
+        stop.maxeval = Settings.MaxIterations;
         unsigned p = 0;
 
         auto status = cobyla_minimize(n, myfunc, &fData, m, fc.data(), p, h.data(),

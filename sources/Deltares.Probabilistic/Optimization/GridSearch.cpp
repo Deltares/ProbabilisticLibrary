@@ -31,7 +31,7 @@ namespace Deltares::Optimization
     {
         model.resetModelRuns();
 
-        std::shared_ptr<SearchParameterSettingsSet> searchArea = Settings->SearchArea;
+        std::shared_ptr<SearchParameterSettingsSet> searchArea = Settings.SearchArea;
 
         std::vector<double> defaultValues;
         for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
@@ -47,7 +47,7 @@ namespace Deltares::Optimization
         reusedCounter = 0;
 
         int gridMoves = 0;
-        while (gridMoves < Settings->MaxGridMoves && isSampleOnEdge(searchArea, sample))
+        while (gridMoves < Settings.MaxGridMoves && isSampleOnEdge(searchArea, sample))
         {
             moveSampleToCenter(searchArea, sample);
             sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves);

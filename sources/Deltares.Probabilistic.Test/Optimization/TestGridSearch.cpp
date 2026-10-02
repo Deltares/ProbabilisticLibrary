@@ -40,7 +40,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto gridSearch = GridSearch();
         auto model = ZModelBuilder::getPolynomeModel(2.4, 3.7);
-        auto searchArea = gridSearch.Settings->SearchArea;
+        auto searchArea = gridSearch.Settings.SearchArea;
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->MinValue = 0;
         searchArea->Dimensions[0]->MaxValue = 10;
@@ -74,8 +74,8 @@ namespace Deltares::Probabilistic::Test
     {
         auto project = GridSearch();
         auto model = ZModelBuilder::getPolynomeModel(12.9, 16.2);
-        project.Settings->MaxGridMoves = 10;
-        auto searchArea = project.Settings->SearchArea;
+        project.Settings.MaxGridMoves = 10;
+        auto searchArea = project.Settings.SearchArea;
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->MinValue = 0;
         searchArea->Dimensions[0]->MaxValue = 10;

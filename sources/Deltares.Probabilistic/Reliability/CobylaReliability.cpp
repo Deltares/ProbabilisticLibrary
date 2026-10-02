@@ -42,10 +42,10 @@ namespace Deltares::Reliability
         DesignPointBuilder uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
         CobylaOptimization optimizer;
-        optimizer.Settings->EpsilonBeta = Settings->EpsilonBeta;
-        optimizer.Settings->MaxIterations = Settings->MaximumIterations;
+        optimizer.Settings.EpsilonBeta = Settings->EpsilonBeta;
+        optimizer.Settings.MaxIterations = Settings->MaximumIterations;
 
-        auto searchArea = optimizer.Settings->SearchArea;
+        auto searchArea = optimizer.Settings.SearchArea;
         searchArea->setDimensions(nStochasts);
         Sample startPoint = Settings->StochastSet->getStartPoint();
         for( int i = 0; i < nStochasts; i++)

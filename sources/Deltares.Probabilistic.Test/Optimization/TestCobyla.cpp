@@ -41,7 +41,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto cb = CobylaOptimization();
         auto model = ZModelBuilder::getPolynomeModel();
-        auto searchArea = cb.Settings->SearchArea;
+        auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
         auto result = cb.getOptimizedSample(model);
         EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
@@ -74,7 +74,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto cb = CobylaOptimization();
         auto model = ZModelBuilder::getPolynomeModel(2, 3);
-        auto searchArea = cb.Settings->SearchArea;
+        auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
         auto result = cb.getOptimizedSample(model);
         EXPECT_NEAR(result->optimizedSample->Values[0], 2.0, 1e-3);
@@ -88,7 +88,7 @@ namespace Deltares::Probabilistic::Test
     {
         auto cb = CobylaOptimization();
         auto model = ZModelBuilder::getConstrainedPolynomeModel();
-        auto searchArea = cb.Settings->SearchArea;
+        auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->StartValue = 1.0;
         searchArea->Dimensions[1]->StartValue = 1.0;

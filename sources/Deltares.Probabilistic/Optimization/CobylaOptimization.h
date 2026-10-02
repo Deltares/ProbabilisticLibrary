@@ -33,7 +33,7 @@ namespace Deltares::Optimization
     class CobylaOptimization : public OptimizationMethod
     {
     public:
-        std::shared_ptr<CobylaOptimizationSettings> Settings = std::make_shared<CobylaOptimizationSettings>();
+        CobylaOptimizationSettings Settings;
         std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
     };
 }

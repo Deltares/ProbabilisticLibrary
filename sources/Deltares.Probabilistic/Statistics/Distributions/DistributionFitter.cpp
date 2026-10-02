@@ -44,7 +44,7 @@ namespace Deltares::Statistics
 
         auto gridSearch = Optimization::GridSearch();
 
-        auto searchArea = gridSearch.Settings->SearchArea;
+        auto searchArea = gridSearch.Settings.SearchArea;
         for (size_t i = 0; i < properties.size(); i++)
         {
             auto settings = std::make_shared<Optimization::SearchParameterSettings>();
