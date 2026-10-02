@@ -23,6 +23,7 @@
 #include "TestCobyla.h"
 #include "../ZModelBuilder.h"
 #include "../../Deltares.Probabilistic/Optimization/CobylaOptimization.h"
+#include "../../Deltares.Probabilistic/Optimization/OptimizationProject.h"
 
 using namespace Deltares::Optimization;
 
@@ -31,6 +32,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::allCobylaTests()
     {
         test_with_constraint1();
+        test_project_no_constraints1();
         test_no_constraints1();
         test_no_constraints2();
     }
@@ -48,6 +50,25 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(result->modelRuns, 69);
         EXPECT_TRUE(result->succeeded);
     }
+
+    void TestCobyla::test_project_no_constraints1()
+    {
+        auto cb = OptimizationProject();
+        cb.zModel = ZModelBuilder::getPolynomeModel();
+        cb.settings->OptimizationMethod = OptimizationMethodType::Cobyla;
+        auto searchArea = cb.settings->SearchArea;
+        searchArea->setDimensions(2);
+
+        cb.run();
+        auto result = cb.result;
+        EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
+        EXPECT_NEAR(result->optimizedSample->Values[1], 0.0, 1e-3);
+        EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
+        EXPECT_EQ(result->modelRuns, 69);
+        EXPECT_TRUE(result->succeeded);
+    }
+
+
 
     void TestCobyla::test_no_constraints2()
     {

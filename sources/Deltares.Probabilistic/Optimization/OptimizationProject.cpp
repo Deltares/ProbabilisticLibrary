@@ -39,7 +39,7 @@ namespace Deltares::Optimization
 
     std::shared_ptr<OptimizationResult> OptimizationProject::getOptimizedSample()
     {
-        this->result = this->optimizationMethod->getOptimizedSample(*model);
+        this->result = this->optimizationMethod->getOptimizedSample(zModel);
 
         if (this->result != nullptr)
         {

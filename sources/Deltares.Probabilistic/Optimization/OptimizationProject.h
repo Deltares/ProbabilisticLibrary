@@ -51,6 +51,11 @@ namespace Deltares::Optimization
         std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
 
         /**
+         * \brief Deterministic model which calculates a z-value based on input values
+         */
+        Models::ZModel zModel;
+
+        /**
          * \brief Results of the optimization calculation
          */
         std::shared_ptr<OptimizationResult> result = nullptr;

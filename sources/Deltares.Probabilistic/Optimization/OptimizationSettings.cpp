@@ -47,6 +47,7 @@ namespace Deltares::Optimization
 
         gridSearch->Settings->MaxGridMoves = this->MaxGridMoves;
         gridSearch->Settings->RunSettings = this->RunSettings;
+        gridSearch->Settings->SearchArea = this->SearchArea;
 
         return gridSearch;
     }

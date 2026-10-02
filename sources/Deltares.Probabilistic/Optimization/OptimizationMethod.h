@@ -22,7 +22,6 @@
 #pragma once
 #include "OptimizationResult.h"
 #include "../Model/ZModel.h"
-#include "../Model/ModelSample.h"
 
 namespace Deltares::Optimization
 {

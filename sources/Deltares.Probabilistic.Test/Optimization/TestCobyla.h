@@ -29,6 +29,7 @@ namespace Deltares::Probabilistic::Test
         void allCobylaTests();
     private:
         static void test_no_constraints1();
+        static void test_project_no_constraints1();
         static void test_no_constraints2();
         static void test_with_constraint1();
 

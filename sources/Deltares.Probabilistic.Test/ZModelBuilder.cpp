@@ -41,7 +41,7 @@ namespace Deltares::Probabilistic::Test
     {
         Models::ZLambda function = [](Models::ModelSample& sample)
         {
-            sample.Z = sample.Values[0] * sample.Values[1];;
+            sample.Z = sample.Values[0] * sample.Values[1];
         };
 
         Models::ZModel model = Models::ZModel(function);

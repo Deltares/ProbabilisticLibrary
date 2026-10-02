@@ -30,6 +30,7 @@ namespace Deltares::Probabilistic::Test
     private:
         static void test_polynome();
         static void test_polynome_move_grid();
+        static void test_project_polynome_move_grid();
 
         const double margin = 1e-2;
     };

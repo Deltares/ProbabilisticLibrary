@@ -33,6 +33,7 @@ namespace Deltares::Probabilistic::Test
     {
         test_polynome();
         test_polynome_move_grid();
+        test_project_polynome_move_grid();
     }
 
     void TestGridSearch::test_polynome()
@@ -106,5 +107,32 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(result2->succeeded);
     }
 
+    void TestGridSearch::test_project_polynome_move_grid()
+    {
+        auto project = OptimizationProject();
+        project.zModel = ZModelBuilder::getPolynomeModel(12.9, 16.2);
+        project.settings->MaxGridMoves = 10;
+        auto searchArea = project.settings->SearchArea;
+        searchArea->setDimensions(2);
+        searchArea->Dimensions[0]->MinValue = 0;
+        searchArea->Dimensions[0]->MaxValue = 10;
+        searchArea->Dimensions[0]->NumberOfValues = 11;
+        searchArea->Dimensions[0]->Move = true;
+        searchArea->Dimensions[0]->NumberOfRefinements = 10;
+        searchArea->Dimensions[1]->MinValue = 0;
+        searchArea->Dimensions[1]->MaxValue = 10;
+        searchArea->Dimensions[1]->NumberOfValues = 11;
+        searchArea->Dimensions[1]->Move = true;
+        searchArea->Dimensions[1]->NumberOfRefinements = 10;
+
+        project.run();
+        auto result = project.result;
+        EXPECT_NEAR(result->optimizedSample->Values[0], 12.9, 0.001);
+        EXPECT_NEAR(result->optimizedSample->Values[1], 16.2, 0.001);
+        EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
+
+        EXPECT_EQ(result->modelRuns, 321); // reused runs
+        EXPECT_TRUE(result->succeeded);
+    }
 }
 
