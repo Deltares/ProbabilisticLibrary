@@ -32,7 +32,7 @@ namespace Deltares::Optimization
     enum class OptimizationMethodType { GridSearch, Cobyla };
 
     /**
-     * \brief General settings applicable to all mechanisms
+     * \brief General settings applicable to all optimization mechanisms
      */
     class OptimizationSettings : public Models::ModelProjectSettings
     {

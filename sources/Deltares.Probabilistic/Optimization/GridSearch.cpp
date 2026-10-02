@@ -23,6 +23,7 @@
 
 #include "OptimizationResult.h"
 #include "../Math/NumericSupport.h"
+#include <cmath>
 
 namespace Deltares::Optimization
 {
@@ -72,6 +73,7 @@ namespace Deltares::Optimization
         result->succeeded = true; // always succeeds
         result->modelRuns = model.getModelRuns();
         result->optimizedSample = std::make_shared<Models::ModelSample>(sample);
+        result->minimumValue = sample.Z;
 
         return result;
     }

@@ -21,7 +21,6 @@
 //
 #pragma once
 
-#include "GridSearch.h"
 #include "SearchParameterSettingsSet.h"
 #include "../Model/Validatable.h"
 
@@ -29,7 +28,7 @@
 namespace Deltares::Optimization
 {
     /**
-     * \brief General settings applicable to all mechanisms
+     * \brief Settings applicable to the grid search optimization settings
      */
     class GridSearchSettings : public Models::Validatable
     {

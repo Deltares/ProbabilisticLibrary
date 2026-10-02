@@ -20,19 +20,16 @@
 // All rights reserved.
 //
 #pragma once
+#include "../Deltares.Probabilistic/Model/ZModel.h"
 
 namespace Deltares::Probabilistic::Test
 {
-    class TestCobyla
+    class ZModelBuilder
     {
     public:
-        void allCobylaTests();
-    private:
-        static void test_no_constraints1();
-        static void test_no_constraints2();
-        static void test_with_constraint1();
 
-        const double margin = 1e-2;
+        static Models::ZModel getPolynomeModel(double offset1 = -1.0, double offset2 = 0.0);
+        static Models::ZModel getConstrainedPolynomeModel();
     };
 }
 

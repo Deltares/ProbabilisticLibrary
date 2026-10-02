@@ -23,14 +23,13 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    class TestCobyla
+    class TestGridSearch
     {
     public:
-        void allCobylaTests();
+        void allGridSearchTests();
     private:
-        static void test_no_constraints1();
-        static void test_no_constraints2();
-        static void test_with_constraint1();
+        static void test_polynome();
+        static void test_polynome_move_grid();
 
         const double margin = 1e-2;
     };

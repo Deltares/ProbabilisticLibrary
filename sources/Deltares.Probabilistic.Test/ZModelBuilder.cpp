@@ -19,20 +19,43 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
+#include "ZModelBuilder.h"
+
+using namespace Deltares::Probabilistic::Test;
 
 namespace Deltares::Probabilistic::Test
 {
-    class TestCobyla
+    Models::ZModel ZModelBuilder::getPolynomeModel(double offset1, double offset2)
     {
-    public:
-        void allCobylaTests();
-    private:
-        static void test_no_constraints1();
-        static void test_no_constraints2();
-        static void test_with_constraint1();
+        Models::ZLambda function = [offset1, offset2](Models::ModelSample& sample)
+        {
+            sample.Z = 10.0 * std::pow(sample.Values[0] - offset1, 2) + std::pow(sample.Values[1] - offset2, 2);
+        };
 
-        const double margin = 1e-2;
-    };
+        Models::ZModel model = Models::ZModel(function);
+
+        return model;
+    }
+
+    Models::ZModel ZModelBuilder::getConstrainedPolynomeModel()
+    {
+        Models::ZLambda function = [](Models::ModelSample& sample)
+        {
+            sample.Z = sample.Values[0] * sample.Values[1];;
+        };
+
+        Models::ZModel model = Models::ZModel(function);
+
+        Models::ZBetaLambda constraint = [](Models::ModelSample& sample)
+        {
+            double C = 1.0 - hypot(sample.Values[0], sample.Values[1]);
+            return std::abs(C);
+        };
+
+        model.setConstraint(constraint);
+
+        return model;
+    }
+
 }
 
