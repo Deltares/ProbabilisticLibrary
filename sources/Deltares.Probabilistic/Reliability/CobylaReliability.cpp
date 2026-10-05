@@ -59,7 +59,7 @@ namespace Deltares::Reliability
         int counter = 0;
         int* pCounter = &counter;
 
-        ZModel zModel = getZModelForModelRunner(modelRunner.get(), &uMean, Settings->MaximumIterations, z0Fac, pCounter);
+        ZModel zModel = getZModelForModelRunner(*modelRunner.get(), uMean, Settings->MaximumIterations, z0Fac, pCounter);
 
         auto result = optimizer.getOptimizedSample(zModel);
 
@@ -73,7 +73,7 @@ namespace Deltares::Reliability
         return designPoint;
     };
 
-    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner* modelRunner, DesignPointBuilder* uMean, int maxIterations, double z0Fac, int* counter) const
+    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const
     {
         const ZLambda zLambda = [](ModelSample& modelSample)
         {
@@ -83,16 +83,16 @@ namespace Deltares::Reliability
 
         ZModel model = ZModel(zLambda);
 
-        const ZBetaLambda zConstraint = [modelRunner, uMean, maxIterations, z0Fac, &counter](ModelSample& modelSample)
+        const ZBetaLambda zConstraint = [&modelRunner, &uMean, maxIterations, z0Fac, &counter](ModelSample& modelSample)
         {
             Sample sample = Sample(modelSample.Values);
-            double z = modelRunner->getZValue(sample);
+            double z = modelRunner.getZValue(sample);
 
-            modelRunner->reportProgress(++(*counter), maxIterations, z0Fac * sample.getBeta());
+            modelRunner.reportProgress(++(*counter), maxIterations, z0Fac * sample.getBeta());
 
             if (z * z0Fac < 0.0)
             {
-                uMean->addSample(sample);
+                uMean.addSample(sample);
             }
 
             modelSample.Z = z;
