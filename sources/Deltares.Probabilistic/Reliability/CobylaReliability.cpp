@@ -92,7 +92,8 @@ namespace Deltares::Reliability
 
             if (z * z0Fac < 0.0)
             {
-                uMean.addSample(sample);
+                Sample clone = sample.clone();
+                uMean.addSample(clone);
             }
 
             modelSample.Z = z;
