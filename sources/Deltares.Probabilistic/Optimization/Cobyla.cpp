@@ -41,9 +41,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 
 #include "Cobyla.h"
+
+#include <iostream>
+
 #include "nlopt-util.h"
 #include "nlopt.h"
 
@@ -83,7 +85,9 @@ typedef struct {
 
 static int func_wrap(int ni, int mi, double *x, double *f, double *con, func_wrap_state *s)
 {
-     unsigned n = U(ni);
+    std::cout << "func_wrap 0" << std::endl;
+
+    unsigned n = U(ni);
      unsigned i, j, k;
      double *xtmp = s->xtmp;
      const double *lb = s->lb, *ub = s->ub;
@@ -125,6 +129,7 @@ static int func_wrap(int ni, int mi, double *x, double *f, double *con, func_wra
         if (!nlopt_isinf(ub[j]))
              con[i++] = ub[j] - x[j];
      }
+     std::cout << "func_wrap 1" << std::endl;
      return 0;
 }
 
@@ -188,7 +193,9 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
                        nlopt_stopping *stop,
                        const double *dx)
 {
-     unsigned i, j;
+    std::cout << "cobyla_minimize 0" << std::endl;
+
+    unsigned i, j;
      func_wrap_state s;
      nlopt_result ret;
      double rhobeg, rhoend;
@@ -209,6 +216,8 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
              ret = NLOPT_INVALID_ARGS; goto done;
          }
 
+     std::cout << "cobyla_minimize 1" << std::endl;
+
      s.lb = nlopt_new_rescaled(n, s.scale, lb);
      if (!s.lb) { ret = NLOPT_OUT_OF_MEMORY; goto done; }
      s.ub = nlopt_new_rescaled(n, s.scale, ub);
@@ -218,6 +227,8 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
      s.xtmp = (double *) malloc(sizeof(double) * n);
      if (!s.xtmp) { ret = NLOPT_OUT_OF_MEMORY; goto done; }
 
+     std::cout << "cobyla_minimize 2" << std::endl;
+
      /* SGJ, 2008: compute rhoend from NLopt stop info */
      rhobeg = fabs(dx[0] / s.scale[0]);
      rhoend = stop->xtol_rel * (rhobeg);
@@ -226,8 +237,12 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
           if (rhoend < stop->xtol_abs[j] / fabs(s.scale[j]))
                rhoend = stop->xtol_abs[j] / fabs(s.scale[j]);
 
-     /* each equality constraint gives two inequality constraints */
+     std::cout << "cobyla_minimize 3" << std::endl;
+
+    /* each equality constraint gives two inequality constraints */
      m = nlopt_count_constraints(m, fc) + 2 * nlopt_count_constraints(p, h);
+
+     std::cout << "cobyla_minimize 4" << std::endl;
 
      /* add constraints for lower/upper bounds (if any) */
      for (j = 0; j < n; ++j) {
@@ -237,7 +252,9 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
               ++m;
      }
 
-     s.con_tol = (double *) malloc(sizeof(double) * m);
+     std::cout << "cobyla_minimize 5" << std::endl;
+
+    s.con_tol = (double *) malloc(sizeof(double) * m);
      if (m && !s.con_tol) { ret = NLOPT_OUT_OF_MEMORY; goto done; }
 
      for (j = 0; j < m; ++j) s.con_tol[j] = 0;
@@ -252,17 +269,22 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
          for (; j < jnext; ++j) s.con_tol[j] = h[i].tol[j - ji];
      }
 
+     std::cout << "cobyla_minimize 6" << std::endl;
+
      nlopt_rescale(n, s.scale, x, x);
      ret = cobyla((int) n, (int) m, x, minf, rhobeg, rhoend,
                 stop, s.lb, s.ub, COBYLA_MSG_NONE,
                 func_wrap, &s);
      nlopt_unscale(n, s.scale, x, x);
 
+     std::cout << "cobyla_minimize 7" << std::endl;
      /* make sure e.g. rounding errors didn't push us slightly out of bounds */
      for (j = 0; j < n; ++j) {
          if (x[j] < lb[j]) x[j] = lb[j];
          if (x[j] > ub[j]) x[j] = ub[j];
      }
+
+     std::cout << "cobyla_minimize 8" << std::endl;
 
 done:
      free(s.con_tol);

@@ -23,14 +23,20 @@
 #include "Cobyla.h"
 #include <functional>
 
+#include <iostream>
+
 namespace Deltares::Optimization
 {
     std::shared_ptr<OptimizationResult> CobylaOptimization::getOptimizedSample(Models::ZModel& model)
     {
+        std::cout << "Cobyla 0" << std::endl;
+
         auto searchArea = Settings.SearchArea;
 
         const unsigned n = static_cast<unsigned>(searchArea->Dimensions.size());
         const unsigned m = model.hasConstraint() ? 1 : 0; // model.GetNumberOfConstraints();
+
+        std::cout << "Cobyla 1" << std::endl;
 
         auto x0 = std::vector<double>(n);
         auto lb = std::vector<double>(n);
@@ -45,8 +51,12 @@ namespace Deltares::Optimization
         }
         long long fData = 0;
 
+        std::cout << "Cobyla 2" << std::endl;
+
         auto myfunc = [&model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
         {
+            std::cout << "Cobyla Z 0" << std::endl;
+
             auto s = Models::ModelSample(static_cast<int>(dim_x));
             for (unsigned i = 0; i < dim_x; i++)
             {
@@ -57,20 +67,30 @@ namespace Deltares::Optimization
 
             model.invoke(s);
 
+            std::cout << "Cobyla Z 1" << std::endl;
+
             return s.Z;
         };
 
         auto myfuncC = [&model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
             {
-                auto s = Models::ModelSample(static_cast<int>(dim_x));
+            std::cout << "Cobyla C 0" << std::endl;
+            auto s = Models::ModelSample(static_cast<int>(dim_x));
                 for (unsigned i = 0; i < dim_x; i++)
                 {
                     s.Values[i] = x[i];
                 }
 
-            // get z value
-                return model.getConstraint(s);
+                // get z value
+                double constraint = model.getConstraint(s);
+
+                std::cout << "Cobyla C 1" << std::endl;
+
+                return constraint;
+
             };
+
+        std::cout << "Cobyla 3" << std::endl;
 
         auto fc = std::vector<nlopt_constraint>(m);
         if (m > 0)
@@ -80,6 +100,7 @@ namespace Deltares::Optimization
             fc[0].tol = std::vector<double>(1);
             fc[0].tol[0] = Settings.EpsilonBeta;
         }
+        std::cout << "Cobyla 4" << std::endl;
         auto h = std::vector<nlopt_constraint>(0);
         double minimum_f_value = 0.0;
         auto stop = nlopt_stopping();
@@ -89,9 +110,11 @@ namespace Deltares::Optimization
         stop.maxeval = Settings.MaxIterations;
         unsigned p = 0;
 
+        std::cout << "Cobyla 5" << std::endl;
         auto status = cobyla_minimize(n, myfunc, &fData, m, fc.data(), p, h.data(),
             lb.data(), ub.data(), x0.data(), &minimum_f_value, &stop, dx.data());
 
+        std::cout << "Cobyla 6" << std::endl;
         auto result = std::make_shared<OptimizationResult>();
         result->modelRuns = *stop.nevals_p;
         result->minimumValue = minimum_f_value;
@@ -108,8 +131,10 @@ namespace Deltares::Optimization
             break;
         }
 
+        std::cout << "Cobyla 7" << std::endl;
         result->optimizedSample = std::make_shared<Models::ModelSample>(x0);
 
+        std::cout << "Cobyla 8" << std::endl;
         return result;
     };
 }
