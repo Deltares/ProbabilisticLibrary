@@ -111,7 +111,12 @@ namespace Deltares::Optimization
             break;
         }
 
-        result->optimizedSample = std::make_shared<Models::ModelSample>(x0);
+        // copy results, do not reuse vector
+        result->optimizedSample = std::make_shared<Models::ModelSample>(x0.size());
+        for (size_t i = 0; i < x0.size(); i++)
+        {
+            result->optimizedSample->Values[i] = x0[i];
+        }
 
         return result;
     };
