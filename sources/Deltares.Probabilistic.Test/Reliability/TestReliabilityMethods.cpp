@@ -201,17 +201,11 @@ namespace Deltares::Probabilistic::Test
 
         auto designPoint = calculator.getDesignPoint(modelRunner);
 
-        std::cout << "Test 0" << std::endl;
         ASSERT_EQ(designPoint->Alphas.size(), 2);
-        std::cout << "Test 1" << std::endl;
         EXPECT_NEAR(designPoint->Beta, 1.8741, 1e-3);
-        std::cout << "Test 2" << std::endl;
         EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.78693, 1e-3);
-        std::cout << "Test 3" << std::endl;
         EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.61704, 1e-3);
-        std::cout << "Test 4" << std::endl;
         EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
-        std::cout << "Test 5 - completed" << std::endl;
     }
 
     void TestReliabilityMethods::testSubSetSimulationReliabilityNearestToMean()

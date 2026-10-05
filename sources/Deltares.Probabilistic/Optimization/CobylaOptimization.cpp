@@ -112,6 +112,7 @@ namespace Deltares::Optimization
         }
 
         // copy results, do not reuse vector
+        // reusing vector leads to memory problems on linux
         result->optimizedSample = std::make_shared<Models::ModelSample>(x0.size());
         for (size_t i = 0; i < x0.size(); i++)
         {
