@@ -19,28 +19,16 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
-#include "../Deltares.Probabilistic/Model/ZModel.h"
+#include <vector>
 
-namespace Deltares::Probabilistic::Test
+namespace Deltares::Optimization::Test
 {
-    class ZmodelWithCenter : public Models::ZModel
+    class TestAdaptiveParticleSwarmOptimization
     {
     public:
-        ZmodelWithCenter(const std::vector<double>& center) : center(center) {}
-        void invoke(Models::ModelSample& sample) override;
-        const int getEvaluations() const { return evaluations; }
-    private:
-        std::vector<double> center;
-        int evaluations = 0;
-    };
-
-    class ZModelBuilder
-    {
-    public:
-
-        static Models::ZModel getPolynomeModel(double offset1 = -1.0, double offset2 = 0.0);
-        static Models::ZModel getConstrainedPolynomeModel();
+        static void TestBeeswarm(bool move, double tolerance, int evaluations, const std::vector<double>& center);
     };
 }
 

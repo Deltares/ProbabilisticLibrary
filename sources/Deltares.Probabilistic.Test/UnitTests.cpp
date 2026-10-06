@@ -50,6 +50,7 @@
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/TestCobyla.h"
 #include "Optimization/TestGridSearch.h"
+#include "Optimization/TestAdaptiveParticleSwarmOptimization.h"
 #include "Proxies/TestProxies.h"
 #include "Utils/TestExceptions.h"
 #include "Utils/TestString.h"
@@ -818,6 +819,41 @@ TEST(UnitTests, testGridSearchOptimization)
 {
     auto testGridSearchOpt = TestGridSearch();
     testGridSearchOpt.allGridSearchTests();
+}
+
+TEST(UnitTests, testAPSOtestCase1)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 7000, {5.0, 7.0});
+}
+
+TEST(UnitTests, testAPSOtestCase2)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 6000, { 5.3, 7.8 });
+}
+
+TEST(UnitTests, testAPSOtestCase3)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 6000, { 2.345, 8.316 });
+}
+
+TEST(UnitTests, testAPSOtestCase4)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 7000, { 2.345, 8.316, 4.343, 6.788, 1.001 });
+}
+
+TEST(UnitTests, testAPSOtestCase5)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.05, 6000, { 12.0, 15.0 });
+}
+
+TEST(UnitTests, testAPSOtestCase6)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.4, 6000, { 25.3, -17.8 });
+}
+
+TEST(UnitTests, testAPSOtestCase7)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.3, 6000, { -24, -18 });
 }
 
 TEST(WaartsTests, testLinearResistanceFORM)
