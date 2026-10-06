@@ -54,7 +54,7 @@ public class OptimizationSettings
     public OptimizationMethod OptimizationMethod
     {
         get { return OptimizationMethodConverter.ConvertFromString(Interface.GetStringValue(id, "optimization_method")); }
-        set { Interface.SetStringValue(id, "uncertainty_method", OptimizationMethodConverter.ConvertToString(value)); }
+        set { Interface.SetStringValue(id, "optimization_method", OptimizationMethodConverter.ConvertToString(value)); }
     }
 
     public int MaxParallelProcesses
@@ -109,18 +109,6 @@ public class OptimizationSettings
     {
         get { return Interface.GetIntValue(id, "max_chunk_size"); }
         set { Interface.SetIntValue(id, "max_chunk_size", value); }
-    }
-
-    public bool IsRepeatableRandom
-    {
-        get { return Interface.GetBoolValue(id, "is_repeatable_random"); }
-        set { Interface.SetBoolValue(id, "is_repeatable_random", value); }
-    }
-
-    public int RandomSeed
-    {
-        get { return Interface.GetIntValue(id, "random_seed"); }
-        set { Interface.SetIntValue(id, "random_seed", value); }
     }
 
     public int MaximumIterations

@@ -83,6 +83,8 @@ namespace Deltares::Optimization
         {
         case OptimizationMethodType::GridSearch: return "grid";
         case OptimizationMethodType::Cobyla: return "cobyla";
+        case OptimizationMethodType::AdaptiveParticleSwarmOptimization: return "apso";
+        case OptimizationMethodType::GeneticAlgorithm: return "ga";
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -91,6 +93,8 @@ namespace Deltares::Optimization
     {
         if (method == "grid") return OptimizationMethodType::GridSearch;
         else if (method == "cobyla") return OptimizationMethodType::Cobyla;
+        else if (method == "apso") return OptimizationMethodType::AdaptiveParticleSwarmOptimization;
+        else if (method == "ga") return OptimizationMethodType::GeneticAlgorithm;
         else throw Reliability::ProbabilisticLibraryException("Optimization method");
     }
 }

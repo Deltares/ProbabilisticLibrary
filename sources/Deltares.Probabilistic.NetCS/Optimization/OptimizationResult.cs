@@ -56,12 +56,6 @@ public class OptimizationResult
         return id;
     }
 
-    public string Identifier
-    {
-        get { return Interface.GetStringValue(id, "identifier"); }
-        set { Interface.SetStringValue(id, "identifier", value); }
-    }
-
     public double MinimumValue
     {
         get { return Interface.GetValue(id, "minimum_value"); }

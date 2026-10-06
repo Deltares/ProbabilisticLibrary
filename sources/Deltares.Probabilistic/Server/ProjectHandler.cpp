@@ -332,6 +332,9 @@ namespace Deltares::Server
         uncertaintyProjectHandler.correlationMatrixHandler = &statisticsHandlers.correlationMatrixHandler;
         uncertaintyProjectHandler.SetBaseHandler(&statisticsHandlers.modelProjectHandler);
 
+        optimizationHandlers.optimizationProjectHandler.SetBaseHandler(&statisticsHandlers.modelProjectHandler);
+        optimizationHandlers.optimizationSettingsHandler.SetBaseHandler(&statisticsHandlers.modelProjectSettingsHandler);
+
         handlers[ObjectType::UncertaintyResult] = &uncertaintyResultHandler;
         handlers[ObjectType::SensitivityResult] = &sensitivityResultHandler;
         handlers[ObjectType::SensitivityValue] = &sensitivityValueHandler;

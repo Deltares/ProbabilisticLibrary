@@ -42,6 +42,18 @@ namespace Deltares::Server
             return ObjectType::OptimizationResult;
         }
 
+        double GetValue(const std::shared_ptr<Optimization::OptimizationResult>& result, const std::string& property_) override
+        {
+            if (property_ == "minimum_value") return result->minimumValue;
+            else return StoredObjectHandler::GetValue(result, property_);
+        }
+
+        void SetValue(const std::shared_ptr<Optimization::OptimizationResult>& result, const std::string& property_, double value) override
+        {
+            if (property_ == "minimum_value") result->minimumValue = value;
+            else return StoredObjectHandler::SetValue(result, property_, value);
+        }
+
         int GetIntValue(const std::shared_ptr<Optimization::OptimizationResult>& result, const std::string& property_) override
         {
             if (property_ == "values_count") return static_cast<int>(result->values.size());

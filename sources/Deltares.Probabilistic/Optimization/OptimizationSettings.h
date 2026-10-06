@@ -29,7 +29,7 @@
 
 namespace Deltares::Optimization
 {
-    enum class OptimizationMethodType { GridSearch, Cobyla };
+    enum class OptimizationMethodType { GridSearch, Cobyla, AdaptiveParticleSwarmOptimization, GeneticAlgorithm };
 
     /**
      * \brief General settings applicable to all optimization mechanisms
