@@ -22,7 +22,6 @@
 #include "ImportanceSampling.h"
 #include "ImportanceSamplingSupport.h"
 #include <vector>
-#include <cmath>
 #include <format>
 #include <memory>
 
