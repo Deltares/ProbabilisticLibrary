@@ -53,7 +53,6 @@ namespace Deltares::Optimization
         return values;
     }
 
-
     double SearchParameterSettings::GetAbsoluteValue(double ratio) const
     {
         const double diff = MaxValue - MinValue;
