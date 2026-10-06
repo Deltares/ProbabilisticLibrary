@@ -21,24 +21,18 @@
 //
 #pragma once
 
-#include "CobylaReliabilitySettings.h"
-#include "ReliabilityMethod.h"
-#include "../Optimization/CobylaOptimization.h"
-
-namespace Deltares::Reliability
+namespace Deltares::Probabilistic::Test
 {
-    class CobylaReliability : public ReliabilityMethod
+    class TestGridSearch
     {
     public:
-        std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-
-        bool isValid() override
-        {
-            return Settings->isValid();
-        }
+        void allGridSearchTests();
     private:
-        Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const;
+        static void test_polynome();
+        static void test_polynome_move_grid();
+        static void test_project_polynome_move_grid();
+
+        const double margin = 1e-2;
     };
 }
 

@@ -19,26 +19,40 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
+#include "OptimizationProject.h"
 
-#include "CobylaReliabilitySettings.h"
-#include "ReliabilityMethod.h"
-#include "../Optimization/CobylaOptimization.h"
-
-namespace Deltares::Reliability
+namespace Deltares::Optimization
 {
-    class CobylaReliability : public ReliabilityMethod
+    void OptimizationProject::run()
     {
-    public:
-        std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        this->modelRuns = 0;
+        this->optimizationMethod = this->settings->GetOptimizationMethod();
+        this->runSettings = this->settings->RunSettings;
 
-        bool isValid() override
+        this->result = this->getOptimizedSample();
+    }
+
+    void OptimizationProject::stop()
+    {
+        this->optimizationMethod->Stop();
+    }
+
+    std::shared_ptr<OptimizationResult> OptimizationProject::getOptimizedSample()
+    {
+        this->result = this->optimizationMethod->getOptimizedSample(zModel);
+
+        if (this->result != nullptr)
         {
-            return Settings->isValid();
+            this->modelRuns += this->result->modelRuns;
         }
-    private:
-        Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const;
-    };
+
+        return this->result;
+    }
+
+    void OptimizationProject::validate(Logging::ValidationReport& report)
+    {
+        ModelProject::validate(report);
+        settings->validate(report);
+    }
 }
 

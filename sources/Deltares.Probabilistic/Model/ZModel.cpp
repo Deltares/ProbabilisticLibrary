@@ -42,12 +42,6 @@ namespace Deltares::Models
         }
     }
 
-    void ZModel::releaseCallBacks()
-    {
-        this->zLambda = nullptr;
-        this->zMultipleLambda = nullptr;
-    }
-
     ZLambda ZModel::getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda) const
     {
         ZLambda calcValuesLambda = [zValuesLambda, this](ModelSample& sample)
@@ -241,7 +235,10 @@ namespace Deltares::Models
         }
         this->handleInvalidSample(sample);
 
-        this->modelRuns++;
+        if (!alreadyExecuted)
+        {
+            this->modelRuns++;
+        }
     }
 
     void ZModel::invokeLambda(ModelSample& sample) const
@@ -335,6 +332,11 @@ namespace Deltares::Models
     double ZModel::getBeta(ModelSample& sample) const
     {
         return this->zBetaLambda(sample);
+    }
+
+    double ZModel::getConstraint(ModelSample& sample) const
+    {
+        return this->zConstraint(sample);
     }
 
     void ZModel::handleInvalidSample(ModelSample& sample) const

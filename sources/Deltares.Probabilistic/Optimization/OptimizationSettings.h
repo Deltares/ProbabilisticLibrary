@@ -20,15 +20,42 @@
 // All rights reserved.
 //
 #pragma once
-#include "SearchParameterSettingsSet.h"
-#include "../Model/Validatable.h"
+
+#include "OptimizationMethod.h"
+#include "GridSearch.h"
+#include "CobylaOptimization.h"
+#include "../Model/ModelProjectSettings.h"
+
 
 namespace Deltares::Optimization
 {
-    class CobylaOptimizationSettings : public Models::Validatable
+    enum class OptimizationMethodType { GridSearch, Cobyla };
+
+    /**
+     * \brief General settings applicable to all optimization mechanisms
+     */
+    class OptimizationSettings : public Models::ModelProjectSettings
     {
     public:
-        int MaxIterations = 10000;
+        OptimizationSettings() = default;
+
+        virtual ~OptimizationSettings() = default;
+
+        /**
+         * \brief Method type how the design point (alpha values) is calculated
+         */
+        OptimizationMethodType OptimizationMethod = OptimizationMethodType::GridSearch;
+
+        /**
+         * \brief Maximum number of grid moves to be performed
+         */
+        int MaxGridMoves = 50;
+
+        /**
+         * \brief The number of iterations
+         */
+        int Iterations = 1000;
+
 
         double EpsilonBeta = 0.001;
 
@@ -38,20 +65,21 @@ namespace Deltares::Optimization
         std::shared_ptr<SearchParameterSettingsSet> SearchArea = std::make_shared<SearchParameterSettingsSet>();
 
         /**
-         * \brief Settings for performing model runs
+         * \brief Gets the optimization method and settings based on these settings
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        std::shared_ptr<Optimization::OptimizationMethod> GetOptimizationMethod();
 
         /**
          * \brief Reports whether the settings have valid values
          * \param report Report in which the validity is reported
          */
-        void validate(Logging::ValidationReport& report) const override
-        {
-            Logging::ValidationSupport::checkMinimum(report, 0, EpsilonBeta, "epsilon beta");
-            Logging::ValidationSupport::checkMinimumInt(report, 1, MaxIterations, "maximum iterations");
-            RunSettings->validate(report);
-        }
+        void validate(Logging::ValidationReport& report) const override;
+
+        static std::string getOptimizationMethodTypeString(OptimizationMethodType method);
+        static OptimizationMethodType getOptimizationMethodType(std::string method);
+    private:
+        std::shared_ptr<GridSearch> GetGridSearchMethod() const;
+        std::shared_ptr<CobylaOptimization> GetCobylaMethod() const;
     };
 }
 

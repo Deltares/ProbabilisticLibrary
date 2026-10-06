@@ -1,4 +1,4 @@
-/* cobyla : contrained optimization by linear approximation */
+/* cobyla : constrained optimization by linear approximation */
 
 /*
  * Copyright (c) 1992, Michael J. D. Powell (M.J.D.Powell@damtp.cam.ac.uk)
@@ -25,7 +25,7 @@
  */
 
 /*
- * This software is a C version of COBYLA2, a contrained optimization by linear
+ * This software is a C version of COBYLA2, a constrained optimization by linear
  * approximation package developed by Michael J. D. Powell in Fortran.
  *
  * The original source code can be found at :
@@ -41,9 +41,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 
 #include "Cobyla.h"
+
 #include "nlopt-util.h"
 #include "nlopt.h"
 
@@ -83,14 +83,14 @@ typedef struct {
 
 static int func_wrap(int ni, int mi, double *x, double *f, double *con, func_wrap_state *s)
 {
-     unsigned n = U(ni);
+    unsigned n = U(ni);
      unsigned i, j, k;
      double *xtmp = s->xtmp;
      const double *lb = s->lb, *ub = s->ub;
 
      (void) mi; /* unused */
 
-     /* in nlopt, we guarante that the function is never evaluated outside
+     /* in nlopt, we guarantee that the function is never evaluated outside
         the lb and ub bounds, so we need force this with xtmp ... note
         that this leads to discontinuity in the first derivative, which
         slows convergence if we don't enable the ENFORCE_BOUNDS feature
@@ -188,7 +188,7 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
                        nlopt_stopping *stop,
                        const double *dx)
 {
-     unsigned i, j;
+    unsigned i, j;
      func_wrap_state s;
      nlopt_result ret;
      double rhobeg, rhoend;
@@ -226,7 +226,7 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
           if (rhoend < stop->xtol_abs[j] / fabs(s.scale[j]))
                rhoend = stop->xtol_abs[j] / fabs(s.scale[j]);
 
-     /* each equality constraint gives two inequality constraints */
+    /* each equality constraint gives two inequality constraints */
      m = nlopt_count_constraints(m, fc) + 2 * nlopt_count_constraints(p, h);
 
      /* add constraints for lower/upper bounds (if any) */
@@ -237,7 +237,7 @@ nlopt_result cobyla_minimize(unsigned n, nlopt_func f, void *f_data,
               ++m;
      }
 
-     s.con_tol = (double *) malloc(sizeof(double) * m);
+    s.con_tol = (double *) malloc(sizeof(double) * m);
      if (m && !s.con_tol) { ret = NLOPT_OUT_OF_MEMORY; goto done; }
 
      for (j = 0; j < m; ++j) s.con_tol[j] = 0;

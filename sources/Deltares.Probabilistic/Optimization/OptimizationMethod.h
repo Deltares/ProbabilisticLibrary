@@ -20,25 +20,27 @@
 // All rights reserved.
 //
 #pragma once
+#include "OptimizationResult.h"
+#include "../Model/ZModel.h"
 
-#include "CobylaReliabilitySettings.h"
-#include "ReliabilityMethod.h"
-#include "../Optimization/CobylaOptimization.h"
-
-namespace Deltares::Reliability
+namespace Deltares::Optimization
 {
-    class CobylaReliability : public ReliabilityMethod
+    class OptimizationMethod
     {
-    public:
-        std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-
-        bool isValid() override
-        {
-            return Settings->isValid();
-        }
     private:
-        Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const;
+        bool stopped = false;
+
+    protected:
+
+        virtual void setStopped();
+
+    public:
+        virtual std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) = 0;
+        virtual ~OptimizationMethod() = default;
+
+        virtual bool isValid() { return false; }
+        bool isStopped();
+        void Stop();
     };
 }
 

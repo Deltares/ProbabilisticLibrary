@@ -20,25 +20,16 @@
 // All rights reserved.
 //
 #pragma once
+#include "../Deltares.Probabilistic/Model/ZModel.h"
 
-#include "CobylaReliabilitySettings.h"
-#include "ReliabilityMethod.h"
-#include "../Optimization/CobylaOptimization.h"
-
-namespace Deltares::Reliability
+namespace Deltares::Probabilistic::Test
 {
-    class CobylaReliability : public ReliabilityMethod
+    class ZModelBuilder
     {
     public:
-        std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 
-        bool isValid() override
-        {
-            return Settings->isValid();
-        }
-    private:
-        Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const;
+        static Models::ZModel getPolynomeModel(double offset1 = -1.0, double offset2 = 0.0);
+        static Models::ZModel getConstrainedPolynomeModel();
     };
 }
 

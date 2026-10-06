@@ -20,6 +20,10 @@
 // All rights reserved.
 //
 #include "CobylaReliability.h"
+
+#include <iostream>
+
+#include "../Model/SampleStorage.h"
 #include "../Optimization/CobylaOptimization.h"
 
 using namespace Deltares::Optimization;
@@ -37,51 +41,70 @@ namespace Deltares::Reliability
         auto initialSample = sampleProvider.getSample();
         double z0Fac = getZFactor(modelRunner->getZValue(initialSample));
 
-        auto optModel = WrappedOptimizationModel(modelRunner, z0Fac, Settings->MaximumIterations);
-        optModel.uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
+        DesignPointBuilder uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
-        auto optimizer = CobylaOptimization();
-        optimizer.settings.EpsilonBeta = Settings->EpsilonBeta;
-        optimizer.settings.MaxIterations = Settings->MaximumIterations;
+        CobylaOptimization optimizer;
+        optimizer.Settings.EpsilonBeta = Settings->EpsilonBeta;
+        optimizer.Settings.MaxIterations = Settings->MaximumIterations;
 
-        auto searchArea = SearchArea();
-        searchArea.Dimensions = std::vector<SearchDimension>(nStochasts);
+        auto searchArea = optimizer.Settings.SearchArea;
+        searchArea->setDimensions(nStochasts);
         Sample startPoint = Settings->StochastSet->getStartPoint();
         for( int i = 0; i < nStochasts; i++)
         {
-            searchArea.Dimensions[i].LowerBound = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
-            searchArea.Dimensions[i].UpperBound = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
-            searchArea.Dimensions[i].StartValue = startPoint.Values[i];
+            searchArea->Dimensions[i] = std::make_shared<SearchParameterSettings>();
+            searchArea->Dimensions[i]->MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
+            searchArea->Dimensions[i]->MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
+            searchArea->Dimensions[i]->StartValue = startPoint.Values[i];
         }
 
-        auto result = optimizer.GetCalibrationPoint(searchArea, optModel);
+        int counter = 0;
+        int* pCounter = &counter;
 
-        double beta = z0Fac * result.getLength();
+        ZModel zModel = getZModelForModelRunner(*modelRunner.get(), uMean, Settings->MaximumIterations, z0Fac, pCounter);
 
-        auto uMin = optModel.uMean.getSample();
+        auto result = optimizer.getOptimizedSample(zModel);
+        double beta = z0Fac * result->minimumValue;
+
+        auto uMin = uMean.getSample();
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-        convergenceReport->IsConverged = result.success;
+        convergenceReport->IsConverged = result->succeeded;
         std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Cobyla Reliability");
 
         return designPoint;
     };
 
-    double WrappedOptimizationModel::GetConstraintValue(Sample& sample)
+    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const
     {
-        auto z = modelRunner->getZValue(sample);
-
-        modelRunner->reportProgress(++counter, maxIterations, z0Fac * sample.getBeta());
-
-        if (z * z0Fac < 0.0)
+        const ZLambda zLambda = [](ModelSample& modelSample)
         {
-            uMean.addSample(sample);
-        }
-        return std::abs(z);
-    }
+            Sample sample = Sample(modelSample.Values);
+            modelSample.Z = sample.getBeta();
+        };
 
-    double WrappedOptimizationModel::GetZValue(Sample& sample) const
-    {
-        return sample.getBeta();
+        ZModel model = ZModel(zLambda);
+
+        const ZBetaLambda zConstraint = [&modelRunner, &uMean, maxIterations, z0Fac, &counter](ModelSample& modelSample)
+        {
+            Sample sample = Sample(modelSample.Values);
+            double z = modelRunner.getZValue(sample);
+
+            modelRunner.reportProgress(++(*counter), maxIterations, z0Fac * sample.getBeta());
+
+            if (z * z0Fac < 0.0)
+            {
+                uMean.addSample(sample);
+            }
+
+            modelSample.Z = z;
+
+            // should be z instead of std::abs(z) for better results
+            return std::abs(z);
+        };
+
+        model.setConstraint(zConstraint);
+
+        return model;
     }
 }
 

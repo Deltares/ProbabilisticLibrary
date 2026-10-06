@@ -19,22 +19,51 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
-#include "CobylaOptimizationSettings.h"
-#include "OptimizationMethod.h"
-#include "../Model/ZModel.h"
+
+#include "../Model/ModelSample.h"
+#include "../Model/Evaluation.h"
+#include "../Logging/Message.h"
+#include <cmath>
 
 namespace Deltares::Optimization
 {
     /**
-     * \brief Wrapper for Cobyla optimization algorithm
-     * \note At this moment: this wrapper handles only zero or one constraints
+     * \brief Contains the results of an optimization calculation
      */
-    class CobylaOptimization : public OptimizationMethod
+    class OptimizationResult
     {
     public:
-        CobylaOptimizationSettings Settings;
-        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
+        /**
+         * \brief Indicates whether the optimization has succeeded
+         */
+        bool succeeded = false;
+
+        /**
+         * \brief Minimum found model value
+         */
+        double minimumValue = std::nan("");
+
+        /**
+         * \brief Number of model runs made to achieve the result
+         */
+        int modelRuns = 0;
+
+        /**
+         * \brief Values corresponding with the minimum result
+         */
+        std::vector<double> values;
+
+        /**
+         * \brief List of evaluations calculated during optimization analysis
+         */
+        std::vector<std::shared_ptr<Models::Evaluation>> evaluations;
+
+        /**
+         * \brief List of messages raised during optimization analysis
+         */
+        std::vector<std::shared_ptr<Logging::Message>> messages;
     };
 }
 

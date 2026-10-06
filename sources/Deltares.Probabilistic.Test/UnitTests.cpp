@@ -49,6 +49,7 @@
 #include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/TestCobyla.h"
+#include "Optimization/TestGridSearch.h"
 #include "Proxies/TestProxies.h"
 #include "Utils/TestExceptions.h"
 #include "Utils/TestString.h"
@@ -811,6 +812,12 @@ TEST(UnitTests, testCobylaOptimization)
 {
     auto tstCobylaOpt = TestCobyla();
     tstCobylaOpt.allCobylaTests();
+}
+
+TEST(UnitTests, testGridSearchOptimization)
+{
+    auto testGridSearchOpt = TestGridSearch();
+    testGridSearchOpt.allGridSearchTests();
 }
 
 TEST(WaartsTests, testLinearResistanceFORM)

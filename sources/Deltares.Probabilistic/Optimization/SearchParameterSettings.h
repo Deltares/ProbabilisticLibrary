@@ -41,12 +41,12 @@ namespace Deltares::Optimization
         /**
          * \brief Minimum value which can be assigned to the parameter
          */
-        double MinValue = 0;
+        double MinValue = -1.0E30;
 
         /**
          * \brief Maximum value which can be assigned to the parameter
          */
-        double MaxValue = 0;
+        double MaxValue = 1.0E30;
 
         /**
          * \brief Number of different values which can be assigned to the parameter
@@ -57,7 +57,7 @@ namespace Deltares::Optimization
          * \brief Start value for the parameter
          * \remark Not used in the grid search algorithm, but in future algorithms
          */
-        double StartValue = nan("");
+        double StartValue = 0.0;
 
         /**
          * \brief Indicates whether the grid can be repositioned for this parameter
