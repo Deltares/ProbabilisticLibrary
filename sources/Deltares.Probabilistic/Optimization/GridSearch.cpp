@@ -77,7 +77,7 @@ namespace Deltares::Optimization
         result->values.reserve(sample.Values.size());
         for (size_t i = 0; i < sample.Values.size(); i++)
         {
-            result->values[i] = sample.Values[i];
+            result->values.push_back(sample.Values[i]);
         }
 
         return result;
