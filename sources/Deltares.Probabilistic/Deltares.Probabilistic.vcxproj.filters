@@ -282,6 +282,7 @@
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />
+    <ClCompile Include="Server\Handlers\OptimizationHandlers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -648,6 +649,11 @@
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Server\Handlers\OptimizationProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationResultHandler.h" />
+    <ClInclude Include="Server\Handlers\SearchParameterSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationHandlers.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

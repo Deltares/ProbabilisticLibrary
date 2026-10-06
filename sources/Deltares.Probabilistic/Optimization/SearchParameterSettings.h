@@ -21,8 +21,10 @@
 //
 #pragma once
 #include <cmath>
+#include <memory>
 #include <vector>
 
+#include "../Model/ModelInputParameter.h"
 #include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Optimization
@@ -30,7 +32,7 @@ namespace Deltares::Optimization
     /**
      * \brief Indicates which values have to be used from the search parameter settings
      */
-    enum UseValuesType {AllValues, MinValue, MaxValue};
+    enum UseValuesType { AllValues, MinValue, MaxValue };
 
     /**
      * \brief Settings for a parameter in the grid search algorithm
@@ -38,6 +40,11 @@ namespace Deltares::Optimization
     class SearchParameterSettings
     {
     public:
+        /**
+         * The parameter to which these settings apply
+         */
+        std::shared_ptr<Models::ModelInputParameter> parameter = nullptr;
+
         /**
          * \brief Minimum value which can be assigned to the parameter
          */
@@ -76,7 +83,7 @@ namespace Deltares::Optimization
         UseValuesType UseValues = UseValuesType::AllValues;
 
         /**
-         * \brief Gets the values to be queried in the grid search algorithm 
+         * \brief Gets the values to be queried in the grid search algorithm
          * \return Values
          * \remark Based on MinValue, MaxValue, UseValueType and NumberOfValues
          */
@@ -84,7 +91,7 @@ namespace Deltares::Optimization
         {
             std::vector<double> values(this->UseValues == UseValuesType::AllValues ? this->NumberOfValues : 1);
 
-            if (this->UseValues == UseValuesType::AllValues) 
+            if (this->UseValues == UseValuesType::AllValues)
             {
                 double interval = getInterval();
 

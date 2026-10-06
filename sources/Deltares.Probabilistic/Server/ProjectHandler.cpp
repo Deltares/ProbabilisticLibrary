@@ -291,6 +291,7 @@ namespace Deltares::Server
         modelHandlers.InitializeHandlers(handlers);
         statisticsHandlers.InitializeHandlers(handlers, &modelHandlers);
         reliabilityHandlers.InitializeHandlers(handlers, &modelHandlers, &statisticsHandlers);
+        optimizationHandlers.InitializeHandlers(handlers, &modelHandlers);
 
         reliabilityHandlers.fragilityCurveHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->reliabilityHandlers.designPointHandler.GetObjectId(designPoint); };
 
