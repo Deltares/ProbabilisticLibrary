@@ -58,6 +58,16 @@ namespace Deltares::Reliability
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
+        // stochasts without an own variance factor use the variance factor of the method settings
+        for (const std::shared_ptr<StochastSettings>& stochastSettings : this->Settings->StochastSet->stochastSettings)
+        {
+            stochastSettings->VarianceFactor = stochastSettings->getVarianceFactor(this->Settings->VarianceFactor);
+        }
+        for (const std::shared_ptr<StochastSettings>& stochastSettings : this->Settings->StochastSet->VaryingStochastSettings)
+        {
+            stochastSettings->VarianceFactor = stochastSettings->getVarianceFactor(this->Settings->VarianceFactor);
+        }
+
         std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
 
