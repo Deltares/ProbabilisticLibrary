@@ -345,6 +345,8 @@
     <ClInclude Include="Utils\FileUtils.h" />
     <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
+    <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimization.h" />
+    <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Optimization\Cobyla.h" />
@@ -600,6 +602,7 @@
     <ClCompile Include="Utils\FileUtils.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
+    <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimization.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\Cobyla.cpp" />
