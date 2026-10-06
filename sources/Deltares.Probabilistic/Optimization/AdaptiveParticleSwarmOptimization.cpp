@@ -46,7 +46,7 @@ namespace Deltares::Optimization
 
         std::vector<ModelSample> population;
 
-        auto best_particle = InitializePopulation( model, population, rng);
+        auto best_particle = InitializePopulation(model, population, rng);
 
         const auto particle_size = search_area.Dimensions.size();
 
@@ -57,12 +57,8 @@ namespace Deltares::Optimization
         {
             std::vector<ModelSample> elite = population;
 
-            std::sort(
-                elite.begin(),
-                elite.end(),
-                [](
-                const ModelSample & a,
-                const ModelSample & b)
+            std::sort(elite.begin(), elite.end(),
+                [](const ModelSample & a, const ModelSample & b)
                 {
                     return a.Z < b.Z;
                 });
@@ -73,7 +69,7 @@ namespace Deltares::Optimization
             }
 
             double algorithm_divider =
-                std::max(0.1, 0.9 - generation_index / (0.9 * static_cast<double>( Options.GenerationCount)));
+                std::max(0.1, 0.9 - generation_index / (0.9 * static_cast<double>(Options.GenerationCount)));
 
             for (int m = 0; m < Options.PopulationCount; ++m)
             {
@@ -82,7 +78,7 @@ namespace Deltares::Optimization
                 //
                 if (uniform(rng) < algorithm_divider)
                 {
-                    double alpha = std::pow( Options.Delta, generation_index);
+                    const double alpha = std::pow(Options.Delta, generation_index);
 
                     for (size_t n = 0; n < particle_size; ++n)
                     {
@@ -94,16 +90,16 @@ namespace Deltares::Optimization
 
                             const double best_ratio = search_area.Dimensions[n]->GetRelativeValue(best_particle.Values[n]);
 
-                            const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta *best_ratio + random_apso;
+                            const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
 
-                            if (search_area.Dimensions[n]->Move ||(new_ratio >= 0.0 && new_ratio <= 1.0))
+                            if (search_area.Dimensions[n]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
                             {
                                 population[m].Values[n] =
                                     search_area.Dimensions[n]->GetAbsoluteValue(new_ratio);
                             }
                             else
                             {
-                                population[m].Values[n] =best_particle.Values[n];
+                                population[m].Values[n] = best_particle.Values[n];
                             }
                         }
                     }
@@ -142,11 +138,11 @@ namespace Deltares::Optimization
 
                             if (search_area.Dimensions[q]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
                             {
-                                population[m].Values[q] =search_area.Dimensions[q]->GetAbsoluteValue(new_ratio);
+                                population[m].Values[q] = search_area.Dimensions[q]->GetAbsoluteValue(new_ratio);
                             }
                             else
                             {
-                                population[m].Values[q] =best_particle.Values[q];
+                                population[m].Values[q] = best_particle.Values[q];
                             }
                         }
                     }
@@ -212,7 +208,7 @@ namespace Deltares::Optimization
 
             population.push_back(sample);
 
-            if (first ||sample.Z <best_particle.Z)
+            if (first ||sample.Z < best_particle.Z)
             {
                 best_particle = sample;
                 first = false;
