@@ -45,9 +45,6 @@ namespace Deltares::Reliability
         this->importanceSampling = std::make_shared<ImportanceSampling>();
         importanceSampling->Settings = this->Settings->importanceSamplingSettings->clone();
         importanceSampling->Settings->startPointSettings->StartMethod = StartMethodType::FixedValue;
-
-        // stochasts without an own variance factor use the variance factor of the adaptive settings,
-        // also in the first loop (the following loops apply this factor via setFactor)
         importanceSampling->Settings->VarianceFactor = this->Settings->VarianceFactor;
 
         modelRunner->updateStochastSettings(importanceSampling->Settings->StochastSet);

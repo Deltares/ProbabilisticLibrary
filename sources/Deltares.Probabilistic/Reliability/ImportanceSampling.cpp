@@ -63,9 +63,9 @@ namespace Deltares::Reliability
         {
             stochastSettings->VarianceFactor = stochastSettings->getVarianceFactor(this->Settings->VarianceFactor);
         }
-        for (const std::shared_ptr<StochastSettings>& stochastSettings : this->Settings->StochastSet->VaryingStochastSettings)
+        for (const std::shared_ptr<StochastSettings>& varyingStochastSettings : this->Settings->StochastSet->VaryingStochastSettings)
         {
-            stochastSettings->VarianceFactor = stochastSettings->getVarianceFactor(this->Settings->VarianceFactor);
+            varyingStochastSettings->VarianceFactor = varyingStochastSettings->getVarianceFactor(this->Settings->VarianceFactor);
         }
 
         std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
@@ -88,7 +88,7 @@ namespace Deltares::Reliability
 
         SampleStorage storage = SampleStorage(chunkSize);
         std::vector<Sample*> samples;
-        std::vector<double> zValues; 
+        std::vector<double> zValues;
 
         // list of all clusters
         std::shared_ptr<DesignPoint> startDesignPoint = nullptr;
@@ -276,7 +276,7 @@ namespace Deltares::Reliability
             }
             else
             {
-                // TODO: 
+                // TODO:
                 breakLoop = breakLoopWithNoFailureObs(*modelRunner, *Settings, sampleIndex, reported);
             }
         }
