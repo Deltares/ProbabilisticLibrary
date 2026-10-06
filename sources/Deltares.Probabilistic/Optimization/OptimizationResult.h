@@ -51,9 +51,9 @@ namespace Deltares::Optimization
         int modelRuns = 0;
 
         /**
-         * \brief Sample corresponding with the minimum result
+         * \brief Values corresponding with the minimum result
          */
-        std::shared_ptr<Models::ModelSample> optimizedSample;
+        std::vector<double> values;
 
         /**
          * \brief List of evaluations calculated during optimization analysis

@@ -72,8 +72,13 @@ namespace Deltares::Optimization
 
         result->succeeded = true; // always succeeds
         result->modelRuns = model.getModelRuns();
-        result->optimizedSample = std::make_shared<Models::ModelSample>(sample);
         result->minimumValue = sample.Z;
+
+        result->values.reserve(sample.Values.size());
+        for (size_t i = 0; i < sample.Values.size(); i++)
+        {
+            result->values[i] = sample.Values[i];
+        }
 
         return result;
     }

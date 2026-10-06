@@ -44,8 +44,8 @@ namespace Deltares::Probabilistic::Test
         auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
         auto result = cb.getOptimizedSample(model);
-        EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
-        EXPECT_NEAR(result->optimizedSample->Values[1], 0.0, 1e-3);
+        EXPECT_NEAR(result->values[0], -1.0, 1e-3);
+        EXPECT_NEAR(result->values[1], 0.0, 1e-3);
         EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
         EXPECT_EQ(result->modelRuns, 69);
         EXPECT_TRUE(result->succeeded);
@@ -61,8 +61,8 @@ namespace Deltares::Probabilistic::Test
 
         cb.run();
         auto result = cb.result;
-        EXPECT_NEAR(result->optimizedSample->Values[0], -1.0, 1e-3);
-        EXPECT_NEAR(result->optimizedSample->Values[1], 0.0, 1e-3);
+        EXPECT_NEAR(result->values[0], -1.0, 1e-3);
+        EXPECT_NEAR(result->values[1], 0.0, 1e-3);
         EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
         EXPECT_EQ(result->modelRuns, 69);
         EXPECT_TRUE(result->succeeded);
@@ -77,8 +77,8 @@ namespace Deltares::Probabilistic::Test
         auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
         auto result = cb.getOptimizedSample(model);
-        EXPECT_NEAR(result->optimizedSample->Values[0], 2.0, 1e-3);
-        EXPECT_NEAR(result->optimizedSample->Values[1], 3.0, 1e-3);
+        EXPECT_NEAR(result->values[0], 2.0, 1e-3);
+        EXPECT_NEAR(result->values[1], 3.0, 1e-3);
         EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
         EXPECT_EQ(result->modelRuns, 83);
         EXPECT_TRUE(result->succeeded);
@@ -93,8 +93,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[0]->StartValue = 1.0;
         searchArea->Dimensions[1]->StartValue = 1.0;
         auto result = cb.getOptimizedSample(model);
-        EXPECT_NEAR(result->optimizedSample->Values[0], 0.707, 1e-2);
-        EXPECT_NEAR(result->optimizedSample->Values[1], -0.707, 1e-2);
+        EXPECT_NEAR(result->values[0], 0.707, 1e-2);
+        EXPECT_NEAR(result->values[1], -0.707, 1e-2);
         EXPECT_NEAR(result->minimumValue, -0.5, 1e-3);
         EXPECT_EQ(result->modelRuns, 49);
         EXPECT_TRUE(result->succeeded);

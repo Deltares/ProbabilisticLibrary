@@ -50,8 +50,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[1]->NumberOfValues = 11;
 
         auto result = gridSearch.getOptimizedSample(model);
-        EXPECT_NEAR(result->optimizedSample->Values[0], 2.0, 0.01);
-        EXPECT_NEAR(result->optimizedSample->Values[1], 4.0, 0.01);
+        EXPECT_NEAR(result->values[0], 2.0, 0.01);
+        EXPECT_NEAR(result->values[1], 4.0, 0.01);
         EXPECT_NEAR(result->minimumValue, 1.69, 1e-3);
 
         EXPECT_EQ(result->modelRuns, 121);
@@ -62,8 +62,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[1]->NumberOfRefinements = 3;
 
         auto result2 = gridSearch.getOptimizedSample(model);
-        EXPECT_NEAR(result2->optimizedSample->Values[0], 2.4, 0.1);
-        EXPECT_NEAR(result2->optimizedSample->Values[1], 3.7, 0.1);
+        EXPECT_NEAR(result2->values[0], 2.4, 0.1);
+        EXPECT_NEAR(result2->values[1], 3.7, 0.1);
         EXPECT_NEAR(result2->minimumValue, 0.008, 1e-3);
 
         EXPECT_EQ(result2->modelRuns, 148);
@@ -87,8 +87,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[1]->Move = true;
 
         auto result = project.getOptimizedSample(model);
-        EXPECT_NEAR(result->optimizedSample->Values[0], 13.0, 0.01);
-        EXPECT_NEAR(result->optimizedSample->Values[1], 16.0, 0.01);
+        EXPECT_NEAR(result->values[0], 13.0, 0.01);
+        EXPECT_NEAR(result->values[1], 16.0, 0.01);
         EXPECT_NEAR(result->minimumValue, 0.14, 1e-3);
 
         EXPECT_EQ(result->modelRuns, 231);
@@ -99,8 +99,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[1]->NumberOfRefinements = 10;
 
         auto result2 = project.getOptimizedSample(model);
-        EXPECT_NEAR(result2->optimizedSample->Values[0], 12.9, 0.001);
-        EXPECT_NEAR(result2->optimizedSample->Values[1], 16.2, 0.001);
+        EXPECT_NEAR(result2->values[0], 12.9, 0.001);
+        EXPECT_NEAR(result2->values[1], 16.2, 0.001);
         EXPECT_NEAR(result2->minimumValue, 0.0, 0.001);
 
         EXPECT_EQ(result2->modelRuns, 112); // reused runs
@@ -127,8 +127,8 @@ namespace Deltares::Probabilistic::Test
 
         project.run();
         auto result = project.result;
-        EXPECT_NEAR(result->optimizedSample->Values[0], 12.9, 0.001);
-        EXPECT_NEAR(result->optimizedSample->Values[1], 16.2, 0.001);
+        EXPECT_NEAR(result->values[0], 12.9, 0.001);
+        EXPECT_NEAR(result->values[1], 16.2, 0.001);
         EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
 
         EXPECT_EQ(result->modelRuns, 321); // reused runs

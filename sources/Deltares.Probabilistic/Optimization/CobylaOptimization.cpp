@@ -23,6 +23,11 @@
 #include "Cobyla.h"
 #include <functional>
 
+namespace Deltares::Numeric
+{
+    class NumericSupport;
+}
+
 namespace Deltares::Optimization
 {
     std::shared_ptr<OptimizationResult> CobylaOptimization::getOptimizedSample(Models::ZModel& model)
@@ -113,10 +118,11 @@ namespace Deltares::Optimization
 
         // copy results, do not reuse vector
         // reusing vector leads to memory problems on linux
-        result->optimizedSample = std::make_shared<Models::ModelSample>(x0.size());
+
+        result->values.reserve(x0.size());
         for (size_t i = 0; i < x0.size(); i++)
         {
-            result->optimizedSample->Values[i] = x0[i];
+            result->values[i] = x0[i];
         }
 
         return result;
