@@ -6,10 +6,12 @@
 #include <random>
 #include <vector>
 
+#include "AdaptiveParticleSwarmOptimizationSettings.h"
+
 class APSO
 {
 public:
-    APSOOptions Options;
+    Deltares::Optimization::AdaptiveParticleSwarmOptimizationSettings Options;
 
     OptimizationSample GetCalibrationPoint(
         SearchArea& searchArea,
