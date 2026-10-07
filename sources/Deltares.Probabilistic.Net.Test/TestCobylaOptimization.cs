@@ -41,7 +41,7 @@ namespace Deltares.Probabilistic.Test
             foreach (ModelParameter parameter in project.InputParameters)
             {
                 project.Settings.SearchParameterSettings.Add(new SearchParameterSettings
-                    { Parameter = parameter, MinValue = 0, MaxValue = 10 });
+                    { Parameter = parameter, MinValue = 0, MaxValue = 10, StartValue = 0});
             }
 
             project.Run();
