@@ -65,78 +65,13 @@ namespace Deltares::Optimization
 
             for (int m = 0; m < Options.PopulationCount; ++m)
             {
-                //
-                // APSO branch
-                //
                 if (rng.next() < algorithm_divider)
                 {
-                    const double alpha = std::pow(Options.Delta, generation_index);
-
-                    for (size_t n = 0; n < particle_size; ++n)
-                    {
-                        if (rng.next() < Options.CrossOver)
-                        {
-                            const double random_apso = alpha * ((rng.next() * 2.0) - 1.0);
-
-                            const double prev_ratio = search_area.Dimensions[n]->GetRelativeValue(population[m] .Values[n]);
-
-                            const double best_ratio = search_area.Dimensions[n]->GetRelativeValue(best_particle.Values[n]);
-
-                            const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
-
-                            if (search_area.Dimensions[n]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
-                            {
-                                population[m].Values[n] =
-                                    search_area.Dimensions[n]->GetAbsoluteValue(new_ratio);
-                            }
-                            else
-                            {
-                                population[m].Values[n] = best_particle.Values[n];
-                            }
-                        }
-                    }
+                    apsoBranch(generation_index, particle_size, best_particle, population[m]);
                 }
-                //
-                // Differential Evolution branch
-                //
                 else
                 {
-                    const int maximum = static_cast<int>(elite.size());
-
-                    const ModelSample de0 = elite[rng.next(maximum)];
-
-                    const ModelSample de1 = elite[rng.next(maximum)];
-
-                    const ModelSample de2 = elite[rng.next(maximum)];
-
-                    const ModelSample de3 = elite[rng.next(maximum)];
-
-                    for (size_t q = 0; q < particle_size; ++q)
-                    {
-                        if (rng.next() < Options.CrossOver)
-                        {
-                            const double best_ratio = search_area.Dimensions[q]->GetRelativeValue(best_particle.Values[q]);
-
-                            const double r0 = search_area.Dimensions[q]->GetRelativeValue(de0.Values[q]);
-
-                            const double r1 = search_area.Dimensions[q]->GetRelativeValue(de1.Values[q]);
-
-                            const double r2 = search_area.Dimensions[q]->GetRelativeValue(de2.Values[q]);
-
-                            const double r3 = search_area.Dimensions[q]->GetRelativeValue(de3.Values[q]);
-
-                            const double new_ratio = best_ratio + Options.DifferentialWeight * (r0 - r1 + r2 - r3);
-
-                            if (search_area.Dimensions[q]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
-                            {
-                                population[m].Values[q] = search_area.Dimensions[q]->GetAbsoluteValue(new_ratio);
-                            }
-                            else
-                            {
-                                population[m].Values[q] = best_particle.Values[q];
-                            }
-                        }
-                    }
+                    differentialEvolutionBranch(elite, particle_size, best_particle, population[m]);
                 }
 
                 model.invoke(population[m]);
@@ -161,7 +96,81 @@ namespace Deltares::Optimization
 
         auto return_value = OptimizationResult();
         return_value.values = best_particle.Values;
+        return_value.succeeded = true;
+        return_value.minimumValue = best_particle.Z;
         return return_value;
+    }
+
+    void AdaptiveParticleSwarmOptimization::apsoBranch(int generation_index, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
+    {
+        auto& search_area = Options.SearchArea;
+        const double alpha = std::pow(Options.Delta, generation_index);
+
+        for (size_t n = 0; n < particle_size; ++n)
+        {
+            if (rng.next() < Options.CrossOver)
+            {
+                const double random_apso = alpha * ((rng.next() * 2.0) - 1.0);
+
+                const double prev_ratio = search_area.Dimensions[n]->GetRelativeValue(population_m.Values[n]);
+
+                const double best_ratio = search_area.Dimensions[n]->GetRelativeValue(best_particle.Values[n]);
+
+                const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
+
+                if (search_area.Dimensions[n]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                {
+                    population_m.Values[n] =
+                        search_area.Dimensions[n]->GetAbsoluteValue(new_ratio);
+                }
+                else
+                {
+                    population_m.Values[n] = best_particle.Values[n];
+                }
+            }
+        }
+    }
+
+    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(std::vector<ModelSample>& elite, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
+    {
+        auto& search_area = Options.SearchArea;
+
+        const int maximum = static_cast<int>(elite.size());
+
+        const ModelSample de0 = elite[rng.next(maximum)];
+
+        const ModelSample de1 = elite[rng.next(maximum)];
+
+        const ModelSample de2 = elite[rng.next(maximum)];
+
+        const ModelSample de3 = elite[rng.next(maximum)];
+
+        for (size_t q = 0; q < particle_size; ++q)
+        {
+            if (rng.next() < Options.CrossOver)
+            {
+                const double best_ratio = search_area.Dimensions[q]->GetRelativeValue(best_particle.Values[q]);
+
+                const double r0 = search_area.Dimensions[q]->GetRelativeValue(de0.Values[q]);
+
+                const double r1 = search_area.Dimensions[q]->GetRelativeValue(de1.Values[q]);
+
+                const double r2 = search_area.Dimensions[q]->GetRelativeValue(de2.Values[q]);
+
+                const double r3 = search_area.Dimensions[q]->GetRelativeValue(de3.Values[q]);
+
+                const double new_ratio = best_ratio + Options.DifferentialWeight * (r0 - r1 + r2 - r3);
+
+                if (search_area.Dimensions[q]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                {
+                    population_m.Values[q] = search_area.Dimensions[q]->GetAbsoluteValue(new_ratio);
+                }
+                else
+                {
+                    population_m.Values[q] = best_particle.Values[q];
+                }
+            }
+        }
     }
 
     ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(ZModel& model, std::vector<ModelSample>& population)
@@ -188,7 +197,7 @@ namespace Deltares::Optimization
             {
                 const double genome_ratio = particle_size > 1 ? static_cast<double>(genome_index) / (particle_size - 1) : 0.0;
 
-                const double ratio =a *(genome_ratio - c) * (genome_ratio - c) + b;
+                const double ratio =a * (genome_ratio - c) * (genome_ratio - c) + b;
 
                 sample.Values[genome_index] = search_area.Dimensions[genome_index]->GetAbsoluteValue(ratio);
             }
