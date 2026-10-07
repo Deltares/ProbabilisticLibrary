@@ -25,6 +25,7 @@
 #include <gtest/gtest.h>
 
 #include "../../Deltares.Probabilistic/Optimization/AdaptiveParticleSwarmOptimization.h"
+#include "../../Deltares.Probabilistic/Optimization/OptimizationProject.h"
 #include "../ZModelBuilder.h"
 
 namespace Deltares::Optimization::Test
@@ -53,5 +54,35 @@ namespace Deltares::Optimization::Test
         EXPECT_EQ(model.getEvaluations(), result.modelRuns);
         EXPECT_TRUE(result.succeeded);
     }
+
+    void TestAdaptiveParticleSwarmOptimization::test_project_polynome_move_grid()
+    {
+        auto project = OptimizationProject();
+        project.settings->OptimizationMethod = OptimizationMethodType::APSO;
+        project.zModel = Probabilistic::Test::ZModelBuilder::getPolynomeModel(12.9, 16.2);
+        project.settings->MaxGridMoves = 10;
+        auto searchArea = project.settings->SearchArea;
+        searchArea->setDimensions(2);
+        searchArea->Dimensions[0]->MinValue = 0;
+        searchArea->Dimensions[0]->MaxValue = 10;
+        searchArea->Dimensions[0]->NumberOfValues = 11;
+        searchArea->Dimensions[0]->Move = true;
+        searchArea->Dimensions[0]->NumberOfRefinements = 10;
+        searchArea->Dimensions[1]->MinValue = 0;
+        searchArea->Dimensions[1]->MaxValue = 10;
+        searchArea->Dimensions[1]->NumberOfValues = 11;
+        searchArea->Dimensions[1]->Move = true;
+        searchArea->Dimensions[1]->NumberOfRefinements = 10;
+
+        project.run();
+        auto result = project.result;
+        EXPECT_NEAR(result->values[0], 12.9, 0.001);
+        EXPECT_NEAR(result->values[1], 16.2, 0.001);
+        EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
+
+        EXPECT_EQ(result->modelRuns, 6375); // reused runs
+        EXPECT_TRUE(result->succeeded);
+    }
+
 }
 

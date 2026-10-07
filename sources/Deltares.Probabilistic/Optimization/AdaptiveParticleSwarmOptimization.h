@@ -32,7 +32,7 @@
 
 namespace Deltares::Optimization
 {
-    class AdaptiveParticleSwarmOptimization : OptimizationMethod
+    class AdaptiveParticleSwarmOptimization : public OptimizationMethod
     {
     public:
         AdaptiveParticleSwarmOptimizationSettings Options;

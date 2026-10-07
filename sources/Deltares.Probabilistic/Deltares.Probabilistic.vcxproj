@@ -603,6 +603,7 @@
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimization.cpp" />
+    <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\Cobyla.cpp" />

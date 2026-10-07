@@ -856,6 +856,11 @@ TEST(UnitTests, testAPSOtestCase7)
     Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.3, 6000, { -24, -18 });
 }
 
+TEST(UnitTests, testAPSOmoveGrid)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::test_project_polynome_move_grid();
+}
+
 TEST(WaartsTests, testLinearResistanceFORM)
 {
     auto tester = TestWaartsLinearResistance();

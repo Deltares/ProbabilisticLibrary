@@ -23,10 +23,11 @@
 #pragma once
 
 #include "SearchParameterSettingsSet.h"
+#include "../Model/Validatable.h"
 
 namespace Deltares::Optimization
 {
-    class AdaptiveParticleSwarmOptimizationSettings
+    class AdaptiveParticleSwarmOptimizationSettings : public Models::Validatable
     {
     public:
         SearchParameterSettingsSet SearchArea = SearchParameterSettingsSet();
@@ -39,5 +40,11 @@ namespace Deltares::Optimization
         double CrossOver = 0.3;
         double Beta = 0.5;
         double Delta = 0.7;
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const override;
     };
 }

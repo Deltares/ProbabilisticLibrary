@@ -29,6 +29,7 @@ namespace Deltares::Optimization::Test
     {
     public:
         static void TestBeeswarm(bool move, double tolerance, int evaluations, const std::vector<double>& center);
+        static void test_project_polynome_move_grid();
     };
 }
 
