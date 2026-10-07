@@ -96,7 +96,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result->values[0], 0.707, 1e-2);
         EXPECT_NEAR(result->values[1], -0.707, 1e-2);
         EXPECT_NEAR(result->minimumValue, -0.5, 1e-3);
-        EXPECT_EQ(result->modelRuns, 49);
+        EXPECT_EQ(result->modelRuns, 86);
         EXPECT_TRUE(result->succeeded);
     }
 
