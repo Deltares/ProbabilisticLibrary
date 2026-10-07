@@ -42,7 +42,7 @@ namespace Deltares::Optimization
         Numeric::RandomValueGenerator rng;
         void apsoBranch(int generation_index, size_t particle_size, const Models::ModelSample& best_particle,
             Models::ModelSample& population_m);
-        void differentialEvolutionBranch(std::vector<Models::ModelSample>& elite, size_t particle_size,
+        void differentialEvolutionBranch(const std::vector<Models::ModelSample>& elite, size_t particle_size,
             const Models::ModelSample& best_particle,
             Models::ModelSample& population_m);
     };

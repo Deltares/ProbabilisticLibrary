@@ -20,12 +20,13 @@
 // All rights reserved.
 //
 
+#include "AdaptiveParticleSwarmOptimization.h"
+#include "../Math/NumericSupport.h"
+
 #include <algorithm>
 #include <cmath>
-#include <limits>
 #include <vector>
-
-#include "AdaptiveParticleSwarmOptimization.h"
+#include <array>
 
 namespace Deltares::Optimization
 {
@@ -34,14 +35,14 @@ namespace Deltares::Optimization
     OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(ZModel& model)
     {
         rng.initialize(true, Options.Seed);
-        auto& search_area = Options.SearchArea;
+        const auto& [Dimensions] = Options.SearchArea;
 
         std::vector<ModelSample> population;
 
         auto best_particle = InitializePopulation(model, population);
         size_t nr_evaluations = population.size();
 
-        const auto particle_size = search_area.Dimensions.size();
+        const auto particle_size = Dimensions.size();
 
         int generation_index = 0;
         int last_improving_generation = 0;
@@ -50,11 +51,11 @@ namespace Deltares::Optimization
         {
             std::vector<ModelSample> elite = population;
 
-            std::sort(elite.begin(), elite.end(),
-                [](const ModelSample & a, const ModelSample & b)
-                {
-                    return a.Z < b.Z;
-                });
+            std::ranges::sort(elite,
+                              [](const ModelSample & a, const ModelSample & b)
+                              {
+                                  return a.Z < b.Z;
+                              });
 
             while (elite.size() > Options.EliteCount)
             {
@@ -106,7 +107,7 @@ namespace Deltares::Optimization
 
     void AdaptiveParticleSwarmOptimization::apsoBranch(int generation_index, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
     {
-        auto& search_area = Options.SearchArea;
+        const auto& [Dimensions] = Options.SearchArea;
         const double alpha = std::pow(Options.Delta, generation_index);
 
         for (size_t n = 0; n < particle_size; ++n)
@@ -115,16 +116,16 @@ namespace Deltares::Optimization
             {
                 const double random_apso = alpha * ((rng.next() * 2.0) - 1.0);
 
-                const double prev_ratio = search_area.Dimensions[n]->GetRelativeValue(population_m.Values[n]);
+                const double prev_ratio = Dimensions[n]->GetRelativeValue(population_m.Values[n]);
 
-                const double best_ratio = search_area.Dimensions[n]->GetRelativeValue(best_particle.Values[n]);
+                const double best_ratio = Dimensions[n]->GetRelativeValue(best_particle.Values[n]);
 
                 const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
 
-                if (search_area.Dimensions[n]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (Dimensions[n]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
                 {
                     population_m.Values[n] =
-                        search_area.Dimensions[n]->GetAbsoluteValue(new_ratio);
+                        Dimensions[n]->GetAbsoluteValue(new_ratio);
                 }
                 else
                 {
@@ -134,39 +135,37 @@ namespace Deltares::Optimization
         }
     }
 
-    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(std::vector<ModelSample>& elite, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
+    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
     {
-        auto& search_area = Options.SearchArea;
+        const auto& [Dimensions] = Options.SearchArea;
 
         const int maximum = static_cast<int>(elite.size());
 
-        const ModelSample de0 = elite[rng.next(maximum)];
-
-        const ModelSample de1 = elite[rng.next(maximum)];
-
-        const ModelSample de2 = elite[rng.next(maximum)];
-
-        const ModelSample de3 = elite[rng.next(maximum)];
+        constexpr int n_terms = 4;
+        std::array<int, n_terms> indexes;
+        for (int i = 0 ; i < n_terms; i++)
+        {
+            indexes[i] = rng.next(maximum);
+        }
 
         for (size_t q = 0; q < particle_size; ++q)
         {
             if (rng.next() < Options.CrossOver)
             {
-                const double best_ratio = search_area.Dimensions[q]->GetRelativeValue(best_particle.Values[q]);
+                const double best_ratio = Dimensions[q]->GetRelativeValue(best_particle.Values[q]);
 
-                const double r0 = search_area.Dimensions[q]->GetRelativeValue(de0.Values[q]);
-
-                const double r1 = search_area.Dimensions[q]->GetRelativeValue(de1.Values[q]);
-
-                const double r2 = search_area.Dimensions[q]->GetRelativeValue(de2.Values[q]);
-
-                const double r3 = search_area.Dimensions[q]->GetRelativeValue(de3.Values[q]);
-
-                const double new_ratio = best_ratio + Options.DifferentialWeight * (r0 - r1 + r2 - r3);
-
-                if (search_area.Dimensions[q]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                std::array<double, n_terms> r;
+                for (int i = 0; i < n_terms; i++)
                 {
-                    population_m.Values[q] = search_area.Dimensions[q]->GetAbsoluteValue(new_ratio);
+                    const auto& sample_de = elite[indexes[i]];
+                    r[i] = Dimensions[q]->GetRelativeValue(sample_de.Values[q]);
+                }
+
+                const double new_ratio = best_ratio + Options.DifferentialWeight * (r[0] - r[1] + r[2] - r[3]);
+
+                if (Dimensions[q]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                {
+                    population_m.Values[q] = Dimensions[q]->GetAbsoluteValue(new_ratio);
                 }
                 else
                 {
@@ -178,9 +177,9 @@ namespace Deltares::Optimization
 
     ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(ZModel& model, std::vector<ModelSample>& population)
     {
-        auto& search_area = Options.SearchArea;
+        const auto& [Dimensions] = Options.SearchArea;
 
-        const int particle_size =static_cast<int>(search_area.Dimensions.size());
+        const int particle_size = static_cast<int>(Dimensions.size());
 
         ModelSample best_particle = ModelSample(particle_size);
         bool first = true;
@@ -198,18 +197,20 @@ namespace Deltares::Optimization
 
             for (int genome_index = 0; genome_index < particle_size; ++genome_index)
             {
-                const double genome_ratio = particle_size > 1 ? static_cast<double>(genome_index) / (particle_size - 1) : 0.0;
+                const double genome_ratio = particle_size > 1
+                    ? Numeric::NumericSupport::Divide (genome_index, particle_size - 1)
+                    : 0.0;
 
-                const double ratio =a * (genome_ratio - c) * (genome_ratio - c) + b;
+                const double ratio = a * std::pow(genome_ratio - c, 2) + b;
 
-                sample.Values[genome_index] = search_area.Dimensions[genome_index]->GetAbsoluteValue(ratio);
+                sample.Values[genome_index] = Dimensions[genome_index]->GetAbsoluteValue(ratio);
             }
 
             model.invoke(sample);
 
             population.push_back(sample);
 
-            if (first ||sample.Z < best_particle.Z)
+            if (first || sample.Z < best_particle.Z)
             {
                 best_particle = sample;
                 first = false;
