@@ -36,8 +36,7 @@ namespace Deltares::Optimization
     {
     public:
         AdaptiveParticleSwarmOptimizationSettings Options;
-        OptimizationResult getOptimizedSampleNew(Models::ZModel& model);
-        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
+        OptimizationResult getOptimizedSample(Models::ZModel& model) override;
     private:
         Models::ModelSample InitializePopulation(Models::ZModel& model, std::vector<Models::ModelSample>& population);
         Numeric::RandomValueGenerator rng;

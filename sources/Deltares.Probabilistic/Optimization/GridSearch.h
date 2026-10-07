@@ -47,7 +47,7 @@ namespace Deltares::Optimization
          * \param model Model to invoke, the minimum z-value will be used
          * \return Sample containing values which lead to he minimum value
          */
-        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
+        OptimizationResult getOptimizedSample(Models::ZModel& model) override;
 
     private:
         /**

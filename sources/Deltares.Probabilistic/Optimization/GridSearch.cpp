@@ -27,7 +27,7 @@
 
 namespace Deltares::Optimization
 {
-    std::shared_ptr<OptimizationResult> GridSearch::getOptimizedSample(Models::ZModel& model)
+    OptimizationResult GridSearch::getOptimizedSample(Models::ZModel& model)
     {
         model.resetModelRuns();
 
@@ -68,16 +68,16 @@ namespace Deltares::Optimization
             reusedCounter = 0;
         }
 
-        auto result = std::make_shared<OptimizationResult>();
+        auto result = OptimizationResult();
 
-        result->succeeded = true; // always succeeds
-        result->modelRuns = model.getModelRuns();
-        result->minimumValue = sample.Z;
+        result.succeeded = true; // always succeeds
+        result.modelRuns = model.getModelRuns();
+        result.minimumValue = sample.Z;
 
-        result->values.reserve(sample.Values.size());
+        result.values.reserve(sample.Values.size());
         for (size_t i = 0; i < sample.Values.size(); i++)
         {
-            result->values.push_back(sample.Values[i]);
+            result.values.push_back(sample.Values[i]);
         }
 
         return result;

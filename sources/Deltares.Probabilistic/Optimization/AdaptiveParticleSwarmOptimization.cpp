@@ -31,12 +31,7 @@ namespace Deltares::Optimization
 {
     using namespace Deltares::Models;
 
-    std::shared_ptr<OptimizationResult> AdaptiveParticleSwarmOptimization::getOptimizedSample(ZModel& model)
-    {
-        return std::make_shared<OptimizationResult>(getOptimizedSampleNew(model));
-    }
-
-    OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSampleNew(ZModel& model)
+    OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(ZModel& model)
     {
         rng.initialize(true, Options.Seed);
         auto& search_area = Options.SearchArea;

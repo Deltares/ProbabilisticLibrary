@@ -60,9 +60,9 @@ namespace Deltares::Statistics
         (Models::ModelSample& sample)
         { return getLogLikelihood(sample, values, stochast, properties); });
 
-        std::shared_ptr<Optimization::OptimizationResult> result = gridSearch.getOptimizedSample(model);
+        const auto result = gridSearch.getOptimizedSample(model);
 
-        return result->values;
+        return result.values;
     }
 
     void DistributionFitter::getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,

@@ -61,20 +61,20 @@ namespace Deltares::Reliability
         int counter = 0;
         int* pCounter = &counter;
 
-        ZModel zModel = getZModelForModelRunner(*modelRunner.get(), uMean, Settings->MaximumIterations, z0Fac, pCounter);
+        ZModel zModel = getZModelForModelRunner(*modelRunner, uMean, Settings->MaximumIterations, z0Fac, pCounter);
 
         auto result = optimizer.getOptimizedSample(zModel);
-        double beta = z0Fac * result->minimumValue;
+        double beta = z0Fac * result.minimumValue;
 
         auto uMin = uMean.getSample();
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-        convergenceReport->IsConverged = result->succeeded;
+        convergenceReport->IsConverged = result.succeeded;
         std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Cobyla Reliability");
 
         return designPoint;
     };
 
-    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const
+    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter)
     {
         const ZLambda zLambda = [](ModelSample& modelSample)
         {
