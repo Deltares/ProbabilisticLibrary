@@ -68,7 +68,7 @@ namespace Deltares::Optimization
         /**
          * \brief Gets the optimization method and settings based on these settings
          */
-        std::shared_ptr<Optimization::OptimizationMethod> GetOptimizationMethod();
+        std::shared_ptr<Optimization::OptimizationMethod> GetOptimizationMethod() const;
 
         /**
          * \brief Reports whether the settings have valid values

@@ -23,14 +23,9 @@
 
 #include <memory>
 
-namespace Deltares::Sensitivity
-{
-    class Sobol;
-}
-
 namespace Deltares::Optimization
 {
-    std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod()
+    std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod() const
     {
         switch (this->OptimizationMethod)
         {
