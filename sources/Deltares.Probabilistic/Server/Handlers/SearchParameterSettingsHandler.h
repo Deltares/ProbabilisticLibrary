@@ -46,6 +46,7 @@ namespace Deltares::Server
             if (property_ == "min_value") return settings->MinValue;
             else if (property_ == "max_value") return settings->MaxValue;
             else if (property_ == "start_value") return settings->StartValue;
+            else if (property_ == "gradient_step_size") return settings->GradientStepSize;
             else return StoredObjectHandler::GetValue(settings, property_);
         }
 
@@ -54,6 +55,7 @@ namespace Deltares::Server
             if (property_ == "min_value") settings->MinValue = value;
             else if (property_ == "max_value") settings->MaxValue = value;
             else if (property_ == "start_value") settings->StartValue = value;
+            else if (property_ == "gradient_step_size") settings->GradientStepSize = value;
             else StoredObjectHandler::SetValue(settings, property_, value);
         }
 

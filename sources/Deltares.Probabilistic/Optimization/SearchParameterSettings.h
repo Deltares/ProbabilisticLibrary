@@ -20,9 +20,9 @@
 // All rights reserved.
 //
 #pragma once
-#include <cmath>
 #include <memory>
 #include <vector>
+#include <cmath>
 
 #include "../Model/ModelInputParameter.h"
 #include "../Utils/ProbabilisticLibraryException.h"
@@ -64,7 +64,7 @@ namespace Deltares::Optimization
          * \brief Start value for the parameter
          * \remark Not used in the grid search algorithm, but in future algorithms
          */
-        double StartValue = 0.0;
+        double StartValue = std::nan("");
 
         /**
          * \brief Indicates whether the grid can be repositioned for this parameter
@@ -76,6 +76,11 @@ namespace Deltares::Optimization
          * \brief The number of refinements to be performed
          */
         int NumberOfRefinements = 0;
+
+        /**
+         * Step size when a gradient is computed
+         */
+        double GradientStepSize = 0.001;
 
         /**
          * \brief Indicates which values have to be used in the grid search algorithm
@@ -129,6 +134,22 @@ namespace Deltares::Optimization
             else
             {
                 return 0;
+            }
+        }
+
+        /**
+         * \brief Gets the start value, if not set use average of MinValue and MaxValue
+         * \return Start value
+         */
+        double getStartValue() const
+        {
+            if (std::isnan(StartValue))
+            {
+                return (MinValue + MaxValue) / 2.0;
+            }
+            else
+            {
+                return StartValue;
             }
         }
     };

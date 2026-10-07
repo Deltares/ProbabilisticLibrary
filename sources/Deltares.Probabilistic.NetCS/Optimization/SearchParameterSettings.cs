@@ -106,4 +106,31 @@ public class SearchParameterSettings
         get { return Interface.GetBoolValue(id, "is_move_allowed"); }
         set { Interface.SetBoolValue(id, "is_move_allowed", value); }
     }
+
+    public double GradientStepSize
+    {
+        get { return Interface.GetValue(id, "gradient_step_size"); }
+        set { Interface.SetValue(id, "gradient_step_size", value); }
+    }
+
+    /// <summary>
+    /// Get the absolute value based on a ratio and the low and high boundaries
+    /// </summary>
+    /// <param name="ratio"></param>
+    /// <returns></returns>
+    public double GetAbsoluteValue(double ratio)
+    {
+        double diff = MaxValue - MinValue;
+        return MinValue + ratio * diff;
+    }
+
+    /// <summary>
+    /// Get the relative value based on an absolute value and the low and high boundaries
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public double GetRelativeValue(double value)
+    {
+        return (value - MinValue) / (MaxValue - MinValue);
+    }
 }
