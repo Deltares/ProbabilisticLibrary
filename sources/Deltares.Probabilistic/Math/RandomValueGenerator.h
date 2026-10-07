@@ -52,6 +52,12 @@ namespace Deltares::Numeric
         double next();
 
         /**
+         * \brief Retrieves the next random integer value between 0 and maximum-1
+         * \returns Random value
+         */
+        int next(int maximum);
+
+        /**
          * \brief Restarts the random value generator, so that same random values are generated (even if repeatable is false)
          */
         void restart();

@@ -58,6 +58,13 @@ namespace Deltares::Numeric
         return ri;
     }
 
+    int RandomValueGenerator::next(int maximum)
+    {
+        std::uniform_int_distribution<int> distribution(0.0, maximum-1);
+        auto ri = distribution(generator);
+        return ri;
+    }
+
     void RandomValueGenerator::restart()
     {
         initializeGenerator(repeatable_, seed_, timeStamp);

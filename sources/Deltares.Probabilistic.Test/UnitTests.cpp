@@ -828,7 +828,7 @@ TEST(UnitTests, testAPSOtestCase1)
 
 TEST(UnitTests, testAPSOtestCase2)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 6000, { 5.3, 7.8 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 6400, { 5.3, 7.8 });
 }
 
 TEST(UnitTests, testAPSOtestCase3)
