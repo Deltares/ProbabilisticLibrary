@@ -24,6 +24,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Optimization;
 using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Sensitivity;
 using Deltares.Probabilistic.Statistics;
@@ -265,6 +266,19 @@ namespace Deltares.Probabilistic.Test
             runProject.ZFunction = project.ZFunction;
 
             return runProject;
+        }
+
+        public static OptimizationProject GetPolynomeOptimizationProject(double x = 0, double y = 0, double c = 0)
+        {
+            var project = new OptimizationProject();
+
+            project.InputParameters.Add(new ModelParameter { Name = "X" });
+            project.InputParameters.Add(new ModelParameter { Name = "Y" });
+
+            Polynome polynome = new Polynome { C = c, X = x, Y = y };
+            project.ZFunction = polynome.CalcSample;
+
+            return project;
         }
 
         public static ReliabilityProject GetInverseLinearProject()
@@ -820,6 +834,20 @@ namespace Deltares.Probabilistic.Test
             double val1 = Linear(sample.Values).Z;
             double val2 = UnbalancedLinear(sample.Values).Z;
             sample.OutputValues = [val1, val2];
+        }
+
+        class Polynome
+        {
+            public double X = 0;
+            public double Y = 0;
+            public double C = 0;
+
+            public void CalcSample(ModelSample sample)
+            {
+                double x = sample.Values[0] - X;
+                double y = sample.Values[1] - Y;
+                sample.Z = C + 10 * x * x + y * y;
+            }
         }
 
         private static ZFunctionOutput Linear2(double a, double b)

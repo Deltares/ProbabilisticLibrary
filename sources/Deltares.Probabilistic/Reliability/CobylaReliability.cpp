@@ -98,8 +98,7 @@ namespace Deltares::Reliability
 
             modelSample.Z = z;
 
-            // should be z instead of std::abs(z) for better results
-            return std::abs(z);
+            return z;
         };
 
         model.setConstraint(zConstraint);
