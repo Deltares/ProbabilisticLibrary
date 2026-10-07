@@ -133,4 +133,20 @@ public class SearchParameterSettings
     {
         return (value - MinValue) / (MaxValue - MinValue);
     }
+
+    /// <summary>
+    /// Gets the start value
+    /// </summary>
+    /// <returns></returns>
+    public double GetStartValue()
+    {
+        if (double.IsNaN(StartValue))
+        {
+            return (MinValue + MaxValue) / 2;
+        }
+        else
+        {
+            return StartValue;
+        }
+    }
 }
