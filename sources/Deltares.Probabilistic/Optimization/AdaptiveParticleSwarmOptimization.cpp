@@ -39,6 +39,7 @@ namespace Deltares::Optimization
         std::vector<ModelSample> population;
 
         auto best_particle = InitializePopulation(model, population);
+        size_t nr_evaluations = population.size();
 
         const auto particle_size = search_area.Dimensions.size();
 
@@ -75,6 +76,7 @@ namespace Deltares::Optimization
                 }
 
                 model.invoke(population[m]);
+                nr_evaluations++;
 
                 if (population[m].Z < best_particle.Z)
                 {
@@ -98,6 +100,7 @@ namespace Deltares::Optimization
         return_value.values = best_particle.Values;
         return_value.succeeded = true;
         return_value.minimumValue = best_particle.Z;
+        return_value.modelRuns = static_cast<int>(nr_evaluations);
         return return_value;
     }
 

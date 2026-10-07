@@ -43,13 +43,15 @@ namespace Deltares::Optimization::Test
         apso.Options.CrossOver = 0.8;
         apso.Options.StopAfterNonImprovingGenerations = 5;
         auto model = Probabilistic::Test::ZmodelWithCenter(center);
-        auto result = apso.getOptimizedSample(model);
+        const auto result = apso.getOptimizedSample(model);
 
         for (size_t i = 0; i < center.size(); i++)
         {
             EXPECT_NEAR(result.values[i], center[i], tolerance);
         }
         EXPECT_LE(model.getEvaluations(), evaluations);
+        EXPECT_EQ(model.getEvaluations(), result.modelRuns);
+        EXPECT_TRUE(result.succeeded);
     }
 }
 
