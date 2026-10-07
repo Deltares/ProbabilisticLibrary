@@ -74,7 +74,7 @@ namespace Deltares::Reliability
         return designPoint;
     };
 
-    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter)
+    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const
     {
         const ZLambda zLambda = [](ModelSample& modelSample)
         {

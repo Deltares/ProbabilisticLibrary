@@ -38,7 +38,7 @@ namespace Deltares::Reliability
             return Settings->isValid();
         }
     private:
-        static Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter);
+        Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const;
     };
 }
 
