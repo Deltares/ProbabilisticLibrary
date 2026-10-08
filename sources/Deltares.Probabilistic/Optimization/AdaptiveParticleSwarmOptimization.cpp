@@ -124,8 +124,7 @@ namespace Deltares::Optimization
 
                 if (Dimensions[n]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
                 {
-                    population_m.Values[n] =
-                        Dimensions[n]->GetAbsoluteValue(new_ratio);
+                    population_m.Values[n] = Dimensions[n]->GetAbsoluteValue(new_ratio);
                 }
                 else
                 {
