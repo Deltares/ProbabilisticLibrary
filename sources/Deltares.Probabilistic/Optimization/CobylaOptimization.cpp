@@ -24,11 +24,6 @@
 #include "Cobyla.h"
 #include <functional>
 
-namespace Deltares::Numeric
-{
-    class NumericSupport;
-}
-
 namespace Deltares::Optimization
 {
     OptimizationResult CobylaOptimization::getOptimizedSample(Models::ZModel& model)

@@ -31,10 +31,10 @@ namespace Deltares::Optimization
     {
         model.resetModelRuns();
 
-        std::shared_ptr<SearchParameterSettingsSet> searchArea = Settings.SearchArea;
+        auto& searchArea = *Settings.SearchArea;
 
         std::vector<double> defaultValues;
-        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
+        for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
         {
             defaultValues.push_back(std::nan(""));
         }
@@ -42,7 +42,7 @@ namespace Deltares::Optimization
         Models::ModelSample initialSample = Models::ModelSample(defaultValues);
         initialSample.Z = std::numeric_limits<double>::infinity();
 
-        Models::ModelSample sample = findGridExtreme(searchArea, model, initialSample, 0);
+        Models::ModelSample sample = findGridExtreme(searchArea, model, initialSample);
         counter = 0;
         reusedCounter = 0;
 
@@ -50,7 +50,7 @@ namespace Deltares::Optimization
         while (gridMoves < Settings.MaxGridMoves && isSampleOnEdge(searchArea, sample))
         {
             moveSampleToCenter(searchArea, sample);
-            sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves);
+            sample = findGridExtreme(searchArea, model, sample);
             gridMoves++;
 
             counter = 0;
@@ -61,7 +61,7 @@ namespace Deltares::Optimization
         while (canRefine(searchArea, refinements))
         {
             refineGrid(searchArea, refinements, sample);
-            sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves + refinements);
+            sample = findGridExtreme(searchArea, model, sample);
             refinements++;
 
             counter = 0;
@@ -75,18 +75,18 @@ namespace Deltares::Optimization
         result.minimumValue = sample.Z;
 
         result.values.reserve(sample.Values.size());
-        for (size_t i = 0; i < sample.Values.size(); i++)
+        for (double Value : sample.Values)
         {
-            result.values.push_back(sample.Values[i]);
+            result.values.push_back(Value);
         }
 
         return result;
     }
 
-    Models::ModelSample GridSearch::findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ZModel& model, Models::ModelSample& minSample, int iteration)
+    Models::ModelSample GridSearch::findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::ZModel& model, Models::ModelSample& minSample)
     {
         std::vector<std::vector<double>> inputValues;
-        for (auto& dimension : searchArea->Dimensions)
+        for (auto& dimension : searchArea.Dimensions)
         {
             inputValues.push_back(std::vector<double>(dimension.getValues()));
         }
@@ -121,16 +121,16 @@ namespace Deltares::Optimization
         return minSample;
     }
 
-    bool GridSearch::isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ModelSample& sample)
+    bool GridSearch::isSampleOnEdge(const SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample)
     {
-        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
+        for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
         {
-            if (searchArea->Dimensions[i].Move && searchArea->Dimensions[i].NumberOfValues > 2)
+            if (searchArea.Dimensions[i].Move && searchArea.Dimensions[i].NumberOfValues > 2)
             {
-                const double tolerance = getTolerance(searchArea->Dimensions[i]);
+                const double tolerance = getTolerance(searchArea.Dimensions[i]);
 
-                if (Numeric::NumericSupport::areEqual(searchArea->Dimensions[i].MinValue, sample.Values[i], tolerance)
-                    || Numeric::NumericSupport::areEqual(searchArea->Dimensions[i].MaxValue, sample.Values[i], tolerance))
+                if (Numeric::NumericSupport::areEqual(searchArea.Dimensions[i].MinValue, sample.Values[i], tolerance)
+                    || Numeric::NumericSupport::areEqual(searchArea.Dimensions[i].MaxValue, sample.Values[i], tolerance))
                 {
                     return true;
                 }
@@ -140,19 +140,19 @@ namespace Deltares::Optimization
         return false;
     }
 
-    void GridSearch::moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ModelSample& sample)
+    void GridSearch::moveSampleToCenter(SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample)
     {
         bool moved = false;
 
-        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
+        for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
         {
-            auto& dimension = searchArea->Dimensions[i];
+            auto& dimension = searchArea.Dimensions[i];
 
             if (!moved && dimension.Move && dimension.NumberOfValues > 2)
             {
                 double shift = dimension.getInterval();
 
-                const double tolerance = getTolerance(searchArea->Dimensions[i]);
+                const double tolerance = getTolerance(searchArea.Dimensions[i]);
 
                 if (Numeric::NumericSupport::areEqual(dimension.MinValue, sample.Values[i], tolerance))
                 {
@@ -180,11 +180,11 @@ namespace Deltares::Optimization
         }
     }
 
-    bool GridSearch::canRefine(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements)
+    bool GridSearch::canRefine(const SearchParameterSettingsSet& searchArea, int refinements)
     {
-        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
+        for (auto& Dimension : searchArea.Dimensions)
         {
-            if (refinements < searchArea->Dimensions[i].NumberOfRefinements)
+            if (refinements < Dimension.NumberOfRefinements)
             {
                 return true;
             }
@@ -193,11 +193,11 @@ namespace Deltares::Optimization
         return false;
     }
 
-    void GridSearch::refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, const Models::ModelSample& sample)
+    void GridSearch::refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample)
     {
-        for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
+        for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
         {
-            auto& dimension = searchArea->Dimensions[i];
+            auto& dimension = searchArea.Dimensions[i];
             if (refinements < dimension.NumberOfRefinements)
             {
                 // when refinement is allowed, create values for the new grid higher, lower and equal the original sample

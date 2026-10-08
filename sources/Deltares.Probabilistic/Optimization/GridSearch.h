@@ -55,9 +55,9 @@ namespace Deltares::Optimization
          * \param searchArea Definition of parameter space and settings which will be searched
          * \param model Model to invoke, the minimum z-value will be used
          * \param minSample The minimum sample found from previous iterations (nullptr if initial)
-         * \return Sample containing values which lead to he minimum value (if no sample leading to a lower value is found, minSample will be returned)
+         * \return Sample containing values which lead to the minimum value (if no sample leading to a lower value is found, minSample will be returned)
          */
-        Models::ModelSample findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ZModel& model, Models::ModelSample& minSample, int iteration);
+        Models::ModelSample findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::ZModel& model, Models::ModelSample& minSample);
 
         /**
          * \brief Indicates whether a sample is located on the edge of the search area
@@ -65,14 +65,14 @@ namespace Deltares::Optimization
          * \param sample Sample
          * \return Indication
          */
-        bool isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ModelSample& sample);
+        static bool isSampleOnEdge(const SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample);
 
         /**
-         * \brief Moves the search area n such a way that the sample is not on the edge any more
+         * \brief Moves the search area in such a way that the sample is not on the edge any more
          * \param searchArea Definition of parameter space and settings which will be searched
          * \param sample Sample on edge
          */
-        void moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ModelSample& sample);
+        static void moveSampleToCenter(SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample);
 
         /**
          * \brief Indicates whether refinement is possible
@@ -80,7 +80,7 @@ namespace Deltares::Optimization
          * \param refinements Number of refinements performed so far
          * \return Indication
          */
-        bool canRefine(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements);
+        static bool canRefine(const SearchParameterSettingsSet& searchArea, int refinements);
 
         /**
          * \brief Refines the grid around the currently found minimum sample
@@ -88,7 +88,7 @@ namespace Deltares::Optimization
          * \param refinements Number of refinements performed so far
          * \param sample Minimum sample
          */
-        static void refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, const Models::ModelSample& sample);
+        static void refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample);
 
         /**
          * \brief Gets the tolerance for a parameter when determining whether a value is on the edge of a grid 
