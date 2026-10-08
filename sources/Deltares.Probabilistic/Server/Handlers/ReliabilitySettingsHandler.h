@@ -138,6 +138,7 @@ namespace Deltares::Server
         {
             if (property_ == "all_quadrants") return settings->StartPointSettings->allQuadrants;
             else if (property_ == "is_repeatable_random") return settings->RandomSettings->IsRepeatableRandom;
+            else if (property_ == "skip_unvarying_parameters") return settings->RandomSettings->SkipUnvaryingParameters;
             else if (property_ == "filter_at_non_convergence") return settings->FilterAtNonConvergence;
             else if (property_ == "clustering") return settings->Clustering;
             else if (property_ == "optimize_number_clusters") return settings->OptimizeNumberOfClusters;
@@ -150,6 +151,7 @@ namespace Deltares::Server
         {
             if (property_ == "all_quadrants") settings->StartPointSettings->allQuadrants = value;
             else if (property_ == "is_repeatable_random") settings->RandomSettings->IsRepeatableRandom = value;
+            else if (property_ == "skip_unvarying_parameters") settings->RandomSettings->SkipUnvaryingParameters = value;
             else if (property_ == "filter_at_non_convergence") settings->FilterAtNonConvergence = value;
             else if (property_ == "clustering") settings->Clustering = value;
             else if (property_ == "optimize_number_clusters") settings->OptimizeNumberOfClusters = value;

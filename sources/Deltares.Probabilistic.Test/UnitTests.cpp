@@ -389,6 +389,11 @@ TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingVarianceFactor)
     TestReliabilityMethods::testAdaptiveImportanceSamplingVarianceFactor();
 }
 
+TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingDefaultVarianceFactor)
+{
+    TestReliabilityMethods::testAdaptiveImportanceSamplingDefaultVarianceFactor();
+}
+
 TEST(ReliabilityMethodTest, TestAdaptiveImportanceSamplingProbability)
 {
     TestReliabilityMethods::testAdaptiveImportanceSamplingZValueProbability();

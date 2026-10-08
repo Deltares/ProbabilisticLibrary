@@ -268,7 +268,7 @@ namespace Deltares::Uncertainty
 
         for (size_t k = 0; k < factors.size(); k++)
         {
-            factors[k] = stochastSettings.VaryingStochastSettings[k]->VarianceFactor;
+            factors[k] = stochastSettings.VaryingStochastSettings[k]->getVarianceFactor(StochastSettings::DefaultVarianceFactor);
         }
 
         return factors;
