@@ -77,7 +77,7 @@ namespace Deltares::Optimization
         void validate(Logging::ValidationReport& report) const override;
 
         static std::string getOptimizationMethodTypeString(OptimizationMethodType method);
-        static OptimizationMethodType getOptimizationMethodType(std::string method);
+        static OptimizationMethodType getOptimizationMethodType(const std::string& method);
     private:
         std::shared_ptr<GridSearch> GetGridSearchMethod() const;
         std::shared_ptr<CobylaOptimization> GetCobylaMethod() const;

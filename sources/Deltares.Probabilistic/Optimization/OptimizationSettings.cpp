@@ -94,7 +94,7 @@ namespace Deltares::Optimization
         }
     }
 
-    OptimizationMethodType OptimizationSettings::getOptimizationMethodType(std::string method)
+    OptimizationMethodType OptimizationSettings::getOptimizationMethodType(const std::string& method)
     {
         if (method == "grid") return OptimizationMethodType::GridSearch;
         else if (method == "cobyla") return OptimizationMethodType::Cobyla;

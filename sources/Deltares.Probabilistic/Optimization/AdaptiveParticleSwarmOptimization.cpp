@@ -52,12 +52,12 @@ namespace Deltares::Optimization
             std::vector<ModelSample> elite = population;
 
             std::ranges::sort(elite,
-                              [](const ModelSample & a, const ModelSample & b)
+                              [](const ModelSample& a, const ModelSample& b)
                               {
                                   return a.Z < b.Z;
                               });
 
-            while (elite.size() > Options.EliteCount)
+            while (static_cast<int>(elite.size()) > Options.EliteCount)
             {
                 elite.pop_back();
             }

@@ -74,6 +74,10 @@ namespace Deltares::Optimization::Test
         searchArea->Dimensions[1]->Move = true;
         searchArea->Dimensions[1]->NumberOfRefinements = 10;
 
+        Logging::ValidationReport report;
+        project.settings->validate(report);
+        ASSERT_TRUE(report.isValid()) << "validation of settings fails";
+
         project.run();
         auto result = project.result;
         EXPECT_NEAR(result->values[0], 12.9, 0.001);
