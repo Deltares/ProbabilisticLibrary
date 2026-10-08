@@ -52,10 +52,10 @@ namespace Deltares::Reliability
         Sample startPoint = Settings->StochastSet->getStartPoint();
         for( int i = 0; i < nStochasts; i++)
         {
-            searchArea->Dimensions[i] = std::make_shared<SearchParameterSettings>();
-            searchArea->Dimensions[i]->MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
-            searchArea->Dimensions[i]->MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
-            searchArea->Dimensions[i]->StartValue = startPoint.Values[i];
+            searchArea->Dimensions[i] = SearchParameterSettings();
+            searchArea->Dimensions[i].MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
+            searchArea->Dimensions[i].MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
+            searchArea->Dimensions[i].StartValue = startPoint.Values[i];
         }
 
         int counter = 0;

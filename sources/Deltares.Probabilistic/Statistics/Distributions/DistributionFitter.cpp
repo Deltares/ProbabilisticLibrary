@@ -47,12 +47,12 @@ namespace Deltares::Statistics
         auto searchArea = gridSearch.Settings.SearchArea;
         for (size_t i = 0; i < properties.size(); i++)
         {
-            auto settings = std::make_shared<Optimization::SearchParameterSettings>();
-            settings->MinValue = minimum[i];
-            settings->MaxValue = maximum[i];
-            settings->NumberOfValues = numberValues;
-            settings->NumberOfRefinements = numberRefinements;
-            settings->Move = true;
+            auto settings = Optimization::SearchParameterSettings();
+            settings.MinValue = minimum[i];
+            settings.MaxValue = maximum[i];
+            settings.NumberOfValues = numberValues;
+            settings.NumberOfRefinements = numberRefinements;
+            settings.Move = true;
             searchArea->Dimensions.push_back(settings);
         }
 

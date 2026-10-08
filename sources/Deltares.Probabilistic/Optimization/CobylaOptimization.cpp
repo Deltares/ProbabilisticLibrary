@@ -43,9 +43,9 @@ namespace Deltares::Optimization
         auto dx = std::vector<double>(n);
         for (unsigned i = 0 ; i < n; i++)
         {
-            x0[i] = searchArea->Dimensions[i]->StartValue;
-            lb[i] = searchArea->Dimensions[i]->MinValue;
-            ub[i] = searchArea->Dimensions[i]->MaxValue;
+            x0[i] = searchArea->Dimensions[i].StartValue;
+            lb[i] = searchArea->Dimensions[i].MinValue;
+            ub[i] = searchArea->Dimensions[i].MaxValue;
             dx[i] = 0.1;
         }
         long long fData = 0;

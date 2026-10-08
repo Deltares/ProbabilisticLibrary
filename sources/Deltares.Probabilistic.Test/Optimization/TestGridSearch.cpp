@@ -42,12 +42,12 @@ namespace Deltares::Probabilistic::Test
         auto model = ZModelBuilder::getPolynomeModel(2.4, 3.7);
         auto searchArea = gridSearch.Settings.SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->MinValue = 0;
-        searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->NumberOfValues = 11;
-        searchArea->Dimensions[1]->MinValue = 0;
-        searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->NumberOfValues = 11;
+        searchArea->Dimensions[0].MinValue = 0;
+        searchArea->Dimensions[0].MaxValue = 10;
+        searchArea->Dimensions[0].NumberOfValues = 11;
+        searchArea->Dimensions[1].MinValue = 0;
+        searchArea->Dimensions[1].MaxValue = 10;
+        searchArea->Dimensions[1].NumberOfValues = 11;
 
         auto result = gridSearch.getOptimizedSample(model);
         EXPECT_NEAR(result.values[0], 2.0, 0.01);
@@ -58,8 +58,8 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(result.succeeded);
 
         // refine
-        searchArea->Dimensions[0]->NumberOfRefinements = 3;
-        searchArea->Dimensions[1]->NumberOfRefinements = 3;
+        searchArea->Dimensions[0].NumberOfRefinements = 3;
+        searchArea->Dimensions[1].NumberOfRefinements = 3;
 
         auto result2 = gridSearch.getOptimizedSample(model);
         EXPECT_NEAR(result2.values[0], 2.4, 0.1);
@@ -77,14 +77,14 @@ namespace Deltares::Probabilistic::Test
         project.Settings.MaxGridMoves = 10;
         auto searchArea = project.Settings.SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->MinValue = 0;
-        searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->NumberOfValues = 11;
-        searchArea->Dimensions[0]->Move = true;
-        searchArea->Dimensions[1]->MinValue = 0;
-        searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->NumberOfValues = 11;
-        searchArea->Dimensions[1]->Move = true;
+        searchArea->Dimensions[0].MinValue = 0;
+        searchArea->Dimensions[0].MaxValue = 10;
+        searchArea->Dimensions[0].NumberOfValues = 11;
+        searchArea->Dimensions[0].Move = true;
+        searchArea->Dimensions[1].MinValue = 0;
+        searchArea->Dimensions[1].MaxValue = 10;
+        searchArea->Dimensions[1].NumberOfValues = 11;
+        searchArea->Dimensions[1].Move = true;
 
         auto result = project.getOptimizedSample(model);
         EXPECT_NEAR(result.values[0], 13.0, 0.01);
@@ -95,8 +95,8 @@ namespace Deltares::Probabilistic::Test
         EXPECT_TRUE(result.succeeded);
 
         // refine
-        searchArea->Dimensions[0]->NumberOfRefinements = 10;
-        searchArea->Dimensions[1]->NumberOfRefinements = 10;
+        searchArea->Dimensions[0].NumberOfRefinements = 10;
+        searchArea->Dimensions[1].NumberOfRefinements = 10;
 
         auto result2 = project.getOptimizedSample(model);
         EXPECT_NEAR(result2.values[0], 12.9, 0.001);
@@ -114,16 +114,16 @@ namespace Deltares::Probabilistic::Test
         project.settings->MaxGridMoves = 10;
         auto searchArea = project.settings->SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->MinValue = 0;
-        searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->NumberOfValues = 11;
-        searchArea->Dimensions[0]->Move = true;
-        searchArea->Dimensions[0]->NumberOfRefinements = 10;
-        searchArea->Dimensions[1]->MinValue = 0;
-        searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->NumberOfValues = 11;
-        searchArea->Dimensions[1]->Move = true;
-        searchArea->Dimensions[1]->NumberOfRefinements = 10;
+        searchArea->Dimensions[0].MinValue = 0;
+        searchArea->Dimensions[0].MaxValue = 10;
+        searchArea->Dimensions[0].NumberOfValues = 11;
+        searchArea->Dimensions[0].Move = true;
+        searchArea->Dimensions[0].NumberOfRefinements = 10;
+        searchArea->Dimensions[1].MinValue = 0;
+        searchArea->Dimensions[1].MaxValue = 10;
+        searchArea->Dimensions[1].NumberOfValues = 11;
+        searchArea->Dimensions[1].Move = true;
+        searchArea->Dimensions[1].NumberOfRefinements = 10;
 
         project.run();
         auto result = project.result;

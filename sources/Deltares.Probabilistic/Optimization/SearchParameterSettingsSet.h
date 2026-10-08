@@ -21,7 +21,6 @@
 //
 #pragma once
 #include <vector>
-#include <memory>
 
 #include "SearchParameterSettings.h"
 
@@ -30,13 +29,13 @@ namespace Deltares::Optimization
     class SearchParameterSettingsSet
     {
     public:
-        std::vector<std::shared_ptr<SearchParameterSettings>> Dimensions;
+        std::vector<SearchParameterSettings> Dimensions;
 
         void setDimensions(size_t nDimensions)
         {
             for (size_t i = Dimensions.size(); i < nDimensions; i++)
             {
-                Dimensions.push_back(std::make_shared<SearchParameterSettings>());
+                Dimensions.push_back(SearchParameterSettings());
             }
         }
     };

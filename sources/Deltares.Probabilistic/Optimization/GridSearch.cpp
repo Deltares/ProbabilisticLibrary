@@ -86,9 +86,9 @@ namespace Deltares::Optimization
     Models::ModelSample GridSearch::findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ZModel& model, Models::ModelSample& minSample, int iteration)
     {
         std::vector<std::vector<double>> inputValues;
-        for (std::shared_ptr<SearchParameterSettings> dimension : searchArea->Dimensions)
+        for (auto& dimension : searchArea->Dimensions)
         {
-            inputValues.push_back(std::vector<double>(dimension->getValues()));
+            inputValues.push_back(std::vector<double>(dimension.getValues()));
         }
 
         std::vector<std::vector<double>> combinations = Numeric::NumericSupport::getFullFactorialCombination(inputValues);
@@ -125,12 +125,12 @@ namespace Deltares::Optimization
     {
         for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
         {
-            if (searchArea->Dimensions[i]->Move && searchArea->Dimensions[i]->NumberOfValues > 2)
+            if (searchArea->Dimensions[i].Move && searchArea->Dimensions[i].NumberOfValues > 2)
             {
                 const double tolerance = getTolerance(searchArea->Dimensions[i]);
 
-                if (Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MinValue, sample.Values[i], tolerance)
-                    || Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MaxValue, sample.Values[i], tolerance))
+                if (Numeric::NumericSupport::areEqual(searchArea->Dimensions[i].MinValue, sample.Values[i], tolerance)
+                    || Numeric::NumericSupport::areEqual(searchArea->Dimensions[i].MaxValue, sample.Values[i], tolerance))
                 {
                     return true;
                 }
@@ -146,36 +146,36 @@ namespace Deltares::Optimization
 
         for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
         {
-            std::shared_ptr<SearchParameterSettings> dimension = searchArea->Dimensions[i];
+            auto& dimension = searchArea->Dimensions[i];
 
-            if (!moved && dimension->Move && dimension->NumberOfValues > 2)
+            if (!moved && dimension.Move && dimension.NumberOfValues > 2)
             {
-                double shift = dimension->getInterval();
+                double shift = dimension.getInterval();
 
                 const double tolerance = getTolerance(searchArea->Dimensions[i]);
 
-                if (Numeric::NumericSupport::areEqual(dimension->MinValue, sample.Values[i], tolerance))
+                if (Numeric::NumericSupport::areEqual(dimension.MinValue, sample.Values[i], tolerance))
                 {
-                    dimension->MinValue -= shift;
-                    dimension->MaxValue -= shift;
-                    dimension->UseValues = UseValuesType::MinValue;
+                    dimension.MinValue -= shift;
+                    dimension.MaxValue -= shift;
+                    dimension.UseValues = UseValuesType::MinValue;
                     moved = true;
                 }
-                else if (Numeric::NumericSupport::areEqual(dimension->MaxValue, sample.Values[i], tolerance))
+                else if (Numeric::NumericSupport::areEqual(dimension.MaxValue, sample.Values[i], tolerance))
                 {
-                    dimension->MinValue += shift;
-                    dimension->MaxValue += shift;
-                    dimension->UseValues = UseValuesType::MaxValue;
+                    dimension.MinValue += shift;
+                    dimension.MaxValue += shift;
+                    dimension.UseValues = UseValuesType::MaxValue;
                     moved = true;
                 }
                 else
                 {
-                    dimension->UseValues = UseValuesType::AllValues;
+                    dimension.UseValues = UseValuesType::AllValues;
                 }
             }
             else
             {
-                dimension->UseValues = UseValuesType::AllValues;
+                dimension.UseValues = UseValuesType::AllValues;
             }
         }
     }
@@ -184,7 +184,7 @@ namespace Deltares::Optimization
     {
         for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
         {
-            if (refinements < searchArea->Dimensions[i]->NumberOfRefinements)
+            if (refinements < searchArea->Dimensions[i].NumberOfRefinements)
             {
                 return true;
             }
@@ -193,37 +193,37 @@ namespace Deltares::Optimization
         return false;
     }
 
-    void GridSearch::refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, Models::ModelSample& sample)
+    void GridSearch::refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, const Models::ModelSample& sample)
     {
         for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
         {
-            std::shared_ptr<SearchParameterSettings> dimension = searchArea->Dimensions[i];
-            if (refinements < dimension->NumberOfRefinements)
+            auto& dimension = searchArea->Dimensions[i];
+            if (refinements < dimension.NumberOfRefinements)
             {
                 // when refinement is allowed, create values for the new grid higher, lower and equal the original sample
                 // the values higher and lower are exactly between the sample and its neighbors in the previous grid
-                double newInterval = dimension->getInterval() / 2;
-                dimension->MinValue = sample.Values[i] - newInterval;
-                dimension->MaxValue = sample.Values[i] + newInterval;
-                dimension->NumberOfValues = 3;
+                double newInterval = dimension.getInterval() / 2;
+                dimension.MinValue = sample.Values[i] - newInterval;
+                dimension.MaxValue = sample.Values[i] + newInterval;
+                dimension.NumberOfValues = 3;
             }
             else
             {
                 // when refinement is not allowed, repeat the value from the original value
-                dimension->MinValue = sample.Values[i];
-                dimension->MaxValue = sample.Values[i];
-                dimension->NumberOfValues = 1;
+                dimension.MinValue = sample.Values[i];
+                dimension.MaxValue = sample.Values[i];
+                dimension.NumberOfValues = 1;
             }
 
-            dimension->UseValues = UseValuesType::AllValues;
+            dimension.UseValues = UseValuesType::AllValues;
         }
     }
 
-    double GridSearch::getTolerance(std::shared_ptr<SearchParameterSettings> dimension)
+    double GridSearch::getTolerance(const SearchParameterSettings& dimension)
     {
-        if (dimension->NumberOfValues > 0)
+        if (dimension.NumberOfValues > 0)
         {
-            return std::fabs((dimension->MaxValue - dimension->MinValue)) / (10 * dimension->NumberOfValues);
+            return std::fabs((dimension.MaxValue - dimension.MinValue)) / (10 * dimension.NumberOfValues);
         }
         else
         {

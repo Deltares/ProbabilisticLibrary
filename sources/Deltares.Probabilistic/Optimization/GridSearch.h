@@ -88,14 +88,14 @@ namespace Deltares::Optimization
          * \param refinements Number of refinements performed so far
          * \param sample Minimum sample
          */
-        void refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, Models::ModelSample& sample);
+        static void refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, const Models::ModelSample& sample);
 
         /**
          * \brief Gets the tolerance for a parameter when determining whether a value is on the edge of a grid 
          * \param dimension Settings of the parameter
          * \return Tolerance
          */
-        double getTolerance(std::shared_ptr<SearchParameterSettings> dimension);
+        static double getTolerance(const SearchParameterSettings& dimension);
 
     private:
 

@@ -90,8 +90,8 @@ namespace Deltares::Probabilistic::Test
         auto model = ZModelBuilder::getConstrainedPolynomeModel();
         auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->StartValue = 1.0;
-        searchArea->Dimensions[1]->StartValue = 1.0;
+        searchArea->Dimensions[0].StartValue = 1.0;
+        searchArea->Dimensions[1].StartValue = 1.0;
         auto result = cb.getOptimizedSample(model);
         EXPECT_NEAR(result.values[0], 0.707, 1e-2);
         EXPECT_NEAR(result.values[1], -0.707, 1e-2);

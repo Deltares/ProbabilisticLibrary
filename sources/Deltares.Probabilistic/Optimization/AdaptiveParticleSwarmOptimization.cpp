@@ -116,15 +116,15 @@ namespace Deltares::Optimization
             {
                 const double random_apso = alpha * ((rng.next() * 2.0) - 1.0);
 
-                const double prev_ratio = Dimensions[n]->GetRelativeValue(population_m.Values[n]);
+                const double prev_ratio = Dimensions[n].GetRelativeValue(population_m.Values[n]);
 
-                const double best_ratio = Dimensions[n]->GetRelativeValue(best_particle.Values[n]);
+                const double best_ratio = Dimensions[n].GetRelativeValue(best_particle.Values[n]);
 
                 const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
 
-                if (Dimensions[n]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (Dimensions[n].Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
                 {
-                    population_m.Values[n] = Dimensions[n]->GetAbsoluteValue(new_ratio);
+                    population_m.Values[n] = Dimensions[n].GetAbsoluteValue(new_ratio);
                 }
                 else
                 {
@@ -151,20 +151,20 @@ namespace Deltares::Optimization
         {
             if (rng.next() < Options.CrossOver)
             {
-                const double best_ratio = Dimensions[q]->GetRelativeValue(best_particle.Values[q]);
+                const double best_ratio = Dimensions[q].GetRelativeValue(best_particle.Values[q]);
 
                 std::array<double, n_terms> r;
                 for (int i = 0; i < n_terms; i++)
                 {
                     const auto& sample_de = elite[indexes[i]];
-                    r[i] = Dimensions[q]->GetRelativeValue(sample_de.Values[q]);
+                    r[i] = Dimensions[q].GetRelativeValue(sample_de.Values[q]);
                 }
 
                 const double new_ratio = best_ratio + Options.DifferentialWeight * (r[0] - r[1] + r[2] - r[3]);
 
-                if (Dimensions[q]->Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (Dimensions[q].Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
                 {
-                    population_m.Values[q] = Dimensions[q]->GetAbsoluteValue(new_ratio);
+                    population_m.Values[q] = Dimensions[q].GetAbsoluteValue(new_ratio);
                 }
                 else
                 {
@@ -202,7 +202,7 @@ namespace Deltares::Optimization
 
                 const double ratio = a * std::pow(genome_ratio - c, 2) + b;
 
-                sample.Values[genome_index] = Dimensions[genome_index]->GetAbsoluteValue(ratio);
+                sample.Values[genome_index] = Dimensions[genome_index].GetAbsoluteValue(ratio);
             }
 
             model.invoke(sample);

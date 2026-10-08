@@ -39,7 +39,7 @@ namespace Deltares::Optimization::Test
         search_param_settings.Move = move;
         for (size_t i = 0; i < center.size(); i++)
         {
-            apso.Options.SearchArea.Dimensions.push_back(std::make_shared<SearchParameterSettings>(search_param_settings));
+            apso.Options.SearchArea.Dimensions.emplace_back(SearchParameterSettings(search_param_settings));
         }
         apso.Options.CrossOver = 0.8;
         apso.Options.StopAfterNonImprovingGenerations = 5;
@@ -63,16 +63,16 @@ namespace Deltares::Optimization::Test
         project.settings->MaxGridMoves = 10;
         auto searchArea = project.settings->SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->MinValue = 0;
-        searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->NumberOfValues = 11;
-        searchArea->Dimensions[0]->Move = true;
-        searchArea->Dimensions[0]->NumberOfRefinements = 10;
-        searchArea->Dimensions[1]->MinValue = 0;
-        searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->NumberOfValues = 11;
-        searchArea->Dimensions[1]->Move = true;
-        searchArea->Dimensions[1]->NumberOfRefinements = 10;
+        searchArea->Dimensions[0].MinValue = 0;
+        searchArea->Dimensions[0].MaxValue = 10;
+        searchArea->Dimensions[0].NumberOfValues = 11;
+        searchArea->Dimensions[0].Move = true;
+        searchArea->Dimensions[0].NumberOfRefinements = 10;
+        searchArea->Dimensions[1].MinValue = 0;
+        searchArea->Dimensions[1].MaxValue = 10;
+        searchArea->Dimensions[1].NumberOfValues = 11;
+        searchArea->Dimensions[1].Move = true;
+        searchArea->Dimensions[1].NumberOfRefinements = 10;
 
         Logging::ValidationReport report;
         project.settings->validate(report);
