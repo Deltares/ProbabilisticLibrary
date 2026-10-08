@@ -86,6 +86,11 @@ namespace Deltares::Models
         return evaluation;
     }
 
+    int BaseModelRunner::getOutputParametersSize() const
+    {
+        return this->zModel->outputParameters.size();
+    }
+
     /**
      * \brief Registers an evaluation for a calculated sample
      * \param sample Calculated sample
@@ -160,6 +165,23 @@ namespace Deltares::Models
         {
             this->progressIndicator->doTextualProgress(type, text);
         }
+    }
+
+    int BaseModelRunner::getModelRuns() const
+    {
+        int runs = this->zModel->getModelRuns();
+        this->zModel->resetModelRuns();
+        return runs;
+    }
+
+    void BaseModelRunner::invoke(ModelSample& sample) const
+    {
+        this->zModel->invoke(sample);
+    }
+
+    void BaseModelRunner::invoke(std::vector<ModelSample*>& samples) const
+    {
+        this->zModel->invoke(samples);
     }
 
     /**

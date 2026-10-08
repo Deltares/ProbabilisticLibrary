@@ -71,15 +71,15 @@ namespace Deltares::Models
     {
         if (useProxy && !usingProxy)
         {
-            zModel = std::make_shared<Proxies::ProxyModel>(this->zModel);
-            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
-            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
-            usingProxy = true;
+            //zModel = std::make_shared<Proxies::ProxyModel>(this->zModel);
+            //std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
+            //std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
+            //usingProxy = true;
         }
         else if (!useProxy && usingProxy)
         {
-            zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->getZModel();
-            usingProxy = false;
+            //zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->getZModel();
+            //usingProxy = false;
         }
         else
         {
@@ -111,7 +111,7 @@ namespace Deltares::Models
         xSample.Weight = sample.Weight;
         xSample.IsRestartRequired = sample.IsRestartRequired;
         xSample.Beta = sample.getBeta();
-        xSample.OutputValues.resize(this->zModel->outputParameters.size());
+        xSample.OutputValues.resize(this->getOutputParametersSize());
 
         return xSample;
     }
@@ -122,7 +122,7 @@ namespace Deltares::Models
 
         // create a sample with values in x-space
         ModelSample xSample = SampleProvider::getModelSample(xValues);
-        xSample.OutputValues.resize(this->zModel->outputParameters.size());
+        xSample.OutputValues.resize(this->getOutputParametersSize());
 
         return xSample;
     }
@@ -136,7 +136,7 @@ namespace Deltares::Models
     {
         ModelSample xSample = getModelSample(sample);
 
-        this->zModel->invoke(xSample);
+        this->invoke(xSample);
 
         registerEvaluation(xSample);
 
@@ -154,7 +154,7 @@ namespace Deltares::Models
     {
         ModelSample xSample = getModelSample(sample);
 
-        this->zModel->invoke(xSample);
+        this->invoke(xSample);
 
         Evaluation evaluation = getEvaluationFromSample(xSample);
 
@@ -170,7 +170,7 @@ namespace Deltares::Models
     {
         ModelSample xSample = getModelSampleFromType(type);
 
-        this->zModel->invoke(xSample);
+        this->invoke(xSample);
 
         Evaluation evaluation = getEvaluationFromSample(xSample);
 
@@ -195,7 +195,7 @@ namespace Deltares::Models
         xSample.ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
         xSample.LoggingCounter = runDesignPointCounter++;
 
-        this->zModel->invoke(xSample);
+        this->invoke(xSample);
 
         registerEvaluation(xSample);
 
@@ -223,7 +223,7 @@ namespace Deltares::Models
             xSamples.push_back(storage.keep(xSample));
         }
 
-        this->zModel->invoke(xSamples);
+        this->invoke(xSamples);
 
         std::vector<double> zValues(xSamples.size());
 
@@ -244,9 +244,9 @@ namespace Deltares::Models
      * \brief Sets a callback which calculates the beta in a certain direction
      * \param zBetaLambda Callback
      */
-    void ModelRunner::setDirectionModel(const ZBetaLambda& zBetaLambda) const
+    void ModelRunner::setDirectionModel(const ZBetaLambda& zBetaLambda) 
     {
-        this->zModel->setBetaLambda(zBetaLambda);
+        this->zBetaLambda = zBetaLambda;
     }
 
     /**
@@ -255,7 +255,7 @@ namespace Deltares::Models
      */
     bool ModelRunner::canCalculateBeta() const
     {
-        return this->zModel->canCalculateBeta();
+        return this->zBetaLambda != nullptr;
     }
 
     /**
@@ -267,7 +267,7 @@ namespace Deltares::Models
     {
         ModelSample xSample = getModelSample(sample);
 
-        return this->zModel->getBeta(xSample);
+        return this->zBetaLambda(xSample);
     }
 
     /**
@@ -408,11 +408,12 @@ namespace Deltares::Models
         designPoint->Identifier = identifier;
         designPoint->convergenceReport = convergenceReport;
 
+        int modelRuns = this->getModelRuns();
+
         if (designPoint->convergenceReport != nullptr)
         {
-            designPoint->convergenceReport->TotalModelRuns = this->zModel->getModelRuns();
+            designPoint->convergenceReport->TotalModelRuns = modelRuns;
         }
-        this->zModel->resetModelRuns();
 
         for (const auto& reliabilityResult : this->reliabilityResults)
         {

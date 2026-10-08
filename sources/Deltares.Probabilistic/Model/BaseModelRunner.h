@@ -60,27 +60,30 @@ namespace Deltares::Models
         void reportProgress(int step, int maxSteps, double reliability = std::nan(""), double convergence = std::nan("")) const;
         void reportMessage(Logging::MessageType type, std::string text);
         void reportDetailedProgress(int step, int loop, double reliability, double convergence) const;
-
-
         void doTextualProgress(ProgressType type, const std::string& text) const;
+
+        void invoke(ModelSample& sample) const;
+        void invoke(std::vector<ModelSample*>& samples) const;
 
         void setAllowRepository(bool allowRepository) const;
 
+        int getModelRuns() const;
         void CollectMessages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const;
 
     protected:
 
-        std::shared_ptr<ZModel> zModel;
+        int getOutputParametersSize() const;
 
         void registerEvaluation(ModelSample& sample);
         Evaluation getEvaluationFromSample(ModelSample& sample) const;
         bool canProgress() const;
 
     private:
+        std::shared_ptr<ZModel> zModel;
+
         std::vector<std::shared_ptr<Evaluation>> evaluations;
         std::vector< std::shared_ptr<Logging::Message>> messages;
         std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
-
 
         Utils::Locker* locker = nullptr;
     };
