@@ -282,6 +282,7 @@
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />
+    <ClCompile Include="Model\BaseModelRunner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -648,6 +649,7 @@
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Model\BaseModelRunner.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

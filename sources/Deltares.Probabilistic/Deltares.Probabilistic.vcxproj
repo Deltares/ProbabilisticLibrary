@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Model\BaseModelRunner.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationMethod.h" />
     <ClInclude Include="Optimization\OptimizationProject.h" />
@@ -480,6 +481,7 @@
     <ClInclude Include="Server\Handlers\ConvergenceReportHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Model\BaseModelRunner.cpp" />
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />

@@ -41,11 +41,7 @@
 #include "../Uncertainty/CorrelationMatrixBuilder.h"
 #include "../Uncertainty/UncertaintyResult.h"
 #include "../Sensitivity/SensitivityResult.h"
-
-namespace Deltares::Reliability
-{
-    class LimitStateFunction;
-}
+#include "BaseModelRunner.h"
 
 namespace Deltares::Models
 {
@@ -53,30 +49,25 @@ namespace Deltares::Models
     typedef std::function<void(int iterationIndex)> RemoveTaskLambda;
     typedef std::function<bool(int stochastIndex)> ShouldInvertLambda;
 
-    class ModelRunner
+    class ModelRunner : public BaseModelRunner
     {
     public:
-        ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, std::shared_ptr<ProgressIndicator> progressIndicator = nullptr)
+        ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, std::shared_ptr<ProgressIndicator> progressIndicator = nullptr) : BaseModelRunner(zModel, progressIndicator)
         {
-            this->zModel = zModel;
             this->uConverter = uConverter;
-            this->progressIndicator = progressIndicator;
         }
 
-        ~ModelRunner()
+        ~ModelRunner() override
         {
-            delete this->locker;
         }
 
-        std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
         std::shared_ptr<Proxies::ProxySettings> ProxySettings = std::make_shared<Proxies::ProxySettings>();
 
-        void initializeForRun();
-        void clear();
-        void clearLists();
+        void initializeForRun() override;
+        void clear() override;
+        void clearLists() override;
         void useProxy(bool useProxy);
         void updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings);
-        void setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider);
         double getZValue(Sample& sample);
         std::vector<double> getZValues(std::vector<Sample*>& samples);
         double getBeta(Sample& sample) const;
@@ -85,12 +76,10 @@ namespace Deltares::Models
         int getVaryingStochastCount() const;
         bool shouldExitPrematurely(const std::vector<Sample*>& samples) const;
         void removeTask(int iterationIndex) const;
+        void setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider);
 
         void reportResult(const std::shared_ptr<Reliability::ReliabilityReport>& report);
-        void reportProgress(int step, int maxSteps, double reliability = std::nan(""), double convergence = std::nan("")) const;
-        void reportMessage(Logging::MessageType type, std::string text);
 
-        void doTextualProgress(ProgressType type, const std::string& text) const;
         bool isVaryingStochast(int index) const;
         std::shared_ptr<Reliability::DesignPoint> getDesignPoint(Sample& sample, double beta, const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport = nullptr, const std::string& identifier = "");
         Uncertainty::UncertaintyResult getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast) const;
@@ -109,30 +98,20 @@ namespace Deltares::Models
         Evaluation getEvaluationFromType(Statistics::RunValuesType type) const;
 
         bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
-        void setAllowRepository(bool allowRepository) const;
         Evaluation getEvaluation(Sample& sample) const;
 
     private:
-        std::shared_ptr<ZModel> zModel;
         std::shared_ptr<UConverter> uConverter;
         int runDesignPointCounter = 1;
         bool usingProxy = false;
+
         std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
-        std::vector<std::shared_ptr<Evaluation>> evaluations;
-        std::vector< std::shared_ptr<Logging::Message>> messages;
-        std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
-
-        static Evaluation getEvaluationFromSample(ModelSample& sample);
-
-        void registerEvaluation(ModelSample& sample);
 
         std::shared_ptr<SampleProvider> sampleProvider = nullptr;
 
         ShouldExitLambda shouldExitFunction = nullptr;
         ShouldInvertLambda shouldInvertFunction = nullptr;
         RemoveTaskLambda removeTaskFunction = nullptr;
-
-        Utils::Locker* locker = nullptr;
     };
 }
 
