@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "CobylaOptimization.h"
+
 #include "Cobyla.h"
 #include <functional>
 
@@ -67,7 +68,7 @@ namespace Deltares::Optimization
 
         auto myfuncC = [&model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
             {
-            auto s = Models::ModelSample(static_cast<int>(dim_x));
+                auto s = Models::ModelSample(static_cast<int>(dim_x));
                 for (unsigned i = 0; i < dim_x; i++)
                 {
                     s.Values[i] = x[i];
