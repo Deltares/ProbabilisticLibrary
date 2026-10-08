@@ -44,11 +44,6 @@ namespace Deltares::Models
             return {sampleSize};
         }
 
-        static ModelSample getModelSample(std::vector<double>& values)
-        {
-            return ModelSample(values);
-        }
-
     private:
         int sampleSize;
         int modelSampleSize;

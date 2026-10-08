@@ -185,6 +185,25 @@ namespace Deltares::Models
     }
 
     /**
+     * \brief Indicates whether this model runner can calculate the beta (distance to limit state) in a given direction
+     * \return Indication
+     */
+    bool BaseModelRunner::canCalculateBeta() const
+    {
+        return this->zModel->canCalculateBeta();
+    }
+
+    /**
+     * \brief Gets the beta (distance to limit state) in a given direction
+     * \param sample Sample indicating the direction
+     * \return Beta
+     */
+    double BaseModelRunner::getBeta(ModelSample& sample) const
+    {
+        return this->zModel->getBeta(sample);
+    }
+
+    /**
      * \brief Assigns the collected evaluations and messages to given collections
      * \param evaluations The evaluations to assign the collected evaluations to
      * \param messages The messages to assign the collected messages to
