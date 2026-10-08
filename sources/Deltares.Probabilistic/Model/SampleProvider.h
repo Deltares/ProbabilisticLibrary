@@ -21,11 +21,7 @@
 //
 #pragma once
 
-#include <vector>
-#include <memory>
-
 #include "Sample.h"
-#include "ModelSample.h"
 #include "../Reliability/StochastSettingsSet.h"
 
 namespace Deltares::Models
@@ -42,11 +38,6 @@ namespace Deltares::Models
         Sample getSample() const
         {
             return {sampleSize};
-        }
-
-        static ModelSample getModelSample(std::vector<double>& values)
-        {
-            return ModelSample(values);
         }
 
     private:

@@ -103,7 +103,7 @@ namespace Deltares::Models
         std::vector<double> xValues = this->uConverter->getXValues(sample);
 
         // create a sample with values in x-space
-        ModelSample xSample = SampleProvider::getModelSample(xValues);
+        ModelSample xSample = ModelSample(xValues);
 
         xSample.AllowProxy = sample.AllowProxy;
         xSample.IterationIndex = sample.IterationIndex;
@@ -121,7 +121,7 @@ namespace Deltares::Models
         std::vector<double> xValues = this->uConverter->getValuesFromType(type);
 
         // create a sample with values in x-space
-        ModelSample xSample = SampleProvider::getModelSample(xValues);
+        ModelSample xSample = ModelSample(xValues);
         xSample.OutputValues.resize(this->getOutputParametersSize());
 
         return xSample;
@@ -241,24 +241,6 @@ namespace Deltares::Models
     }
 
     /**
-     * \brief Sets a callback which calculates the beta in a certain direction
-     * \param zBetaLambda Callback
-     */
-    void ModelRunner::setDirectionModel(const ZBetaLambda& zBetaLambda) 
-    {
-        this->zBetaLambda = zBetaLambda;
-    }
-
-    /**
-     * \brief Indicates whether this model runner can calculate the beta (distance to limit state) in a given direction
-     * \return Indication
-     */
-    bool ModelRunner::canCalculateBeta() const
-    {
-        return this->zBetaLambda != nullptr;
-    }
-
-    /**
      * \brief Gets the beta (distance to limit state) in a given direction
      * \param sample Sample indicating the direction
      * \return Beta
@@ -267,7 +249,7 @@ namespace Deltares::Models
     {
         ModelSample xSample = getModelSample(sample);
 
-        return this->zBetaLambda(xSample);
+        return BaseModelRunner::getBeta(xSample);
     }
 
     /**

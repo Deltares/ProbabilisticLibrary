@@ -67,6 +67,9 @@ namespace Deltares::Models
 
         void setAllowRepository(bool allowRepository) const;
 
+        bool canCalculateBeta() const;
+        double getBeta(ModelSample& sample) const;
+
         int getModelRuns() const;
         void CollectMessages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const;
 

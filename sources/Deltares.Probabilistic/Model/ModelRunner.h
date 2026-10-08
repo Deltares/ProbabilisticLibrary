@@ -71,7 +71,6 @@ namespace Deltares::Models
         double getZValue(Sample& sample);
         std::vector<double> getZValues(std::vector<Sample*>& samples);
         double getBeta(Sample& sample) const;
-        bool canCalculateBeta() const;
         int getStochastCount() const;
         int getVaryingStochastCount() const;
         bool shouldExitPrematurely(const std::vector<Sample*>& samples) const;
@@ -88,7 +87,6 @@ namespace Deltares::Models
         Models::ModelSample getModelSampleFromType(Statistics::RunValuesType type) const;
         std::vector<double> getOnlyVaryingValues(const std::vector<double>& values) const;
 
-        void setDirectionModel(const ZBetaLambda& zBetaLambda);
         void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
         void setShouldInvertFunction(ShouldInvertLambda shouldInvertFunction) { this->shouldInvertFunction = shouldInvertFunction; }
         void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
@@ -112,8 +110,6 @@ namespace Deltares::Models
         ShouldExitLambda shouldExitFunction = nullptr;
         ShouldInvertLambda shouldInvertFunction = nullptr;
         RemoveTaskLambda removeTaskFunction = nullptr;
-
-        ZBetaLambda zBetaLambda = nullptr;
     };
 }
 
