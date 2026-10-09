@@ -60,8 +60,9 @@ namespace Deltares::Numeric
 
     int RandomValueGenerator::next(int maximum)
     {
-        std::uniform_int_distribution<int> distribution(0.0, maximum-1);
-        auto ri = distribution(generator);
+        const double r = next() * static_cast<double>(maximum);
+        auto ri = static_cast<int>(r);
+        ri = std::min(ri, maximum - 1); // to be sure that the resulting value is < maximum.
         return ri;
     }
 
