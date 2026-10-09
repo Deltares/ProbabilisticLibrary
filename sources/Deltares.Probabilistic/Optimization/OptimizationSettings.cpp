@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "OptimizationSettings.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 #include <memory>
 

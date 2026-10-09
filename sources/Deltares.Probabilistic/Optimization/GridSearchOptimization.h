@@ -26,7 +26,6 @@
 #include "OptimizationResult.h"
 #include "SearchParameterSettingsSet.h"
 #include "../Model/ModelSample.h"
-#include "../Model/ModelRunner.h"
 
 namespace Deltares::Optimization
 {

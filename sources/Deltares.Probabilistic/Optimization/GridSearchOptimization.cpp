@@ -26,6 +26,7 @@
 #include <cmath>
 #include <algorithm>
 #include <ranges>
+#include "../Model/ModelRunner.h"
 
 namespace Deltares::Optimization
 {
@@ -35,11 +36,7 @@ namespace Deltares::Optimization
 
         auto& searchArea = *Settings.SearchArea;
 
-        std::vector<double> defaultValues;
-        for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
-        {
-            defaultValues.push_back(std::nan(""));
-        }
+        auto defaultValues = std::vector<double>(searchArea.Dimensions.size(), std::nan(""));
 
         Models::ModelSample initialSample = Models::ModelSample(defaultValues);
         initialSample.Z = std::numeric_limits<double>::infinity();
@@ -103,7 +100,7 @@ namespace Deltares::Optimization
         int gridCounter = 0;
         int gridIntervalCounter = 0;
 
-        for (auto& combination : combinations)
+        for (const auto& combination : combinations)
         {
             gridCounter++;
             gridIntervalCounter++;
@@ -223,7 +220,7 @@ namespace Deltares::Optimization
     {
         if (dimension.NumberOfValues > 0)
         {
-            return std::fabs((dimension.MaxValue - dimension.MinValue)) / (10 * dimension.NumberOfValues);
+            return std::fabs(dimension.MaxValue - dimension.MinValue) / (10 * dimension.NumberOfValues);
         }
         else
         {
