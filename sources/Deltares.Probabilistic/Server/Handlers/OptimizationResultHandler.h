@@ -59,7 +59,7 @@ namespace Deltares::Server
             if (property_ == "values_count") return static_cast<int>(result->values.size());
             else if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
             else if (property_ == "messages_count") return static_cast<int>(result->messages.size());
-            else if (property_ == "model_runs") return static_cast<int>(result->modelRuns);
+            else if (property_ == "model_runs") return result->modelRuns;
             else return StoredObjectHandler::GetIntValue(result, property_);
         }
 

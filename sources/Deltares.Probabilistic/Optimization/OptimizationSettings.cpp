@@ -30,12 +30,14 @@ namespace Deltares::Sensitivity
 
 namespace Deltares::Optimization
 {
+    using enum OptimizationMethodType;
+
     std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod()
     {
         switch (this->OptimizationMethod)
         {
-        case OptimizationMethodType::GridSearch: return this->GetGridSearchMethod();
-        case OptimizationMethodType::Cobyla: return this->GetCobylaMethod();
+        case Grid: return this->GetGridSearchMethod();
+        case Cobyla: return this->GetCobylaMethod();
 
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
@@ -71,8 +73,8 @@ namespace Deltares::Optimization
     {
         switch (this->OptimizationMethod)
         {
-        case OptimizationMethodType::GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
-        case OptimizationMethodType::Cobyla: GetCobylaMethod()->Settings.validate(report); break;
+        case Grid: GetGridSearchMethod()->Settings.validate(report); break;
+        case Cobyla: GetCobylaMethod()->Settings.validate(report); break;
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -81,20 +83,20 @@ namespace Deltares::Optimization
     {
         switch (method)
         {
-        case OptimizationMethodType::GridSearch: return "grid";
-        case OptimizationMethodType::Cobyla: return "cobyla";
-        case OptimizationMethodType::AdaptiveParticleSwarmOptimization: return "apso";
-        case OptimizationMethodType::GeneticAlgorithm: return "ga";
+        case Grid: return "grid";
+        case Cobyla: return "cobyla";
+        case AdaptiveParticleSwarmOptimization: return "apso";
+        case GeneticAlgorithm: return "ga";
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
 
     OptimizationMethodType OptimizationSettings::getOptimizationMethodType(std::string method)
     {
-        if (method == "grid") return OptimizationMethodType::GridSearch;
-        else if (method == "cobyla") return OptimizationMethodType::Cobyla;
-        else if (method == "apso") return OptimizationMethodType::AdaptiveParticleSwarmOptimization;
-        else if (method == "ga") return OptimizationMethodType::GeneticAlgorithm;
+        if (method == "grid") return Grid;
+        else if (method == "cobyla") return Cobyla;
+        else if (method == "apso") return AdaptiveParticleSwarmOptimization;
+        else if (method == "ga") return GeneticAlgorithm;
         else throw Reliability::ProbabilisticLibraryException("Optimization method");
     }
 }

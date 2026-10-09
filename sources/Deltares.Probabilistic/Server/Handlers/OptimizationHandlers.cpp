@@ -36,10 +36,12 @@ namespace Deltares::Server
         optimizationProjectHandler.optimizationResultHandler = &optimizationResultHandler;
         optimizationProjectHandler.optimizationSettingsHandler = &optimizationSettingsHandler;
 
-        handlers[ObjectType::OptimizationProject] = &optimizationProjectHandler;
-        handlers[ObjectType::OptimizationResult] = &optimizationResultHandler;
-        handlers[ObjectType::OptimizationSettings] = &optimizationSettingsHandler;
-        handlers[ObjectType::SearchParameterSettings] = &searchParameterSettingsHandler;
+        using enum ObjectType;
+
+        handlers[OptimizationProject] = &optimizationProjectHandler;
+        handlers[OptimizationResult] = &optimizationResultHandler;
+        handlers[OptimizationSettings] = &optimizationSettingsHandler;
+        handlers[SearchParameterSettings] = &searchParameterSettingsHandler;
     }
 }
 

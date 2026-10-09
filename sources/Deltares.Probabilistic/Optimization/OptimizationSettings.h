@@ -29,7 +29,7 @@
 
 namespace Deltares::Optimization
 {
-    enum class OptimizationMethodType { GridSearch, Cobyla, AdaptiveParticleSwarmOptimization, GeneticAlgorithm };
+    enum class OptimizationMethodType { Grid, Cobyla, AdaptiveParticleSwarmOptimization, GeneticAlgorithm };
 
     /**
      * \brief General settings applicable to all optimization mechanisms
@@ -44,7 +44,7 @@ namespace Deltares::Optimization
         /**
          * \brief Method type how the design point (alpha values) is calculated
          */
-        OptimizationMethodType OptimizationMethod = OptimizationMethodType::GridSearch;
+        OptimizationMethodType OptimizationMethod = OptimizationMethodType::Grid;
 
         /**
          * \brief Maximum number of grid moves to be performed
