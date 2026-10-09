@@ -20,26 +20,14 @@
 // All rights reserved.
 //
 #pragma once
-#include <string>
 
-#include <vector>
-
-#include "../Model/UConverter.h"
-#include "../Model/Sample.h"
-#include "../Model/ZModel.h"
-#include "ProxySettings.h"
 #include "ProxyModel.h"
+#include "../Model/UConverter.h"
 #include "../Model/ModelRunner.h"
-#include "../Model/ModelSample.h"
 #include "../Model/ProgressIndicator.h"
-
 
 namespace Deltares::Proxies
 {
-    typedef std::function<bool(bool finalCall)> ShouldExitLambda;
-    typedef std::function<void(int iterationIndex)> RemoveTaskLambda;
-    typedef std::function<bool(int stochastIndex)> ShouldInvertLambda;
-
     class ProxyModelRunner : public Models::ModelRunner
     {
     public:

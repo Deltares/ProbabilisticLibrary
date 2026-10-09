@@ -36,7 +36,6 @@ namespace Deltares::Proxies
     {
         this->allowProxy = allowProxy;
     }
-
 }
 
 

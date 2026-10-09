@@ -21,15 +21,14 @@
 //
 #include "ModelRunner.h"
 #include "ModelSample.h"
+#include "ModelSampleStorage.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/Stochast.h"
-#include <cmath>
+#include "../Reliability/FragilityCurve.h"
 
-#include "../Proxies/ProxyModel.h"
+#include <cmath>
 #include <format>
 
-#include "ModelSampleStorage.h"
-#include "../Reliability/FragilityCurve.h"
 
 namespace Deltares::Models
 {
