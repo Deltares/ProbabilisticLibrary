@@ -32,18 +32,20 @@ namespace Deltares::Optimization::Test
 {
     void TestAdaptiveParticleSwarmOptimization::TestBeeswarm(bool move, double tolerance, int evaluations, const std::vector<double>& center)
     {
-        auto apso = AdaptiveParticleSwarmOptimization();
+        AdaptiveParticleSwarmOptimizationSettings options;
         auto search_param_settings = SearchParameterSettings();
         search_param_settings.MinValue = 1;
         search_param_settings.MaxValue = 10;
         search_param_settings.Move = move;
         for (size_t i = 0; i < center.size(); i++)
         {
-            apso.Options.SearchArea.Dimensions.emplace_back(SearchParameterSettings(search_param_settings));
+            options.SearchArea.Dimensions.emplace_back(search_param_settings);
         }
-        apso.Options.CrossOver = 0.8;
-        apso.Options.StopAfterNonImprovingGenerations = 5;
+        options.CrossOver = 0.8;
+        options.StopAfterNonImprovingGenerations = 5;
+
         auto model = Probabilistic::Test::ZmodelWithCenter(center);
+        auto apso = AdaptiveParticleSwarmOptimization(options);
         const auto result = apso.getOptimizedSample(model);
 
         for (size_t i = 0; i < center.size(); i++)

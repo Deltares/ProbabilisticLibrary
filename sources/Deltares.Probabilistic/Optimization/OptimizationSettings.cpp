@@ -64,9 +64,10 @@ namespace Deltares::Optimization
 
     std::shared_ptr<AdaptiveParticleSwarmOptimization> OptimizationSettings::GetApsoMethod() const
     {
-        auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>();
+        auto options = AdaptiveParticleSwarmOptimizationSettings();
+        options.SearchArea = *SearchArea;
 
-        apso->Options.SearchArea = *SearchArea;
+        auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>(options);
 
         return apso;
     }
@@ -81,7 +82,7 @@ namespace Deltares::Optimization
         {
         case GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
         case Cobyla: GetCobylaMethod()->Settings.validate(report); break;
-        case APSO: GetApsoMethod()->Options.validate(report); break;
+        case APSO: GetApsoMethod()->validate(report); break;
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }

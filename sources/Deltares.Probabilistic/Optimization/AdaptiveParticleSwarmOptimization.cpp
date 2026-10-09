@@ -32,6 +32,11 @@ namespace Deltares::Optimization
 {
     using namespace Deltares::Models;
 
+    void AdaptiveParticleSwarmOptimization::validate(Logging::ValidationReport& report) const
+    {
+        Options.validate(report);
+    }
+
     OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(ZModel& model)
     {
         rng.initialize(true, Options.Seed);
