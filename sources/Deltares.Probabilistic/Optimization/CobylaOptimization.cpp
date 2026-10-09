@@ -30,7 +30,7 @@ namespace Deltares::Numeric
 
 namespace Deltares::Optimization
 {
-    std::shared_ptr<OptimizationResult> CobylaOptimization::getOptimizedSample(Models::ZModel& model)
+    std::shared_ptr<OptimizationResult> CobylaOptimization::getOptimizedSample(Models::BaseModelRunner& model)
     {
         auto searchArea = Settings.SearchArea;
 

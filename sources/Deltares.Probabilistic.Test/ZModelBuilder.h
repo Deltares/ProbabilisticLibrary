@@ -28,8 +28,8 @@ namespace Deltares::Probabilistic::Test
     {
     public:
 
-        static Models::ZModel getPolynomeModel(double offset1 = -1.0, double offset2 = 0.0);
-        static Models::ZModel getConstrainedPolynomeModel();
+        static std::shared_ptr<Models::ZModel> getPolynomeModel(double offset1 = -1.0, double offset2 = 0.0);
+        static std::shared_ptr<Models::ZModel> getConstrainedPolynomeModel();
     };
 }
 

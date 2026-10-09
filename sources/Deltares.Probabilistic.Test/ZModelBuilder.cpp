@@ -25,26 +25,26 @@ using namespace Deltares::Probabilistic::Test;
 
 namespace Deltares::Probabilistic::Test
 {
-    Models::ZModel ZModelBuilder::getPolynomeModel(double offset1, double offset2)
+    std::shared_ptr<Models::ZModel> ZModelBuilder::getPolynomeModel(double offset1, double offset2)
     {
         Models::ZLambda function = [offset1, offset2](Models::ModelSample& sample)
         {
             sample.Z = 10.0 * std::pow(sample.Values[0] - offset1, 2) + std::pow(sample.Values[1] - offset2, 2);
         };
 
-        Models::ZModel model = Models::ZModel(function);
+        auto model = std::make_shared<Models::ZModel>(function);
 
         return model;
     }
 
-    Models::ZModel ZModelBuilder::getConstrainedPolynomeModel()
+    std::shared_ptr<Models::ZModel> ZModelBuilder::getConstrainedPolynomeModel()
     {
         Models::ZLambda function = [](Models::ModelSample& sample)
         {
             sample.Z = sample.Values[0] * sample.Values[1];
         };
 
-        Models::ZModel model = Models::ZModel(function);
+        std::shared_ptr<Models::ZModel> model = std::make_shared<Models::ZModel>(function);
 
         Models::ZBetaLambda constraint = [](Models::ModelSample& sample)
         {
@@ -52,7 +52,7 @@ namespace Deltares::Probabilistic::Test
             return std::abs(C);
         };
 
-        model.setConstraint(constraint);
+        model->setConstraint(constraint);
 
         return model;
     }

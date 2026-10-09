@@ -43,7 +43,8 @@ namespace Deltares::Probabilistic::Test
         auto model = ZModelBuilder::getPolynomeModel();
         auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
-        auto result = cb.getOptimizedSample(model);
+        auto modelRunner = Models::BaseModelRunner(model);
+        auto result = cb.getOptimizedSample(modelRunner);
         EXPECT_NEAR(result->values[0], -1.0, 1e-3);
         EXPECT_NEAR(result->values[1], 0.0, 1e-3);
         EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
@@ -54,7 +55,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::test_project_no_constraints1()
     {
         auto cb = OptimizationProject();
-        cb.zModel = ZModelBuilder::getPolynomeModel();
+        cb.model = ZModelBuilder::getPolynomeModel();
         cb.settings->OptimizationMethod = OptimizationMethodType::Cobyla;
         auto searchArea = cb.settings->SearchArea;
         searchArea->setDimensions(2);
@@ -76,7 +77,8 @@ namespace Deltares::Probabilistic::Test
         auto model = ZModelBuilder::getPolynomeModel(2, 3);
         auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
-        auto result = cb.getOptimizedSample(model);
+        auto modelRunner = Models::BaseModelRunner(model);
+        auto result = cb.getOptimizedSample(modelRunner);
         EXPECT_NEAR(result->values[0], 2.0, 1e-3);
         EXPECT_NEAR(result->values[1], 3.0, 1e-3);
         EXPECT_NEAR(result->minimumValue, 0.0, 1e-3);
@@ -92,7 +94,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->StartValue = 1.0;
         searchArea->Dimensions[1]->StartValue = 1.0;
-        auto result = cb.getOptimizedSample(model);
+        auto modelRunner = Models::BaseModelRunner(model);
+        auto result = cb.getOptimizedSample(modelRunner);
         EXPECT_NEAR(result->values[0], 0.707, 1e-2);
         EXPECT_NEAR(result->values[1], -0.707, 1e-2);
         EXPECT_NEAR(result->minimumValue, -0.5, 1e-3);

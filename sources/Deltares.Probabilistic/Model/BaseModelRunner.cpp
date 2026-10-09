@@ -212,6 +212,16 @@ namespace Deltares::Models
         return this->zModel->getBeta(sample);
     }
 
+    bool BaseModelRunner::hasConstraint() const
+    {
+        return zModel->hasConstraint();
+    }
+
+    double BaseModelRunner::getConstraint(ModelSample& sample)
+    {
+        return zModel->getConstraint(sample);
+    }
+
     /**
      * \brief Assigns the collected evaluations and messages to given collections
      * \param evaluations The evaluations to assign the collected evaluations to

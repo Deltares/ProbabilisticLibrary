@@ -56,11 +56,14 @@ namespace Deltares::Statistics
             searchArea->Dimensions.push_back(settings);
         }
 
-        Models::ZModel model = Models::ZModel([this, values, &stochast, properties]
-        (Models::ModelSample& sample)
-        { return getLogLikelihood(sample, values, stochast, properties); });
+        Models::ZLambda function = [this, values, &stochast, properties] (Models::ModelSample& sample)
+        { return getLogLikelihood(sample, values, stochast, properties); };
 
-        std::shared_ptr<Optimization::OptimizationResult> result = gridSearch.getOptimizedSample(model);
+        std::shared_ptr<Models::ZModel> model = std::make_shared<Models::ZModel>(function);
+
+        Models::BaseModelRunner modelRunner = Models::BaseModelRunner(model);
+
+        std::shared_ptr<Optimization::OptimizationResult> result = gridSearch.getOptimizedSample(modelRunner);
 
         return result->values;
     }

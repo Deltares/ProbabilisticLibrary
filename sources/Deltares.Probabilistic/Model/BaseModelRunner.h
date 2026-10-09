@@ -69,6 +69,8 @@ namespace Deltares::Models
 
         bool canCalculateBeta() const;
         double getBeta(ModelSample& sample) const;
+        bool hasConstraint() const;
+        double getConstraint(ModelSample& sample);
 
         int getModelRuns() const;
         void CollectMessages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const;

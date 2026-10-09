@@ -53,7 +53,7 @@ namespace Deltares::Optimization
         /**
          * \brief Deterministic model which calculates a z-value based on input values
          */
-        Models::ZModel zModel;
+        //Models::ZModel zModel;
 
         /**
          * \brief Results of the optimization calculation

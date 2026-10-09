@@ -49,7 +49,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[1]->MaxValue = 10;
         searchArea->Dimensions[1]->NumberOfValues = 11;
 
-        auto result = gridSearch.getOptimizedSample(model);
+        auto modelRunner = Models::BaseModelRunner(model);
+        auto result = gridSearch.getOptimizedSample(modelRunner);
         EXPECT_NEAR(result->values[0], 2.0, 0.01);
         EXPECT_NEAR(result->values[1], 4.0, 0.01);
         EXPECT_NEAR(result->minimumValue, 1.69, 1e-3);
@@ -61,7 +62,7 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[0]->NumberOfRefinements = 3;
         searchArea->Dimensions[1]->NumberOfRefinements = 3;
 
-        auto result2 = gridSearch.getOptimizedSample(model);
+        auto result2 = gridSearch.getOptimizedSample(modelRunner);
         EXPECT_NEAR(result2->values[0], 2.4, 0.1);
         EXPECT_NEAR(result2->values[1], 3.7, 0.1);
         EXPECT_NEAR(result2->minimumValue, 0.008, 1e-3);
@@ -86,7 +87,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[1]->NumberOfValues = 11;
         searchArea->Dimensions[1]->Move = true;
 
-        auto result = project.getOptimizedSample(model);
+        auto modelRunner = Models::BaseModelRunner(model);
+        auto result = project.getOptimizedSample(modelRunner);
         EXPECT_NEAR(result->values[0], 13.0, 0.01);
         EXPECT_NEAR(result->values[1], 16.0, 0.01);
         EXPECT_NEAR(result->minimumValue, 0.14, 1e-3);
@@ -98,7 +100,8 @@ namespace Deltares::Probabilistic::Test
         searchArea->Dimensions[0]->NumberOfRefinements = 10;
         searchArea->Dimensions[1]->NumberOfRefinements = 10;
 
-        auto result2 = project.getOptimizedSample(model);
+        auto modelRunner2 = Models::BaseModelRunner(model);
+        auto result2 = project.getOptimizedSample(modelRunner2);
         EXPECT_NEAR(result2->values[0], 12.9, 0.001);
         EXPECT_NEAR(result2->values[1], 16.2, 0.001);
         EXPECT_NEAR(result2->minimumValue, 0.0, 0.001);
@@ -110,7 +113,7 @@ namespace Deltares::Probabilistic::Test
     void TestGridSearch::test_project_polynome_move_grid()
     {
         auto project = OptimizationProject();
-        project.zModel = ZModelBuilder::getPolynomeModel(12.9, 16.2);
+        project.model = ZModelBuilder::getPolynomeModel(12.9, 16.2);
         project.settings->MaxGridMoves = 10;
         auto searchArea = project.settings->SearchArea;
         searchArea->setDimensions(2);

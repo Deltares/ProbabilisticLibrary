@@ -34,7 +34,7 @@ namespace Deltares::Optimization
     {
     public:
         CobylaOptimizationSettings Settings;
-        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::ZModel& model) override;
+        std::shared_ptr<OptimizationResult> getOptimizedSample(Models::BaseModelRunner& model) override;
     };
 }
 

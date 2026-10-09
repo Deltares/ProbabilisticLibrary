@@ -61,9 +61,10 @@ namespace Deltares::Reliability
         int counter = 0;
         int* pCounter = &counter;
 
-        ZModel zModel = getZModelForModelRunner(*modelRunner.get(), uMean, Settings->MaximumIterations, z0Fac, pCounter);
+        std::shared_ptr<ZModel> zModel = getZModelForModelRunner(*modelRunner.get(), uMean, Settings->MaximumIterations, z0Fac, pCounter);
+        BaseModelRunner runner = BaseModelRunner(zModel);
 
-        auto result = optimizer.getOptimizedSample(zModel);
+        auto result = optimizer.getOptimizedSample(runner);
         double beta = z0Fac * result->minimumValue;
 
         auto uMin = uMean.getSample();
@@ -74,7 +75,7 @@ namespace Deltares::Reliability
         return designPoint;
     };
 
-    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const
+    std::shared_ptr<ZModel> CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const
     {
         const ZLambda zLambda = [](ModelSample& modelSample)
         {
@@ -82,7 +83,7 @@ namespace Deltares::Reliability
             modelSample.Z = sample.getBeta();
         };
 
-        ZModel model = ZModel(zLambda);
+        std::shared_ptr<ZModel> model = std::make_shared<ZModel>(zLambda);
 
         const ZBetaLambda zConstraint = [&modelRunner, &uMean, maxIterations, z0Fac, &counter](ModelSample& modelSample)
         {
@@ -102,7 +103,7 @@ namespace Deltares::Reliability
             return std::abs(z);
         };
 
-        model.setConstraint(zConstraint);
+        model->setConstraint(zConstraint);
 
         return model;
     }

@@ -27,9 +27,9 @@
 
 namespace Deltares::Optimization
 {
-    std::shared_ptr<OptimizationResult> GridSearch::getOptimizedSample(Models::ZModel& model)
+    std::shared_ptr<OptimizationResult> GridSearch::getOptimizedSample(Models::BaseModelRunner& model)
     {
-        model.resetModelRuns();
+        model.clear();
 
         std::shared_ptr<SearchParameterSettingsSet> searchArea = Settings.SearchArea;
 
@@ -83,7 +83,7 @@ namespace Deltares::Optimization
         return result;
     }
 
-    Models::ModelSample GridSearch::findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::ZModel& model, Models::ModelSample& minSample, int iteration)
+    Models::ModelSample GridSearch::findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, Models::BaseModelRunner& model, Models::ModelSample& minSample, int iteration)
     {
         std::vector<std::vector<double>> inputValues;
         for (std::shared_ptr<SearchParameterSettings> dimension : searchArea->Dimensions)
@@ -100,6 +100,8 @@ namespace Deltares::Optimization
 
         int gridCounter = 0;
         int gridIntervalCounter = 0;
+        int gridTotal = static_cast<int>(combinations.size());
+        int progressInterval = gridTotal / searchArea->Dimensions[0]->NumberOfValues;
 
         for (auto& combination : combinations)
         {
@@ -115,6 +117,18 @@ namespace Deltares::Optimization
             if (!std::isnan(sample.Z) && sample.Z < minSample.Z)
             {
                 minSample = sample;
+            }
+
+            if (gridIntervalCounter >= progressInterval || gridCounter == gridTotal)
+            {
+                model.reportProgress(gridCounter, gridTotal);
+                gridIntervalCounter = 0;
+                //TO DO: register reliability result
+            }
+
+            if (isStopped())
+            {
+                break;
             }
         }
 
