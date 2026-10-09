@@ -20,30 +20,29 @@
 // All rights reserved.
 //
 #include "OptimizationSettings.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 #include <memory>
 
-namespace Deltares::Sensitivity
-{
-    class Sobol;
-}
-
 namespace Deltares::Optimization
 {
-    std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod()
+    using enum OptimizationMethodType;
+
+    std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod() const
     {
         switch (this->OptimizationMethod)
         {
-        case OptimizationMethodType::GridSearch: return this->GetGridSearchMethod();
-        case OptimizationMethodType::Cobyla: return this->GetCobylaMethod();
+        case GridSearch: return this->GetGridSearchMethod();
+        case Cobyla: return this->GetCobylaMethod();
+        case APSO: return this->GetApsoMethod();
 
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
 
-    std::shared_ptr<GridSearch> OptimizationSettings::GetGridSearchMethod() const
+    std::shared_ptr<GridSearchOptimization> OptimizationSettings::GetGridSearchMethod() const
     {
-        std::shared_ptr<GridSearch> gridSearch = std::make_shared<GridSearch>();
+        std::shared_ptr<GridSearchOptimization> gridSearch = std::make_shared<GridSearchOptimization>();
 
         gridSearch->Settings.MaxGridMoves = this->MaxGridMoves;
         gridSearch->Settings.RunSettings = this->RunSettings;
@@ -63,16 +62,26 @@ namespace Deltares::Optimization
         return cobyla;
     }
 
+    std::shared_ptr<AdaptiveParticleSwarmOptimization> OptimizationSettings::GetApsoMethod() const
+    {
+        auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>();
+
+        apso->Options.SearchArea = *SearchArea;
+
+        return apso;
+    }
+
     /**
      * \brief Reports whether the settings have valid values
      * \param report Report in which the validity is reported
      */
     void OptimizationSettings::validate(Logging::ValidationReport& report) const
     {
-        switch (this->OptimizationMethod)
+        switch (OptimizationMethod)
         {
-        case OptimizationMethodType::GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
-        case OptimizationMethodType::Cobyla: GetCobylaMethod()->Settings.validate(report); break;
+        case GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
+        case Cobyla: GetCobylaMethod()->Settings.validate(report); break;
+        case APSO: GetApsoMethod()->Options.validate(report); break;
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -81,18 +90,19 @@ namespace Deltares::Optimization
     {
         switch (method)
         {
-        case OptimizationMethodType::GridSearch: return "grid";
-        case OptimizationMethodType::Cobyla: return "cobyla";
+        case GridSearch: return "grid";
+        case Cobyla: return "cobyla";
+        case APSO: return "APSO";
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
 
-    OptimizationMethodType OptimizationSettings::getOptimizationMethodType(std::string method)
+    OptimizationMethodType OptimizationSettings::getOptimizationMethodType(const std::string& method)
     {
-        if (method == "grid") return OptimizationMethodType::GridSearch;
-        else if (method == "cobyla") return OptimizationMethodType::Cobyla;
+        if (method == "grid") return GridSearch;
+        else if (method == "cobyla") return Cobyla;
+        else if (method == "APSO") return APSO;
         else throw Reliability::ProbabilisticLibraryException("Optimization method");
     }
 }
-
 

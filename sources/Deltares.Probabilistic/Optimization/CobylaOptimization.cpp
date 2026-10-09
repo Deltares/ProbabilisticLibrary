@@ -20,17 +20,13 @@
 // All rights reserved.
 //
 #include "CobylaOptimization.h"
+
 #include "Cobyla.h"
 #include <functional>
 
-namespace Deltares::Numeric
-{
-    class NumericSupport;
-}
-
 namespace Deltares::Optimization
 {
-    std::shared_ptr<OptimizationResult> CobylaOptimization::getOptimizedSample(Models::ZModel& model)
+    OptimizationResult CobylaOptimization::getOptimizedSample(Models::ZModel& model)
     {
         auto searchArea = Settings.SearchArea;
 
@@ -43,9 +39,9 @@ namespace Deltares::Optimization
         auto dx = std::vector<double>(n);
         for (unsigned i = 0 ; i < n; i++)
         {
-            x0[i] = searchArea->Dimensions[i]->StartValue;
-            lb[i] = searchArea->Dimensions[i]->MinValue;
-            ub[i] = searchArea->Dimensions[i]->MaxValue;
+            x0[i] = searchArea->Dimensions[i].StartValue;
+            lb[i] = searchArea->Dimensions[i].MinValue;
+            ub[i] = searchArea->Dimensions[i].MaxValue;
             dx[i] = 0.1;
         }
         long long fData = 0;
@@ -67,7 +63,7 @@ namespace Deltares::Optimization
 
         auto myfuncC = [&model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
             {
-            auto s = Models::ModelSample(static_cast<int>(dim_x));
+                auto s = Models::ModelSample(static_cast<int>(dim_x));
                 for (unsigned i = 0; i < dim_x; i++)
                 {
                     s.Values[i] = x[i];
@@ -100,29 +96,29 @@ namespace Deltares::Optimization
         auto status = cobyla_minimize(n, myfunc, &fData, m, fc.data(), p, h.data(),
             lb.data(), ub.data(), x0.data(), &minimum_f_value, &stop, dx.data());
 
-        auto result = std::make_shared<OptimizationResult>();
-        result->modelRuns = *stop.nevals_p;
-        result->minimumValue = minimum_f_value;
+        auto result = OptimizationResult();
+        result.modelRuns = *stop.nevals_p;
+        result.minimumValue = minimum_f_value;
         switch (status)
         {
         case NLOPT_SUCCESS:
         case NLOPT_STOPVAL_REACHED:
         case NLOPT_FTOL_REACHED:
         case NLOPT_XTOL_REACHED:
-            result->succeeded = true;
+            result.succeeded = true;
             break;
         default:
-            result->succeeded = false;
+            result.succeeded = false;
             break;
         }
 
         // copy results, do not reuse vector
         // reusing vector leads to memory problems on linux
 
-        result->values.reserve(x0.size());
+        result.values.reserve(x0.size());
         for (size_t i = 0; i < x0.size(); i++)
         {
-            result->values.push_back(x0[i]);
+            result.values.push_back(x0[i]);
         }
 
         return result;

@@ -1,0 +1,230 @@
+// Copyright (C) Stichting Deltares. All rights reserved.
+//
+// This file is part of the Probabilistic Library.
+//
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+// All names, logos, and references to "Deltares" are registered trademarks of
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
+#include "GridSearchOptimization.h"
+
+#include "OptimizationResult.h"
+#include "../Math/NumericSupport.h"
+#include <cmath>
+#include <algorithm>
+#include <ranges>
+#include "../Model/ModelRunner.h"
+
+namespace Deltares::Optimization
+{
+    OptimizationResult GridSearchOptimization::getOptimizedSample(Models::ZModel& model)
+    {
+        model.resetModelRuns();
+
+        auto& searchArea = *Settings.SearchArea;
+
+        auto defaultValues = std::vector<double>(searchArea.Dimensions.size(), std::nan(""));
+
+        Models::ModelSample initialSample = Models::ModelSample(defaultValues);
+        initialSample.Z = std::numeric_limits<double>::infinity();
+
+        Models::ModelSample sample = findGridExtreme(searchArea, model, initialSample);
+        counter = 0;
+        reusedCounter = 0;
+
+        int gridMoves = 0;
+        while (gridMoves < Settings.MaxGridMoves && isSampleOnEdge(searchArea, sample))
+        {
+            moveSampleToCenter(searchArea, sample);
+            sample = findGridExtreme(searchArea, model, sample);
+            gridMoves++;
+
+            counter = 0;
+            reusedCounter = 0;
+        }
+
+        int refinements = 0;
+        while (canRefine(searchArea, refinements))
+        {
+            refineGrid(searchArea, refinements, sample);
+            sample = findGridExtreme(searchArea, model, sample);
+            refinements++;
+
+            counter = 0;
+            reusedCounter = 0;
+        }
+
+        auto result = OptimizationResult();
+
+        result.succeeded = true; // always succeeds
+        result.modelRuns = model.getModelRuns();
+        result.minimumValue = sample.Z;
+
+        result.values.reserve(sample.Values.size());
+        for (double Value : sample.Values)
+        {
+            result.values.push_back(Value);
+        }
+
+        return result;
+    }
+
+    Models::ModelSample GridSearchOptimization::findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::ZModel& model, Models::ModelSample& minSample)
+    {
+        std::vector<std::vector<double>> inputValues;
+        for (auto& dimension : searchArea.Dimensions)
+        {
+            inputValues.push_back(std::vector<double>(dimension.getValues()));
+        }
+
+        std::vector<std::vector<double>> combinations = Numeric::NumericSupport::getFullFactorialCombination(inputValues);
+
+        if (combinations.empty())
+        {
+            throw Reliability::ProbabilisticLibraryException("No dimensions or empty dimensions are not allowed");
+        }
+
+        int gridCounter = 0;
+        int gridIntervalCounter = 0;
+
+        for (const auto& combination : combinations)
+        {
+            gridCounter++;
+            gridIntervalCounter++;
+
+            Models::ModelSample sample = Models::ModelSample(combination);
+
+            model.invoke(sample);
+
+            counter++;
+
+            if (!std::isnan(sample.Z) && sample.Z < minSample.Z)
+            {
+                minSample = sample;
+            }
+        }
+
+        return minSample;
+    }
+
+    bool GridSearchOptimization::isSampleOnEdge(const SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample)
+    {
+        for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
+        {
+            if (searchArea.Dimensions[i].Move && searchArea.Dimensions[i].NumberOfValues > 2)
+            {
+                const double tolerance = getTolerance(searchArea.Dimensions[i]);
+
+                if (Numeric::NumericSupport::areEqual(searchArea.Dimensions[i].MinValue, sample.Values[i], tolerance)
+                    || Numeric::NumericSupport::areEqual(searchArea.Dimensions[i].MaxValue, sample.Values[i], tolerance))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    void GridSearchOptimization::moveSampleToCenter(SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample)
+    {
+        bool moved = false;
+
+        for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
+        {
+            auto& dimension = searchArea.Dimensions[i];
+
+            if (!moved && dimension.Move && dimension.NumberOfValues > 2)
+            {
+                double shift = dimension.getInterval();
+
+                const double tolerance = getTolerance(searchArea.Dimensions[i]);
+
+                if (Numeric::NumericSupport::areEqual(dimension.MinValue, sample.Values[i], tolerance))
+                {
+                    dimension.MinValue -= shift;
+                    dimension.MaxValue -= shift;
+                    dimension.UseValues = UseValuesType::MinValue;
+                    moved = true;
+                }
+                else if (Numeric::NumericSupport::areEqual(dimension.MaxValue, sample.Values[i], tolerance))
+                {
+                    dimension.MinValue += shift;
+                    dimension.MaxValue += shift;
+                    dimension.UseValues = UseValuesType::MaxValue;
+                    moved = true;
+                }
+                else
+                {
+                    dimension.UseValues = UseValuesType::AllValues;
+                }
+            }
+            else
+            {
+                dimension.UseValues = UseValuesType::AllValues;
+            }
+        }
+    }
+
+    bool GridSearchOptimization::canRefine(const SearchParameterSettingsSet& searchArea, int refinements)
+    {
+        return std::ranges::any_of(
+            searchArea.Dimensions,
+            [refinements](
+            const auto& dimension)
+            {
+                return refinements < dimension.NumberOfRefinements;
+            });
+    }
+
+    void GridSearchOptimization::refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample)
+    {
+        for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
+        {
+            auto& dimension = searchArea.Dimensions[i];
+            if (refinements < dimension.NumberOfRefinements)
+            {
+                // when refinement is allowed, create values for the new grid higher, lower and equal the original sample
+                // the values higher and lower are exactly between the sample and its neighbors in the previous grid
+                double newInterval = dimension.getInterval() / 2;
+                dimension.MinValue = sample.Values[i] - newInterval;
+                dimension.MaxValue = sample.Values[i] + newInterval;
+                dimension.NumberOfValues = 3;
+            }
+            else
+            {
+                // when refinement is not allowed, repeat the value from the original value
+                dimension.MinValue = sample.Values[i];
+                dimension.MaxValue = sample.Values[i];
+                dimension.NumberOfValues = 1;
+            }
+
+            dimension.UseValues = UseValuesType::AllValues;
+        }
+    }
+
+    double GridSearchOptimization::getTolerance(const SearchParameterSettings& dimension)
+    {
+        if (dimension.NumberOfValues > 0)
+        {
+            return std::fabs(dimension.MaxValue - dimension.MinValue) / (10 * dimension.NumberOfValues);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}

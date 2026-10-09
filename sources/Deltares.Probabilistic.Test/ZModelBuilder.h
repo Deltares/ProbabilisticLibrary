@@ -24,6 +24,17 @@
 
 namespace Deltares::Probabilistic::Test
 {
+    class ZmodelWithCenter : public Models::ZModel
+    {
+    public:
+        ZmodelWithCenter(const std::vector<double>& center) : center(center) {}
+        void invoke(Models::ModelSample& sample) override;
+        const int getEvaluations() const { return evaluations; }
+    private:
+        std::vector<double> center;
+        int evaluations = 0;
+    };
+
     class ZModelBuilder
     {
     public:

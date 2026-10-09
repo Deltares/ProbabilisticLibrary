@@ -19,26 +19,17 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
+#include <vector>
 
-#include "CobylaReliabilitySettings.h"
-#include "ReliabilityMethod.h"
-#include "../Optimization/CobylaOptimization.h"
-
-namespace Deltares::Reliability
+namespace Deltares::Optimization::Test
 {
-    class CobylaReliability : public ReliabilityMethod
+    class TestAdaptiveParticleSwarmOptimization
     {
     public:
-        std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-
-        bool isValid() override
-        {
-            return Settings->isValid();
-        }
-    private:
-        Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int& counter) const;
+        static void TestBeeswarm(bool move, double tolerance, int evaluations, const std::vector<double>& center);
+        static void test_project_polynome_move_grid();
     };
 }
 

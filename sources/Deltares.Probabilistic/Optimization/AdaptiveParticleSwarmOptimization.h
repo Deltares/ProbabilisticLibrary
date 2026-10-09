@@ -19,26 +19,33 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
 
-#include "CobylaReliabilitySettings.h"
-#include "ReliabilityMethod.h"
-#include "../Optimization/CobylaOptimization.h"
+#include <vector>
 
-namespace Deltares::Reliability
+#include "OptimizationMethod.h"
+
+#include "AdaptiveParticleSwarmOptimizationSettings.h"
+
+#include "../Math/RandomValueGenerator.h"
+
+namespace Deltares::Optimization
 {
-    class CobylaReliability : public ReliabilityMethod
+    class AdaptiveParticleSwarmOptimization : public OptimizationMethod
     {
     public:
-        std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-
-        bool isValid() override
-        {
-            return Settings->isValid();
-        }
+        AdaptiveParticleSwarmOptimizationSettings Options;
+        OptimizationResult getOptimizedSample(Models::ZModel& model) override;
     private:
-        Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int& counter) const;
+        Models::ModelSample InitializePopulation(Models::ZModel& model, std::vector<Models::ModelSample>& population);
+        Numeric::RandomValueGenerator rng;
+        void apsoBranch(int generation_index, size_t particle_size, const Models::ModelSample& best_particle,
+            Models::ModelSample& population_m);
+        void differentialEvolutionBranch(const std::vector<Models::ModelSample>& elite, size_t particle_size,
+            const Models::ModelSample& best_particle,
+            Models::ModelSample& population_m);
     };
+
 }
 

@@ -32,6 +32,7 @@ namespace Deltares::Models
          * \param report Report in which the validity is reported
          */
         virtual void validate(Logging::ValidationReport& report) const { /* implemented by inheritors */ }
+        virtual ~Validatable() = default;
 
         /**
          * \brief Validates the project and puts the result in a validation report

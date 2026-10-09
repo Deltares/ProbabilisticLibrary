@@ -19,26 +19,32 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
 
-#include "CobylaReliabilitySettings.h"
-#include "ReliabilityMethod.h"
-#include "../Optimization/CobylaOptimization.h"
+#include "SearchParameterSettingsSet.h"
+#include "../Model/Validatable.h"
 
-namespace Deltares::Reliability
+namespace Deltares::Optimization
 {
-    class CobylaReliability : public ReliabilityMethod
+    class AdaptiveParticleSwarmOptimizationSettings : public Models::Validatable
     {
     public:
-        std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        SearchParameterSettingsSet SearchArea = SearchParameterSettingsSet();
+        double DifferentialWeight = 0.3;
+        double CrossOver = 0.3;
+        double Beta = 0.5;
+        double Delta = 0.7;
+        int Seed = 12345;
+        int GenerationCount = 50;
+        int EliteCount = 8;
+        int PopulationCount = 125;
+        int StopAfterNonImprovingGenerations = 100;
 
-        bool isValid() override
-        {
-            return Settings->isValid();
-        }
-    private:
-        Models::ZModel getZModelForModelRunner(Models::ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int& counter) const;
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const override;
     };
 }
-
