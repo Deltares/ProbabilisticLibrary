@@ -843,12 +843,12 @@ TEST(UnitTests, testAPSOtestCase4)
 
 TEST(UnitTests, testAPSOtestCase5)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.05, 6500, { 12.0, 15.0 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.05, 6000, { 12.0, 15.0 });
 }
 
 TEST(UnitTests, testAPSOtestCase6)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.4, 6500, { 25.3, -17.8 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.4, 6000, { 25.3, -17.8 });
 }
 
 TEST(UnitTests, testAPSOtestCase7)
