@@ -22,7 +22,7 @@
 #include "DistributionFitter.h"
 #include "Distribution.h"
 #include "../Stochast.h"
-#include "../../Optimization/GridSearch.h"
+#include "../../Optimization/GridSearchOptimization.h"
 #include "../../Optimization/SearchParameterSettings.h"
 #include "../../Optimization/SearchParameterSettingsSet.h"
 #include "../../Model/ModelSample.h"
@@ -42,7 +42,7 @@ namespace Deltares::Statistics
         constexpr int numberValues = 13;
         constexpr int numberRefinements = 10;
 
-        auto gridSearch = Optimization::GridSearch();
+        auto gridSearch = Optimization::GridSearchOptimization();
 
         auto searchArea = gridSearch.Settings.SearchArea;
         for (size_t i = 0; i < properties.size(); i++)

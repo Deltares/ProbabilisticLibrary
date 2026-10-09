@@ -21,10 +21,6 @@
 //
 #pragma once
 
-#include <map>
-#include <vector>
-#include <memory>
-
 #include "GridSearchSettings.h"
 #include "OptimizationMethod.h"
 #include "OptimizationResult.h"
@@ -34,7 +30,7 @@
 
 namespace Deltares::Optimization
 {
-    class GridSearch : public OptimizationMethod
+    class GridSearchOptimization : public OptimizationMethod
     {
     public:
         /**
@@ -45,7 +41,7 @@ namespace Deltares::Optimization
         /**
          * \brief Finds the parameter combination which results in the minimum value
          * \param model Model to invoke, the minimum z-value will be used
-         * \return Sample containing values which lead to he minimum value
+         * \return Sample containing values which lead to the minimum value
          */
         OptimizationResult getOptimizedSample(Models::ZModel& model) override;
 

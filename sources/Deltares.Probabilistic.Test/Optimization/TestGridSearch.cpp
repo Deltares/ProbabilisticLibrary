@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 #include "TestGridSearch.h"
 #include "../ZModelBuilder.h"
-#include "../../Deltares.Probabilistic/Optimization/GridSearch.h"
+#include "../../Deltares.Probabilistic/Optimization/GridSearchOptimization.h"
 #include "../../Deltares.Probabilistic/Optimization/OptimizationProject.h"
 
 using namespace Deltares::Optimization;
@@ -38,7 +38,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestGridSearch::test_polynome()
     {
-        auto gridSearch = GridSearch();
+        auto gridSearch = GridSearchOptimization();
         auto model = ZModelBuilder::getPolynomeModel(2.4, 3.7);
         auto searchArea = gridSearch.Settings.SearchArea;
         searchArea->setDimensions(2);
@@ -72,7 +72,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestGridSearch::test_polynome_move_grid()
     {
-        auto project = GridSearch();
+        auto project = GridSearchOptimization();
         auto model = ZModelBuilder::getPolynomeModel(12.9, 16.2);
         project.Settings.MaxGridMoves = 10;
         auto searchArea = project.Settings.SearchArea;

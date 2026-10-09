@@ -37,9 +37,9 @@ namespace Deltares::Optimization
         }
     }
 
-    std::shared_ptr<GridSearch> OptimizationSettings::GetGridSearchMethod() const
+    std::shared_ptr<GridSearchOptimization> OptimizationSettings::GetGridSearchMethod() const
     {
-        std::shared_ptr<GridSearch> gridSearch = std::make_shared<GridSearch>();
+        std::shared_ptr<GridSearchOptimization> gridSearch = std::make_shared<GridSearchOptimization>();
 
         gridSearch->Settings.MaxGridMoves = this->MaxGridMoves;
         gridSearch->Settings.RunSettings = this->RunSettings;

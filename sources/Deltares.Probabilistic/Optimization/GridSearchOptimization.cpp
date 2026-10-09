@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "GridSearch.h"
+#include "GridSearchOptimization.h"
 
 #include "OptimizationResult.h"
 #include "../Math/NumericSupport.h"
@@ -27,7 +27,7 @@
 
 namespace Deltares::Optimization
 {
-    OptimizationResult GridSearch::getOptimizedSample(Models::ZModel& model)
+    OptimizationResult GridSearchOptimization::getOptimizedSample(Models::ZModel& model)
     {
         model.resetModelRuns();
 
@@ -83,7 +83,7 @@ namespace Deltares::Optimization
         return result;
     }
 
-    Models::ModelSample GridSearch::findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::ZModel& model, Models::ModelSample& minSample)
+    Models::ModelSample GridSearchOptimization::findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::ZModel& model, Models::ModelSample& minSample)
     {
         std::vector<std::vector<double>> inputValues;
         for (auto& dimension : searchArea.Dimensions)
@@ -121,7 +121,7 @@ namespace Deltares::Optimization
         return minSample;
     }
 
-    bool GridSearch::isSampleOnEdge(const SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample)
+    bool GridSearchOptimization::isSampleOnEdge(const SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample)
     {
         for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
         {
@@ -140,7 +140,7 @@ namespace Deltares::Optimization
         return false;
     }
 
-    void GridSearch::moveSampleToCenter(SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample)
+    void GridSearchOptimization::moveSampleToCenter(SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample)
     {
         bool moved = false;
 
@@ -180,7 +180,7 @@ namespace Deltares::Optimization
         }
     }
 
-    bool GridSearch::canRefine(const SearchParameterSettingsSet& searchArea, int refinements)
+    bool GridSearchOptimization::canRefine(const SearchParameterSettingsSet& searchArea, int refinements)
     {
         for (auto& Dimension : searchArea.Dimensions)
         {
@@ -193,7 +193,7 @@ namespace Deltares::Optimization
         return false;
     }
 
-    void GridSearch::refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample)
+    void GridSearchOptimization::refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample)
     {
         for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
         {
@@ -219,7 +219,7 @@ namespace Deltares::Optimization
         }
     }
 
-    double GridSearch::getTolerance(const SearchParameterSettings& dimension)
+    double GridSearchOptimization::getTolerance(const SearchParameterSettings& dimension)
     {
         if (dimension.NumberOfValues > 0)
         {

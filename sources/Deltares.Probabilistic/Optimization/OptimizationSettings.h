@@ -22,7 +22,7 @@
 #pragma once
 
 #include "OptimizationMethod.h"
-#include "GridSearch.h"
+#include "GridSearchOptimization.h"
 #include "CobylaOptimization.h"
 #include "AdaptiveParticleSwarmOptimization.h"
 #include "../Model/ModelProjectSettings.h"
@@ -79,7 +79,7 @@ namespace Deltares::Optimization
         static std::string getOptimizationMethodTypeString(OptimizationMethodType method);
         static OptimizationMethodType getOptimizationMethodType(const std::string& method);
     private:
-        std::shared_ptr<GridSearch> GetGridSearchMethod() const;
+        std::shared_ptr<GridSearchOptimization> GetGridSearchMethod() const;
         std::shared_ptr<CobylaOptimization> GetCobylaMethod() const;
         std::shared_ptr<AdaptiveParticleSwarmOptimization> GetApsoMethod() const;
     };
