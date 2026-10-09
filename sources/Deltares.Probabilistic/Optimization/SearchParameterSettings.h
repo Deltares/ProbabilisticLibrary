@@ -20,9 +20,11 @@
 // All rights reserved.
 //
 #pragma once
-#include <cmath>
+#include <memory>
 #include <vector>
+#include <cmath>
 
+#include "../Model/ModelInputParameter.h"
 #include "../Utils/ProbabilisticLibraryException.h"
 
 namespace Deltares::Optimization
@@ -30,7 +32,7 @@ namespace Deltares::Optimization
     /**
      * \brief Indicates which values have to be used from the search parameter settings
      */
-    enum UseValuesType {AllValues, MinValue, MaxValue};
+    enum UseValuesType { AllValues, MinValue, MaxValue };
 
     /**
      * \brief Settings for a parameter in the grid search algorithm
@@ -38,6 +40,11 @@ namespace Deltares::Optimization
     class SearchParameterSettings
     {
     public:
+        /**
+         * The parameter to which these settings apply
+         */
+        std::shared_ptr<Models::ModelInputParameter> parameter = nullptr;
+
         /**
          * \brief Minimum value which can be assigned to the parameter
          */
@@ -57,7 +64,7 @@ namespace Deltares::Optimization
          * \brief Start value for the parameter
          * \remark Not used in the grid search algorithm, but in future algorithms
          */
-        double StartValue = 0.0;
+        double StartValue = std::nan("");
 
         /**
          * \brief Indicates whether the grid can be repositioned for this parameter
@@ -71,12 +78,17 @@ namespace Deltares::Optimization
         int NumberOfRefinements = 0;
 
         /**
+         * Step size when a gradient is computed
+         */
+        double GradientStepSize = 0.001;
+
+        /**
          * \brief Indicates which values have to be used in the grid search algorithm
          */
         UseValuesType UseValues = UseValuesType::AllValues;
 
         /**
-         * \brief Gets the values to be queried in the grid search algorithm 
+         * \brief Gets the values to be queried in the grid search algorithm
          * \return Values
          * \remark Based on MinValue, MaxValue, UseValueType and NumberOfValues
          */
@@ -84,7 +96,7 @@ namespace Deltares::Optimization
         {
             std::vector<double> values(this->UseValues == UseValuesType::AllValues ? this->NumberOfValues : 1);
 
-            if (this->UseValues == UseValuesType::AllValues) 
+            if (this->UseValues == UseValuesType::AllValues)
             {
                 double interval = getInterval();
 
@@ -122,6 +134,22 @@ namespace Deltares::Optimization
             else
             {
                 return 0;
+            }
+        }
+
+        /**
+         * \brief Gets the start value, if not set use average of MinValue and MaxValue
+         * \return Start value
+         */
+        double getStartValue() const
+        {
+            if (std::isnan(StartValue))
+            {
+                return (MinValue + MaxValue) / 2.0;
+            }
+            else
+            {
+                return StartValue;
             }
         }
     };

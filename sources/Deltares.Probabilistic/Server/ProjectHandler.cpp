@@ -291,6 +291,7 @@ namespace Deltares::Server
         modelHandlers.InitializeHandlers(handlers);
         statisticsHandlers.InitializeHandlers(handlers, &modelHandlers);
         reliabilityHandlers.InitializeHandlers(handlers, &modelHandlers, &statisticsHandlers);
+        optimizationHandlers.InitializeHandlers(handlers, &modelHandlers);
 
         reliabilityHandlers.fragilityCurveHandler.designPointIdCallback = [this](const std::shared_ptr<Reliability::DesignPoint>& designPoint) {return this->reliabilityHandlers.designPointHandler.GetObjectId(designPoint); };
 
@@ -330,6 +331,9 @@ namespace Deltares::Server
         uncertaintyProjectHandler.stochastHandler = &statisticsHandlers.stochastHandler;
         uncertaintyProjectHandler.correlationMatrixHandler = &statisticsHandlers.correlationMatrixHandler;
         uncertaintyProjectHandler.SetBaseHandler(&statisticsHandlers.modelProjectHandler);
+
+        optimizationHandlers.optimizationProjectHandler.SetBaseHandler(&statisticsHandlers.modelProjectHandler);
+        optimizationHandlers.optimizationSettingsHandler.SetBaseHandler(&statisticsHandlers.modelProjectSettingsHandler);
 
         handlers[ObjectType::UncertaintyResult] = &uncertaintyResultHandler;
         handlers[ObjectType::SensitivityResult] = &sensitivityResultHandler;

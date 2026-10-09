@@ -159,11 +159,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\OptimizationHandlers.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationMethod.h" />
     <ClInclude Include="Optimization\OptimizationProject.h" />
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Server\Handlers\OptimizationProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationResultHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationSettingsHandler.h" />
     <ClInclude Include="Server\Handlers\BaseCorrelationMatrixHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilityHandlers.h" />
     <ClInclude Include="Server\Handlers\StatisticsHandlers.h" />
@@ -264,6 +268,7 @@
     <ClInclude Include="Server\Handlers\ReliabilitySettingsHandler.h" />
     <ClInclude Include="Server\Handlers\LengthEffectProjectHandler.h" />
     <ClInclude Include="Server\Handlers\DerivedObjectHandler.h" />
+    <ClInclude Include="Server\Handlers\SearchParameterSettingsHandler.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />
@@ -480,6 +485,7 @@
     <ClInclude Include="Server\Handlers\ConvergenceReportHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Server\Handlers\OptimizationHandlers.cpp" />
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />

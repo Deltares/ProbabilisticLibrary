@@ -22,11 +22,7 @@
 #include "CobylaOptimization.h"
 #include "Cobyla.h"
 #include <functional>
-
-namespace Deltares::Numeric
-{
-    class NumericSupport;
-}
+#include <limits>
 
 namespace Deltares::Optimization
 {
@@ -43,7 +39,7 @@ namespace Deltares::Optimization
         auto dx = std::vector<double>(n);
         for (unsigned i = 0 ; i < n; i++)
         {
-            x0[i] = searchArea->Dimensions[i]->StartValue;
+            x0[i] = searchArea->Dimensions[i]->getStartValue();
             lb[i] = searchArea->Dimensions[i]->MinValue;
             ub[i] = searchArea->Dimensions[i]->MaxValue;
             dx[i] = 0.1;
@@ -95,6 +91,7 @@ namespace Deltares::Optimization
         stop.nevals_p = &number_of_evaluations;
         stop.xtol_rel = Settings.EpsilonBeta;
         stop.maxeval = Settings.MaxIterations;
+        stop.minf_max = -std::numeric_limits<double>::infinity();
         unsigned p = 0;
 
         auto status = cobyla_minimize(n, myfunc, &fData, m, fc.data(), p, h.data(),

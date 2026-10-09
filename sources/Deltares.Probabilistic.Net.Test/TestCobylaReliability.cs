@@ -58,9 +58,9 @@ namespace Deltares.Probabilistic.Test
             project.Settings.MaximumSamples = 200;
             project.Run();
 
-            ClassicAssert.AreEqual(50, progressHolder.Invocations);
-            ClassicAssert.AreEqual(0.25, progressHolder.Progress, margin);
-            ClassicAssert.AreEqual("50/200, Reliability = 2.326", progressHolder.Text);
+            ClassicAssert.AreEqual(39, progressHolder.Invocations);
+            ClassicAssert.AreEqual(0.195, progressHolder.Progress, margin);
+            ClassicAssert.AreEqual("39/200, Reliability = 2.326", progressHolder.Text);
         }
 
         [Test]
