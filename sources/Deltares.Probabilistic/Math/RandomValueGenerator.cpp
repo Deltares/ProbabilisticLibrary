@@ -58,10 +58,15 @@ namespace Deltares::Numeric
         return ri;
     }
 
-    int RandomValueGenerator::next(int maximum)
+    int RandomValueGenerator::next(const int maximum)
     {
+        if (maximum <= 0)
+        {
+            throw Reliability::ProbabilisticLibraryException("Argument maximum in next() should be >= 1, actual value: ", maximum);
+        }
+
         const double r = next() * static_cast<double>(maximum);
-        auto ri = static_cast<int>(r);
+        int ri = static_cast<int>(r);
         ri = std::min(ri, maximum - 1); // to be sure that the resulting value is < maximum.
         return ri;
     }

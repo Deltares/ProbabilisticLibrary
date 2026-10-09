@@ -782,9 +782,34 @@ TEST(UnitTests, testRunModel)
     tstModel.allModelTests();
 }
 
-TEST(UnitTests, testRandom)
+TEST(UnitTests, testRandomMersenneTwister)
 {
-    TestRandom::allRandomTests();
+    TestRandom::mersenneTwisterTest1();
+}
+
+TEST(UnitTests, testRandomInitialization)
+{
+    TestRandom::initializationTest();
+}
+
+TEST(UnitTests, testRandomRepetitive)
+{
+    TestRandom::repetitiveTest();
+}
+
+TEST(UnitTests, testRandomTwoInstances)
+{
+    TestRandom::twoInstances();
+}
+
+TEST(UnitTests, testRandomIntegers)
+{
+    TestRandom::intTest();
+}
+
+TEST(UnitTests, testRandomIntErrorhandling)
+{
+    TestRandom::intErrorHandlingTest();
 }
 
 TEST(UnitTests, testRootfinder)
