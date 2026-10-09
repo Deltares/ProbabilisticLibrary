@@ -25,13 +25,15 @@
 
 namespace Deltares::Optimization
 {
+    using enum OptimizationMethodType;
+
     std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod() const
     {
         switch (this->OptimizationMethod)
         {
-        case OptimizationMethodType::GridSearch: return this->GetGridSearchMethod();
-        case OptimizationMethodType::Cobyla: return this->GetCobylaMethod();
-        case OptimizationMethodType::APSO: return this->GetApsoMethod();
+        case GridSearch: return this->GetGridSearchMethod();
+        case Cobyla: return this->GetCobylaMethod();
+        case APSO: return this->GetApsoMethod();
 
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
@@ -76,9 +78,9 @@ namespace Deltares::Optimization
     {
         switch (OptimizationMethod)
         {
-        case OptimizationMethodType::GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
-        case OptimizationMethodType::Cobyla: GetCobylaMethod()->Settings.validate(report); break;
-        case OptimizationMethodType::APSO: GetApsoMethod()->Options.validate(report); break;
+        case GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
+        case Cobyla: GetCobylaMethod()->Settings.validate(report); break;
+        case APSO: GetApsoMethod()->Options.validate(report); break;
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -87,20 +89,19 @@ namespace Deltares::Optimization
     {
         switch (method)
         {
-        case OptimizationMethodType::GridSearch: return "grid";
-        case OptimizationMethodType::Cobyla: return "cobyla";
-        case OptimizationMethodType::APSO: return "APSO";
+        case GridSearch: return "grid";
+        case Cobyla: return "cobyla";
+        case APSO: return "APSO";
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
 
     OptimizationMethodType OptimizationSettings::getOptimizationMethodType(const std::string& method)
     {
-        if (method == "grid") return OptimizationMethodType::GridSearch;
-        else if (method == "cobyla") return OptimizationMethodType::Cobyla;
-        else if (method == "APSO") return OptimizationMethodType::APSO;
+        if (method == "grid") return GridSearch;
+        else if (method == "cobyla") return Cobyla;
+        else if (method == "APSO") return APSO;
         else throw Reliability::ProbabilisticLibraryException("Optimization method");
     }
 }
-
 
