@@ -28,7 +28,6 @@
 
 namespace Deltares::Models
 {
-
     void BaseModelRunner::initializeForRun()
     {
         this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
@@ -112,6 +111,16 @@ namespace Deltares::Models
                 this->evaluations.push_back(evaluation);
             }
         }
+    }
+
+    std::shared_ptr<ZModel> BaseModelRunner::getZModel()
+    {
+        return this->zModel;
+    }
+
+    void BaseModelRunner::setZModel(std::shared_ptr<ZModel> newZModel)
+    {
+        this->zModel = newZModel;
     }
 
     bool BaseModelRunner::canProgress() const

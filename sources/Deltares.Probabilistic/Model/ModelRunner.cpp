@@ -71,15 +71,18 @@ namespace Deltares::Models
     {
         if (useProxy && !usingProxy)
         {
-            //zModel = std::make_shared<Proxies::ProxyModel>(this->zModel);
-            //std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
-            //std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
-            //usingProxy = true;
+            auto zModel = std::make_shared<Proxies::ProxyModel>(BaseModelRunner::getZModel());
+            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
+            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
+
+            setZModel(zModel);
+            usingProxy = true;
         }
         else if (!useProxy && usingProxy)
         {
-            //zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->getZModel();
-            //usingProxy = false;
+            auto zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(getZModel())->getZModel();
+            setZModel(zModel);
+            usingProxy = false;
         }
         else
         {
