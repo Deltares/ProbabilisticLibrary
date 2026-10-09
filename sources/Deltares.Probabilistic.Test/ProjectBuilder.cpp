@@ -24,6 +24,9 @@
 #include "../Deltares.Probabilistic/Model/DefaultValueConverter.h"
 #include <iostream>
 
+#include "../Deltares.Probabilistic/Proxies/ProxyModel.h"
+#include "../Deltares.Probabilistic/Proxies/ProxyModelRunner.h"
+
 #include "DefaultProgressIndicator.h"
 #include "../Deltares.Probabilistic/Statistics/CopulaCorrelation.h"
 
@@ -49,6 +52,13 @@ namespace Deltares::Probabilistic::Test
     {
         auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linearAutoStart(v); });
         return CreateModelRunner(nStochasts, z);
+    }
+
+    std::shared_ptr<Proxies::ProxyModelRunner> ProjectBuilder::BuildLinearProxyProject(size_t nStochasts)
+    {
+        auto z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linearAutoStart(v); });
+        auto p = std::make_shared<Proxies::ProxyModel>(z);
+        return CreateProxyModelRunner(nStochasts, p);
     }
 
     std::shared_ptr<Models::ModelRunner> ProjectBuilder::BuildLinearProjectProgress(size_t nStochasts, DefaultProgressIndicator* progress)
@@ -89,6 +99,15 @@ namespace Deltares::Probabilistic::Test
         return CreateModelRunner(2, zModel);
     }
 
+    std::shared_ptr<Proxies::ProxyModelRunner> ProjectBuilder::BuildLinearOutputOnlyProxyProject()
+    {
+        auto zModel = std::make_shared<Models::ZModel>([](Models::ModelSample& sample) { return linearOutputOnly(sample); });
+        auto pModel = std::make_shared<Proxies::ProxyModel>(zModel);
+        pModel->zValueConverter = std::make_shared<Deltares::Models::DefaultValueConverter>();
+
+        return CreateProxyModelRunner(2, pModel);
+    }
+
     std::shared_ptr<Models::ModelRunner> ProjectBuilder::BuildLinearOutputProject()
     {
         std::shared_ptr<Models::ZModel> z = std::make_shared<Models::ZModel>([](Models::ModelSample& v) { return linearMultiple(v); });
@@ -111,6 +130,25 @@ namespace Deltares::Probabilistic::Test
 
         std::shared_ptr<Models::ProgressIndicator> progress_indicator = getProgressIndicator(progress);
         std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(zModel, uConverter, progress_indicator);
+        return modelRunner;
+    }
+
+    std::shared_ptr<Proxies::ProxyModelRunner> ProjectBuilder::CreateProxyModelRunner(size_t nStochasts, std::shared_ptr<Proxies::ProxyModel> zModel, DefaultProgressIndicator* progress)
+    {
+        auto stochasts = std::vector<std::shared_ptr<Statistics::Stochast>>();
+        auto dist = Statistics::DistributionType::Uniform;
+        std::vector<double> params{ -1.0, 1.0 };
+        std::shared_ptr<Statistics::Stochast> s = std::make_shared<Statistics::Stochast>(dist, params);
+        for (size_t i = 0; i < nStochasts; i++)
+        {
+            stochasts.push_back(s);
+        }
+        std::shared_ptr<Statistics::CorrelationMatrix> corr = std::make_shared<Statistics::CorrelationMatrix>(true);
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, corr);
+        uConverter->initializeForRun();
+
+        std::shared_ptr<Models::ProgressIndicator> progress_indicator = getProgressIndicator(progress);
+        std::shared_ptr<Proxies::ProxyModelRunner> modelRunner = std::make_shared<Proxies::ProxyModelRunner>(zModel, uConverter, progress_indicator);
         return modelRunner;
     }
 

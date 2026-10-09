@@ -283,6 +283,7 @@
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />
     <ClCompile Include="Model\BaseModelRunner.cpp" />
+    <ClCompile Include="Proxies\ProxyModelRunner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -650,6 +651,7 @@
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
     <ClInclude Include="Model\BaseModelRunner.h" />
+    <ClInclude Include="Proxies\ProxyModelRunner.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

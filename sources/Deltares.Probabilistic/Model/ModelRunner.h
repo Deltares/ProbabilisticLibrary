@@ -36,6 +36,7 @@
 #include "ZModel.h"
 #include "../Logging/Message.h"
 #include "../Proxies/ProxySettings.h"
+#include "../Proxies/ProxyModel.h"
 #include "ModelSample.h"
 #include "ProgressIndicator.h"
 #include "../Uncertainty/CorrelationMatrixBuilder.h"
@@ -66,7 +67,6 @@ namespace Deltares::Models
         void initializeForRun() override;
         void clear() override;
         void clearLists() override;
-        void useProxy(bool useProxy);
         void updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings);
         double getZValue(Sample& sample);
         std::vector<double> getZValues(std::vector<Sample*>& samples);
@@ -98,10 +98,12 @@ namespace Deltares::Models
         bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
         Evaluation getEvaluation(Sample& sample) const;
 
+    protected:
+        virtual bool isProxyAllowed() const { return true; }
+
     private:
         std::shared_ptr<UConverter> uConverter;
         int runDesignPointCounter = 1;
-        bool usingProxy = false;
 
         std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
 

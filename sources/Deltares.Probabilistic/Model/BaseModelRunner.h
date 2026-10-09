@@ -31,7 +31,6 @@
 #include "RunSettings.h"
 #include "ZModel.h"
 #include "../Logging/Message.h"
-#include "../Proxies/ProxySettings.h"
 #include "ModelSample.h"
 #include "ProgressIndicator.h"
 

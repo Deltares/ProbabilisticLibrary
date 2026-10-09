@@ -19,22 +19,25 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
 
-#include "../../Deltares.Probabilistic/Proxies/ProxyModelRunner.h"
-#include "../../Deltares.Probabilistic/Model/ModelRunner.h"
-#include "../../Deltares.Probabilistic/Model/Sample.h"
+#include "ProxyModelRunner.h"
 
-namespace Deltares::Probabilistic::Test
+namespace Deltares::Proxies
 {
-    class TestProxies
+    void ProxyModelRunner::initializeForRun()
     {
-    public:
-        void testLinearModel() const;
-        void testLinearOutputOnlyModel() const;
-    private:
-        const double margin = 0.001;
-        void testProxy(std::shared_ptr<Proxies::ProxyModelRunner> modelRunner, Models::Sample& sample) const;
-    };
-};
+        proxyModel->settings = this->ProxySettings;
+        proxyModel->setConverter(this->uConverter);
+
+        ModelRunner::initializeForRun();
+    }
+
+    void ProxyModelRunner::setAllowProxy(const bool allowProxy)
+    {
+        this->allowProxy = allowProxy;
+    }
+
+}
+
+
 

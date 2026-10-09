@@ -67,29 +67,6 @@ namespace Deltares::Models
         BaseModelRunner::clearLists();
     }
 
-    void ModelRunner::useProxy(bool useProxy)
-    {
-        if (useProxy && !usingProxy)
-        {
-            auto zModel = std::make_shared<Proxies::ProxyModel>(BaseModelRunner::getZModel());
-            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
-            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
-
-            setZModel(zModel);
-            usingProxy = true;
-        }
-        else if (!useProxy && usingProxy)
-        {
-            auto zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(getZModel())->getZModel();
-            setZModel(zModel);
-            usingProxy = false;
-        }
-        else
-        {
-            // nothing to do
-        }
-    }
-
     void ModelRunner::setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider)
     {
         sampleProvider = sample_provider;
@@ -108,7 +85,7 @@ namespace Deltares::Models
         // create a sample with values in x-space
         ModelSample xSample = ModelSample(xValues);
 
-        xSample.AllowProxy = sample.AllowProxy;
+        xSample.AllowProxy = sample.AllowProxy && this->isProxyAllowed();
         xSample.IterationIndex = sample.IterationIndex;
         xSample.threadId = sample.threadId;
         xSample.Weight = sample.Weight;
