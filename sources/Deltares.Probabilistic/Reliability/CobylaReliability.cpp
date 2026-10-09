@@ -86,7 +86,7 @@ namespace Deltares::Reliability
             Sample sample = Sample(modelSample.Values);
             double z = modelRunner.getZValue(sample);
 
-            modelRunner.reportProgress(++(counter), maxIterations, z0Fac * sample.getBeta());
+            modelRunner.reportProgress(++counter, maxIterations, z0Fac * sample.getBeta());
 
             if (z * z0Fac < 0.0)
             {

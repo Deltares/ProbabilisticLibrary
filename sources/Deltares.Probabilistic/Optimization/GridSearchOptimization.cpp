@@ -24,6 +24,8 @@
 #include "OptimizationResult.h"
 #include "../Math/NumericSupport.h"
 #include <cmath>
+#include <algorithm>
+#include <ranges>
 
 namespace Deltares::Optimization
 {
@@ -182,15 +184,13 @@ namespace Deltares::Optimization
 
     bool GridSearchOptimization::canRefine(const SearchParameterSettingsSet& searchArea, int refinements)
     {
-        for (auto& Dimension : searchArea.Dimensions)
-        {
-            if (refinements < Dimension.NumberOfRefinements)
+        return std::ranges::any_of(
+            searchArea.Dimensions,
+            [refinements](
+            const auto& dimension)
             {
-                return true;
-            }
-        }
-
-        return false;
+                return refinements < dimension.NumberOfRefinements;
+            });
     }
 
     void GridSearchOptimization::refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample)
