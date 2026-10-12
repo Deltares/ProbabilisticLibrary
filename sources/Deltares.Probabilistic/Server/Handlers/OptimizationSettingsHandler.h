@@ -64,6 +64,7 @@ namespace Deltares::Server
         {
             if (property_ == "maximum_iterations") settings->Iterations = value;
             else if (property_ == "max_grid_moves") settings->MaxGridMoves = value;
+            else if (property_ == "add_search_parameter_settings") settings->SearchArea->Dimensions.push_back(searchParameterSettingsHandler->GetObject(value));
             else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }
 

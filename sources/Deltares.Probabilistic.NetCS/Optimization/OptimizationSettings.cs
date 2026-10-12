@@ -150,6 +150,13 @@ public class OptimizationSettings
 
     private void SearchParameterSettingsChanged(ListOperationType listOperation, SearchParameterSettings item)
     {
-        Interface.SetArrayIntValue(id, "search_parameter_settings", this.searchParameterSettings.Select(p => p.GetId()).ToArray());
+        if (listOperation == ListOperationType.Add)
+        {
+            Interface.SetIntValue(id, "add_search_parameter_settings", item.GetId());
+        }
+        else
+        {
+            Interface.SetArrayIntValue(id, "search_parameter_settings", this.searchParameterSettings.Select(p => p.GetId()).ToArray());
+        }
     }
 }
