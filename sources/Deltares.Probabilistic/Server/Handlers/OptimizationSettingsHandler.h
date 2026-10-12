@@ -30,7 +30,7 @@
 namespace Deltares::Server
 {
     /**
-     * \brief Handles properties and methods of class SensitivitySettings
+     * \brief Handles properties and methods of class OptimizationSettings
      */
     class OptimizationSettingsHandler : public DerivedObjectHandler<Optimization::OptimizationSettings, Models::ModelProjectSettings>
     {

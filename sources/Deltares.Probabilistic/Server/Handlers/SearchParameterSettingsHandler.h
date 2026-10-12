@@ -30,7 +30,7 @@
 namespace Deltares::Server
 {
     /**
-     * \brief Handles properties and methods of class StochastSettings
+     * \brief Handles properties and methods of class SearchParameterSettings
      */
     class SearchParameterSettingsHandler : public StoredObjectHandler<Optimization::SearchParameterSettings>
     {

@@ -31,7 +31,7 @@
 namespace Deltares::Server
 {
     /**
-     * \brief Handles properties and methods of class RunProject
+     * \brief Handles properties and methods of class OptimizationProject
      */
     class OptimizationProjectHandler : public DerivedObjectHandler<Optimization::OptimizationProject, Models::ModelProject>
     {
@@ -46,6 +46,13 @@ namespace Deltares::Server
             if (property_ == "settings") return optimizationSettingsHandler->GetObjectId(project->settings);
             else if (property_ == "result") return optimizationResultHandler->GetObjectId(project->result);
             else return DerivedObjectHandler::GetIdValue(project, property_);
+        }
+
+        void SetIntValue(const std::shared_ptr<Optimization::OptimizationProject>& project, const std::string& property_, int value) override
+        {
+            if (property_ == "settings") project->settings = optimizationSettingsHandler->GetObject(value);
+            else if (property_ == "result") project->result = optimizationResultHandler->GetObject(value);
+            else DerivedObjectHandler::SetIntValue(project, property_, value);
         }
 
         void SetCallBack(const std::shared_ptr<Optimization::OptimizationProject>& project, const std::string& property_, Models::ZValuesCallBack callBack) override

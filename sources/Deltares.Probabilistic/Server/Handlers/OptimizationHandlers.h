@@ -21,15 +21,11 @@
 //
 #pragma once
 
-#include "EvaluationHandler.h"
-#include "MessageHandler.h"
 #include "ModelHandlers.h"
 #include "OptimizationResultHandler.h"
 #include "OptimizationSettingsHandler.h"
 #include "OptimizationProjectHandler.h"
-#include "ValidationReportHandler.h"
 #include "../ProjectEntries.h"
-
 
 namespace Deltares::Server
 {

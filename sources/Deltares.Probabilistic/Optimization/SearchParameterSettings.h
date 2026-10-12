@@ -62,7 +62,7 @@ namespace Deltares::Optimization
 
         /**
          * \brief Start value for the parameter
-         * \remark Not used in the grid search algorithm, but in future algorithms
+         * \remark If not set (left nan), the average of MinValue and MaxValue is used for start value, to be retrieved by getStartValue
          */
         double StartValue = std::nan("");
 

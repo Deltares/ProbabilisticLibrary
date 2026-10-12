@@ -26,7 +26,6 @@
 #include "CobylaOptimization.h"
 #include "../Model/ModelProjectSettings.h"
 
-
 namespace Deltares::Optimization
 {
     enum class OptimizationMethodType { Grid, Cobyla, AdaptiveParticleSwarmOptimization, GeneticAlgorithm };

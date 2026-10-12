@@ -20,10 +20,8 @@
 // All rights reserved.
 //
 #include "OptimizationHandlers.h"
-
-#include <unordered_map>
-
 #include "ObjectHandler.h"
+#include <unordered_map>
 
 namespace Deltares::Server
 {
@@ -35,6 +33,9 @@ namespace Deltares::Server
 
         optimizationProjectHandler.optimizationResultHandler = &optimizationResultHandler;
         optimizationProjectHandler.optimizationSettingsHandler = &optimizationSettingsHandler;
+
+        optimizationResultHandler.evaluationHandler = &modelHandlers->evaluationHandler;
+        optimizationResultHandler.messageHandler = &modelHandlers->messageHandler;
 
         using enum ObjectType;
 
