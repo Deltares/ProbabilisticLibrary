@@ -123,6 +123,7 @@
     <ClInclude Include="Server\IntegrationTestProjectHandler.h" />
     <ClInclude Include="Math\TestCholeskiDecomposition.h" />
     <ClInclude Include="Math\TestNumericSupport.h" />
+    <ClInclude Include="Optimization\TestAdaptiveParticleSwarmOptimization.h" />
     <ClInclude Include="Math\TestKMean.h" />
     <ClInclude Include="Math\TestMatrix.h" />
     <ClInclude Include="Math\TestMatrixInverse.h" />
@@ -179,6 +180,7 @@
     <ClCompile Include="Server\IntegrationTestProjectHandler.cpp" />
     <ClCompile Include="Math\TestCholeskiDecomposition.cpp" />
     <ClCompile Include="Math\TestNumericSupport.cpp" />
+    <ClCompile Include="Optimization\TestAdaptiveParticleSwarmOptimization.cpp" />
     <ClCompile Include="Math\TestKMean.cpp" />
     <ClCompile Include="Math\TestMatrix.cpp" />
     <ClCompile Include="Math\TestMatrixInverse.cpp" />

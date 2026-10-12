@@ -22,7 +22,7 @@
 #include "DistributionFitter.h"
 #include "Distribution.h"
 #include "../Stochast.h"
-#include "../../Optimization/GridSearch.h"
+#include "../../Optimization/GridSearchOptimization.h"
 #include "../../Optimization/SearchParameterSettings.h"
 #include "../../Optimization/SearchParameterSettingsSet.h"
 #include "../../Model/ModelSample.h"
@@ -42,17 +42,17 @@ namespace Deltares::Statistics
         constexpr int numberValues = 13;
         constexpr int numberRefinements = 10;
 
-        auto gridSearch = Optimization::GridSearch();
+        auto gridSearch = Optimization::GridSearchOptimization();
 
         auto searchArea = gridSearch.Settings.SearchArea;
         for (size_t i = 0; i < properties.size(); i++)
         {
-            auto settings = std::make_shared<Optimization::SearchParameterSettings>();
-            settings->MinValue = minimum[i];
-            settings->MaxValue = maximum[i];
-            settings->NumberOfValues = numberValues;
-            settings->NumberOfRefinements = numberRefinements;
-            settings->Move = true;
+            auto settings = Optimization::SearchParameterSettings();
+            settings.MinValue = minimum[i];
+            settings.MaxValue = maximum[i];
+            settings.NumberOfValues = numberValues;
+            settings.NumberOfRefinements = numberRefinements;
+            settings.Move = true;
             searchArea->Dimensions.push_back(settings);
         }
 
@@ -60,9 +60,9 @@ namespace Deltares::Statistics
         (Models::ModelSample& sample)
         { return getLogLikelihood(sample, values, stochast, properties); });
 
-        std::shared_ptr<Optimization::OptimizationResult> result = gridSearch.getOptimizedSample(model);
+        const auto result = gridSearch.getOptimizedSample(model);
 
-        return result->values;
+        return result.values;
     }
 
     void DistributionFitter::getLogLikelihood(Models::ModelSample& sample, const std::vector<double>& values,

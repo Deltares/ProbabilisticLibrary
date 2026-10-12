@@ -105,6 +105,23 @@ namespace Deltares::Numeric
         return static_cast<double>(counter) / static_cast<double>(denominator);
     }
 
+    bool NumericSupport::areEqual(double x1, double x2)
+    {
+        if (std::isnan(x1) && std::isnan(x2))
+        {
+            return true;
+        }
+        else
+        {
+            constexpr double rel_tolerance = 1e-12;
+            const double abs_tolerance = 0.5 * (fabs(x1) + fabs(x2)) * rel_tolerance;
+            return fabs(x1 - x2) < abs_tolerance;
+        }
+    }
+
+    /// <summary>
+    /// obsolete method for comparing doubles, use the one above
+    /// </summary>
     bool NumericSupport::areEqual(double x1, double x2, double tolerance)
     {
         if (std::isnan(x1) && std::isnan(x2))

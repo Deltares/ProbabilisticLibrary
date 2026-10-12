@@ -50,6 +50,7 @@
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/TestCobyla.h"
 #include "Optimization/TestGridSearch.h"
+#include "Optimization/TestAdaptiveParticleSwarmOptimization.h"
 #include "Proxies/TestProxies.h"
 #include "Utils/TestExceptions.h"
 #include "Utils/TestString.h"
@@ -207,9 +208,39 @@ TEST(ProxiesTest, linear_output_only_model)
     testProxies.testLinearOutputOnlyModel();
 }
 
-TEST(UnitTests, testNumericalSupport)
+TEST(UnitTests, testNumericalSupportLinearInterpolation)
 {
-    TestNumericSupport::allNumericSupportTests();
+    TestNumericSupport::testLinearInterpolate();
+}
+
+TEST(UnitTests, testNumericalSupportLogLinearInterpolation)
+{
+    TestNumericSupport::testLogLinearInterpolate();
+}
+
+TEST(UnitTests, testNumericalSupportHarmonicInterpolation)
+{
+    TestNumericSupport::testHarmonicInterpolate();
+}
+
+TEST(UnitTests, testNumericalSupportMinMax)
+{
+    TestNumericSupport::testMinMaxFunctions();
+}
+
+TEST(UnitTests, testNumericalSupportFraction)
+{
+    TestNumericSupport::testGetFraction();
+}
+
+TEST(UnitTests, testNumericalSupportLimit)
+{
+    TestNumericSupport::testLimit();
+}
+
+TEST(UnitTests, testNumericalSupportAreEqual)
+{
+    TestNumericSupport::testAreEqual();
 }
 
 TEST(UnitTests, testKMeanClustering)
@@ -781,9 +812,34 @@ TEST(UnitTests, testRunModel)
     tstModel.allModelTests();
 }
 
-TEST(UnitTests, testRandom)
+TEST(UnitTests, testRandomMersenneTwister)
 {
-    TestRandom::allRandomTests();
+    TestRandom::mersenneTwisterTest1();
+}
+
+TEST(UnitTests, testRandomInitialization)
+{
+    TestRandom::initializationTest();
+}
+
+TEST(UnitTests, testRandomRepetitive)
+{
+    TestRandom::repetitiveTest();
+}
+
+TEST(UnitTests, testRandomTwoInstances)
+{
+    TestRandom::twoInstances();
+}
+
+TEST(UnitTests, testRandomIntegers)
+{
+    TestRandom::intTest();
+}
+
+TEST(UnitTests, testRandomIntErrorhandling)
+{
+    TestRandom::intErrorHandlingTest();
 }
 
 TEST(UnitTests, testRootfinder)
@@ -823,6 +879,46 @@ TEST(UnitTests, testGridSearchOptimization)
 {
     auto testGridSearchOpt = TestGridSearch();
     testGridSearchOpt.allGridSearchTests();
+}
+
+TEST(UnitTests, testAPSOtestCase1)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 7000, {5.0, 7.0});
+}
+
+TEST(UnitTests, testAPSOtestCase2)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 6400, { 5.3, 7.8 });
+}
+
+TEST(UnitTests, testAPSOtestCase3)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 6000, { 2.345, 8.316 });
+}
+
+TEST(UnitTests, testAPSOtestCase4)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 7000, { 2.345, 8.316, 4.343, 6.788, 1.001 });
+}
+
+TEST(UnitTests, testAPSOtestCase5)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.05, 6000, { 12.0, 15.0 });
+}
+
+TEST(UnitTests, testAPSOtestCase6)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.4, 6000, { 25.3, -17.8 });
+}
+
+TEST(UnitTests, testAPSOtestCase7)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.3, 6000, { -24, -18 });
+}
+
+TEST(UnitTests, testAPSOmoveGrid)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::test_project_polynome_move_grid();
 }
 
 TEST(WaartsTests, testLinearResistanceFORM)

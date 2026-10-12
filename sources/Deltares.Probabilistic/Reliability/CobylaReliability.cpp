@@ -21,8 +21,6 @@
 //
 #include "CobylaReliability.h"
 
-#include <iostream>
-
 #include "../Model/SampleStorage.h"
 #include "../Optimization/CobylaOptimization.h"
 
@@ -52,29 +50,28 @@ namespace Deltares::Reliability
         Sample startPoint = Settings->StochastSet->getStartPoint();
         for( int i = 0; i < nStochasts; i++)
         {
-            searchArea->Dimensions[i] = std::make_shared<SearchParameterSettings>();
-            searchArea->Dimensions[i]->MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
-            searchArea->Dimensions[i]->MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
-            searchArea->Dimensions[i]->StartValue = startPoint.Values[i];
+            searchArea->Dimensions[i].MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
+            searchArea->Dimensions[i].MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
+            searchArea->Dimensions[i].StartValue = startPoint.Values[i];
         }
 
-        int counter = 0;
-        int* pCounter = &counter;
+        auto counter = std::make_unique_for_overwrite<int>();
+        *counter = 0;
 
-        ZModel zModel = getZModelForModelRunner(*modelRunner.get(), uMean, Settings->MaximumIterations, z0Fac, pCounter);
+        ZModel zModel = getZModelForModelRunner(*modelRunner, uMean, Settings->MaximumIterations, z0Fac, *counter);
 
         auto result = optimizer.getOptimizedSample(zModel);
-        double beta = z0Fac * result->minimumValue;
+        double beta = z0Fac * result.minimumValue;
 
         auto uMin = uMean.getSample();
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-        convergenceReport->IsConverged = result->succeeded;
+        convergenceReport->IsConverged = result.succeeded;
         std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Cobyla Reliability");
 
         return designPoint;
     };
 
-    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const
+    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int& counter) const
     {
         const ZLambda zLambda = [](ModelSample& modelSample)
         {
@@ -89,7 +86,7 @@ namespace Deltares::Reliability
             Sample sample = Sample(modelSample.Values);
             double z = modelRunner.getZValue(sample);
 
-            modelRunner.reportProgress(++(*counter), maxIterations, z0Fac * sample.getBeta());
+            modelRunner.reportProgress(++counter, maxIterations, z0Fac * sample.getBeta());
 
             if (z * z0Fac < 0.0)
             {

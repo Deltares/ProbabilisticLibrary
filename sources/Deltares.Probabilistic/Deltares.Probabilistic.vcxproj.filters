@@ -100,7 +100,7 @@
     <ClCompile Include="Statistics\Distributions\RayleighDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FrechetDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionFitter.cpp" />
-    <ClCompile Include="Optimization\GridSearch.cpp" />
+    <ClCompile Include="Optimization\GridSearchOptimization.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettings.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
     <ClCompile Include="Reliability\DirectionalSamplingThenFORM.cpp" />
@@ -400,7 +400,7 @@
     <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FrechetDistribution.h" />
     <ClInclude Include="Statistics\Distributions\DistributionFitter.h" />
-    <ClInclude Include="Optimization\GridSearch.h" />
+    <ClInclude Include="Optimization\GridSearchOptimization.h" />
     <ClInclude Include="Optimization\SearchParameterSettings.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
     <ClInclude Include="Reliability\DirectionalSamplingThenFORM.h" />

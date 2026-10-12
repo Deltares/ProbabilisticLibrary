@@ -20,3 +20,55 @@
 // All rights reserved.
 //
 #include "SearchParameterSettings.h"
+#include "../Utils/ProbabilisticLibraryException.h"
+#include "../Math/NumericSupport.h"
+
+namespace Deltares::Optimization
+{
+    std::vector<double> SearchParameterSettings::getValues() const
+    {
+        std::vector<double> values(UseValues == UseValuesType::AllValues ? NumberOfValues : 1);
+
+        if (UseValues == UseValuesType::AllValues)
+        {
+            const double interval = getInterval();
+
+            for (size_t i = 0; i < values.size(); i++)
+            {
+                values[i] = MinValue + static_cast<double>(i) * interval;
+            }
+        }
+        else if (UseValues == UseValuesType::MinValue)
+        {
+            values[0] = MinValue;
+        }
+        else if (UseValues == UseValuesType::MaxValue)
+        {
+            values[0] = MaxValue;
+        }
+        else
+        {
+            throw Reliability::ProbabilisticLibraryException("Use values type not supported");
+        }
+
+        return values;
+    }
+
+    double SearchParameterSettings::GetAbsoluteValue(double ratio) const
+    {
+        const double diff = MaxValue - MinValue;
+        return MinValue + ratio * diff;
+    }
+
+    double SearchParameterSettings::GetRelativeValue(double value) const
+    {
+        if (Numeric::NumericSupport::areEqual(MaxValue, MinValue))
+        {
+            throw Reliability::ProbabilisticLibraryException("Division by zero in GetRelativeValue");
+        }
+
+        return (value - MinValue) / (MaxValue - MinValue);
+    }
+
+}
+

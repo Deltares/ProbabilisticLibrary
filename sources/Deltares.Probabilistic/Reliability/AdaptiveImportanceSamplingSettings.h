@@ -34,6 +34,8 @@ namespace Deltares::Reliability
     class AdaptiveImportanceSamplingSettings : public Models::Validatable
     {
     public:
+        virtual ~AdaptiveImportanceSamplingSettings() = default;
+
         /**
          * \brief Minimum loops of importance sampling to perform
          */
