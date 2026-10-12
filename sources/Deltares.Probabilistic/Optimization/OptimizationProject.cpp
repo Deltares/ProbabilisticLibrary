@@ -39,14 +39,11 @@ namespace Deltares::Optimization
 
     std::shared_ptr<OptimizationResult> OptimizationProject::getOptimizedSample()
     {
-        this->result = std::make_shared<OptimizationResult>(optimizationMethod->getOptimizedSample(zModel));
+        result = std::make_shared<OptimizationResult>(optimizationMethod->getOptimizedSample(zModel));
 
-        if (this->result != nullptr)
-        {
-            this->modelRuns += this->result->modelRuns;
-        }
+        modelRuns += result->modelRuns;
 
-        return this->result;
+        return result;
     }
 
     void OptimizationProject::validate(Logging::ValidationReport& report)

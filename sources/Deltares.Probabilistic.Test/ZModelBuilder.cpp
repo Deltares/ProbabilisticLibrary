@@ -60,7 +60,7 @@ namespace Deltares::Probabilistic::Test
     void ZmodelWithCenter::invoke(Models::ModelSample& sample)
     {
         sample.Z = 0.0;
-        evaluations++;
+        modelRuns++;
         for (size_t i = 0; i < sample.Values.size(); i++)
         {
             sample.Z += pow(sample.Values[i] - center[i], 2);

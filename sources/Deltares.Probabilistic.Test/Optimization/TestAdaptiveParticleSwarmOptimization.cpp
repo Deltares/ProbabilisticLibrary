@@ -52,8 +52,8 @@ namespace Deltares::Optimization::Test
         {
             EXPECT_NEAR(result.values[i], center[i], tolerance);
         }
-        EXPECT_LE(model.getEvaluations(), evaluations);
-        EXPECT_EQ(model.getEvaluations(), result.modelRuns);
+        EXPECT_LE(model.getModelRuns(), evaluations);
+        EXPECT_EQ(model.getModelRuns(), result.modelRuns);
         EXPECT_TRUE(result.succeeded);
     }
 
@@ -62,19 +62,14 @@ namespace Deltares::Optimization::Test
         auto project = OptimizationProject();
         project.settings->OptimizationMethod = OptimizationMethodType::APSO;
         project.zModel = Probabilistic::Test::ZModelBuilder::getPolynomeModel(12.9, 16.2);
-        project.settings->MaxGridMoves = 10;
         auto searchArea = project.settings->SearchArea;
         searchArea->setDimensions(2);
         searchArea->Dimensions[0].MinValue = 0;
         searchArea->Dimensions[0].MaxValue = 10;
-        searchArea->Dimensions[0].NumberOfValues = 11;
         searchArea->Dimensions[0].Move = true;
-        searchArea->Dimensions[0].NumberOfRefinements = 10;
         searchArea->Dimensions[1].MinValue = 0;
         searchArea->Dimensions[1].MaxValue = 10;
-        searchArea->Dimensions[1].NumberOfValues = 11;
         searchArea->Dimensions[1].Move = true;
-        searchArea->Dimensions[1].NumberOfRefinements = 10;
 
         Logging::ValidationReport report;
         project.settings->validate(report);

@@ -93,7 +93,7 @@ namespace Deltares::Optimization
         {
         case GridSearch: return "grid";
         case Cobyla: return "cobyla";
-        case APSO: return "APSO";
+        case APSO: return "apso";
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -102,7 +102,7 @@ namespace Deltares::Optimization
     {
         if (method == "grid") return GridSearch;
         else if (method == "cobyla") return Cobyla;
-        else if (method == "APSO") return APSO;
+        else if (method == "apso") return APSO;
         else throw Reliability::ProbabilisticLibraryException("Optimization method");
     }
 }

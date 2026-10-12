@@ -21,6 +21,7 @@
 //
 #include "SearchParameterSettings.h"
 #include "../Utils/ProbabilisticLibraryException.h"
+#include "../Math/NumericSupport.h"
 
 namespace Deltares::Optimization
 {
@@ -61,6 +62,11 @@ namespace Deltares::Optimization
 
     double SearchParameterSettings::GetRelativeValue(double value) const
     {
+        if (Numeric::NumericSupport::areEqual(MaxValue, MinValue))
+        {
+            throw Reliability::ProbabilisticLibraryException("Division by zero in GetRelativeValue");
+        }
+
         return (value - MinValue) / (MaxValue - MinValue);
     }
 

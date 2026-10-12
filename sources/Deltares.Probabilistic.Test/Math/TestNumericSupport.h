@@ -26,14 +26,13 @@ namespace Deltares::Probabilistic::Test
     class TestNumericSupport
     {
     public:
-        static void allNumericSupportTests();
-    private:
         static void testLinearInterpolate();
         static void testLogLinearInterpolate();
         static void testHarmonicInterpolate();
         static void testMinMaxFunctions();
         static void testGetFraction();
         static void testLimit();
+        static void testAreEqual();
     };
 }
 

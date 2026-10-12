@@ -45,12 +45,14 @@ namespace Deltares::Optimization
         std::vector<ModelSample> population;
 
         auto best_particle = InitializePopulation(model, population);
-        size_t nr_evaluations = population.size();
 
         const auto particle_size = Dimensions.size();
 
         int generation_index = 0;
         int last_improving_generation = 0;
+
+        auto return_value = OptimizationResult();
+        return_value.succeeded = true;
 
         while (generation_index < Options.GenerationCount)
         {
@@ -82,7 +84,6 @@ namespace Deltares::Optimization
                 }
 
                 model.invoke(population[m]);
-                nr_evaluations++;
 
                 if (population[m].Z < best_particle.Z)
                 {
@@ -98,15 +99,18 @@ namespace Deltares::Optimization
             {
                 break;
             }
+            else if (isStopped())
+            {
+                return_value.succeeded = false;
+                break;
+            }
 
             ++generation_index;
         }
 
-        auto return_value = OptimizationResult();
         return_value.values = best_particle.Values;
-        return_value.succeeded = true;
         return_value.minimumValue = best_particle.Z;
-        return_value.modelRuns = static_cast<int>(nr_evaluations);
+        return_value.modelRuns = model.getModelRuns();
         return return_value;
     }
 

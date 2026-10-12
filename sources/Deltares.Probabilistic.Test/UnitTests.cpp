@@ -208,9 +208,39 @@ TEST(ProxiesTest, linear_output_only_model)
     testProxies.testLinearOutputOnlyModel();
 }
 
-TEST(UnitTests, testNumericalSupport)
+TEST(UnitTests, testNumericalSupportLinearInterpolation)
 {
-    TestNumericSupport::allNumericSupportTests();
+    TestNumericSupport::testLinearInterpolate();
+}
+
+TEST(UnitTests, testNumericalSupportLogLinearInterpolation)
+{
+    TestNumericSupport::testLogLinearInterpolate();
+}
+
+TEST(UnitTests, testNumericalSupportHarmonicInterpolation)
+{
+    TestNumericSupport::testHarmonicInterpolate();
+}
+
+TEST(UnitTests, testNumericalSupportMinMax)
+{
+    TestNumericSupport::testMinMaxFunctions();
+}
+
+TEST(UnitTests, testNumericalSupportFraction)
+{
+    TestNumericSupport::testGetFraction();
+}
+
+TEST(UnitTests, testNumericalSupportLimit)
+{
+    TestNumericSupport::testLimit();
+}
+
+TEST(UnitTests, testNumericalSupportAreEqual)
+{
+    TestNumericSupport::testAreEqual();
 }
 
 TEST(UnitTests, testKMeanClustering)
