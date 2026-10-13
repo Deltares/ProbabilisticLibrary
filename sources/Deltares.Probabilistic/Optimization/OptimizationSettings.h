@@ -25,6 +25,7 @@
 #include "GridSearchOptimization.h"
 #include "CobylaOptimization.h"
 #include "AdaptiveParticleSwarmOptimization.h"
+#include "SearchArea.h"
 #include "../Model/ModelProjectSettings.h"
 
 namespace Deltares::Optimization
@@ -44,7 +45,7 @@ namespace Deltares::Optimization
         /**
          * \brief Method type how the design point (alpha values) is calculated
          */
-        OptimizationMethodType OptimizationMethod = OptimizationMethodType::Grid;
+        OptimizationMethodType OptimizationMethod = OptimizationMethodType::GridSearch;
 
         /**
          * \brief Maximum number of grid moves to be performed
@@ -62,7 +63,7 @@ namespace Deltares::Optimization
         /**
          * \brief Settings for individual parameters, such as the start value
          */
-        std::shared_ptr<SearchParameterSettingsSet> SearchArea = std::make_shared<SearchParameterSettingsSet>();
+        std::shared_ptr<SearchArea> SearchArea = std::make_shared<Optimization::SearchArea>();
 
         /**
          * \brief Gets the optimization method and settings based on these settings

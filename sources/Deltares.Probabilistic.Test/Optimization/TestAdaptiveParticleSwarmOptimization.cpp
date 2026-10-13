@@ -64,12 +64,12 @@ namespace Deltares::Optimization::Test
         project.zModel = Probabilistic::Test::ZModelBuilder::getPolynomeModel(12.9, 16.2);
         auto searchArea = project.settings->SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0].MinValue = 0;
-        searchArea->Dimensions[0].MaxValue = 10;
-        searchArea->Dimensions[0].Move = true;
-        searchArea->Dimensions[1].MinValue = 0;
-        searchArea->Dimensions[1].MaxValue = 10;
-        searchArea->Dimensions[1].Move = true;
+        searchArea->Dimensions[0]->MinValue = 0;
+        searchArea->Dimensions[0]->MaxValue = 10;
+        searchArea->Dimensions[0]->Move = true;
+        searchArea->Dimensions[1]->MinValue = 0;
+        searchArea->Dimensions[1]->MaxValue = 10;
+        searchArea->Dimensions[1]->Move = true;
 
         Logging::ValidationReport report;
         project.settings->validate(report);

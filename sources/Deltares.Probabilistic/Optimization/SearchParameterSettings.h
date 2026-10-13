@@ -22,6 +22,8 @@
 #pragma once
 
 #include <vector>
+#include <memory>
+#include <cmath>
 #include "../Model/ModelInputParameter.h"
 
 
