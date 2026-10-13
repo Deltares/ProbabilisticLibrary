@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 #include "TestGridSearch.h"
 #include "../ZModelBuilder.h"
-#include "../../Deltares.Probabilistic/Optimization/GridSearch.h"
+#include "../../Deltares.Probabilistic/Optimization/GridSearchOptimization.h"
 #include "../../Deltares.Probabilistic/Optimization/OptimizationProject.h"
 
 using namespace Deltares::Optimization;
@@ -38,73 +38,73 @@ namespace Deltares::Probabilistic::Test
 
     void TestGridSearch::test_polynome()
     {
-        auto gridSearch = GridSearch();
+        auto gridSearch = GridSearchOptimization();
         auto model = ZModelBuilder::getPolynomeModel(2.4, 3.7);
         auto searchArea = gridSearch.Settings.SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->MinValue = 0;
-        searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->NumberOfValues = 11;
-        searchArea->Dimensions[1]->MinValue = 0;
-        searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->NumberOfValues = 11;
+        searchArea->Dimensions[0].MinValue = 0;
+        searchArea->Dimensions[0].MaxValue = 10;
+        searchArea->Dimensions[0].NumberOfValues = 11;
+        searchArea->Dimensions[1].MinValue = 0;
+        searchArea->Dimensions[1].MaxValue = 10;
+        searchArea->Dimensions[1].NumberOfValues = 11;
 
         auto result = gridSearch.getOptimizedSample(model);
-        EXPECT_NEAR(result->values[0], 2.0, 0.01);
-        EXPECT_NEAR(result->values[1], 4.0, 0.01);
-        EXPECT_NEAR(result->minimumValue, 1.69, 1e-3);
+        EXPECT_NEAR(result.values[0], 2.0, 0.01);
+        EXPECT_NEAR(result.values[1], 4.0, 0.01);
+        EXPECT_NEAR(result.minimumValue, 1.69, 1e-3);
 
-        EXPECT_EQ(result->modelRuns, 121);
-        EXPECT_TRUE(result->succeeded);
+        EXPECT_EQ(result.modelRuns, 121);
+        EXPECT_TRUE(result.succeeded);
 
         // refine
-        searchArea->Dimensions[0]->NumberOfRefinements = 3;
-        searchArea->Dimensions[1]->NumberOfRefinements = 3;
+        searchArea->Dimensions[0].NumberOfRefinements = 3;
+        searchArea->Dimensions[1].NumberOfRefinements = 3;
 
         auto result2 = gridSearch.getOptimizedSample(model);
-        EXPECT_NEAR(result2->values[0], 2.4, 0.1);
-        EXPECT_NEAR(result2->values[1], 3.7, 0.1);
-        EXPECT_NEAR(result2->minimumValue, 0.008, 1e-3);
+        EXPECT_NEAR(result2.values[0], 2.4, 0.1);
+        EXPECT_NEAR(result2.values[1], 3.7, 0.1);
+        EXPECT_NEAR(result2.minimumValue, 0.008, 1e-3);
 
-        EXPECT_EQ(result2->modelRuns, 148);
-        EXPECT_TRUE(result2->succeeded);
+        EXPECT_EQ(result2.modelRuns, 148);
+        EXPECT_TRUE(result2.succeeded);
     }
 
     void TestGridSearch::test_polynome_move_grid()
     {
-        auto project = GridSearch();
+        auto project = GridSearchOptimization();
         auto model = ZModelBuilder::getPolynomeModel(12.9, 16.2);
         project.Settings.MaxGridMoves = 10;
         auto searchArea = project.Settings.SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->MinValue = 0;
-        searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->NumberOfValues = 11;
-        searchArea->Dimensions[0]->Move = true;
-        searchArea->Dimensions[1]->MinValue = 0;
-        searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->NumberOfValues = 11;
-        searchArea->Dimensions[1]->Move = true;
+        searchArea->Dimensions[0].MinValue = 0;
+        searchArea->Dimensions[0].MaxValue = 10;
+        searchArea->Dimensions[0].NumberOfValues = 11;
+        searchArea->Dimensions[0].Move = true;
+        searchArea->Dimensions[1].MinValue = 0;
+        searchArea->Dimensions[1].MaxValue = 10;
+        searchArea->Dimensions[1].NumberOfValues = 11;
+        searchArea->Dimensions[1].Move = true;
 
         auto result = project.getOptimizedSample(model);
-        EXPECT_NEAR(result->values[0], 13.0, 0.01);
-        EXPECT_NEAR(result->values[1], 16.0, 0.01);
-        EXPECT_NEAR(result->minimumValue, 0.14, 1e-3);
+        EXPECT_NEAR(result.values[0], 13.0, 0.01);
+        EXPECT_NEAR(result.values[1], 16.0, 0.01);
+        EXPECT_NEAR(result.minimumValue, 0.14, 1e-3);
 
-        EXPECT_EQ(result->modelRuns, 231);
-        EXPECT_TRUE(result->succeeded);
+        EXPECT_EQ(result.modelRuns, 231);
+        EXPECT_TRUE(result.succeeded);
 
         // refine
-        searchArea->Dimensions[0]->NumberOfRefinements = 10;
-        searchArea->Dimensions[1]->NumberOfRefinements = 10;
+        searchArea->Dimensions[0].NumberOfRefinements = 10;
+        searchArea->Dimensions[1].NumberOfRefinements = 10;
 
         auto result2 = project.getOptimizedSample(model);
-        EXPECT_NEAR(result2->values[0], 12.9, 0.001);
-        EXPECT_NEAR(result2->values[1], 16.2, 0.001);
-        EXPECT_NEAR(result2->minimumValue, 0.0, 0.001);
+        EXPECT_NEAR(result2.values[0], 12.9, 0.001);
+        EXPECT_NEAR(result2.values[1], 16.2, 0.001);
+        EXPECT_NEAR(result2.minimumValue, 0.0, 0.001);
 
-        EXPECT_EQ(result2->modelRuns, 112); // reused runs
-        EXPECT_TRUE(result2->succeeded);
+        EXPECT_EQ(result2.modelRuns, 112); // reused runs
+        EXPECT_TRUE(result2.succeeded);
     }
 
     void TestGridSearch::test_project_polynome_move_grid()
@@ -114,16 +114,16 @@ namespace Deltares::Probabilistic::Test
         project.settings->MaxGridMoves = 10;
         auto searchArea = project.settings->SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->MinValue = 0;
-        searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->NumberOfValues = 11;
-        searchArea->Dimensions[0]->Move = true;
-        searchArea->Dimensions[0]->NumberOfRefinements = 10;
-        searchArea->Dimensions[1]->MinValue = 0;
-        searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->NumberOfValues = 11;
-        searchArea->Dimensions[1]->Move = true;
-        searchArea->Dimensions[1]->NumberOfRefinements = 10;
+        searchArea->Dimensions[0].MinValue = 0;
+        searchArea->Dimensions[0].MaxValue = 10;
+        searchArea->Dimensions[0].NumberOfValues = 11;
+        searchArea->Dimensions[0].Move = true;
+        searchArea->Dimensions[0].NumberOfRefinements = 10;
+        searchArea->Dimensions[1].MinValue = 0;
+        searchArea->Dimensions[1].MaxValue = 10;
+        searchArea->Dimensions[1].NumberOfValues = 11;
+        searchArea->Dimensions[1].Move = true;
+        searchArea->Dimensions[1].NumberOfRefinements = 10;
 
         project.run();
         auto result = project.result;

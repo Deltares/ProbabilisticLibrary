@@ -22,13 +22,14 @@
 #pragma once
 
 #include "OptimizationMethod.h"
-#include "GridSearch.h"
+#include "GridSearchOptimization.h"
 #include "CobylaOptimization.h"
+#include "AdaptiveParticleSwarmOptimization.h"
 #include "../Model/ModelProjectSettings.h"
 
 namespace Deltares::Optimization
 {
-    enum class OptimizationMethodType { Grid, Cobyla, AdaptiveParticleSwarmOptimization, GeneticAlgorithm };
+    enum class OptimizationMethodType { GridSearch, Cobyla, APSO };
 
     /**
      * \brief General settings applicable to all optimization mechanisms
@@ -66,7 +67,7 @@ namespace Deltares::Optimization
         /**
          * \brief Gets the optimization method and settings based on these settings
          */
-        std::shared_ptr<Optimization::OptimizationMethod> GetOptimizationMethod();
+        std::shared_ptr<Optimization::OptimizationMethod> GetOptimizationMethod() const;
 
         /**
          * \brief Reports whether the settings have valid values
@@ -75,10 +76,11 @@ namespace Deltares::Optimization
         void validate(Logging::ValidationReport& report) const override;
 
         static std::string getOptimizationMethodTypeString(OptimizationMethodType method);
-        static OptimizationMethodType getOptimizationMethodType(std::string method);
+        static OptimizationMethodType getOptimizationMethodType(const std::string& method);
     private:
-        std::shared_ptr<GridSearch> GetGridSearchMethod() const;
+        std::shared_ptr<GridSearchOptimization> GetGridSearchMethod() const;
         std::shared_ptr<CobylaOptimization> GetCobylaMethod() const;
+        std::shared_ptr<AdaptiveParticleSwarmOptimization> GetApsoMethod() const;
     };
 }
 
