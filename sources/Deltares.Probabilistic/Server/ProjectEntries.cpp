@@ -69,6 +69,10 @@ namespace Deltares::Server
         {"uncertainty_project", UncertaintyProject},
         {"uncertainty_settings", UncertaintySettings},
         {"uncertainty_result", UncertaintyResult},
+        {"optimization_project", OptimizationProject},
+        {"optimization_settings", OptimizationSettings},
+        {"optimization_result", OptimizationResult},
+        {"search_parameter_settings", SearchParameterSettings},
         {"length_effect_project", LengthEffectProject},
         {"convergence_report", ConvergenceReport}
     };

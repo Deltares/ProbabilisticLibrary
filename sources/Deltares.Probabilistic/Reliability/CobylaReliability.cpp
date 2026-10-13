@@ -55,10 +55,10 @@ namespace Deltares::Reliability
             searchArea->Dimensions[i].StartValue = startPoint.Values[i];
         }
 
-        auto counter = std::make_unique_for_overwrite<int>();
-        *counter = 0;
+        int counter = 0;
+        int* pCounter = &counter;
 
-        ZModel zModel = getZModelForModelRunner(*modelRunner, uMean, Settings->MaximumIterations, z0Fac, *counter);
+        ZModel zModel = getZModelForModelRunner(*modelRunner, uMean, Settings->MaximumIterations, z0Fac, pCounter);
 
         auto result = optimizer.getOptimizedSample(zModel);
         double beta = z0Fac * result.minimumValue;
@@ -71,7 +71,7 @@ namespace Deltares::Reliability
         return designPoint;
     };
 
-    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int& counter) const
+    ZModel CobylaReliability::getZModelForModelRunner(ModelRunner& modelRunner, DesignPointBuilder& uMean, int maxIterations, double z0Fac, int* counter) const
     {
         const ZLambda zLambda = [](ModelSample& modelSample)
         {
@@ -81,12 +81,12 @@ namespace Deltares::Reliability
 
         ZModel model = ZModel(zLambda);
 
-        const ZBetaLambda zConstraint = [&modelRunner, &uMean, maxIterations, z0Fac, &counter](ModelSample& modelSample)
+        const ZBetaLambda zConstraint = [&modelRunner, &uMean, maxIterations, z0Fac, counter](ModelSample& modelSample)
         {
             Sample sample = Sample(modelSample.Values);
             double z = modelRunner.getZValue(sample);
 
-            modelRunner.reportProgress(++counter, maxIterations, z0Fac * sample.getBeta());
+            modelRunner.reportProgress(++(*counter), maxIterations, z0Fac * sample.getBeta());
 
             if (z * z0Fac < 0.0)
             {
@@ -95,7 +95,6 @@ namespace Deltares::Reliability
 
             modelSample.Z = z;
 
-            // should be z instead of std::abs(z) for better results
             return std::abs(z);
         };
 

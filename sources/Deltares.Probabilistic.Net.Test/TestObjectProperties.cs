@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Optimization;
 using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Sensitivity;
 using Deltares.Probabilistic.Uncertainty;
@@ -63,6 +64,10 @@ public class TestObjectProperties
     [TestCase(typeof(CombineSettings))]
     [TestCase(typeof(ExcludingCombineProject))]
     [TestCase(typeof(ExcludingCombineSettings))]
+    [TestCase(typeof(OptimizationProject))]
+    [TestCase(typeof(OptimizationResult))]
+    [TestCase(typeof(OptimizationSettings))]
+    [TestCase(typeof(SearchParameterSettings))]
     [TestCase(typeof(SensitivityProject))]
     [TestCase(typeof(SensitivitySettings))]
     [TestCase(typeof(SensitivityResult))]
