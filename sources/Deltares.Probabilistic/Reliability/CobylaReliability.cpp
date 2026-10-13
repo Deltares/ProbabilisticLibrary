@@ -84,7 +84,7 @@ namespace Deltares::Reliability
 
         ZModel model = ZModel(zLambda);
 
-        const ZBetaLambda zConstraint = [&modelRunner, &uMean, maxIterations, z0Fac, &counter](ModelSample& modelSample)
+        const ZBetaLambda zConstraint = [&modelRunner, &uMean, maxIterations, z0Fac, counter](ModelSample& modelSample)
         {
             Sample sample = Sample(modelSample.Values);
             double z = modelRunner.getZValue(sample);
