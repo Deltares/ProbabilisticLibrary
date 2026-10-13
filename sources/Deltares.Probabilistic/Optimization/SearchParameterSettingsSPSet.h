@@ -24,10 +24,14 @@
 #include <memory>
 
 #include "SearchParameterSettings.h"
+#include "SearchParameterSettingsSet.h"
 
 namespace Deltares::Optimization
 {
-    class SearchArea
+    /**
+     * Contains a collection of search parameters as shared pointers
+     */
+    class SearchParameterSettingsSPSet
     {
     public:
         std::vector<std::shared_ptr<SearchParameterSettings>> Dimensions;

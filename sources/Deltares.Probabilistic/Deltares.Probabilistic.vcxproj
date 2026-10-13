@@ -159,7 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Optimization\SearchArea.h" />
+    <ClInclude Include="Optimization\SearchParameterSettingsSPSet.h" />
     <ClInclude Include="Server\Handlers\OptimizationHandlers.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationMethod.h" />

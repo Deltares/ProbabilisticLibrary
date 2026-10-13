@@ -25,11 +25,13 @@
 #include "GridSearchOptimization.h"
 #include "CobylaOptimization.h"
 #include "AdaptiveParticleSwarmOptimization.h"
-#include "SearchArea.h"
+#include "SearchParameterSettingsSPSet.h"
 #include "../Model/ModelProjectSettings.h"
 
 namespace Deltares::Optimization
 {
+    class SearchParameterSettingsSPSet;
+
     enum class OptimizationMethodType { GridSearch, Cobyla, APSO };
 
     /**
@@ -63,7 +65,7 @@ namespace Deltares::Optimization
         /**
          * \brief Settings for individual parameters, such as the start value
          */
-        std::shared_ptr<SearchArea> SearchArea = std::make_shared<Optimization::SearchArea>();
+        std::shared_ptr<Optimization::SearchParameterSettingsSPSet> SearchArea = std::make_shared<Optimization::SearchParameterSettingsSPSet>();
 
         /**
          * \brief Gets the optimization method and settings based on these settings
