@@ -27,8 +27,7 @@ public enum OptimizationMethod
 {
     GridSearch,
     Cobyla,
-    AdaptiveParticleSwarmOptimization,
-    GeneticAlgorithm
+    AdaptiveParticleSwarmOptimization
 }
 
 public static class OptimizationMethodConverter
@@ -40,7 +39,6 @@ public static class OptimizationMethodConverter
             OptimizationMethod.GridSearch => "grid",
             OptimizationMethod.Cobyla => "cobyla",
             OptimizationMethod.AdaptiveParticleSwarmOptimization => "apso",
-            OptimizationMethod.GeneticAlgorithm => "ga",
             _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
         };
     }
@@ -52,7 +50,6 @@ public static class OptimizationMethodConverter
             "grid" => OptimizationMethod.GridSearch,
             "cobyla" => OptimizationMethod.Cobyla,
             "apso" => OptimizationMethod.AdaptiveParticleSwarmOptimization,
-            "ga" => OptimizationMethod.GeneticAlgorithm,
             _ => throw new ArgumentException($"Unknown optimization method: '{value}'", nameof(value))
         };
     }
