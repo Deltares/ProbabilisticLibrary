@@ -44,13 +44,15 @@ namespace Deltares::Optimization
             }
         }
 
-        void fillSearchParameterSettings(SearchParameterSettingsSet& searchArea)
+        SearchParameterSettingsSet CopySearchParameterSettings() const
         {
+            SearchParameterSettingsSet searchArea;
             searchArea.Dimensions.clear();
-            for (auto searchParameterSettings : Dimensions)
+            for (const auto& searchParameterSettings : Dimensions)
             {
-                searchArea.Dimensions.push_back(*searchParameterSettings.get());
+                searchArea.Dimensions.push_back(*searchParameterSettings);
             }
+            return searchArea;
         }
     };
 }

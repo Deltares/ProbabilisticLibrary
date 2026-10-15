@@ -46,7 +46,7 @@ namespace Deltares::Optimization
 
         gridSearch->Settings.MaxGridMoves = this->MaxGridMoves;
         gridSearch->Settings.RunSettings = this->RunSettings;
-        this->SearchArea->fillSearchParameterSettings(*gridSearch->Settings.SearchArea.get());
+        gridSearch->Settings.SearchArea = std::make_shared<SearchParameterSettingsSet>(SearchArea->CopySearchParameterSettings());
 
         return gridSearch;
     }
@@ -57,7 +57,7 @@ namespace Deltares::Optimization
 
         cobyla->Settings.EpsilonBeta = this->EpsilonBeta;
         cobyla->Settings.MaxIterations = this->Iterations;
-        this->SearchArea->fillSearchParameterSettings(*cobyla->Settings.SearchArea.get());
+        cobyla->Settings.SearchArea = std::make_shared<SearchParameterSettingsSet>(SearchArea->CopySearchParameterSettings());
 
         return cobyla;
     }
@@ -65,7 +65,7 @@ namespace Deltares::Optimization
     std::shared_ptr<AdaptiveParticleSwarmOptimization> OptimizationSettings::GetApsoMethod() const
     {
         auto options = AdaptiveParticleSwarmOptimizationSettings();
-        this->SearchArea->fillSearchParameterSettings(options.SearchArea);
+        options.SearchArea = SearchArea->CopySearchParameterSettings();
 
         auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>(options);
 
