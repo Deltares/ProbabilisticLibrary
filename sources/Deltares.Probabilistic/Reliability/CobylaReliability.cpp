@@ -45,14 +45,14 @@ namespace Deltares::Reliability
         optimizer.Settings.EpsilonBeta = Settings->EpsilonBeta;
         optimizer.Settings.MaxIterations = Settings->MaximumIterations;
 
-        auto searchArea = optimizer.Settings.SearchArea;
-        searchArea->setDimensions(nStochasts);
+        auto& searchArea = optimizer.Settings.SearchArea;
+        searchArea.setDimensions(nStochasts);
         Sample startPoint = Settings->StochastSet->getStartPoint();
         for( int i = 0; i < nStochasts; i++)
         {
-            searchArea->Dimensions[i].MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
-            searchArea->Dimensions[i].MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
-            searchArea->Dimensions[i].StartValue = startPoint.Values[i];
+            searchArea.Dimensions[i].MinValue = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
+            searchArea.Dimensions[i].MaxValue = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
+            searchArea.Dimensions[i].StartValue = startPoint.Values[i];
         }
 
         int counter = 0;

@@ -34,7 +34,7 @@ namespace Deltares::Optimization
     {
         model.resetModelRuns();
 
-        auto& searchArea = *Settings.SearchArea;
+        auto& searchArea = Settings.SearchArea;
 
         auto defaultValues = std::vector<double>(searchArea.Dimensions.size(), std::nan(""));
 

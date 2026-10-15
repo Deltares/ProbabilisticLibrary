@@ -46,7 +46,7 @@ namespace Deltares::Optimization
 
         gridSearch->Settings.MaxGridMoves = this->MaxGridMoves;
         gridSearch->Settings.RunSettings = this->RunSettings;
-        gridSearch->Settings.SearchArea = std::make_shared<SearchParameterSettingsSet>(SearchArea->CopySearchParameterSettings());
+        gridSearch->Settings.SearchArea = SearchArea->CopySearchParameterSettings();
 
         return gridSearch;
     }
@@ -57,7 +57,7 @@ namespace Deltares::Optimization
 
         cobyla->Settings.EpsilonBeta = this->EpsilonBeta;
         cobyla->Settings.MaxIterations = this->Iterations;
-        cobyla->Settings.SearchArea = std::make_shared<SearchParameterSettingsSet>(SearchArea->CopySearchParameterSettings());
+        cobyla->Settings.SearchArea = SearchArea->CopySearchParameterSettings();
 
         return cobyla;
     }
