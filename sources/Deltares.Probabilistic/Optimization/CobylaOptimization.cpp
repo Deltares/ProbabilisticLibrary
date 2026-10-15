@@ -28,7 +28,7 @@ namespace Deltares::Optimization
 {
     OptimizationResult CobylaOptimization::getOptimizedSample(Models::ZModel& model)
     {
-        auto searchArea = Settings.SearchArea;
+        auto& searchArea = Settings.SearchArea;
 
         const unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
         const unsigned m = model.hasConstraint() ? 1 : 0; // model.GetNumberOfConstraints();
