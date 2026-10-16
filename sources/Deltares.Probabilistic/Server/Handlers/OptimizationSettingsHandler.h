@@ -43,12 +43,14 @@ namespace Deltares::Server
         double GetValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_) override
         {
             if (property_ == "epsilon_beta") return settings->EpsilonBeta;
+            else if (property_ == "differential_weight") return settings->DifferentialWeight;
             else return DerivedObjectHandler::GetValue(settings, property_);
         }
 
         void SetValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_, double value) override
         {
             if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
+            else if (property_ == "differential_weight") settings->DifferentialWeight = value;
             else DerivedObjectHandler::SetValue(settings, property_, value);
         }
 

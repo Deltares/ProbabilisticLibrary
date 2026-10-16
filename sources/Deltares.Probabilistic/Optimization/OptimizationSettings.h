@@ -63,6 +63,8 @@ namespace Deltares::Optimization
 
         double EpsilonBeta = 0.001;
 
+        double DifferentialWeight = 0.3;
+
         int GenerationCount = 50;
 
         int EliteCount = 8;

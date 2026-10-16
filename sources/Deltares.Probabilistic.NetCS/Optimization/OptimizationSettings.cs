@@ -129,6 +129,12 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "epsilon_beta", value); }
     }
 
+    public double DifferentialWeight
+    {
+        get { return Interface.GetValue(id, "differential_weight"); }
+        set { Interface.SetValue(id, "differential_weight", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }
