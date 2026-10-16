@@ -69,6 +69,8 @@ namespace Deltares::Optimization
 
         int PopulationCount = 125;
 
+        int StopAfterNonImprovingGenerations = 100;
+
         /**
          * \brief Settings for individual parameters, such as the start value
          */

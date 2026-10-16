@@ -48,6 +48,7 @@ namespace Deltares.Probabilistic.Test
             project.Settings.EliteCount = 8;
             project.Settings.Seed = 12345;
             project.Settings.PopulationCount = 125;
+            project.Settings.StopAfterNonImprovingGenerations = 3;
 
             project.Run();
 
@@ -58,7 +59,7 @@ namespace Deltares.Probabilistic.Test
             ClassicAssert.AreEqual(2.2, result.Values[0], margin);
             ClassicAssert.AreEqual(8.3, result.Values[1], margin);
             ClassicAssert.AreEqual(4.25, result.MinimumValue, margin);
-            ClassicAssert.AreEqual(6375, result.ModelRuns);
+            ClassicAssert.AreEqual(1500, result.ModelRuns);
         }
 
         [Test]

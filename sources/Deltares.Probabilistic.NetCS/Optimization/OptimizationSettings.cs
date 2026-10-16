@@ -147,6 +147,12 @@ public class OptimizationSettings
         set { Interface.SetIntValue(id, "population_count", value); }
     }
 
+    public int StopAfterNonImprovingGenerations
+    {
+        get { return Interface.GetIntValue(id, "stop_after_non_improving_generations"); }
+        set { Interface.SetIntValue(id, "stop_after_non_improving_generations", value); }
+    }
+
     public int Seed
     {
         get { return Interface.GetIntValue(id, "seed"); }

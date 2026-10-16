@@ -60,6 +60,7 @@ namespace Deltares::Server
             else if (property_ == "generation_count") return settings->GenerationCount;
             else if (property_ == "elite_count") return settings->EliteCount;
             else if (property_ == "population_count") return settings->PopulationCount;
+            else if (property_ == "stop_after_non_improving_generations") return settings->StopAfterNonImprovingGenerations;
             else if (property_ == "seed") return settings->random_settings.Seed;
             else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
@@ -72,6 +73,7 @@ namespace Deltares::Server
             else if (property_ == "generation_count") settings->GenerationCount = value;
             else if (property_ == "elite_count") settings->EliteCount = value;
             else if (property_ == "population_count") settings->PopulationCount = value;
+            else if (property_ == "stop_after_non_improving_generations") settings->StopAfterNonImprovingGenerations = value;
             else if (property_ == "seed") settings->random_settings.Seed = value;
             else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }
