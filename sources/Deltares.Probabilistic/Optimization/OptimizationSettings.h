@@ -60,12 +60,13 @@ namespace Deltares::Optimization
          */
         int Iterations = 1000;
 
-
         double EpsilonBeta = 0.001;
 
         double DifferentialWeight = 0.3;
 
         double CrossOver = 0.3;
+
+        double Beta = 0.5;
 
         int GenerationCount = 50;
 

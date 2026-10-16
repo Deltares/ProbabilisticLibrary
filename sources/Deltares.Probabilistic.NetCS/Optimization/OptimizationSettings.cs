@@ -141,6 +141,12 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "cross_over", value); }
     }
 
+    public double Beta
+    {
+        get { return Interface.GetValue(id, "beta"); }
+        set { Interface.SetValue(id, "beta", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }

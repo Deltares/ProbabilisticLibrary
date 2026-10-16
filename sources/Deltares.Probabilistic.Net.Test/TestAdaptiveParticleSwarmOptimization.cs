@@ -51,6 +51,7 @@ namespace Deltares.Probabilistic.Test
             project.Settings.StopAfterNonImprovingGenerations = 3;
             project.Settings.DifferentialWeight = 0.3;
             project.Settings.CrossOver = 0.3;
+            project.Settings.Beta = 0.5;
 
             project.Run();
 
