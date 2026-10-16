@@ -135,6 +135,12 @@ public class OptimizationSettings
         set { Interface.SetIntValue(id, "generation_count", value); }
     }
 
+    public int EliteCount
+    {
+        get { return Interface.GetIntValue(id, "elite_count"); }
+        set { Interface.SetIntValue(id, "elite_count", value); }
+    }
+
     public IList<SearchParameterSettings> SearchParameterSettings
     {
         get

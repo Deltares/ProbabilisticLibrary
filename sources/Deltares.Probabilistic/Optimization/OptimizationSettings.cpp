@@ -67,6 +67,7 @@ namespace Deltares::Optimization
         auto options = AdaptiveParticleSwarmOptimizationSettings();
         options.SearchArea = SearchArea->CopySearchParameterSettings();
         options.GenerationCount = GenerationCount;
+        options.EliteCount = EliteCount;
 
         auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>(options);
 

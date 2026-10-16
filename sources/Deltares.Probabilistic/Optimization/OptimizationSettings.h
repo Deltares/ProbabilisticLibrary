@@ -64,6 +64,8 @@ namespace Deltares::Optimization
 
         int GenerationCount = 50;
 
+        int EliteCount = 8;
+
         /**
          * \brief Settings for individual parameters, such as the start value
          */
