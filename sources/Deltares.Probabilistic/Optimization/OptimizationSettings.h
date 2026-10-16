@@ -68,6 +68,8 @@ namespace Deltares::Optimization
 
         double Beta = 0.5;
 
+        double Delta = 0.7;
+
         int GenerationCount = 50;
 
         int EliteCount = 8;

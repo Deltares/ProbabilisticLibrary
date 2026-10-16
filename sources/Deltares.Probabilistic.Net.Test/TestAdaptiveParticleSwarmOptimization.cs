@@ -52,6 +52,7 @@ namespace Deltares.Probabilistic.Test
             project.Settings.DifferentialWeight = 0.3;
             project.Settings.CrossOver = 0.3;
             project.Settings.Beta = 0.5;
+            project.Settings.Delta = 0.7;
 
             project.Run();
 

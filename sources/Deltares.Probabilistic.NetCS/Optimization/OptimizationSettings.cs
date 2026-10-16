@@ -147,6 +147,12 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "beta", value); }
     }
 
+    public double Delta
+    {
+        get { return Interface.GetValue(id, "delta"); }
+        set { Interface.SetValue(id, "delta", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }

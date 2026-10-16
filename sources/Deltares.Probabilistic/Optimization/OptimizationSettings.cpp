@@ -73,6 +73,7 @@ namespace Deltares::Optimization
         options.DifferentialWeight = DifferentialWeight;
         options.CrossOver = CrossOver;
         options.Beta = Beta;
+        options.Delta = Delta;
         options.Seed = random_settings.Seed;
 
         auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>(options);
