@@ -44,6 +44,7 @@ namespace Deltares::Server
         {
             if (property_ == "epsilon_beta") return settings->EpsilonBeta;
             else if (property_ == "differential_weight") return settings->DifferentialWeight;
+            else if (property_ == "cross_over") return settings->CrossOver;
             else return DerivedObjectHandler::GetValue(settings, property_);
         }
 
@@ -51,6 +52,7 @@ namespace Deltares::Server
         {
             if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
             else if (property_ == "differential_weight") settings->DifferentialWeight = value;
+            else if (property_ == "cross_over") settings->CrossOver = value;
             else DerivedObjectHandler::SetValue(settings, property_, value);
         }
 

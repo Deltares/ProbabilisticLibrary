@@ -65,6 +65,8 @@ namespace Deltares::Optimization
 
         double DifferentialWeight = 0.3;
 
+        double CrossOver = 0.3;
+
         int GenerationCount = 50;
 
         int EliteCount = 8;

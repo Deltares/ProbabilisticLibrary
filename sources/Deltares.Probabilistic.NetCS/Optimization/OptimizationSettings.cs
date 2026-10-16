@@ -135,6 +135,12 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "differential_weight", value); }
     }
 
+    public double CrossOver
+    {
+        get { return Interface.GetValue(id, "cross_over"); }
+        set { Interface.SetValue(id, "cross_over", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }

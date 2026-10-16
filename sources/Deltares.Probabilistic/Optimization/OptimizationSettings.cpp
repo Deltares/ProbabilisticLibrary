@@ -71,6 +71,7 @@ namespace Deltares::Optimization
         options.PopulationCount = PopulationCount;
         options.StopAfterNonImprovingGenerations = StopAfterNonImprovingGenerations;
         options.DifferentialWeight = DifferentialWeight;
+        options.CrossOver = CrossOver;
         options.Seed = random_settings.Seed;
 
         auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>(options);
