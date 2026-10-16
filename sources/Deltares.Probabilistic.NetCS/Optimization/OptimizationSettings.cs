@@ -141,6 +141,12 @@ public class OptimizationSettings
         set { Interface.SetIntValue(id, "elite_count", value); }
     }
 
+    public int Seed
+    {
+        get { return Interface.GetIntValue(id, "seed"); }
+        set { Interface.SetIntValue(id, "seed", value); }
+    }
+
     public IList<SearchParameterSettings> SearchParameterSettings
     {
         get

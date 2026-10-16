@@ -27,6 +27,7 @@
 #include "AdaptiveParticleSwarmOptimization.h"
 #include "SearchParameterSettingsSPSet.h"
 #include "../Model/ModelProjectSettings.h"
+#include "../Model/RandomSettings.h"
 
 namespace Deltares::Optimization
 {
@@ -70,6 +71,8 @@ namespace Deltares::Optimization
          * \brief Settings for individual parameters, such as the start value
          */
         std::shared_ptr<SearchParameterSettingsSPSet> SearchArea = std::make_shared<SearchParameterSettingsSPSet>();
+
+        Models::RandomSettings random_settings = Models::RandomSettings();
 
         /**
          * \brief Gets the optimization method and settings based on these settings
