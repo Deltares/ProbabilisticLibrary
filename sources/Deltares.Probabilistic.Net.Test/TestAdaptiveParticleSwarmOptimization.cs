@@ -54,6 +54,8 @@ namespace Deltares.Probabilistic.Test
             project.Settings.Beta = 0.5;
             project.Settings.Delta = 0.7;
 
+            ClassicAssert.True(project.IsValid());
+
             project.Run();
 
             OptimizationResult result = project.Result;
