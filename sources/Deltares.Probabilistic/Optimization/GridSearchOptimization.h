@@ -92,8 +92,6 @@ namespace Deltares::Optimization
          */
         static double getTolerance(const SearchParameterSettings& dimension);
 
-    private:
-
         int counter = 0;
         int reusedCounter = 0;
 
