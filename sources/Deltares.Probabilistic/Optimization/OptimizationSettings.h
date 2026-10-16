@@ -62,6 +62,8 @@ namespace Deltares::Optimization
 
         double EpsilonBeta = 0.001;
 
+        int GenerationCount = 50;
+
         /**
          * \brief Settings for individual parameters, such as the start value
          */

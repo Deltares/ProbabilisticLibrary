@@ -129,6 +129,12 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "epsilon_beta", value); }
     }
 
+    public int GenerationCount
+    {
+        get { return Interface.GetIntValue(id, "generation_count"); }
+        set { Interface.SetIntValue(id, "generation_count", value); }
+    }
+
     public IList<SearchParameterSettings> SearchParameterSettings
     {
         get

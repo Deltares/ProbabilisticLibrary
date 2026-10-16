@@ -57,6 +57,7 @@ namespace Deltares::Server
             if (property_ == "maximum_iterations") return settings->Iterations;
             else if (property_ == "max_grid_moves") return settings->MaxGridMoves;
             else if (property_ == "search_parameter_settings_count") return static_cast<int>(settings->SearchArea->Dimensions.size());
+            else if (property_ == "generation_count") return settings->GenerationCount;
             else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
 
@@ -65,6 +66,7 @@ namespace Deltares::Server
             if (property_ == "maximum_iterations") settings->Iterations = value;
             else if (property_ == "max_grid_moves") settings->MaxGridMoves = value;
             else if (property_ == "add_search_parameter_settings") settings->SearchArea->Dimensions.push_back(searchParameterSettingsHandler->GetObject(value));
+            else if (property_ == "generation_count") settings->GenerationCount = value;
             else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }
 
