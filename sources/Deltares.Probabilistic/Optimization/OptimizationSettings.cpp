@@ -75,6 +75,7 @@ namespace Deltares::Optimization
         options.Beta = Beta;
         options.Delta = Delta;
         options.Seed = random_settings.Seed;
+        options.AllowRepository = this->RunSettings->AllowRepository;
 
         auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>(options);
 

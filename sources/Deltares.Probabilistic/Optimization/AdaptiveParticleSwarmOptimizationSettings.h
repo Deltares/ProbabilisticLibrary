@@ -40,6 +40,7 @@ namespace Deltares::Optimization
         int EliteCount = 8;
         int PopulationCount = 125;
         int StopAfterNonImprovingGenerations = 100;
+        bool AllowRepository = true;
 
         /**
          * \brief Reports whether the settings have valid values
