@@ -67,6 +67,8 @@ namespace Deltares::Optimization
 
         int EliteCount = 8;
 
+        int PopulationCount = 125;
+
         /**
          * \brief Settings for individual parameters, such as the start value
          */

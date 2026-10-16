@@ -141,6 +141,12 @@ public class OptimizationSettings
         set { Interface.SetIntValue(id, "elite_count", value); }
     }
 
+    public int PopulationCount
+    {
+        get { return Interface.GetIntValue(id, "population_count"); }
+        set { Interface.SetIntValue(id, "population_count", value); }
+    }
+
     public int Seed
     {
         get { return Interface.GetIntValue(id, "seed"); }

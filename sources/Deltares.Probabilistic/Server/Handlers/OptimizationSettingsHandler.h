@@ -59,6 +59,7 @@ namespace Deltares::Server
             else if (property_ == "search_parameter_settings_count") return static_cast<int>(settings->SearchArea->Dimensions.size());
             else if (property_ == "generation_count") return settings->GenerationCount;
             else if (property_ == "elite_count") return settings->EliteCount;
+            else if (property_ == "population_count") return settings->PopulationCount;
             else if (property_ == "seed") return settings->random_settings.Seed;
             else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
@@ -70,6 +71,7 @@ namespace Deltares::Server
             else if (property_ == "add_search_parameter_settings") settings->SearchArea->Dimensions.push_back(searchParameterSettingsHandler->GetObject(value));
             else if (property_ == "generation_count") settings->GenerationCount = value;
             else if (property_ == "elite_count") settings->EliteCount = value;
+            else if (property_ == "population_count") settings->PopulationCount = value;
             else if (property_ == "seed") settings->random_settings.Seed = value;
             else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }

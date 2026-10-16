@@ -47,6 +47,7 @@ namespace Deltares.Probabilistic.Test
             project.Settings.GenerationCount = 50;
             project.Settings.EliteCount = 8;
             project.Settings.Seed = 12345;
+            project.Settings.PopulationCount = 125;
 
             project.Run();
 
