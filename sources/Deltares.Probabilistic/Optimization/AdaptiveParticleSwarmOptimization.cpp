@@ -42,8 +42,6 @@ namespace Deltares::Optimization
         rng.initialize(true, Options.Seed);
         const auto& [Dimensions] = Options.SearchArea;
 
-        model.setAllowRepository(Options.AllowRepository);
-
         std::vector<ModelSample> population;
 
         auto best_particle = InitializePopulation(model, population);
