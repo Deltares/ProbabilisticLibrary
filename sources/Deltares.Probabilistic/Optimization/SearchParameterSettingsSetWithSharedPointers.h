@@ -31,23 +31,32 @@ namespace Deltares::Optimization
     /**
      * Contains a collection of search parameters as shared pointers
      */
-    class SearchParameterSettingsSPSet
+    class SearchParameterSettingsSetWithSharedPointers
     {
     public:
+        /**
+         * Collection of SearchParameterSettings as shared pointers
+         */
         std::vector<std::shared_ptr<SearchParameterSettings>> Dimensions;
 
-        void setDimensions(size_t nDimensions)
+        /**
+         * \brief Sets the number of expected search parameter settings, so that appending a SearchParameterSettings is done efficiently
+         * \param nDimensions the number of search parameter settings
+         */
+        void setDimensions(int nDimensions)
         {
-            for (size_t i = Dimensions.size(); i < nDimensions; i++)
+            for (int i = static_cast<int>(Dimensions.size()); i < nDimensions; i++)
             {
                 Dimensions.push_back(std::make_shared<SearchParameterSettings>());
             }
         }
 
+        /**
+         * \brief Returns the SearchParameterSettings as a SearchParameterSettingsSet (without shared pointers)
+         */
         SearchParameterSettingsSet CopySearchParameterSettings() const
         {
             SearchParameterSettingsSet searchArea;
-            searchArea.Dimensions.clear();
             for (const auto& searchParameterSettings : Dimensions)
             {
                 searchArea.Dimensions.push_back(*searchParameterSettings);
