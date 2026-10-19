@@ -64,6 +64,13 @@ namespace Deltares::Optimization
         static bool isSampleOnEdge(const SearchParameterSettingsSet& searchArea, const Models::ModelSample& sample);
 
         /**
+         * \brief Gets the maximum assigned number of refinements
+         * \param searchArea Definition of parameter space and settings which will be searched
+         * \return Max number of refinements
+         */
+        static bool getMaxRefinements(const SearchParameterSettingsSet& searchArea);
+
+        /**
          * \brief Moves the search area in such a way that the sample is not on the edge any more
          * \param searchArea Definition of parameter space and settings which will be searched
          * \param sample Sample on edge

@@ -128,7 +128,6 @@ namespace Deltares::Models
         return progressIndicator != nullptr;
     }
 
-
     void BaseModelRunner::reportProgress(int step, int maxSteps, double reliability, double convergence) const
     {
         if (this->progressIndicator != nullptr)
@@ -168,11 +167,28 @@ namespace Deltares::Models
         }
     }
 
-    void BaseModelRunner::reportIteration(double z, int iteration, int maxIterations)
+    void BaseModelRunner::reportResult(double minimum, int step, int maxSteps)
     {
-        
-    }
+        if (Settings->SaveConvergence)
+        {
+            // TODO: add to list with convergence
+        }
 
+        if (this->progressIndicator != nullptr)
+        {
+            const double progress = Numeric::NumericSupport::Divide(step, maxSteps);
+            this->progressIndicator->doProgress(progress);
+
+            auto text = std::format("{}/{}", step, maxSteps);
+
+            if (!std::isnan(minimum))
+            {
+                text += std::format(", Minimum = {:.3f}", minimum);
+            }
+
+            this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
+        }
+    }
 
     void BaseModelRunner::doTextualProgress(ProgressType type, const std::string& text) const
     {

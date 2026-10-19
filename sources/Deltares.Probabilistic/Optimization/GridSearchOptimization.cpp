@@ -23,6 +23,7 @@
 
 #include "OptimizationResult.h"
 #include "../Math/NumericSupport.h"
+#include <algorithm>
 #include <cmath>
 #include <algorithm>
 #include <ranges>
@@ -88,6 +89,7 @@ namespace Deltares::Optimization
             throw Reliability::ProbabilisticLibraryException("No dimensions or empty dimensions are not allowed");
         }
 
+        int maxRefinements = getMaxRefinements(searchArea);
         int gridCounter = 0;
         int gridIntervalCounter = 0;
         int gridTotal = static_cast<int>(combinations.size());
@@ -112,7 +114,7 @@ namespace Deltares::Optimization
                 model.reportProgress(gridCounter, gridTotal);
                 gridIntervalCounter = 0;
 
-                model.reportIteration(sample.Z, iteration, Settings.MaxGridMoves);
+                model.reportResult(minSample.Z, iteration, Settings.MaxGridMoves + maxRefinements);
             }
 
             if (isStopped())
@@ -188,10 +190,21 @@ namespace Deltares::Optimization
         return std::ranges::any_of(
             searchArea.Dimensions,
             [refinements](
-            const auto& dimension)
-            {
-                return refinements < dimension.NumberOfRefinements;
-            });
+                const auto& dimension)
+        {
+            return refinements < dimension.NumberOfRefinements;
+        });
+    }
+
+    bool GridSearchOptimization::getMaxRefinements(const SearchParameterSettingsSet& searchArea)
+    {
+        int maxRefinements = 0;
+        for (const auto& dimension : searchArea.Dimensions)
+        {
+            maxRefinements = std::max(dimension.NumberOfRefinements, maxRefinements);
+        }
+
+        return maxRefinements;
     }
 
     void GridSearchOptimization::refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample)

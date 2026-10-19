@@ -59,7 +59,7 @@ namespace Deltares::Models
         void reportProgress(int step, int maxSteps, double reliability = std::nan(""), double convergence = std::nan("")) const;
         void reportMessage(Logging::MessageType type, std::string text);
         void reportDetailedProgress(int step, int loop, double reliability, double convergence) const;
-        void reportIteration(double z, int iteration, int maxIterations);
+        void reportResult(double minimum, int step, int maxSteps);
         void doTextualProgress(ProgressType type, const std::string& text) const;
 
         void invoke(ModelSample& sample) const;

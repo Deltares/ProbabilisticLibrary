@@ -93,7 +93,7 @@ namespace Deltares::Optimization
                 }
             }
 
-            model.reportIteration(best_particle.Z, generation_index + 1, Options.GenerationCount);
+            model.reportResult(best_particle.Z, generation_index + 1, Options.GenerationCount);
 
             if (generation_index -last_improving_generation >= Options.StopAfterNonImprovingGenerations)
             {
@@ -224,7 +224,7 @@ namespace Deltares::Optimization
                 first = false;
             }
 
-            //model.ReportResult(bestParticle.Z, 0, Options.GenerationCount);
+            model.reportResult(best_particle.Z, 0, Options.GenerationCount);
         }
 
         return best_particle;
