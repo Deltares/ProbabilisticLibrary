@@ -41,8 +41,7 @@ namespace Deltares::Optimization
     {
         Models::BaseModelRunner modelRunner = Models::BaseModelRunner(this->model, this->progressIndicator);
 
-
-        this->result = this->optimizationMethod->getOptimizedSample(modelRunner);
+        this->result = std::make_shared<OptimizationResult>(this->optimizationMethod->getOptimizedSample(modelRunner));
 
         modelRuns += result->modelRuns;
 

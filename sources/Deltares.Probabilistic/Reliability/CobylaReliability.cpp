@@ -58,11 +58,11 @@ namespace Deltares::Reliability
         auto counter = std::make_unique_for_overwrite<int>();
         *counter = 0;
 
-        std::shared_ptr<ZModel> zModel = getZModelForModelRunner(*modelRunner.get(), uMean, Settings->MaximumIterations, z0Fac, pCounter);
+        std::shared_ptr<ZModel> zModel = std::make_shared<ZModel>(getZModelForModelRunner(*modelRunner.get(), uMean, Settings->MaximumIterations, z0Fac, *counter));
         BaseModelRunner runner = BaseModelRunner(zModel);
 
         auto result = optimizer.getOptimizedSample(runner);
-        double beta = z0Fac * result->minimumValue;
+        double beta = z0Fac * result.minimumValue;
 
         auto uMin = uMean.getSample();
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();

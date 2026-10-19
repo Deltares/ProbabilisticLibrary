@@ -59,7 +59,7 @@ namespace Deltares::Statistics
         Models::ZLambda function = [this, values, &stochast, properties] (Models::ModelSample& sample)
         { return getLogLikelihood(sample, values, stochast, properties); };
 
-        Models::ZModel model =Models::ZModel(function);
+        std::shared_ptr<Models::ZModel> model = std::make_shared<Models::ZModel>(Models::ZModel(function));
 
         Models::BaseModelRunner modelRunner = Models::BaseModelRunner(model);
 

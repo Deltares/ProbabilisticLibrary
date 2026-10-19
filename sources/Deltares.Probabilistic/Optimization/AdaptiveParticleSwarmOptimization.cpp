@@ -37,7 +37,7 @@ namespace Deltares::Optimization
         Options.validate(report);
     }
 
-    OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(ZModel& model)
+    OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(Models::BaseModelRunner& model)
     {
         rng.initialize(true, Options.Seed);
         const auto& [Dimensions] = Options.SearchArea;
@@ -93,7 +93,7 @@ namespace Deltares::Optimization
                 }
             }
 
-            //model.ReportResult(bestParticle.Z, generationIndex + 1, Options.GenerationCount);
+            model.reportIteration(best_particle.Z, generation_index + 1, Options.GenerationCount);
 
             if (generation_index -last_improving_generation >= Options.StopAfterNonImprovingGenerations)
             {
@@ -183,7 +183,7 @@ namespace Deltares::Optimization
         }
     }
 
-    ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(ZModel& model, std::vector<ModelSample>& population)
+    ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(Models::BaseModelRunner& model, std::vector<ModelSample>& population)
     {
         const auto& [Dimensions] = Options.SearchArea;
 

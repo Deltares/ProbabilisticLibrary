@@ -57,14 +57,14 @@ namespace Deltares::Server
 
         void SetCallBack(const std::shared_ptr<Optimization::OptimizationProject>& project, const std::string& property_, Models::ZValuesCallBack callBack) override
         {
-            if (property_ == "model") project->zModel = Models::ZModel(callBack);
+            if (property_ == "model") project->model = std::make_shared<Models::ZModel>(callBack);
         }
 
         void SetModelSampleCallBack(const std::shared_ptr<Optimization::OptimizationProject>& project, const std::string& property_, Models::ModelSampleCallback callBack) override
         {
             if (property_ == "model")
             {
-                project->zModel.setModelSampleCallback(callBack);
+                project->model->setModelSampleCallback(callBack);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Deltares::Server
         {
             if (property_ == "model")
             {
-                project->zModel.setMultipleModelSampleCallback(callBack);
+                project->model->setMultipleModelSampleCallback(callBack);
             }
         }
 

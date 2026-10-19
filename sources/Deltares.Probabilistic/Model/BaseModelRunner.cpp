@@ -168,6 +168,12 @@ namespace Deltares::Models
         }
     }
 
+    void BaseModelRunner::reportIteration(double z, int iteration, int maxIterations)
+    {
+        
+    }
+
+
     void BaseModelRunner::doTextualProgress(ProgressType type, const std::string& text) const
     {
         if (this->progressIndicator != nullptr)

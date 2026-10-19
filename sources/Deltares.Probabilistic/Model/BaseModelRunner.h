@@ -26,7 +26,6 @@
 
 #include "Evaluation.h"
 #include "../Reliability/ReliabilityReport.h"
-#include "../Reliability/ReliabilityResult.h"
 #include "../Utils/Locker.h"
 #include "RunSettings.h"
 #include "ZModel.h"
@@ -50,6 +49,7 @@ namespace Deltares::Models
             delete this->locker;
         }
 
+
         std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 
         virtual void initializeForRun();
@@ -59,6 +59,7 @@ namespace Deltares::Models
         void reportProgress(int step, int maxSteps, double reliability = std::nan(""), double convergence = std::nan("")) const;
         void reportMessage(Logging::MessageType type, std::string text);
         void reportDetailedProgress(int step, int loop, double reliability, double convergence) const;
+        void reportIteration(double z, int iteration, int maxIterations);
         void doTextualProgress(ProgressType type, const std::string& text) const;
 
         void invoke(ModelSample& sample) const;
