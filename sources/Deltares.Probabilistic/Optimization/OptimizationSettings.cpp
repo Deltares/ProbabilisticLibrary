@@ -46,7 +46,7 @@ namespace Deltares::Optimization
 
         gridSearch->Settings.MaxGridMoves = this->MaxGridMoves;
         gridSearch->Settings.RunSettings = this->RunSettings;
-        this->SearchArea->fillSearchParameterSettings(*gridSearch->Settings.SearchArea.get());
+        this->SearchArea->fillSearchParameterSettings(*gridSearch->Settings.SearchArea);
 
         return gridSearch;
     }
@@ -57,7 +57,7 @@ namespace Deltares::Optimization
 
         cobyla->Settings.EpsilonBeta = this->EpsilonBeta;
         cobyla->Settings.MaxIterations = this->Iterations;
-        this->SearchArea->fillSearchParameterSettings(*cobyla->Settings.SearchArea.get());
+        this->SearchArea->fillSearchParameterSettings(*cobyla->Settings.SearchArea);
 
         return cobyla;
     }

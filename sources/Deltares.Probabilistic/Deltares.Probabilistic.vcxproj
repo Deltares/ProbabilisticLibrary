@@ -159,13 +159,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Optimization\SearchParameterSettingsSPSet.h" />
     <ClInclude Include="Server\Handlers\OptimizationHandlers.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationMethod.h" />
     <ClInclude Include="Optimization\OptimizationProject.h" />
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Optimization\SearchParameterSettingsSetWithSharedPointers.h" />
     <ClInclude Include="Server\Handlers\OptimizationProjectHandler.h" />
     <ClInclude Include="Server\Handlers\OptimizationResultHandler.h" />
     <ClInclude Include="Server\Handlers\OptimizationSettingsHandler.h" />
