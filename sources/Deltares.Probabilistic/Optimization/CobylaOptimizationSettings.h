@@ -35,23 +35,18 @@ namespace Deltares::Optimization
         /**
          * \brief Settings for individual parameters, such as the start value
          */
-        std::shared_ptr<SearchParameterSettingsSet> SearchArea = std::make_shared<SearchParameterSettingsSet>();
+        SearchParameterSettingsSet SearchArea = SearchParameterSettingsSet();
 
         /**
          * \brief Settings for performing model runs
          */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        Models::RunSettings RunSettings = Models::RunSettings();
 
         /**
          * \brief Reports whether the settings have valid values
          * \param report Report in which the validity is reported
          */
-        void validate(Logging::ValidationReport& report) const override
-        {
-            Logging::ValidationSupport::checkMinimum(report, 0, EpsilonBeta, "epsilon beta");
-            Logging::ValidationSupport::checkMinimumInt(report, 1, MaxIterations, "maximum iterations");
-            RunSettings->validate(report);
-        }
+        void validate(Logging::ValidationReport& report) const override;
     };
 }
 

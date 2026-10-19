@@ -20,3 +20,14 @@
 // All rights reserved.
 //
 #include "CobylaOptimizationSettings.h"
+
+namespace Deltares::Optimization
+{
+    void CobylaOptimizationSettings::validate(Logging::ValidationReport& report) const
+    {
+        Logging::ValidationSupport::checkMinimum(report, 0, EpsilonBeta, "epsilon beta");
+        Logging::ValidationSupport::checkMinimumInt(report, 1, MaxIterations, "maximum iterations");
+        RunSettings.validate(report);
+    }
+}
+

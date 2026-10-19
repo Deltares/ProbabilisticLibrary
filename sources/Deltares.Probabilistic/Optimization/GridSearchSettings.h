@@ -46,7 +46,7 @@ namespace Deltares::Optimization
         /**
          * \brief Settings for individual parameters, such as the start value
          */
-        std::shared_ptr<SearchParameterSettingsSet> SearchArea = std::make_shared<SearchParameterSettingsSet>();
+        SearchParameterSettingsSet SearchArea = SearchParameterSettingsSet();
 
         /**
          * \brief Reports whether the settings have valid values
