@@ -554,6 +554,42 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Beta, 3.13, 0.01);
     }
 
+    void TestReliabilityMethods::testAdaptiveImportanceSamplingDefaultVarianceFactor()
+    {
+        // variance factor only defined in the method settings, no stochast settings provided
+        auto calculatorDefault = AdaptiveImportanceSampling();
+        auto modelRunnerDefault = ProjectBuilder().BuildProjectWithPolynome2();
+        calculatorDefault.Settings->importanceSamplingSettings->MinimumSamples = 1000;
+        calculatorDefault.Settings->importanceSamplingSettings->MaximumSamples = 1000;
+        calculatorDefault.Settings->VarianceFactor = 0.5;
+
+        auto designPointDefault = calculatorDefault.getDesignPoint(modelRunnerDefault);
+
+        // same variance factor, explicitly defined per stochast
+        auto calculatorExplicit = AdaptiveImportanceSampling();
+        auto modelRunnerExplicit = ProjectBuilder().BuildProjectWithPolynome2();
+        calculatorExplicit.Settings->importanceSamplingSettings->MinimumSamples = 1000;
+        calculatorExplicit.Settings->importanceSamplingSettings->MaximumSamples = 1000;
+        calculatorExplicit.Settings->VarianceFactor = 0.5;
+
+        modelRunnerExplicit->updateStochastSettings(calculatorExplicit.Settings->importanceSamplingSettings->StochastSet);
+        for (auto stochastSettings : calculatorExplicit.Settings->importanceSamplingSettings->StochastSet->VaryingStochastSettings)
+        {
+            stochastSettings->VarianceFactor = 0.5;
+        }
+
+        auto designPointExplicit = calculatorExplicit.getDesignPoint(modelRunnerExplicit);
+
+        // the first loop must use the variance factor of the settings, so results are identical
+        ASSERT_EQ(designPointDefault->ContributingDesignPoints.size(), designPointExplicit->ContributingDesignPoints.size());
+        EXPECT_DOUBLE_EQ(designPointDefault->Beta, designPointExplicit->Beta);
+        for (size_t i = 0; i < designPointDefault->ContributingDesignPoints.size(); i++)
+        {
+            EXPECT_DOUBLE_EQ(designPointDefault->ContributingDesignPoints[i]->Beta, designPointExplicit->ContributingDesignPoints[i]->Beta);
+        }
+        EXPECT_NEAR(designPointDefault->Beta, 3.13, 0.01);
+    }
+
     void TestReliabilityMethods::testClustersAdpImpSampling()
     {
         auto expectedBetas = std::vector({ 0.80438, 0.753699, 0.78369, 0.7956208, 0.754192 });

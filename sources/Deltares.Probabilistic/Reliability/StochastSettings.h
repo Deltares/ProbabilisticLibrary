@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #pragma once
+#include <cmath>
 #include <memory>
 
 #include "../Statistics/StandardNormal.h"
@@ -30,12 +31,29 @@ namespace Deltares::Reliability
     class StochastSettings
     {
     public:
+        /**
+         * \brief Variance factor used when neither the stochast settings nor the method settings define one
+         */
+        static constexpr double DefaultVarianceFactor = 1.5;
+
         double MinValue = -Statistics::StandardNormal::UMax;
         double MaxValue = Statistics::StandardNormal::UMax;
         double StartValue = 0;
         double UncorrelatedStartValue = 0;
 
-        double VarianceFactor = 1.5;
+        /**
+         * \brief Variance factor for this stochast. NaN (default) means: not defined for this stochast,
+         *        use the variance factor of the reliability method settings
+         */
+        double VarianceFactor = std::nan("");
+
+        /**
+         * \brief Gets the variance factor, or the given default value when not defined for this stochast
+         */
+        double getVarianceFactor(double defaultValue) const
+        {
+            return std::isnan(this->VarianceFactor) ? defaultValue : this->VarianceFactor;
+        }
         bool IsVarianceAllowed = true;
         bool isVarying = false;  // will be updated by uConverter
 

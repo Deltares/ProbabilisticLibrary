@@ -229,6 +229,8 @@ namespace Deltares::Models
             }
         }
 
+    protected:
+        int modelRuns = 0;
     private:
         ZLambda zLambda = nullptr;
         ZMultipleLambda zMultipleLambda = nullptr;
@@ -237,7 +239,6 @@ namespace Deltares::Models
         EmptyCallBack runMethod = nullptr;
         EmptyCallBack nextMethod = nullptr;
         int maxProcesses = 1;
-        int modelRuns = 0;
         int inputParametersCount = 0;
         int outputParametersCount = 0;
         ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda) const;

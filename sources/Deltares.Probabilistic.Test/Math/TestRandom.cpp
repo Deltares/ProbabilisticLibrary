@@ -22,17 +22,11 @@
 #include <gtest/gtest.h>
 #include "TestRandom.h"
 #include "../../Deltares.Probabilistic/Math/RandomValueGenerator.h"
+#include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
+#include <array>
 
 namespace Deltares::Probabilistic::Test
 {
-    void TestRandom::allRandomTests()
-    {
-        mersenneTwisterTest1();
-        initializationTest();
-        repetitiveTest();
-        twoInstances();
-    }
-
     void TestRandom::mersenneTwisterTest1()
     {
         constexpr double margin = 1e-12;
@@ -115,5 +109,42 @@ namespace Deltares::Probabilistic::Test
         ASSERT_EQ(val1, val2);
     }
 
+    void TestRandom::intTest()
+    {
+        auto mt = Numeric::RandomValueGenerator();
+        constexpr int maximum = 8;
+        auto buffer = std::array<int, maximum>();
+
+        constexpr int max_draws = 1000;
+        for (int i = 0; i < max_draws * maximum; i++)
+        {
+            buffer[mt.next(maximum)]++;
+        }
+
+        // expect all values in buffer close to max_draws:
+        for (int i = 0; i < maximum; i++)
+        {
+            EXPECT_LE(950, buffer[i]);
+            EXPECT_GE(1050, buffer[i]);
+        }
+    }
+
+    void TestRandom::intErrorHandlingTest()
+    {
+        auto mt = Numeric::RandomValueGenerator();
+
+        std::string msg;
+        int i = 0;
+        try
+        {
+            i = mt.next(-1);
+        }
+        catch (const Reliability::ProbabilisticLibraryException& e)
+        {
+            msg = e.what();
+        }
+        EXPECT_FALSE(msg.empty());
+        EXPECT_EQ(i, 0);
+    }
 }
 

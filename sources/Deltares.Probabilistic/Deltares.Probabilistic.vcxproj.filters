@@ -100,7 +100,7 @@
     <ClCompile Include="Statistics\Distributions\RayleighDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FrechetDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionFitter.cpp" />
-    <ClCompile Include="Optimization\GridSearch.cpp" />
+    <ClCompile Include="Optimization\GridSearchOptimization.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettings.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
     <ClCompile Include="Reliability\DirectionalSamplingThenFORM.cpp" />
@@ -282,6 +282,9 @@
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />
+    <ClCompile Include="Server\Handlers\OptimizationHandlers.cpp" />
+    <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimization.cpp" />
+    <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.cpp" />
     <ClCompile Include="Model\BaseModelRunner.cpp" />
     <ClCompile Include="Proxies\ProxyModelRunner.cpp" />
   </ItemGroup>
@@ -402,7 +405,7 @@
     <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FrechetDistribution.h" />
     <ClInclude Include="Statistics\Distributions\DistributionFitter.h" />
-    <ClInclude Include="Optimization\GridSearch.h" />
+    <ClInclude Include="Optimization\GridSearchOptimization.h" />
     <ClInclude Include="Optimization\SearchParameterSettings.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
     <ClInclude Include="Reliability\DirectionalSamplingThenFORM.h" />
@@ -650,6 +653,14 @@
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Server\Handlers\OptimizationProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationResultHandler.h" />
+    <ClInclude Include="Server\Handlers\SearchParameterSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationHandlers.h" />
+    <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimization.h" />
+    <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.h" />
+    <ClInclude Include="Optimization\SearchParameterSettingsSetWithSharedPointers.h" />
     <ClInclude Include="Model\BaseModelRunner.h" />
     <ClInclude Include="Proxies\ProxyModelRunner.h" />
   </ItemGroup>

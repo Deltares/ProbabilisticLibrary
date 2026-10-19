@@ -20,17 +20,19 @@
 // All rights reserved.
 //
 #pragma once
-#include <cmath>
-#include <vector>
 
-#include "../Utils/ProbabilisticLibraryException.h"
+#include <vector>
+#include <memory>
+#include <cmath>
+#include "../Model/ModelInputParameter.h"
+
 
 namespace Deltares::Optimization
 {
     /**
      * \brief Indicates which values have to be used from the search parameter settings
      */
-    enum UseValuesType {AllValues, MinValue, MaxValue};
+    enum class UseValuesType {AllValues, MinValue, MaxValue};
 
     /**
      * \brief Settings for a parameter in the grid search algorithm
@@ -38,6 +40,11 @@ namespace Deltares::Optimization
     class SearchParameterSettings
     {
     public:
+        /**
+         * The parameter to which these settings apply
+         */
+        std::shared_ptr<Models::ModelInputParameter> parameter = nullptr;
+
         /**
          * \brief Minimum value which can be assigned to the parameter
          */
@@ -55,9 +62,9 @@ namespace Deltares::Optimization
 
         /**
          * \brief Start value for the parameter
-         * \remark Not used in the grid search algorithm, but in future algorithms
+         * \remark If not set (left nan), the average of MinValue and MaxValue is used for start value, to be retrieved by getStartValue
          */
-        double StartValue = 0.0;
+        double StartValue = std::nan("");
 
         /**
          * \brief Indicates whether the grid can be repositioned for this parameter
@@ -71,43 +78,21 @@ namespace Deltares::Optimization
         int NumberOfRefinements = 0;
 
         /**
+         * Step size when a gradient is computed
+         */
+        double GradientStepSize = 0.001;
+
+        /**
          * \brief Indicates which values have to be used in the grid search algorithm
          */
         UseValuesType UseValues = UseValuesType::AllValues;
 
         /**
-         * \brief Gets the values to be queried in the grid search algorithm 
+         * \brief Gets the values to be queried in the grid search algorithm
          * \return Values
          * \remark Based on MinValue, MaxValue, UseValueType and NumberOfValues
          */
-        std::vector<double> getValues() const
-        {
-            std::vector<double> values(this->UseValues == UseValuesType::AllValues ? this->NumberOfValues : 1);
-
-            if (this->UseValues == UseValuesType::AllValues) 
-            {
-                double interval = getInterval();
-
-                for (int i = 0; i < values.size(); i++)
-                {
-                    values[i] = MinValue + i * interval;
-                }
-            }
-            else if (this->UseValues == UseValuesType::MinValue)
-            {
-                values[0] = MinValue;
-            }
-            else if (this->UseValues == UseValuesType::MaxValue)
-            {
-                values[0] = MaxValue;
-            }
-            else
-            {
-                throw Reliability::ProbabilisticLibraryException("Use values type not supported");
-            }
-
-            return values;
-        }
+        std::vector<double> getValues() const;
 
         /**
          * \brief Gets the interval between values
@@ -122,6 +107,35 @@ namespace Deltares::Optimization
             else
             {
                 return 0;
+            }
+        }
+
+        /// <summary>
+        /// Get the absolute value based on a ratio and the low and high boundaries
+        /// </summary>
+        /// <param name="ratio"></param>
+        /// <returns> the absolute value </returns>
+        double GetAbsoluteValue(double ratio) const;
+
+        /// <summary>
+        /// Get the relative value based on an absolute value and the low and high boundaries
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns> the relative value </returns>
+        double GetRelativeValue(double value) const;
+        /**
+         * \brief Gets the start value, if not set use average of MinValue and MaxValue
+         * \return Start value
+         */
+        double getStartValue() const
+        {
+            if (std::isnan(StartValue))
+            {
+                return (MinValue + MaxValue) / 2.0;
+            }
+            else
+            {
+                return StartValue;
             }
         }
     };

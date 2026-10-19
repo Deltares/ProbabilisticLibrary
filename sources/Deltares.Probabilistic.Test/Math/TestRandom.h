@@ -26,12 +26,12 @@ namespace Deltares::Probabilistic::Test
     class TestRandom
     {
     public:
-        static void allRandomTests();
-    private:
         static void mersenneTwisterTest1();
         static void initializationTest();
         static void repetitiveTest();
         static void twoInstances();
+        static void intTest();
+        static void intErrorHandlingTest();
     };
 }
 

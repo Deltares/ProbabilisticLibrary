@@ -30,6 +30,7 @@
 #include "../Model/RunProject.h"
 
 #include "Handlers/ModelHandlers.h"
+#include "Handlers/OptimizationHandlers.h"
 #include "Handlers/ProbabilityValueHandler.h"
 #include "Handlers/SensitivityResultHandler.h"
 #include "Handlers/SensitivityValueHandler.h"
@@ -93,6 +94,7 @@ namespace Deltares::Server
         ModelHandlers modelHandlers;
         StatisticsHandlers statisticsHandlers;
         ReliabilityHandlers reliabilityHandlers;
+        OptimizationHandlers optimizationHandlers;
 
     protected:
         virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);

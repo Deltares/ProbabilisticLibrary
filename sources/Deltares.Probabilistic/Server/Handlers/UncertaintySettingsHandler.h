@@ -95,6 +95,7 @@ namespace Deltares::Server
             else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
             else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
             else if (property_ == "is_repeatable_random") return settings->RandomSettings->IsRepeatableRandom;
+            else if (property_ == "skip_unvarying_parameters") return settings->RandomSettings->SkipUnvaryingParameters;
             else return DerivedObjectHandler::GetBoolValue(settings, property_);
         }
 
@@ -104,6 +105,7 @@ namespace Deltares::Server
             else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
             else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
             else if (property_ == "is_repeatable_random") settings->RandomSettings->IsRepeatableRandom = value;
+            else if (property_ == "skip_unvarying_parameters") settings->RandomSettings->SkipUnvaryingParameters = value;
             else DerivedObjectHandler::SetBoolValue(settings, property_, value);
         }
 

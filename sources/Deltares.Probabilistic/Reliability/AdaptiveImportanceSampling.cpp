@@ -45,6 +45,7 @@ namespace Deltares::Reliability
         this->importanceSampling = std::make_shared<ImportanceSampling>();
         importanceSampling->Settings = this->Settings->importanceSamplingSettings->clone();
         importanceSampling->Settings->startPointSettings->StartMethod = StartMethodType::FixedValue;
+        importanceSampling->Settings->VarianceFactor = this->Settings->VarianceFactor;
 
         modelRunner->updateStochastSettings(importanceSampling->Settings->StochastSet);
 

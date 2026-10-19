@@ -44,12 +44,9 @@ namespace Deltares::Optimization
 
         this->result = this->optimizationMethod->getOptimizedSample(modelRunner);
 
-        if (this->result != nullptr)
-        {
-            this->modelRuns += this->result->modelRuns;
-        }
+        modelRuns += result->modelRuns;
 
-        return this->result;
+        return result;
     }
 
     void OptimizationProject::validate(Logging::ValidationReport& report)

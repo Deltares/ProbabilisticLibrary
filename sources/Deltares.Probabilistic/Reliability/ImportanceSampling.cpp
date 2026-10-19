@@ -22,7 +22,6 @@
 #include "ImportanceSampling.h"
 #include "ImportanceSamplingSupport.h"
 #include <vector>
-#include <cmath>
 #include <format>
 #include <memory>
 
@@ -58,6 +57,12 @@ namespace Deltares::Reliability
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
+        // stochasts without an own variance factor use the variance factor of the method settings
+        for (const std::shared_ptr<StochastSettings>& varyingStochastSettings : this->Settings->StochastSet->VaryingStochastSettings)
+        {
+            varyingStochastSettings->VarianceFactor = varyingStochastSettings->getVarianceFactor(this->Settings->VarianceFactor);
+        }
+
         std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
         modelRunner->setSampleProvider(sampleProvider);
 
@@ -78,7 +83,7 @@ namespace Deltares::Reliability
 
         SampleStorage storage = SampleStorage(chunkSize);
         std::vector<Sample*> samples;
-        std::vector<double> zValues; 
+        std::vector<double> zValues;
 
         // list of all clusters
         std::shared_ptr<DesignPoint> startDesignPoint = nullptr;
@@ -266,7 +271,7 @@ namespace Deltares::Reliability
             }
             else
             {
-                // TODO: 
+                // TODO:
                 breakLoop = breakLoopWithNoFailureObs(*modelRunner, *Settings, sampleIndex, reported);
             }
         }

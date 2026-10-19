@@ -56,6 +56,7 @@ namespace Deltares::Probabilistic::Test
         static void testImportanceSamplingProbabilityInverse();
         static void testAdaptiveImportanceSampling();
         static void testAdaptiveImportanceSamplingVarianceFactor();
+        static void testAdaptiveImportanceSamplingDefaultVarianceFactor();
         static void testAdaptiveImportanceSamplingZValueProbability();
         static void testClustersAdpImpSampling();
         static void testDirSamplingProxyModels(const bool useProxy, const Reliability::ModelVaryingType varyingType, const double dsdu);

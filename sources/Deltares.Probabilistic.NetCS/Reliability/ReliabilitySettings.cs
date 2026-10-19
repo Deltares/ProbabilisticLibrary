@@ -172,6 +172,12 @@ public class ReliabilitySettings
         set { Interface.SetBoolValue(id, "is_repeatable_random", value); }
     }
 
+    public bool SkipUnvaryingParameters
+    {
+        get { return Interface.GetBoolValue(id, "skip_unvarying_parameters"); }
+        set { Interface.SetBoolValue(id, "skip_unvarying_parameters", value); }
+    }
+
     public int RandomSeed
     {
         get { return Interface.GetIntValue(id, "random_seed"); }

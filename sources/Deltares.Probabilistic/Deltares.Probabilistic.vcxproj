@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\Handlers\OptimizationHandlers.h" />
     <ClInclude Include="Proxies\ProxyModelRunner.h" />
     <ClInclude Include="Model\BaseModelRunner.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
@@ -166,6 +167,10 @@
     <ClInclude Include="Optimization\OptimizationProject.h" />
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Optimization\SearchParameterSettingsSetWithSharedPointers.h" />
+    <ClInclude Include="Server\Handlers\OptimizationProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationResultHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationSettingsHandler.h" />
     <ClInclude Include="Server\Handlers\BaseCorrelationMatrixHandler.h" />
     <ClInclude Include="Server\Handlers\ReliabilityHandlers.h" />
     <ClInclude Include="Server\Handlers\StatisticsHandlers.h" />
@@ -266,6 +271,7 @@
     <ClInclude Include="Server\Handlers\ReliabilitySettingsHandler.h" />
     <ClInclude Include="Server\Handlers\LengthEffectProjectHandler.h" />
     <ClInclude Include="Server\Handlers\DerivedObjectHandler.h" />
+    <ClInclude Include="Server\Handlers\SearchParameterSettingsHandler.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />
@@ -347,6 +353,8 @@
     <ClInclude Include="Utils\FileUtils.h" />
     <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
+    <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimization.h" />
+    <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Optimization\Cobyla.h" />
@@ -359,7 +367,7 @@
     <ClInclude Include="Reliability\ImportanceSampling.h" />
     <ClInclude Include="Statistics\DistributionPropertyType.h" />
     <ClInclude Include="Statistics\Distributions\KSCalculator.h" />
-    <ClInclude Include="Optimization\GridSearch.h" />
+    <ClInclude Include="Optimization\GridSearchOptimization.h" />
     <ClInclude Include="Optimization\SearchParameterSettings.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
     <ClInclude Include="Reliability\DirectionalSamplingThenFORM.h" />
@@ -482,6 +490,7 @@
     <ClInclude Include="Server\Handlers\ConvergenceReportHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Server\Handlers\OptimizationHandlers.cpp" />
     <ClCompile Include="Proxies\ProxyModelRunner.cpp" />
     <ClCompile Include="Model\BaseModelRunner.cpp" />
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
@@ -604,6 +613,8 @@
     <ClCompile Include="Utils\FileUtils.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
+    <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimization.cpp" />
+    <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\Cobyla.cpp" />
@@ -619,7 +630,7 @@
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
     <ClCompile Include="Statistics\DistributionPropertyType.cpp" />
     <ClCompile Include="Statistics\Distributions\KSCalculator.cpp" />
-    <ClCompile Include="Optimization\GridSearch.cpp" />
+    <ClCompile Include="Optimization\GridSearchOptimization.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettings.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
     <ClCompile Include="Reliability\DirectionalSamplingThenFORM.cpp" />

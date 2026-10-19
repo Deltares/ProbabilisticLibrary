@@ -53,7 +53,10 @@ namespace Deltares::Reliability
          */
         double VariationCoefficient = 0.05;
 
-        double VarianceFactor = 1;
+        /**
+         * \brief Variance factor used for stochasts which do not define their own variance factor
+         */
+        double VarianceFactor = StochastSettings::DefaultVarianceFactor;
 
         /**
          * \brief Method type how the design point (alpha values) is calculated
@@ -86,7 +89,7 @@ namespace Deltares::Reliability
             {
                 std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
 
-                Logging::ValidationSupport::checkMinimum(report, 0.01, stochastSettings->VarianceFactor, "variance factor");
+                Logging::ValidationSupport::checkMinimum(report, 0.01, stochastSettings->getVarianceFactor(this->VarianceFactor), "variance factor");
                 Logging::ValidationSupport::checkMinimum(report, -Statistics::StandardNormal::UMax, stochastSettings->StartValue, "start value");
                 Logging::ValidationSupport::checkMaximum(report, Statistics::StandardNormal::UMax, stochastSettings->StartValue, "start value");
             }

@@ -22,6 +22,7 @@
 ﻿using System;
 using System.Threading;
 using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Statistics;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using Deltares.Probabilistic.Model;
@@ -529,6 +530,50 @@ namespace Deltares.Probabilistic.Test
             DesignPoint designPoint = project.DesignPoint;
 
             ClassicAssert.AreEqual(2.50, designPoint.Beta, margin);
+        }
+
+        [Test]
+        public void TestSkipUnvaryingParametersFalseUsesSameSamplesForVaryingStochasts()
+        {
+            var baselineProject = ProjectBuilder.GetLinearProject();
+
+            baselineProject.Settings.SaveRealizations = true;
+            baselineProject.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            baselineProject.Settings.MinimumSamples = 25;
+            baselineProject.Settings.MaximumSamples = 25;
+            baselineProject.Settings.IsRepeatableRandom = true;
+            baselineProject.Settings.RandomSeed = 1234;
+            baselineProject.Settings.SkipUnvaryingParameters = false;
+
+            baselineProject.Run();
+
+            var augmentedProject = ProjectBuilder.GetLinearProject();
+            augmentedProject.Stochasts.Insert(0, new Stochast { DistributionType = DistributionType.Deterministic, Mean = 0 });
+            augmentedProject.CorrelationMatrix.Initialize(augmentedProject.Stochasts);
+
+            augmentedProject.Settings.SaveRealizations = true;
+            augmentedProject.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+            augmentedProject.Settings.MinimumSamples = 25;
+            augmentedProject.Settings.MaximumSamples = 25;
+            augmentedProject.Settings.IsRepeatableRandom = true;
+            augmentedProject.Settings.RandomSeed = 1234;
+            augmentedProject.Settings.SkipUnvaryingParameters = false;
+
+            augmentedProject.Run();
+
+            ClassicAssert.AreEqual(baselineProject.DesignPoint.Realizations.Count, augmentedProject.DesignPoint.Realizations.Count);
+
+            for (int i = 0; i < baselineProject.DesignPoint.Realizations.Count; i++)
+            {
+                double[] baselineInputs = baselineProject.DesignPoint.Realizations[i].InputValues;
+                double[] augmentedInputs = augmentedProject.DesignPoint.Realizations[i].InputValues;
+
+                ClassicAssert.AreEqual(2, baselineInputs.Length);
+                ClassicAssert.AreEqual(3, augmentedInputs.Length);
+                ClassicAssert.AreEqual(0, augmentedInputs[0], 1e-12);
+                ClassicAssert.AreEqual(baselineInputs[0], augmentedInputs[1], 1e-12);
+                ClassicAssert.AreEqual(baselineInputs[1], augmentedInputs[2], 1e-12);
+            }
         }
 
         [Test]
