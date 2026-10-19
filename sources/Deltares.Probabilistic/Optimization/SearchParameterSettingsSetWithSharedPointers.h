@@ -52,13 +52,11 @@ namespace Deltares::Optimization
         }
 
         /**
-         * \brief Fills the SearchParameterSettings in a SearchParameterSettingsSet (without shared pointers)
-         * \param searchParameterSettingsSet The search parameter settings set to be populated
+         * \brief Returns the SearchParameterSettings as a SearchParameterSettingsSet (without shared pointers)
          */
         SearchParameterSettingsSet CopySearchParameterSettings() const
         {
             SearchParameterSettingsSet searchArea;
-            searchArea.Dimensions.clear();
             for (const auto& searchParameterSettings : Dimensions)
             {
                 searchArea.Dimensions.push_back(*searchParameterSettings);
