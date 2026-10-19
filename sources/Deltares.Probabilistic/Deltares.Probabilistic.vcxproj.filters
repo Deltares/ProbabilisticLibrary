@@ -282,6 +282,9 @@
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />
+    <ClCompile Include="Server\Handlers\OptimizationHandlers.cpp" />
+    <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimization.cpp" />
+    <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -648,6 +651,14 @@
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\GridSearchSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Server\Handlers\OptimizationProjectHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationResultHandler.h" />
+    <ClInclude Include="Server\Handlers\SearchParameterSettingsHandler.h" />
+    <ClInclude Include="Server\Handlers\OptimizationHandlers.h" />
+    <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimization.h" />
+    <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.h" />
+    <ClInclude Include="Optimization\SearchParameterSettingsSetWithSharedPointers.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

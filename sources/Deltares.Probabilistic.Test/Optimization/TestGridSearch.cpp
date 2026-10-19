@@ -114,16 +114,16 @@ namespace Deltares::Probabilistic::Test
         project.settings->MaxGridMoves = 10;
         auto searchArea = project.settings->SearchArea;
         searchArea->setDimensions(2);
-        searchArea->Dimensions[0].MinValue = 0;
-        searchArea->Dimensions[0].MaxValue = 10;
-        searchArea->Dimensions[0].NumberOfValues = 11;
-        searchArea->Dimensions[0].Move = true;
-        searchArea->Dimensions[0].NumberOfRefinements = 10;
-        searchArea->Dimensions[1].MinValue = 0;
-        searchArea->Dimensions[1].MaxValue = 10;
-        searchArea->Dimensions[1].NumberOfValues = 11;
-        searchArea->Dimensions[1].Move = true;
-        searchArea->Dimensions[1].NumberOfRefinements = 10;
+        searchArea->Dimensions[0]->MinValue = 0;
+        searchArea->Dimensions[0]->MaxValue = 10;
+        searchArea->Dimensions[0]->NumberOfValues = 11;
+        searchArea->Dimensions[0]->Move = true;
+        searchArea->Dimensions[0]->NumberOfRefinements = 10;
+        searchArea->Dimensions[1]->MinValue = 0;
+        searchArea->Dimensions[1]->MaxValue = 10;
+        searchArea->Dimensions[1]->NumberOfValues = 11;
+        searchArea->Dimensions[1]->Move = true;
+        searchArea->Dimensions[1]->NumberOfRefinements = 10;
 
         project.run();
         auto result = project.result;
