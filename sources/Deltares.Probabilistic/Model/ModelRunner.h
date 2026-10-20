@@ -90,10 +90,10 @@ namespace Deltares::Models
         void runDesignPoint(const std::shared_ptr<Reliability::DesignPoint>& designPoint);
         Sample getSampleFromStochastPoint(const std::shared_ptr<Models::StochastPoint>& stochastPoint) const;
         void registerSample(const std::shared_ptr<Uncertainty::CorrelationMatrixBuilder>& correlationMatrixBuilder, Sample& sample) const;
-        Evaluation getEvaluationFromType(Statistics::RunValuesType type) const;
+        Evaluation getEvaluationFromType(Statistics::RunValuesType type);
 
         bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
-        Evaluation getEvaluation(Sample& sample) const;
+        Evaluation getEvaluation(Sample& sample);
 
     protected:
         virtual bool isProxyAllowed() const { return true; }

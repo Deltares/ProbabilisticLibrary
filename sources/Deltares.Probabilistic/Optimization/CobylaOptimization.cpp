@@ -97,7 +97,7 @@ namespace Deltares::Optimization
         auto status = cobyla_minimize(n, myfunc, &fData, m, fc.data(), p, h.data(),
             lb.data(), ub.data(), x0.data(), &minimum_f_value, &stop, dx.data());
 
-        auto result = OptimizationResult();
+        auto result = createOptimizationResult(model);
         result.modelRuns = *stop.nevals_p;
         result.minimumValue = minimum_f_value;
         switch (status)

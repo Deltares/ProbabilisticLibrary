@@ -44,7 +44,7 @@ namespace Deltares::Optimization::Test
         options.CrossOver = 0.8;
         options.StopAfterNonImprovingGenerations = 5;
 
-        auto zModel = std::make_shared<Models::ZModel>(Probabilistic::Test::ZmodelWithCenter(center));
+        auto zModel = Probabilistic::Test::ZModelBuilder::getPolynomeModel(center);
         auto model = Models::BaseModelRunner(zModel);
         auto apso = AdaptiveParticleSwarmOptimization(options);
         const auto result = apso.getOptimizedSample(model);
@@ -53,8 +53,8 @@ namespace Deltares::Optimization::Test
         {
             EXPECT_NEAR(result.values[i], center[i], tolerance);
         }
-        EXPECT_LE(model.getModelRuns(), evaluations);
-        EXPECT_EQ(model.getModelRuns(), result.modelRuns);
+        EXPECT_GT(result.modelRuns, 0);
+        EXPECT_LE(result.modelRuns, evaluations);
         EXPECT_TRUE(result.succeeded);
     }
 
@@ -62,7 +62,7 @@ namespace Deltares::Optimization::Test
     {
         auto project = OptimizationProject();
         project.settings->OptimizationMethod = OptimizationMethodType::APSO;
-        project.model = Probabilistic::Test::ZModelBuilder::getPolynomeModel(12.9, 16.2);
+        project.model = Probabilistic::Test::ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
         auto searchArea = project.settings->SearchArea;
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->MinValue = 0;

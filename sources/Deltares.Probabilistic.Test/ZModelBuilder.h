@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #pragma once
+
 #include "../Deltares.Probabilistic/Model/ZModel.h"
 
 namespace Deltares::Probabilistic::Test
@@ -37,7 +38,8 @@ namespace Deltares::Probabilistic::Test
     {
     public:
 
-        static std::shared_ptr<Models::ZModel> getPolynomeModel(double offset1 = -1.0, double offset2 = 0.0);
+        static std::shared_ptr<Models::ZModel> getPolynomeModel(const std::vector<double>& center);
+        static std::shared_ptr<Models::ZModel> getUnequalPolynomeModel(double offset1 = -1.0, double offset2 = 0.0);
         static std::shared_ptr<Models::ZModel> getConstrainedPolynomeModel();
     };
 }

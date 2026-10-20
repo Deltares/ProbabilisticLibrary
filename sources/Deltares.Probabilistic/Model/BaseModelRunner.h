@@ -62,8 +62,8 @@ namespace Deltares::Models
         void reportResult(double minimum, int step, int maxSteps);
         void doTextualProgress(ProgressType type, const std::string& text) const;
 
-        void invoke(ModelSample& sample) const;
-        void invoke(std::vector<ModelSample*>& samples) const;
+        void invoke(ModelSample& sample);
+        void invoke(std::vector<ModelSample*>& samples);
 
         void setAllowRepository(bool allowRepository) const;
 
@@ -73,7 +73,7 @@ namespace Deltares::Models
         double getConstraint(ModelSample& sample);
 
         int getModelRuns() const;
-        void CollectMessages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const;
+        void collect_messages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const;
 
     protected:
 
@@ -82,7 +82,6 @@ namespace Deltares::Models
 
         int getOutputParametersSize() const;
 
-        void registerEvaluation(ModelSample& sample);
         Evaluation getEvaluationFromSample(ModelSample& sample) const;
         bool canProgress() const;
 
@@ -92,6 +91,8 @@ namespace Deltares::Models
         std::vector<std::shared_ptr<Evaluation>> evaluations;
         std::vector< std::shared_ptr<Logging::Message>> messages;
         std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
+
+        void registerEvaluation(ModelSample& sample);
 
         Utils::Locker* locker = nullptr;
     };

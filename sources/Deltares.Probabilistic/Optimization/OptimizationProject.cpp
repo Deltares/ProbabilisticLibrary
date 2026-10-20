@@ -40,6 +40,8 @@ namespace Deltares::Optimization
     std::shared_ptr<OptimizationResult> OptimizationProject::getOptimizedSample()
     {
         Models::BaseModelRunner modelRunner = Models::BaseModelRunner(this->model, this->progressIndicator);
+        modelRunner.Settings = this->runSettings;
+        modelRunner.initializeForRun();
 
         this->result = std::make_shared<OptimizationResult>(this->optimizationMethod->getOptimizedSample(modelRunner));
 

@@ -50,9 +50,7 @@ namespace Deltares::Optimization
 
         int generation_index = 0;
         int last_improving_generation = 0;
-
-        auto return_value = OptimizationResult();
-        return_value.succeeded = true;
+        bool succeeded = true;
 
         while (generation_index < Options.GenerationCount)
         {
@@ -101,16 +99,17 @@ namespace Deltares::Optimization
             }
             else if (isStopped())
             {
-                return_value.succeeded = false;
+                succeeded = false;
                 break;
             }
 
             ++generation_index;
         }
 
+        auto return_value = createOptimizationResult(model);
+        return_value.succeeded = succeeded;
         return_value.values = best_particle.Values;
         return_value.minimumValue = best_particle.Z;
-        return_value.modelRuns = model.getModelRuns();
         return return_value;
     }
 

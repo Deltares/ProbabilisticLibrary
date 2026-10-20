@@ -75,6 +75,8 @@ namespace Deltares::Probabilistic::Test
         static std::shared_ptr<Statistics::Stochast>  getDeterministicStochast(double mean = 0);
         static std::shared_ptr<Statistics::Stochast>  getNormalStochast(double mean = 0, double stddev = 1);
         static std::shared_ptr<Statistics::Stochast>  getLogNormalStochast(double mean = 0, double stddev = 1, double shift = 0);
+
+        static std::shared_ptr<Models::ProgressIndicator> getProgressIndicator(DefaultProgressIndicator* progress);
     private:
         static std::shared_ptr<Models::ModelRunner> CreateModelRunner(size_t nStochasts, std::shared_ptr<Models::ZModel> zModel, DefaultProgressIndicator* progress = nullptr);
         static std::shared_ptr<Proxies::ProxyModelRunner> CreateProxyModelRunner(size_t nStochasts, std::shared_ptr<Proxies::ProxyModel> zModel, DefaultProgressIndicator* progress = nullptr);
@@ -100,8 +102,5 @@ namespace Deltares::Probabilistic::Test
 
         static std::shared_ptr<Statistics::Stochast>  getTriangularStochast(double min = 0, double top = 0, double max = 1);
         static std::shared_ptr<Statistics::Stochast>  getGumbelStochast(double mean = 0, double stddev = 1);
-
-        static std::shared_ptr<Models::ProgressIndicator> getProgressIndicator(DefaultProgressIndicator* progress);
-
     };
 }

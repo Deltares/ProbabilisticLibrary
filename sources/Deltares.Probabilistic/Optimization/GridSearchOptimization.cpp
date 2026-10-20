@@ -25,7 +25,6 @@
 #include "../Math/NumericSupport.h"
 #include <algorithm>
 #include <cmath>
-#include <algorithm>
 #include <ranges>
 #include "../Model/ModelRunner.h"
 
@@ -59,10 +58,9 @@ namespace Deltares::Optimization
             refinements++;
         }
 
-        auto result = OptimizationResult();
+        auto result = createOptimizationResult(model);
 
         result.succeeded = true; // always succeeds
-        result.modelRuns = model.getModelRuns();
         result.minimumValue = sample.Z;
 
         result.values.reserve(sample.Values.size());
@@ -111,9 +109,7 @@ namespace Deltares::Optimization
 
             if (gridIntervalCounter >= progressInterval || gridCounter == gridTotal)
             {
-                model.reportProgress(gridCounter, gridTotal);
                 gridIntervalCounter = 0;
-
                 model.reportResult(minSample.Z, iteration, Settings.MaxGridMoves + maxRefinements);
             }
 
@@ -196,7 +192,7 @@ namespace Deltares::Optimization
         });
     }
 
-    bool GridSearchOptimization::getMaxRefinements(const SearchParameterSettingsSet& searchArea)
+    int GridSearchOptimization::getMaxRefinements(const SearchParameterSettingsSet& searchArea)
     {
         int maxRefinements = 0;
         for (const auto& dimension : searchArea.Dimensions)

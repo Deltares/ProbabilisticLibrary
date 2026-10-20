@@ -40,7 +40,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::test_no_constraints1()
     {
         auto cb = CobylaOptimization();
-        auto zModel = ZModelBuilder::getPolynomeModel();
+        auto zModel = ZModelBuilder::getUnequalPolynomeModel();
         auto model = Models::BaseModelRunner(zModel);
         auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);
@@ -55,7 +55,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::test_project_no_constraints1()
     {
         auto cb = OptimizationProject();
-        cb.model = ZModelBuilder::getPolynomeModel();
+        cb.model = ZModelBuilder::getUnequalPolynomeModel();
         cb.settings->OptimizationMethod = OptimizationMethodType::Cobyla;
         auto searchArea = cb.settings->SearchArea;
         searchArea->setDimensions(2);
@@ -74,7 +74,7 @@ namespace Deltares::Probabilistic::Test
     void TestCobyla::test_no_constraints2()
     {
         auto cb = CobylaOptimization();
-        auto zModel = ZModelBuilder::getPolynomeModel(2, 3);
+        auto zModel = ZModelBuilder::getUnequalPolynomeModel(2, 3);
         auto model = Models::BaseModelRunner(zModel);
         auto searchArea = cb.Settings.SearchArea;
         searchArea->setDimensions(2);

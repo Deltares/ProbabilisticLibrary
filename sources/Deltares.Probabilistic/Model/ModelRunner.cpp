@@ -117,8 +117,6 @@ namespace Deltares::Models
 
         this->invoke(xSample);
 
-        registerEvaluation(xSample);
-
         sample.Z = xSample.Z;
 
         return sample.Z;
@@ -129,7 +127,7 @@ namespace Deltares::Models
      * \param sample Sample to be calculated
      * \return Evaluation report of the sample calculation
      */
-    Evaluation ModelRunner::getEvaluation(Sample& sample) const
+    Evaluation ModelRunner::getEvaluation(Sample& sample)
     {
         ModelSample xSample = getModelSample(sample);
 
@@ -145,7 +143,7 @@ namespace Deltares::Models
      * \param type Run values type
      * \return Evaluation report of the sample calculation
      */
-    Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type) const
+    Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type)
     {
         ModelSample xSample = getModelSampleFromType(type);
 
@@ -175,8 +173,6 @@ namespace Deltares::Models
         xSample.LoggingCounter = runDesignPointCounter++;
 
         this->invoke(xSample);
-
-        registerEvaluation(xSample);
 
         for (size_t i = 0; i < xSample.Values.size(); i++)
         {
@@ -208,8 +204,6 @@ namespace Deltares::Models
 
         for (size_t i = 0; i < xSamples.size(); i++)
         {
-            registerEvaluation(*xSamples[i]);
-
             samples[i]->Z = xSamples[i]->Z;
             samples[i]->AllowProxy = xSamples[i]->AllowProxy;
             samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
@@ -381,7 +375,7 @@ namespace Deltares::Models
             designPoint->ReliabilityResults.push_back(reliabilityResult);
         }
 
-        CollectMessages(designPoint->Evaluations, designPoint->Messages);
+        collect_messages(designPoint->Evaluations, designPoint->Messages);
 
         return designPoint;
     }
@@ -397,7 +391,7 @@ namespace Deltares::Models
 
         result.stochast = stochast;
 
-        CollectMessages(result.evaluations, result.messages);
+        collect_messages(result.evaluations, result.messages);
 
         return result;
     }
@@ -409,7 +403,7 @@ namespace Deltares::Models
     {
         Sensitivity::SensitivityResult result = uConverter->getSensitivityResult();
 
-        CollectMessages(result.evaluations, result.messages);
+        collect_messages(result.evaluations, result.messages);
 
         return result;
     }

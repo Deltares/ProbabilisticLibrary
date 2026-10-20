@@ -34,6 +34,8 @@ namespace Deltares::Optimization
 
         virtual void setStopped();
 
+        static OptimizationResult createOptimizationResult(const Models::BaseModelRunner& model);
+
     public:
         virtual OptimizationResult getOptimizedSample(Models::BaseModelRunner& model) = 0;
         virtual ~OptimizationMethod() = default;

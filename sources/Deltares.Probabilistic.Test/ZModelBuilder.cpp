@@ -21,11 +21,27 @@
 //
 #include "ZModelBuilder.h"
 
-using namespace Deltares::Probabilistic::Test;
+#include "ProjectBuilder.h"
 
 namespace Deltares::Probabilistic::Test
 {
-    std::shared_ptr<Models::ZModel> ZModelBuilder::getPolynomeModel(double offset1, double offset2)
+    std::shared_ptr<Models::ZModel> ZModelBuilder::getPolynomeModel(const std::vector<double>& center)
+    {
+        Models::ZLambda function = [center](Models::ModelSample& sample)
+        {
+            sample.Z = 0.0;
+            for (size_t i = 0; i < sample.Values.size(); i++)
+            {
+                sample.Z += pow(sample.Values[i] - center[i], 2);
+            }
+        };
+
+        auto model = std::make_shared<Models::ZModel>(function);
+
+        return model;
+    }
+
+    std::shared_ptr<Models::ZModel> ZModelBuilder::getUnequalPolynomeModel(double offset1, double offset2)
     {
         Models::ZLambda function = [offset1, offset2](Models::ModelSample& sample)
         {

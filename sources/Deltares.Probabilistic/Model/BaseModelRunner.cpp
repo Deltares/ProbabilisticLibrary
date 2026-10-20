@@ -96,20 +96,17 @@ namespace Deltares::Models
      */
     void BaseModelRunner::registerEvaluation(ModelSample& sample)
     {
-        if (this->Settings->SaveEvaluations)
-        {
-            std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
+        std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
 
-            if (this->Settings->MaxParallelProcesses > 1)
-            {
-                locker->lock();
-                this->evaluations.push_back(evaluation);
-                locker->unlock();
-            }
-            else
-            {
-                this->evaluations.push_back(evaluation);
-            }
+        if (this->Settings->MaxParallelProcesses > 1)
+        {
+            locker->lock();
+            this->evaluations.push_back(evaluation);
+            locker->unlock();
+        }
+        else
+        {
+            this->evaluations.push_back(evaluation);
         }
     }
 
@@ -171,7 +168,7 @@ namespace Deltares::Models
     {
         if (Settings->SaveConvergence)
         {
-            // TODO: add to list with convergence
+            // TODO: add to list with convergence (with minimum and number of samples)
         }
 
         if (this->progressIndicator != nullptr)
@@ -205,14 +202,27 @@ namespace Deltares::Models
         return runs;
     }
 
-    void BaseModelRunner::invoke(ModelSample& sample) const
+    void BaseModelRunner::invoke(ModelSample& sample)
     {
         this->zModel->invoke(sample);
+
+        if (this->Settings->SaveEvaluations)
+        {
+            registerEvaluation(sample);
+        }
     }
 
-    void BaseModelRunner::invoke(std::vector<ModelSample*>& samples) const
+    void BaseModelRunner::invoke(std::vector<ModelSample*>& samples)
     {
         this->zModel->invoke(samples);
+
+        if (this->Settings->SaveEvaluations)
+        {
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                registerEvaluation(*samples[i]);
+            }
+        }
     }
 
     /**
@@ -249,7 +259,7 @@ namespace Deltares::Models
      * \param evaluations The evaluations to assign the collected evaluations to
      * \param messages The messages to assign the collected messages to
      */
-    void BaseModelRunner::CollectMessages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const
+    void BaseModelRunner::collect_messages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const
     {
         for (const auto& evaluation : this->evaluations)
         {
