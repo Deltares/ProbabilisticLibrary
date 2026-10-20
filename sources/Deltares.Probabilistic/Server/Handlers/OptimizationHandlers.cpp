@@ -36,6 +36,7 @@ namespace Deltares::Server
 
         optimizationResultHandler.evaluationHandler = &modelHandlers->evaluationHandler;
         optimizationResultHandler.messageHandler = &modelHandlers->messageHandler;
+        optimizationResultHandler.convergenceResultHandler = &modelHandlers->convergenceResultHandler;
 
         using enum ObjectType;
 

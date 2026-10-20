@@ -663,6 +663,9 @@
     <ClInclude Include="Optimization\SearchParameterSettingsSetWithSharedPointers.h" />
     <ClInclude Include="Model\BaseModelRunner.h" />
     <ClInclude Include="Proxies\ProxyModelRunner.h" />
+    <ClInclude Include="Model\ConvergenceReport.h" />
+    <ClInclude Include="Model\ConvergenceResult.h" />
+    <ClInclude Include="Server\Handlers\ConvergenceResultHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

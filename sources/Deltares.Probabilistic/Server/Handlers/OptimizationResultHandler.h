@@ -25,6 +25,7 @@
 
 #include "EvaluationHandler.h"
 #include "MessageHandler.h"
+#include "ReliabilityResultHandler.h"
 #include "StoredObjectHandler.h"
 #include "../../Optimization/OptimizationResult.h"
 
@@ -59,6 +60,7 @@ namespace Deltares::Server
             if (property_ == "values_count") return static_cast<int>(result->values.size());
             if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
             if (property_ == "messages_count") return static_cast<int>(result->messages.size());
+            if (property_ == "convergence_results_count") return static_cast<int>(result->convergenceResults.size());
             if (property_ == "model_runs") return result->modelRuns;
             return StoredObjectHandler::GetIntValue(result, property_);
         }
@@ -85,6 +87,7 @@ namespace Deltares::Server
         {
             if (property_ == "evaluations") return evaluationHandler->GetObjectId(result->evaluations[index]);
             if (property_ == "messages") return messageHandler->GetObjectId(result->messages[index]);
+            else if (property_ == "convergence_results") return convergenceResultHandler->GetObjectId(result->convergenceResults[index]);
             return StoredObjectHandler::GetIndexedIdValue(result, property_, index);
         }
 
@@ -96,6 +99,7 @@ namespace Deltares::Server
 
         EvaluationHandler* evaluationHandler = nullptr;
         MessageHandler* messageHandler = nullptr;
+        ConvergenceResultHandler* convergenceResultHandler = nullptr;
     };
 }
 

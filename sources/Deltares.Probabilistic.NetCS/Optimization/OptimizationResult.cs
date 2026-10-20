@@ -20,9 +20,10 @@
 // All rights reserved.
 //
 using Deltares.Probabilistic.Logging;
-using System.Collections.Generic;
 using Deltares.Probabilistic.Model;
+using Deltares.Probabilistic.Reliability;
 using Deltares.Probabilistic.Utils;
+using System.Collections.Generic;
 
 namespace Deltares.Probabilistic.Optimization;
 
@@ -33,6 +34,7 @@ public class OptimizationResult
     private double[] values = null;
     private List<Evaluation> realizations = null;
     private List<Message> messages = null;
+    private List<ConvergenceResult> convergenceResults = null;
     private TagRepository tagRepository = null;
 
     public OptimizationResult()
@@ -103,6 +105,25 @@ public class OptimizationResult
             }
 
             return realizations;
+        }
+    }
+
+    public IList<ConvergenceResult> ConvergenceResults
+    {
+        get
+        {
+            if (convergenceResults == null)
+            {
+                convergenceResults = new List<ConvergenceResult>();
+
+                int[] resultIds = Interface.GetArrayIdValue(id, "convergence_results");
+                foreach (int resultId in resultIds)
+                {
+                    convergenceResults.Add(new ConvergenceResult(resultId));
+                }
+            }
+
+            return convergenceResults;
         }
     }
 

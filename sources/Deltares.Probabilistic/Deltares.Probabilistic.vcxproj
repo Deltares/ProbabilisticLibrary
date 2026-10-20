@@ -159,6 +159,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Model\ConvergenceReport.h" />
+    <ClInclude Include="Model\ConvergenceResult.h" />
+    <ClInclude Include="Server\Handlers\ConvergenceResultHandler.h" />
     <ClInclude Include="Server\Handlers\OptimizationHandlers.h" />
     <ClInclude Include="Proxies\ProxyModelRunner.h" />
     <ClInclude Include="Model\BaseModelRunner.h" />

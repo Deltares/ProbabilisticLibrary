@@ -26,6 +26,8 @@
 #include <cmath>
 #include <format>
 
+#include "../Reliability/ReliabilityResult.h"
+
 namespace Deltares::Models
 {
     void BaseModelRunner::initializeForRun()
@@ -58,6 +60,7 @@ namespace Deltares::Models
     {
         this->evaluations.clear();
         this->messages.clear();
+        this->convergenceResults.clear();
     }
 
     /**
@@ -168,7 +171,11 @@ namespace Deltares::Models
     {
         if (Settings->SaveConvergence)
         {
-            // TODO: add to list with convergence (with minimum and number of samples)
+            auto result = std::make_shared<Reliability::ReliabilityResult>();
+            result->Difference = minimum;
+            result->Samples = this->zModel->getModelRuns();
+
+            convergenceResults.push_back(result);
         }
 
         if (this->progressIndicator != nullptr)
@@ -269,6 +276,18 @@ namespace Deltares::Models
         for (const auto& message : this->messages)
         {
             messages.push_back(message);
+        }
+    }
+
+    /**
+     * \brief Assigns the collected evaluations and messages to given collections
+     * \param convergenceResults The convergence results to assign the collected evaluations to
+     */
+    void BaseModelRunner::collect_convergence_results(std::vector<std::shared_ptr<ConvergenceResult>>& convergenceResults) const
+    {
+        for (const auto& convergenceResult : this->convergenceResults)
+        {
+            convergenceResults.push_back(convergenceResult);
         }
     }
 }

@@ -21,17 +21,16 @@
 //
 #pragma once
 #include <string>
-
 #include <vector>
 
 #include "Evaluation.h"
-#include "../Reliability/ReliabilityReport.h"
-#include "../Utils/Locker.h"
+#include "ConvergenceResult.h"
 #include "RunSettings.h"
 #include "ZModel.h"
-#include "../Logging/Message.h"
 #include "ModelSample.h"
 #include "ProgressIndicator.h"
+#include "../Utils/Locker.h"
+#include "../Logging/Message.h"
 
 namespace Deltares::Models
 {
@@ -74,6 +73,7 @@ namespace Deltares::Models
 
         int getModelRuns() const;
         void collect_messages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const;
+        void collect_convergence_results(std::vector<std::shared_ptr<ConvergenceResult>>& convergenceResults) const;
 
     protected:
 
@@ -89,7 +89,9 @@ namespace Deltares::Models
         std::shared_ptr<ZModel> zModel;
 
         std::vector<std::shared_ptr<Evaluation>> evaluations;
-        std::vector< std::shared_ptr<Logging::Message>> messages;
+        std::vector<std::shared_ptr<Logging::Message>> messages;
+        std::vector<std::shared_ptr<ConvergenceResult>> convergenceResults;
+
         std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
         void registerEvaluation(ModelSample& sample);

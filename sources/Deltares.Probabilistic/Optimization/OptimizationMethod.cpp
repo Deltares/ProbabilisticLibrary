@@ -45,6 +45,7 @@ namespace Deltares::Optimization
 
         result.modelRuns = model.getModelRuns();
         model.collect_messages(result.evaluations, result.messages);
+        model.collect_convergence_results(result.convergenceResults);
 
         return result;
     }

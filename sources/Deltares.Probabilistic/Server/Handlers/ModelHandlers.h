@@ -21,6 +21,7 @@
 //
 #pragma once
 
+#include "ConvergenceResultHandler.h"
 #include "EvaluationHandler.h"
 #include "MessageHandler.h"
 #include "ModelParameterHandler.h"
@@ -38,6 +39,7 @@ namespace Deltares::Server
 
         MessageHandler messageHandler; 
         EvaluationHandler evaluationHandler;
+        ConvergenceResultHandler convergenceResultHandler;
         ValidationReportHandler validationReportHandler;
         ModelParameterHandler modelParameterHandler;
     };

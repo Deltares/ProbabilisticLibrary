@@ -54,6 +54,7 @@ namespace Deltares::Server
         {"fragility_curve_project", FragilityCurveProject},
         {"fragility_curve_settings", FragilityCurveSettings},
         {"evaluation", Evaluation},
+        {"convergence_result", ConvergenceResult},
         {"reliability_result", ReliabilityResult},
         {"combine_project", CombineProject},
         {"combine_settings", CombineSettings},

@@ -22,10 +22,12 @@
 
 #pragma once
 
-#include "../Model/ModelSample.h"
 #include "../Model/Evaluation.h"
 #include "../Logging/Message.h"
+#include "../Model/ConvergenceResult.h"
+
 #include <cmath>
+#include <memory>
 
 namespace Deltares::Optimization
 {
@@ -64,6 +66,11 @@ namespace Deltares::Optimization
          * \brief List of messages raised during optimization analysis
          */
         std::vector<std::shared_ptr<Logging::Message>> messages;
+
+        /**
+         * \brief List of convergence messages raised during optimization analysis
+         */
+        std::vector<std::shared_ptr<Models::ConvergenceResult>> convergenceResults;
     };
 }
 

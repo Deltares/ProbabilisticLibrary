@@ -57,6 +57,7 @@ public class TestObjectProperties
     [TestCase(typeof(LimitStateFunction))]
     [TestCase(typeof(StochastSettings))]
     [TestCase(typeof(DesignPoint))]
+    [TestCase(typeof(ConvergenceReport))]
     [TestCase(typeof(ReliabilityResult))]
     [TestCase(typeof(ConvergenceReport))]
     [TestCase(typeof(FragilityCurve), "DistributionType", "ConstantParameterType", "Truncated", "Mean", "Deviation", "Variation", "DesignValue")]
