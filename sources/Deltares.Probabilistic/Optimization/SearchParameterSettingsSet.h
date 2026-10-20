@@ -23,11 +23,11 @@
 #include <vector>
 
 #include "SearchParameterSettings.h"
-#include "../Model/ModelProjectSettings.h"
+#include "../Logging/ValidationReport.h"
 
 namespace Deltares::Optimization
 {
-    class SearchParameterSettingsSet : public Models::ModelProjectSettings
+    class SearchParameterSettingsSet
     {
     public:
         std::vector<SearchParameterSettings> Dimensions;
@@ -44,7 +44,7 @@ namespace Deltares::Optimization
          * \brief Reports whether the settings have valid values
          * \param report Report in which the validity is reported
          */
-        void validate(Logging::ValidationReport& report) const override;
+        void validate(Logging::ValidationReport& report) const;
     };
 }
 
