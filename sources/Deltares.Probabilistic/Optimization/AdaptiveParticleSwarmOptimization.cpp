@@ -40,7 +40,7 @@ namespace Deltares::Optimization
     OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(ZModel& model)
     {
         rng.initialize(true, Options.Seed);
-        const auto& [Dimensions] = Options.SearchArea;
+        const auto& Dimensions = Options.SearchArea.Dimensions;
 
         std::vector<ModelSample> population;
 
@@ -116,7 +116,7 @@ namespace Deltares::Optimization
 
     void AdaptiveParticleSwarmOptimization::apsoBranch(int generation_index, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
     {
-        const auto& [Dimensions] = Options.SearchArea;
+        const auto& Dimensions = Options.SearchArea.Dimensions;
         const double alpha = std::pow(Options.Delta, generation_index);
 
         for (size_t n = 0; n < particle_size; ++n)
@@ -145,7 +145,7 @@ namespace Deltares::Optimization
 
     void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
     {
-        const auto& [Dimensions] = Options.SearchArea;
+        const auto& Dimensions = Options.SearchArea.Dimensions;
 
         const int maximum = static_cast<int>(elite.size());
 
@@ -185,7 +185,7 @@ namespace Deltares::Optimization
 
     ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(ZModel& model, std::vector<ModelSample>& population)
     {
-        const auto& [Dimensions] = Options.SearchArea;
+        const auto& Dimensions = Options.SearchArea.Dimensions;
 
         const int particle_size = static_cast<int>(Dimensions.size());
 

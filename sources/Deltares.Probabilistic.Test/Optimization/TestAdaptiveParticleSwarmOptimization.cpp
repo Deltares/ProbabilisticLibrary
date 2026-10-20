@@ -85,5 +85,32 @@ namespace Deltares::Optimization::Test
         EXPECT_TRUE(result->succeeded);
     }
 
+    void TestAdaptiveParticleSwarmOptimization::TestValidation()
+    {
+        auto settings = AdaptiveParticleSwarmOptimizationSettings();
+        settings.DifferentialWeight = 2.1;
+        settings.CrossOver = -1.0;
+
+        Logging::ValidationReport report;
+
+        settings.validate(report);
+        EXPECT_FALSE(report.isValid()) << "validation of APSO settings is true, but should be false";
+        EXPECT_EQ(2, report.messages.size());
+    }
+
+    void TestAdaptiveParticleSwarmOptimization::TestSearchDimensionValidation()
+    {
+        auto dimensions = SearchParameterSettingsSet();
+        dimensions.setDimensions(2);
+        dimensions.Dimensions[0].MinValue = 1.0;
+        dimensions.Dimensions[0].MaxValue = 1.0;
+
+        Logging::ValidationReport report;
+
+        dimensions.validate(report);
+        EXPECT_FALSE(report.isValid()) << "validation of SearchParameterSettingsSet is true, but should be false";
+        EXPECT_EQ(1, report.messages.size());
+    }
+
 }
 

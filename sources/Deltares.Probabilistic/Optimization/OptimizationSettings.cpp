@@ -66,6 +66,15 @@ namespace Deltares::Optimization
     {
         auto options = AdaptiveParticleSwarmOptimizationSettings();
         options.SearchArea = SearchArea->CopySearchParameterSettings();
+        options.GenerationCount = GenerationCount;
+        options.EliteCount = EliteCount;
+        options.PopulationCount = PopulationCount;
+        options.StopAfterNonImprovingGenerations = StopAfterNonImprovingGenerations;
+        options.DifferentialWeight = DifferentialWeight;
+        options.CrossOver = CrossOver;
+        options.Beta = Beta;
+        options.Delta = Delta;
+        options.Seed = random_settings.Seed;
 
         auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>(options);
 

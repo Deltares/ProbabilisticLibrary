@@ -29,6 +29,8 @@ namespace Deltares::Optimization
         this->optimizationMethod = this->settings->GetOptimizationMethod();
         this->runSettings = this->settings->RunSettings;
 
+        zModel.setAllowRepository(runSettings->AllowRepository);
+
         this->result = this->getOptimizedSample();
     }
 

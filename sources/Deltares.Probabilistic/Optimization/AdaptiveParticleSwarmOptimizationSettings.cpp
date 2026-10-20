@@ -30,14 +30,17 @@ namespace Deltares::Optimization
         Logging::ValidationSupport::checkMaximum(report, 1.0, Beta, "Beta");
         Logging::ValidationSupport::checkMinimum(report, 0.0, CrossOver, "CrossOver");
         Logging::ValidationSupport::checkMaximum(report, 1.0, CrossOver, "CrossOver");
-        Logging::ValidationSupport::checkMinimum(report, 0.0, Delta, "Delta");
-        Logging::ValidationSupport::checkMaximum(report, 1.0, Delta, "Delta");
+        Logging::ValidationSupport::checkMinimum(report, 0.1, Delta, "Delta");
+        Logging::ValidationSupport::checkMaximum(report, 0.99, Delta, "Delta");
         Logging::ValidationSupport::checkMinimum(report, 0.0, DifferentialWeight, "DifferentialWeight");
-        Logging::ValidationSupport::checkMaximum(report, 1.0, DifferentialWeight, "DifferentialWeight");
+        Logging::ValidationSupport::checkMaximum(report, 2.0, DifferentialWeight, "DifferentialWeight");
         Logging::ValidationSupport::checkMinimumInt(report, 1, GenerationCount, "GenerationCount");
         Logging::ValidationSupport::checkMinimumInt(report, 1, EliteCount, "EliteCount");
         Logging::ValidationSupport::checkMinimumInt(report, 1, PopulationCount, "PopulationCount");
+        Logging::ValidationSupport::checkMaximumInt(report, PopulationCount, EliteCount, "EliteCount");
         Logging::ValidationSupport::checkMinimumInt(report, 1, StopAfterNonImprovingGenerations, "StopAfterNonImprovingGenerations");
+
+        SearchArea.validate(report);
     }
 }
 

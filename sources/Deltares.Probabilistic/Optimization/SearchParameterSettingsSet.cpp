@@ -20,3 +20,15 @@
 // All rights reserved.
 //
 #include "SearchParameterSettingsSet.h"
+#include "../Logging/ValidationSupport.h"
+
+namespace Deltares::Optimization
+{
+    void SearchParameterSettingsSet::validate(Logging::ValidationReport& report) const
+    {
+        for (const auto& dimension : Dimensions)
+        {
+            Logging::ValidationSupport::checkMaximumNonInclusive(report, dimension.MaxValue, dimension.MinValue, "MinValue");
+        }
+    }
+}

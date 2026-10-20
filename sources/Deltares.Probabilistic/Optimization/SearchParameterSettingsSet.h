@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "SearchParameterSettings.h"
+#include "../Logging/ValidationReport.h"
 
 namespace Deltares::Optimization
 {
@@ -38,6 +39,12 @@ namespace Deltares::Optimization
                 Dimensions.push_back(SearchParameterSettings());
             }
         }
+
+        /**
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        void validate(Logging::ValidationReport& report) const;
     };
 }
 

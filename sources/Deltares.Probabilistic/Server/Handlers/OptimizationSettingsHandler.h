@@ -43,12 +43,20 @@ namespace Deltares::Server
         double GetValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_) override
         {
             if (property_ == "epsilon_beta") return settings->EpsilonBeta;
+            else if (property_ == "differential_weight") return settings->DifferentialWeight;
+            else if (property_ == "cross_over") return settings->CrossOver;
+            else if (property_ == "beta") return settings->Beta;
+            else if (property_ == "delta") return settings->Delta;
             else return DerivedObjectHandler::GetValue(settings, property_);
         }
 
         void SetValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_, double value) override
         {
             if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
+            else if (property_ == "differential_weight") settings->DifferentialWeight = value;
+            else if (property_ == "cross_over") settings->CrossOver = value;
+            else if (property_ == "beta") settings->Beta = value;
+            else if (property_ == "delta") settings->Delta = value;
             else DerivedObjectHandler::SetValue(settings, property_, value);
         }
 
@@ -57,6 +65,11 @@ namespace Deltares::Server
             if (property_ == "maximum_iterations") return settings->Iterations;
             else if (property_ == "max_grid_moves") return settings->MaxGridMoves;
             else if (property_ == "search_parameter_settings_count") return static_cast<int>(settings->SearchArea->Dimensions.size());
+            else if (property_ == "generation_count") return settings->GenerationCount;
+            else if (property_ == "elite_count") return settings->EliteCount;
+            else if (property_ == "population_count") return settings->PopulationCount;
+            else if (property_ == "stop_after_non_improving_generations") return settings->StopAfterNonImprovingGenerations;
+            else if (property_ == "seed") return settings->random_settings.Seed;
             else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
 
@@ -65,6 +78,11 @@ namespace Deltares::Server
             if (property_ == "maximum_iterations") settings->Iterations = value;
             else if (property_ == "max_grid_moves") settings->MaxGridMoves = value;
             else if (property_ == "add_search_parameter_settings") settings->SearchArea->Dimensions.push_back(searchParameterSettingsHandler->GetObject(value));
+            else if (property_ == "generation_count") settings->GenerationCount = value;
+            else if (property_ == "elite_count") settings->EliteCount = value;
+            else if (property_ == "population_count") settings->PopulationCount = value;
+            else if (property_ == "stop_after_non_improving_generations") settings->StopAfterNonImprovingGenerations = value;
+            else if (property_ == "seed") settings->random_settings.Seed = value;
             else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }
 
