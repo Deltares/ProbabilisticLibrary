@@ -35,6 +35,7 @@ namespace Deltares::Probabilistic::Test
         static void test_project_polynome_move_grid();
         static void test_project_progress();
         static void test_project_evaluations();
+        static void test_project_convergence_results();
 
         static void fillSearchArea(
             std::shared_ptr<Optimization::SearchParameterSettingsSetWithSharedPointers> searchArea, int size,
