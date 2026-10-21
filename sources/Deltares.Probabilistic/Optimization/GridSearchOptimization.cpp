@@ -87,7 +87,7 @@ namespace Deltares::Optimization
             throw Reliability::ProbabilisticLibraryException("No dimensions or empty dimensions are not allowed");
         }
 
-        int maxRefinements = getMaxRefinements(searchArea);
+        int maxRefinements = searchArea.getMaxRefinements();
         int gridCounter = 0;
         int gridIntervalCounter = 0;
         int gridTotal = static_cast<int>(combinations.size());
@@ -190,17 +190,6 @@ namespace Deltares::Optimization
         {
             return refinements < dimension.NumberOfRefinements;
         });
-    }
-
-    int GridSearchOptimization::getMaxRefinements(const SearchParameterSettingsSet& searchArea)
-    {
-        int maxRefinements = 0;
-        for (const auto& dimension : searchArea.Dimensions)
-        {
-            maxRefinements = std::max(dimension.NumberOfRefinements, maxRefinements);
-        }
-
-        return maxRefinements;
     }
 
     void GridSearchOptimization::refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample)

@@ -56,14 +56,9 @@ namespace Deltares::Models
     void ModelRunner::clear()
     {
         BaseModelRunner::clear();
-        clearLists();
-        this->runDesignPointCounter = 1;
-    }
 
-    void ModelRunner::clearLists()
-    {
         this->reliabilityResults.clear();
-        BaseModelRunner::clearLists();
+        this->runDesignPointCounter = 1;
     }
 
     void ModelRunner::setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider)
@@ -376,6 +371,8 @@ namespace Deltares::Models
 
         collect_messages(designPoint->Evaluations, designPoint->Messages);
 
+        clear();
+
         return designPoint;
     }
 
@@ -384,7 +381,7 @@ namespace Deltares::Models
      * \param stochast Stochast in the uncertainty result
      * \return Uncertainty result
      */
-    Uncertainty::UncertaintyResult ModelRunner::getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast) const
+    Uncertainty::UncertaintyResult ModelRunner::getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast)
     {
         auto result = Uncertainty::UncertaintyResult();
 
@@ -392,17 +389,21 @@ namespace Deltares::Models
 
         collect_messages(result.evaluations, result.messages);
 
+        clear();
+
         return result;
     }
 
     /**
      * \brief Gets an empty result of a sensitivity calculation with stochast definition and runtime information
      */
-    Sensitivity::SensitivityResult ModelRunner::getSensitivityResult() const
+    Sensitivity::SensitivityResult ModelRunner::getSensitivityResult()
     {
         Sensitivity::SensitivityResult result = uConverter->getSensitivityResult();
 
         collect_messages(result.evaluations, result.messages);
+
+        clear();
 
         return result;
     }

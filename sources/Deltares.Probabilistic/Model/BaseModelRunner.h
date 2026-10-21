@@ -63,14 +63,9 @@ namespace Deltares::Models
         virtual void initializeForRun();
 
         /**
-         * \brief Resets counters and collections
+         * \brief Resets counters and collections populated by an algorithm
          */
         virtual void clear();
-
-        /**
-         * \brief Clears collections populated by an algorithm
-         */
-        virtual void clearLists();
 
         /**
          * \brief Sends progress during an algorithm

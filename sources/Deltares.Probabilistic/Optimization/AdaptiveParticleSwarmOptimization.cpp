@@ -37,7 +37,7 @@ namespace Deltares::Optimization
         Options.validate(report);
     }
 
-    OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(Models::BaseModelRunner& model)
+    OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(BaseModelRunner& model)
     {
         rng.initialize(true, Options.Seed);
         const auto& Dimensions = Options.SearchArea.Dimensions;
@@ -182,7 +182,7 @@ namespace Deltares::Optimization
         }
     }
 
-    ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(Models::BaseModelRunner& model, std::vector<ModelSample>& population)
+    ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(BaseModelRunner& model, std::vector<ModelSample>& population)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
 

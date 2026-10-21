@@ -53,11 +53,8 @@ namespace Deltares::Models
 
     void BaseModelRunner::clear()
     {
-        clearLists();
-    }
+        this->zModel->resetModelRuns();
 
-    void BaseModelRunner::clearLists()
-    {
         this->evaluations.clear();
         this->messages.clear();
         this->convergenceResults.clear();

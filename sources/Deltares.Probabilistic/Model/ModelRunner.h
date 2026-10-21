@@ -66,8 +66,12 @@ namespace Deltares::Models
         std::shared_ptr<Proxies::ProxySettings> ProxySettings = std::make_shared<Proxies::ProxySettings>();
 
         void initializeForRun() override;
+
+        /**
+         * \brief Resets counters and collections populated by an algorithm
+         */
         void clear() override;
-        void clearLists() override;
+
         void updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings);
         double getZValue(Sample& sample);
         std::vector<double> getZValues(std::vector<Sample*>& samples);
@@ -82,8 +86,8 @@ namespace Deltares::Models
 
         bool isVaryingStochast(int index) const;
         std::shared_ptr<Reliability::DesignPoint> getDesignPoint(Sample& sample, double beta, const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport = nullptr, const std::string& identifier = "");
-        Uncertainty::UncertaintyResult getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast) const;
-        Sensitivity::SensitivityResult getSensitivityResult() const;
+        Uncertainty::UncertaintyResult getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast);
+        Sensitivity::SensitivityResult getSensitivityResult();
         ModelSample getModelSample(Sample& sample) const;
         ModelSample getModelSampleFromType(Statistics::RunValuesType type) const;
         std::vector<double> getOnlyVaryingValues(const std::vector<double>& values) const;

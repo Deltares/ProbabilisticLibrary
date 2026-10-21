@@ -31,4 +31,15 @@ namespace Deltares::Optimization
             Logging::ValidationSupport::checkMaximumNonInclusive(report, dimension.MaxValue, dimension.MinValue, "MinValue");
         }
     }
+
+    int SearchParameterSettingsSet::getMaxRefinements() const
+    {
+        int maxRefinements = 0;
+        for (const auto& dimension : Dimensions)
+        {
+            maxRefinements = std::max(dimension.NumberOfRefinements, maxRefinements);
+        }
+
+        return maxRefinements;
+    }
 }

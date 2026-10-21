@@ -29,7 +29,7 @@
 namespace Deltares::Server
 {
     /**
-     * \brief Handles properties and methods of class ReliabilityResult
+     * \brief Handles properties and methods of class ConvergenceResult
      */
     class ConvergenceResultHandler : public StoredObjectHandler<Models::ConvergenceResult>
     {
