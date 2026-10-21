@@ -32,7 +32,7 @@ namespace Deltares::Optimization
 {
     OptimizationResult GridSearchOptimization::getOptimizedSample(Models::BaseModelRunner& model)
     {
-        model.resetModelRuns();
+        model.clear();
 
         auto& searchArea = *Settings.SearchArea;
 
