@@ -27,6 +27,7 @@
 #include "AdaptiveParticleSwarmOptimization.h"
 #include "SearchParameterSettingsSetWithSharedPointers.h"
 #include "../Model/ModelProjectSettings.h"
+#include "../Model/RandomSettings.h"
 
 namespace Deltares::Optimization
 {
@@ -57,13 +58,30 @@ namespace Deltares::Optimization
          */
         int Iterations = 1000;
 
-
         double EpsilonBeta = 0.001;
+
+        double DifferentialWeight = 0.3;
+
+        double CrossOver = 0.3;
+
+        double Beta = 0.5;
+
+        double Delta = 0.7;
+
+        int GenerationCount = 50;
+
+        int EliteCount = 8;
+
+        int PopulationCount = 125;
+
+        int StopAfterNonImprovingGenerations = 100;
 
         /**
          * \brief Settings for individual parameters, such as the start value
          */
         std::shared_ptr<SearchParameterSettingsSetWithSharedPointers> SearchArea = std::make_shared<SearchParameterSettingsSetWithSharedPointers>();
+
+        Models::RandomSettings random_settings = Models::RandomSettings();
 
         /**
          * \brief Gets the optimization method and settings based on these settings

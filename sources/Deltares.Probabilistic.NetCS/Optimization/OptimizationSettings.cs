@@ -129,6 +129,60 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "epsilon_beta", value); }
     }
 
+    public double DifferentialWeight
+    {
+        get { return Interface.GetValue(id, "differential_weight"); }
+        set { Interface.SetValue(id, "differential_weight", value); }
+    }
+
+    public double CrossOver
+    {
+        get { return Interface.GetValue(id, "cross_over"); }
+        set { Interface.SetValue(id, "cross_over", value); }
+    }
+
+    public double Beta
+    {
+        get { return Interface.GetValue(id, "beta"); }
+        set { Interface.SetValue(id, "beta", value); }
+    }
+
+    public double Delta
+    {
+        get { return Interface.GetValue(id, "delta"); }
+        set { Interface.SetValue(id, "delta", value); }
+    }
+
+    public int GenerationCount
+    {
+        get { return Interface.GetIntValue(id, "generation_count"); }
+        set { Interface.SetIntValue(id, "generation_count", value); }
+    }
+
+    public int EliteCount
+    {
+        get { return Interface.GetIntValue(id, "elite_count"); }
+        set { Interface.SetIntValue(id, "elite_count", value); }
+    }
+
+    public int PopulationCount
+    {
+        get { return Interface.GetIntValue(id, "population_count"); }
+        set { Interface.SetIntValue(id, "population_count", value); }
+    }
+
+    public int StopAfterNonImprovingGenerations
+    {
+        get { return Interface.GetIntValue(id, "stop_after_non_improving_generations"); }
+        set { Interface.SetIntValue(id, "stop_after_non_improving_generations", value); }
+    }
+
+    public int Seed
+    {
+        get { return Interface.GetIntValue(id, "seed"); }
+        set { Interface.SetIntValue(id, "seed", value); }
+    }
+
     public IList<SearchParameterSettings> SearchParameterSettings
     {
         get

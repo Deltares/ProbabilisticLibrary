@@ -44,7 +44,7 @@ namespace Deltares::Statistics
 
         auto gridSearch = Optimization::GridSearchOptimization();
 
-        auto searchArea = gridSearch.Settings.SearchArea;
+        auto& searchArea = gridSearch.Settings.SearchArea;
         for (size_t i = 0; i < properties.size(); i++)
         {
             auto settings = Optimization::SearchParameterSettings();
@@ -53,7 +53,7 @@ namespace Deltares::Statistics
             settings.NumberOfValues = numberValues;
             settings.NumberOfRefinements = numberRefinements;
             settings.Move = true;
-            searchArea->Dimensions.push_back(settings);
+            searchArea.Dimensions.push_back(settings);
         }
 
         Models::ZLambda function = [this, values, &stochast, properties] (Models::ModelSample& sample)

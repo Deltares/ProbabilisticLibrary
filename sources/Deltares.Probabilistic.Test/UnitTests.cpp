@@ -921,6 +921,16 @@ TEST(UnitTests, testAPSOmoveGrid)
     Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::test_project_polynome_move_grid();
 }
 
+TEST(UnitTests, testApsoValidation)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestValidation();
+}
+
+TEST(UnitTests, testSearchDimensionValidation)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestSearchDimensionValidation();
+}
+
 TEST(WaartsTests, testLinearResistanceFORM)
 {
     auto tester = TestWaartsLinearResistance();

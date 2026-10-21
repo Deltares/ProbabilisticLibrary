@@ -32,6 +32,8 @@ namespace Deltares::Optimization
 {
     OptimizationResult GridSearchOptimization::getOptimizedSample(Models::BaseModelRunner& model)
     {
+        model.resetModelRuns();
+
         auto& searchArea = *Settings.SearchArea;
 
         auto defaultValues = std::vector<double>(searchArea.Dimensions.size(), std::nan(""));
