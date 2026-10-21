@@ -77,11 +77,7 @@ namespace Deltares::Models
 
     protected:
 
-        std::shared_ptr<ZModel> getZModel();
-        void setZModel(std::shared_ptr<ZModel> newZModel);
-
         int getOutputParametersSize() const;
-
         Evaluation getEvaluationFromSample(ModelSample& sample) const;
         bool canProgress() const;
 

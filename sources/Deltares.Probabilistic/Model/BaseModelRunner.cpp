@@ -113,16 +113,6 @@ namespace Deltares::Models
         }
     }
 
-    std::shared_ptr<ZModel> BaseModelRunner::getZModel()
-    {
-        return this->zModel;
-    }
-
-    void BaseModelRunner::setZModel(std::shared_ptr<ZModel> newZModel)
-    {
-        this->zModel = newZModel;
-    }
-
     bool BaseModelRunner::canProgress() const
     {
         return progressIndicator != nullptr;
@@ -204,9 +194,7 @@ namespace Deltares::Models
 
     int BaseModelRunner::getModelRuns() const
     {
-        int runs = this->zModel->getModelRuns();
-        this->zModel->resetModelRuns();
-        return runs;
+        return this->zModel->getModelRuns();
     }
 
     void BaseModelRunner::invoke(ModelSample& sample)
