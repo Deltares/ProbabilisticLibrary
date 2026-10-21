@@ -47,6 +47,9 @@ namespace Deltares::Models
     typedef std::function<void(int iterationIndex)> RemoveTaskLambda;
     typedef std::function<bool(int stochastIndex)> ShouldInvertLambda;
 
+    /**
+     * \brief Facilitates running samples defined in u-space
+     */
     class ModelRunner : public BaseModelRunner
     {
     public:
@@ -55,9 +58,7 @@ namespace Deltares::Models
             this->uConverter = uConverter;
         }
 
-        ~ModelRunner() override
-        {
-        }
+        ~ModelRunner() override = default;
 
         std::shared_ptr<Proxies::ProxySettings> ProxySettings = std::make_shared<Proxies::ProxySettings>();
 
@@ -80,8 +81,8 @@ namespace Deltares::Models
         std::shared_ptr<Reliability::DesignPoint> getDesignPoint(Sample& sample, double beta, const std::shared_ptr<Reliability::ConvergenceReport>& convergenceReport = nullptr, const std::string& identifier = "");
         Uncertainty::UncertaintyResult getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast) const;
         Sensitivity::SensitivityResult getSensitivityResult() const;
-        Models::ModelSample getModelSample(Sample& sample) const;
-        Models::ModelSample getModelSampleFromType(Statistics::RunValuesType type) const;
+        ModelSample getModelSample(Sample& sample) const;
+        ModelSample getModelSampleFromType(Statistics::RunValuesType type) const;
         std::vector<double> getOnlyVaryingValues(const std::vector<double>& values) const;
 
         void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }

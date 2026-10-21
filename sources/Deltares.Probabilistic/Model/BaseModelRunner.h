@@ -34,9 +34,17 @@
 
 namespace Deltares::Models
 {
+    /**
+     * \brief Facilitates running samples defined in x-space
+     */
     class BaseModelRunner
     {
     public:
+        /**
+         * \brief Constructor
+         * \param zModel The underlying model to run samples
+         * \param progressIndicator Progress indicator to which progress messages are sent
+         */
         BaseModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<ProgressIndicator> progressIndicator = nullptr)
         {
             this->zModel = zModel;
@@ -48,10 +56,16 @@ namespace Deltares::Models
             delete this->locker;
         }
 
-
+        /**
+         * Settings applicable for running samples
+         */
         std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 
+        /**
+         * Prepares the model runner for a number of runs executed within one of the algorithms
+         */
         virtual void initializeForRun();
+
         virtual void clear();
         virtual void clearLists();
 
