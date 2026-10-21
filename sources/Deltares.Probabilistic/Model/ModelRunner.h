@@ -53,9 +53,12 @@ namespace Deltares::Models
     class ModelRunner : public BaseModelRunner
     {
     public:
-        ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, std::shared_ptr<ProgressIndicator> progressIndicator = nullptr) : BaseModelRunner(zModel, progressIndicator)
+        ModelRunner(const std::shared_ptr<ZModel>& newModel,
+                    const std::shared_ptr<UConverter>& newConverter,
+                    const std::shared_ptr<ProgressIndicator>& newProgressIndicator = nullptr) :
+            BaseModelRunner(newModel, newProgressIndicator),
+            uConverter(newConverter)
         {
-            this->uConverter = uConverter;
         }
 
         ~ModelRunner() override = default;

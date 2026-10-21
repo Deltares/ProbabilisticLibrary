@@ -47,7 +47,7 @@ namespace Deltares::Models
 
         if (this->locker == nullptr)
         {
-            this->locker = new Utils::Locker();
+            this->locker = std::make_unique<Utils::Locker>();
         }
     }
 
@@ -63,16 +63,7 @@ namespace Deltares::Models
         this->convergenceResults.clear();
     }
 
-    /**
-     * \brief Indicates whether the sample repository is allowed
-     * \param allowRepository Indication
-     */
-    void BaseModelRunner::setAllowRepository(bool allowRepository) const
-    {
-        this->zModel->setAllowRepository(allowRepository);
-    }
-
-    Evaluation BaseModelRunner::getEvaluationFromSample(ModelSample& sample) const
+    Evaluation BaseModelRunner::getEvaluationFromSample(const ModelSample& sample) const
     {
         Evaluation evaluation = Evaluation();
 
@@ -88,15 +79,11 @@ namespace Deltares::Models
         return evaluation;
     }
 
-    int BaseModelRunner::getOutputParametersSize() const
+    size_t BaseModelRunner::getOutputParametersSize() const
     {
         return this->zModel->outputParameters.size();
     }
 
-    /**
-     * \brief Registers an evaluation for a calculated sample
-     * \param sample Calculated sample
-     */
     void BaseModelRunner::registerEvaluation(ModelSample& sample)
     {
         std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
@@ -157,7 +144,7 @@ namespace Deltares::Models
         }
     }
 
-    void BaseModelRunner::reportResult(double minimum, int step, int maxSteps)
+    void BaseModelRunner::reportConvergence(double minimum, int step, int maxSteps)
     {
         if (Settings->SaveConvergence)
         {
@@ -213,9 +200,9 @@ namespace Deltares::Models
 
         if (this->Settings->SaveEvaluations)
         {
-            for (size_t i = 0; i < samples.size(); i++)
+            for (auto& sample : samples)
             {
-                registerEvaluation(*samples[i]);
+                registerEvaluation(*sample);
             }
         }
     }
@@ -234,7 +221,7 @@ namespace Deltares::Models
      * \param sample Sample indicating the direction
      * \return Beta
      */
-    double BaseModelRunner::getBeta(ModelSample& sample) const
+    double BaseModelRunner::getModelSampleBeta(ModelSample& sample) const
     {
         return this->zModel->getBeta(sample);
     }
@@ -244,38 +231,38 @@ namespace Deltares::Models
         return zModel->hasConstraint();
     }
 
-    double BaseModelRunner::getConstraint(ModelSample& sample)
+    double BaseModelRunner::getConstraint(ModelSample& sample) const
     {
         return zModel->getConstraint(sample);
     }
 
     /**
      * \brief Assigns the collected evaluations and messages to given collections
-     * \param evaluations The evaluations to assign the collected evaluations to
-     * \param messages The messages to assign the collected messages to
+     * \param resultEvaluations The evaluations to assign the collected evaluations to
+     * \param resultMessages The messages to assign the collected messages to
      */
-    void BaseModelRunner::collect_messages(std::vector<std::shared_ptr<Evaluation>>& evaluations, std::vector<std::shared_ptr<Logging::Message>>& messages) const
+    void BaseModelRunner::collect_messages(std::vector<std::shared_ptr<Evaluation>>& resultEvaluations, std::vector<std::shared_ptr<Logging::Message>>& resultMessages) const
     {
-        for (const auto& evaluation : this->evaluations)
+        for (const auto& evaluation : evaluations)
         {
-            evaluations.push_back(evaluation);
+            resultEvaluations.push_back(evaluation);
         }
 
-        for (const auto& message : this->messages)
+        for (const auto& message : messages)
         {
-            messages.push_back(message);
+            resultMessages.push_back(message);
         }
     }
 
     /**
      * \brief Assigns the collected evaluations and messages to given collections
-     * \param convergenceResults The convergence results to assign the collected evaluations to
+     * \param resultConvergenceResults The convergence results to assign the collected evaluations to
      */
-    void BaseModelRunner::collect_convergence_results(std::vector<std::shared_ptr<ConvergenceResult>>& convergenceResults) const
+    void BaseModelRunner::collect_convergence_results(std::vector<std::shared_ptr<ConvergenceResult>>& resultConvergenceResults) const
     {
-        for (const auto& convergenceResult : this->convergenceResults)
+        for (const auto& convergenceResult : convergenceResults)
         {
-            convergenceResults.push_back(convergenceResult);
+            resultConvergenceResults.push_back(convergenceResult);
         }
     }
 }

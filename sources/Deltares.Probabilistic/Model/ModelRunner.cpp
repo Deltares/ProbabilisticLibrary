@@ -221,8 +221,7 @@ namespace Deltares::Models
     double ModelRunner::getBeta(Sample& sample) const
     {
         ModelSample xSample = getModelSample(sample);
-
-        return BaseModelRunner::getBeta(xSample);
+        return getModelSampleBeta(xSample);
     }
 
     /**

@@ -28,18 +28,21 @@
 
 namespace Deltares::Proxies
 {
+    /**
+     * \brief Facilitates running samples on a proxy model
+     */
     class ProxyModelRunner : public Models::ModelRunner
     {
     public:
-        ProxyModelRunner(std::shared_ptr<Proxies::ProxyModel> proxyModel, std::shared_ptr<Models::UConverter>uConverter, std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr) : ModelRunner(proxyModel, uConverter, progressIndicator)
+        ProxyModelRunner(const std::shared_ptr<Proxies::ProxyModel>& newProxyModel,
+                         const std::shared_ptr<Models::UConverter>& newConverter,
+                         const std::shared_ptr<Models::ProgressIndicator>& newProgressIndicator = nullptr):
+            ModelRunner(newProxyModel, newConverter, newProgressIndicator),
+            proxyModel(newProxyModel), uConverter(newConverter)
         {
-            this->uConverter = uConverter;
-            this->proxyModel = proxyModel;
         }
 
-        ~ProxyModelRunner() override
-        {
-        }
+        ~ProxyModelRunner() override = default;
 
         void initializeForRun() override;
         void setAllowProxy(bool allowProxy);

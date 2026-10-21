@@ -110,7 +110,7 @@ namespace Deltares::Optimization
             if (gridIntervalCounter >= progressInterval || gridCounter == gridTotal)
             {
                 gridIntervalCounter = 0;
-                model.reportResult(minSample.Z, iteration, Settings.MaxGridMoves + maxRefinements);
+                model.reportConvergence(minSample.Z, iteration, Settings.MaxGridMoves + maxRefinements);
             }
 
             if (isStopped())
