@@ -62,12 +62,6 @@ namespace Deltares::Optimization
         void validate(Logging::ValidationReport& report) override;
 
         /**
-         * \brief Performs the optimization calculation
-         * \return Design point
-         */
-        std::shared_ptr<OptimizationResult> getOptimizedSample();
-
-        /**
          * \brief Runs the reliability calculation
          */
         void run() override;
@@ -76,6 +70,14 @@ namespace Deltares::Optimization
          * \brief Stops the reliability calculation
          */
         void stop() override;
+
+    private:
+        /**
+         * \brief Performs the optimization calculation
+         * \return Optimization result
+         */
+        std::shared_ptr<OptimizationResult> getOptimizedSample();
+
     };
 }
 

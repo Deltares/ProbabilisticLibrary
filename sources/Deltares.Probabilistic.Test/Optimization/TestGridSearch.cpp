@@ -130,6 +130,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
 
         EXPECT_EQ(result->modelRuns, 321); // reused runs
+        EXPECT_EQ(project.modelRuns, 321); 
         EXPECT_TRUE(result->succeeded);
     }
 

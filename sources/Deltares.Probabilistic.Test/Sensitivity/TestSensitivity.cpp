@@ -124,14 +124,19 @@ namespace Deltares::Probabilistic::Test
         project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
         project->run();
 
-        Sensitivity::SensitivityResult result = project->getSensitivityResult();
+        ASSERT_EQ(project->sensitivityResults.size(), 1);
 
-        ASSERT_EQ(project->stochasts.size(), result.values.size());
+        auto result = project->sensitivityResult;
 
-        ASSERT_NEAR(2.7, result.values[0]->low, margin);
-        ASSERT_NEAR(0.9, result.values[0]->high, margin);
-        ASSERT_NEAR(2.7, result.values[1]->low, margin);
-        ASSERT_NEAR(0.9, result.values[1]->high, margin);
+        ASSERT_EQ(project->stochasts.size(), result->values.size());
+
+        ASSERT_EQ(result->modelRuns, 2 * project->stochasts.size() + 1);
+        ASSERT_EQ(project->modelRuns, result->modelRuns);
+
+        ASSERT_NEAR(2.7, result->values[0]->low, margin);
+        ASSERT_NEAR(0.9, result->values[0]->high, margin);
+        ASSERT_NEAR(2.7, result->values[1]->low, margin);
+        ASSERT_NEAR(0.9, result->values[1]->high, margin);
     }
 
     void TestSensitivity::testLinearSingleVariationRealizations() const
@@ -142,10 +147,10 @@ namespace Deltares::Probabilistic::Test
         project->settings->RunSettings->SaveEvaluations = true;
         project->run();
 
-        Sensitivity::SensitivityResult result = project->getSensitivityResult();
+        auto result = project->sensitivityResult;
 
-        ASSERT_EQ(project->stochasts.size(), result.values.size());
-        ASSERT_EQ(5, result.evaluations.size());
+        ASSERT_EQ(project->stochasts.size(), result->values.size());
+        ASSERT_EQ(5, result->evaluations.size());
     }
 
     void TestSensitivity::testLinearOutputSingleVariation() const
