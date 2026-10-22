@@ -122,7 +122,7 @@ namespace Deltares::Models
          * \brief Calculates a number of samples (defined in x-space) with the underlying model
          * \param samples The samples to be calculated
          */
-        void invoke(std::vector<ModelSample*>& samples);
+        void invoke(const std::vector<ModelSample*>& samples);
 
         /**
          * \brief Indicates whether the underlying model can generate a beta value of a sample
@@ -203,7 +203,7 @@ namespace Deltares::Models
          * \brief Registers an evaluation for a calculated sample
          * \param sample Calculated sample
          */
-        void registerEvaluation(ModelSample& sample);
+        void registerEvaluation(const ModelSample& sample);
 
         std::unique_ptr<Utils::Locker> locker = nullptr;
     };

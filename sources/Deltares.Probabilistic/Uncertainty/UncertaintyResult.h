@@ -48,6 +48,11 @@ namespace Deltares::Uncertainty
         }
 
         /**
+         * \brief Number of model runs made to achieve the result
+         */
+        int modelRuns = 0;
+
+        /**
          * \brief List of evaluations corresponding with the requested quantiles
          */
         std::vector<std::shared_ptr<Models::Evaluation>> quantileEvaluations;

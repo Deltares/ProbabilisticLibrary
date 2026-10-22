@@ -388,6 +388,7 @@ namespace Deltares::Models
         result.stochast = stochast;
 
         collect_messages(result.evaluations, result.messages);
+        result.modelRuns = this->getModelRuns();
 
         clear();
 
@@ -402,6 +403,7 @@ namespace Deltares::Models
         Sensitivity::SensitivityResult result = uConverter->getSensitivityResult();
 
         collect_messages(result.evaluations, result.messages);
+        result.modelRuns = this->getModelRuns();
 
         clear();
 

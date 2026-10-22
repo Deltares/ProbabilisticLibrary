@@ -81,7 +81,7 @@ namespace Deltares::Models
         return this->zModel->outputParameters.size();
     }
 
-    void BaseModelRunner::registerEvaluation(ModelSample& sample)
+    void BaseModelRunner::registerEvaluation(const ModelSample& sample)
     {
         std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
 
@@ -191,7 +191,7 @@ namespace Deltares::Models
         }
     }
 
-    void BaseModelRunner::invoke(std::vector<ModelSample*>& samples)
+    void BaseModelRunner::invoke(const std::vector<ModelSample*>& samples)
     {
         this->zModel->invoke(samples);
 
