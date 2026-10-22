@@ -31,6 +31,11 @@
 
 namespace Deltares::Optimization
 {
+    namespace Test
+    {
+        class GeneticAlgorithmOriginalTest;
+    }
+
     /**
      * \brief Genetic optimization with elitism and selection of the better of two children.
      * \remark Uses the kernel random generator, not the C# System.Random sequence.
@@ -47,6 +52,8 @@ namespace Deltares::Optimization
         bool isValid() override { return Options.isValid(); }
 
     private:
+        friend class Test::GeneticAlgorithmOriginalTest;
+
         GeneticAlgorithmSettings Options;
         Numeric::RandomValueGenerator rng;
         std::array<double, 3> crossOverMaskRange{};
