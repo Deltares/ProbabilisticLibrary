@@ -353,6 +353,8 @@
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimization.h" />
     <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.h" />
+    <ClInclude Include="Optimization\GeneticAlgorithm.h" />
+    <ClInclude Include="Optimization\GeneticAlgorithmSettings.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Optimization\Cobyla.h" />
@@ -611,6 +613,8 @@
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimization.cpp" />
     <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.cpp" />
+    <ClCompile Include="Optimization\GeneticAlgorithm.cpp" />
+    <ClCompile Include="Optimization\GeneticAlgorithmSettings.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\Cobyla.cpp" />

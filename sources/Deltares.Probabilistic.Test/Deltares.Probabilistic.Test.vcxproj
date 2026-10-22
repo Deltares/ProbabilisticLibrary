@@ -181,6 +181,7 @@
     <ClCompile Include="Math\TestCholeskiDecomposition.cpp" />
     <ClCompile Include="Math\TestNumericSupport.cpp" />
     <ClCompile Include="Optimization\TestAdaptiveParticleSwarmOptimization.cpp" />
+    <ClCompile Include="Optimization\TestGeneticAlgorithm.cpp" />
     <ClCompile Include="Math\TestKMean.cpp" />
     <ClCompile Include="Math\TestMatrix.cpp" />
     <ClCompile Include="Math\TestMatrixInverse.cpp" />
