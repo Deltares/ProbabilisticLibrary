@@ -34,7 +34,7 @@ namespace Deltares::Optimization
     {
     public:
         CobylaOptimizationSettings Settings;
-        OptimizationResult getOptimizedSample(Models::ZModel& model) override;
+        OptimizationResult getOptimizedSample(Models::BaseModelRunner& model) override;
     };
 }
 

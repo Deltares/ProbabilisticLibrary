@@ -81,7 +81,7 @@ namespace Deltares::Models
         virtual void setSettings(std::shared_ptr<ModelProjectSettings> newSettings) {}
 
         /**
-         * \brief Gets the total number of model runs
+         * \brief Gets the total number of model runs performed during the last run
          */
         int modelRuns = 0;
 

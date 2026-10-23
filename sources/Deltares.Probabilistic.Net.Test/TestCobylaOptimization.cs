@@ -19,6 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Optimization;
 using NUnit.Framework;
@@ -135,5 +136,26 @@ namespace Deltares.Probabilistic.Test
             ClassicAssert.AreEqual(800, result.ModelRuns);
         }
 
+        [Test]
+        public void TestPolynomeEvaluations()
+        {
+            var project = ProjectBuilder.GetPolynomeOptimizationProject(2.2, 8.3, 4.25);
+
+            project.Settings.OptimizationMethod = OptimizationMethod.Cobyla;
+            project.Settings.SaveRealizations = true;
+
+            foreach (ModelParameter parameter in project.InputParameters)
+            {
+                project.Settings.SearchParameterSettings.Add(new SearchParameterSettings
+                    { Parameter = parameter, MinValue = 0, MaxValue = 10, StartValue = 0 });
+            }
+
+            project.Run();
+
+            OptimizationResult result = project.Result;
+
+            ClassicAssert.AreEqual(89, result.ModelRuns);
+            ClassicAssert.AreEqual(89, result.Realizations.Count);
+        }
     }
 }

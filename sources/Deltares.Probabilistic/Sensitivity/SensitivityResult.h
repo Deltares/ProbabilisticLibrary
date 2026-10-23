@@ -45,6 +45,11 @@ namespace Deltares::Sensitivity
         std::vector<std::shared_ptr<SensitivityValue>> values;
 
         /**
+         * \brief Number of model runs made to achieve the result
+         */
+        int modelRuns = 0;
+
+        /**
          * \brief List of evaluations calculated during sensitivity analysis
          */
         std::vector<std::shared_ptr<Models::Evaluation>> evaluations;

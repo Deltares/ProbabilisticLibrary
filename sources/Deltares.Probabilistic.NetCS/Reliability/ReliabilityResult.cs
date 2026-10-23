@@ -36,6 +36,7 @@ public class ReliabilityResult
         this.Convergence = Interface.GetValue(id, "convergence");
         this.Variation = Interface.GetValue(id, "variation");
         this.Contribution = Interface.GetValue(id, "contribution");
+        this.Difference = Interface.GetValue(id, "difference");
         this.Samples = Interface.GetIntValue(id, "samples");
 
         Interface.Destroy(id);

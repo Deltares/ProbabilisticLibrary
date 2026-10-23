@@ -37,7 +37,7 @@ namespace Deltares::Optimization
         Options.validate(report);
     }
 
-    OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(ZModel& model)
+    OptimizationResult AdaptiveParticleSwarmOptimization::getOptimizedSample(BaseModelRunner& model)
     {
         rng.initialize(true, Options.Seed);
         const auto& Dimensions = Options.SearchArea.Dimensions;
@@ -50,9 +50,7 @@ namespace Deltares::Optimization
 
         int generation_index = 0;
         int last_improving_generation = 0;
-
-        auto return_value = OptimizationResult();
-        return_value.succeeded = true;
+        bool succeeded = true;
 
         while (generation_index < Options.GenerationCount)
         {
@@ -93,7 +91,7 @@ namespace Deltares::Optimization
                 }
             }
 
-            //model.ReportResult(bestParticle.Z, generationIndex + 1, Options.GenerationCount);
+            model.reportConvergence(best_particle.Z, generation_index + 1, Options.GenerationCount);
 
             if (generation_index -last_improving_generation >= Options.StopAfterNonImprovingGenerations)
             {
@@ -101,16 +99,17 @@ namespace Deltares::Optimization
             }
             else if (isStopped())
             {
-                return_value.succeeded = false;
+                succeeded = false;
                 break;
             }
 
             ++generation_index;
         }
 
+        auto return_value = createOptimizationResult(model);
+        return_value.succeeded = succeeded;
         return_value.values = best_particle.Values;
         return_value.minimumValue = best_particle.Z;
-        return_value.modelRuns = model.getModelRuns();
         return return_value;
     }
 
@@ -183,7 +182,7 @@ namespace Deltares::Optimization
         }
     }
 
-    ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(ZModel& model, std::vector<ModelSample>& population)
+    ModelSample AdaptiveParticleSwarmOptimization::InitializePopulation(BaseModelRunner& model, std::vector<ModelSample>& population)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
 
@@ -224,7 +223,7 @@ namespace Deltares::Optimization
                 first = false;
             }
 
-            //model.ReportResult(bestParticle.Z, 0, Options.GenerationCount);
+            model.reportConvergence(best_particle.Z, 0, Options.GenerationCount);
         }
 
         return best_particle;

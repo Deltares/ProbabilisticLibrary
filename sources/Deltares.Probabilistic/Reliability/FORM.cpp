@@ -60,8 +60,6 @@ namespace Deltares::Reliability
         // perform iterations
         for (int relaxationIndex = 0; relaxationIndex < Settings->RelaxationLoops; relaxationIndex++)
         {
-            modelRunner->clearLists();
-
             auto startPointSample = startPoint.clone();
             designPoint = getDesignPoint(modelRunner, startPointSample, relaxationFactor, relaxationIndex);
 

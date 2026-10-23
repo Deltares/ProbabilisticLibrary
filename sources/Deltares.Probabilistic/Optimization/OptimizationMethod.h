@@ -21,7 +21,7 @@
 //
 #pragma once
 #include "OptimizationResult.h"
-#include "../Model/ZModel.h"
+#include "../Model/BaseModelRunner.h"
 
 namespace Deltares::Optimization
 {
@@ -34,8 +34,10 @@ namespace Deltares::Optimization
 
         virtual void setStopped();
 
+        static OptimizationResult createOptimizationResult(const Models::BaseModelRunner& model);
+
     public:
-        virtual OptimizationResult getOptimizedSample(Models::ZModel& model) = 0;
+        virtual OptimizationResult getOptimizedSample(Models::BaseModelRunner& model) = 0;
         virtual ~OptimizationMethod() = default;
 
         virtual bool isValid() { return false; }

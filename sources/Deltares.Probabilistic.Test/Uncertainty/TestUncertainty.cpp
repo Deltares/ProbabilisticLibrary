@@ -37,6 +37,9 @@ namespace Deltares::Probabilistic::Test
         project->settings->UncertaintyMethod = Uncertainty::UncertaintyMethodType::UncertaintyCrudeMonteCarlo;
         project->run();
 
+        ASSERT_EQ(project->modelRuns, 7600);
+        ASSERT_EQ(project->uncertaintyResult->modelRuns, 7600);
+
         std::shared_ptr<Statistics::Stochast> stochast = project->uncertaintyResult->stochast;
 
         ASSERT_NEAR(stochast->getMean(), 1.0, margin);
@@ -57,6 +60,9 @@ namespace Deltares::Probabilistic::Test
         project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
         project->run();
+
+        ASSERT_EQ(project->modelRuns, 7600);
+        ASSERT_EQ(project->uncertaintyResult->modelRuns, 7600);
 
         auto result = project->uncertaintyResult;
 
@@ -90,6 +96,9 @@ namespace Deltares::Probabilistic::Test
 
         project->run();
 
+        ASSERT_EQ(project->modelRuns, 7600);
+        ASSERT_EQ(project->uncertaintyResult->modelRuns, 7600);
+
         auto result = project->uncertaintyResult;
 
         ASSERT_LE(result->quantileEvaluations[0]->Z, 1.5);
@@ -103,6 +112,11 @@ namespace Deltares::Probabilistic::Test
         // do it again, check results are not equal
 
         project->run();
+
+        // check model runs have been reset
+
+        ASSERT_EQ(project->modelRuns, 7600);
+        ASSERT_EQ(project->uncertaintyResult->modelRuns, 7600);
 
         auto result2 = project->uncertaintyResult;
 
@@ -125,6 +139,10 @@ namespace Deltares::Probabilistic::Test
         project->run();
 
         ASSERT_EQ(2, project->uncertaintyResults.size());
+
+        ASSERT_EQ(project->uncertaintyResults[0]->modelRuns, 7600);
+        ASSERT_EQ(project->uncertaintyResults[1]->modelRuns, 7600);
+        ASSERT_EQ(project->modelRuns, project->uncertaintyResults[0]->modelRuns + project->uncertaintyResults[1]->modelRuns);
 
         ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getMean(), project->uncertaintyResults[1]->stochast->getMean(), smallMargin);
         ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getDeviation(), project->uncertaintyResults[1]->stochast->getDeviation(), smallMargin);
@@ -177,7 +195,7 @@ namespace Deltares::Probabilistic::Test
         project->settings->DeriveSamplesFromVariationCoefficient = true;
         project->run();
 
-        std::shared_ptr<Statistics::Stochast> stochast = project->getUncertaintyResult().stochast;
+        std::shared_ptr<Statistics::Stochast> stochast = project->uncertaintyResult->stochast;
 
         ASSERT_EQ(7600, project->settings->getRequiredSamples());
         ASSERT_NEAR(1.8, stochast->getMean(), margin);

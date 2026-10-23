@@ -38,5 +38,16 @@ namespace Deltares::Optimization
     {
         setStopped();
     }
+
+    OptimizationResult OptimizationMethod::createOptimizationResult(const Models::BaseModelRunner& model)
+    {
+        OptimizationResult result;
+
+        result.modelRuns = model.getModelRuns();
+        model.collect_messages(result.evaluations, result.messages);
+        model.collect_convergence_results(result.convergenceResults);
+
+        return result;
+    }
 }
 

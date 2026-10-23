@@ -33,6 +33,7 @@ namespace Deltares::Server
 
         handlers[ObjectType::Message] = &messageHandler;
         handlers[ObjectType::Evaluation] = &evaluationHandler;
+        handlers[ObjectType::ConvergenceResult] = &convergenceResultHandler;
         handlers[ObjectType::ValidationReport] = &validationReportHandler;
         handlers[ObjectType::ModelParameter] = &modelParameterHandler;
     }

@@ -285,6 +285,8 @@
     <ClCompile Include="Server\Handlers\OptimizationHandlers.cpp" />
     <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimization.cpp" />
     <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.cpp" />
+    <ClCompile Include="Model\BaseModelRunner.cpp" />
+    <ClCompile Include="Proxies\ProxyModelRunner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -659,6 +661,11 @@
     <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimization.h" />
     <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSetWithSharedPointers.h" />
+    <ClInclude Include="Model\BaseModelRunner.h" />
+    <ClInclude Include="Proxies\ProxyModelRunner.h" />
+    <ClInclude Include="Model\ConvergenceReport.h" />
+    <ClInclude Include="Model\ConvergenceResult.h" />
+    <ClInclude Include="Server\Handlers\ConvergenceResultHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

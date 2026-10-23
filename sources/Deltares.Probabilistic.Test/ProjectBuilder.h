@@ -26,6 +26,8 @@
 #include "DefaultProgressIndicator.h"
 #include "../Deltares.Probabilistic/Model/ModelRunner.h"
 #include "../Deltares.Probabilistic/Model/RunProject.h"
+#include "../Deltares.Probabilistic/Proxies/ProxyModel.h"
+#include "../Deltares.Probabilistic/Proxies/ProxyModelRunner.h"
 #include "../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
 #include "../Deltares.Probabilistic/Uncertainty/UncertaintyProject.h"
 #include "../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
@@ -38,12 +40,14 @@ namespace Deltares::Probabilistic::Test
     public:
         std::shared_ptr<Models::ModelRunner> BuildProject() const;
         static std::shared_ptr<Models::ModelRunner> BuildLinearProject(size_t nStochasts);
+        static std::shared_ptr<Proxies::ProxyModelRunner> BuildLinearProxyProject(size_t nStochasts);
         static std::shared_ptr<Models::ModelRunner> BuildLinearProjectProgress(size_t nStochasts, DefaultProgressIndicator* progress);
         static std::shared_ptr<Models::ModelRunner> BuildLinearProbabilityProject(size_t nStochasts);
         static std::shared_ptr<Models::ModelRunner> BuildLinearProbabilityInverseProject(size_t nStochasts);
         static std::shared_ptr<Models::ModelRunner> BuildLinearReliabilityProject(size_t nStochasts);
         static std::shared_ptr<Models::ModelRunner> BuildLinearReliabilityInverseProject(size_t nStochasts);
         static std::shared_ptr<Models::ModelRunner> BuildLinearOutputOnlyProject();
+        static std::shared_ptr<Proxies::ProxyModelRunner> BuildLinearOutputOnlyProxyProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearOutputProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearArrayProject();
         static std::shared_ptr<Models::ModelRunner> BuildLinearVaryingArrayProject();
@@ -71,8 +75,11 @@ namespace Deltares::Probabilistic::Test
         static std::shared_ptr<Statistics::Stochast>  getDeterministicStochast(double mean = 0);
         static std::shared_ptr<Statistics::Stochast>  getNormalStochast(double mean = 0, double stddev = 1);
         static std::shared_ptr<Statistics::Stochast>  getLogNormalStochast(double mean = 0, double stddev = 1, double shift = 0);
+
+        static std::shared_ptr<Models::ProgressIndicator> getProgressIndicator(DefaultProgressIndicator* progress);
     private:
         static std::shared_ptr<Models::ModelRunner> CreateModelRunner(size_t nStochasts, std::shared_ptr<Models::ZModel> zModel, DefaultProgressIndicator* progress = nullptr);
+        static std::shared_ptr<Proxies::ProxyModelRunner> CreateProxyModelRunner(size_t nStochasts, std::shared_ptr<Proxies::ProxyModel> zModel, DefaultProgressIndicator* progress = nullptr);
 
         void zfunc(Models::ModelSample& sample) const;
         void zfuncWithDeterminist(Models::ModelSample& sample) const;
@@ -95,8 +102,5 @@ namespace Deltares::Probabilistic::Test
 
         static std::shared_ptr<Statistics::Stochast>  getTriangularStochast(double min = 0, double top = 0, double max = 1);
         static std::shared_ptr<Statistics::Stochast>  getGumbelStochast(double mean = 0, double stddev = 1);
-
-        static std::shared_ptr<Models::ProgressIndicator> getProgressIndicator(DefaultProgressIndicator* progress);
-
     };
 }

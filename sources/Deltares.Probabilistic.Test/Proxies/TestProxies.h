@@ -21,6 +21,7 @@
 //
 #pragma once
 
+#include "../../Deltares.Probabilistic/Proxies/ProxyModelRunner.h"
 #include "../../Deltares.Probabilistic/Model/ModelRunner.h"
 #include "../../Deltares.Probabilistic/Model/Sample.h"
 
@@ -33,7 +34,7 @@ namespace Deltares::Probabilistic::Test
         void testLinearOutputOnlyModel() const;
     private:
         const double margin = 0.001;
-        void testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, Models::Sample& sample) const;
+        void testProxy(std::shared_ptr<Proxies::ProxyModelRunner> modelRunner, Models::Sample& sample) const;
     };
 };
 

@@ -32,7 +32,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestProxies::testLinearModel() const
     {
-        std::shared_ptr<Models::ModelRunner> modelRunner = ProjectBuilder::BuildLinearProject(2);
+        std::shared_ptr<Proxies::ProxyModelRunner> modelRunner = ProjectBuilder::BuildLinearProxyProject(2);
 
         Models::Sample sample = Models::Sample(std::vector<double> {1.0, 0.5});
 
@@ -44,7 +44,7 @@ namespace Deltares::Probabilistic::Test
 
     void TestProxies::testLinearOutputOnlyModel() const
     {
-        std::shared_ptr<Models::ModelRunner> modelRunner = ProjectBuilder::BuildLinearOutputOnlyProject();
+        std::shared_ptr<Proxies::ProxyModelRunner> modelRunner = ProjectBuilder::BuildLinearOutputOnlyProxyProject();
 
         Models::Sample sample = Models::Sample(std::vector<double> {1.0, 0.5});
 
@@ -54,13 +54,13 @@ namespace Deltares::Probabilistic::Test
         testProxy(modelRunner, sample);
     }
 
-    void TestProxies::testProxy(std::shared_ptr<Models::ModelRunner> modelRunner, Models::Sample& sample) const
+    void TestProxies::testProxy(std::shared_ptr<Proxies::ProxyModelRunner> modelRunner, Models::Sample& sample) const
     {
-        modelRunner->useProxy(false);
+        modelRunner->setAllowProxy(false);
 
         Models::Evaluation eval1 = modelRunner->getEvaluation(sample);
 
-        modelRunner->useProxy(true);
+        modelRunner->setAllowProxy(true);
 
         modelRunner->initializeForRun();
 

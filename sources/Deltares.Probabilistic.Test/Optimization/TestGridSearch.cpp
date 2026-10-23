@@ -21,7 +21,9 @@
 //
 #include <gtest/gtest.h>
 #include "TestGridSearch.h"
+#include "../ProjectBuilder.h"
 #include "../ZModelBuilder.h"
+#include "../DefaultProgressIndicator.h"
 #include "../../Deltares.Probabilistic/Optimization/GridSearchOptimization.h"
 #include "../../Deltares.Probabilistic/Optimization/OptimizationProject.h"
 
@@ -34,12 +36,16 @@ namespace Deltares::Probabilistic::Test
         test_polynome();
         test_polynome_move_grid();
         test_project_polynome_move_grid();
+        test_project_progress();
+        test_project_evaluations();
+        test_project_convergence_results();
     }
 
     void TestGridSearch::test_polynome()
     {
         auto gridSearch = GridSearchOptimization();
-        auto model = ZModelBuilder::getPolynomeModel(2.4, 3.7);
+        auto zModel = ZModelBuilder::getUnequalPolynomeModel(2.4, 3.7);
+        auto model = Models::BaseModelRunner(zModel);
         auto& searchArea = gridSearch.Settings.SearchArea;
         searchArea.setDimensions(2);
         searchArea.Dimensions[0].MinValue = 0;
@@ -61,6 +67,7 @@ namespace Deltares::Probabilistic::Test
         searchArea.Dimensions[0].NumberOfRefinements = 3;
         searchArea.Dimensions[1].NumberOfRefinements = 3;
 
+        model.initializeForRun(); // to reset counters
         auto result2 = gridSearch.getOptimizedSample(model);
         EXPECT_NEAR(result2.values[0], 2.4, 0.1);
         EXPECT_NEAR(result2.values[1], 3.7, 0.1);
@@ -73,7 +80,8 @@ namespace Deltares::Probabilistic::Test
     void TestGridSearch::test_polynome_move_grid()
     {
         auto project = GridSearchOptimization();
-        auto model = ZModelBuilder::getPolynomeModel(12.9, 16.2);
+        auto zModel = ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
+        auto model = Models::BaseModelRunner(zModel);
         project.Settings.MaxGridMoves = 10;
         auto& searchArea = project.Settings.SearchArea;
         searchArea.setDimensions(2);
@@ -98,6 +106,7 @@ namespace Deltares::Probabilistic::Test
         searchArea.Dimensions[0].NumberOfRefinements = 10;
         searchArea.Dimensions[1].NumberOfRefinements = 10;
 
+        model.initializeForRun(); // to reset counters
         auto result2 = project.getOptimizedSample(model);
         EXPECT_NEAR(result2.values[0], 12.9, 0.001);
         EXPECT_NEAR(result2.values[1], 16.2, 0.001);
@@ -110,20 +119,9 @@ namespace Deltares::Probabilistic::Test
     void TestGridSearch::test_project_polynome_move_grid()
     {
         auto project = OptimizationProject();
-        project.zModel = ZModelBuilder::getPolynomeModel(12.9, 16.2);
+        project.model = ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
         project.settings->MaxGridMoves = 10;
-        auto searchArea = project.settings->SearchArea;
-        searchArea->setDimensions(2);
-        searchArea->Dimensions[0]->MinValue = 0;
-        searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->NumberOfValues = 11;
-        searchArea->Dimensions[0]->Move = true;
-        searchArea->Dimensions[0]->NumberOfRefinements = 10;
-        searchArea->Dimensions[1]->MinValue = 0;
-        searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->NumberOfValues = 11;
-        searchArea->Dimensions[1]->Move = true;
-        searchArea->Dimensions[1]->NumberOfRefinements = 10;
+        fillSearchArea(project.settings->SearchArea, 2, true, 10);
 
         project.run();
         auto result = project.result;
@@ -132,7 +130,78 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
 
         EXPECT_EQ(result->modelRuns, 321); // reused runs
+        EXPECT_EQ(project.modelRuns, 321); 
         EXPECT_TRUE(result->succeeded);
+    }
+
+    void TestGridSearch::test_project_progress()
+    {
+        auto project = OptimizationProject();
+        project.model = ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
+        project.settings->MaxGridMoves = 10;
+        auto searchArea = project.settings->SearchArea;
+        fillSearchArea(searchArea, 2, true, 10);
+
+        DefaultProgressIndicator progress;
+        project.progressIndicator = ProjectBuilder::getProgressIndicator(&progress);
+
+        project.run();
+        auto result = project.result;
+
+        ASSERT_EQ(progress.invocations, 151);
+        ASSERT_EQ(progress.last_progress, 1.0);
+        ASSERT_EQ(progress.last_message, "20/20, Minimum = 0.000");
+
+        ASSERT_EQ(result->evaluations.size(), 0);
+    }
+
+    void TestGridSearch::test_project_evaluations()
+    {
+        auto project = OptimizationProject();
+        project.model = ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
+        project.settings->MaxGridMoves = 10;
+        project.settings->RunSettings->SaveEvaluations = true;
+        auto searchArea = project.settings->SearchArea;
+        fillSearchArea(searchArea, 2, true, 10);
+
+        project.run();
+        auto result = project.result;
+
+        ASSERT_EQ(result->evaluations.size(), 321);
+        EXPECT_NEAR(result->evaluations[1]->InputValues[0], 0.0, 0.001);
+        EXPECT_NEAR(result->evaluations[1]->InputValues[1], 1.0, 0.001);
+        EXPECT_NEAR(result->evaluations[1]->Z, 1895.14, 0.001);
+    }
+
+    void TestGridSearch::test_project_convergence_results()
+    {
+        auto project = OptimizationProject();
+        project.model = ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
+        project.settings->MaxGridMoves = 10;
+        project.settings->RunSettings->SaveConvergence = true;
+        auto searchArea = project.settings->SearchArea;
+        fillSearchArea(searchArea, 2, true, 10);
+
+        project.run();
+        auto result = project.result;
+
+        ASSERT_EQ(result->convergenceResults.size(), 151);
+        EXPECT_NEAR(result->convergenceResults.front()->Difference, 1702.54, 0.01);
+        EXPECT_NEAR(result->convergenceResults.back()->Difference, 0.0, 0.001);
+    }
+
+    void TestGridSearch::fillSearchArea(std::shared_ptr<SearchParameterSettingsSetWithSharedPointers> searchArea,
+                                        int size, bool allowMove, int numberOfRefinements)
+    {
+        searchArea->setDimensions(size);
+        for (auto dimension : searchArea->Dimensions)
+        {
+            dimension->MinValue = 0;
+            dimension->MaxValue = 10;
+            dimension->NumberOfValues = 11;
+            dimension->Move = allowMove;
+            dimension->NumberOfRefinements = numberOfRefinements;
+        }
     }
 }
 

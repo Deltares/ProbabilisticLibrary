@@ -55,6 +55,28 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(designPoint->Alphas[1]->InfluenceFactor, 0.5, 1e-2);
         EXPECT_NEAR(designPoint->Alphas[0]->X, 0.9, 1e-2);
         EXPECT_NEAR(designPoint->Alphas[1]->X, 0.9, 1e-2);
+
+        ASSERT_EQ(designPoint->convergenceReport->TotalModelRuns, 18);
+    }
+
+    void TestReliabilityMethods::testFORMStartMethod()
+    {
+        auto project = ProjectBuilder::getLinearProject();
+        project->settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityFORM;
+        project->settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;
+
+        project->run();
+
+        auto designPoint = project->designPoint;
+
+        ASSERT_EQ(designPoint->Alphas.size(), 2);
+        EXPECT_NEAR(designPoint->Beta, 2.33, 1e-2);
+        ASSERT_EQ(designPoint->convergenceReport->TotalModelRuns, 6);
+
+        ASSERT_EQ(designPoint->ContributingDesignPoints.size(), 1);
+        ASSERT_EQ(designPoint->ContributingDesignPoints[0]->convergenceReport->TotalModelRuns, 36);
+
+        ASSERT_EQ(project->modelRuns, designPoint->convergenceReport->TotalModelRuns + designPoint->ContributingDesignPoints[0]->convergenceReport->TotalModelRuns);
     }
 
     void TestReliabilityMethods::testFORMProgress()
