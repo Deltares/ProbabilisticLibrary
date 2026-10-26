@@ -53,20 +53,21 @@ namespace Deltares::Optimization
 
     private:
         friend class Test::GeneticAlgorithmOriginalTest;
+        static constexpr int mask_range_count = 3;
 
         GeneticAlgorithmSettings Options;
         Numeric::RandomValueGenerator rng;
-        std::array<double, 3> crossOverMaskRange{};
-        std::array<double, 3> mutationMaskRange{};
+        std::array<double, mask_range_count> crossOverMaskRange{};
+        std::array<double, mask_range_count> mutationMaskRange{};
         std::vector<int> crossOverMask;
         std::vector<double> mutationMask;
 
         std::vector<Models::ModelSample> initializePopulation(Models::ZModel& model);
         Models::ModelSample createChild(const std::vector<Models::ModelSample>& population,
             const Models::ModelSample& mutationAnchor, Models::ZModel& model, int generation);
-        void randomizeMaskRange(std::array<double, 3>& range, RandomEffect effect);
+        void randomizeMaskRange(std::array<double, mask_range_count>& range, RandomEffect effect);
         void determineCrossOverMask();
         void determineMutationMask(const Models::ModelSample& first);
-        int selectMask(const std::array<double, 3>& range);
+        int selectMask(const std::array<double, mask_range_count>& range);
     };
 }

@@ -102,6 +102,9 @@ namespace Deltares::Optimization
             ModelSample sample(dimensions.size());
             if (Options.InitializePopulationMethod == InitializePopulationMethod::Parabolic)
             {
+                // The parabola has the shape f = A (g-c)^2 + B (g normalized).
+                // The location c and value B of the extreme are chosen randomly.
+                // The value at the farthest side is chosen randomly
                 const double c = rng.next();
                 const double b = rng.next();
                 const double distance = c < 0.5 ? 1.0 - c : c;
@@ -157,7 +160,7 @@ namespace Deltares::Optimization
         return child;
     }
 
-    void GeneticAlgorithm::randomizeMaskRange(std::array<double, 3>& range, RandomEffect effect)
+    void GeneticAlgorithm::randomizeMaskRange(std::array<double, mask_range_count>& range, RandomEffect effect)
     {
         if (effect == RandomEffect::Free)
         {
@@ -172,7 +175,7 @@ namespace Deltares::Optimization
         }
     }
 
-    int GeneticAlgorithm::selectMask(const std::array<double, 3>& range)
+    int GeneticAlgorithm::selectMask(const std::array<double, mask_range_count>& range)
     {
         const double value = rng.next();
         return value <= range[0] ? 0 : value <= range[1] ? 1 : 2;
