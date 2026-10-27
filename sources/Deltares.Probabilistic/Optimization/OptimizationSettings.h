@@ -69,6 +69,8 @@ namespace Deltares::Optimization
 
         double Delta = 0.7;
 
+        double MutationRate = 0.3;
+
         int GenerationCount = 50;
 
         int EliteCount = 8;

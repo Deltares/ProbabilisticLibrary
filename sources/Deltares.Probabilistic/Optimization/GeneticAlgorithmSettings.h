@@ -51,7 +51,7 @@ namespace Deltares::Optimization
         double MutationInverseFraction = 0.1;
         double MutationCreepReduction = 0.05;
         int Seed = 1;
-        Optimization::InitializePopulationMethod InitializePopulationMethod = Optimization::InitializePopulationMethod::Uniform;
+        InitializePopulationMethod InitializePopulationMethod = InitializePopulationMethod::Uniform;
         RandomFrequency CrossOverRandomFrequency = RandomFrequency::Never;
         RandomEffect CrossOverRandomEffect = RandomEffect::Free;
         RandomFrequency MutationRandomFrequency = RandomFrequency::Never;

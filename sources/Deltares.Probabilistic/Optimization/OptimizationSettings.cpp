@@ -89,6 +89,7 @@ namespace Deltares::Optimization
         settings.GenerationCount = GenerationCount;
         settings.EliteCount = EliteCount;
         settings.PopulationCount = PopulationCount;
+        settings.MutationRate = MutationRate;
 
         auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
         return genetic_algorithm;

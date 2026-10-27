@@ -153,6 +153,12 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "delta", value); }
     }
 
+    public double MutationRate
+    {
+        get { return Interface.GetValue(id, "mutation_rate"); }
+        set { Interface.SetValue(id, "mutation_rate", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }
