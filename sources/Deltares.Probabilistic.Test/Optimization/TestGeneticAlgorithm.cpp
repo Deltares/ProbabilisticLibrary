@@ -28,6 +28,8 @@
 
 #include "../../Deltares.Probabilistic/Optimization/GeneticAlgorithm.h"
 #include "../../Deltares.Probabilistic/Utils/ProbabilisticLibraryException.h"
+#include "../../Deltares.Probabilistic/Optimization/OptimizationProject.h"
+#include "../ZModelBuilder.h"
 
 namespace Deltares::Optimization::Test
 {
@@ -201,7 +203,7 @@ namespace Deltares::Optimization::Test
                 options.MutationCreepReduction = 2.0;
                 for (auto& dimension : options.SearchArea.Dimensions)
                 {
-                    dimension.Move = true;
+                    dimension.Move = false;
                 }
                 auto z = getModel([](ModelSample& sample)
                 {
@@ -429,4 +431,33 @@ namespace Deltares::Optimization::Test
         EXPECT_EQ(result.modelRuns, 10);
         EXPECT_EQ(result.modelRuns, calls);
     }
+
+    TEST(GeneticAlgorithmTest, test_project_polynome_move_grid)
+    {
+        auto project = OptimizationProject();
+        project.settings->OptimizationMethod = OptimizationMethodType::GA;
+        project.model = Probabilistic::Test::ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
+        auto searchArea = project.settings->SearchArea;
+        searchArea->setDimensions(2);
+        searchArea->Dimensions[0]->MinValue = 0;
+        searchArea->Dimensions[0]->MaxValue = 10;
+        searchArea->Dimensions[0]->Move = true;
+        searchArea->Dimensions[1]->MinValue = 0;
+        searchArea->Dimensions[1]->MaxValue = 10;
+        searchArea->Dimensions[1]->Move = true;
+
+        Logging::ValidationReport report;
+        project.settings->validate(report);
+        ASSERT_TRUE(report.isValid()) << "validation of settings fails";
+
+        project.run();
+        auto result = project.result;
+        EXPECT_NEAR(result->values[0], 12.9, 0.001);
+        EXPECT_NEAR(result->values[1], 16.2, 0.001);
+        EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
+
+        EXPECT_EQ(result->modelRuns, 11825); // reused runs
+        EXPECT_TRUE(result->succeeded);
+    }
+
 }

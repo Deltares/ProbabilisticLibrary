@@ -230,9 +230,16 @@ namespace Deltares::Optimization
             }
             else if (method == 1)
             {
-                mutationMask[gene] = std::clamp(first.Values[gene] + Options.MutationCreepReduction *
-                    (2.0 * rng.next() - 1.0) * (dimension.MaxValue - dimension.MinValue),
-                    dimension.MinValue, dimension.MaxValue);
+                const double new_value = first.Values[gene] + Options.MutationCreepReduction *
+                    (2.0 * rng.next() - 1.0) * (dimension.MaxValue - dimension.MinValue);
+                if (dimension.Move)
+                {
+                    mutationMask[gene] = new_value;
+                }
+                else
+                {
+                    mutationMask[gene] = std::clamp(new_value, dimension.MinValue, dimension.MaxValue);
+                }
             }
             else
             {
