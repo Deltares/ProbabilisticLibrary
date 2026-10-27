@@ -30,11 +30,12 @@ namespace Deltares::Optimization
 
     std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod() const
     {
-        switch (this->OptimizationMethod)
+        switch (OptimizationMethod)
         {
-        case GridSearch: return this->GetGridSearchMethod();
-        case Cobyla: return this->GetCobylaMethod();
-        case APSO: return this->GetApsoMethod();
+        case GridSearch: return GetGridSearchMethod();
+        case Cobyla: return GetCobylaMethod();
+        case APSO: return GetApsoMethod();
+        case GA: return GetGaMethod();
 
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
@@ -81,6 +82,18 @@ namespace Deltares::Optimization
         return apso;
     }
 
+    std::shared_ptr<GeneticAlgorithm> OptimizationSettings::GetGaMethod() const
+    {
+        auto settings = GeneticAlgorithmSettings();
+        settings.SearchArea = SearchArea->CopySearchParameterSettings();
+        settings.GenerationCount = GenerationCount;
+        settings.EliteCount = EliteCount;
+        settings.PopulationCount = PopulationCount;
+
+        auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
+        return genetic_algorithm;
+    }
+
     /**
      * \brief Reports whether the settings have valid values
      * \param report Report in which the validity is reported
@@ -92,6 +105,7 @@ namespace Deltares::Optimization
         case GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
         case Cobyla: GetCobylaMethod()->Settings.validate(report); break;
         case APSO: GetApsoMethod()->validate(report); break;
+        case GA: GetGaMethod()->validate(report); break;
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -103,6 +117,7 @@ namespace Deltares::Optimization
         case GridSearch: return "grid";
         case Cobyla: return "cobyla";
         case APSO: return "apso";
+        case GA: return "ga";
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -112,6 +127,7 @@ namespace Deltares::Optimization
         if (method == "grid") return GridSearch;
         else if (method == "cobyla") return Cobyla;
         else if (method == "apso") return APSO;
+        else if (method == "ga") return GA;
         else throw Reliability::ProbabilisticLibraryException("Optimization method");
     }
 }

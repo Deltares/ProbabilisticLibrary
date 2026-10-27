@@ -25,13 +25,14 @@
 #include "GridSearchOptimization.h"
 #include "CobylaOptimization.h"
 #include "AdaptiveParticleSwarmOptimization.h"
+#include "GeneticAlgorithm.h"
 #include "SearchParameterSettingsSetWithSharedPointers.h"
 #include "../Model/ModelProjectSettings.h"
 #include "../Model/RandomSettings.h"
 
 namespace Deltares::Optimization
 {
-    enum class OptimizationMethodType { GridSearch, Cobyla, APSO };
+    enum class OptimizationMethodType { GridSearch, Cobyla, APSO, GA };
 
     /**
      * \brief General settings applicable to all optimization mechanisms
@@ -100,6 +101,7 @@ namespace Deltares::Optimization
         std::shared_ptr<GridSearchOptimization> GetGridSearchMethod() const;
         std::shared_ptr<CobylaOptimization> GetCobylaMethod() const;
         std::shared_ptr<AdaptiveParticleSwarmOptimization> GetApsoMethod() const;
+        std::shared_ptr<GeneticAlgorithm> GetGaMethod() const;
     };
 }
 
