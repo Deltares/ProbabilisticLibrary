@@ -48,11 +48,12 @@ namespace Deltares::Optimization::Test
             return options;
         }
 
-        ZModel getModel(const Models::ZLambda& callback)
+        std::shared_ptr<ZModel> getModel(const Models::ZLambda& callback)
         {
-            ZModel model(callback);
-            model.setAllowRepository(false);
-            model.setUseZFromSample(true);
+            auto model = std::make_shared<ZModel>(callback);
+            model->setAllowRepository(false);
+            model->setUseZFromSample(true);
+
             return model;
         }
     }
@@ -115,7 +116,8 @@ namespace Deltares::Optimization::Test
             algorithm.validate(report);
             EXPECT_FALSE(report.isValid());
             EXPECT_FALSE(algorithm.isValid());
-            auto model = getModel([](ModelSample& sample) { sample.Z = 0.0; });
+            auto z = getModel([](ModelSample& sample) { sample.Z = 0.0; });
+            auto model = Models::BaseModelRunner(z);
             EXPECT_THROW(algorithm.getOptimizedSample(model), Reliability::ProbabilisticLibraryException);
             EXPECT_EQ(model.getModelRuns(), 0);
         }
@@ -133,11 +135,12 @@ namespace Deltares::Optimization::Test
                 options.EliteCount = 1;
                 options.GenerationCount = 1;
                 std::vector<ModelSample> samples;
-                auto model = getModel([&](ModelSample& sample)
+                auto z = getModel([&](ModelSample& sample)
                 {
                     sample.Z = 0.0;
                     samples.push_back(sample);
                 });
+                auto model = Models::BaseModelRunner(z);
                 GeneticAlgorithm algorithm(options);
                 const auto result = algorithm.getOptimizedSample(model);
                 ASSERT_EQ(samples.size(), 10u);
@@ -200,7 +203,7 @@ namespace Deltares::Optimization::Test
                 {
                     dimension.Move = true;
                 }
-                auto model = getModel([](ModelSample& sample)
+                auto z = getModel([](ModelSample& sample)
                 {
                     sample.Z = 0.0;
                     for (double value : sample.Values)
@@ -211,6 +214,7 @@ namespace Deltares::Optimization::Test
                         sample.Z += value * value;
                     }
                 });
+                auto model = Models::BaseModelRunner(z);
                 GeneticAlgorithm algorithm(options);
                 const auto result = algorithm.getOptimizedSample(model);
                 EXPECT_TRUE(result.succeeded);
@@ -235,7 +239,7 @@ namespace Deltares::Optimization::Test
             options.CrossOverDoublePointFraction = method == 2 ? 1.0 : 0.0;
             int calls = 0;
             bool mixedParents = false;
-            auto model = getModel([&](ModelSample& sample)
+            auto z = getModel([&](ModelSample& sample)
             {
                 sample.Z = calls;
                 if (calls < options.PopulationCount)
@@ -268,6 +272,7 @@ namespace Deltares::Optimization::Test
                 }
                 ++calls;
             });
+            auto model = Models::BaseModelRunner(z);
             GeneticAlgorithm algorithm(options);
             const auto result = algorithm.getOptimizedSample(model);
             EXPECT_TRUE(mixedParents);
@@ -289,7 +294,7 @@ namespace Deltares::Optimization::Test
             options.MutationCreepFraction = inverse ? 0.0 : 1.0;
             options.MutationInverseFraction = inverse ? 1.0 : 0.0;
             int calls = 0;
-            auto model = getModel([&](ModelSample& sample)
+            auto z = getModel([&](ModelSample& sample)
             {
                 sample.Z = calls;
                 if (calls < options.PopulationCount)
@@ -302,6 +307,7 @@ namespace Deltares::Optimization::Test
                 }
                 ++calls;
             });
+            auto model = Models::BaseModelRunner(z);
             GeneticAlgorithm algorithm(options);
             const auto result = algorithm.getOptimizedSample(model);
             EXPECT_DOUBLE_EQ(result.values[0], 2.0);
@@ -322,12 +328,13 @@ namespace Deltares::Optimization::Test
             options.MutationCreepFraction = 0.0;
             options.MutationInverseFraction = 0.0;
             std::vector<ModelSample> samples;
-            auto model = getModel([&](ModelSample& sample)
+            auto z = getModel([&](ModelSample& sample)
             {
                 sample.Z = samples.empty() ? -100.0
                     : (samples.size() == 1) == firstBetter ? -1.0 : 1.0;
                 samples.push_back(sample);
             });
+            auto model = Models::BaseModelRunner(z);
             GeneticAlgorithm algorithm(options);
             const auto result = algorithm.getOptimizedSample(model);
             ASSERT_EQ(samples.size(), 3u);
@@ -354,7 +361,7 @@ namespace Deltares::Optimization::Test
                 for (int run = 0; run < 2; ++run)
                 {
                     std::vector<std::vector<double>> samples;
-                    auto model = getModel([&](ModelSample& sample)
+                    auto z = getModel([&](ModelSample& sample)
                     {
                         sample.Z = 0.0;
                         for (double value : sample.Values)
@@ -365,6 +372,7 @@ namespace Deltares::Optimization::Test
                         }
                         samples.push_back(sample.Values);
                     });
+                    auto model = Models::BaseModelRunner(z);
                     const auto result = algorithm.getOptimizedSample(model);
                     EXPECT_TRUE(result.succeeded);
                     EXPECT_EQ(result.modelRuns, 58);
@@ -383,10 +391,11 @@ namespace Deltares::Optimization::Test
         auto options = getSettings();
         options.PopulationCount = 100;
         options.GenerationCount = 100;
-        auto model = getModel([](ModelSample& sample)
+        auto z = getModel([](ModelSample& sample)
         {
             sample.Z = std::pow(sample.Values[0] - 1.5, 2) + std::pow(sample.Values[1] + 2.0, 2);
         });
+        auto model = Models::BaseModelRunner(z);
         GeneticAlgorithm algorithm(options);
         const auto result = algorithm.getOptimizedSample(model);
         ASSERT_EQ(result.values.size(), 2u);
@@ -405,7 +414,7 @@ namespace Deltares::Optimization::Test
         options.GenerationCount = 5;
         GeneticAlgorithm algorithm(options);
         int calls = 0;
-        auto model = getModel([&](ModelSample& sample)
+        auto z = getModel([&](ModelSample& sample)
         {
             sample.Z = calls++;
             if (sample.IterationIndex == 0)
@@ -413,6 +422,7 @@ namespace Deltares::Optimization::Test
                 algorithm.Stop();
             }
         });
+        auto model = Models::BaseModelRunner(z);
         const auto result = algorithm.getOptimizedSample(model);
         EXPECT_FALSE(result.succeeded);
         EXPECT_DOUBLE_EQ(result.minimumValue, 0.0);

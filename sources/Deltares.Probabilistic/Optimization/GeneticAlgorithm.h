@@ -47,7 +47,7 @@ namespace Deltares::Optimization
         GeneticAlgorithm() = default;
         explicit GeneticAlgorithm(GeneticAlgorithmSettings options) : Options(std::move(options)) {}
 
-        OptimizationResult getOptimizedSample(Models::ZModel& model) override;
+        OptimizationResult getOptimizedSample(Models::BaseModelRunner& model) override;
         void validate(Logging::ValidationReport& report) const;
         bool isValid() override { return Options.isValid(); }
 
@@ -62,9 +62,9 @@ namespace Deltares::Optimization
         std::vector<int> crossOverMask;
         std::vector<double> mutationMask;
 
-        std::vector<Models::ModelSample> initializePopulation(Models::ZModel& model);
+        std::vector<Models::ModelSample> initializePopulation(Models::BaseModelRunner& model);
         Models::ModelSample createChild(const std::vector<Models::ModelSample>& population,
-            const Models::ModelSample& mutationAnchor, Models::ZModel& model, int generation);
+            const Models::ModelSample& mutationAnchor, Models::BaseModelRunner& model, int generation);
         void randomizeMaskRange(std::array<double, mask_range_count>& range, RandomEffect effect);
         void determineCrossOverMask();
         void determineMutationMask(const Models::ModelSample& first);

@@ -71,9 +71,10 @@ namespace Deltares::Optimization::Test
             algorithm.rng.initialize(true, options.Seed);
             algorithm.crossOverMask.resize(options.SearchArea.Dimensions.size());
             algorithm.mutationMask.resize(options.SearchArea.Dimensions.size());
-            Models::ZModel model([](Models::ModelSample& sample) { sample.Z = 0.0; });
-            model.setAllowRepository(false);
-            model.setUseZFromSample(true);
+            auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& sample) { sample.Z = 0.0; });
+            z->setAllowRepository(false);
+            z->setUseZFromSample(true);
+            auto model = Models::BaseModelRunner(z);
             auto population = algorithm.initializePopulation(model);
             if (reinitializeRandom)
             {
@@ -207,7 +208,7 @@ namespace Deltares::Optimization::Test
         options.CrossOverRandomFrequency = RandomFrequency::Generation;
         options.MutationRandomFrequency = RandomFrequency::Generation;
         GeneticAlgorithm optimizer(options);
-        Models::ZModel model([](Models::ModelSample& sample)
+        auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& sample)
         {
             double fitness = 21.0;
             for (double value : sample.Values)
@@ -216,15 +217,16 @@ namespace Deltares::Optimization::Test
             }
             sample.Z = fitness;
         });
-        model.setAllowRepository(false);
-        model.setUseZFromSample(true);
+        z->setAllowRepository(false);
+        z->setUseZFromSample(true);
 
         double sum = 0.0;
         double sumSquares = 0.0;
         for (int draw = 0; draw < drawCount; ++draw)
         {
             SCOPED_TRACE(draw);
-            model.resetModelRuns();
+            z->resetModelRuns();
+            auto model = Models::BaseModelRunner(z);
             const auto result = optimizer.getOptimizedSample(model);
             ASSERT_TRUE(result.succeeded);
             ASSERT_TRUE(std::isfinite(result.minimumValue));

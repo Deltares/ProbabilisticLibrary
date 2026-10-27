@@ -34,7 +34,7 @@ namespace Deltares::Optimization
         Options.validate(report);
     }
 
-    OptimizationResult GeneticAlgorithm::getOptimizedSample(ZModel& model)
+    OptimizationResult GeneticAlgorithm::getOptimizedSample(BaseModelRunner& model)
     {
         if (!Options.isValid())
         {
@@ -92,7 +92,7 @@ namespace Deltares::Optimization
         return result;
     }
 
-    std::vector<ModelSample> GeneticAlgorithm::initializePopulation(ZModel& model)
+    std::vector<ModelSample> GeneticAlgorithm::initializePopulation(BaseModelRunner& model)
     {
         const auto& dimensions = Options.SearchArea.Dimensions;
         std::vector<ModelSample> population;
@@ -131,7 +131,7 @@ namespace Deltares::Optimization
     }
 
     ModelSample GeneticAlgorithm::createChild(const std::vector<ModelSample>& population,
-        const ModelSample& mutationAnchor, ZModel& model, int generation)
+        const ModelSample& mutationAnchor, BaseModelRunner& model, int generation)
     {
         const int father = rng.next(Options.PopulationCount);
         const int mother = rng.next(Options.PopulationCount);
