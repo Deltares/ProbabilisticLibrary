@@ -1,0 +1,268 @@
+// Copyright (C) Stichting Deltares. All rights reserved.
+//
+// This file is part of the Probabilistic Library.
+//
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+// All names, logos, and references to "Deltares" are registered trademarks of
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
+#include "BaseModelRunner.h"
+#include "ModelSample.h"
+#include "../Math/NumericSupport.h"
+
+#include <cmath>
+#include <format>
+
+#include "../Reliability/ReliabilityResult.h"
+
+namespace Deltares::Models
+{
+    void BaseModelRunner::initializeForRun()
+    {
+        this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
+        this->zModel->setHandleInvalidType(this->Settings->handleInvalidType);
+        this->zModel->setAllowRepository(this->Settings->AllowRepository);
+        this->zModel->setUseZFromSample(this->Settings->UseZFromSample);
+        this->zModel->resetModelRuns();
+
+        this->zModel->initializeForRun();
+
+        if (!this->Settings->ReuseCalculations)
+        {
+            this->zModel->clearRepository();
+        }
+
+        if (this->locker == nullptr)
+        {
+            this->locker = std::make_unique<Utils::Locker>();
+        }
+    }
+
+    void BaseModelRunner::clear()
+    {
+        this->zModel->resetModelRuns();
+
+        this->evaluations.clear();
+        this->messages.clear();
+        this->convergenceResults.clear();
+    }
+
+    Evaluation BaseModelRunner::getEvaluationFromSample(const ModelSample& sample) const
+    {
+        Evaluation evaluation = Evaluation();
+
+        evaluation.Z = sample.Z;
+        evaluation.Beta = sample.Beta;
+        evaluation.Iteration = sample.IterationIndex;
+        evaluation.Weight = sample.Weight;
+        evaluation.usedProxy = sample.UsedProxy;
+        evaluation.InputValues = sample.Values;
+        evaluation.OutputValues = sample.OutputValues;
+        evaluation.Tag = sample.Tag;
+
+        return evaluation;
+    }
+
+    size_t BaseModelRunner::getOutputParametersSize() const
+    {
+        return this->zModel->outputParameters.size();
+    }
+
+    void BaseModelRunner::registerEvaluation(const ModelSample& sample)
+    {
+        std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
+
+        if (this->Settings->MaxParallelProcesses > 1)
+        {
+            locker->lock();
+            this->evaluations.push_back(evaluation);
+            locker->unlock();
+        }
+        else
+        {
+            this->evaluations.push_back(evaluation);
+        }
+    }
+
+    bool BaseModelRunner::canProgress() const
+    {
+        return progressIndicator != nullptr;
+    }
+
+    void BaseModelRunner::reportProgress(int step, int maxSteps, double reliability, double convergence) const
+    {
+        if (this->progressIndicator != nullptr)
+        {
+            const double progress = Numeric::NumericSupport::Divide(step, maxSteps);
+            this->progressIndicator->doProgress(progress);
+
+            auto text = std::format("{}/{}", step, maxSteps);
+
+            if (!std::isnan(reliability))
+            {
+                text += std::format(", Reliability = {:.3f}", reliability);
+            }
+
+            if (!std::isnan(convergence))
+            {
+                text += std::format(", Convergence = {:.3f}", convergence);
+            }
+
+            this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
+        }
+    }
+
+    void BaseModelRunner::reportMessage(Logging::MessageType type, std::string text)
+    {
+        if (Settings->SaveMessages && this->messages.size() < static_cast<size_t>(this->Settings->MaxMessages) && type >= this->Settings->LowestMessageType)
+        {
+            this->messages.push_back(std::make_shared<Logging::Message>(type, text));
+        }
+    }
+
+    void BaseModelRunner::reportDetailedProgress(int step, int loop, double reliability, double convergence) const
+    {
+        if (progressIndicator != nullptr)
+        {
+            this->progressIndicator->doDetailedProgress(step, loop, reliability, convergence);
+        }
+    }
+
+    void BaseModelRunner::reportConvergence(double minimum, int step, int maxSteps)
+    {
+        if (Settings->SaveConvergence)
+        {
+            auto result = std::make_shared<Reliability::ReliabilityResult>();
+            result->Difference = minimum;
+            result->Samples = this->zModel->getModelRuns();
+
+            convergenceResults.push_back(result);
+        }
+
+        if (this->progressIndicator != nullptr)
+        {
+            const double progress = Numeric::NumericSupport::Divide(step, maxSteps);
+            this->progressIndicator->doProgress(progress);
+
+            auto text = std::format("{}/{}", step, maxSteps);
+
+            if (!std::isnan(minimum))
+            {
+                text += std::format(", Minimum = {:.3f}", minimum);
+            }
+
+            this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
+        }
+    }
+
+    void BaseModelRunner::doTextualProgress(ProgressType type, const std::string& text) const
+    {
+        if (this->progressIndicator != nullptr)
+        {
+            this->progressIndicator->doTextualProgress(type, text);
+        }
+    }
+
+    int BaseModelRunner::getModelRuns() const
+    {
+        return this->zModel->getModelRuns();
+    }
+
+    void BaseModelRunner::invoke(ModelSample& sample)
+    {
+        this->zModel->invoke(sample);
+
+        if (this->Settings->SaveEvaluations)
+        {
+            registerEvaluation(sample);
+        }
+    }
+
+    void BaseModelRunner::invoke(const std::vector<ModelSample*>& samples)
+    {
+        this->zModel->invoke(samples);
+
+        if (this->Settings->SaveEvaluations)
+        {
+            for (auto& sample : samples)
+            {
+                registerEvaluation(*sample);
+            }
+        }
+    }
+
+    /**
+     * \brief Indicates whether this model runner can calculate the beta (distance to limit state) in a given direction
+     * \return Indication
+     */
+    bool BaseModelRunner::canCalculateBeta() const
+    {
+        return this->zModel->canCalculateBeta();
+    }
+
+    /**
+     * \brief Gets the beta (distance to limit state) in a given direction
+     * \param sample Sample indicating the direction
+     * \return Beta
+     */
+    double BaseModelRunner::getModelSampleBeta(ModelSample& sample) const
+    {
+        return this->zModel->getBeta(sample);
+    }
+
+    bool BaseModelRunner::hasConstraint() const
+    {
+        return zModel->hasConstraint();
+    }
+
+    double BaseModelRunner::getConstraint(ModelSample& sample) const
+    {
+        return zModel->getConstraint(sample);
+    }
+
+    /**
+     * \brief Assigns the collected evaluations and messages to given collections
+     * \param resultEvaluations The evaluations to assign the collected evaluations to
+     * \param resultMessages The messages to assign the collected messages to
+     */
+    void BaseModelRunner::collect_messages(std::vector<std::shared_ptr<Evaluation>>& resultEvaluations, std::vector<std::shared_ptr<Logging::Message>>& resultMessages) const
+    {
+        for (const auto& evaluation : evaluations)
+        {
+            resultEvaluations.push_back(evaluation);
+        }
+
+        for (const auto& message : messages)
+        {
+            resultMessages.push_back(message);
+        }
+    }
+
+    /**
+     * \brief Assigns the collected evaluations and messages to given collections
+     * \param resultConvergenceResults The convergence results to assign the collected evaluations to
+     */
+    void BaseModelRunner::collect_convergence_results(std::vector<std::shared_ptr<ConvergenceResult>>& resultConvergenceResults) const
+    {
+        for (const auto& convergenceResult : convergenceResults)
+        {
+            resultConvergenceResults.push_back(convergenceResult);
+        }
+    }
+}
+
+
+

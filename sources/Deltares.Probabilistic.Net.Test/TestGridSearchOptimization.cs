@@ -82,5 +82,52 @@ namespace Deltares.Probabilistic.Test
             ClassicAssert.AreEqual(-4.25, result.MinimumValue, margin);
             ClassicAssert.AreEqual(343, result.ModelRuns);
         }
+
+        [Test]
+        public void TestPolynomeEvaluations()
+        {
+            var project = ProjectBuilder.GetPolynomeOptimizationProject(12.2, -8.3, -4.25);
+
+            project.Settings.OptimizationMethod = OptimizationMethod.GridSearch;
+            project.Settings.MaxGridMoves = 50;
+            project.Settings.SaveRealizations = true;
+
+            foreach (ModelParameter parameter in project.InputParameters)
+            {
+                project.Settings.SearchParameterSettings.Add(new SearchParameterSettings
+                    { Parameter = parameter, MinValue = 0, MaxValue = 10, NumberOfValues = 11, NumberOfRefinements = 10, IsMoveAllowed = true });
+            }
+
+            project.Run();
+
+            OptimizationResult result = project.Result;
+
+            ClassicAssert.AreEqual(343, result.ModelRuns);
+            ClassicAssert.AreEqual(343, result.Realizations.Count);
+        }
+
+        [Test]
+        public void TestPolynomeProgress()
+        {
+            var project = ProjectBuilder.GetPolynomeOptimizationProject(12.2, -8.3, -4.25);
+
+            ProgressHolder progressHolder = new ProgressHolder();
+            project.ProgressIndicator = new ProgressIndicator(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
+
+            project.Settings.OptimizationMethod = OptimizationMethod.GridSearch;
+            project.Settings.MaxGridMoves = 50;
+
+            foreach (ModelParameter parameter in project.InputParameters)
+            {
+                project.Settings.SearchParameterSettings.Add(new SearchParameterSettings
+                    { Parameter = parameter, MinValue = 0, MaxValue = 10, NumberOfValues = 11, NumberOfRefinements = 10, IsMoveAllowed = true });
+            }
+
+            project.Run();
+
+            ClassicAssert.AreEqual(173, progressHolder.Invocations);
+            ClassicAssert.AreEqual(0.366, progressHolder.Progress, margin);
+            ClassicAssert.AreEqual("22/60, Minimum = -4.250", progressHolder.Text);
+        }
     }
 }

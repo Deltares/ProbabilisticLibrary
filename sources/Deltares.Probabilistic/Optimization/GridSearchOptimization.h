@@ -42,7 +42,7 @@ namespace Deltares::Optimization
          * \param model Model to invoke, the minimum z-value will be used
          * \return Sample containing values which lead to the minimum value
          */
-        OptimizationResult getOptimizedSample(Models::ZModel& model) override;
+        OptimizationResult getOptimizedSample(Models::BaseModelRunner& model) override;
 
     private:
         /**
@@ -50,9 +50,10 @@ namespace Deltares::Optimization
          * \param searchArea Definition of parameter space and settings which will be searched
          * \param model Model to invoke, the minimum z-value will be used
          * \param minSample The minimum sample found from previous iterations (nullptr if initial)
+         * \param iteration The iteration in the grid search algorithm
          * \return Sample containing values which lead to the minimum value (if no sample leading to a lower value is found, minSample will be returned)
          */
-        Models::ModelSample findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::ZModel& model, Models::ModelSample& minSample);
+        Models::ModelSample findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::BaseModelRunner& model, Models::ModelSample& minSample, int iteration = 0);
 
         /**
          * \brief Indicates whether a sample is located on the edge of the search area
@@ -91,9 +92,5 @@ namespace Deltares::Optimization
          * \return Tolerance
          */
         static double getTolerance(const SearchParameterSettings& dimension);
-
-        int counter = 0;
-        int reusedCounter = 0;
-
     };
 }

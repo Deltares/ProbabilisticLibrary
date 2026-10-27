@@ -21,15 +21,14 @@
 //
 #include "ModelRunner.h"
 #include "ModelSample.h"
+#include "ModelSampleStorage.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/Stochast.h"
-#include <cmath>
+#include "../Reliability/FragilityCurve.h"
 
-#include "../Proxies/ProxyModel.h"
+#include <cmath>
 #include <format>
 
-#include "ModelSampleStorage.h"
-#include "../Reliability/FragilityCurve.h"
 
 namespace Deltares::Models
 {
@@ -48,10 +47,18 @@ namespace Deltares::Models
         return this->uConverter->isVaryingStochast(index);
     }
 
-    void ModelRunner::updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings)
+    void ModelRunner::initializeForRun()
     {
-        uConverter->updateStochastSettings(settings);
-        sampleProvider = std::make_shared<SampleProvider>(*settings);
+        this->uConverter->initializeForRun();
+        BaseModelRunner::initializeForRun();
+    }
+
+    void ModelRunner::clear()
+    {
+        BaseModelRunner::clear();
+
+        this->reliabilityResults.clear();
+        this->runDesignPointCounter = 1;
     }
 
     void ModelRunner::setSampleProvider(const std::shared_ptr<SampleProvider>& sample_provider)
@@ -59,82 +66,26 @@ namespace Deltares::Models
         sampleProvider = sample_provider;
     }
 
-
-    void ModelRunner::initializeForRun()
+    void ModelRunner::updateStochastSettings(const std::shared_ptr<Reliability::StochastSettingsSet>& settings)
     {
-        this->uConverter->initializeForRun();
-        this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
-        this->zModel->setHandleInvalidType(this->Settings->handleInvalidType);
-        this->zModel->setAllowRepository(this->Settings->AllowRepository);
-        this->zModel->setUseZFromSample(this->Settings->UseZFromSample);
-        this->zModel->resetModelRuns();
-
-        this->zModel->initializeForRun();
-
-        if (!this->Settings->ReuseCalculations)
-        {
-            this->zModel->clearRepository();
-        }
-
-        if (this->locker == nullptr)
-        {
-            this->locker = new Utils::Locker();
-        }
-
-        if (sampleProvider == nullptr)
-        {
-            sampleProvider = std::make_shared<SampleProvider>(this->uConverter->getVaryingStochastCount(), this->uConverter->getStochastCount());
-        }
+        uConverter->updateStochastSettings(settings);
+        sampleProvider = std::make_shared<SampleProvider>(*settings);
     }
-
-    void ModelRunner::clear()
-    {
-        clearLists();
-        this->runDesignPointCounter = 1;
-    }
-
-    void ModelRunner::clearLists()
-    {
-        this->reliabilityResults.clear();
-        this->evaluations.clear();
-        this->messages.clear();
-    }
-
-    void ModelRunner::useProxy(bool useProxy)
-    {
-        if (useProxy && !usingProxy)
-        {
-            zModel = std::make_shared<Proxies::ProxyModel>(this->zModel);
-            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->settings = this->ProxySettings;
-            std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->setConverter(this->uConverter);
-            usingProxy = true;
-        }
-        else if (!useProxy && usingProxy)
-        {
-            zModel = std::dynamic_pointer_cast<Proxies::ProxyModel>(zModel)->getZModel();
-            usingProxy = false;
-        }
-        else
-        {
-            // nothing to do
-        }
-    }
-
 
     ModelSample ModelRunner::getModelSample(Sample& sample) const
     {
         std::vector<double> xValues = this->uConverter->getXValues(sample);
 
         // create a sample with values in x-space
-        ModelSample xSample = SampleProvider::getModelSample(xValues);
+        ModelSample xSample = ModelSample(xValues);
 
-        xSample.AllowProxy = sample.AllowProxy;
+        xSample.AllowProxy = sample.AllowProxy && this->isProxyAllowed();
         xSample.IterationIndex = sample.IterationIndex;
         xSample.threadId = sample.threadId;
         xSample.Weight = sample.Weight;
         xSample.IsRestartRequired = sample.IsRestartRequired;
         xSample.Beta = sample.getBeta();
-        xSample.OutputValues.resize(this->zModel->outputParameters.size());
+        xSample.OutputValues.resize(this->getOutputParametersSize());
 
         return xSample;
     }
@@ -144,8 +95,8 @@ namespace Deltares::Models
         std::vector<double> xValues = this->uConverter->getValuesFromType(type);
 
         // create a sample with values in x-space
-        ModelSample xSample = SampleProvider::getModelSample(xValues);
-        xSample.OutputValues.resize(this->zModel->outputParameters.size());
+        ModelSample xSample = ModelSample(xValues);
+        xSample.OutputValues.resize(this->getOutputParametersSize());
 
         return xSample;
     }
@@ -159,9 +110,7 @@ namespace Deltares::Models
     {
         ModelSample xSample = getModelSample(sample);
 
-        this->zModel->invoke(xSample);
-
-        registerEvaluation(xSample);
+        this->invoke(xSample);
 
         sample.Z = xSample.Z;
 
@@ -173,11 +122,11 @@ namespace Deltares::Models
      * \param sample Sample to be calculated
      * \return Evaluation report of the sample calculation
      */
-    Evaluation ModelRunner::getEvaluation(Sample& sample) const
+    Evaluation ModelRunner::getEvaluation(Sample& sample)
     {
         ModelSample xSample = getModelSample(sample);
 
-        this->zModel->invoke(xSample);
+        this->invoke(xSample);
 
         Evaluation evaluation = getEvaluationFromSample(xSample);
 
@@ -185,24 +134,15 @@ namespace Deltares::Models
     }
 
     /**
-     * \brief Indicates whether the sample repository is allowed
-     * \param allowRepository Indication
-     */
-    void ModelRunner::setAllowRepository(bool allowRepository) const
-    {
-        this->zModel->setAllowRepository(allowRepository);
-    }
-
-    /**
      * \brief Calculates a sample
      * \param type Run values type
      * \return Evaluation report of the sample calculation
      */
-    Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type) const
+    Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type)
     {
         ModelSample xSample = getModelSampleFromType(type);
 
-        this->zModel->invoke(xSample);
+        this->invoke(xSample);
 
         Evaluation evaluation = getEvaluationFromSample(xSample);
 
@@ -227,9 +167,7 @@ namespace Deltares::Models
         xSample.ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
         xSample.LoggingCounter = runDesignPointCounter++;
 
-        this->zModel->invoke(xSample);
-
-        registerEvaluation(xSample);
+        this->invoke(xSample);
 
         for (size_t i = 0; i < xSample.Values.size(); i++)
         {
@@ -255,14 +193,12 @@ namespace Deltares::Models
             xSamples.push_back(storage.keep(xSample));
         }
 
-        this->zModel->invoke(xSamples);
+        this->invoke(xSamples);
 
         std::vector<double> zValues(xSamples.size());
 
         for (size_t i = 0; i < xSamples.size(); i++)
         {
-            registerEvaluation(*xSamples[i]);
-
             samples[i]->Z = xSamples[i]->Z;
             samples[i]->AllowProxy = xSamples[i]->AllowProxy;
             samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
@@ -273,24 +209,6 @@ namespace Deltares::Models
     }
 
     /**
-     * \brief Sets a callback which calculates the beta in a certain direction
-     * \param zBetaLambda Callback
-     */
-    void ModelRunner::setDirectionModel(const ZBetaLambda& zBetaLambda) const
-    {
-        this->zModel->setBetaLambda(zBetaLambda);
-    }
-
-    /**
-     * \brief Indicates whether this model runner can calculate the beta (distance to limit state) in a given direction
-     * \return Indication
-     */
-    bool ModelRunner::canCalculateBeta() const
-    {
-        return this->zModel->canCalculateBeta();
-    }
-
-    /**
      * \brief Gets the beta (distance to limit state) in a given direction
      * \param sample Sample indicating the direction
      * \return Beta
@@ -298,47 +216,7 @@ namespace Deltares::Models
     double ModelRunner::getBeta(Sample& sample) const
     {
         ModelSample xSample = getModelSample(sample);
-
-        return this->zModel->getBeta(xSample);
-    }
-
-    Evaluation ModelRunner::getEvaluationFromSample(ModelSample& sample)
-    {
-        Evaluation evaluation = Evaluation();
-
-        evaluation.Z = sample.Z;
-        evaluation.Beta = sample.Beta;
-        evaluation.Iteration = sample.IterationIndex;
-        evaluation.Weight = sample.Weight;
-        evaluation.usedProxy = sample.UsedProxy;
-        evaluation.InputValues = sample.Values;
-        evaluation.OutputValues = sample.OutputValues;
-        evaluation.Tag = sample.Tag;
-
-        return evaluation;
-    }
-
-    /**
-     * \brief Registers an evaluation for a calculated sample
-     * \param sample Calculated sample
-     */
-    void ModelRunner::registerEvaluation(ModelSample& sample)
-    {
-        if (this->Settings->SaveEvaluations)
-        {
-            std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
-
-            if (this->Settings->MaxParallelProcesses > 1)
-            {
-                locker->lock();
-                this->evaluations.push_back(evaluation);
-                locker->unlock();
-            }
-            else
-            {
-                this->evaluations.push_back(evaluation);
-            }
-        }
+        return getModelSampleBeta(xSample);
     }
 
     /**
@@ -416,7 +294,7 @@ namespace Deltares::Models
             this->reliabilityResults.push_back(result);
         }
 
-        if (this->progressIndicator != nullptr)
+        if (canProgress())
         {
             double convergence = report->ConvBeta;
             if (std::isnan(convergence))
@@ -425,47 +303,8 @@ namespace Deltares::Models
             }
 
             this->reportProgress(report->Step, report->MaxSteps, report->Reliability, convergence);
+            this->reportDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
 
-            this->progressIndicator->doDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
-        }
-    }
-
-    void ModelRunner::reportProgress(int step, int maxSteps, double reliability, double convergence) const
-    {
-        if (this->progressIndicator != nullptr)
-        {
-            const double progress = Numeric::NumericSupport::Divide(step, maxSteps);
-            this->progressIndicator->doProgress(progress);
-
-            auto text = std::format("{}/{}", step, maxSteps);
-
-            if (!std::isnan(reliability))
-            {
-                text += std::format(", Reliability = {:.3f}", reliability);
-            }
-
-            if (!std::isnan(convergence))
-            {
-                text += std::format(", Convergence = {:.3f}", convergence);
-            }
-
-            this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
-        }
-    }
-
-    void ModelRunner::reportMessage(Logging::MessageType type, std::string text)
-    {
-        if (Settings->SaveMessages && this->messages.size() < (size_t)this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
-        {
-            this->messages.push_back(std::make_shared<Logging::Message>(type, text));
-        }
-    }
-
-    void ModelRunner::doTextualProgress(ProgressType type, const std::string& text) const
-    {
-        if (this->progressIndicator != nullptr)
-        {
-            this->progressIndicator->doTextualProgress(type, text);
         }
     }
 
@@ -518,26 +357,21 @@ namespace Deltares::Models
         designPoint->Identifier = identifier;
         designPoint->convergenceReport = convergenceReport;
 
+        int modelRuns = this->getModelRuns();
+
         if (designPoint->convergenceReport != nullptr)
         {
-            designPoint->convergenceReport->TotalModelRuns = this->zModel->getModelRuns();
+            designPoint->convergenceReport->TotalModelRuns = modelRuns;
         }
-        this->zModel->resetModelRuns();
 
         for (const auto& reliabilityResult : this->reliabilityResults)
         {
             designPoint->ReliabilityResults.push_back(reliabilityResult);
         }
 
-        for (const auto& value : evaluations)
-        {
-            designPoint->Evaluations.push_back(value);
-        }
+        collect_messages(designPoint->Evaluations, designPoint->Messages);
 
-        for (const auto& message : this->messages)
-        {
-            designPoint->Messages.push_back(message);
-        }
+        clear();
 
         return designPoint;
     }
@@ -547,21 +381,16 @@ namespace Deltares::Models
      * \param stochast Stochast in the uncertainty result
      * \return Uncertainty result
      */
-    Uncertainty::UncertaintyResult ModelRunner::getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast) const
+    Uncertainty::UncertaintyResult ModelRunner::getUncertaintyResult(const std::shared_ptr<Statistics::Stochast>& stochast)
     {
         auto result = Uncertainty::UncertaintyResult();
 
         result.stochast = stochast;
 
-        for (const auto& evaluation : evaluations)
-        {
-            result.evaluations.push_back(evaluation);
-        }
+        collect_messages(result.evaluations, result.messages);
+        result.modelRuns = this->getModelRuns();
 
-        for (const auto& message : messages)
-        {
-            result.messages.push_back(message);
-        }
+        clear();
 
         return result;
     }
@@ -569,19 +398,14 @@ namespace Deltares::Models
     /**
      * \brief Gets an empty result of a sensitivity calculation with stochast definition and runtime information
      */
-    Sensitivity::SensitivityResult ModelRunner::getSensitivityResult() const
+    Sensitivity::SensitivityResult ModelRunner::getSensitivityResult()
     {
         Sensitivity::SensitivityResult result = uConverter->getSensitivityResult();
 
-        for (const auto& evaluation : evaluations)
-        {
-            result.evaluations.push_back(evaluation);
-        }
+        collect_messages(result.evaluations, result.messages);
+        result.modelRuns = this->getModelRuns();
 
-        for (const auto& message : messages)
-        {
-            result.messages.push_back(message);
-        }
+        clear();
 
         return result;
     }

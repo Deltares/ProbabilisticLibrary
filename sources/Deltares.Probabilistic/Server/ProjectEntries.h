@@ -74,6 +74,7 @@ namespace Deltares::Server
         RunProject,
         RunProjectSettings,
         ReliabilityResult,
+        ConvergenceResult,
         CopulaCorrelation,
         ConvergenceReport,
     };

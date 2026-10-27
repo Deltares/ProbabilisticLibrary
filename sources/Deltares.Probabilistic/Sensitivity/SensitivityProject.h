@@ -72,12 +72,6 @@ namespace Deltares::Sensitivity
         void validate(Logging::ValidationReport& report) override;
 
         /**
-         * \brief Performs the sensitivity calculation
-         * \return Sensitivity result
-         */
-        SensitivityResult getSensitivityResult();
-
-        /**
          * \brief Runs the sensitivity calculation
          */
         void run() override;
@@ -106,6 +100,12 @@ namespace Deltares::Sensitivity
         std::vector<std::shared_ptr<Logging::Message>> messages;
 
     private:
+        /**
+         * \brief Performs the sensitivity calculation
+         * \return Sensitivity result
+         */
+        SensitivityResult getSensitivityResult();
+
         std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
 
         /**

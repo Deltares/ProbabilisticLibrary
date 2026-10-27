@@ -41,6 +41,12 @@ namespace Deltares::Optimization
         }
 
         /**
+         * \brief Gets the maximum  number of refinements in any dimension
+         * \return Maximum number of refinements
+         */
+        int getMaxRefinements() const;
+
+        /**
          * \brief Reports whether the settings have valid values
          * \param report Report in which the validity is reported
          */

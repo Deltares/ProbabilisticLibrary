@@ -23,17 +23,15 @@
 
 #include "OptimizationResult.h"
 #include "../Math/NumericSupport.h"
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 #include <ranges>
 #include "../Model/ModelRunner.h"
 
 namespace Deltares::Optimization
 {
-    OptimizationResult GridSearchOptimization::getOptimizedSample(Models::ZModel& model)
+    OptimizationResult GridSearchOptimization::getOptimizedSample(Models::BaseModelRunner& model)
     {
-        model.resetModelRuns();
-
         auto& searchArea = Settings.SearchArea;
 
         auto defaultValues = std::vector<double>(searchArea.Dimensions.size(), std::nan(""));
@@ -41,36 +39,28 @@ namespace Deltares::Optimization
         Models::ModelSample initialSample = Models::ModelSample(defaultValues);
         initialSample.Z = std::numeric_limits<double>::infinity();
 
-        Models::ModelSample sample = findGridExtreme(searchArea, model, initialSample);
-        counter = 0;
-        reusedCounter = 0;
+        int iteration = 0;
+        Models::ModelSample sample = findGridExtreme(searchArea, model, initialSample, iteration++);
 
         int gridMoves = 0;
         while (gridMoves < Settings.MaxGridMoves && isSampleOnEdge(searchArea, sample))
         {
             moveSampleToCenter(searchArea, sample);
-            sample = findGridExtreme(searchArea, model, sample);
+            sample = findGridExtreme(searchArea, model, sample, iteration++);
             gridMoves++;
-
-            counter = 0;
-            reusedCounter = 0;
         }
 
         int refinements = 0;
         while (canRefine(searchArea, refinements))
         {
             refineGrid(searchArea, refinements, sample);
-            sample = findGridExtreme(searchArea, model, sample);
+            sample = findGridExtreme(searchArea, model, sample, iteration++);
             refinements++;
-
-            counter = 0;
-            reusedCounter = 0;
         }
 
-        auto result = OptimizationResult();
+        auto result = createOptimizationResult(model);
 
         result.succeeded = true; // always succeeds
-        result.modelRuns = model.getModelRuns();
         result.minimumValue = sample.Z;
 
         result.values.reserve(sample.Values.size());
@@ -82,7 +72,7 @@ namespace Deltares::Optimization
         return result;
     }
 
-    Models::ModelSample GridSearchOptimization::findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::ZModel& model, Models::ModelSample& minSample)
+    Models::ModelSample GridSearchOptimization::findGridExtreme(const SearchParameterSettingsSet& searchArea, Models::BaseModelRunner& model, Models::ModelSample& minSample, int iteration)
     {
         std::vector<std::vector<double>> inputValues;
         for (auto& dimension : searchArea.Dimensions)
@@ -97,8 +87,11 @@ namespace Deltares::Optimization
             throw Reliability::ProbabilisticLibraryException("No dimensions or empty dimensions are not allowed");
         }
 
+        int maxRefinements = searchArea.getMaxRefinements();
         int gridCounter = 0;
         int gridIntervalCounter = 0;
+        int gridTotal = static_cast<int>(combinations.size());
+        int progressInterval = gridTotal / searchArea.Dimensions[0].NumberOfValues;
 
         for (const auto& combination : combinations)
         {
@@ -109,11 +102,20 @@ namespace Deltares::Optimization
 
             model.invoke(sample);
 
-            counter++;
-
             if (!std::isnan(sample.Z) && sample.Z < minSample.Z)
             {
                 minSample = sample;
+            }
+
+            if (gridIntervalCounter >= progressInterval || gridCounter == gridTotal)
+            {
+                gridIntervalCounter = 0;
+                model.reportConvergence(minSample.Z, iteration, Settings.MaxGridMoves + maxRefinements);
+            }
+
+            if (isStopped())
+            {
+                break;
             }
         }
 
@@ -184,10 +186,10 @@ namespace Deltares::Optimization
         return std::ranges::any_of(
             searchArea.Dimensions,
             [refinements](
-            const auto& dimension)
-            {
-                return refinements < dimension.NumberOfRefinements;
-            });
+                const auto& dimension)
+        {
+            return refinements < dimension.NumberOfRefinements;
+        });
     }
 
     void GridSearchOptimization::refineGrid(SearchParameterSettingsSet& searchArea, int refinements, const Models::ModelSample& sample)

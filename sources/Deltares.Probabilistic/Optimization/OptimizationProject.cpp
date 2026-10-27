@@ -29,8 +29,6 @@ namespace Deltares::Optimization
         this->optimizationMethod = this->settings->GetOptimizationMethod();
         this->runSettings = this->settings->RunSettings;
 
-        zModel.setAllowRepository(runSettings->AllowRepository);
-
         this->result = this->getOptimizedSample();
     }
 
@@ -41,7 +39,11 @@ namespace Deltares::Optimization
 
     std::shared_ptr<OptimizationResult> OptimizationProject::getOptimizedSample()
     {
-        result = std::make_shared<OptimizationResult>(optimizationMethod->getOptimizedSample(zModel));
+        Models::BaseModelRunner modelRunner = Models::BaseModelRunner(this->model, this->progressIndicator);
+        modelRunner.Settings = this->runSettings;
+        modelRunner.initializeForRun();
+
+        this->result = std::make_shared<OptimizationResult>(this->optimizationMethod->getOptimizedSample(modelRunner));
 
         modelRuns += result->modelRuns;
 

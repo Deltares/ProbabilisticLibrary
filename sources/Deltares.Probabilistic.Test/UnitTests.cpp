@@ -290,6 +290,11 @@ TEST(ReliabilityMethodTest, TestFORM)
     TestReliabilityMethods::testFORM();
 }
 
+TEST(ReliabilityMethodTest, TestFORMStartMethod)
+{
+    TestReliabilityMethods::testFORMStartMethod();
+}
+
 TEST(ReliabilityMethodTest, TestFORMProgress)
 {
     TestReliabilityMethods::testFORMProgress();

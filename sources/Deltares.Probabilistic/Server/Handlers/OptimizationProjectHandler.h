@@ -55,27 +55,6 @@ namespace Deltares::Server
             else DerivedObjectHandler::SetIntValue(project, property_, value);
         }
 
-        void SetCallBack(const std::shared_ptr<Optimization::OptimizationProject>& project, const std::string& property_, Models::ZValuesCallBack callBack) override
-        {
-            if (property_ == "model") project->zModel = Models::ZModel(callBack);
-        }
-
-        void SetModelSampleCallBack(const std::shared_ptr<Optimization::OptimizationProject>& project, const std::string& property_, Models::ModelSampleCallback callBack) override
-        {
-            if (property_ == "model")
-            {
-                project->zModel.setModelSampleCallback(callBack);
-            }
-        }
-
-        void SetMultipleModelSampleCallBack(const std::shared_ptr<Optimization::OptimizationProject>& project, const std::string& property_, Models::MultipleModelSampleCallback callBack) override
-        {
-            if (property_ == "model")
-            {
-                project->zModel.setMultipleModelSampleCallback(callBack);
-            }
-        }
-
         OptimizationSettingsHandler* optimizationSettingsHandler = nullptr;
         OptimizationResultHandler* optimizationResultHandler = nullptr;
     };

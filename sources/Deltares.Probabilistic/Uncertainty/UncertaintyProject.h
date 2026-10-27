@@ -84,13 +84,6 @@ namespace Deltares::Uncertainty
          */
         void validate(Logging::ValidationReport& report) override;
 
-        // TODO: make private when C++/CLI has been phased out
-        /**
-         * \brief Performs the sensitivity calculation
-         * \return Sensitivity result
-         */
-        UncertaintyResult getUncertaintyResult();
-
         /**
          * \brief Runs the uncertainty calculation
          */
@@ -110,6 +103,12 @@ namespace Deltares::Uncertainty
         }
 
     private:
+        /**
+         * \brief Performs the sensitivity calculation
+         * \return Sensitivity result
+         */
+        UncertaintyResult getUncertaintyResult();
+
         std::shared_ptr<Models::ZValueConverter> outputSelector = nullptr;
 
         /**

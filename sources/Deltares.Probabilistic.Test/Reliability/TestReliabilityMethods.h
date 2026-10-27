@@ -30,6 +30,7 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         static void testFORM();
+        static void testFORMStartMethod();
         static void testFORMProgress();
         static void testFORMArray();
         static void testFORMVaryingArray();
