@@ -79,6 +79,7 @@ namespace Deltares::Optimization
         double JumpFraction = 0.0;
         double InverseFraction = 0.1;
         double CreepFraction = 0.9;
+        double CreepReduction = 0.05;
 
         int GenerationCount = 50;
 

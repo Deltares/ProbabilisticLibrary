@@ -171,6 +171,12 @@ public class OptimizationSettings
         set { Interface.SetArrayValue(id, "mutation_fractions", value); }
     }
 
+    public double CreepReduction
+    {
+        get { return Interface.GetValue(id, "creep_reduction"); }
+        set { Interface.SetValue(id, "creep_reduction", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }

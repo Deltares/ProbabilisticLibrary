@@ -96,6 +96,7 @@ namespace Deltares::Optimization
         settings.MutationJumpFraction = JumpFraction;
         settings.MutationInverseFraction = InverseFraction;
         settings.MutationCreepFraction = CreepFraction;
+        settings.MutationCreepReduction = CreepReduction;
 
         auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
         return genetic_algorithm;

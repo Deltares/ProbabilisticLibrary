@@ -48,6 +48,7 @@ namespace Deltares::Server
             else if (property_ == "beta") return settings->Beta;
             else if (property_ == "delta") return settings->Delta;
             else if (property_ == "mutation_rate") return settings->MutationRate;
+            else if (property_ == "creep_reduction") return settings->CreepReduction;
             else return DerivedObjectHandler::GetValue(settings, property_);
         }
 
@@ -59,6 +60,7 @@ namespace Deltares::Server
             else if (property_ == "beta") settings->Beta = value;
             else if (property_ == "delta") settings->Delta = value;
             else if (property_ == "mutation_rate") settings->MutationRate = value;
+            else if (property_ == "creep_reduction") settings->CreepReduction = value;
             else DerivedObjectHandler::SetValue(settings, property_, value);
         }
 

@@ -53,6 +53,7 @@ namespace Deltares.Probabilistic.Test
             project.Settings.CrossOverFractions = [0.01, 0.69, 0.3];
             var mf = project.Settings.MutationFractions;
             project.Settings.MutationFractions = mf;
+            project.Settings.CreepReduction = 0.055;
 
             project.Settings.AllowRepository = false;
 
