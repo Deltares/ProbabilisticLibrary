@@ -100,6 +100,7 @@ namespace Deltares::Optimization
         for (int i = 0; i < Options.PopulationCount; ++i)
         {
             ModelSample sample(dimensions.size());
+            sample.IterationIndex = 0;
             if (Options.initializePopulationMethod == InitializePopulationMethod::Parabolic)
             {
                 // The parabola has the shape f = A (g-c)^2 + B (g normalized).
@@ -147,7 +148,7 @@ namespace Deltares::Optimization
         determineMutationMask(mutationAnchor);
 
         ModelSample child(Options.SearchArea.Dimensions.size());
-        child.IterationIndex = generation;
+        child.IterationIndex = generation + 1;
         for (size_t gene = 0; gene < child.Values.size(); ++gene)
         {
             child.Values[gene] = population[crossOverMask[gene] == 0 ? father : mother].Values[gene];
