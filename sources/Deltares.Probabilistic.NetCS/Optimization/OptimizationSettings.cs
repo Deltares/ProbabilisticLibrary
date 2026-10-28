@@ -195,6 +195,18 @@ public class OptimizationSettings
         set { Interface.SetStringValue(id, "mutation_random_frequency", value); }
     }
 
+    public string CrossOverRandomEffect
+    {
+        get { return Interface.GetStringValue(id, "cross_over_random_effect"); }
+        set { Interface.SetStringValue(id, "cross_over_random_effect", value); }
+    }
+
+    public string MutationRandomEffect
+    {
+        get { return Interface.GetStringValue(id, "mutation_random_effect"); }
+        set { Interface.SetStringValue(id, "mutation_random_effect", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }

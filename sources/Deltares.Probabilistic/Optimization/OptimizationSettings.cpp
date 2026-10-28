@@ -100,6 +100,8 @@ namespace Deltares::Optimization
         settings.initializePopulationMethod = initializePopulationMethod;
         settings.CrossOverRandomFrequency = CrossOverRandomFrequency;
         settings.MutationRandomFrequency = MutationRandomFrequency;
+        settings.CrossOverRandomEffect = CrossOverRandomEffect;
+        settings.MutationRandomEffect = MutationRandomEffect;
 
         auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
         return genetic_algorithm;
@@ -176,6 +178,23 @@ namespace Deltares::Optimization
         else if (method == "generation") return RandomFrequency::Generation;
         else if (method == "child") return RandomFrequency::Child;
         else throw Reliability::ProbabilisticLibraryException("Random frequency setting");
+    }
+
+    std::string OptimizationSettings::getRandomEffectString(RandomEffect method)
+    {
+        switch (method)
+        {
+        case RandomEffect::Unity: return "unity";
+        case RandomEffect::Free: return "free";
+        default: throw Reliability::ProbabilisticLibraryException("Random effect setting");
+        }
+    }
+
+    RandomEffect OptimizationSettings::getRandomEffect(const std::string& method)
+    {
+        if (method == "unity") return RandomEffect::Unity;
+        else if (method == "free") return RandomEffect::Free;
+        else throw Reliability::ProbabilisticLibraryException("Random effect setting");
     }
 }
 

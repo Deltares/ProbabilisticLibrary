@@ -109,6 +109,14 @@ namespace Deltares::Server
             {
                 return Optimization::OptimizationSettings::getRandomFrequency(settings->MutationRandomFrequency);
             }
+            else if (property_ == "cross_over_random_effect")
+            {
+                return Optimization::OptimizationSettings::getRandomEffectString(settings->CrossOverRandomEffect);
+            }
+            else if (property_ == "mutation_random_effect")
+            {
+                return Optimization::OptimizationSettings::getRandomEffectString(settings->MutationRandomEffect);
+            }
             else return DerivedObjectHandler::GetStringValue(settings, property_);
         }
 
@@ -129,6 +137,14 @@ namespace Deltares::Server
             else if (property_ == "mutation_random_frequency")
             {
                 settings->MutationRandomFrequency = Optimization::OptimizationSettings::getRandomFrequencyString(value);
+            }
+            else if (property_ == "cross_over_random_effect")
+            {
+                settings->CrossOverRandomEffect = Optimization::OptimizationSettings::getRandomEffect(value);
+            }
+            else if (property_ == "mutation_random_effect")
+            {
+                settings->MutationRandomEffect = Optimization::OptimizationSettings::getRandomEffect(value);
             }
             else DerivedObjectHandler::SetStringValue(settings, property_, value);
         }

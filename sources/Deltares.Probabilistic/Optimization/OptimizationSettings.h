@@ -84,6 +84,8 @@ namespace Deltares::Optimization
         InitializePopulationMethod initializePopulationMethod;
         RandomFrequency CrossOverRandomFrequency;
         RandomFrequency MutationRandomFrequency;
+        RandomEffect CrossOverRandomEffect;
+        RandomEffect MutationRandomEffect;
 
         int GenerationCount = 50;
 
@@ -117,6 +119,8 @@ namespace Deltares::Optimization
         static InitializePopulationMethod getInitializePopulationMethod(const std::string& method);
         static std::string getRandomFrequency(RandomFrequency method);
         static RandomFrequency getRandomFrequencyString(const std::string& method);
+        static std::string getRandomEffectString(RandomEffect method);
+        static RandomEffect getRandomEffect(const std::string& method);
 
     private:
         std::shared_ptr<GridSearchOptimization> GetGridSearchMethod() const;
