@@ -61,17 +61,7 @@ namespace Deltares::Optimization
                 randomizeMaskRange(mutationMaskRange, Options.MutationRandomEffect);
             }
 
-            // Preserve the C# elite ordering: mutation is relative to population[0].
-            for (int i = Options.EliteCount; i < Options.PopulationCount; ++i)
-            {
-                for (int elite = 0; elite < Options.EliteCount; ++elite)
-                {
-                    if (population[i].Z < population[elite].Z)
-                    {
-                        std::swap(population[i], population[elite]);
-                    }
-                }
-            }
+            setEliteAtBegin(population);
 
             const auto originalPopulation = population;
             for (int i = Options.EliteCount; i < Options.PopulationCount; ++i)
@@ -90,6 +80,21 @@ namespace Deltares::Optimization
         result.minimumValue = best->Z;
         result.modelRuns = model.getModelRuns();
         return result;
+    }
+
+    void GeneticAlgorithm::setEliteAtBegin(std::vector<ModelSample>& population) const
+    {
+        // Preserve the C# elite ordering: mutation is relative to population[0].
+        for (int i = Options.EliteCount; i < Options.PopulationCount; ++i)
+        {
+            for (int elite = 0; elite < Options.EliteCount; ++elite)
+            {
+                if (population[i].Z < population[elite].Z)
+                {
+                    std::swap(population[i], population[elite]);
+                }
+            }
+        }
     }
 
     std::vector<ModelSample> GeneticAlgorithm::initializePopulation(BaseModelRunner& model)
@@ -179,7 +184,10 @@ namespace Deltares::Optimization
     int GeneticAlgorithm::selectMask(const std::array<double, mask_range_count>& range)
     {
         const double value = rng.next();
-        return value <= range[0] ? 0 : value <= range[1] ? 1 : 2;
+        if (value <= range[1])
+            return value <= range[0] ? 0 : 1;
+        else
+            return value <= range[0] ? 0 : 2;
     }
 
     void GeneticAlgorithm::determineCrossOverMask()
