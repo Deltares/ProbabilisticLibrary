@@ -100,7 +100,7 @@ namespace Deltares::Optimization
         for (int i = 0; i < Options.PopulationCount; ++i)
         {
             ModelSample sample(dimensions.size());
-            if (Options.InitializePopulationMethod == InitializePopulationMethod::Parabolic)
+            if (Options.initializePopulationMethod == InitializePopulationMethod::Parabolic)
             {
                 // The parabola has the shape f = A (g-c)^2 + B (g normalized).
                 // The location c and value B of the extreme are chosen randomly.

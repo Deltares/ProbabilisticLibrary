@@ -70,7 +70,7 @@ namespace Deltares::Optimization
             ValidationSupport::checkMinimumInt(report, 0, value, name);
             ValidationSupport::checkMaximumInt(report, maximum, value, name);
         };
-        checkEnum(static_cast<int>(InitializePopulationMethod), 1, "InitializePopulationMethod");
+        checkEnum(static_cast<int>(initializePopulationMethod), 1, "InitializePopulationMethod");
         checkEnum(static_cast<int>(CrossOverRandomFrequency), 2, "CrossOverRandomFrequency");
         checkEnum(static_cast<int>(MutationRandomFrequency), 2, "MutationRandomFrequency");
         checkEnum(static_cast<int>(CrossOverRandomEffect), 1, "CrossOverRandomEffect");

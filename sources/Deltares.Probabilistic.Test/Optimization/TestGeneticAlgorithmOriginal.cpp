@@ -128,7 +128,7 @@ namespace Deltares::Optimization::Test
     TEST_F(GeneticAlgorithmOriginalTest, TestDetermineMutationMask)
     {
         setBounds(7, -5.0, 5.0);
-        options.InitializePopulationMethod = InitializePopulationMethod::Parabolic;
+        options.initializePopulationMethod = InitializePopulationMethod::Parabolic;
         const auto population = initializePopulation();
         ASSERT_EQ(population.size(), 200u);
         const auto& anchor = population[0];
@@ -179,7 +179,7 @@ namespace Deltares::Optimization::Test
     TEST_F(GeneticAlgorithmOriginalTest, TestParabolicGenome)
     {
         setBounds(7, 0.0, 1.0);
-        options.InitializePopulationMethod = InitializePopulationMethod::Parabolic;
+        options.initializePopulationMethod = InitializePopulationMethod::Parabolic;
         const auto population = initializePopulation();
         ASSERT_FALSE(population.empty());
         const auto& genome = population[0].Values;
@@ -204,7 +204,7 @@ namespace Deltares::Optimization::Test
         constexpr int drawCount = 100;
         constexpr double tolerance = 2e-3;
         setBounds(2, -5.0, 5.0);
-        options.InitializePopulationMethod = InitializePopulationMethod::Uniform;
+        options.initializePopulationMethod = InitializePopulationMethod::Uniform;
         options.CrossOverRandomFrequency = RandomFrequency::Generation;
         options.MutationRandomFrequency = RandomFrequency::Generation;
         GeneticAlgorithm optimizer(options);

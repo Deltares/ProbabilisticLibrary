@@ -98,7 +98,7 @@ namespace Deltares::Optimization::Test
             [](auto& o) { o.MutationCreepReduction = -0.1; },
             [](auto& o) { o.MutationCreepReduction = std::numeric_limits<double>::infinity(); },
             [](auto& o) { o.MutationCreepReduction = std::numeric_limits<double>::quiet_NaN(); },
-            [](auto& o) { o.InitializePopulationMethod = static_cast<InitializePopulationMethod>(2); },
+            [](auto& o) { o.initializePopulationMethod = static_cast<InitializePopulationMethod>(2); },
             [](auto& o) { o.CrossOverRandomFrequency = static_cast<RandomFrequency>(3); },
             [](auto& o) { o.MutationRandomFrequency = static_cast<RandomFrequency>(-1); },
             [](auto& o) { o.CrossOverRandomEffect = static_cast<RandomEffect>(2); },
@@ -132,7 +132,7 @@ namespace Deltares::Optimization::Test
             for (size_t dimensions : { 1u, 7u })
             {
                 auto options = getSettings(dimensions);
-                options.InitializePopulationMethod = method;
+                options.initializePopulationMethod = method;
                 options.PopulationCount = 4;
                 options.EliteCount = 1;
                 options.GenerationCount = 1;
