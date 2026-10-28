@@ -72,6 +72,7 @@ namespace Deltares::Server
             else if (property_ == "population_count") return settings->PopulationCount;
             else if (property_ == "stop_after_non_improving_generations") return settings->StopAfterNonImprovingGenerations;
             else if (property_ == "seed") return settings->random_settings.Seed;
+            else if (property_ == "cross_over_fractions_count") return 3;
             else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
 
@@ -110,6 +111,35 @@ namespace Deltares::Server
         {
             if (property_ == "search_parameter_settings") searchParameterSettingsHandler->SetIdValues(settings->SearchArea->Dimensions, values, size);
             else DerivedObjectHandler::SetArrayIntValue(settings, property_, values, size);
+        }
+
+        double GetIndexedValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_, int index) override
+        {
+            if (property_ == "cross_over_fractions")
+            {
+                double return_value;
+                switch (index)
+                {
+                case 0: return_value = settings->ScatterFraction;  break;
+                case 1: return_value = settings->SinglePointFraction; break;
+                case 2: return_value = settings->DoublePointFraction; break;
+                default: return_value = 0.0;
+                }
+                return return_value;
+            }
+            else return DerivedObjectHandler::GetIndexedValue(settings, property_, index);
+        }
+
+        void SetArrayValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_, double* values, int size) override
+        {
+            if (property_ == "cross_over_fractions")
+            {
+                if (size < 3) throw Reliability::ProbabilisticLibraryException("size of cross_over_fractions must be 3");
+                settings->ScatterFraction = values[0];
+                settings->SinglePointFraction = values[1];
+                settings->DoublePointFraction = values[2];
+            }
+            else DerivedObjectHandler::SetArrayValue(settings, property_, values, size);
         }
 
         SearchParameterSettingsHandler* searchParameterSettingsHandler = nullptr;

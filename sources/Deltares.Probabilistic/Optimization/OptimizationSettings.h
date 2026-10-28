@@ -71,6 +71,10 @@ namespace Deltares::Optimization
 
         double MutationRate = 0.3;
 
+        double ScatterFraction = 0.0;
+        double SinglePointFraction = 0.7;
+        double DoublePointFraction = 0.3;
+
         int GenerationCount = 50;
 
         int EliteCount = 8;

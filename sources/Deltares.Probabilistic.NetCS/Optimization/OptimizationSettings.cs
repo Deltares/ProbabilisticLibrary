@@ -159,6 +159,12 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "mutation_rate", value); }
     }
 
+    public double[] CrossOverFractions
+    {
+        get { return Interface.GetArrayValue(id, "cross_over_fractions"); }
+        set { Interface.SetArrayValue(id, "cross_over_fractions", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }
