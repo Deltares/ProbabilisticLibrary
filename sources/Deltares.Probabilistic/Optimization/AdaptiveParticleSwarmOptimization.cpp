@@ -81,6 +81,8 @@ namespace Deltares::Optimization
                     differentialEvolutionBranch(elite, particle_size, best_particle, population[m]);
                 }
 
+                population[m].IterationIndex = generation_index;
+
                 model.invoke(population[m]);
 
                 if (population[m].Z < best_particle.Z)
@@ -212,6 +214,9 @@ namespace Deltares::Optimization
 
                 sample.Values[genome_index] = Dimensions[genome_index].GetAbsoluteValue(ratio);
             }
+
+            // initial run
+            sample.IterationIndex = -1;
 
             model.invoke(sample);
 

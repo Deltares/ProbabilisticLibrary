@@ -86,6 +86,35 @@ namespace Deltares::Optimization::Test
         EXPECT_TRUE(result->succeeded);
     }
 
+    void TestAdaptiveParticleSwarmOptimization::test_project_polynome_evaluations()
+    {
+        auto project = OptimizationProject();
+        project.settings->OptimizationMethod = OptimizationMethodType::APSO;
+        project.model = Probabilistic::Test::ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
+        project.settings->RunSettings->SaveEvaluations = true;
+
+        auto searchArea = project.settings->SearchArea;
+        searchArea->setDimensions(2);
+        searchArea->Dimensions[0]->MinValue = 0;
+        searchArea->Dimensions[0]->MaxValue = 10;
+        searchArea->Dimensions[0]->Move = true;
+        searchArea->Dimensions[1]->MinValue = 0;
+        searchArea->Dimensions[1]->MaxValue = 10;
+        searchArea->Dimensions[1]->Move = true;
+
+        Logging::ValidationReport report;
+        project.settings->validate(report);
+        ASSERT_TRUE(report.isValid()) << "validation of settings fails";
+
+        project.run();
+        auto result = project.result;
+
+        ASSERT_EQ(result->evaluations.size(), 6375);
+        ASSERT_EQ(result->evaluations.front()->Iteration, -1);
+        ASSERT_EQ(result->evaluations.back()->Iteration, 49);
+        EXPECT_TRUE(result->succeeded);
+    }
+
     void TestAdaptiveParticleSwarmOptimization::TestValidation()
     {
         auto settings = AdaptiveParticleSwarmOptimizationSettings();
