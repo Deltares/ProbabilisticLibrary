@@ -50,7 +50,9 @@ namespace Deltares.Probabilistic.Test
             project.Settings.Seed = 12345;
             project.Settings.PopulationCount = 125;
             project.Settings.MutationRate = 0.33;
-            project.Settings.CrossOverFractions = new double[3] { 0.01, 0.69, 0.2 };
+            project.Settings.CrossOverFractions = [0.01, 0.69, 0.3];
+            var mf = project.Settings.MutationFractions;
+            project.Settings.MutationFractions = mf;
 
             project.Settings.AllowRepository = false;
 

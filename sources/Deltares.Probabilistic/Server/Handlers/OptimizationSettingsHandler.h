@@ -72,7 +72,7 @@ namespace Deltares::Server
             else if (property_ == "population_count") return settings->PopulationCount;
             else if (property_ == "stop_after_non_improving_generations") return settings->StopAfterNonImprovingGenerations;
             else if (property_ == "seed") return settings->random_settings.Seed;
-            else if (property_ == "cross_over_fractions_count") return 3;
+            else if (property_ == "cross_over_fractions_count" || property_ == "mutation_fractions_count") return 3;
             else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
 
@@ -127,6 +127,18 @@ namespace Deltares::Server
                 }
                 return return_value;
             }
+            else if (property_ == "mutation_fractions")
+            {
+                double return_value;
+                switch (index)
+                {
+                case 0: return_value = settings->JumpFraction;  break;
+                case 1: return_value = settings->InverseFraction; break;
+                case 2: return_value = settings->CreepFraction; break;
+                default: return_value = 0.0;
+                }
+                return return_value;
+            }
             else return DerivedObjectHandler::GetIndexedValue(settings, property_, index);
         }
 
@@ -138,6 +150,13 @@ namespace Deltares::Server
                 settings->ScatterFraction = values[0];
                 settings->SinglePointFraction = values[1];
                 settings->DoublePointFraction = values[2];
+            }
+            else if (property_ == "mutation_fractions")
+            {
+                if (size < 3) throw Reliability::ProbabilisticLibraryException("size of mutation_fractions must be 3");
+                settings->JumpFraction = values[0];
+                settings->InverseFraction = values[1];
+                settings->CreepFraction = values[2];
             }
             else DerivedObjectHandler::SetArrayValue(settings, property_, values, size);
         }

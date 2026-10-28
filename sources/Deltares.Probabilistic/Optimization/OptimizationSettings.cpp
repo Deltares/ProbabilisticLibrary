@@ -90,6 +90,12 @@ namespace Deltares::Optimization
         settings.EliteCount = EliteCount;
         settings.PopulationCount = PopulationCount;
         settings.MutationRate = MutationRate;
+        settings.CrossOverScatterFraction = ScatterFraction;
+        settings.CrossOverSinglePointFraction = SinglePointFraction;
+        settings.CrossOverDoublePointFraction = DoublePointFraction;
+        settings.MutationJumpFraction = JumpFraction;
+        settings.MutationInverseFraction = InverseFraction;
+        settings.MutationCreepFraction = CreepFraction;
 
         auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
         return genetic_algorithm;

@@ -69,11 +69,16 @@ namespace Deltares::Optimization
 
         double Delta = 0.7;
 
-        double MutationRate = 0.3;
-
+        // Cross over settings; fractions should add to 1.0
         double ScatterFraction = 0.0;
         double SinglePointFraction = 0.7;
         double DoublePointFraction = 0.3;
+
+        // Mutation settings; fractions should add to 1.0
+        double MutationRate = 0.3;
+        double JumpFraction = 0.0;
+        double InverseFraction = 0.1;
+        double CreepFraction = 0.9;
 
         int GenerationCount = 50;
 
