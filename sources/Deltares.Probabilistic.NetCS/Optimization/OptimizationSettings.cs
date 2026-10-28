@@ -177,6 +177,12 @@ public class OptimizationSettings
         set { Interface.SetValue(id, "creep_reduction", value); }
     }
 
+    public string InitializePopulationMethod
+    {
+        get { return Interface.GetStringValue(id, "initialize_population_method"); }
+        set { Interface.SetStringValue(id, "initialize_population_method", value); }
+    }
+
     public int GenerationCount
     {
         get { return Interface.GetIntValue(id, "generation_count"); }

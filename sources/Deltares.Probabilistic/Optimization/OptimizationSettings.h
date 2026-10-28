@@ -81,6 +81,8 @@ namespace Deltares::Optimization
         double CreepFraction = 0.9;
         double CreepReduction = 0.05;
 
+        InitializePopulationMethod initializePopulationMethod;
+
         int GenerationCount = 50;
 
         int EliteCount = 8;
@@ -109,6 +111,9 @@ namespace Deltares::Optimization
 
         static std::string getOptimizationMethodTypeString(OptimizationMethodType method);
         static OptimizationMethodType getOptimizationMethodType(const std::string& method);
+        static std::string getInitializePopulationMethod(InitializePopulationMethod method);
+        static InitializePopulationMethod getInitializePopulationMethod(const std::string& method);
+
     private:
         std::shared_ptr<GridSearchOptimization> GetGridSearchMethod() const;
         std::shared_ptr<CobylaOptimization> GetCobylaMethod() const;

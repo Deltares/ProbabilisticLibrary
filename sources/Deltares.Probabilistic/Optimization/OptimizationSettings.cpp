@@ -97,6 +97,7 @@ namespace Deltares::Optimization
         settings.MutationInverseFraction = InverseFraction;
         settings.MutationCreepFraction = CreepFraction;
         settings.MutationCreepReduction = CreepReduction;
+        settings.initializePopulationMethod = initializePopulationMethod;
 
         auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
         return genetic_algorithm;
@@ -137,6 +138,23 @@ namespace Deltares::Optimization
         else if (method == "apso") return APSO;
         else if (method == "ga") return GA;
         else throw Reliability::ProbabilisticLibraryException("Optimization method");
+    }
+
+    std::string OptimizationSettings::getInitializePopulationMethod(InitializePopulationMethod method)
+    {
+        switch (method)
+        {
+        case InitializePopulationMethod::Uniform: return "uniform";
+        case InitializePopulationMethod::Parabolic: return "parabolic";
+        default: throw Reliability::ProbabilisticLibraryException("Initialize population method");
+        }
+    }
+
+    InitializePopulationMethod OptimizationSettings::getInitializePopulationMethod(const std::string& method)
+    {
+        if (method == "uniform") return InitializePopulationMethod::Uniform;
+        else if (method == "parabolic") return InitializePopulationMethod::Parabolic;
+        else throw Reliability::ProbabilisticLibraryException("Initialize population method");
     }
 }
 

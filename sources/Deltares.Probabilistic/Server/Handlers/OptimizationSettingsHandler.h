@@ -93,13 +93,27 @@ namespace Deltares::Server
 
         std::string GetStringValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_) override
         {
-            if (property_ == "optimization_method") return Optimization::OptimizationSettings::getOptimizationMethodTypeString(settings->OptimizationMethod);
+            if (property_ == "optimization_method")
+            {
+                return Optimization::OptimizationSettings::getOptimizationMethodTypeString(settings->OptimizationMethod);
+            }
+            else if (property_ == "initialize_population_method")
+            {
+                return Optimization::OptimizationSettings::getInitializePopulationMethod(settings->initializePopulationMethod);
+            }
             else return DerivedObjectHandler::GetStringValue(settings, property_);
         }
 
         void SetStringValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_, const std::string& value) override
         {
-            if (property_ == "optimization_method") settings->OptimizationMethod = Optimization::OptimizationSettings::getOptimizationMethodType(value);
+            if (property_ == "optimization_method")
+            {
+                settings->OptimizationMethod = Optimization::OptimizationSettings::getOptimizationMethodType(value);
+            }
+            else if (property_ == "initialize_population_method")
+            {
+                settings->initializePopulationMethod = Optimization::OptimizationSettings::getInitializePopulationMethod(value);
+            }
             else DerivedObjectHandler::SetStringValue(settings, property_, value);
         }
 
