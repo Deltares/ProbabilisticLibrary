@@ -82,6 +82,8 @@ namespace Deltares::Optimization
         double CreepReduction = 0.05;
 
         InitializePopulationMethod initializePopulationMethod;
+        RandomFrequency CrossOverRandomFrequency;
+        RandomFrequency MutationRandomFrequency;
 
         int GenerationCount = 50;
 
@@ -113,6 +115,8 @@ namespace Deltares::Optimization
         static OptimizationMethodType getOptimizationMethodType(const std::string& method);
         static std::string getInitializePopulationMethod(InitializePopulationMethod method);
         static InitializePopulationMethod getInitializePopulationMethod(const std::string& method);
+        static std::string getRandomFrequency(RandomFrequency method);
+        static RandomFrequency getRandomFrequencyString(const std::string& method);
 
     private:
         std::shared_ptr<GridSearchOptimization> GetGridSearchMethod() const;

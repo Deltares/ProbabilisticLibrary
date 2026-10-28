@@ -101,6 +101,14 @@ namespace Deltares::Server
             {
                 return Optimization::OptimizationSettings::getInitializePopulationMethod(settings->initializePopulationMethod);
             }
+            else if (property_ == "cross_over_random_frequency")
+            {
+                return Optimization::OptimizationSettings::getRandomFrequency(settings->CrossOverRandomFrequency);
+            }
+            else if (property_ == "mutation_random_frequency")
+            {
+                return Optimization::OptimizationSettings::getRandomFrequency(settings->MutationRandomFrequency);
+            }
             else return DerivedObjectHandler::GetStringValue(settings, property_);
         }
 
@@ -113,6 +121,14 @@ namespace Deltares::Server
             else if (property_ == "initialize_population_method")
             {
                 settings->initializePopulationMethod = Optimization::OptimizationSettings::getInitializePopulationMethod(value);
+            }
+            else if (property_ == "cross_over_random_frequency")
+            {
+                settings->CrossOverRandomFrequency = Optimization::OptimizationSettings::getRandomFrequencyString(value);
+            }
+            else if (property_ == "mutation_random_frequency")
+            {
+                settings->MutationRandomFrequency = Optimization::OptimizationSettings::getRandomFrequencyString(value);
             }
             else DerivedObjectHandler::SetStringValue(settings, property_, value);
         }

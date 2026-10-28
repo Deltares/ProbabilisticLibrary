@@ -98,6 +98,8 @@ namespace Deltares::Optimization
         settings.MutationCreepFraction = CreepFraction;
         settings.MutationCreepReduction = CreepReduction;
         settings.initializePopulationMethod = initializePopulationMethod;
+        settings.CrossOverRandomFrequency = CrossOverRandomFrequency;
+        settings.MutationRandomFrequency = MutationRandomFrequency;
 
         auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
         return genetic_algorithm;
@@ -155,6 +157,25 @@ namespace Deltares::Optimization
         if (method == "uniform") return InitializePopulationMethod::Uniform;
         else if (method == "parabolic") return InitializePopulationMethod::Parabolic;
         else throw Reliability::ProbabilisticLibraryException("Initialize population method");
+    }
+
+    std::string OptimizationSettings::getRandomFrequency(RandomFrequency method)
+    {
+        switch (method)
+        {
+        case RandomFrequency::Never: return "never";
+        case RandomFrequency::Generation : return "generation";
+        case RandomFrequency::Child: return "child";
+        default: throw Reliability::ProbabilisticLibraryException("Random frequency setting");
+        }
+    }
+
+    RandomFrequency OptimizationSettings::getRandomFrequencyString(const std::string& method)
+    {
+        if (method == "never") return RandomFrequency::Never;
+        else if (method == "generation") return RandomFrequency::Generation;
+        else if (method == "child") return RandomFrequency::Child;
+        else throw Reliability::ProbabilisticLibraryException("Random frequency setting");
     }
 }
 
