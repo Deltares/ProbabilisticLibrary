@@ -67,8 +67,8 @@ namespace Deltares::Optimization::Test
         EXPECT_EQ(options.EliteCount, 2);
         EXPECT_EQ(options.GenerationCount, 50);
         EXPECT_DOUBLE_EQ(options.MutationRate, 0.3);
-        EXPECT_DOUBLE_EQ(options.CrossOverSinglePointFraction, 0.7);
-        EXPECT_DOUBLE_EQ(options.MutationCreepFraction, 0.9);
+        EXPECT_DOUBLE_EQ(options.CrossOverFractions.getValueByIndex(1), 0.7);
+        EXPECT_DOUBLE_EQ(options.MutationFractions.getValueByIndex(1), 0.9);
         GeneticAlgorithm algorithm(options);
         Logging::ValidationReport report;
         algorithm.validate(report);
@@ -87,14 +87,10 @@ namespace Deltares::Optimization::Test
             [](auto& o) { o.MutationRate = -0.1; },
             [](auto& o) { o.MutationRate = 1.1; },
             [](auto& o) { o.MutationRate = std::numeric_limits<double>::quiet_NaN(); },
-            [](auto& o) { o.CrossOverScatterFraction = -0.1; },
-            [](auto& o) { o.CrossOverSinglePointFraction = 1.1; },
-            [](auto& o) { o.CrossOverDoublePointFraction = 0.0; },
-            [](auto& o) { o.CrossOverDoublePointFraction = std::numeric_limits<double>::quiet_NaN(); },
-            [](auto& o) { o.MutationJumpFraction = -0.1; },
-            [](auto& o) { o.MutationCreepFraction = 1.1; },
-            [](auto& o) { o.MutationInverseFraction = 0.0; },
-            [](auto& o) { o.MutationInverseFraction = std::numeric_limits<double>::quiet_NaN(); },
+            [](auto& o) { o.CrossOverFractions = ThreeFractions(-0.1, 1.1, 0.0); },
+            [](auto& o) { o.CrossOverFractions = ThreeFractions(0.0, 0.5, std::numeric_limits<double>::quiet_NaN()); },
+            [](auto& o) { o.MutationFractions = ThreeFractions(-0.1, 1.1, 0.0); },
+            [](auto& o) { o.MutationFractions = ThreeFractions(0.0, 0.5,  std::numeric_limits<double>::quiet_NaN()); },
             [](auto& o) { o.MutationCreepReduction = -0.1; },
             [](auto& o) { o.MutationCreepReduction = std::numeric_limits<double>::infinity(); },
             [](auto& o) { o.MutationCreepReduction = std::numeric_limits<double>::quiet_NaN(); },
@@ -194,12 +190,14 @@ namespace Deltares::Optimization::Test
                 options.PopulationCount = 10;
                 options.GenerationCount = 3;
                 options.MutationRate = 1.0;
-                options.CrossOverScatterFraction = crossover == 0 ? 1.0 : 0.0;
-                options.CrossOverSinglePointFraction = crossover == 1 ? 1.0 : 0.0;
-                options.CrossOverDoublePointFraction = crossover == 2 ? 1.0 : 0.0;
-                options.MutationJumpFraction = mutation == 0 ? 1.0 : 0.0;
-                options.MutationCreepFraction = mutation == 1 ? 1.0 : 0.0;
-                options.MutationInverseFraction = mutation == 2 ? 1.0 : 0.0;
+                switch(crossover)
+                {
+                case 0: options.CrossOverFractions = ThreeFractions(1.0, 0.0, 0.0); break;
+                case 1: options.CrossOverFractions = ThreeFractions(0.0, 1.0, 0.0); break;
+                case 2: options.CrossOverFractions = ThreeFractions(0.0, 0.0, 1.0); break;
+                default:throw Reliability::ProbabilisticLibraryException("Invalid cross over value: ", crossover);
+                }
+                options.MutationFractions = options.CrossOverFractions;
                 options.MutationCreepReduction = 2.0;
                 for (auto& dimension : options.SearchArea.Dimensions)
                 {
@@ -236,9 +234,13 @@ namespace Deltares::Optimization::Test
             options.EliteCount = 1;
             options.GenerationCount = 1;
             options.MutationRate = 0.0;
-            options.CrossOverScatterFraction = method == 0 ? 1.0 : 0.0;
-            options.CrossOverSinglePointFraction = method == 1 ? 1.0 : 0.0;
-            options.CrossOverDoublePointFraction = method == 2 ? 1.0 : 0.0;
+            switch (method)
+            {
+            case 0: options.CrossOverFractions = ThreeFractions(1.0, 0.0, 0.0); break;
+            case 1: options.CrossOverFractions = ThreeFractions(0.0, 1.0, 0.0); break;
+            case 2: options.CrossOverFractions = ThreeFractions(0.0, 0.0, 1.0); break;
+            default:throw Reliability::ProbabilisticLibraryException("Invalid cross over value: ", method);
+            }
             int calls = 0;
             bool mixedParents = false;
             auto z = getModel([&](ModelSample& sample)
@@ -293,8 +295,14 @@ namespace Deltares::Optimization::Test
             options.GenerationCount = 1;
             options.MutationRate = 1.0;
             options.MutationCreepReduction = 0.0;
-            options.MutationCreepFraction = inverse ? 0.0 : 1.0;
-            options.MutationInverseFraction = inverse ? 1.0 : 0.0;
+            if (inverse)
+            {
+                options.MutationFractions = ThreeFractions(0.0, 0.0, 1.0);
+            }
+            else
+            {
+                options.MutationFractions = ThreeFractions(0.0, 1.0, 0.0);
+            }
             int calls = 0;
             auto z = getModel([&](ModelSample& sample)
             {
@@ -326,9 +334,7 @@ namespace Deltares::Optimization::Test
             options.EliteCount = 0;
             options.GenerationCount = 1;
             options.MutationRate = 1.0;
-            options.MutationJumpFraction = 1.0;
-            options.MutationCreepFraction = 0.0;
-            options.MutationInverseFraction = 0.0;
+            options.MutationFractions = ThreeFractions(1.0, 0.0, 0.0);
             std::vector<ModelSample> samples;
             auto z = getModel([&](ModelSample& sample)
             {

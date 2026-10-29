@@ -165,27 +165,11 @@ namespace Deltares::Server
         {
             if (property_ == "cross_over_fractions")
             {
-                double return_value;
-                switch (index)
-                {
-                case 0: return_value = settings->ScatterFraction;  break;
-                case 1: return_value = settings->SinglePointFraction; break;
-                case 2: return_value = settings->DoublePointFraction; break;
-                default: return_value = 0.0;
-                }
-                return return_value;
+                return settings->CrossOverFractions.getValueByIndex(index);
             }
             else if (property_ == "mutation_fractions")
             {
-                double return_value;
-                switch (index)
-                {
-                case 0: return_value = settings->JumpFraction;  break;
-                case 1: return_value = settings->InverseFraction; break;
-                case 2: return_value = settings->CreepFraction; break;
-                default: return_value = 0.0;
-                }
-                return return_value;
+                return settings->MutationFractions.getValueByIndex(index);
             }
             else return DerivedObjectHandler::GetIndexedValue(settings, property_, index);
         }
@@ -194,17 +178,13 @@ namespace Deltares::Server
         {
             if (property_ == "cross_over_fractions")
             {
-                if (size < 3) throw Reliability::ProbabilisticLibraryException("size of cross_over_fractions must be 3");
-                settings->ScatterFraction = values[0];
-                settings->SinglePointFraction = values[1];
-                settings->DoublePointFraction = values[2];
+                if (size != 3) throw Reliability::ProbabilisticLibraryException("size of cross_over_fractions must be 3");
+                settings->CrossOverFractions = Optimization::ThreeFractions(values[0], values[1], values[2]);
             }
             else if (property_ == "mutation_fractions")
             {
-                if (size < 3) throw Reliability::ProbabilisticLibraryException("size of mutation_fractions must be 3");
-                settings->JumpFraction = values[0];
-                settings->InverseFraction = values[1];
-                settings->CreepFraction = values[2];
+                if (size != 3) throw Reliability::ProbabilisticLibraryException("size of mutation_fractions must be 3");
+                settings->MutationFractions = Optimization::ThreeFractions(values[0], values[1], values[2]);
             }
             else DerivedObjectHandler::SetArrayValue(settings, property_, values, size);
         }

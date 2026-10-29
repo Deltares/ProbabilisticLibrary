@@ -27,6 +27,7 @@
 #include "AdaptiveParticleSwarmOptimization.h"
 #include "GeneticAlgorithm.h"
 #include "SearchParameterSettingsSetWithSharedPointers.h"
+#include "ThreeFractions.h"
 #include "../Model/ModelProjectSettings.h"
 #include "../Model/RandomSettings.h"
 
@@ -70,15 +71,11 @@ namespace Deltares::Optimization
         double Delta = 0.7;
 
         // Cross over settings; fractions should add to 1.0
-        double ScatterFraction = 0.0;
-        double SinglePointFraction = 0.7;
-        double DoublePointFraction = 0.3;
+        ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3);
 
         // Mutation settings; fractions should add to 1.0
+        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1);
         double MutationRate = 0.3;
-        double JumpFraction = 0.0;
-        double InverseFraction = 0.1;
-        double CreepFraction = 0.9;
         double CreepReduction = 0.05;
 
         InitializePopulationMethod initializePopulationMethod;

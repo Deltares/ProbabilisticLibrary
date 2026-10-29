@@ -22,6 +22,7 @@
 #pragma once
 
 #include "SearchParameterSettingsSet.h"
+#include "ThreeFractions.h"
 #include "../Model/Validatable.h"
 
 namespace Deltares::Optimization
@@ -43,12 +44,8 @@ namespace Deltares::Optimization
         int PopulationCount = 60;
         int GenerationCount = 50;
         double MutationRate = 0.3;
-        double CrossOverScatterFraction = 0.0;
-        double CrossOverSinglePointFraction = 0.7;
-        double CrossOverDoublePointFraction = 0.3;
-        double MutationJumpFraction = 0.0;
-        double MutationCreepFraction = 0.9;
-        double MutationInverseFraction = 0.1;
+        ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3);
+        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1);
         double MutationCreepReduction = 0.05;
         int Seed = 1;
         InitializePopulationMethod initializePopulationMethod = InitializePopulationMethod::Uniform;

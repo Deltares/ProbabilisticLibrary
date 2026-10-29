@@ -47,23 +47,10 @@ namespace Deltares::Optimization
             ValidationSupport::checkMaximum(report, 1.0, value, name);
         };
         checkFraction(MutationRate, "MutationRate");
-        checkFraction(CrossOverScatterFraction, "CrossOverScatterFraction");
-        checkFraction(CrossOverSinglePointFraction, "CrossOverSinglePointFraction");
-        checkFraction(CrossOverDoublePointFraction, "CrossOverDoublePointFraction");
-        checkFraction(MutationJumpFraction, "MutationJumpFraction");
-        checkFraction(MutationCreepFraction, "MutationCreepFraction");
-        checkFraction(MutationInverseFraction, "MutationInverseFraction");
+        CrossOverFractions.validate(report);
+        MutationFractions.validate(report);
         checkFinite(MutationCreepReduction, "MutationCreepReduction");
         ValidationSupport::checkMinimum(report, 0.0, MutationCreepReduction, "MutationCreepReduction");
-
-        if (std::abs(CrossOverScatterFraction + CrossOverSinglePointFraction + CrossOverDoublePointFraction - 1.0) > 1e-12)
-        {
-            ValidationSupport::add(report, "Crossover fractions must sum to one.");
-        }
-        if (std::abs(MutationJumpFraction + MutationCreepFraction + MutationInverseFraction - 1.0) > 1e-12)
-        {
-            ValidationSupport::add(report, "Mutation fractions must sum to one.");
-        }
 
         const auto checkEnum = [&report](int value, int maximum, const std::string& name)
         {

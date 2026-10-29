@@ -42,10 +42,8 @@ namespace Deltares::Optimization
         }
 
         rng.initialize(true, Options.Seed);
-        crossOverMaskRange = { Options.CrossOverScatterFraction,
-            Options.CrossOverScatterFraction + Options.CrossOverSinglePointFraction, 1.0 };
-        mutationMaskRange = { Options.MutationJumpFraction,
-            Options.MutationJumpFraction + Options.MutationCreepFraction, 1.0 };
+        crossOverMaskRange = Options.CrossOverFractions.getMaskRange();
+        mutationMaskRange = Options.MutationFractions.getMaskRange();
         crossOverMask.resize(Options.SearchArea.Dimensions.size());
         mutationMask.resize(Options.SearchArea.Dimensions.size());
         auto population = initializePopulation(model);
@@ -74,6 +72,9 @@ namespace Deltares::Optimization
 
         const auto best = std::ranges::min_element(population,
             [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
+
+        model.reportConvergence(best->Z, 0, Options.GenerationCount);
+
         OptimizationResult result;
         result.succeeded = !isStopped();
         result.values = best->Values;
@@ -122,13 +123,14 @@ namespace Deltares::Optimization
                     sample.Values[gene] = dimensions[gene].GetAbsoluteValue(ratio);
                 }
             }
-            else
+            else if (Options.initializePopulationMethod == InitializePopulationMethod::Uniform)
             {
                 for (size_t gene = 0; gene < dimensions.size(); ++gene)
                 {
                     sample.Values[gene] = dimensions[gene].GetAbsoluteValue(rng.next());
                 }
             }
+            else throw Reliability::ProbabilisticLibraryException("Invalid InitializePopulationMethod");
             model.invoke(sample);
             population.push_back(std::move(sample));
         }
@@ -173,20 +175,25 @@ namespace Deltares::Optimization
             const double second = rng.next();
             range = { std::min(first, second), std::max(first, second), 1.0 };
         }
-        else
+        else if (effect == RandomEffect::Unity)
         {
             const int method = rng.next(3);
             range = { method == 0 ? 1.0 : 0.0, method <= 1 ? 1.0 : 0.0, 1.0 };
         }
+        else throw Reliability::ProbabilisticLibraryException("Invalid RandomEffect");
     }
 
     int GeneticAlgorithm::selectMask(const std::array<double, mask_range_count>& range)
     {
         const double value = rng.next();
         if (value <= range[1])
+        {
             return value <= range[0] ? 0 : 1;
+        }
         else
+        {
             return value <= range[0] ? 0 : 2;
+        }
     }
 
     void GeneticAlgorithm::determineCrossOverMask()
@@ -208,7 +215,7 @@ namespace Deltares::Optimization
                 crossOverMask[gene] = static_cast<double>(gene) < point ? 0 : 1;
             }
         }
-        else
+        else if (method == 2)
         {
             double first = rng.next() * (count - 3.0) + 0.5;
             double second = rng.next() * (count - 3.0) + 0.5;
@@ -223,6 +230,7 @@ namespace Deltares::Optimization
                 crossOverMask[gene] = position < first || position > second ? 0 : 1;
             }
         }
+        else throw Reliability::ProbabilisticLibraryException("Internal error: method not in range 0 - 2, but: ", method);
     }
 
     void GeneticAlgorithm::determineMutationMask(const ModelSample& first)
@@ -249,10 +257,11 @@ namespace Deltares::Optimization
                     mutationMask[gene] = std::clamp(new_value, dimension.MinValue, dimension.MaxValue);
                 }
             }
-            else
+            else if (method == 2)
             {
                 mutationMask[gene] = dimension.MinValue + (dimension.MaxValue - first.Values[gene]);
             }
+            else throw Reliability::ProbabilisticLibraryException("Internal error: method not in range 0 - 2, but: ", method);
         }
     }
 }

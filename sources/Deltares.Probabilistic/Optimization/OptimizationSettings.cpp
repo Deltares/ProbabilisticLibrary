@@ -90,12 +90,8 @@ namespace Deltares::Optimization
         settings.EliteCount = EliteCount;
         settings.PopulationCount = PopulationCount;
         settings.MutationRate = MutationRate;
-        settings.CrossOverScatterFraction = ScatterFraction;
-        settings.CrossOverSinglePointFraction = SinglePointFraction;
-        settings.CrossOverDoublePointFraction = DoublePointFraction;
-        settings.MutationJumpFraction = JumpFraction;
-        settings.MutationInverseFraction = InverseFraction;
-        settings.MutationCreepFraction = CreepFraction;
+        settings.CrossOverFractions = CrossOverFractions;
+        settings.MutationFractions = MutationFractions;
         settings.MutationCreepReduction = CreepReduction;
         settings.initializePopulationMethod = initializePopulationMethod;
         settings.CrossOverRandomFrequency = CrossOverRandomFrequency;
