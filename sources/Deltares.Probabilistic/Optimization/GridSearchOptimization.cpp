@@ -99,6 +99,7 @@ namespace Deltares::Optimization
             gridIntervalCounter++;
 
             Models::ModelSample sample = Models::ModelSample(combination);
+            sample.IterationIndex = iteration;
 
             model.invoke(sample);
 

@@ -926,6 +926,11 @@ TEST(UnitTests, testAPSOmoveGrid)
     Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::test_project_polynome_move_grid();
 }
 
+TEST(UnitTests, testAPSOevaluations)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::test_project_polynome_evaluations();
+}
+
 TEST(UnitTests, testApsoValidation)
 {
     Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestValidation();

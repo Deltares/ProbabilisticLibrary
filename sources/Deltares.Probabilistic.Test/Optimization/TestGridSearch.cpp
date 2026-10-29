@@ -171,6 +171,8 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result->evaluations[1]->InputValues[0], 0.0, 0.001);
         EXPECT_NEAR(result->evaluations[1]->InputValues[1], 1.0, 0.001);
         EXPECT_NEAR(result->evaluations[1]->Z, 1895.14, 0.001);
+        ASSERT_EQ(result->evaluations.front()->Iteration, 0);
+        ASSERT_EQ(result->evaluations.back()->Iteration, 20);
     }
 
     void TestGridSearch::test_project_convergence_results()
