@@ -54,11 +54,11 @@ namespace Deltares.Probabilistic.Test
             var mf = project.Settings.MutationFractions;
             project.Settings.MutationFractions = mf;
             project.Settings.CreepReduction = 0.055;
-            project.Settings.InitializePopulationMethod = "parabolic";
-            project.Settings.CrossOverRandomFrequency = "never";
-            project.Settings.MutationRandomFrequency = "child";
-            project.Settings.CrossOverRandomEffect = "free";
-            project.Settings.MutationRandomEffect = "free";
+            project.Settings.InitializePopulationMethod = InitializePopulationMethod.Parabolic;
+            project.Settings.CrossOverRandomFrequency = RandomFrequency.Never;
+            project.Settings.MutationRandomFrequency = RandomFrequency.Child;
+            project.Settings.CrossOverRandomEffect = RandomEffect.Free;
+            project.Settings.MutationRandomEffect = RandomEffect.Free;
 
             project.Settings.AllowRepository = false;
 
