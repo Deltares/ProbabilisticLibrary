@@ -48,7 +48,7 @@ namespace Deltares::Optimization
         mutationMask.resize(Options.SearchArea.Dimensions.size());
         auto population = initializePopulation(model);
 
-        for (int generation = 0; generation < Options.GenerationCount && !isStopped(); ++generation)
+        for (int generation = 0; generation < Options.generation_counters.generation_count && !isStopped(); ++generation)
         {
             if (Options.CrossOverRandomFrequency == RandomFrequency::Generation)
             {
@@ -62,7 +62,7 @@ namespace Deltares::Optimization
             setEliteAtBegin(population);
 
             const auto originalPopulation = population;
-            for (int i = Options.EliteCount; i < Options.PopulationCount; ++i)
+            for (int i = Options.generation_counters.elite_count; i < Options.generation_counters.population_count; ++i)
             {
                 auto child1 = createChild(originalPopulation, population[0], model, generation);
                 auto child2 = createChild(originalPopulation, population[0], model, generation);
@@ -73,7 +73,7 @@ namespace Deltares::Optimization
         const auto best = std::ranges::min_element(population,
             [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
 
-        model.reportConvergence(best->Z, 0, Options.GenerationCount);
+        model.reportConvergence(best->Z, 0, Options.generation_counters.generation_count);
 
         OptimizationResult result;
         result.succeeded = !isStopped();
@@ -86,9 +86,9 @@ namespace Deltares::Optimization
     void GeneticAlgorithm::setEliteAtBegin(std::vector<ModelSample>& population) const
     {
         // Preserve the C# elite ordering: mutation is relative to population[0].
-        for (int i = Options.EliteCount; i < Options.PopulationCount; ++i)
+        for (int i = Options.generation_counters.elite_count; i < Options.generation_counters.population_count; ++i)
         {
-            for (int elite = 0; elite < Options.EliteCount; ++elite)
+            for (int elite = 0; elite < Options.generation_counters.elite_count; ++elite)
             {
                 if (population[i].Z < population[elite].Z)
                 {
@@ -102,8 +102,8 @@ namespace Deltares::Optimization
     {
         const auto& dimensions = Options.SearchArea.Dimensions;
         std::vector<ModelSample> population;
-        population.reserve(Options.PopulationCount);
-        for (int i = 0; i < Options.PopulationCount; ++i)
+        population.reserve(Options.generation_counters.population_count);
+        for (int i = 0; i < Options.generation_counters.population_count; ++i)
         {
             ModelSample sample(dimensions.size());
             if (Options.initializePopulationMethod == InitializePopulationMethod::Parabolic)
@@ -140,8 +140,8 @@ namespace Deltares::Optimization
     ModelSample GeneticAlgorithm::createChild(const std::vector<ModelSample>& population,
         const ModelSample& mutationAnchor, BaseModelRunner& model, int generation)
     {
-        const int father = rng.next(Options.PopulationCount);
-        const int mother = rng.next(Options.PopulationCount);
+        const int father = rng.next(Options.generation_counters.population_count);
+        const int mother = rng.next(Options.generation_counters.population_count);
         if (Options.CrossOverRandomFrequency == RandomFrequency::Child)
         {
             randomizeMaskRange(crossOverMaskRange, Options.CrossOverRandomEffect);

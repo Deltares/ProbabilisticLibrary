@@ -52,7 +52,7 @@ namespace Deltares::Optimization
         int last_improving_generation = 0;
         bool succeeded = true;
 
-        while (generation_index < Options.GenerationCount)
+        while (generation_index < Options.generation_counters.generation_count)
         {
             std::vector<ModelSample> elite = population;
 
@@ -62,15 +62,15 @@ namespace Deltares::Optimization
                                   return a.Z < b.Z;
                               });
 
-            while (static_cast<int>(elite.size()) > Options.EliteCount)
+            while (static_cast<int>(elite.size()) > Options.generation_counters.elite_count)
             {
                 elite.pop_back();
             }
 
             double algorithm_divider =
-                std::max(0.1, 0.9 - generation_index / (0.9 * static_cast<double>(Options.GenerationCount)));
+                std::max(0.1, 0.9 - generation_index / (0.9 * static_cast<double>(Options.generation_counters.generation_count)));
 
-            for (int m = 0; m < Options.PopulationCount; ++m)
+            for (int m = 0; m < Options.generation_counters.population_count; ++m)
             {
                 if (rng.next() < algorithm_divider)
                 {
@@ -91,9 +91,9 @@ namespace Deltares::Optimization
                 }
             }
 
-            model.reportConvergence(best_particle.Z, generation_index + 1, Options.GenerationCount);
+            model.reportConvergence(best_particle.Z, generation_index + 1, Options.generation_counters.generation_count);
 
-            if (generation_index -last_improving_generation >= Options.StopAfterNonImprovingGenerations)
+            if (generation_index -last_improving_generation >= Options.generation_counters.stop_after_non_improving_generations)
             {
                 break;
             }
@@ -191,7 +191,7 @@ namespace Deltares::Optimization
         ModelSample best_particle = ModelSample(particle_size);
         bool first = true;
 
-        for (int k = 0; k < Options.PopulationCount; ++k)
+        for (int k = 0; k < Options.generation_counters.population_count; ++k)
         {
             ModelSample sample(particle_size);
 
@@ -223,7 +223,7 @@ namespace Deltares::Optimization
                 first = false;
             }
 
-            model.reportConvergence(best_particle.Z, 0, Options.GenerationCount);
+            model.reportConvergence(best_particle.Z, 0, Options.generation_counters.generation_count);
         }
 
         return best_particle;

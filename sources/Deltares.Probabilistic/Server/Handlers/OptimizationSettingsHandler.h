@@ -69,10 +69,10 @@ namespace Deltares::Server
             if (property_ == "maximum_iterations") return settings->Iterations;
             else if (property_ == "max_grid_moves") return settings->MaxGridMoves;
             else if (property_ == "search_parameter_settings_count") return static_cast<int>(settings->SearchArea->Dimensions.size());
-            else if (property_ == "generation_count") return settings->GenerationCount;
-            else if (property_ == "elite_count") return settings->EliteCount;
-            else if (property_ == "population_count") return settings->PopulationCount;
-            else if (property_ == "stop_after_non_improving_generations") return settings->StopAfterNonImprovingGenerations;
+            else if (property_ == "generation_count") return settings->generation_counters.generation_count;
+            else if (property_ == "elite_count") return settings->generation_counters.elite_count;
+            else if (property_ == "population_count") return settings->generation_counters.population_count;
+            else if (property_ == "stop_after_non_improving_generations") return settings->generation_counters.stop_after_non_improving_generations;
             else if (property_ == "seed") return settings->random_settings.Seed;
             else if (property_ == "cross_over_fractions_count" || property_ == "mutation_fractions_count") return 3;
             else return DerivedObjectHandler::GetIntValue(settings, property_);
@@ -83,10 +83,10 @@ namespace Deltares::Server
             if (property_ == "maximum_iterations") settings->Iterations = value;
             else if (property_ == "max_grid_moves") settings->MaxGridMoves = value;
             else if (property_ == "add_search_parameter_settings") settings->SearchArea->Dimensions.push_back(searchParameterSettingsHandler->GetObject(value));
-            else if (property_ == "generation_count") settings->GenerationCount = value;
-            else if (property_ == "elite_count") settings->EliteCount = value;
-            else if (property_ == "population_count") settings->PopulationCount = value;
-            else if (property_ == "stop_after_non_improving_generations") settings->StopAfterNonImprovingGenerations = value;
+            else if (property_ == "generation_count") settings->generation_counters.generation_count = value;
+            else if (property_ == "elite_count") settings->generation_counters.elite_count = value;
+            else if (property_ == "population_count") settings->generation_counters.population_count = value;
+            else if (property_ == "stop_after_non_improving_generations") settings->generation_counters.stop_after_non_improving_generations = value;
             else if (property_ == "seed") settings->random_settings.Seed = value;
             else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }

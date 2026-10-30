@@ -23,6 +23,7 @@
 
 #include "SearchParameterSettingsSet.h"
 #include "ThreeFractions.h"
+#include "GenerationCounters.h"
 #include "../Model/Validatable.h"
 
 namespace Deltares::Optimization
@@ -40,9 +41,7 @@ namespace Deltares::Optimization
     {
     public:
         SearchParameterSettingsSet SearchArea;
-        int EliteCount = 2;
-        int PopulationCount = 60;
-        int GenerationCount = 50;
+        GenerationCounters generation_counters = GenerationCounters(50, 2, 60, 100);
         double MutationRate = 0.3;
         ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3);
         ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1);

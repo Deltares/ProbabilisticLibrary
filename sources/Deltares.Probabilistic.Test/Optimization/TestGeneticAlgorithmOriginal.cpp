@@ -43,9 +43,9 @@ namespace Deltares::Optimization::Test
 
         void SetUp() override
         {
-            options.PopulationCount = 200;
-            options.GenerationCount = 100;
-            options.EliteCount = 2;
+            options.generation_counters.population_count = 200;
+            options.generation_counters.generation_count = 100;
+            options.generation_counters.elite_count = 2;
             options.MutationRate = 0.3;
             referenceGenerator.seed(options.Seed);
         }
@@ -145,7 +145,7 @@ namespace Deltares::Optimization::Test
             EXPECT_NEAR(anchor.Values[gene], expectedAnchor[gene], 1e-10);
         }
         // Parabolic initialization consumes three draws for each population member.
-        for (int i = 3; i < options.PopulationCount * 3; ++i)
+        for (int i = 3; i < options.generation_counters.population_count * 3; ++i)
         {
             nextReference();
         }

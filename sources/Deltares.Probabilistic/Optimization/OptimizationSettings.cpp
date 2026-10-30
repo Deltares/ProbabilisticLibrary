@@ -27,6 +27,8 @@
 namespace Deltares::Optimization
 {
     using enum OptimizationMethodType;
+    using enum RandomFrequency;
+    using enum RandomEffect;
 
     std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod() const
     {
@@ -67,10 +69,7 @@ namespace Deltares::Optimization
     {
         auto options = AdaptiveParticleSwarmOptimizationSettings();
         options.SearchArea = SearchArea->CopySearchParameterSettings();
-        options.GenerationCount = GenerationCount;
-        options.EliteCount = EliteCount;
-        options.PopulationCount = PopulationCount;
-        options.StopAfterNonImprovingGenerations = StopAfterNonImprovingGenerations;
+        options.generation_counters = generation_counters;
         options.DifferentialWeight = DifferentialWeight;
         options.CrossOver = CrossOver;
         options.Beta = Beta;
@@ -86,9 +85,7 @@ namespace Deltares::Optimization
     {
         auto settings = GeneticAlgorithmSettings();
         settings.SearchArea = SearchArea->CopySearchParameterSettings();
-        settings.GenerationCount = GenerationCount;
-        settings.EliteCount = EliteCount;
-        settings.PopulationCount = PopulationCount;
+        settings.generation_counters = generation_counters;
         settings.MutationRate = MutationRate;
         settings.CrossOverFractions = CrossOverFractions;
         settings.MutationFractions = MutationFractions;
@@ -161,18 +158,18 @@ namespace Deltares::Optimization
     {
         switch (method)
         {
-        case RandomFrequency::Never: return "never";
-        case RandomFrequency::Generation : return "generation";
-        case RandomFrequency::Child: return "child";
+        case Never: return "never";
+        case Generation : return "generation";
+        case Child: return "child";
         default: throw Reliability::ProbabilisticLibraryException("Random frequency setting");
         }
     }
 
     RandomFrequency OptimizationSettings::getRandomFrequencyString(const std::string& method)
     {
-        if (method == "never") return RandomFrequency::Never;
-        else if (method == "generation") return RandomFrequency::Generation;
-        else if (method == "child") return RandomFrequency::Child;
+        if (method == "never") return Never;
+        else if (method == "generation") return Generation;
+        else if (method == "child") return Child;
         else throw Reliability::ProbabilisticLibraryException("Random frequency setting");
     }
 
@@ -180,16 +177,16 @@ namespace Deltares::Optimization
     {
         switch (method)
         {
-        case RandomEffect::Unity: return "unity";
-        case RandomEffect::Free: return "free";
+        case Unity: return "unity";
+        case Free: return "free";
         default: throw Reliability::ProbabilisticLibraryException("Random effect setting");
         }
     }
 
     RandomEffect OptimizationSettings::getRandomEffect(const std::string& method)
     {
-        if (method == "unity") return RandomEffect::Unity;
-        else if (method == "free") return RandomEffect::Free;
+        if (method == "unity") return Unity;
+        else if (method == "free") return Free;
         else throw Reliability::ProbabilisticLibraryException("Random effect setting");
     }
 }

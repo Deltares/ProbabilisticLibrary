@@ -22,18 +22,13 @@
 #include "GeneticAlgorithmSettings.h"
 #include "../Logging/ValidationSupport.h"
 
-#include <cmath>
-
 namespace Deltares::Optimization
 {
     void GeneticAlgorithmSettings::validate(Logging::ValidationReport& report) const
     {
         using Logging::ValidationSupport;
 
-        ValidationSupport::checkMinimumInt(report, 1, PopulationCount, "PopulationCount");
-        ValidationSupport::checkMinimumInt(report, 0, EliteCount, "EliteCount");
-        ValidationSupport::checkMaximumNonInclusive(report, PopulationCount, EliteCount, "EliteCount");
-        ValidationSupport::checkMinimumInt(report, 1, GenerationCount, "GenerationCount");
+        generation_counters.validate(report);
 
         const auto checkFinite = [&report](double value, const std::string& name)
         {

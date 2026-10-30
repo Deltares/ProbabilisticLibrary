@@ -63,9 +63,9 @@ namespace Deltares::Optimization::Test
     TEST(GeneticAlgorithmTest, DefaultSettings)
     {
         auto options = getSettings();
-        EXPECT_EQ(options.PopulationCount, 60);
-        EXPECT_EQ(options.EliteCount, 2);
-        EXPECT_EQ(options.GenerationCount, 50);
+        EXPECT_EQ(options.generation_counters.population_count, 60);
+        EXPECT_EQ(options.generation_counters.elite_count, 2);
+        EXPECT_EQ(options.generation_counters.generation_count, 50);
         EXPECT_DOUBLE_EQ(options.MutationRate, 0.3);
         EXPECT_DOUBLE_EQ(options.CrossOverFractions.getValueByIndex(1), 0.7);
         EXPECT_DOUBLE_EQ(options.MutationFractions.getValueByIndex(1), 0.9);
@@ -79,11 +79,7 @@ namespace Deltares::Optimization::Test
     TEST(GeneticAlgorithmTest, RejectsInvalidSettingsBeforeEvaluatingModel)
     {
         const std::vector<std::function<void(GeneticAlgorithmSettings&)>> invalidate = {
-            [](auto& o) { o.PopulationCount = 0; },
-            [](auto& o) { o.PopulationCount = std::numeric_limits<int>::min(); },
-            [](auto& o) { o.EliteCount = -1; },
-            [](auto& o) { o.EliteCount = o.PopulationCount; },
-            [](auto& o) { o.GenerationCount = 0; },
+            [](auto& o) { o.generation_counters = GenerationCounters(0, 0, 0, 0); },
             [](auto& o) { o.MutationRate = -0.1; },
             [](auto& o) { o.MutationRate = 1.1; },
             [](auto& o) { o.MutationRate = std::numeric_limits<double>::quiet_NaN(); },
@@ -129,9 +125,9 @@ namespace Deltares::Optimization::Test
             {
                 auto options = getSettings(dimensions);
                 options.initializePopulationMethod = method;
-                options.PopulationCount = 4;
-                options.EliteCount = 1;
-                options.GenerationCount = 1;
+                options.generation_counters.population_count = 4;
+                options.generation_counters.elite_count = 1;
+                options.generation_counters.generation_count = 1;
                 std::vector<ModelSample> samples;
                 auto z = getModel([&](ModelSample& sample)
                 {
@@ -147,7 +143,7 @@ namespace Deltares::Optimization::Test
 
                 Numeric::RandomValueGenerator rng;
                 rng.initialize(true, options.Seed);
-                for (int i = 0; i < options.PopulationCount; ++i)
+                for (int i = 0; i < options.generation_counters.population_count; ++i)
                 {
                     EXPECT_EQ(samples[i].IterationIndex, -1);
                     double c = 0.0;
@@ -170,7 +166,7 @@ namespace Deltares::Optimization::Test
                             options.SearchArea.Dimensions[gene].GetAbsoluteValue(ratio));
                     }
                 }
-                for (size_t i = options.PopulationCount; i < samples.size(); ++i)
+                for (size_t i = options.generation_counters.population_count; i < samples.size(); ++i)
                 {
                     EXPECT_EQ(samples[i].IterationIndex, 0);
                 }
@@ -187,8 +183,8 @@ namespace Deltares::Optimization::Test
                 SCOPED_TRACE(crossover);
                 SCOPED_TRACE(mutation);
                 auto options = getSettings(7);
-                options.PopulationCount = 10;
-                options.GenerationCount = 3;
+                options.generation_counters.population_count = 10;
+                options.generation_counters.generation_count = 3;
                 options.MutationRate = 1.0;
                 switch(crossover)
                 {
@@ -230,9 +226,9 @@ namespace Deltares::Optimization::Test
         for (int method = 0; method < 3; ++method)
         {
             auto options = getSettings(12);
-            options.PopulationCount = 20;
-            options.EliteCount = 1;
-            options.GenerationCount = 1;
+            options.generation_counters.population_count = 20;
+            options.generation_counters.elite_count = 1;
+            options.generation_counters.generation_count = 1;
             options.MutationRate = 0.0;
             switch (method)
             {
@@ -246,7 +242,7 @@ namespace Deltares::Optimization::Test
             auto z = getModel([&](ModelSample& sample)
             {
                 sample.Z = calls;
-                if (calls < options.PopulationCount)
+                if (calls < options.generation_counters.population_count)
                 {
                     std::ranges::fill(sample.Values, -5.0 + 0.5 * calls);
                 }
@@ -290,9 +286,9 @@ namespace Deltares::Optimization::Test
         for (bool inverse : { false, true })
         {
             auto options = getSettings(1);
-            options.PopulationCount = 3;
-            options.EliteCount = 1;
-            options.GenerationCount = 1;
+            options.generation_counters.population_count = 3;
+            options.generation_counters.elite_count = 1;
+            options.generation_counters.generation_count = 1;
             options.MutationRate = 1.0;
             options.MutationCreepReduction = 0.0;
             if (inverse)
@@ -307,7 +303,7 @@ namespace Deltares::Optimization::Test
             auto z = getModel([&](ModelSample& sample)
             {
                 sample.Z = calls;
-                if (calls < options.PopulationCount)
+                if (calls < options.generation_counters.population_count)
                 {
                     sample.Values[0] = 2.0 + calls;
                 }
@@ -330,9 +326,9 @@ namespace Deltares::Optimization::Test
         for (bool firstBetter : { false, true })
         {
             auto options = getSettings(1);
-            options.PopulationCount = 1;
-            options.EliteCount = 0;
-            options.GenerationCount = 1;
+            options.generation_counters.population_count = 1;
+            options.generation_counters.elite_count = 0;
+            options.generation_counters.generation_count = 1;
             options.MutationRate = 1.0;
             options.MutationFractions = ThreeFractions(1.0, 0.0, 0.0);
             std::vector<ModelSample> samples;
@@ -358,8 +354,8 @@ namespace Deltares::Optimization::Test
             for (auto effect : { RandomEffect::Free, RandomEffect::Unity })
             {
                 auto options = getSettings(7);
-                options.PopulationCount = 10;
-                options.GenerationCount = 3;
+                options.generation_counters.population_count = 10;
+                options.generation_counters.generation_count = 3;
                 options.CrossOverRandomFrequency = frequency;
                 options.MutationRandomFrequency = frequency;
                 options.CrossOverRandomEffect = effect;
@@ -397,8 +393,8 @@ namespace Deltares::Optimization::Test
     TEST(GeneticAlgorithmTest, MinimizesQuadratic)
     {
         auto options = getSettings();
-        options.PopulationCount = 100;
-        options.GenerationCount = 100;
+        options.generation_counters.population_count = 100;
+        options.generation_counters.generation_count = 100;
         auto z = getModel([](ModelSample& sample)
         {
             sample.Z = std::pow(sample.Values[0] - 1.5, 2) + std::pow(sample.Values[1] + 2.0, 2);
@@ -417,9 +413,9 @@ namespace Deltares::Optimization::Test
     TEST(GeneticAlgorithmTest, CancellationReturnsCurrentBestWithoutSuccess)
     {
         auto options = getSettings();
-        options.PopulationCount = 4;
-        options.EliteCount = 1;
-        options.GenerationCount = 5;
+        options.generation_counters.population_count = 4;
+        options.generation_counters.elite_count = 1;
+        options.generation_counters.generation_count = 5;
         GeneticAlgorithm algorithm(options);
         int calls = 0;
         auto z = getModel([&](ModelSample& sample)

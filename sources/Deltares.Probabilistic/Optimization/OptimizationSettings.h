@@ -25,6 +25,7 @@
 #include "GridSearchOptimization.h"
 #include "CobylaOptimization.h"
 #include "AdaptiveParticleSwarmOptimization.h"
+#include "GenerationCounters.h"
 #include "GeneticAlgorithm.h"
 #include "SearchParameterSettingsSetWithSharedPointers.h"
 #include "ThreeFractions.h"
@@ -43,7 +44,7 @@ namespace Deltares::Optimization
     public:
         OptimizationSettings() = default;
 
-        virtual ~OptimizationSettings() = default;
+        ~OptimizationSettings() override = default;
 
         /**
          * \brief Method type how the design point (alpha values) is calculated
@@ -84,13 +85,7 @@ namespace Deltares::Optimization
         RandomEffect CrossOverRandomEffect;
         RandomEffect MutationRandomEffect;
 
-        int GenerationCount = 50;
-
-        int EliteCount = 8;
-
-        int PopulationCount = 125;
-
-        int StopAfterNonImprovingGenerations = 100;
+        GenerationCounters generation_counters = GenerationCounters(50, 8, 125, 100);
 
         /**
          * \brief Settings for individual parameters, such as the start value
