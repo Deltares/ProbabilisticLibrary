@@ -23,6 +23,7 @@
 #pragma once
 
 #include "SearchParameterSettingsSet.h"
+#include "GenerationCounters.h"
 #include "../Model/Validatable.h"
 
 namespace Deltares::Optimization
@@ -36,10 +37,7 @@ namespace Deltares::Optimization
         double Beta = 0.5;
         double Delta = 0.7;
         int Seed = 12345;
-        int GenerationCount = 50;
-        int EliteCount = 8;
-        int PopulationCount = 125;
-        int StopAfterNonImprovingGenerations = 100;
+        GenerationCounters generation_counters = GenerationCounters(50, 8, 125, 100);
 
         /**
          * \brief Reports whether the settings have valid values

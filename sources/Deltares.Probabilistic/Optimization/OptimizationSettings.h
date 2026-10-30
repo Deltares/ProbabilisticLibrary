@@ -25,13 +25,16 @@
 #include "GridSearchOptimization.h"
 #include "CobylaOptimization.h"
 #include "AdaptiveParticleSwarmOptimization.h"
+#include "GenerationCounters.h"
+#include "GeneticAlgorithm.h"
 #include "SearchParameterSettingsSetWithSharedPointers.h"
+#include "ThreeFractions.h"
 #include "../Model/ModelProjectSettings.h"
 #include "../Model/RandomSettings.h"
 
 namespace Deltares::Optimization
 {
-    enum class OptimizationMethodType { GridSearch, Cobyla, APSO };
+    enum class OptimizationMethodType { GridSearch, Cobyla, APSO, GA };
 
     /**
      * \brief General settings applicable to all optimization mechanisms
@@ -41,7 +44,7 @@ namespace Deltares::Optimization
     public:
         OptimizationSettings() = default;
 
-        virtual ~OptimizationSettings() = default;
+        ~OptimizationSettings() override = default;
 
         /**
          * \brief Method type how the design point (alpha values) is calculated
@@ -68,13 +71,21 @@ namespace Deltares::Optimization
 
         double Delta = 0.7;
 
-        int GenerationCount = 50;
+        // Cross over settings; fractions should add to 1.0
+        ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3);
 
-        int EliteCount = 8;
+        // Mutation settings; fractions should add to 1.0
+        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1);
+        double MutationRate = 0.3;
+        double CreepReduction = 0.05;
 
-        int PopulationCount = 125;
+        InitializePopulationMethod initializePopulationMethod;
+        RandomFrequency CrossOverRandomFrequency;
+        RandomFrequency MutationRandomFrequency;
+        RandomEffect CrossOverRandomEffect;
+        RandomEffect MutationRandomEffect;
 
-        int StopAfterNonImprovingGenerations = 100;
+        GenerationCounters generation_counters = GenerationCounters(50, 8, 125, 100);
 
         /**
          * \brief Settings for individual parameters, such as the start value
@@ -96,10 +107,18 @@ namespace Deltares::Optimization
 
         static std::string getOptimizationMethodTypeString(OptimizationMethodType method);
         static OptimizationMethodType getOptimizationMethodType(const std::string& method);
+        static std::string getInitializePopulationMethod(InitializePopulationMethod method);
+        static InitializePopulationMethod getInitializePopulationMethod(const std::string& method);
+        static std::string getRandomFrequency(RandomFrequency method);
+        static RandomFrequency getRandomFrequencyString(const std::string& method);
+        static std::string getRandomEffectString(RandomEffect method);
+        static RandomEffect getRandomEffect(const std::string& method);
+
     private:
         std::shared_ptr<GridSearchOptimization> GetGridSearchMethod() const;
         std::shared_ptr<CobylaOptimization> GetCobylaMethod() const;
         std::shared_ptr<AdaptiveParticleSwarmOptimization> GetApsoMethod() const;
+        std::shared_ptr<GeneticAlgorithm> GetGaMethod() const;
     };
 }
 

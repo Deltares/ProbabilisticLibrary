@@ -170,6 +170,8 @@
     <ClInclude Include="Optimization\OptimizationProject.h" />
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Optimization\ThreeFractions.h" />
+    <ClInclude Include="Optimization\GenerationCounters.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSetWithSharedPointers.h" />
     <ClInclude Include="Server\Handlers\OptimizationProjectHandler.h" />
     <ClInclude Include="Server\Handlers\OptimizationResultHandler.h" />
@@ -358,6 +360,8 @@
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimization.h" />
     <ClInclude Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.h" />
+    <ClInclude Include="Optimization\GeneticAlgorithm.h" />
+    <ClInclude Include="Optimization\GeneticAlgorithmSettings.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Optimization\Cobyla.h" />
@@ -499,6 +503,8 @@
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />
+    <ClCompile Include="Optimization\ThreeFractions.cpp" />
+    <ClCompile Include="Optimization\GenerationCounters.cpp" />
     <ClCompile Include="Server\Handlers\ReliabilityHandlers.cpp" />
     <ClCompile Include="Server\Handlers\StatisticsHandlers.cpp" />
     <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />
@@ -618,6 +624,8 @@
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimization.cpp" />
     <ClCompile Include="Optimization\AdaptiveParticleSwarmOptimizationSettings.cpp" />
+    <ClCompile Include="Optimization\GeneticAlgorithm.cpp" />
+    <ClCompile Include="Optimization\GeneticAlgorithmSettings.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\Cobyla.cpp" />

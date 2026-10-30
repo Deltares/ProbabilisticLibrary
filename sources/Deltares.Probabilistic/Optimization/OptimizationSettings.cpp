@@ -27,14 +27,17 @@
 namespace Deltares::Optimization
 {
     using enum OptimizationMethodType;
+    using enum RandomFrequency;
+    using enum RandomEffect;
 
     std::shared_ptr<OptimizationMethod> OptimizationSettings::GetOptimizationMethod() const
     {
-        switch (this->OptimizationMethod)
+        switch (OptimizationMethod)
         {
-        case GridSearch: return this->GetGridSearchMethod();
-        case Cobyla: return this->GetCobylaMethod();
-        case APSO: return this->GetApsoMethod();
+        case GridSearch: return GetGridSearchMethod();
+        case Cobyla: return GetCobylaMethod();
+        case APSO: return GetApsoMethod();
+        case GA: return GetGaMethod();
 
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
@@ -66,10 +69,7 @@ namespace Deltares::Optimization
     {
         auto options = AdaptiveParticleSwarmOptimizationSettings();
         options.SearchArea = SearchArea->CopySearchParameterSettings();
-        options.GenerationCount = GenerationCount;
-        options.EliteCount = EliteCount;
-        options.PopulationCount = PopulationCount;
-        options.StopAfterNonImprovingGenerations = StopAfterNonImprovingGenerations;
+        options.generation_counters = generation_counters;
         options.DifferentialWeight = DifferentialWeight;
         options.CrossOver = CrossOver;
         options.Beta = Beta;
@@ -79,6 +79,25 @@ namespace Deltares::Optimization
         auto apso = std::make_shared<AdaptiveParticleSwarmOptimization>(options);
 
         return apso;
+    }
+
+    std::shared_ptr<GeneticAlgorithm> OptimizationSettings::GetGaMethod() const
+    {
+        auto settings = GeneticAlgorithmSettings();
+        settings.SearchArea = SearchArea->CopySearchParameterSettings();
+        settings.generation_counters = generation_counters;
+        settings.MutationRate = MutationRate;
+        settings.CrossOverFractions = CrossOverFractions;
+        settings.MutationFractions = MutationFractions;
+        settings.MutationCreepReduction = CreepReduction;
+        settings.initializePopulationMethod = initializePopulationMethod;
+        settings.CrossOverRandomFrequency = CrossOverRandomFrequency;
+        settings.MutationRandomFrequency = MutationRandomFrequency;
+        settings.CrossOverRandomEffect = CrossOverRandomEffect;
+        settings.MutationRandomEffect = MutationRandomEffect;
+
+        auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
+        return genetic_algorithm;
     }
 
     /**
@@ -92,6 +111,7 @@ namespace Deltares::Optimization
         case GridSearch: GetGridSearchMethod()->Settings.validate(report); break;
         case Cobyla: GetCobylaMethod()->Settings.validate(report); break;
         case APSO: GetApsoMethod()->validate(report); break;
+        case GA: GetGaMethod()->validate(report); break;
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -103,6 +123,7 @@ namespace Deltares::Optimization
         case GridSearch: return "grid";
         case Cobyla: return "cobyla";
         case APSO: return "apso";
+        case GA: return "ga";
         default: throw Reliability::ProbabilisticLibraryException("Optimization method");
         }
     }
@@ -112,7 +133,61 @@ namespace Deltares::Optimization
         if (method == "grid") return GridSearch;
         else if (method == "cobyla") return Cobyla;
         else if (method == "apso") return APSO;
+        else if (method == "ga") return GA;
         else throw Reliability::ProbabilisticLibraryException("Optimization method");
+    }
+
+    std::string OptimizationSettings::getInitializePopulationMethod(InitializePopulationMethod method)
+    {
+        switch (method)
+        {
+        case InitializePopulationMethod::Uniform: return "uniform";
+        case InitializePopulationMethod::Parabolic: return "parabolic";
+        default: throw Reliability::ProbabilisticLibraryException("Initialize population method");
+        }
+    }
+
+    InitializePopulationMethod OptimizationSettings::getInitializePopulationMethod(const std::string& method)
+    {
+        if (method == "uniform") return InitializePopulationMethod::Uniform;
+        else if (method == "parabolic") return InitializePopulationMethod::Parabolic;
+        else throw Reliability::ProbabilisticLibraryException("Initialize population method");
+    }
+
+    std::string OptimizationSettings::getRandomFrequency(RandomFrequency method)
+    {
+        switch (method)
+        {
+        case Never: return "never";
+        case Generation : return "generation";
+        case Child: return "child";
+        default: throw Reliability::ProbabilisticLibraryException("Random frequency setting");
+        }
+    }
+
+    RandomFrequency OptimizationSettings::getRandomFrequencyString(const std::string& method)
+    {
+        if (method == "never") return Never;
+        else if (method == "generation") return Generation;
+        else if (method == "child") return Child;
+        else throw Reliability::ProbabilisticLibraryException("Random frequency setting");
+    }
+
+    std::string OptimizationSettings::getRandomEffectString(RandomEffect method)
+    {
+        switch (method)
+        {
+        case Unity: return "unity";
+        case Free: return "free";
+        default: throw Reliability::ProbabilisticLibraryException("Random effect setting");
+        }
+    }
+
+    RandomEffect OptimizationSettings::getRandomEffect(const std::string& method)
+    {
+        if (method == "unity") return Unity;
+        else if (method == "free") return Free;
+        else throw Reliability::ProbabilisticLibraryException("Random effect setting");
     }
 }
 
