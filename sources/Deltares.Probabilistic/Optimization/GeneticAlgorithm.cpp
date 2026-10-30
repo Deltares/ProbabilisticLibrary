@@ -106,6 +106,7 @@ namespace Deltares::Optimization
         for (int i = 0; i < Options.generation_counters.population_count; ++i)
         {
             ModelSample sample(dimensions.size());
+            sample.IterationIndex = -1;
             if (Options.initializePopulationMethod == InitializePopulationMethod::Parabolic)
             {
                 // The parabola has the shape f = A (g-c)^2 + B (g normalized).
