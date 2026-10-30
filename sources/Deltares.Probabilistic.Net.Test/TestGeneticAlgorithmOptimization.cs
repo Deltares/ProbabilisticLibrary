@@ -51,11 +51,11 @@ namespace Deltares.Probabilistic.Test
             project.Settings.PopulationCount = 125;
             project.Settings.MutationRate = 0.33;
             project.Settings.CrossOverFractions = [0.01, 0.69, 0.3];
-            var mf = project.Settings.MutationFractions;
-            ClassicAssert.AreEqual(mf[0], 0.0, margin);
-            ClassicAssert.AreEqual(mf[1], 0.1, margin);
-            ClassicAssert.AreEqual(mf[2], 0.9, margin);
-            project.Settings.MutationFractions = mf;
+            var mutationFractions = project.Settings.MutationFractions;
+            ClassicAssert.AreEqual(mutationFractions[0], 0.0, margin);
+            ClassicAssert.AreEqual(mutationFractions[1], 0.9, margin);
+            ClassicAssert.AreEqual(mutationFractions[2], 0.1, margin);
+            project.Settings.MutationFractions = mutationFractions;
             project.Settings.CreepReduction = 0.055;
             project.Settings.InitializePopulationMethod = InitializePopulationMethod.Parabolic;
             project.Settings.CrossOverRandomFrequency = RandomFrequency.Never;

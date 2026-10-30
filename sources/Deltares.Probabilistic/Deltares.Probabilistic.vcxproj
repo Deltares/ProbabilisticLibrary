@@ -170,6 +170,7 @@
     <ClInclude Include="Optimization\OptimizationProject.h" />
     <ClInclude Include="Optimization\OptimizationSettings.h" />
     <ClInclude Include="Optimization\OptimizationResult.h" />
+    <ClInclude Include="Optimization\ThreeFractions.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSetWithSharedPointers.h" />
     <ClInclude Include="Server\Handlers\OptimizationProjectHandler.h" />
     <ClInclude Include="Server\Handlers\OptimizationResultHandler.h" />
@@ -501,6 +502,7 @@
     <ClCompile Include="Optimization\OptimizationMethod.cpp" />
     <ClCompile Include="Optimization\OptimizationProject.cpp" />
     <ClCompile Include="Optimization\OptimizationSettings.cpp" />
+    <ClCompile Include="Optimization\ThreeFractions.cpp" />
     <ClCompile Include="Server\Handlers\ReliabilityHandlers.cpp" />
     <ClCompile Include="Server\Handlers\StatisticsHandlers.cpp" />
     <ClCompile Include="Reliability\ProbabilityLimitStateFunction.cpp" />
