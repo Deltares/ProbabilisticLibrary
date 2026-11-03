@@ -46,8 +46,8 @@ namespace Deltares::Optimization
     enum class MutationTypes
     {
         Jump,
-        Inverse,
-        Creep
+        Creep,
+        Inverse
     };
 
     /**

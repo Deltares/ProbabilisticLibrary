@@ -214,14 +214,17 @@ namespace Deltares::Optimization
     {
         const auto method = selectCrossOverMask(crossOverMaskRange);
         const double count = static_cast<double>(crossOverMask.size());
-        if (method == CrossOverTypes::Scatter)
+        switch (method)
+        {
+        case CrossOverTypes::Scatter:
         {
             for (auto& parent : crossOverMask)
             {
                 parent = rng.next() > 0.5 ? 1 : 0;
             }
         }
-        else if (method == CrossOverTypes::SinglePoint)
+        break;
+        case CrossOverTypes::SinglePoint:
         {
             const double point = rng.next() * (count - 2.0) + 0.5;
             for (size_t gene = 0; gene < crossOverMask.size(); ++gene)
@@ -229,7 +232,8 @@ namespace Deltares::Optimization
                 crossOverMask[gene] = static_cast<double>(gene) < point ? 0 : 1;
             }
         }
-        else if (method == CrossOverTypes::DoublePoint)
+        break;
+        case CrossOverTypes::DoublePoint:
         {
             double first = rng.next() * (count - 3.0) + 0.5;
             double second = rng.next() * (count - 3.0) + 0.5;
@@ -244,7 +248,11 @@ namespace Deltares::Optimization
                 crossOverMask[gene] = position < first || position > second ? 0 : 1;
             }
         }
-        else throw Reliability::ProbabilisticLibraryException("Internal error: method not in range 0 - 2, but: ", static_cast<int>(method));
+        break;
+        default:
+            throw Reliability::ProbabilisticLibraryException("Internal error: method not in range 0 - 2, but: ",
+                static_cast<int>(method));
+        }
     }
 
     void GeneticAlgorithm::determineMutationMask(const ModelSample& first)
@@ -254,11 +262,14 @@ namespace Deltares::Optimization
         for (size_t gene = 0; gene < dimensions.size(); ++gene)
         {
             const auto& dimension = dimensions[gene];
-            if (method == MutationTypes::Jump)
+            switch (method)
             {
-                mutationMask[gene] = dimension.GetAbsoluteValue(rng.next());
-            }
-            else if (method == MutationTypes::Creep)
+            case MutationTypes::Jump:
+                {
+                    mutationMask[gene] = dimension.GetAbsoluteValue(rng.next());
+                }
+                break;
+            case MutationTypes::Creep:
             {
                 const double new_value = first.Values[gene] + Options.MutationCreepReduction *
                     (2.0 * rng.next() - 1.0) * (dimension.MaxValue - dimension.MinValue);
@@ -271,11 +282,16 @@ namespace Deltares::Optimization
                     mutationMask[gene] = std::clamp(new_value, dimension.MinValue, dimension.MaxValue);
                 }
             }
-            else if (method == MutationTypes::Inverse)
+            break;
+            case MutationTypes::Inverse:
             {
                 mutationMask[gene] = dimension.MinValue + (dimension.MaxValue - first.Values[gene]);
             }
-            else throw Reliability::ProbabilisticLibraryException("Internal error: method not in range 0 - 2, but: ", static_cast<int>(method));
+            break;
+            default:
+                throw Reliability::ProbabilisticLibraryException("Internal error: method not in range 0 - 2, but: ",
+                    static_cast<int>(method));
+            }
         }
     }
 }
