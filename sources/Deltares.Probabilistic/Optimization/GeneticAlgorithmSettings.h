@@ -44,7 +44,7 @@ namespace Deltares::Optimization
         GenerationCounters generation_counters = GenerationCounters(50, 2, 60, 100);
         double MutationRate = 0.3;
         ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3, {"Scatter", "Single point", "Double point"});
-        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1, {"Jump", "Inverse", "Creep"});
+        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1, {"Jump", "Creep", "Inverse"});
         double MutationCreepReduction = 0.05;
         int Seed = 1;
         InitializePopulationMethod initializePopulationMethod = InitializePopulationMethod::Uniform;

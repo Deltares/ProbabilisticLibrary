@@ -77,7 +77,7 @@ namespace Deltares::Optimization
 
         // Mutation settings; fractions should add to 1.0
         ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1,
-            {"Jump", "Inverse", "Creep"});
+            {"Jump", "Creep", "Inverse"});
         double MutationRate = 0.3;
         double CreepReduction = 0.05;
 
