@@ -47,6 +47,8 @@ namespace Deltares::Server
             else if (property_ == "cross_over") return settings->CrossOver;
             else if (property_ == "beta") return settings->Beta;
             else if (property_ == "delta") return settings->Delta;
+            else if (property_ == "mutation_rate") return settings->MutationRate;
+            else if (property_ == "creep_reduction") return settings->CreepReduction;
             else return DerivedObjectHandler::GetValue(settings, property_);
         }
 
@@ -57,6 +59,8 @@ namespace Deltares::Server
             else if (property_ == "cross_over") settings->CrossOver = value;
             else if (property_ == "beta") settings->Beta = value;
             else if (property_ == "delta") settings->Delta = value;
+            else if (property_ == "mutation_rate") settings->MutationRate = value;
+            else if (property_ == "creep_reduction") settings->CreepReduction = value;
             else DerivedObjectHandler::SetValue(settings, property_, value);
         }
 
@@ -65,11 +69,12 @@ namespace Deltares::Server
             if (property_ == "maximum_iterations") return settings->Iterations;
             else if (property_ == "max_grid_moves") return settings->MaxGridMoves;
             else if (property_ == "search_parameter_settings_count") return static_cast<int>(settings->SearchArea->Dimensions.size());
-            else if (property_ == "generation_count") return settings->GenerationCount;
-            else if (property_ == "elite_count") return settings->EliteCount;
-            else if (property_ == "population_count") return settings->PopulationCount;
-            else if (property_ == "stop_after_non_improving_generations") return settings->StopAfterNonImprovingGenerations;
+            else if (property_ == "generation_count") return settings->generation_counters.generation_count;
+            else if (property_ == "elite_count") return settings->generation_counters.elite_count;
+            else if (property_ == "population_count") return settings->generation_counters.population_count;
+            else if (property_ == "stop_after_non_improving_generations") return settings->generation_counters.stop_after_non_improving_generations;
             else if (property_ == "seed") return settings->random_settings.Seed;
+            else if (property_ == "cross_over_fractions_count" || property_ == "mutation_fractions_count") return 3;
             else return DerivedObjectHandler::GetIntValue(settings, property_);
         }
 
@@ -78,23 +83,69 @@ namespace Deltares::Server
             if (property_ == "maximum_iterations") settings->Iterations = value;
             else if (property_ == "max_grid_moves") settings->MaxGridMoves = value;
             else if (property_ == "add_search_parameter_settings") settings->SearchArea->Dimensions.push_back(searchParameterSettingsHandler->GetObject(value));
-            else if (property_ == "generation_count") settings->GenerationCount = value;
-            else if (property_ == "elite_count") settings->EliteCount = value;
-            else if (property_ == "population_count") settings->PopulationCount = value;
-            else if (property_ == "stop_after_non_improving_generations") settings->StopAfterNonImprovingGenerations = value;
+            else if (property_ == "generation_count") settings->generation_counters.generation_count = value;
+            else if (property_ == "elite_count") settings->generation_counters.elite_count = value;
+            else if (property_ == "population_count") settings->generation_counters.population_count = value;
+            else if (property_ == "stop_after_non_improving_generations") settings->generation_counters.stop_after_non_improving_generations = value;
             else if (property_ == "seed") settings->random_settings.Seed = value;
             else DerivedObjectHandler::SetIntValue(settings, property_, value);
         }
 
         std::string GetStringValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_) override
         {
-            if (property_ == "optimization_method") return Optimization::OptimizationSettings::getOptimizationMethodTypeString(settings->OptimizationMethod);
+            if (property_ == "optimization_method")
+            {
+                return Optimization::OptimizationSettings::getOptimizationMethodTypeString(settings->OptimizationMethod);
+            }
+            else if (property_ == "initialize_population_method")
+            {
+                return Optimization::OptimizationSettings::getInitializePopulationMethod(settings->initializePopulationMethod);
+            }
+            else if (property_ == "cross_over_random_frequency")
+            {
+                return Optimization::OptimizationSettings::getRandomFrequency(settings->CrossOverRandomFrequency);
+            }
+            else if (property_ == "mutation_random_frequency")
+            {
+                return Optimization::OptimizationSettings::getRandomFrequency(settings->MutationRandomFrequency);
+            }
+            else if (property_ == "cross_over_random_effect")
+            {
+                return Optimization::OptimizationSettings::getRandomEffectString(settings->CrossOverRandomEffect);
+            }
+            else if (property_ == "mutation_random_effect")
+            {
+                return Optimization::OptimizationSettings::getRandomEffectString(settings->MutationRandomEffect);
+            }
             else return DerivedObjectHandler::GetStringValue(settings, property_);
         }
 
         void SetStringValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_, const std::string& value) override
         {
-            if (property_ == "optimization_method") settings->OptimizationMethod = Optimization::OptimizationSettings::getOptimizationMethodType(value);
+            if (property_ == "optimization_method")
+            {
+                settings->OptimizationMethod = Optimization::OptimizationSettings::getOptimizationMethodType(value);
+            }
+            else if (property_ == "initialize_population_method")
+            {
+                settings->initializePopulationMethod = Optimization::OptimizationSettings::getInitializePopulationMethod(value);
+            }
+            else if (property_ == "cross_over_random_frequency")
+            {
+                settings->CrossOverRandomFrequency = Optimization::OptimizationSettings::getRandomFrequencyString(value);
+            }
+            else if (property_ == "mutation_random_frequency")
+            {
+                settings->MutationRandomFrequency = Optimization::OptimizationSettings::getRandomFrequencyString(value);
+            }
+            else if (property_ == "cross_over_random_effect")
+            {
+                settings->CrossOverRandomEffect = Optimization::OptimizationSettings::getRandomEffect(value);
+            }
+            else if (property_ == "mutation_random_effect")
+            {
+                settings->MutationRandomEffect = Optimization::OptimizationSettings::getRandomEffect(value);
+            }
             else DerivedObjectHandler::SetStringValue(settings, property_, value);
         }
 
@@ -108,6 +159,34 @@ namespace Deltares::Server
         {
             if (property_ == "search_parameter_settings") searchParameterSettingsHandler->SetIdValues(settings->SearchArea->Dimensions, values, size);
             else DerivedObjectHandler::SetArrayIntValue(settings, property_, values, size);
+        }
+
+        double GetIndexedValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_, int index) override
+        {
+            if (property_ == "cross_over_fractions")
+            {
+                return settings->CrossOverFractions.getValueByIndex(index);
+            }
+            else if (property_ == "mutation_fractions")
+            {
+                return settings->MutationFractions.getValueByIndex(index);
+            }
+            else return DerivedObjectHandler::GetIndexedValue(settings, property_, index);
+        }
+
+        void SetArrayValue(const std::shared_ptr<Optimization::OptimizationSettings>& settings, const std::string& property_, double* values, int size) override
+        {
+            if (property_ == "cross_over_fractions")
+            {
+                if (size != 3) throw Reliability::ProbabilisticLibraryException("size of cross_over_fractions must be 3");
+                settings->CrossOverFractions = Optimization::ThreeFractions(values[0], values[1], values[2]);
+            }
+            else if (property_ == "mutation_fractions")
+            {
+                if (size != 3) throw Reliability::ProbabilisticLibraryException("size of mutation_fractions must be 3");
+                settings->MutationFractions = Optimization::ThreeFractions(values[0], values[1], values[2]);
+            }
+            else DerivedObjectHandler::SetArrayValue(settings, property_, values, size);
         }
 
         SearchParameterSettingsHandler* searchParameterSettingsHandler = nullptr;

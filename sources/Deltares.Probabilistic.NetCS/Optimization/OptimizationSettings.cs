@@ -19,12 +19,33 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
+using System;
 using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Utils;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Deltares.Probabilistic.Optimization;
+
+public enum InitializePopulationMethod
+{
+    Uniform,
+    Parabolic
+}
+
+public enum RandomFrequency
+{
+    Never,
+    Generation,
+    Child
+}
+
+public enum RandomEffect
+{
+    Unity,
+    Free
+}
 
 public class OptimizationSettings
 {
@@ -151,6 +172,132 @@ public class OptimizationSettings
     {
         get { return Interface.GetValue(id, "delta"); }
         set { Interface.SetValue(id, "delta", value); }
+    }
+
+    public double MutationRate
+    {
+        get { return Interface.GetValue(id, "mutation_rate"); }
+        set { Interface.SetValue(id, "mutation_rate", value); }
+    }
+
+    public double[] CrossOverFractions
+    {
+        get { return Interface.GetArrayValue(id, "cross_over_fractions"); }
+        set { Interface.SetArrayValue(id, "cross_over_fractions", value); }
+    }
+
+    public double[] MutationFractions
+    {
+        get { return Interface.GetArrayValue(id, "mutation_fractions"); }
+        set { Interface.SetArrayValue(id, "mutation_fractions", value); }
+    }
+
+    public double CreepReduction
+    {
+        get { return Interface.GetValue(id, "creep_reduction"); }
+        set { Interface.SetValue(id, "creep_reduction", value); }
+    }
+
+    public InitializePopulationMethod InitializePopulationMethod
+    {
+        get
+        {
+            var s = Interface.GetStringValue(id, "initialize_population_method");
+            return s == "uniform" ? InitializePopulationMethod.Uniform : InitializePopulationMethod.Parabolic;
+        }
+        set
+        {
+            var s = value == InitializePopulationMethod.Uniform ? "uniform" : "parabolic";
+            Interface.SetStringValue(id, "initialize_population_method", s);
+        }
+    }
+
+    private string RandomFrequencyToString(RandomFrequency freq)
+    {
+        switch (freq)
+        {
+            case RandomFrequency.Never: return "never";
+            case RandomFrequency.Generation: return "generation";
+            case RandomFrequency.Child: return "child";
+            default: throw new ArgumentException("unknown random frequency");
+        }
+    }
+
+    private RandomFrequency StringToRandomFrequency(string s)
+    {
+        switch (s)
+        {
+            case "never": return RandomFrequency.Never;
+            case "generation": return RandomFrequency.Generation;
+            case "child": return RandomFrequency.Child;
+            default: throw new ArgumentException("unknown random frequency");
+        }
+    }
+
+    public RandomFrequency CrossOverRandomFrequency
+    {
+        get
+        {
+            var s = Interface.GetStringValue(id, "cross_over_random_frequency");
+            return StringToRandomFrequency(s);
+        }
+        set
+        {
+            var s = RandomFrequencyToString(value);
+            Interface.SetStringValue(id, "cross_over_random_frequency", s);
+        }
+    }
+
+    public RandomFrequency MutationRandomFrequency
+    {
+        get
+        {
+            var s = Interface.GetStringValue(id, "mutation_random_frequency");
+            return StringToRandomFrequency(s);
+        }
+        set
+        {
+            var s = RandomFrequencyToString(value);
+            Interface.SetStringValue(id, "mutation_random_frequency", s);
+        }
+    }
+
+    private RandomEffect StringToRandomEffect(string s)
+    {
+        return s == "unity" ? RandomEffect.Unity : RandomEffect.Free;
+    }
+
+    private string RandomEffectToString(RandomEffect randomEffect)
+    {
+        return randomEffect == RandomEffect.Unity ? "unity" : "free";
+    }
+
+    public RandomEffect CrossOverRandomEffect
+    {
+        get
+        {
+            var s = Interface.GetStringValue(id, "cross_over_random_effect");
+            return StringToRandomEffect(s);
+        }
+        set
+        {
+            var s = RandomEffectToString(value);
+            Interface.SetStringValue(id, "cross_over_random_effect", s);
+        }
+    }
+
+    public RandomEffect MutationRandomEffect
+    {
+        get
+        {
+            var s = Interface.GetStringValue(id, "mutation_random_effect");
+            return StringToRandomEffect(s);
+        }
+        set
+        {
+            var s = RandomEffectToString(value);
+            Interface.SetStringValue(id, "mutation_random_effect", s);
+        }
     }
 
     public int GenerationCount

@@ -42,7 +42,7 @@ namespace Deltares::Optimization::Test
             options.SearchArea.Dimensions.emplace_back(search_param_settings);
         }
         options.CrossOver = 0.8;
-        options.StopAfterNonImprovingGenerations = 5;
+        options.generation_counters.stop_after_non_improving_generations = 5;
 
         auto zModel = Probabilistic::Test::ZModelBuilder::getPolynomeModel(center);
         auto model = Models::BaseModelRunner(zModel);

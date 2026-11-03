@@ -23,7 +23,6 @@
 
 #include "OptimizationMethod.h"
 #include "OptimizationSettings.h"
-#include "../Model/ModelSample.h"
 #include "../Model/ModelProject.h"
 
 namespace Deltares::Optimization
@@ -37,12 +36,12 @@ namespace Deltares::Optimization
         /**
          * \brief Method which performs a reliability calculation
          */
-        std::shared_ptr<Optimization::OptimizationMethod> optimizationMethod = nullptr;
+        std::shared_ptr<OptimizationMethod> optimizationMethod = nullptr;
 
         /**
          * \brief Calculation settings
          */
-        std::shared_ptr<Optimization::OptimizationSettings> settings = std::make_shared<Optimization::OptimizationSettings>();
+        std::shared_ptr<OptimizationSettings> settings = std::make_shared<OptimizationSettings>();
 
         /**
          * \brief Settings for performing a calculation
