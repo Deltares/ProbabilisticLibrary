@@ -48,6 +48,10 @@ namespace Deltares::Optimization
         mutationMask.resize(Options.SearchArea.Dimensions.size());
         auto population = initializePopulation(model);
 
+        auto best = std::ranges::min_element(population,
+            [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
+        model.reportConvergence(best->Z, 0, Options.generation_counters.generation_count+1);
+
         for (int generation = 0; generation < Options.generation_counters.generation_count && !isStopped(); ++generation)
         {
             if (Options.CrossOverRandomFrequency == RandomFrequency::Generation)
@@ -68,12 +72,11 @@ namespace Deltares::Optimization
                 auto child2 = createChild(originalPopulation, population[0], model, generation);
                 population[i] = child1.Z < child2.Z ? std::move(child1) : std::move(child2);
             }
+
+            best = std::ranges::min_element(population,
+                [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
+            model.reportConvergence(best->Z, generation + 1, Options.generation_counters.generation_count + 1);
         }
-
-        const auto best = std::ranges::min_element(population,
-            [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
-
-        model.reportConvergence(best->Z, 0, Options.generation_counters.generation_count);
 
         OptimizationResult result;
         result.succeeded = !isStopped();
