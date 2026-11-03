@@ -43,8 +43,8 @@ namespace Deltares::Optimization
         SearchParameterSettingsSet SearchArea;
         GenerationCounters generation_counters = GenerationCounters(50, 2, 60, 100);
         double MutationRate = 0.3;
-        ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3);
-        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1);
+        ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3, {"Scatter", "Single point", "Double point"});
+        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1, {"Jump", "Inverse", "Creep"});
         double MutationCreepReduction = 0.05;
         int Seed = 1;
         InitializePopulationMethod initializePopulationMethod = InitializePopulationMethod::Uniform;

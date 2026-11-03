@@ -30,6 +30,7 @@ namespace Deltares::Optimization
     {
     public:
         explicit ThreeFractions(double a, double b, double c);
+        explicit ThreeFractions(double a, double b, double c, std::array<std::string,3> names);
         void validate(Logging::ValidationReport& report) const override;
         std::array<double, 3> getMaskRange() const;
         double getValueByIndex(int index) const;
@@ -37,6 +38,7 @@ namespace Deltares::Optimization
         double a;
         double b;
         double c;
+        std::array<std::string,3> names = { "a", "b", "c" };
     };
 }
 

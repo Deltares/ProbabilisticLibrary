@@ -36,6 +36,20 @@ namespace Deltares::Optimization
         class GeneticAlgorithmOriginalTest;
     }
 
+    enum class CrossOverTypes
+    {
+        Scatter,
+        SinglePoint,
+        DoublePoint
+    };
+
+    enum class MutationTypes
+    {
+        Jump,
+        Inverse,
+        Creep
+    };
+
     /**
      * \brief Genetic optimization with elitism and selection of the better of two children.
      * \remark Uses the kernel random generator, not the C# System.Random sequence.
@@ -70,5 +84,7 @@ namespace Deltares::Optimization
         void determineCrossOverMask();
         void determineMutationMask(const Models::ModelSample& first);
         int selectMask(const std::array<double, mask_range_count>& range);
+        CrossOverTypes selectCrossOverMask(const std::array<double, mask_range_count>& range);
+        MutationTypes selectMutationMask(const std::array<double, mask_range_count>& range);
     };
 }

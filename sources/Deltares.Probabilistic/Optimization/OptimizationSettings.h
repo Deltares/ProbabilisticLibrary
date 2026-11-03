@@ -72,10 +72,12 @@ namespace Deltares::Optimization
         double Delta = 0.7;
 
         // Cross over settings; fractions should add to 1.0
-        ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3);
+        ThreeFractions CrossOverFractions = ThreeFractions(0.0, 0.7, 0.3,
+            { "Scatter", "Single point", "Double point" });
 
         // Mutation settings; fractions should add to 1.0
-        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1);
+        ThreeFractions MutationFractions = ThreeFractions(0.0, 0.9, 0.1,
+            {"Jump", "Inverse", "Creep"});
         double MutationRate = 0.3;
         double CreepReduction = 0.05;
 

@@ -30,17 +30,20 @@ namespace Deltares::Optimization
 
     ThreeFractions::ThreeFractions(double a, double b, double c) : a(a), b(b), c(c) {}
 
+    ThreeFractions::ThreeFractions(double a, double b, double c, std::array<std::string,3> names)
+    : a(a), b(b), c(c), names(std::move(names)) {}
+
     void ThreeFractions::validate(ValidationReport& report) const
     {
-        ValidationSupport::checkMinimum(report, 0.0, a, "a");
-        ValidationSupport::checkMinimum(report, 0.0, b, "b");
-        ValidationSupport::checkMinimum(report, 0.0, c, "c");
-        ValidationSupport::checkNotNaN(report, a, "a");
-        ValidationSupport::checkNotNaN(report, b, "b");
-        ValidationSupport::checkNotNaN(report, c, "c");
-        ValidationSupport::checkFinite(report, a, "a");
-        ValidationSupport::checkFinite(report, b, "b");
-        ValidationSupport::checkFinite(report, c, "c");
+        ValidationSupport::checkMinimum(report, 0.0, a, names[0]);
+        ValidationSupport::checkMinimum(report, 0.0, b, names[1]);
+        ValidationSupport::checkMinimum(report, 0.0, c, names[2]);
+        ValidationSupport::checkNotNaN(report, a, names[0]);
+        ValidationSupport::checkNotNaN(report, b, names[1]);
+        ValidationSupport::checkNotNaN(report, c, names[2]);
+        ValidationSupport::checkFinite(report, a, names[0]);
+        ValidationSupport::checkFinite(report, b, names[1]);
+        ValidationSupport::checkFinite(report, c, names[2]);
         if (std::abs(a + b + c - 1.0) > 1e-12)
         {
             ValidationSupport::add(report, "Fractions must sum to one.");
