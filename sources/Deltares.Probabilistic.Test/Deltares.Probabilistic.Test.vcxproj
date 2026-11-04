@@ -129,6 +129,7 @@
     <ClInclude Include="Math\TestMatrixInverse.h" />
     <ClInclude Include="Math\TestMatrixMultiplication.h" />
     <ClInclude Include="Math\TestRandom.h" />
+    <ClInclude Include="Math\TestShuffleItems.h" />
     <ClInclude Include="Math\TestRootfinder.h" />
     <ClInclude Include="Math\TestVector1D.h" />
     <ClInclude Include="Math\TestSpecialFunctions.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="Math\TestMatrixInverse.cpp" />
     <ClCompile Include="Math\TestMatrixMultiplication.cpp" />
     <ClCompile Include="Math\TestRandom.cpp" />
+    <ClCompile Include="Math\TestShuffleItems.cpp" />
     <ClCompile Include="Math\TestRootfinder.cpp" />
     <ClCompile Include="Math\TestVector1D.cpp" />
     <ClCompile Include="Math\TestSpecialFunctions.cpp" />

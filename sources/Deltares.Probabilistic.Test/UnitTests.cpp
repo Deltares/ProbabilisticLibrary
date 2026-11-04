@@ -29,6 +29,7 @@
 #include "Math/TestMatrixInverse.h"
 #include "Math/TestMatrixMultiplication.h"
 #include "Math/TestRandom.h"
+#include "Math/TestShuffleItems.h"
 #include "Math/TestVector1D.h"
 #include "Math/TestRootfinder.h"
 #include "Math/TestSpecialFunctions.h"
@@ -845,6 +846,16 @@ TEST(UnitTests, testRandomIntegers)
 TEST(UnitTests, testRandomIntErrorhandling)
 {
     TestRandom::intErrorHandlingTest();
+}
+
+TEST(UnitTests, testShuffleInPlace)
+{
+    Deltares::Numeric::Test::TestShuffleItems::RunTest1();
+}
+
+TEST(UnitTests, testGetNShuffledItems)
+{
+    Deltares::Numeric::Test::TestShuffleItems::RunTest2();
 }
 
 TEST(UnitTests, testRootfinder)

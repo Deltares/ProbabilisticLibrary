@@ -22,6 +22,7 @@
 
 #include "AdaptiveParticleSwarmOptimization.h"
 #include "../Math/NumericSupport.h"
+#include "../Math/ShuffleItems.h"
 
 #include <algorithm>
 #include <cmath>
@@ -144,56 +145,6 @@ namespace Deltares::Optimization
         }
     }
 
-    std::array<int, AdaptiveParticleSwarmOptimization::n_terms> AdaptiveParticleSwarmOptimization::drawUniqueNumbers(const int maximum, const int exclude)
-    {
-        auto found_values = std::vector<bool>(maximum);
-
-        int scale_random_numbers = maximum;
-
-        if (exclude < maximum)
-        {
-            found_values[exclude] = true;
-            scale_random_numbers--;
-        }
-
-        for (int i = 0; i < n_terms; i++)
-        {
-            int index = rng.next(scale_random_numbers);
-            int ii = 0;
-            for (int j = 0; j < maximum; j++)
-            {
-                if (!found_values[j])
-                {
-                    if (ii == index)
-                    {
-                        found_values[j] = true;
-                        scale_random_numbers--;
-                        break;
-                    }
-                    ii++;
-                }
-            }
-        }
-
-        if (exclude < maximum)
-        {
-            found_values[exclude] = false;
-        }
-
-        auto set = std::array<int, n_terms>();
-        int ii = 0;
-        for (int j = 0; j < maximum; j++)
-        {
-            if (found_values[j])
-            {
-                set[ii] = j;
-                ii++;
-            }
-        }
-
-        return set;
-    }
-
     void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size,
         const ModelSample& best_particle, ModelSample& population_m, const int m)
     {
@@ -201,7 +152,17 @@ namespace Deltares::Optimization
 
         const int maximum = static_cast<int>(elite.size());
 
-        const std::array<int, n_terms> indexes = drawUniqueNumbers(maximum, m);
+        static constexpr int n_terms = 4;
+
+        auto items = std::vector<int>();
+        for (int i = 0; i < maximum; i++)
+        {
+            if (i != m)
+            {
+                items.push_back(i);
+            }
+        }
+        const auto indexes = Numeric::ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
 
         for (size_t q = 0; q < particle_size; ++q)
         {

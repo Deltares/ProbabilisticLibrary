@@ -49,11 +49,9 @@ namespace Deltares::Optimization
     private:
         AdaptiveParticleSwarmOptimizationSettings Options;
         Numeric::RandomValueGenerator rng;
-        static constexpr int n_terms = 4;
         Models::ModelSample InitializePopulation(Models::BaseModelRunner& model, std::vector<Models::ModelSample>& population);
         void apsoBranch(int generation_index, size_t particle_size, const Models::ModelSample& best_particle,
             Models::ModelSample& population_m);
-        std::array<int, n_terms> drawUniqueNumbers(const int maximum, const int exclude);
         void differentialEvolutionBranch(const std::vector<Models::ModelSample>& elite, size_t particle_size,
                                          const Models::ModelSample& best_particle,
                                          Models::ModelSample& population_m, const int m);
