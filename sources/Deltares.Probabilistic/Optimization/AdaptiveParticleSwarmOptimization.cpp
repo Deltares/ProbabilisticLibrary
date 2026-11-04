@@ -78,7 +78,7 @@ namespace Deltares::Optimization
                 }
                 else
                 {
-                    differentialEvolutionBranch(elite, particle_size, best_particle, population[m]);
+                    differentialEvolutionBranch(elite, particle_size, best_particle, population[m], m);
                 }
 
                 population[m].IterationIndex = generation_index;
@@ -144,18 +144,64 @@ namespace Deltares::Optimization
         }
     }
 
-    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
+    std::array<int, AdaptiveParticleSwarmOptimization::n_terms> AdaptiveParticleSwarmOptimization::drawUniqueNumbers(const int maximum, const int exclude)
+    {
+        auto found_values = std::vector<bool>(maximum);
+
+        int scale_random_numbers = maximum;
+
+        if (exclude < maximum)
+        {
+            found_values[exclude] = true;
+            scale_random_numbers--;
+        }
+
+        for (int i = 0; i < n_terms; i++)
+        {
+            int index = rng.next(scale_random_numbers);
+            int ii = 0;
+            for (int j = 0; j < maximum; j++)
+            {
+                if (!found_values[j])
+                {
+                    if (ii == index)
+                    {
+                        found_values[j] = true;
+                        scale_random_numbers--;
+                        break;
+                    }
+                    ii++;
+                }
+            }
+        }
+
+        if (exclude < maximum)
+        {
+            found_values[exclude] = false;
+        }
+
+        auto set = std::array<int, n_terms>();
+        int ii = 0;
+        for (int j = 0; j < maximum; j++)
+        {
+            if (found_values[j])
+            {
+                set[ii] = j;
+                ii++;
+            }
+        }
+
+        return set;
+    }
+
+    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size,
+        const ModelSample& best_particle, ModelSample& population_m, const int m)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
 
         const int maximum = static_cast<int>(elite.size());
 
-        constexpr int n_terms = 4;
-        std::array<int, n_terms> indexes;
-        for (int i = 0 ; i < n_terms; i++)
-        {
-            indexes[i] = rng.next(maximum);
-        }
+        const std::array<int, n_terms> indexes = drawUniqueNumbers(maximum, m);
 
         for (size_t q = 0; q < particle_size; ++q)
         {
