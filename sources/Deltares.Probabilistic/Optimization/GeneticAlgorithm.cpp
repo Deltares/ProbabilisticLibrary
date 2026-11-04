@@ -50,7 +50,7 @@ namespace Deltares::Optimization
 
         auto best = std::ranges::min_element(population,
             [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
-        model.reportConvergence(best->Z, 0, Options.generation_counters.generation_count+1);
+        model.reportConvergence(best->Z, 0, Options.generation_counters.generation_count);
 
         for (int generation = 0; generation < Options.generation_counters.generation_count && !isStopped(); ++generation)
         {
@@ -75,14 +75,13 @@ namespace Deltares::Optimization
 
             best = std::ranges::min_element(population,
                 [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
-            model.reportConvergence(best->Z, generation + 1, Options.generation_counters.generation_count + 1);
+            model.reportConvergence(best->Z, generation + 1, Options.generation_counters.generation_count);
         }
 
-        OptimizationResult result;
+        auto result = createOptimizationResult(model);
         result.succeeded = !isStopped();
         result.values = best->Values;
         result.minimumValue = best->Z;
-        result.modelRuns = model.getModelRuns();
         return result;
     }
 
