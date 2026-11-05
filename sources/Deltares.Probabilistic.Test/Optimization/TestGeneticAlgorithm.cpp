@@ -462,4 +462,48 @@ namespace Deltares::Optimization::Test
         EXPECT_TRUE(result->succeeded);
     }
 
+    TEST(GeneticAlgorithmTest, LocalMinimum)
+    {
+        auto z = getModel([](ModelSample& sample)
+        {
+            // wide paraboloid, local minimum in center search area
+            double p = std::pow(sample.Values[0] - 4.3, 2) + std::pow(sample.Values[1] - 5.1, 2) - 5.5;
+
+            // sharp paraboloid, global minimum outside center search area
+            double q = 20 * (std::pow(sample.Values[0] - 8.9, 2) + std::pow(sample.Values[1] - 0.8, 2)) - 10.3;
+
+            sample.Z = std::min(p, q);
+        });
+        auto model = Models::BaseModelRunner(z);
+
+        model.Settings->SaveEvaluations = true;
+
+        auto options = GeneticAlgorithmSettings();
+        options.generation_counters.population_count = 60;
+        options.generation_counters.generation_count = 50;
+        options.CrossOverFractions = ThreeFractions(0.5, 0.2, 0.3); // scatter, single, double
+        options.MutationFractions = ThreeFractions(0.5, 0.4, 0.1); // jump, creep, inverse
+
+        options.SearchArea.setDimensions(2);
+        options.SearchArea.Dimensions[0].MinValue = 0;
+        options.SearchArea.Dimensions[0].MaxValue = 10;
+        options.SearchArea.Dimensions[0].Move = false;
+        options.SearchArea.Dimensions[1].MinValue = 0;
+        options.SearchArea.Dimensions[1].MaxValue = 10;
+        options.SearchArea.Dimensions[1].Move = false;
+
+        GeneticAlgorithm algorithm(options);
+
+        const auto result = algorithm.getOptimizedSample(model);
+        ASSERT_EQ(result.values.size(), 2u);
+        EXPECT_TRUE(result.succeeded);
+
+        // expect results close to the center and minimum of the sharp paraboloid
+        EXPECT_NEAR(result.values[0], 8.9, 0.1);
+        EXPECT_NEAR(result.values[1], 0.8, 0.1);
+        EXPECT_NEAR(result.minimumValue, -10.3, 0.1);
+
+        EXPECT_EQ(result.modelRuns, 5860);
+        EXPECT_EQ(result.evaluations.size(), 5860);
+    }
 }

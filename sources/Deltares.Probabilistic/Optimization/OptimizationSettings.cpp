@@ -95,6 +95,7 @@ namespace Deltares::Optimization
         settings.MutationRandomFrequency = MutationRandomFrequency;
         settings.CrossOverRandomEffect = CrossOverRandomEffect;
         settings.MutationRandomEffect = MutationRandomEffect;
+        settings.Seed = random_settings.Seed;
 
         auto genetic_algorithm = std::make_shared<GeneticAlgorithm>(settings);
         return genetic_algorithm;
