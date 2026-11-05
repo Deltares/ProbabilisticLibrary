@@ -68,7 +68,7 @@ namespace Deltares::Optimization
                 elite.pop_back();
             }
 
-            double algorithm_divider =
+            const double algorithm_divider =
                 std::max(0.1, 0.9 - generation_index / (0.9 * static_cast<double>(Options.generation_counters.generation_count)));
 
             for (int m = 0; m < Options.generation_counters.population_count; ++m)
@@ -145,24 +145,28 @@ namespace Deltares::Optimization
         }
     }
 
-    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size,
-        const ModelSample& best_particle, ModelSample& population_m, const int m)
+    std::vector<int> AdaptiveParticleSwarmOptimization::getUniqueIndices(const int exclude)
     {
-        const auto& Dimensions = Options.SearchArea.Dimensions;
-
-        const int maximum = static_cast<int>(elite.size());
-
-        static constexpr int n_terms = 4;
+        const int maximum = Options.generation_counters.elite_count;
 
         auto items = std::vector<int>();
         for (int i = 0; i < maximum; i++)
         {
-            if (i != m)
+            if (i != exclude)
             {
                 items.push_back(i);
             }
         }
         const auto indexes = Numeric::ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
+        return indexes;
+    }
+
+    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size,
+        const ModelSample& best_particle, ModelSample& population_m, const int m)
+    {
+        const auto& Dimensions = Options.SearchArea.Dimensions;
+
+        const auto indexes = getUniqueIndices(m);
 
         for (size_t q = 0; q < particle_size; ++q)
         {
