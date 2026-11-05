@@ -36,7 +36,7 @@ namespace Deltares::Optimization::Test
         auto search_param_settings = SearchParameterSettings();
         search_param_settings.MinValue = 1;
         search_param_settings.MaxValue = 10;
-        search_param_settings.Move = move;
+        search_param_settings.SetMove(move);
         for (size_t i = 0; i < center.size(); i++)
         {
             options.SearchArea.Dimensions.emplace_back(search_param_settings);
@@ -67,10 +67,10 @@ namespace Deltares::Optimization::Test
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->MinValue = 0;
         searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->Move = true;
+        searchArea->Dimensions[0]->SetMove(true);
         searchArea->Dimensions[1]->MinValue = 0;
         searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->Move = true;
+        searchArea->Dimensions[1]->SetMove(true);
 
         Logging::ValidationReport report;
         project.settings->validate(report);
@@ -97,10 +97,10 @@ namespace Deltares::Optimization::Test
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->MinValue = 0;
         searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->Move = true;
+        searchArea->Dimensions[0]->SetMove(true);
         searchArea->Dimensions[1]->MinValue = 0;
         searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->Move = true;
+        searchArea->Dimensions[1]->SetMove(true);
 
         Logging::ValidationReport report;
         project.settings->validate(report);

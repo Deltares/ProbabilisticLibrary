@@ -82,13 +82,13 @@ namespace Deltares::Server
 
         bool GetBoolValue(const std::shared_ptr<Optimization::SearchParameterSettings>& settings, const std::string& property_) override
         {
-            if (property_ == "is_move_allowed") return settings->Move;
+            if (property_ == "is_move_allowed") return settings->Move();
             else return StoredObjectHandler::GetBoolValue(settings, property_);
         }
 
         void SetBoolValue(const std::shared_ptr<Optimization::SearchParameterSettings>& settings, const std::string& property_, bool value) override
         {
-            if (property_ == "is_move_allowed") settings->Move = value;
+            if (property_ == "is_move_allowed") settings->SetMove(value);
             else StoredObjectHandler::SetBoolValue(settings, property_, value);
         }
 

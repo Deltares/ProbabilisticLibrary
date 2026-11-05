@@ -38,7 +38,7 @@ namespace Deltares::Probabilistic::Test
         static void test_project_convergence_results();
 
         static void fillSearchArea(
-            std::shared_ptr<Optimization::SearchParameterSettingsSetWithSharedPointers> searchArea, int size,
+            Optimization::SearchParameterSettingsSetWithSharedPointers& searchArea, int size,
             bool allowMove, int numberOfRefinements);
 
         const double margin = 1e-2;

@@ -133,7 +133,7 @@ namespace Deltares::Optimization
 
                 const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
 
-                if (Dimensions[n].Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (Dimensions[n].Move() || (new_ratio >= 0.0 && new_ratio <= 1.0))
                 {
                     population_m.Values[n] = Dimensions[n].GetAbsoluteValue(new_ratio);
                 }
@@ -184,7 +184,7 @@ namespace Deltares::Optimization
 
                 const double new_ratio = best_ratio + Options.DifferentialWeight * (r[0] - r[1] + r[2] - r[3]);
 
-                if (Dimensions[q].Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (Dimensions[q].Move() || (new_ratio >= 0.0 && new_ratio <= 1.0))
                 {
                     population_m.Values[q] = Dimensions[q].GetAbsoluteValue(new_ratio);
                 }

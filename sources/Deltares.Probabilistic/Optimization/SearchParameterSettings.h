@@ -70,7 +70,8 @@ namespace Deltares::Optimization
          * \brief Indicates whether the grid can be repositioned for this parameter
          * \remark Only useful when UseValues is AllValues
          */
-        bool Move = false;
+        bool Move() const { return move; }
+        void SetMove(bool value) { move = value; }
 
         /**
          * \brief The number of refinements to be performed
@@ -138,6 +139,8 @@ namespace Deltares::Optimization
                 return StartValue;
             }
         }
+    private:
+        bool move = false;
     };
 }
 
