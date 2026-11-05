@@ -30,13 +30,14 @@
 
 namespace Deltares::Optimization::Test
 {
-    void TestAdaptiveParticleSwarmOptimization::TestBeeswarm(bool move, double tolerance, int evaluations, const std::vector<double>& center)
+    void TestAdaptiveParticleSwarmOptimization::TestBeeswarm(bool fixed_lower, bool fixed_upper, double tolerance, int evaluations, const std::vector<double>& center)
     {
         AdaptiveParticleSwarmOptimizationSettings options;
         auto search_param_settings = SearchParameterSettings();
         search_param_settings.MinValue = 1;
         search_param_settings.MaxValue = 10;
-        search_param_settings.SetMove(move);
+        search_param_settings.SetFixedLowerBound(fixed_lower);
+        search_param_settings.SetFixedUpperBound(fixed_upper);
         for (size_t i = 0; i < center.size(); i++)
         {
             options.SearchArea.Dimensions.emplace_back(search_param_settings);
@@ -67,10 +68,10 @@ namespace Deltares::Optimization::Test
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->MinValue = 0;
         searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->SetMove(true);
+        searchArea->Dimensions[0]->SetFixedUpperBound(false);
         searchArea->Dimensions[1]->MinValue = 0;
         searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->SetMove(true);
+        searchArea->Dimensions[1]->SetFixedUpperBound(false);
 
         Logging::ValidationReport report;
         project.settings->validate(report);
@@ -97,10 +98,10 @@ namespace Deltares::Optimization::Test
         searchArea->setDimensions(2);
         searchArea->Dimensions[0]->MinValue = 0;
         searchArea->Dimensions[0]->MaxValue = 10;
-        searchArea->Dimensions[0]->SetMove(true);
+        searchArea->Dimensions[0]->SetFixedUpperBound(false);
         searchArea->Dimensions[1]->MinValue = 0;
         searchArea->Dimensions[1]->MaxValue = 10;
-        searchArea->Dimensions[1]->SetMove(true);
+        searchArea->Dimensions[1]->SetFixedUpperBound(false);
 
         Logging::ValidationReport report;
         project.settings->validate(report);
