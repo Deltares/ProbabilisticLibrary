@@ -116,6 +116,13 @@ namespace Deltares::Optimization
         return return_value;
     }
 
+    bool AdaptiveParticleSwarmOptimization::isValidNewRatio(const SearchParameterSettings& dimension, const double new_ratio)
+    {
+        const bool check_lower = !dimension.GetFixedLowerBound() || new_ratio >= 0.0;
+        const bool check_upper = !dimension.GetFixedUpperBound() || new_ratio <= 1.0;
+        return check_lower && check_upper;
+    }
+
     void AdaptiveParticleSwarmOptimization::apsoBranch(int generation_index, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
@@ -133,7 +140,7 @@ namespace Deltares::Optimization
 
                 const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
 
-                if (Dimensions[n].Move() || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (isValidNewRatio(Dimensions[n], new_ratio))
                 {
                     population_m.Values[n] = Dimensions[n].GetAbsoluteValue(new_ratio);
                 }
@@ -184,7 +191,7 @@ namespace Deltares::Optimization
 
                 const double new_ratio = best_ratio + Options.DifferentialWeight * (r[0] - r[1] + r[2] - r[3]);
 
-                if (Dimensions[q].Move() || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (isValidNewRatio(Dimensions[q], new_ratio))
                 {
                     population_m.Values[q] = Dimensions[q].GetAbsoluteValue(new_ratio);
                 }
