@@ -54,7 +54,7 @@ namespace Deltares::Optimization
         void apsoBranch(int generation_index, size_t particle_size, const Models::ModelSample& best_particle,
             Models::ModelSample& population_m);
         std::vector<int> getUniqueIndices(const int exclude);
-        void differentialEvolutionBranch(const std::vector<Models::ModelSample>& elite, size_t particle_size,
+        void differentialEvolutionBranch(const std::vector<Models::ModelSample>& elite,
                                          const Models::ModelSample& best_particle,
                                          Models::ModelSample& population_m, const int m);
     };

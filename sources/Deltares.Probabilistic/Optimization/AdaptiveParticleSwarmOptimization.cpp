@@ -79,7 +79,7 @@ namespace Deltares::Optimization
                 }
                 else
                 {
-                    differentialEvolutionBranch(elite, particle_size, best_particle, population[m], m);
+                    differentialEvolutionBranch(elite, best_particle, population[m], m);
                 }
 
                 population[m].IterationIndex = generation_index;
@@ -161,10 +161,11 @@ namespace Deltares::Optimization
         return indexes;
     }
 
-    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size,
+    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite,
         const ModelSample& best_particle, ModelSample& population_m, const int m)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
+        const auto particle_size = Dimensions.size();
 
         const auto indexes = getUniqueIndices(m);
 
