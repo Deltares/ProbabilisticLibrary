@@ -497,9 +497,12 @@ namespace Deltares::Optimization::Test
         const auto result = algorithm.getOptimizedSample(model);
         ASSERT_EQ(result.values.size(), 2u);
         EXPECT_TRUE(result.succeeded);
+
+        // expect results close to the center and minimum of the sharp paraboloid
         EXPECT_NEAR(result.values[0], 8.9, 0.1);
         EXPECT_NEAR(result.values[1], 0.8, 0.1);
-        EXPECT_LT(result.minimumValue, -10.2);
+        EXPECT_NEAR(result.minimumValue, -10.3, 0.1);
+
         EXPECT_EQ(result.modelRuns, 5860);
         EXPECT_EQ(result.evaluations.size(), 5860);
     }
