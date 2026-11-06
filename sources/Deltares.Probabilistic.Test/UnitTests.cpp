@@ -29,6 +29,7 @@
 #include "Math/TestMatrixInverse.h"
 #include "Math/TestMatrixMultiplication.h"
 #include "Math/TestRandom.h"
+#include "Math/TestShuffleItems.h"
 #include "Math/TestVector1D.h"
 #include "Math/TestRootfinder.h"
 #include "Math/TestSpecialFunctions.h"
@@ -847,6 +848,26 @@ TEST(UnitTests, testRandomIntErrorhandling)
     TestRandom::intErrorHandlingTest();
 }
 
+TEST(UnitTests, testShuffleInPlace)
+{
+    Deltares::Numeric::Test::TestShuffleItems::BasicShuffleInPlaceTest();
+}
+
+TEST(UnitTests, testGetNShuffledItems)
+{
+    Deltares::Numeric::Test::TestShuffleItems::BasicGetNItemsTest();
+}
+
+TEST(UnitTests, testRepeatedShuffleInPlace)
+{
+    Deltares::Numeric::Test::TestShuffleItems::RepeatedShuffleInPlaceTest();
+}
+
+TEST(UnitTests, testRepeatedGetNShuffledItems)
+{
+    Deltares::Numeric::Test::TestShuffleItems::RepeatedGetNItemsTest();
+}
+
 TEST(UnitTests, testRootfinder)
 {
     auto tstRF = TestRootfinder();
@@ -888,37 +909,37 @@ TEST(UnitTests, testGridSearchOptimization)
 
 TEST(UnitTests, testAPSOtestCase1)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 7000, {5.0, 7.0});
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 7000, {5.0, 7.0});
 }
 
 TEST(UnitTests, testAPSOtestCase2)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 6400, { 5.3, 7.8 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 6400, { 5.3, 7.8 });
 }
 
 TEST(UnitTests, testAPSOtestCase3)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 6000, { 2.345, 8.316 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 6000, { 2.345, 8.316 });
 }
 
 TEST(UnitTests, testAPSOtestCase4)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, 0.05, 7000, { 2.345, 8.316, 4.343, 6.788, 1.001 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 7000, { 2.345, 8.316, 4.343, 6.788, 1.001 });
 }
 
 TEST(UnitTests, testAPSOtestCase5)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.05, 6000, { 12.0, 15.0 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, false, 0.05, 6000, { 12.0, 15.0 });
 }
 
 TEST(UnitTests, testAPSOtestCase6)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.4, 6000, { 25.3, -17.8 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, false, 0.4, 6000, { 25.3, -17.8 });
 }
 
 TEST(UnitTests, testAPSOtestCase7)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, 0.3, 6000, { -24, -18 });
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, true, 0.3, 6000, { -24, -18 });
 }
 
 TEST(UnitTests, testAPSOmoveGrid)

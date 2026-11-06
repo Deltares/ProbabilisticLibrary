@@ -49,12 +49,15 @@ namespace Deltares::Optimization
     private:
         AdaptiveParticleSwarmOptimizationSettings Options;
         Numeric::RandomValueGenerator rng;
+        static constexpr int n_terms = 4;
+        static bool isValidNewRatio(const SearchParameterSettings& dimension, const double new_ratio);
         Models::ModelSample InitializePopulation(Models::BaseModelRunner& model, std::vector<Models::ModelSample>& population);
         void apsoBranch(int generation_index, size_t particle_size, const Models::ModelSample& best_particle,
             Models::ModelSample& population_m);
-        void differentialEvolutionBranch(const std::vector<Models::ModelSample>& elite, size_t particle_size,
-            const Models::ModelSample& best_particle,
-            Models::ModelSample& population_m);
+        std::vector<int> getUniqueIndices(const int exclude);
+        void differentialEvolutionBranch(const std::vector<Models::ModelSample>& elite,
+                                         const Models::ModelSample& best_particle,
+                                         Models::ModelSample& population_m, const int m);
     };
 
 }

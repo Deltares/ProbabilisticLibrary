@@ -22,6 +22,7 @@
 
 #include "AdaptiveParticleSwarmOptimization.h"
 #include "../Math/NumericSupport.h"
+#include "../Math/ShuffleItems.h"
 
 #include <algorithm>
 #include <cmath>
@@ -67,7 +68,7 @@ namespace Deltares::Optimization
                 elite.pop_back();
             }
 
-            double algorithm_divider =
+            const double algorithm_divider =
                 std::max(0.1, 0.9 - generation_index / (0.9 * static_cast<double>(Options.generation_counters.generation_count)));
 
             for (int m = 0; m < Options.generation_counters.population_count; ++m)
@@ -78,7 +79,7 @@ namespace Deltares::Optimization
                 }
                 else
                 {
-                    differentialEvolutionBranch(elite, particle_size, best_particle, population[m]);
+                    differentialEvolutionBranch(elite, best_particle, population[m], m);
                 }
 
                 population[m].IterationIndex = generation_index;
@@ -115,6 +116,13 @@ namespace Deltares::Optimization
         return return_value;
     }
 
+    bool AdaptiveParticleSwarmOptimization::isValidNewRatio(const SearchParameterSettings& dimension, const double new_ratio)
+    {
+        const bool check_lower = !dimension.GetFixedLowerBound() || new_ratio >= 0.0;
+        const bool check_upper = !dimension.GetFixedUpperBound() || new_ratio <= 1.0;
+        return check_lower && check_upper;
+    }
+
     void AdaptiveParticleSwarmOptimization::apsoBranch(int generation_index, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
@@ -132,7 +140,7 @@ namespace Deltares::Optimization
 
                 const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
 
-                if (Dimensions[n].Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (isValidNewRatio(Dimensions[n], new_ratio))
                 {
                     population_m.Values[n] = Dimensions[n].GetAbsoluteValue(new_ratio);
                 }
@@ -144,18 +152,29 @@ namespace Deltares::Optimization
         }
     }
 
-    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
+    std::vector<int> AdaptiveParticleSwarmOptimization::getUniqueIndices(const int exclude)
+    {
+        const int maximum = Options.generation_counters.elite_count;
+
+        auto items = std::vector<int>();
+        for (int i = 0; i < maximum; i++)
+        {
+            if (i != exclude)
+            {
+                items.push_back(i);
+            }
+        }
+        const auto indices = Numeric::ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
+        return indices;
+    }
+
+    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite,
+        const ModelSample& best_particle, ModelSample& population_m, const int m)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
+        const auto particle_size = Dimensions.size();
 
-        const int maximum = static_cast<int>(elite.size());
-
-        constexpr int n_terms = 4;
-        std::array<int, n_terms> indexes;
-        for (int i = 0 ; i < n_terms; i++)
-        {
-            indexes[i] = rng.next(maximum);
-        }
+        const auto indices = getUniqueIndices(m);
 
         for (size_t q = 0; q < particle_size; ++q)
         {
@@ -166,13 +185,13 @@ namespace Deltares::Optimization
                 std::array<double, n_terms> r;
                 for (int i = 0; i < n_terms; i++)
                 {
-                    const auto& sample_de = elite[indexes[i]];
+                    const auto& sample_de = elite[indices[i]];
                     r[i] = Dimensions[q].GetRelativeValue(sample_de.Values[q]);
                 }
 
                 const double new_ratio = best_ratio + Options.DifferentialWeight * (r[0] - r[1] + r[2] - r[3]);
 
-                if (Dimensions[q].Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (isValidNewRatio(Dimensions[q], new_ratio))
                 {
                     population_m.Values[q] = Dimensions[q].GetAbsoluteValue(new_ratio);
                 }

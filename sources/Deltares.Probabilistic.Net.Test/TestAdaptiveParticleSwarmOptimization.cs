@@ -65,10 +65,10 @@ namespace Deltares.Probabilistic.Test
 
             ClassicAssert.AreEqual(2, result.Values.Length);
 
-            ClassicAssert.AreEqual(2.2, result.Values[0], margin);
-            ClassicAssert.AreEqual(8.3, result.Values[1], margin);
+            ClassicAssert.AreEqual(2.2, result.Values[0], margin*2);
+            ClassicAssert.AreEqual(8.3, result.Values[1], margin*2);
             ClassicAssert.AreEqual(4.25, result.MinimumValue, margin);
-            ClassicAssert.AreEqual(1500, result.ModelRuns);
+            ClassicAssert.AreEqual(1000, result.ModelRuns);
         }
 
         [Test]

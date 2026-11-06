@@ -127,7 +127,7 @@ namespace Deltares::Optimization
     {
         for (size_t i = 0; i < searchArea.Dimensions.size(); i++)
         {
-            if (searchArea.Dimensions[i].Move && searchArea.Dimensions[i].NumberOfValues > 2)
+            if (searchArea.Dimensions[i].Move() && searchArea.Dimensions[i].NumberOfValues > 2)
             {
                 const double tolerance = getTolerance(searchArea.Dimensions[i]);
 
@@ -150,7 +150,7 @@ namespace Deltares::Optimization
         {
             auto& dimension = searchArea.Dimensions[i];
 
-            if (!moved && dimension.Move && dimension.NumberOfValues > 2)
+            if (!moved && dimension.Move() && dimension.NumberOfValues > 2)
             {
                 double shift = dimension.getInterval();
 
@@ -215,6 +215,7 @@ namespace Deltares::Optimization
                 dimension.NumberOfValues = 1;
             }
 
+            dimension.SetMove(true);
             dimension.UseValues = UseValuesType::AllValues;
         }
     }
