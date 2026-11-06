@@ -66,10 +66,10 @@ namespace Deltares::Reliability
             }
         }
 
-        return getReducedDesignPoint(modelRunner, qRange);
+        return getReducedDesignPoint(*modelRunner, qRange);
     }
 
-    std::vector<Sample*> LatinHyperCube::createAllSamples(int nStochasts, Models::SampleStorage& storage)
+    std::vector<Sample*> LatinHyperCube::createAllSamples(int nStochasts, SampleStorage& storage) const
     {
         RandomValueGenerator random;
         random.initialize(Settings->randomSettings->IsRepeatableRandom, Settings->randomSettings->Seed,
@@ -104,6 +104,7 @@ namespace Deltares::Reliability
         for (int n = 0; n < Settings->MinimumSamples; n++)
         {
             std::vector<int> uIndices;
+            uIndices.reserve(nStochasts);
             for (int i = 0; i < nStochasts; i++)
             {
                 uIndices.push_back(indices[i][n]);
@@ -131,9 +132,9 @@ namespace Deltares::Reliability
         return samples;
     }
 
-    std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(std::shared_ptr<ModelRunner>& modelRunner, double qRange)
+    std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(ModelRunner& modelRunner, double qRange)
     {
-        int nStochasts = modelRunner->getVaryingStochastCount();
+        int nStochasts = modelRunner.getVaryingStochastCount();
 
         auto zValues = std::vector<double>(0); // copy of z for all parallel threads as double
 
@@ -181,7 +182,7 @@ namespace Deltares::Reliability
                     calcSamples.push_back(samples[n + i]);
                 }
 
-                zValues = modelRunner->getZValues(calcSamples);
+                zValues = modelRunner.getZValues(calcSamples);
 
                 if (initial)
                 {
@@ -228,7 +229,7 @@ namespace Deltares::Reliability
                 probFailure += qRange * u.Weight;
             }
 
-            // check if convergence is reached (or stop criterion)
+            // add convergence report to model runner
             convergenceReport->Convergence = ReportConvergence(modelRunner, probFailure, nSamples, n);
         }
 
@@ -237,13 +238,13 @@ namespace Deltares::Reliability
 
         uMin = uMean.getSample();
 
-        std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport);
+        std::shared_ptr<DesignPoint> designPoint = modelRunner.getDesignPoint(uMin, beta, convergenceReport);
         return designPoint;
     }
 
-    double LatinHyperCube::ReportConvergence(std::shared_ptr<ModelRunner>& modelRunner, double pf, int samples, int Index) const
+    double LatinHyperCube::ReportConvergence(ModelRunner& modelRunner, double pf, int samples, int index) const
     {
-        auto report = std::make_shared<ReliabilityReport>(Index);
+        auto report = std::make_shared<ReliabilityReport>(index);
 
         if (pf > 0.0 && pf < 1.0)
         {
@@ -258,13 +259,13 @@ namespace Deltares::Reliability
             report->MaxSteps = Settings->MinimumSamples;
             report->ConvBeta = convergence;
 
-            modelRunner->reportResult(report);
+            modelRunner.reportResult(report);
 
             return convergence;
         }
         else
         {
-            modelRunner->reportResult(report);
+            modelRunner.reportResult(report);
             return std::nan("");
         }
     }
