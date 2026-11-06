@@ -850,12 +850,22 @@ TEST(UnitTests, testRandomIntErrorhandling)
 
 TEST(UnitTests, testShuffleInPlace)
 {
-    Deltares::Numeric::Test::TestShuffleItems::RunTest1();
+    Deltares::Numeric::Test::TestShuffleItems::BasicShuffleInPlaceTest();
 }
 
 TEST(UnitTests, testGetNShuffledItems)
 {
-    Deltares::Numeric::Test::TestShuffleItems::RunTest2();
+    Deltares::Numeric::Test::TestShuffleItems::BasicGetNItemsTest();
+}
+
+TEST(UnitTests, testRepeatedShuffleInPlace)
+{
+    Deltares::Numeric::Test::TestShuffleItems::RepeatedShuffleInPlaceTest();
+}
+
+TEST(UnitTests, testRepeatedGetNShuffledItems)
+{
+    Deltares::Numeric::Test::TestShuffleItems::RepeatedGetNItemsTest();
 }
 
 TEST(UnitTests, testRootfinder)

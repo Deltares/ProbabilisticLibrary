@@ -27,7 +27,9 @@ namespace Deltares::Numeric::Test
     class TestShuffleItems
     {
     public:
-        static void RunTest1();
-        static void RunTest2();
+        static void BasicShuffleInPlaceTest();
+        static void BasicGetNItemsTest();
+        static void RepeatedShuffleInPlaceTest();
+        static void RepeatedGetNItemsTest();
     };
 }
