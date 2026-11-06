@@ -25,6 +25,7 @@
 #include "../Statistics/StandardNormal.h"
 #include "../Math/NumericSupport.h"
 #include "../Math/RandomValueGenerator.h"
+#include "../Math/ShuffleItems.h"
 
 using namespace Deltares::Models;
 using namespace Deltares::Statistics;
@@ -66,55 +67,25 @@ namespace Deltares::Reliability
         }
 
         return getReducedDesignPoint(modelRunner, qRange);
-    };
+    }
 
     std::vector<Sample*> LatinHyperCube::createAllSamples(int nStochasts, Models::SampleStorage& storage)
     {
-        struct IndexedItem
-        {
-            int Value = 0;
-            double Sequence = 0.0;
-        };
-
         RandomValueGenerator random;
         random.initialize(Settings->randomSettings->IsRepeatableRandom, Settings->randomSettings->Seed,
                           Settings->randomSettings->getTimeStamp());
-
-        std::vector<std::pair<int, std::vector<double>>> list;
-        for (int i = 0; i < Settings->MinimumSamples; i++)
-        {
-            auto values = std::vector<double>();
-            for (int j = 0; j < nStochasts; j++)
-            {
-                auto s = random.next();
-                values.push_back(s);
-            }
-            list.push_back({ i, values });
-        }
 
         // Create all indices
         std::vector<std::vector<int>> indices;
         for (int i = 0; i < nStochasts; i++)
         {
-            std::vector<IndexedItem> values;
-            for (const auto& p : list)
-            {
-                auto temp_var = IndexedItem();
-                temp_var.Value = p.first;
-                temp_var.Sequence = p.second[i];
-                values.push_back(temp_var);
-            }
-
-            std::sort(values.begin(), values.end(), [](const auto& lhs, const auto& rhs)
-                {
-                    return lhs.Sequence < rhs.Sequence;
-                });
-
             std::vector<int> iValues;
-            for (const auto& p : values)
+            iValues.reserve(Settings->MinimumSamples);
+            for (int j = 0; j < Settings->MinimumSamples; j++)
             {
-                iValues.push_back(p.Value);
+                iValues.push_back(j);
             }
+            ShuffleItems<int>::ShuffleInPlace(iValues, random);
             indices.push_back(iValues);
         }
 
