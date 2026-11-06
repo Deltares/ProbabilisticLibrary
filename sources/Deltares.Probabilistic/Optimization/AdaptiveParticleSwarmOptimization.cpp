@@ -164,8 +164,8 @@ namespace Deltares::Optimization
                 items.push_back(i);
             }
         }
-        const auto indexes = Numeric::ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
-        return indexes;
+        const auto indices = Numeric::ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
+        return indices;
     }
 
     void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite,
@@ -174,7 +174,7 @@ namespace Deltares::Optimization
         const auto& Dimensions = Options.SearchArea.Dimensions;
         const auto particle_size = Dimensions.size();
 
-        const auto indexes = getUniqueIndices(m);
+        const auto indices = getUniqueIndices(m);
 
         for (size_t q = 0; q < particle_size; ++q)
         {
@@ -185,7 +185,7 @@ namespace Deltares::Optimization
                 std::array<double, n_terms> r;
                 for (int i = 0; i < n_terms; i++)
                 {
-                    const auto& sample_de = elite[indexes[i]];
+                    const auto& sample_de = elite[indices[i]];
                     r[i] = Dimensions[q].GetRelativeValue(sample_de.Values[q]);
                 }
 
