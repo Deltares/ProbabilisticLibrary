@@ -38,9 +38,6 @@ namespace Deltares::Optimization
         ValidationSupport::checkMaximum(report, 2.0, DifferentialWeight, "DifferentialWeight");
         generation_counters.validate(report);
 
-        // elite_count must be at least 5 (= n_terms + 1) to allow for differential evolution:
-        ValidationSupport::checkMinimum(report, 5, generation_counters.elite_count, "elite_count");
-
         SearchArea.validate(report);
     }
 }

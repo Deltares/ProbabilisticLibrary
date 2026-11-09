@@ -23,6 +23,7 @@
 #include "AdaptiveParticleSwarmOptimization.h"
 #include "../Math/NumericSupport.h"
 #include "../Math/ShuffleItems.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 #include <algorithm>
 #include <cmath>
@@ -73,7 +74,7 @@ namespace Deltares::Optimization
 
             for (int m = 0; m < Options.generation_counters.population_count; ++m)
             {
-                if (rng.next() < algorithm_divider)
+                if (Options.generation_counters.elite_count == 1 || rng.next() < algorithm_divider)
                 {
                     apsoBranch(generation_index, particle_size, best_particle, population[m]);
                 }
@@ -152,20 +153,49 @@ namespace Deltares::Optimization
         }
     }
 
-    std::vector<int> AdaptiveParticleSwarmOptimization::getUniqueIndices(const int exclude)
+    std::vector<int> AdaptiveParticleSwarmOptimization::getIndicesCandidates(const int exclude)
     {
         const int maximum = Options.generation_counters.elite_count;
 
         auto items = std::vector<int>();
-        for (int i = 0; i < maximum; i++)
+
+        switch (maximum)
         {
-            if (i != exclude)
+        case 1:
+            throw Reliability::ProbabilisticLibraryException("getIndicesCandidates: elite count cannot be 1");
+        case 2:
             {
-                items.push_back(i);
+                for (int i = 0; i < 4; i++)
+                {
+                    items.push_back(i % 2);
+                }
+                return items;
             }
+            break;
+        case 3:
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    items.push_back(i);
+                }
+                items.push_back(rng.next(3));
+                return items;
+            }
+            break;
+        default:
+            {
+                for (int i = 0; i < maximum; i++)
+                {
+                    if (maximum == 4 || i != exclude)
+                    {
+                        items.push_back(i);
+                    }
+                }
+                const auto indices = Numeric::ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
+                return indices;
+            }
+            break;
         }
-        const auto indices = Numeric::ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
-        return indices;
     }
 
     void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite,
@@ -174,7 +204,7 @@ namespace Deltares::Optimization
         const auto& Dimensions = Options.SearchArea.Dimensions;
         const auto particle_size = Dimensions.size();
 
-        const auto indices = getUniqueIndices(m);
+        const auto indices = getIndicesCandidates(m);
 
         for (size_t q = 0; q < particle_size; ++q)
         {

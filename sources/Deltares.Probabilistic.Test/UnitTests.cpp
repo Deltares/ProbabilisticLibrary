@@ -957,6 +957,26 @@ TEST(UnitTests, testApsoValidation)
     Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestValidation();
 }
 
+TEST(UnitTests, testApsoIndicesCandidatesEliteSize1)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize1();
+}
+
+TEST(UnitTests, testApsoIndicesCandidatesEliteSize2)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize2();
+}
+
+TEST(UnitTests, testApsoIndicesCandidatesEliteSize3)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize3();
+}
+
+TEST(UnitTests, testApsoIndicesCandidatesEliteSize4orGreater)
+{
+    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize4orGreater();
+}
+
 TEST(UnitTests, testSearchDimensionValidation)
 {
     Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestSearchDimensionValidation();

@@ -33,6 +33,12 @@ namespace Deltares::Optimization::Test
         static void test_project_polynome_evaluations();
         static void TestValidation();
         static void TestSearchDimensionValidation();
+        static void TestIndicesCandidatesEliteSize1();
+        static void TestIndicesCandidatesEliteSize2();
+        static void TestIndicesCandidatesEliteSize3();
+        static void TestIndicesCandidatesEliteSize4orGreater();
+    private:
+        static void TestIndicesCandidates(const int elite_size);
     };
 }
 

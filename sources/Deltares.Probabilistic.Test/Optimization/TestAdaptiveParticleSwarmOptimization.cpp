@@ -143,5 +143,109 @@ namespace Deltares::Optimization::Test
         EXPECT_EQ(1, report.messages.size());
     }
 
+    void TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize1()
+    {
+        auto settings = AdaptiveParticleSwarmOptimizationSettings();
+        settings.generation_counters.elite_count = 1;
+        auto apso = AdaptiveParticleSwarmOptimization(settings);
+
+        EXPECT_THROW(apso.getIndicesCandidates(0), Reliability::ProbabilisticLibraryException);
+    }
+
+    void TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize2()
+    {
+        auto settings = AdaptiveParticleSwarmOptimizationSettings();
+        settings.generation_counters.elite_count = 2;
+        auto apso = AdaptiveParticleSwarmOptimization(settings);
+
+        auto indices = apso.getIndicesCandidates(0);
+        EXPECT_EQ(indices.size(), 4);
+        EXPECT_EQ(indices[0], 0);
+        EXPECT_EQ(indices[1], 1);
+        EXPECT_EQ(indices[2], 0);
+        EXPECT_EQ(indices[3], 1);
+    }
+
+    void TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize3()
+    {
+        constexpr auto num_iterations = 1000;
+        auto settings = AdaptiveParticleSwarmOptimizationSettings();
+
+        auto sum_indices = std::vector<int>(3, 0);
+        settings.generation_counters.elite_count = 3;
+        auto apso = AdaptiveParticleSwarmOptimization(settings);
+        for (int i = 0; i < num_iterations; ++i)
+        {
+            auto indices = apso.getIndicesCandidates(0);
+            EXPECT_EQ(indices.size(), 4);
+            EXPECT_EQ(indices[0], 0);
+            EXPECT_EQ(indices[1], 1);
+            EXPECT_EQ(indices[2], 2);
+            EXPECT_TRUE(indices[3] >= 0 && indices[3] < 3);
+            sum_indices[indices[3]]++;
+        }
+
+        // The expected value of sum_indices is 333.33... , so we check if the sum is within a reasonable range
+        constexpr double expected_sum = static_cast<double>(num_iterations) / 3.0;
+        constexpr double spread = 10.0; // Allowable spread from the expected value
+        for (int i = 0; i < 3; ++i)
+        {
+            EXPECT_NEAR(sum_indices[i], expected_sum, spread);
+        }
+    }
+
+    void TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize4orGreater()
+    {
+        TestIndicesCandidates(4);
+        TestIndicesCandidates(8);
+    }
+
+    void TestAdaptiveParticleSwarmOptimization::TestIndicesCandidates(const int elite_size)
+    {
+        constexpr auto num_iterations = 10000;
+        auto settings = AdaptiveParticleSwarmOptimizationSettings();
+
+        settings.generation_counters.elite_count = elite_size;
+        settings.generation_counters.population_count = 125;
+        auto sum_indices = std::vector<int>(settings.generation_counters.elite_count, 0);
+        auto apso = AdaptiveParticleSwarmOptimization(settings);
+        for (int i = 0; i < num_iterations; ++i)
+        {
+            const int exclude = i % settings.generation_counters.population_count; // Exclude a different index each iteration
+            const auto indices = apso.getIndicesCandidates(exclude);
+            EXPECT_EQ(indices.size(), AdaptiveParticleSwarmOptimization::n_terms);
+            for (int j = 0; j < AdaptiveParticleSwarmOptimization::n_terms; ++j)
+            {
+                EXPECT_TRUE(indices[j] >= 0 && indices[j] < elite_size);
+                if (elite_size > 4)
+                {
+                    EXPECT_NE(indices[j], exclude); // Ensure that the excluded index is not in the result
+                }
+                sum_indices[indices[j]]++;
+                for (int k = j + 1; k < AdaptiveParticleSwarmOptimization::n_terms; ++k)
+                {
+                    EXPECT_NE(indices[j], indices[k]); // Ensure that all indices are unique
+                }
+            }
+        }
+
+        // Each index should be selected approximately: (num_iterations iterations * n_terms indices / elite_size) times
+        const double expected_sum = static_cast<double>(num_iterations)
+            * static_cast<double>(AdaptiveParticleSwarmOptimization::n_terms)
+            / static_cast<double>(elite_size);
+
+        for (int i = 0; i < elite_size; ++i)
+        {
+            if (elite_size == AdaptiveParticleSwarmOptimization::n_terms)
+            {
+                EXPECT_EQ(sum_indices[i], num_iterations);
+            }
+            else
+            {
+                constexpr double spread = 100.0; // Allowable spread from the expected value
+                EXPECT_NEAR(sum_indices[i], expected_sum, spread);
+            }
+        }
+    }
 }
 

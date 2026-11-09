@@ -32,6 +32,11 @@
 
 namespace Deltares::Optimization
 {
+    namespace Test
+    {
+        class TestAdaptiveParticleSwarmOptimization;
+    }
+
     /// <summary>
     /// APSO: Adaptive Particle Swarm Optimization
     /// optimization method cf OptimizationMethod
@@ -47,6 +52,7 @@ namespace Deltares::Optimization
         // Validation of the input
         void validate(Logging::ValidationReport& report) const;
     private:
+        friend class Test::TestAdaptiveParticleSwarmOptimization;
         AdaptiveParticleSwarmOptimizationSettings Options;
         Numeric::RandomValueGenerator rng;
         static constexpr int n_terms = 4;
@@ -54,7 +60,7 @@ namespace Deltares::Optimization
         Models::ModelSample InitializePopulation(Models::BaseModelRunner& model, std::vector<Models::ModelSample>& population);
         void apsoBranch(int generation_index, size_t particle_size, const Models::ModelSample& best_particle,
             Models::ModelSample& population_m);
-        std::vector<int> getUniqueIndices(const int exclude);
+        std::vector<int> getIndicesCandidates(const int exclude);
         void differentialEvolutionBranch(const std::vector<Models::ModelSample>& elite,
                                          const Models::ModelSample& best_particle,
                                          Models::ModelSample& population_m, const int m);
