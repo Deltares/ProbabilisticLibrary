@@ -27,10 +27,19 @@
 #include "../Model/SampleStorage.h"
 #include "SphereTasks.h"
 
+#include <format>
+
+
 namespace Deltares::Reliability
 {
     Models::Sample StartPointCalculator::getStartPoint(Models::ModelRunner& modelRunner) const
     {
+        if (this->Settings->StartMethod != StartMethodType::FixedValue)
+        {
+            const auto text = std::format("Calculating starting point with {:} stochastic variables.", modelRunner.getVaryingStochastCount());
+            modelRunner.doTextualProgress(Models::ProgressType::Global, text);
+        }
+
         switch (this->Settings->StartMethod)
         {
         case StartMethodType::FixedValue:
@@ -106,7 +115,7 @@ namespace Deltares::Reliability
 
         for (int i = 0; i < nStochasts; i++)
         {
-            if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed || 
+            if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed ||
                 this->Settings->StochastSet->VaryingStochastSettings[i]->IsQualitative)
             {
                 startPoint.Values[i] = 0;

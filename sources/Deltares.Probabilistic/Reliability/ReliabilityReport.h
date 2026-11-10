@@ -27,7 +27,6 @@ namespace Deltares::Reliability
     class ReliabilityReport
     {
     public:
-        int Index = -1;
         double Reliability = nan("");
         double ConvBeta = nan("");
         double Variation = nan("");
