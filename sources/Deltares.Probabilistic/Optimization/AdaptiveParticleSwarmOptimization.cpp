@@ -276,9 +276,8 @@ namespace Deltares::Optimization
                 best_particle = sample;
                 first = false;
             }
-
-            model.reportConvergence(best_particle.Z, 0, Options.generation_counters.generation_count);
         }
+        model.reportConvergence(best_particle.Z, 0, Options.generation_counters.generation_count);
 
         return best_particle;
     }
