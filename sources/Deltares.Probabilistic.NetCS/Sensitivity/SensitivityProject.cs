@@ -103,6 +103,11 @@ namespace Deltares.Probabilistic.Sensitivity
             set { Interface.SetStringValue(id, "parameter", value); }
         }
 
+        protected override int GetMaxParallelProcesses()
+        {
+            return Settings.MaxParallelProcesses;
+        }
+
         public void Run()
         {
             result = null;

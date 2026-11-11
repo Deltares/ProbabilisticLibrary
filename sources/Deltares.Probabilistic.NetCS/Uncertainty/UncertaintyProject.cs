@@ -99,6 +99,11 @@ namespace Deltares.Probabilistic.Uncertainty
             Interface.SetArrayIntValue(id, "uncertainty_parameters", this.uncertaintyParameters.Select(p => p.GetId()).ToArray());
         }
 
+        protected override int GetMaxParallelProcesses()
+        {
+            return Settings.MaxParallelProcesses;
+        }
+
         public void Run()
         {
             result = null;

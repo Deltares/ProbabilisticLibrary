@@ -98,6 +98,11 @@ namespace Deltares.Probabilistic.Reliability
 
 
 
+        protected override int GetMaxParallelProcesses()
+        {
+            return Settings.MaxParallelProcesses;
+        }
+
         public void Run()
         {
             designPoint = null;

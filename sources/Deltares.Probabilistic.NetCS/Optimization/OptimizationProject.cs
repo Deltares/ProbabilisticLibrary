@@ -68,6 +68,11 @@ namespace Deltares.Probabilistic.Optimization
             }
         }
 
+        protected override int GetMaxParallelProcesses()
+        {
+            return Settings.MaxParallelProcesses;
+        }
+
         public void Run()
         {
             result = null;
