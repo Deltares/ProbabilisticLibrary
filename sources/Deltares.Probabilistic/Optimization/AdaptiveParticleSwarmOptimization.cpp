@@ -33,6 +33,7 @@
 namespace Deltares::Optimization
 {
     using namespace Deltares::Models;
+    using namespace Deltares::Numeric;
 
     void AdaptiveParticleSwarmOptimization::validate(Logging::ValidationReport& report) const
     {
@@ -165,37 +166,38 @@ namespace Deltares::Optimization
             throw Reliability::ProbabilisticLibraryException("getIndicesCandidates: elite count cannot be 1");
         case 2:
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < n_terms; i++)
                 {
                     items.push_back(i % 2);
                 }
-                return items;
+                ShuffleItems<int>::ShuffleInPlace(items, rng);
             }
             break;
         case 3:
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < maximum; i++)
                 {
                     items.push_back(i);
                 }
-                items.push_back(rng.next(3));
-                return items;
+                items.push_back(rng.next(maximum));
+                ShuffleItems<int>::ShuffleInPlace(items, rng);
             }
             break;
         default:
             {
                 for (int i = 0; i < maximum; i++)
                 {
-                    if (maximum == 4 || i != exclude)
+                    if (maximum == n_terms || i != exclude)
                     {
                         items.push_back(i);
                     }
                 }
-                const auto indices = Numeric::ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
-                return indices;
+                items = ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
             }
             break;
         }
+
+        return items;
     }
 
     void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite,

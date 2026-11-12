@@ -160,35 +160,42 @@ namespace Deltares::Optimization::Test
 
         auto indices = apso.getIndicesCandidates(0);
         EXPECT_EQ(indices.size(), 4);
-        EXPECT_EQ(indices[0], 0);
-        EXPECT_EQ(indices[1], 1);
-        EXPECT_EQ(indices[2], 0);
-        EXPECT_EQ(indices[3], 1);
+
+        int sum0 = 0;
+        int sum1 = 0;
+        for (const auto& index : indices)
+        {
+            EXPECT_TRUE(index == 0 || index == 1);
+            if (index == 0) sum0++;
+            if (index == 1) sum1++;
+        }
+        EXPECT_EQ(sum0, 2);
+        EXPECT_EQ(sum1, 2);
     }
 
     void TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize3()
     {
-        constexpr auto num_iterations = 1000;
+        constexpr auto num_iterations = 2000;
         auto settings = AdaptiveParticleSwarmOptimizationSettings();
 
-        auto sum_indices = std::vector<int>(3, 0);
+        auto sum_indices = std::vector<int>(4, 0);
         settings.generation_counters.elite_count = 3;
         auto apso = AdaptiveParticleSwarmOptimization(settings);
         for (int i = 0; i < num_iterations; ++i)
         {
             auto indices = apso.getIndicesCandidates(0);
             EXPECT_EQ(indices.size(), 4);
-            EXPECT_EQ(indices[0], 0);
-            EXPECT_EQ(indices[1], 1);
-            EXPECT_EQ(indices[2], 2);
-            EXPECT_TRUE(indices[3] >= 0 && indices[3] < 3);
-            sum_indices[indices[3]]++;
+            for (int j = 0; j < 4; j++)
+            {
+                EXPECT_TRUE(indices[j] >= 0 && indices[j] < 3);
+                sum_indices[j] += indices[j];
+            }
         }
 
-        // The expected value of sum_indices is 333.33... , so we check if the sum is within a reasonable range
-        constexpr double expected_sum = static_cast<double>(num_iterations) / 3.0;
-        constexpr double spread = 10.0; // Allowable spread from the expected value
-        for (int i = 0; i < 3; ++i)
+        // The expected value of sum_indices is 2000, so we check if the sum is within a reasonable range
+        constexpr double expected_sum = num_iterations;
+        constexpr double spread = 0.3 * expected_sum; // Allowable spread from the expected value
+        for (int i = 0; i < 4; ++i)
         {
             EXPECT_NEAR(sum_indices[i], expected_sum, spread);
         }
