@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>Deltares_Probabilistic_Library</id>
-    <version>2026.3.1</version>
+    <id>Deltares.Probabilistic.Library</id>
+    <version>26.3.1</version>
     <authors>Deltares</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">LGPL</license>
