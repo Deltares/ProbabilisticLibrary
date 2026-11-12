@@ -53,6 +53,11 @@ namespace Deltares::Reliability
         this->breakFunction = newBreakFunction;
     }
 
+    void ImportanceSampling::setLoopCounter(int newLoopCounter)
+    {
+        this->loopCounter = newLoopCounter;
+    }
+
     std::shared_ptr<DesignPoint> ImportanceSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
@@ -327,6 +332,7 @@ namespace Deltares::Reliability
     {
         std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
         report->Step = nmaal;
+        report->Loop = this->loopCounter;
         report->MaxSteps = Settings->MaximumSamples;
 
         if (pf > 0 && pf < 1)
@@ -386,7 +392,8 @@ namespace Deltares::Reliability
     void ImportanceSampling::report(ModelRunner& modelRunner, int sampleIndex) const
     {
         std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
-        report->Index = sampleIndex;
+        report->Step = sampleIndex;
+        report->Loop = this->loopCounter;
         report->MaxSteps = Settings->MaximumSamples;
 
         modelRunner.reportResult(report);

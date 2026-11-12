@@ -36,6 +36,7 @@ namespace Deltares::Reliability
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         void setSampleLambda(RegisterSampleLambda sampleFunction);
         void setBreakLoopLambda(BreakLoopLambda breakFunction);
+        void setLoopCounter(int loopCounter);
         bool isValid() override
         {
             return this->Settings->isValid();
@@ -44,6 +45,7 @@ namespace Deltares::Reliability
     private:
         RegisterSampleLambda sampleFunction = nullptr;
         BreakLoopLambda breakFunction = nullptr;
+        int loopCounter = 0;
         std::vector<std::shared_ptr<ImportanceSamplingCluster>> getClusters(Models::ModelRunner& modelRunner, std::shared_ptr<DesignPoint>& startDesignPoint) const;
         bool checkConvergence(Models::ModelRunner& modelRunner, double pf, double minWeight, int samples, int nmaal) const;
         static std::vector<double> getFactors(const StochastSettingsSet& stochastSettings);

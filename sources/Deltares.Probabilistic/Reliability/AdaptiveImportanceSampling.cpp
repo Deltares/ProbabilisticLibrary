@@ -391,6 +391,8 @@ namespace Deltares::Reliability
 
     void AdaptiveImportanceSampling::setCallbacks(int loopCounter)
     {
+        importanceSampling->setLoopCounter(loopCounter);
+
         if (this->Settings->Clustering)
         {
             importanceSampling->setSampleLambda([this](Sample sample)
