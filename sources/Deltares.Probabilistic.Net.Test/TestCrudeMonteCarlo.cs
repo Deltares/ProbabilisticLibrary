@@ -141,6 +141,67 @@ namespace Deltares.Probabilistic.Test
             ClassicAssert.AreEqual(0, designPoint.Realizations.Count);
         }
 
+        [TestCase(1, 1)]
+        [TestCase(4, 2)]
+        public void TestLinearParallelInvocations(int maxParallelProcesses, int expectedMinConcurrency)
+        {
+            var project = ProjectBuilder.GetLinearProject();
+
+            project.Settings.MaxParallelProcesses = maxParallelProcesses;
+            project.Settings.ReliabilityMethod = ReliabilityMethod.CrudeMonteCarlo;
+
+            ZSampleDelegate originalFunction = project.ZFunction;
+
+            int activeInvocations = 0;
+            int maxActiveInvocations = 0;
+            int remainingWaits = 10;
+            var threadIds = new System.Collections.Concurrent.ConcurrentDictionary<int, bool>();
+            using var overlapDetected = new ManualResetEventSlim(false);
+
+            project.ZFunction = sample =>
+            {
+                threadIds.TryAdd(Environment.CurrentManagedThreadId, true);
+
+                int active = Interlocked.Increment(ref activeInvocations);
+
+                int currentMax;
+                while (active > (currentMax = Volatile.Read(ref maxActiveInvocations)))
+                {
+                    Interlocked.CompareExchange(ref maxActiveInvocations, active, currentMax);
+                }
+
+                if (active > 1)
+                {
+                    overlapDetected.Set();
+                }
+                else if (Interlocked.Decrement(ref remainingWaits) >= 0)
+                {
+                    // give other threads the opportunity to start an invocation simultaneously
+                    overlapDetected.Wait(100);
+                }
+
+                originalFunction(sample);
+
+                Interlocked.Decrement(ref activeInvocations);
+            };
+
+            project.Run();
+
+            ClassicAssert.AreEqual(2.58, project.DesignPoint.Beta, margin);
+
+            if (maxParallelProcesses <= 1)
+            {
+                ClassicAssert.AreEqual(1, maxActiveInvocations);
+                ClassicAssert.AreEqual(1, threadIds.Count);
+            }
+            else
+            {
+                ClassicAssert.GreaterOrEqual(maxActiveInvocations, expectedMinConcurrency);
+                ClassicAssert.LessOrEqual(maxActiveInvocations, maxParallelProcesses);
+                ClassicAssert.Greater(threadIds.Count, 1);
+            }
+        }
+
         [Test]
         public void TestLinearMessages()
         {
