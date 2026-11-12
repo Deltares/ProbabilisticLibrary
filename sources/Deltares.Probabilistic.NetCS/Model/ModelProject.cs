@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
 
 namespace Deltares.Probabilistic.Model
 {
@@ -113,10 +115,7 @@ namespace Deltares.Probabilistic.Model
             }
             else
             {
-                foreach (ModelSample sample in modelSamples)
-                {
-                    zFunction.Invoke(sample);
-                }
+                InvokeZFunction(modelSamples);
             }
 
             for (int i = 0; i < count; i++)
@@ -127,6 +126,50 @@ namespace Deltares.Probabilistic.Model
                 IntPtr current = samplesPtr + i * structSize;
                 Marshal.StructureToPtr(modelSampleStructs[i], current, false);
             }
+        }
+
+        /// <summary>
+        /// Evaluates a batch of samples with <see cref="ZFunction"/>. The samples are evaluated in parallel
+        /// when <see cref="GetMaxParallelProcesses"/> allows it, otherwise sequentially.
+        /// </summary>
+        /// <remarks>
+        /// The native library only parallelizes batches itself when no multiple sample callback is registered.
+        /// Since this class always registers one, the parallelization is done here.
+        /// </remarks>
+        private void InvokeZFunction(ModelSample[] samples)
+        {
+            int maxParallelProcesses = GetMaxParallelProcesses();
+
+            if (maxParallelProcesses <= 1 || samples.Length <= 1)
+            {
+                foreach (ModelSample sample in samples)
+                {
+                    zFunction.Invoke(sample);
+                }
+
+                return;
+            }
+
+            try
+            {
+                Parallel.ForEach(samples, new ParallelOptions { MaxDegreeOfParallelism = maxParallelProcesses }, sample => zFunction.Invoke(sample));
+            }
+            catch (AggregateException exception) when (exception.InnerExceptions.Count == 1)
+            {
+                ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+            }
+        }
+
+        /// <summary>
+        /// Gets the maximum number of samples which may be evaluated in parallel by <see cref="ZFunction"/>.
+        /// </summary>
+        /// <remarks>
+        /// Override this method to allow more than one parallel process. The default is 1, which means no parallelization.
+        /// Overrides are usually a call to settings.MaxParallelProcesses.
+        /// </remarks>
+        protected virtual int GetMaxParallelProcesses()
+        {
+            return 1;
         }
 
         public IntPtr NextCalculation()
@@ -145,6 +188,11 @@ namespace Deltares.Probabilistic.Model
             set { zFunction = value; }
         }
 
+        /// <summary>
+        /// Optional function evaluating a batch of samples. When not set, the batch is evaluated with
+        /// <see cref="ZFunction"/>, in parallel if the settings allow more than one parallel process.
+        /// </summary>
+        /// <remarks><see cref="ZFunction"/> must be thread safe when more than one parallel process is allowed.</remarks>
         public ZMultipleSampleDelegate ZMultipleFunction
         {
             get { return zMultipleFunction; }
