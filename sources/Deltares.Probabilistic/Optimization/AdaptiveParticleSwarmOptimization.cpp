@@ -251,14 +251,14 @@ namespace Deltares::Optimization
             const double b = rng.next();
             double c = rng.next();
 
-            c = (c < 0.5) ? (1.0 - c) : c;
+            c = c < 0.5 ? 1.0 - c : c;
 
             const double a = (rng.next() - b) / (c * c);
 
             for (int genome_index = 0; genome_index < particle_size; ++genome_index)
             {
                 const double genome_ratio = particle_size > 1
-                    ? Numeric::NumericSupport::Divide (genome_index, particle_size - 1)
+                    ? NumericSupport::Divide (genome_index, particle_size - 1)
                     : 0.0;
 
                 const double ratio = a * std::pow(genome_ratio - c, 2) + b;
