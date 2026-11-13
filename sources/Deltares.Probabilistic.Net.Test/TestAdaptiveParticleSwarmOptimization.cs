@@ -19,6 +19,8 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
+using System.Collections.Generic;
 using Deltares.Probabilistic.Model;
 using Deltares.Probabilistic.Optimization;
 using NUnit.Framework;
@@ -35,40 +37,43 @@ namespace Deltares.Probabilistic.Test
         [Test]
         public void TestPolynome()
         {
-            var project = ProjectBuilder.GetPolynomeOptimizationProject(2.2, 8.3, 4.25);
-
-            project.Settings.OptimizationMethod = OptimizationMethod.AdaptiveParticleSwarmOptimization;
-
-            foreach (ModelParameter parameter in project.InputParameters)
+            for (int eliteCount = 1; eliteCount < 11; eliteCount++)
             {
-                project.Settings.SearchParameterSettings.Add(new SearchParameterSettings
-                    { Parameter = parameter, MinValue = 0, MaxValue = 10, StartValue = 0});
+                var project = ProjectBuilder.GetPolynomeOptimizationProject(2.2, 8.3, 4.25);
+
+                project.Settings.OptimizationMethod = OptimizationMethod.AdaptiveParticleSwarmOptimization;
+
+                foreach (ModelParameter parameter in project.InputParameters)
+                {
+                    project.Settings.SearchParameterSettings.Add(new SearchParameterSettings
+                        { Parameter = parameter, MinValue = 0, MaxValue = 10, StartValue = 0 });
+                }
+
+                project.Settings.GenerationCount = 50;
+                project.Settings.EliteCount = eliteCount;
+                project.Settings.Seed = 12345;
+                project.Settings.PopulationCount = 125;
+                project.Settings.StopAfterNonImprovingGenerations = 3;
+                project.Settings.DifferentialWeight = 0.3;
+                project.Settings.CrossOver = 0.3;
+                project.Settings.Beta = 0.5;
+                project.Settings.Delta = 0.7;
+
+                project.Settings.AllowRepository = false;
+
+                ClassicAssert.True(project.IsValid());
+
+                project.Run();
+
+                OptimizationResult result = project.Result;
+
+                ClassicAssert.AreEqual(2, result.Values.Length);
+
+                ClassicAssert.AreEqual(2.2, result.Values[0], 0.1);
+                ClassicAssert.AreEqual(8.3, result.Values[1], 0.1);
+                ClassicAssert.AreEqual(4.25, result.MinimumValue, margin);
             }
 
-            project.Settings.GenerationCount = 50;
-            project.Settings.EliteCount = 8;
-            project.Settings.Seed = 12345;
-            project.Settings.PopulationCount = 125;
-            project.Settings.StopAfterNonImprovingGenerations = 3;
-            project.Settings.DifferentialWeight = 0.3;
-            project.Settings.CrossOver = 0.3;
-            project.Settings.Beta = 0.5;
-            project.Settings.Delta = 0.7;
-
-            project.Settings.AllowRepository = false;
-
-            ClassicAssert.True(project.IsValid());
-
-            project.Run();
-
-            OptimizationResult result = project.Result;
-
-            ClassicAssert.AreEqual(2, result.Values.Length);
-
-            ClassicAssert.AreEqual(2.2, result.Values[0], margin);
-            ClassicAssert.AreEqual(8.3, result.Values[1], margin);
-            ClassicAssert.AreEqual(4.25, result.MinimumValue, margin);
-            ClassicAssert.AreEqual(1500, result.ModelRuns);
         }
 
         [Test]

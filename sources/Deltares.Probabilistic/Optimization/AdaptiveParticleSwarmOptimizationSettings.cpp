@@ -24,16 +24,18 @@
 
 namespace Deltares::Optimization
 {
-    void AdaptiveParticleSwarmOptimizationSettings::validate(Logging::ValidationReport& report) const
+    using namespace Deltares::Logging;
+
+    void AdaptiveParticleSwarmOptimizationSettings::validate(ValidationReport& report) const
     {
-        Logging::ValidationSupport::checkMinimum(report, 0.0, Beta, "Beta");
-        Logging::ValidationSupport::checkMaximum(report, 1.0, Beta, "Beta");
-        Logging::ValidationSupport::checkMinimum(report, 0.0, CrossOver, "CrossOver");
-        Logging::ValidationSupport::checkMaximum(report, 1.0, CrossOver, "CrossOver");
-        Logging::ValidationSupport::checkMinimum(report, 0.1, Delta, "Delta");
-        Logging::ValidationSupport::checkMaximum(report, 0.99, Delta, "Delta");
-        Logging::ValidationSupport::checkMinimum(report, 0.0, DifferentialWeight, "DifferentialWeight");
-        Logging::ValidationSupport::checkMaximum(report, 2.0, DifferentialWeight, "DifferentialWeight");
+        ValidationSupport::checkMinimum(report, 0.0, Beta, "Beta");
+        ValidationSupport::checkMaximum(report, 1.0, Beta, "Beta");
+        ValidationSupport::checkMinimum(report, 0.0, CrossOver, "CrossOver");
+        ValidationSupport::checkMaximum(report, 1.0, CrossOver, "CrossOver");
+        ValidationSupport::checkMinimum(report, 0.1, Delta, "Delta");
+        ValidationSupport::checkMaximum(report, 0.99, Delta, "Delta");
+        ValidationSupport::checkMinimum(report, 0.0, DifferentialWeight, "DifferentialWeight");
+        ValidationSupport::checkMaximum(report, 2.0, DifferentialWeight, "DifferentialWeight");
         generation_counters.validate(report);
 
         SearchArea.validate(report);

@@ -22,6 +22,8 @@
 
 #include "AdaptiveParticleSwarmOptimization.h"
 #include "../Math/NumericSupport.h"
+#include "../Math/ShuffleItems.h"
+#include "../Utils/ProbabilisticLibraryException.h"
 
 #include <algorithm>
 #include <cmath>
@@ -31,6 +33,7 @@
 namespace Deltares::Optimization
 {
     using namespace Deltares::Models;
+    using namespace Deltares::Numeric;
 
     void AdaptiveParticleSwarmOptimization::validate(Logging::ValidationReport& report) const
     {
@@ -67,18 +70,18 @@ namespace Deltares::Optimization
                 elite.pop_back();
             }
 
-            double algorithm_divider =
+            const double algorithm_divider =
                 std::max(0.1, 0.9 - generation_index / (0.9 * static_cast<double>(Options.generation_counters.generation_count)));
 
             for (int m = 0; m < Options.generation_counters.population_count; ++m)
             {
-                if (rng.next() < algorithm_divider)
+                if (avoid_de_branch(m) || rng.next() < algorithm_divider)
                 {
                     apsoBranch(generation_index, particle_size, best_particle, population[m]);
                 }
                 else
                 {
-                    differentialEvolutionBranch(elite, particle_size, best_particle, population[m]);
+                    differentialEvolutionBranch(elite, best_particle, population[m], m);
                 }
 
                 population[m].IterationIndex = generation_index;
@@ -115,6 +118,26 @@ namespace Deltares::Optimization
         return return_value;
     }
 
+    bool AdaptiveParticleSwarmOptimization::avoid_de_branch(int m) const
+    {
+        switch (Options.generation_counters.elite_count)
+        {
+        case 1:
+            return true;
+        case 2:
+            return m < Options.generation_counters.elite_count;
+        default:
+            return false;
+        }
+    }
+
+    bool AdaptiveParticleSwarmOptimization::isValidNewRatio(const SearchParameterSettings& dimension, const double new_ratio)
+    {
+        const bool check_lower = !dimension.GetFixedLowerBound() || new_ratio >= 0.0;
+        const bool check_upper = !dimension.GetFixedUpperBound() || new_ratio <= 1.0;
+        return check_lower && check_upper;
+    }
+
     void AdaptiveParticleSwarmOptimization::apsoBranch(int generation_index, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
@@ -132,7 +155,7 @@ namespace Deltares::Optimization
 
                 const double new_ratio = (1.0 - Options.Beta) * prev_ratio + Options.Beta * best_ratio + random_apso;
 
-                if (Dimensions[n].Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (isValidNewRatio(Dimensions[n], new_ratio))
                 {
                     population_m.Values[n] = Dimensions[n].GetAbsoluteValue(new_ratio);
                 }
@@ -144,18 +167,61 @@ namespace Deltares::Optimization
         }
     }
 
-    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite, size_t particle_size, const ModelSample& best_particle, ModelSample& population_m)
+    std::vector<int> AdaptiveParticleSwarmOptimization::getIndicesCandidates(const int exclude)
+    {
+        const int maximum = Options.generation_counters.elite_count;
+
+        auto items = std::vector<int>();
+        for (int i = 0; i < maximum; i++)
+        {
+            if (i != exclude)
+            {
+                items.push_back(i);
+            }
+        }
+
+        switch (items.size())
+        {
+        case 1:
+            throw Reliability::ProbabilisticLibraryException("getIndicesCandidates: elite count cannot be 1");
+        case 2:
+            {
+                // if there are only two items, we can just swap them and duplicate them to get four items
+                const auto swap_values = rng.next(2);
+                if (swap_values == 1)
+                {
+                    std::swap(items[0], items[1]);
+                }
+                for (int i = 0; i < 2; i++)
+                {
+                    items.push_back(items[i]);
+                }
+            }
+            break;
+        case 3:
+            {
+                auto last_member = items[rng.next(static_cast<int>(items.size()))];
+                items.push_back(last_member);
+                ShuffleItems<int>::ShuffleInPlace(items, rng);
+            }
+            break;
+        default:
+            {
+                items = ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
+            }
+            break;
+        }
+
+        return items;
+    }
+
+    void AdaptiveParticleSwarmOptimization::differentialEvolutionBranch(const std::vector<ModelSample>& elite,
+        const ModelSample& best_particle, ModelSample& population_m, const int m)
     {
         const auto& Dimensions = Options.SearchArea.Dimensions;
+        const auto particle_size = Dimensions.size();
 
-        const int maximum = static_cast<int>(elite.size());
-
-        constexpr int n_terms = 4;
-        std::array<int, n_terms> indexes;
-        for (int i = 0 ; i < n_terms; i++)
-        {
-            indexes[i] = rng.next(maximum);
-        }
+        const auto indices = getIndicesCandidates(m);
 
         for (size_t q = 0; q < particle_size; ++q)
         {
@@ -166,13 +232,13 @@ namespace Deltares::Optimization
                 std::array<double, n_terms> r;
                 for (int i = 0; i < n_terms; i++)
                 {
-                    const auto& sample_de = elite[indexes[i]];
+                    const auto& sample_de = elite[indices[i]];
                     r[i] = Dimensions[q].GetRelativeValue(sample_de.Values[q]);
                 }
 
                 const double new_ratio = best_ratio + Options.DifferentialWeight * (r[0] - r[1] + r[2] - r[3]);
 
-                if (Dimensions[q].Move || (new_ratio >= 0.0 && new_ratio <= 1.0))
+                if (isValidNewRatio(Dimensions[q], new_ratio))
                 {
                     population_m.Values[q] = Dimensions[q].GetAbsoluteValue(new_ratio);
                 }
@@ -200,14 +266,14 @@ namespace Deltares::Optimization
             const double b = rng.next();
             double c = rng.next();
 
-            c = (c < 0.5) ? (1.0 - c) : c;
+            c = c < 0.5 ? 1.0 - c : c;
 
             const double a = (rng.next() - b) / (c * c);
 
             for (int genome_index = 0; genome_index < particle_size; ++genome_index)
             {
                 const double genome_ratio = particle_size > 1
-                    ? Numeric::NumericSupport::Divide (genome_index, particle_size - 1)
+                    ? NumericSupport::Divide (genome_index, particle_size - 1)
                     : 0.0;
 
                 const double ratio = a * std::pow(genome_ratio - c, 2) + b;
@@ -227,9 +293,8 @@ namespace Deltares::Optimization
                 best_particle = sample;
                 first = false;
             }
-
-            model.reportConvergence(best_particle.Z, 0, Options.generation_counters.generation_count);
         }
+        model.reportConvergence(best_particle.Z, 0, Options.generation_counters.generation_count);
 
         return best_particle;
     }

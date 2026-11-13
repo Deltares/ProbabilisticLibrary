@@ -28,11 +28,17 @@ namespace Deltares::Optimization::Test
     class TestAdaptiveParticleSwarmOptimization
     {
     public:
-        static void TestBeeswarm(bool move, double tolerance, int evaluations, const std::vector<double>& center);
+        static void TestBeeswarm(bool fixed_lower, bool fixed_upper, double tolerance, int evaluations, const std::vector<double>& center);
         static void test_project_polynome_move_grid();
         static void test_project_polynome_evaluations();
         static void TestValidation();
         static void TestSearchDimensionValidation();
+        static void TestIndicesCandidatesEliteSize1();
+        static void TestIndicesCandidatesEliteSize2();
+        static void TestIndicesCandidatesEliteSize3();
+        static void TestIndicesCandidatesEliteSize4orGreater();
+    private:
+        static void TestIndicesCandidates(const int elite_size);
     };
 }
 

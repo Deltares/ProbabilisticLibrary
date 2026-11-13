@@ -88,11 +88,11 @@ namespace Deltares::Probabilistic::Test
         searchArea.Dimensions[0].MinValue = 0;
         searchArea.Dimensions[0].MaxValue = 10;
         searchArea.Dimensions[0].NumberOfValues = 11;
-        searchArea.Dimensions[0].Move = true;
+        searchArea.Dimensions[0].SetMove(true);
         searchArea.Dimensions[1].MinValue = 0;
         searchArea.Dimensions[1].MaxValue = 10;
         searchArea.Dimensions[1].NumberOfValues = 11;
-        searchArea.Dimensions[1].Move = true;
+        searchArea.Dimensions[1].SetMove(true);
 
         auto result = project.getOptimizedSample(model);
         EXPECT_NEAR(result.values[0], 13.0, 0.01);
@@ -121,7 +121,7 @@ namespace Deltares::Probabilistic::Test
         auto project = OptimizationProject();
         project.model = ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
         project.settings->MaxGridMoves = 10;
-        fillSearchArea(project.settings->SearchArea, 2, true, 10);
+        fillSearchArea(*project.settings->SearchArea, 2, true, 10);
 
         project.run();
         auto result = project.result;
@@ -140,7 +140,7 @@ namespace Deltares::Probabilistic::Test
         project.model = ZModelBuilder::getUnequalPolynomeModel(12.9, 16.2);
         project.settings->MaxGridMoves = 10;
         auto searchArea = project.settings->SearchArea;
-        fillSearchArea(searchArea, 2, true, 10);
+        fillSearchArea(*searchArea, 2, true, 10);
 
         DefaultProgressIndicator progress;
         project.progressIndicator = ProjectBuilder::getProgressIndicator(&progress);
@@ -162,7 +162,7 @@ namespace Deltares::Probabilistic::Test
         project.settings->MaxGridMoves = 10;
         project.settings->RunSettings->SaveEvaluations = true;
         auto searchArea = project.settings->SearchArea;
-        fillSearchArea(searchArea, 2, true, 10);
+        fillSearchArea(*searchArea, 2, true, 10);
 
         project.run();
         auto result = project.result;
@@ -182,7 +182,7 @@ namespace Deltares::Probabilistic::Test
         project.settings->MaxGridMoves = 10;
         project.settings->RunSettings->SaveConvergence = true;
         auto searchArea = project.settings->SearchArea;
-        fillSearchArea(searchArea, 2, true, 10);
+        fillSearchArea(*searchArea, 2, true, 10);
 
         project.run();
         auto result = project.result;
@@ -192,16 +192,16 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(result->convergenceResults.back()->Difference, 0.0, 0.001);
     }
 
-    void TestGridSearch::fillSearchArea(std::shared_ptr<SearchParameterSettingsSetWithSharedPointers> searchArea,
+    void TestGridSearch::fillSearchArea(SearchParameterSettingsSetWithSharedPointers& searchArea,
                                         int size, bool allowMove, int numberOfRefinements)
     {
-        searchArea->setDimensions(size);
-        for (auto dimension : searchArea->Dimensions)
+        searchArea.setDimensions(size);
+        for (const auto& dimension : searchArea.Dimensions)
         {
             dimension->MinValue = 0;
             dimension->MaxValue = 10;
             dimension->NumberOfValues = 11;
-            dimension->Move = allowMove;
+            dimension->SetMove(allowMove);
             dimension->NumberOfRefinements = numberOfRefinements;
         }
     }
