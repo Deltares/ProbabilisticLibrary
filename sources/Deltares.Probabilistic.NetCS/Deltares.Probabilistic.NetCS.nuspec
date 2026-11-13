@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>Deltares_Probabilistic_Library</id>
-    <version>2026.3.1</version>
+    <id>Deltares.Probabilistic.Library</id>
+    <version>$version$</version>
     <authors>Deltares</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">LGPL</license>
     <!-- <icon>icon.png</icon> -->
     <projectUrl>https://deltares.github.io/ProbabilisticLibrary/</projectUrl>
     <description>.Net interface for Probabilistic Library</description>
-    <copyright>Copyright © Deltares $([System.DateTime]::Today.ToString(yyyy))</copyright>
+    <copyright>$copyright$</copyright>
   </metadata>
   <files>
     <file src="..\x64\Release\Deltares.Probabilistic.NetCS.dll" target="lib\net8.0\Deltares.Probabilistic.NetCS.dll" />
