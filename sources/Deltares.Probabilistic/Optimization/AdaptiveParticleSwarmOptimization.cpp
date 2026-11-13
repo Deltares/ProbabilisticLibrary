@@ -75,7 +75,7 @@ namespace Deltares::Optimization
 
             for (int m = 0; m < Options.generation_counters.population_count; ++m)
             {
-                if (Options.generation_counters.elite_count == 1 || rng.next() < algorithm_divider)
+                if (avoid_de_branch(m) || rng.next() < algorithm_divider)
                 {
                     apsoBranch(generation_index, particle_size, best_particle, population[m]);
                 }
@@ -116,6 +116,19 @@ namespace Deltares::Optimization
         return_value.values = best_particle.Values;
         return_value.minimumValue = best_particle.Z;
         return return_value;
+    }
+
+    bool AdaptiveParticleSwarmOptimization::avoid_de_branch(int m) const
+    {
+        switch (Options.generation_counters.elite_count)
+        {
+        case 1:
+            return true;
+        case 2:
+            return m < Options.generation_counters.elite_count;
+        default:
+            return false;
+        }
     }
 
     bool AdaptiveParticleSwarmOptimization::isValidNewRatio(const SearchParameterSettings& dimension, const double new_ratio)
@@ -159,39 +172,41 @@ namespace Deltares::Optimization
         const int maximum = Options.generation_counters.elite_count;
 
         auto items = std::vector<int>();
+        for (int i = 0; i < maximum; i++)
+        {
+            if (i != exclude)
+            {
+                items.push_back(i);
+            }
+        }
 
-        switch (maximum)
+        switch (items.size())
         {
         case 1:
             throw Reliability::ProbabilisticLibraryException("getIndicesCandidates: elite count cannot be 1");
         case 2:
             {
-                for (int i = 0; i < n_terms; i++)
+                // if there are only two items, we can just swap them and duplicate them to get four items
+                const auto swap_values = rng.next(2);
+                if (swap_values == 1)
                 {
-                    items.push_back(i % 2);
+                    std::swap(items[0], items[1]);
                 }
-                ShuffleItems<int>::ShuffleInPlace(items, rng);
+                for (int i = 0; i < 2; i++)
+                {
+                    items.push_back(items[i]);
+                }
             }
             break;
         case 3:
             {
-                for (int i = 0; i < maximum; i++)
-                {
-                    items.push_back(i);
-                }
-                items.push_back(rng.next(maximum));
+                auto last_member = items[rng.next(static_cast<int>(items.size()))];
+                items.push_back(last_member);
                 ShuffleItems<int>::ShuffleInPlace(items, rng);
             }
             break;
         default:
             {
-                for (int i = 0; i < maximum; i++)
-                {
-                    if (maximum == n_terms || i != exclude)
-                    {
-                        items.push_back(i);
-                    }
-                }
                 items = ShuffleItems<int>::GetNShuffledItems(items, rng, n_terms);
             }
             break;

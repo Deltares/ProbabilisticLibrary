@@ -73,6 +73,7 @@
 #include "Server/IntegrationTestProjectHandler.h"
 
 using namespace Deltares::Probabilistic::Test;
+using namespace Deltares::Optimization::Test;
 
 int main(int argc, char** argv)
 {
@@ -909,77 +910,77 @@ TEST(UnitTests, testGridSearchOptimization)
 
 TEST(UnitTests, testAPSOtestCase1)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 7000, {5.0, 7.0});
+    TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 7000, {5.0, 7.0});
 }
 
 TEST(UnitTests, testAPSOtestCase2)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 6400, { 5.3, 7.8 });
+    TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 6400, { 5.3, 7.8 });
 }
 
 TEST(UnitTests, testAPSOtestCase3)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 6000, { 2.345, 8.316 });
+    TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 6000, { 2.345, 8.316 });
 }
 
 TEST(UnitTests, testAPSOtestCase4)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 7000, { 2.345, 8.316, 4.343, 6.788, 1.001 });
+    TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, true, 0.05, 7000, { 2.345, 8.316, 4.343, 6.788, 1.001 });
 }
 
 TEST(UnitTests, testAPSOtestCase5)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, false, 0.05, 6000, { 12.0, 15.0 });
+    TestAdaptiveParticleSwarmOptimization::TestBeeswarm(true, false, 0.05, 6000, { 12.0, 15.0 });
 }
 
 TEST(UnitTests, testAPSOtestCase6)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, false, 0.4, 6000, { 25.3, -17.8 });
+    TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, false, 0.4, 6000, { 25.3, -17.8 });
 }
 
 TEST(UnitTests, testAPSOtestCase7)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, true, 0.3, 6000, { -24, -18 });
+    TestAdaptiveParticleSwarmOptimization::TestBeeswarm(false, true, 0.3, 6000, { -24, -18 });
 }
 
 TEST(UnitTests, testAPSOmoveGrid)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::test_project_polynome_move_grid();
+    TestAdaptiveParticleSwarmOptimization::test_project_polynome_move_grid();
 }
 
 TEST(UnitTests, testAPSOevaluations)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::test_project_polynome_evaluations();
+    TestAdaptiveParticleSwarmOptimization::test_project_polynome_evaluations();
 }
 
 TEST(UnitTests, testApsoValidation)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestValidation();
+    TestAdaptiveParticleSwarmOptimization::TestValidation();
 }
 
 TEST(UnitTests, testApsoIndicesCandidatesEliteSize1)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize1();
+    TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize1();
 }
 
 TEST(UnitTests, testApsoIndicesCandidatesEliteSize2)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize2();
+    TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize2();
 }
 
 TEST(UnitTests, testApsoIndicesCandidatesEliteSize3)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize3();
+    TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize3();
 }
 
 TEST(UnitTests, testApsoIndicesCandidatesEliteSize4orGreater)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize4orGreater();
+    TestAdaptiveParticleSwarmOptimization::TestIndicesCandidatesEliteSize4orGreater();
 }
 
 TEST(UnitTests, testSearchDimensionValidation)
 {
-    Deltares::Optimization::Test::TestAdaptiveParticleSwarmOptimization::TestSearchDimensionValidation();
+    TestAdaptiveParticleSwarmOptimization::TestSearchDimensionValidation();
 }
 
 TEST(WaartsTests, testLinearResistanceFORM)

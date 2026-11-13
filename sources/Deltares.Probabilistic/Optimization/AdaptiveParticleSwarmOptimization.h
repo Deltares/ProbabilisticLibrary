@@ -56,6 +56,7 @@ namespace Deltares::Optimization
         AdaptiveParticleSwarmOptimizationSettings Options;
         Numeric::RandomValueGenerator rng;
         static constexpr int n_terms = 4;
+        bool avoid_de_branch(int m) const;
         static bool isValidNewRatio(const SearchParameterSettings& dimension, const double new_ratio);
         Models::ModelSample InitializePopulation(Models::BaseModelRunner& model, std::vector<Models::ModelSample>& population);
         void apsoBranch(int generation_index, size_t particle_size, const Models::ModelSample& best_particle,

@@ -158,7 +158,7 @@ namespace Deltares::Optimization::Test
         settings.generation_counters.elite_count = 2;
         auto apso = AdaptiveParticleSwarmOptimization(settings);
 
-        auto indices = apso.getIndicesCandidates(0);
+        auto indices = apso.getIndicesCandidates(123);
         EXPECT_EQ(indices.size(), 4);
 
         int sum0 = 0;
@@ -183,7 +183,7 @@ namespace Deltares::Optimization::Test
         auto apso = AdaptiveParticleSwarmOptimization(settings);
         for (int i = 0; i < num_iterations; ++i)
         {
-            auto indices = apso.getIndicesCandidates(0);
+            auto indices = apso.getIndicesCandidates(123);
             EXPECT_EQ(indices.size(), 4);
             for (int j = 0; j < 4; j++)
             {
@@ -227,12 +227,12 @@ namespace Deltares::Optimization::Test
                 if (elite_size > 4)
                 {
                     EXPECT_NE(indices[j], exclude); // Ensure that the excluded index is not in the result
+                    for (int k = j + 1; k < AdaptiveParticleSwarmOptimization::n_terms; ++k)
+                    {
+                        EXPECT_NE(indices[j], indices[k]); // Ensure that all indices are unique
+                    }
                 }
                 sum_indices[indices[j]]++;
-                for (int k = j + 1; k < AdaptiveParticleSwarmOptimization::n_terms; ++k)
-                {
-                    EXPECT_NE(indices[j], indices[k]); // Ensure that all indices are unique
-                }
             }
         }
 
@@ -243,15 +243,8 @@ namespace Deltares::Optimization::Test
 
         for (int i = 0; i < elite_size; ++i)
         {
-            if (elite_size == AdaptiveParticleSwarmOptimization::n_terms)
-            {
-                EXPECT_EQ(sum_indices[i], num_iterations);
-            }
-            else
-            {
-                constexpr double spread = 100.0; // Allowable spread from the expected value
-                EXPECT_NEAR(sum_indices[i], expected_sum, spread);
-            }
+            constexpr double spread = 100.0; // Allowable spread from the expected value
+            EXPECT_NEAR(sum_indices[i], expected_sum, spread);
         }
     }
 }
