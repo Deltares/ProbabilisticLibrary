@@ -23,7 +23,6 @@
 
 #include <algorithm>
 #include <array>
-#include <cmath>
 #include <numbers>
 #include <random>
 #include <vector>

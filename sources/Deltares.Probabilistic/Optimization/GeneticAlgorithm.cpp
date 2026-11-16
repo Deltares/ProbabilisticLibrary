@@ -265,6 +265,13 @@ namespace Deltares::Optimization
         }
     }
 
+    bool GeneticAlgorithm::isValidNewRatio(const SearchParameterSettings& dimension, const double new_ratio)
+    {
+        const bool check_lower = !dimension.GetFixedLowerBound() || new_ratio >= dimension.MinValue;
+        const bool check_upper = !dimension.GetFixedUpperBound() || new_ratio <= dimension.MaxValue;
+        return check_lower && check_upper;
+    }
+
     void GeneticAlgorithm::determineMutationMask(const ModelSample& first)
     {
         const auto method = selectMutationMask(mutationMaskRange);
@@ -283,7 +290,7 @@ namespace Deltares::Optimization
             {
                 const double new_value = first.Values[gene] + Options.MutationCreepReduction *
                     (2.0 * rng.next() - 1.0) * (dimension.MaxValue - dimension.MinValue);
-                if (dimension.Move())
+                if (isValidNewRatio(dimension, new_value))
                 {
                     mutationMask[gene] = new_value;
                 }

@@ -82,6 +82,7 @@ namespace Deltares::Optimization
             const Models::ModelSample& mutationAnchor, Models::BaseModelRunner& model, int generation);
         void randomizeMaskRange(std::array<double, mask_range_count>& range, RandomEffect effect);
         void determineCrossOverMask();
+        static bool isValidNewRatio(const SearchParameterSettings& dimension, double new_ratio);
         void determineMutationMask(const Models::ModelSample& first);
         int selectMask(const std::array<double, mask_range_count>& range);
         CrossOverTypes selectCrossOverMask(const std::array<double, mask_range_count>& range);
