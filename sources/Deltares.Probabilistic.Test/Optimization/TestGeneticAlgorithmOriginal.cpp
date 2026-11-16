@@ -207,11 +207,12 @@ namespace Deltares::Optimization::Test
         options.initializePopulationMethod = InitializePopulationMethod::Uniform;
         options.CrossOverRandomFrequency = RandomFrequency::Generation;
         options.MutationRandomFrequency = RandomFrequency::Generation;
+        options.generation_counters.stop_after_non_improving_generations = 15;
         GeneticAlgorithm optimizer(options);
         auto z = std::make_shared<Models::ZModel>([this](Models::ModelSample& sample)
         {
             double fitness = 21.0;
-            for (double value : sample.Values)
+            for (const double value : sample.Values)
             {
                 fitness += value * value - 10.0 * std::cos(2.0 * std::numbers::pi * value);
             }
