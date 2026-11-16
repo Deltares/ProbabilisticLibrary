@@ -70,7 +70,16 @@ namespace Deltares::Optimization
          * \brief Indicates whether the grid can be repositioned for this parameter
          * \remark Only useful when UseValues is AllValues
          */
-        bool Move = false;
+        bool Move() const { return !fixed_lower_bound && !fixed_upper_bound; }
+        void SetMove(bool value)
+        {
+            fixed_lower_bound = !value;
+            fixed_upper_bound = !value;
+        }
+        bool GetFixedLowerBound() const { return fixed_lower_bound; }
+        void SetFixedLowerBound(bool value) { fixed_lower_bound = value; }
+        bool GetFixedUpperBound() const { return fixed_upper_bound; }
+        void SetFixedUpperBound(bool value) { fixed_upper_bound = value; }
 
         /**
          * \brief The number of refinements to be performed
@@ -138,6 +147,9 @@ namespace Deltares::Optimization
                 return StartValue;
             }
         }
+    private:
+        bool fixed_lower_bound = true;
+        bool fixed_upper_bound = true;
     };
 }
 

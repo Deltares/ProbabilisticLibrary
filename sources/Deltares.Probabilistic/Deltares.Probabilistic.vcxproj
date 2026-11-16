@@ -440,6 +440,7 @@
     <ClInclude Include="Math\RootFinders\RootFinder.h" />
     <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Math\RandomValueGenerator.h" />
+    <ClInclude Include="Math\ShuffleItems.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
     <ClInclude Include="Statistics\BaseCorrelation.h" />
@@ -706,6 +707,7 @@
     <ClCompile Include="Utils\ProbabilisticLibraryException.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Math\RandomValueGenerator.cpp" />
+    <ClCompile Include="Math\ShuffleItems.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\BaseCorrelation.cpp" />
