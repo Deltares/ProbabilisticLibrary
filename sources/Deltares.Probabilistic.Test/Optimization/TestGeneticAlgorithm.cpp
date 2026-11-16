@@ -487,10 +487,10 @@ namespace Deltares::Optimization::Test
         options.SearchArea.setDimensions(2);
         options.SearchArea.Dimensions[0].MinValue = 0;
         options.SearchArea.Dimensions[0].MaxValue = 10;
-        options.SearchArea.Dimensions[0].Move = false;
+        options.SearchArea.Dimensions[0].SetMove(false);
         options.SearchArea.Dimensions[1].MinValue = 0;
         options.SearchArea.Dimensions[1].MaxValue = 10;
-        options.SearchArea.Dimensions[1].Move = false;
+        options.SearchArea.Dimensions[1].SetMove(false);
 
         GeneticAlgorithm algorithm(options);
 
