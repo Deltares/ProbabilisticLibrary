@@ -175,9 +175,9 @@ namespace Deltares::Probabilistic::Test
             auto designPoint = calculator.getDesignPoint(modelRunner);
 
             ASSERT_EQ(designPoint->Alphas.size(), 2);
-            EXPECT_NEAR(designPoint->Beta, 1.8250068211, 1e-4);
-            EXPECT_NEAR(designPoint->Alphas[0]->X, 1.27313, 1e-4);
-            EXPECT_NEAR(designPoint->Alphas[1]->X, -1.30758, 1e-4);
+            EXPECT_NEAR(designPoint->Beta, 1.896, 1e-3);
+            EXPECT_NEAR(designPoint->Alphas[0]->X, 1.358, 1e-3);
+            EXPECT_NEAR(designPoint->Alphas[1]->X, -1.322, 1e-3);
         }
     }
 

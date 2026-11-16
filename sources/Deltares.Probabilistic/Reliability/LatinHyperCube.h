@@ -38,8 +38,8 @@ namespace Deltares::Reliability
         }
 
     private:
-        std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner>& modelRunner, double qRange);
-        double ReportConvergence(std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nMaal) const;
-        std::vector<Models::Sample*> createAllSamples(int nStochasts, Models::SampleStorage& storage);
+        std::shared_ptr<DesignPoint> getReducedDesignPoint(Models::ModelRunner& modelRunner, double qRange);
+        double ReportConvergence(Models::ModelRunner& modelRunner, double pf, int samples, int index) const;
+        std::vector<Models::Sample*> createAllSamples(int nStochasts, Models::SampleStorage& storage) const;
     };
 }

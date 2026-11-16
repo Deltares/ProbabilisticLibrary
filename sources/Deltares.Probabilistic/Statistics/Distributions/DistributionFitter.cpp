@@ -52,7 +52,7 @@ namespace Deltares::Statistics
             settings.MaxValue = maximum[i];
             settings.NumberOfValues = numberValues;
             settings.NumberOfRefinements = numberRefinements;
-            settings.Move = true;
+            settings.SetMove(true);
             searchArea.Dimensions.push_back(settings);
         }
 

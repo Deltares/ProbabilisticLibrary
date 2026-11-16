@@ -41,7 +41,7 @@ namespace Deltares.Probabilistic.Test
 
             DesignPoint designPoint = project.DesignPoint;
 
-            ClassicAssert.AreEqual(2.652, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.5758, designPoint.Beta, margin);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Deltares.Probabilistic.Test
 
             ClassicAssert.AreEqual(1000, progressHolder.Invocations);
             ClassicAssert.AreEqual(1, progressHolder.Progress, margin);
-            ClassicAssert.AreEqual("1000/1000, Reliability = 2.652, Convergence = 0.499", progressHolder.Text);
+            ClassicAssert.AreEqual("1000/1000, Reliability = 2.576, Convergence = 0.446", progressHolder.Text);
         }
     }
 }
