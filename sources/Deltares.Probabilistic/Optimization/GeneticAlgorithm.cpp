@@ -72,7 +72,14 @@ namespace Deltares::Optimization
             {
                 auto child1 = createChild(originalPopulation, population[0], model, generation);
                 auto child2 = createChild(originalPopulation, population[0], model, generation);
-                population[i] = child1.Z < child2.Z ? std::move(child1) : std::move(child2);
+                if (child1.Z < child2.Z)
+                {
+                    population[i] = std::move(child1);
+                }
+                else
+                {
+                    population[i] = std::move(child2);
+                }
             }
 
             best = std::ranges::min_element(population,
