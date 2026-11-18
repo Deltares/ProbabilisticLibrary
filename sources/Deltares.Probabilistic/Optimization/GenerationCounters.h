@@ -31,7 +31,7 @@ namespace Deltares::Optimization
         int generation_count;
         int elite_count;
         int population_count;
-        int stop_after_non_improving_generations;
+        int stop_after_non_improving_generations = 25; // Avoid stopping too early
         void validate(Logging::ValidationReport& report) const override;
     };
 

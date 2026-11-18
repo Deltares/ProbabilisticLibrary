@@ -490,7 +490,7 @@ namespace Deltares::Optimization::Test
         EXPECT_NEAR(result->values[1], 16.2, 0.001);
         EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
 
-        EXPECT_EQ(result->modelRuns, 19313); // reused runs
+        EXPECT_EQ(result->modelRuns, 23525); // reused runs
         EXPECT_TRUE(result->succeeded);
     }
 

@@ -21,6 +21,7 @@
 
 #include "GeneticAlgorithm.h"
 #include "../Utils/ProbabilisticLibraryException.h"
+#include "../Math/NumericSupport.h"
 
 #include <algorithm>
 #include <cmath>
@@ -84,7 +85,7 @@ namespace Deltares::Optimization
 
             best = std::ranges::min_element(population,
                 [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
-            if (best->Z < best_Z)
+            if (Numeric::NumericSupport::isLess(best->Z, best_Z, 1e-12))
             {
                 best_Z = best->Z;
                 last_improved_generation = generation;
@@ -272,11 +273,11 @@ namespace Deltares::Optimization
         }
     }
 
-    bool GeneticAlgorithm::isValidNewRatio(const SearchParameterSettings& dimension, const double new_ratio)
+    double GeneticAlgorithm::clampToFixedBounds(const SearchParameterSettings& dimension, const double value)
     {
-        const bool check_lower = !dimension.GetFixedLowerBound() || new_ratio >= dimension.MinValue;
-        const bool check_upper = !dimension.GetFixedUpperBound() || new_ratio <= dimension.MaxValue;
-        return check_lower && check_upper;
+        if (dimension.GetFixedLowerBound() && value < dimension.MinValue) return dimension.MinValue;
+        if (dimension.GetFixedUpperBound() && value > dimension.MaxValue) return dimension.MaxValue;
+        return value;
     }
 
     void GeneticAlgorithm::determineMutationMask(const ModelSample& first)
@@ -297,19 +298,13 @@ namespace Deltares::Optimization
             {
                 const double new_value = first.Values[gene] + Options.MutationCreepReduction *
                     (2.0 * rng.next() - 1.0) * (dimension.MaxValue - dimension.MinValue);
-                if (isValidNewRatio(dimension, new_value))
-                {
-                    mutationMask[gene] = new_value;
-                }
-                else
-                {
-                    mutationMask[gene] = std::clamp(new_value, dimension.MinValue, dimension.MaxValue);
-                }
+                mutationMask[gene] = clampToFixedBounds(dimension, new_value);
             }
             break;
             case MutationTypes::Inverse:
             {
-                mutationMask[gene] = dimension.MinValue + (dimension.MaxValue - first.Values[gene]);
+                const double new_value = dimension.MinValue + (dimension.MaxValue - first.Values[gene]);
+                mutationMask[gene] = clampToFixedBounds(dimension, new_value);
             }
             break;
             default:

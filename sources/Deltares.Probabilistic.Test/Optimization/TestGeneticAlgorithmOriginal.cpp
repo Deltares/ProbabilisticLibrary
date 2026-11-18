@@ -21,6 +21,7 @@
 
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <algorithm>
 #include <array>
 #include <numbers>
