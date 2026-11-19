@@ -181,6 +181,26 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
+    void TestReliabilityMethods::testLatinHyperCubeSearchRange()
+    {
+        auto calculator = LatinHyperCube();
+        auto builder = ProjectBuilder();
+        auto modelRunner = builder.BuildProject();
+
+        auto stochastSet = calculator.Settings->StochastSet;
+        modelRunner->updateStochastSettings(stochastSet);
+
+        ASSERT_EQ(stochastSet->VaryingStochastSettings.size(), 2);
+        stochastSet->VaryingStochastSettings.at(0)->MinValue = -4.0;
+
+        auto designPoint = calculator.getDesignPoint(modelRunner);
+
+        ASSERT_EQ(designPoint->Alphas.size(), 2);
+        EXPECT_NEAR(designPoint->Beta, 1.896, 1e-3);
+        EXPECT_NEAR(designPoint->Alphas[0]->X, 1.358, 1e-3);
+        EXPECT_NEAR(designPoint->Alphas[1]->X, -1.322, 1e-3);
+    }
+
     void TestReliabilityMethods::testNumericalBisection()
     {
         constexpr double margin = 1e-9;

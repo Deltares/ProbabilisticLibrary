@@ -322,6 +322,11 @@ TEST(ReliabilityMethodTest, TestLatinHyperCube)
     TestReliabilityMethods::testLatinHyperCube();
 }
 
+TEST(ReliabilityMethodTest, TestLatinHyperCubeSearchRange)
+{
+    TestReliabilityMethods::testLatinHyperCubeSearchRange();
+}
+
 TEST(ReliabilityMethodTest, TestCobylaReliability)
 {
     TestReliabilityMethods::testCobylaReliability();

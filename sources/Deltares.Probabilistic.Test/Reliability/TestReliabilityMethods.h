@@ -36,6 +36,7 @@ namespace Deltares::Probabilistic::Test
         static void testFORMVaryingArray();
         static void testValidation();
         static void testLatinHyperCube();
+        static void testLatinHyperCubeSearchRange();
         static void testNumericalBisection();
         static void testNumericalBisectionLinear();
         static void testNumIntZValueProbability();
