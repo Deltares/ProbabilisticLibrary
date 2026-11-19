@@ -21,6 +21,7 @@
 
 #include "GeneticAlgorithm.h"
 #include "../Utils/ProbabilisticLibraryException.h"
+#include "../Math/NumericSupport.h"
 
 #include <algorithm>
 #include <cmath>
@@ -51,6 +52,8 @@ namespace Deltares::Optimization
         auto best = std::ranges::min_element(population,
             [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
         model.reportConvergence(best->Z, 0, Options.generation_counters.generation_count);
+        double best_Z = best->Z;
+        int last_improved_generation = 0;
 
         for (int generation = 0; generation < Options.generation_counters.generation_count && !isStopped(); ++generation)
         {
@@ -70,12 +73,28 @@ namespace Deltares::Optimization
             {
                 auto child1 = createChild(originalPopulation, population[0], model, generation);
                 auto child2 = createChild(originalPopulation, population[0], model, generation);
-                population[i] = child1.Z < child2.Z ? std::move(child1) : std::move(child2);
+                if (child1.Z < child2.Z)
+                {
+                    population[i] = std::move(child1);
+                }
+                else
+                {
+                    population[i] = std::move(child2);
+                }
             }
 
             best = std::ranges::min_element(population,
                 [](const ModelSample& a, const ModelSample& b) { return a.Z < b.Z; });
+            if (Numeric::NumericSupport::isLess(best->Z, best_Z, 1e-12))
+            {
+                best_Z = best->Z;
+                last_improved_generation = generation;
+            }
             model.reportConvergence(best->Z, generation + 1, Options.generation_counters.generation_count);
+            if (generation - last_improved_generation >= Options.generation_counters.stop_after_non_improving_generations)
+            {
+                break;
+            }
         }
 
         auto result = createOptimizationResult(model);
@@ -254,6 +273,13 @@ namespace Deltares::Optimization
         }
     }
 
+    double GeneticAlgorithm::clampToFixedBounds(const SearchParameterSettings& dimension, const double value)
+    {
+        if (dimension.GetFixedLowerBound() && value < dimension.MinValue) return dimension.MinValue;
+        if (dimension.GetFixedUpperBound() && value > dimension.MaxValue) return dimension.MaxValue;
+        return value;
+    }
+
     void GeneticAlgorithm::determineMutationMask(const ModelSample& first)
     {
         const auto method = selectMutationMask(mutationMaskRange);
@@ -272,19 +298,13 @@ namespace Deltares::Optimization
             {
                 const double new_value = first.Values[gene] + Options.MutationCreepReduction *
                     (2.0 * rng.next() - 1.0) * (dimension.MaxValue - dimension.MinValue);
-                if (dimension.Move())
-                {
-                    mutationMask[gene] = new_value;
-                }
-                else
-                {
-                    mutationMask[gene] = std::clamp(new_value, dimension.MinValue, dimension.MaxValue);
-                }
+                mutationMask[gene] = clampToFixedBounds(dimension, new_value);
             }
             break;
             case MutationTypes::Inverse:
             {
-                mutationMask[gene] = dimension.MinValue + (dimension.MaxValue - first.Values[gene]);
+                const double new_value = dimension.MinValue + (dimension.MaxValue - first.Values[gene]);
+                mutationMask[gene] = clampToFixedBounds(dimension, new_value);
             }
             break;
             default:

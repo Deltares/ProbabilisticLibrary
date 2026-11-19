@@ -40,6 +40,8 @@ file(GLOB testfiles
     "Reliability/Waarts/*.[ch]*"
 )
 
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${testfiles})
+
 add_executable(Deltares.Probabilistic.Test ${testfiles})
 
 set_target_properties(Deltares.Probabilistic.Test

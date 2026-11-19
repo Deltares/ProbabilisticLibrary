@@ -434,7 +434,7 @@ namespace Deltares::Optimization::Test
         EXPECT_EQ(result.modelRuns, calls);
     }
 
-    TEST(GeneticAlgorithmTest, test_project_polynome_move_grid)
+    TEST(GeneticAlgorithmTest, TestProjectPolynomeMoveGrid)
     {
         auto project = OptimizationProject();
         project.settings->OptimizationMethod = OptimizationMethodType::GA;
@@ -459,6 +459,38 @@ namespace Deltares::Optimization::Test
         EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
 
         EXPECT_EQ(result->modelRuns, 11825); // reused runs
+        EXPECT_TRUE(result->succeeded);
+    }
+
+    TEST(GeneticAlgorithmTest, TestProjectPolynomeNoFixedUpperBound)
+    {
+        auto project = OptimizationProject();
+        project.settings->OptimizationMethod = OptimizationMethodType::GA;
+        project.settings->generation_counters.generation_count = 100;
+        project.settings->generation_counters.stop_after_non_improving_generations = 15;
+        project.model = Probabilistic::Test::ZModelBuilder::getUnequalPolynomeModel(4.9, 16.2);
+        auto searchArea = project.settings->SearchArea;
+        searchArea->setDimensions(2);
+        searchArea->Dimensions[0]->MinValue = 0;
+        searchArea->Dimensions[0]->MaxValue = 10;
+        searchArea->Dimensions[0]->SetFixedLowerBound(true);
+        searchArea->Dimensions[0]->SetFixedUpperBound(true);
+        searchArea->Dimensions[1]->MinValue = 0;
+        searchArea->Dimensions[1]->MaxValue = 10;
+        searchArea->Dimensions[1]->SetFixedLowerBound(true);
+        searchArea->Dimensions[1]->SetFixedUpperBound(false);
+
+        Logging::ValidationReport report;
+        project.settings->validate(report);
+        ASSERT_TRUE(report.isValid()) << "validation of settings fails";
+
+        project.run();
+        auto result = project.result;
+        EXPECT_NEAR(result->values[0], 4.9, 0.001);
+        EXPECT_NEAR(result->values[1], 16.2, 0.001);
+        EXPECT_NEAR(result->minimumValue, 0.0, 0.001);
+
+        EXPECT_EQ(result->modelRuns, 23525); // reused runs
         EXPECT_TRUE(result->succeeded);
     }
 

@@ -35,5 +35,6 @@ namespace Deltares::Optimization
         ValidationSupport::checkMinimumInt(report, 0, elite_count, "elite_count");
         ValidationSupport::checkMaximumNonInclusive(report, population_count, elite_count, "elite_count");
         ValidationSupport::checkMinimumInt(report, 1, generation_count, "generation_count");
+        ValidationSupport::checkMinimumInt(report, 1, stop_after_non_improving_generations, "stop_after_non_improving_generations");
     }
 }

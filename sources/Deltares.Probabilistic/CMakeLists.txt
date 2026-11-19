@@ -33,6 +33,8 @@ file(GLOB probabilistic_files
     "Utils/*.h"
 )
 
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${probabilistic_files})
+
 add_library(Deltares.Probabilistic
     STATIC
     ${probabilistic_files}
