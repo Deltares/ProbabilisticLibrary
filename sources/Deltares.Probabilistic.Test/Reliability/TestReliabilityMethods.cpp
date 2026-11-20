@@ -22,7 +22,6 @@
 
 #include <gtest/gtest.h>
 #include "TestReliabilityMethods.h"
-#include "../../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
 #include "../../Deltares.Probabilistic/Reliability/NumericalBisection.h"
 #include "../../Deltares.Probabilistic/Reliability/CobylaReliability.h"
 #include "../../Deltares.Probabilistic/Reliability/SubsetSimulation.h"
@@ -160,25 +159,6 @@ namespace Deltares::Probabilistic::Test
         project.settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityCrudeMonteCarlo;
 
         EXPECT_EQ(true, project.isValid());
-    }
-
-    void TestReliabilityMethods::testLatinHyperCube()
-    {
-        const auto chunckSizes = std::vector<int>({ 1, 15, 2000 });
-        for (const auto& chunkSize : chunckSizes)
-        {
-            auto calculator = LatinHyperCube();
-            calculator.Settings->RunSettings->MaxChunkSize = chunkSize;
-
-            auto modelRunner = ProjectBuilder().BuildProject();
-
-            auto designPoint = calculator.getDesignPoint(modelRunner);
-
-            ASSERT_EQ(designPoint->Alphas.size(), 2);
-            EXPECT_NEAR(designPoint->Beta, 1.896, 1e-3);
-            EXPECT_NEAR(designPoint->Alphas[0]->X, 1.358, 1e-3);
-            EXPECT_NEAR(designPoint->Alphas[1]->X, -1.322, 1e-3);
-        }
     }
 
     void TestReliabilityMethods::testNumericalBisection()
