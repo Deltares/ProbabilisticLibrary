@@ -66,14 +66,14 @@ namespace Deltares::Reliability
             }
         }
 
-        double remainderFailure = 0.0;
+        double remainder_failure = 0.0;
         if (qRange < 1.0)
         {
-            double zRemainder = modelRunner->getZValue(remainderSample);
-            remainderFailure = std::isnan(zRemainder) ? zRemainder : getFailureAddition(zRemainder, Models::ModelReturnType::ZValue);
+            const double zRemainder = modelRunner->getZValue(remainderSample);
+            remainder_failure = std::isnan(zRemainder) ? zRemainder : getFailureAddition(zRemainder, ModelReturnType::ZValue);
         }
 
-        return getReducedDesignPoint(*modelRunner, qRange, remainderFailure);
+        return getReducedDesignPoint(*modelRunner, qRange, remainder_failure);
     }
 
     std::vector<Sample*> LatinHyperCube::createAllSamples(int nStochasts, SampleStorage& storage) const
@@ -135,9 +135,9 @@ namespace Deltares::Reliability
         return samples;
     }
 
-    std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(ModelRunner& modelRunner, double qRange, double remainderFailure)
+    std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(ModelRunner& modelRunner, double qRange, double remainder_failure)
     {
-        int nStochasts = modelRunner.getVaryingStochastCount();
+        const int nStochasts = modelRunner.getVaryingStochastCount();
 
         auto zValues = std::vector<double>(0); // copy of z for all parallel threads as double
 
@@ -151,8 +151,8 @@ namespace Deltares::Reliability
 
         int nFailed = 0;
         int nSamples = 0;
-        std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-        const int chunkSize = Settings->RunSettings->MaxChunkSize;
+        auto convergence_report = std::make_shared<ConvergenceReport>();
+        const int chunk_size = Settings->RunSettings->MaxChunkSize;
 
         size_t zIndex = 0;
 
@@ -160,8 +160,8 @@ namespace Deltares::Reliability
 
         auto samples = createAllSamples(nStochasts, storage);
 
-        std::vector<Sample*> calcSamples;
-        double probFailure = (1.0 - qRange) * remainderFailure;
+        std::vector<Sample*> calc_samples;
+        double prob_failure = (1.0 - qRange) * remainder_failure;
 
         for (int n = 0; n < Settings->MinimumSamples && !isStopped(); n++)
         {
@@ -169,23 +169,23 @@ namespace Deltares::Reliability
 
             if (initial || zIndex >= zValues.size())
             {
-                calcSamples.clear();
+                calc_samples.clear();
 
-                int runs = std::min(chunkSize, Settings->MinimumSamples - n);
+                int runs = std::min(chunk_size, Settings->MinimumSamples - n);
 
                 if (initial)
                 {
                     Sample sample = Sample(nStochasts);
-                    calcSamples.push_back(storage.keep(sample));
+                    calc_samples.push_back(storage.keep(sample));
                     runs = std::max(1, runs - 1);
                 }
 
                 for (int i = 0; i < runs; i++)
                 {
-                    calcSamples.push_back(samples[n + i]);
+                    calc_samples.push_back(samples[n + i]);
                 }
 
-                zValues = modelRunner.getZValues(calcSamples);
+                zValues = modelRunner.getZValues(calc_samples);
 
                 if (initial)
                 {
@@ -204,7 +204,7 @@ namespace Deltares::Reliability
 
 
             double z = zValues[zIndex];
-            Sample u = *calcSamples[zIndex];
+            Sample u = *calc_samples[zIndex];
 
             // ignore a failed evaluation
             if (std::isnan(z))
@@ -218,8 +218,8 @@ namespace Deltares::Reliability
             // determine total probability of failure
             if (z < 0) nFailed++;
 
-            convergenceReport->FailedSamples = nFailed;
-            convergenceReport->FailFraction = NumericSupport::Divide(nFailed, nSamples);
+            convergence_report->FailedSamples = nFailed;
+            convergence_report->FailFraction = NumericSupport::Divide(nFailed, nSamples);
 
             // register minimum value of r and alpha
             if (z * z0Fac < 0)
@@ -227,19 +227,19 @@ namespace Deltares::Reliability
                 uMean.addSample(u);
             }
 
-            probFailure = qRange * convergenceReport->FailFraction + (1.0 - qRange) * remainderFailure;
+            prob_failure = qRange * convergence_report->FailFraction + (1.0 - qRange) * remainder_failure;
 
             // add convergence report to model runner
-            convergenceReport->Convergence = ReportConvergence(modelRunner, probFailure, nSamples, n);
+            convergence_report->Convergence = ReportConvergence(modelRunner, prob_failure, nSamples, n);
         }
 
         // general processing
-        double beta = StandardNormal::getUFromQ(probFailure);
+        double beta = StandardNormal::getUFromQ(prob_failure);
 
         uMin = uMean.getSample();
 
-        std::shared_ptr<DesignPoint> designPoint = modelRunner.getDesignPoint(uMin, beta, convergenceReport);
-        return designPoint;
+        auto design_point = modelRunner.getDesignPoint(uMin, beta, convergence_report);
+        return design_point;
     }
 
     double LatinHyperCube::ReportConvergence(ModelRunner& modelRunner, double pf, int samples, int index) const

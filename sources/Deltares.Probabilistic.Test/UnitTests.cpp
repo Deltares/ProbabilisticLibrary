@@ -322,6 +322,16 @@ TEST(ReliabilityMethodTest, TestLatinHyperCube)
     TestReliabilityMethods::testLatinHyperCube();
 }
 
+TEST(ReliabilityMethodTest, LatinHyperCubeBoundedProbability)
+{
+    TestReliabilityMethods::LatinHyperCubeBoundedProbability();
+}
+
+TEST(ReliabilityMethodTest, LatinHyperCubeFailedEvaluations)
+{
+    TestReliabilityMethods::LatinHyperCubeFailedEvaluations();
+}
+
 TEST(ReliabilityMethodTest, TestCobylaReliability)
 {
     TestReliabilityMethods::testCobylaReliability();

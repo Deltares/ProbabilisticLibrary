@@ -181,7 +181,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    TEST(ReliabilityMethodTest, LatinHyperCubeBoundedProbability)
+    void TestReliabilityMethods::LatinHyperCubeBoundedProbability()
     {
         struct Case
         {
@@ -254,7 +254,7 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-    TEST(ReliabilityMethodTest, LatinHyperCubeFailedEvaluations)
+    void TestReliabilityMethods::LatinHyperCubeFailedEvaluations()
     {
         for (bool failRemainder : { false, true })
         {
