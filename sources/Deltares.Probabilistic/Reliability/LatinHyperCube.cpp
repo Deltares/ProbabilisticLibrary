@@ -69,8 +69,10 @@ namespace Deltares::Reliability
         double remainder_failure = 0.0;
         if (qRange < 1.0)
         {
-            const double zRemainder = modelRunner->getZValue(remainderSample);
-            remainder_failure = std::isnan(zRemainder) ? zRemainder : getFailureAddition(zRemainder, ModelReturnType::ZValue);
+            const double zRemainder = modelRunner->getZValue(remainder_sample);
+            remainder_failure = std::isnan(zRemainder)
+                ? zRemainder
+                : getFailureAddition(zRemainder, Settings->RunSettings->modelReturnType);
         }
 
         return getReducedDesignPoint(*modelRunner, qRange, remainder_failure);
