@@ -66,7 +66,14 @@ namespace Deltares::Reliability
             }
         }
 
-        return getReducedDesignPoint(*modelRunner, qRange);
+        double remainderFailure = 0.0;
+        if (qRange < 1.0)
+        {
+            double zRemainder = modelRunner->getZValue(remainderSample);
+            remainderFailure = std::isnan(zRemainder) ? zRemainder : getFailureAddition(zRemainder, Models::ModelReturnType::ZValue);
+        }
+
+        return getReducedDesignPoint(*modelRunner, qRange, remainderFailure);
     }
 
     std::vector<Sample*> LatinHyperCube::createAllSamples(int nStochasts, SampleStorage& storage) const
@@ -111,7 +118,6 @@ namespace Deltares::Reliability
             }
 
             std::vector<double> uValues(nStochasts);
-            double weight = 0.0;
 
             for (int i = 0; i < nStochasts; i++)
             {
@@ -119,20 +125,17 @@ namespace Deltares::Reliability
                 double pMax = pMaxValues[i];
                 double step = (pMin - pMax) / Settings->MinimumSamples;
 
-                double pLow = pMin - uIndices[i] * step;
-                double pHigh = pMin - (uIndices[i] + 1) * step;
                 uValues[i] = StandardNormal::getUFromQ(pMin - (uIndices[i] + 0.5) * step);
-                weight += pLow - pHigh;
             }
 
             auto sample = Sample(uValues);
-            sample.Weight = weight / nStochasts;
+            sample.Weight = 1.0 / Settings->MinimumSamples;
             samples.push_back(storage.keep(sample));
         }
         return samples;
     }
 
-    std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(ModelRunner& modelRunner, double qRange)
+    std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(ModelRunner& modelRunner, double qRange, double remainderFailure)
     {
         int nStochasts = modelRunner.getVaryingStochastCount();
 
@@ -158,7 +161,7 @@ namespace Deltares::Reliability
         auto samples = createAllSamples(nStochasts, storage);
 
         std::vector<Sample*> calcSamples;
-        double probFailure = 0.0;
+        double probFailure = (1.0 - qRange) * remainderFailure;
 
         for (int n = 0; n < Settings->MinimumSamples && !isStopped(); n++)
         {
@@ -224,10 +227,7 @@ namespace Deltares::Reliability
                 uMean.addSample(u);
             }
 
-            if (z < 0.0)
-            {
-                probFailure += qRange * u.Weight;
-            }
+            probFailure = qRange * convergenceReport->FailFraction + (1.0 - qRange) * remainderFailure;
 
             // add convergence report to model runner
             convergenceReport->Convergence = ReportConvergence(modelRunner, probFailure, nSamples, n);

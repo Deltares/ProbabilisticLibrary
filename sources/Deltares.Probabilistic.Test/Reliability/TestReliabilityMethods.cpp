@@ -181,6 +181,117 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
+    TEST(ReliabilityMethodTest, LatinHyperCubeBoundedProbability)
+    {
+        struct Case
+        {
+            double min1;
+            double max1;
+            double min2;
+            double max2;
+            bool upperFailure;
+            bool remainderFailure;
+            double boundedFailure;
+        };
+
+        const std::vector<Case> cases = {
+            { -1.0, 1.0, -8.0, 8.0, false, false, 0.25 },
+            { -1.0, 1.0, -8.0, 8.0, true, true, 0.25 },
+            { -0.5, 2.0, -2.0, 0.5, false, true, 0.25 },
+            { -0.5, 2.0, -2.0, 0.5, true, false, 0.25 },
+            { -1.0, 1.0, -8.0, 8.0, false, false, 0.0 },
+            { -1.0, 1.0, -8.0, 8.0, true, true, 0.0 },
+            { -1.0, 1.0, -8.0, 8.0, false, false, 1.0 },
+            { -1.0, 1.0, -8.0, 8.0, true, true, 1.0 }
+        };
+
+        for (const auto& test : cases)
+        {
+            for (int chunkSize : { 1, 15, 200 })
+            {
+                SCOPED_TRACE(testing::Message() << "bounds: " << test.min1 << ", " << test.max1
+                    << "; " << test.min2 << ", " << test.max2 << "; upper failure: " << test.upperFailure
+                    << "; bounded failure: " << test.boundedFailure << "; chunk size: " << chunkSize);
+
+                auto calculator = LatinHyperCube();
+                calculator.Settings->MinimumSamples = 100;
+                calculator.Settings->RunSettings->MaxChunkSize = chunkSize;
+
+                auto stochast1 = ProjectBuilder::getNormalStochast();
+                auto stochast2 = ProjectBuilder::getNormalStochast();
+                for (const auto& stochast : { stochast1, stochast2 })
+                {
+                    auto settings = std::make_shared<StochastSettings>();
+                    settings->stochast = stochast;
+                    settings->MinValue = stochast == stochast1 ? test.min1 : test.min2;
+                    settings->MaxValue = stochast == stochast1 ? test.max1 : test.max2;
+                    calculator.Settings->StochastSet->stochastSettings.push_back(settings);
+                }
+
+                double pMin = StandardNormal::getPFromU(test.min1);
+                double pMax = StandardNormal::getPFromU(test.max1);
+                double fraction = test.upperFailure ? 1.0 - test.boundedFailure : test.boundedFailure;
+                double threshold = StandardNormal::getUFromP(pMin + fraction * (pMax - pMin));
+                auto model = std::make_shared<ZModel>([threshold, test](ModelSample& sample)
+                {
+                    sample.Z = test.upperFailure ? threshold - sample.Values[0] : sample.Values[0] - threshold;
+                });
+                auto correlation = std::make_shared<CorrelationMatrix>(true);
+                auto converter = std::make_shared<UConverter>(std::vector<std::shared_ptr<Stochast>>{ stochast1, stochast2 }, correlation);
+                converter->initializeForRun();
+                auto runner = std::make_shared<ModelRunner>(model, converter);
+
+                auto designPoint = calculator.getDesignPoint(runner);
+                double range1 = pMax - pMin;
+                double range2 = test.min2 == -8.0 && test.max2 == 8.0 ? 1.0 :
+                    StandardNormal::getPFromU(test.max2) - StandardNormal::getPFromU(test.min2);
+                double qRange = range1 * range2;
+                double expectedFailure = test.boundedFailure * qRange + (test.remainderFailure ? 1.0 - qRange : 0.0);
+
+                EXPECT_NEAR(designPoint->convergenceReport->FailFraction, test.boundedFailure, 1e-12);
+                EXPECT_NEAR(StandardNormal::getQFromU(designPoint->Beta), expectedFailure, 1e-10);
+            }
+        }
+    }
+
+    TEST(ReliabilityMethodTest, LatinHyperCubeFailedEvaluations)
+    {
+        for (bool failRemainder : { false, true })
+        {
+            auto calculator = LatinHyperCube();
+            calculator.Settings->MinimumSamples = 100;
+
+            auto stochast = ProjectBuilder::getNormalStochast();
+            auto settings = std::make_shared<StochastSettings>();
+            settings->stochast = stochast;
+            settings->MinValue = -1.0;
+            settings->MaxValue = 1.0;
+            calculator.Settings->StochastSet->stochastSettings.push_back(settings);
+
+            auto model = std::make_shared<ZModel>([failRemainder](ModelSample& sample)
+            {
+                double x = sample.Values[0];
+                sample.Z = ((x > 0.0 && x < 1.0) || (failRemainder && x > 1.0)) ? std::nan("") : -1.0;
+            });
+            auto correlation = std::make_shared<CorrelationMatrix>(true);
+            auto converter = std::make_shared<UConverter>(std::vector<std::shared_ptr<Stochast>>{ stochast }, correlation);
+            converter->initializeForRun();
+            auto runner = std::make_shared<ModelRunner>(model, converter);
+
+            auto designPoint = calculator.getDesignPoint(runner);
+            EXPECT_EQ(designPoint->convergenceReport->FailedSamples, 50);
+            EXPECT_DOUBLE_EQ(designPoint->convergenceReport->FailFraction, 1.0);
+            if (failRemainder)
+            {
+                EXPECT_TRUE(std::isnan(designPoint->Beta));
+            }
+            else
+            {
+                EXPECT_DOUBLE_EQ(designPoint->Beta, -StandardNormal::BetaMax);
+            }
+        }
+    }
+
     void TestReliabilityMethods::testNumericalBisection()
     {
         constexpr double margin = 1e-9;
