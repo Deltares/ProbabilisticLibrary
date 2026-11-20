@@ -35,33 +35,33 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> LatinHyperCube::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings->StochastSet);
 
-        auto sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
-        modelRunner->setSampleProvider(sampleProvider);
+        const auto sample_provider = std::make_shared<SampleProvider>(*Settings->StochastSet);
+        modelRunner->setSampleProvider(sample_provider);
 
         double qRange = 1.0;
 
-        Sample remainderSample = sampleProvider->getSample();
+        Sample remainder_sample = sample_provider->getSample();
 
-        for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
+        for (int i = 0; i < Settings->StochastSet->getVaryingStochastCount(); i++)
         {
-            if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
+            if (!Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
             {
-                double probLow = StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
-                double probHigh = StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
+                const double prob_low = StandardNormal::getPFromU(Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
+                const double prob_high = StandardNormal::getQFromU(Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
 
-                double prob = 1.0 - probLow - probHigh;
+                const double prob = 1.0 - prob_low - prob_high;
 
                 qRange *= prob;
 
-                if (probLow > probHigh)
+                if (prob_low > prob_high)
                 {
-                    remainderSample.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
+                    remainder_sample.Values[i] = Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
                 }
                 else
                 {
-                    remainderSample.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
+                    remainder_sample.Values[i] = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
                 }
             }
         }
@@ -204,7 +204,6 @@ namespace Deltares::Reliability
                 }
             }
 
-
             double z = zValues[zIndex];
             Sample u = *calc_samples[zIndex];
 
@@ -224,7 +223,7 @@ namespace Deltares::Reliability
             convergence_report->FailFraction = NumericSupport::Divide(nFailed, nSamples);
 
             // register minimum value of r and alpha
-            if (z * z0Fac < 0)
+            if (z * z0Fac < 0.0)
             {
                 uMean.addSample(u);
             }
