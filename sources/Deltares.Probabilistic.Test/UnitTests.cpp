@@ -333,6 +333,11 @@ TEST(ReliabilityMethodTest, TestLatinHyperCubeFailedEvaluations)
     TestLatinHyperCube::testFailedEvaluations();
 }
 
+TEST(ReliabilityMethodTest, TestLatinHyperCubeModelReturnTypes)
+{
+    TestLatinHyperCube::testModelReturnTypes();
+}
+
 TEST(ReliabilityMethodTest, TestCobylaReliability)
 {
     TestReliabilityMethods::testCobylaReliability();

@@ -23,7 +23,6 @@
 #include "LatinHyperCube.h"
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
-#include "../Math/NumericSupport.h"
 #include "../Math/RandomValueGenerator.h"
 #include "../Math/ShuffleItems.h"
 
@@ -143,7 +142,7 @@ namespace Deltares::Reliability
 
         auto zValues = std::vector<double>(0); // copy of z for all parallel threads as double
 
-        auto uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
+        auto uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet, Settings->RunSettings->shouldAddProbability());
 
         Sample uMin = Sample(nStochasts);
 
@@ -151,7 +150,8 @@ namespace Deltares::Reliability
         bool initial = true;
         double z0Fac = 0.0;
 
-        int nFailed = 0;
+        double nFailed = 0.0;
+        int failedSamples = 0;
         int nSamples = 0;
         auto convergence_report = std::make_shared<ConvergenceReport>();
         const int chunk_size = Settings->RunSettings->MaxChunkSize;
@@ -191,8 +191,8 @@ namespace Deltares::Reliability
 
                 if (initial)
                 {
-                    // determine multiplication factor for z (z<0), if u = 0
-                    z0Fac = getZFactor(zValues[0]);
+                    // determine which domain contains the origin
+                    z0Fac = getZFactor(zValues[0], Settings->RunSettings->modelReturnType);
                     uMin = Sample(uMin.getSampleAtBeta(z0Fac * StandardNormal::BetaMax));
                     uMean.initialize(z0Fac * StandardNormal::BetaMax);
                     initial = false;
@@ -217,15 +217,20 @@ namespace Deltares::Reliability
             nSamples++;
 
             // determine total probability of failure
-            if (z < 0) nFailed++;
-
-            convergence_report->FailedSamples = nFailed;
-            convergence_report->FailFraction = NumericSupport::Divide(nFailed, nSamples);
-
-            // register minimum value of r and alpha
-            if (z * z0Fac < 0.0)
+            double failureAddition = getFailureAddition(z, Settings->RunSettings->modelReturnType);
+            nFailed += failureAddition;
+            if (failureAddition > 0.0)
             {
-                uMean.addSample(u);
+                failedSamples++;
+            }
+            convergence_report->FailedSamples = failedSamples;
+            convergence_report->FailFraction = nFailed / nSamples;
+
+            // register samples in the domain opposite to the origin
+            double smallestDomainAddition = z0Fac > 0.0 ? failureAddition : 1.0 - failureAddition;
+            if (smallestDomainAddition > 0.0 && (Settings->RunSettings->modelReturnType != ModelReturnType::ZValue || z != 0.0))
+            {
+                uMean.addSample(u, smallestDomainAddition);
             }
 
             prob_failure = qRange * convergence_report->FailFraction + (1.0 - qRange) * remainder_failure;

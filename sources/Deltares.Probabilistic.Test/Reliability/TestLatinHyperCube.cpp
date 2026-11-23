@@ -1,6 +1,7 @@
 #include "TestLatinHyperCube.h"
 #include <gtest/gtest.h>
 #include "../../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
+#include "../../Deltares.Probabilistic/Reliability/Settings.h"
 #include "../ProjectBuilder.h"
 
 namespace Deltares::Probabilistic::Test
@@ -135,5 +136,67 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
-}
+    void TestLatinHyperCube::testModelReturnTypes()
+    {
+        for (auto returnType : { ModelReturnType::ProbabilityFailure, ModelReturnType::ReliabilityIndex })
+        {
+            for (bool bounded : { false, true })
+            {
+                for (bool inverse : { false, true })
+                {
+                    SCOPED_TRACE(testing::Message() << "return type: " << static_cast<int>(returnType)
+                        << "; bounded: " << bounded << "; inverse: " << inverse);
 
+                    auto settings = Settings();
+                    settings.ReliabilityMethod = ReliabilityMethodType::ReliabilityLatinHyperCube;
+                    settings.MinimumSamples = 100;
+                    settings.RunSettings->modelReturnType = returnType;
+                    settings.RunSettings->MaxChunkSize = 15;
+
+                    const auto stochast = ProjectBuilder::getNormalStochast();
+                    if (bounded)
+                    {
+                        auto stochastSettings = std::make_shared<StochastSettings>();
+                        stochastSettings->stochast = stochast;
+                        stochastSettings->MinValue = -1.0;
+                        stochastSettings->MaxValue = 1.0;
+                        settings.StochastSet->stochastSettings.push_back(stochastSettings);
+                    }
+
+                    Logging::ValidationReport report;
+                    settings.validate(report);
+                    EXPECT_TRUE(report.isValid());
+                    auto calculator = settings.GetReliabilityMethod();
+                    const auto model = std::make_shared<ZModel>([returnType, inverse](ModelSample& sample)
+                        {
+                            double probability = sample.Values[0] > 1.0 ? 0.4 : (sample.Values[0] < 0.0 ? 0.2 : 0.8);
+                            if (inverse) probability = 1.0 - probability;
+                            sample.Z = returnType == ModelReturnType::ProbabilityFailure
+                                ? probability : StandardNormal::getUFromQ(probability);
+                        });
+                    auto correlation = std::make_shared<CorrelationMatrix>(true);
+                    auto converter = std::make_shared<UConverter>(std::vector<std::shared_ptr<Stochast>>{ stochast }, correlation);
+                    converter->initializeForRun();
+                    auto runner = std::make_shared<ModelRunner>(model, converter);
+                    const auto designPoint = calculator->getDesignPoint(runner);
+
+                    const double qRange = bounded ? StandardNormal::getPFromU(1.0) - StandardNormal::getPFromU(-1.0) : 1.0;
+                    // Sixteen of the 100 unbounded midpoint samples lie above 1.
+                    const double upperTail = bounded ? 0.0 : 0.16;
+                    const double expectedFraction = inverse ? 0.5 + 0.4 * upperTail : 0.5 - 0.4 * upperTail;
+                    const double remainder = inverse ? 0.6 : 0.4;
+                    EXPECT_NEAR(designPoint->convergenceReport->FailFraction, expectedFraction, 1e-12);
+                    EXPECT_EQ(designPoint->convergenceReport->FailedSamples, 100);
+                    EXPECT_NEAR(StandardNormal::getQFromU(designPoint->Beta), qRange * expectedFraction + (1.0 - qRange) * remainder, 1e-10);
+                    ASSERT_EQ(designPoint->Alphas.size(), 2);
+                    if (bounded)
+                    {
+                        EXPECT_LT(designPoint->Alphas[0]->U, 0.0);
+                        EXPECT_GT(designPoint->Alphas[1]->U, 0.0);
+                    }
+                }
+            }
+        }
+    }
+
+}

@@ -8,5 +8,6 @@ namespace Deltares::Probabilistic::Test
         static void testDifferentChunkSizes();
         static void testBoundedProbability();
         static void testFailedEvaluations();
+        static void testModelReturnTypes();
     };
 }

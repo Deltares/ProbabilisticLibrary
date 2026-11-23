@@ -62,7 +62,7 @@ namespace Deltares::Reliability
         void validate(Logging::ValidationReport& report) const override
         {
             Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
-            runSettings->validate(report);
+            RunSettings->validate(report, true);
         }
 
         /**
