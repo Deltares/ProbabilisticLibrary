@@ -266,3 +266,49 @@ This is a random process which uses the APSO/DE separation factor $S$.
 Next there is another random process, which uses the cross over fraction $C$,
 which decides per parameter in the particle whether the value comes from from \autoref{eq:APSO} or from \autoref{eq:DE}.
 
+\subsection{Cobyla}
+\label{sec:CobylaOptimization}
+
+Cobyla (Constrained Optimization by Linear Approximations) is a derivative-free optimization algorithm for problems with a nonlinear objective function and nonlinear constraints.
+It is implemented as a sequential trust-region method \cite{Powell1994}.
+The algorithm first defines a simplex consisting of the starting point and $n$ additional points for an optimization problem with $n$ variables.
+At every iteration, linear approximations of the objective function and the constraint functions are constructed by interpolation through the simplex points.
+
+The interpolated linear model is then used to determine a trial point within a trust region around the best point found so far.
+The trial point is accepted if it improves the objective function sufficiently and satisfies the constraints.
+Otherwise, the simplex and trust-region radius are adjusted and the iteration is repeated.
+This process avoids numerical derivatives and therefore allows Cobyla to handle nonsmooth or discontinuous model responses.
+
+The search is limited by the lower and upper bounds of each optimization variable.
+Constrained Cobyla problems require the constraint value to satisfy the constraint tolerance specified in the settings.
+The optimization stops when the relative change in the variables becomes sufficiently small or when the maximum number of model evaluations is reached.
+
+\subsection{K-Means clustering}
+\label{sec:KMeansClustering}
+
+K-Means clustering partitions a set of samples into $k$ groups such that samples in the same group are close to their cluster center.
+The cluster center is the arithmetic mean of the sample values in the cluster.
+For a sample $\mathbf{x}_i$ and cluster $j$, the squared Euclidean distance is
+
+\begin{align}
+d^2\left(\mathbf{x}_i,\mathbf{c}_j\right)
+= \sum_{n=1}^{N}\left(x_{i,n}-c_{j,n}\right)^2 ,
+\end{align}
+
+where $\mathbf{c}_j$ is the center of cluster $j$ and $N$ is the number of variables.
+Sample weights can be included when the initialization selects the next cluster center.
+
+The implementation initializes the clusters with the K-Means++ principle \cite{Arthur2007}.
+The first center is the mean of all samples.
+Each subsequent center is selected randomly from the samples, with a probability proportional to its weighted squared distance from the nearest existing center.
+This favors center locations in regions that are not yet represented well.
+
+The algorithm then repeatedly assigns every sample to the cluster with the nearest center.
+After the assignments, all cluster centers are updated to the mean of their assigned samples.
+Iterations continue until the assignments no longer change or the maximum number of iterations is reached.
+Multiple trials with different initializations can be performed, and the trial with the smallest sum of squared distances between samples and their cluster centers is retained.
+
+The number of clusters can be fixed by the user or optimized automatically.
+In the automatic case, the algorithm evaluates solutions with an increasing number of clusters and uses the silhouette coefficient \cite{Rousseeuw1987} to measure cluster quality.
+The silhouette coefficient compares the mean distance within a cluster with the mean distance to the nearest other cluster.
+Values range from $-1$ to $1$, with values near $1$ indicating well-separated clusters.
