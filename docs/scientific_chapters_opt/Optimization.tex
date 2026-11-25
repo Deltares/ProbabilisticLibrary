@@ -3,7 +3,7 @@
 
 The following algorithms are used to minimize a function.
 
-\subsection{Grid} \label{sec:GridSearch}
+\section{Grid} \label{sec:GridSearch}
 
 A grid search has a number of dimensions, called N. Each dimension contains a number of numeric items.
 All item combinations, also called points, are evaluated with the cost function.
@@ -15,7 +15,7 @@ The items are defined as a range with a minimum and maximum value and the number
 Possibly one item cannot be evaluated, because the realization can not be calculated.
 It will be ignored in the optimization process.
 
-\subsubsection{Move grid if minimum is on edge} \label{sec:MoveGrid}
+\subsection{Move grid if minimum is on edge} \label{sec:MoveGrid}
 
 If, in any dimension, the optimum is on the edge of a dimension,
 the edge will be extended one step in the direction of the edge.
@@ -26,7 +26,7 @@ Per dimension this feature is optional.
 
 This process will be repeated until the optimum is not on the edge of the dimension area any more.
 
-\subsubsection{Refinement of the grid}\label{sec:RefineGrid}
+\subsection{Refinement of the grid}\label{sec:RefineGrid}
 
 When the minimum has been found, eventually moved (\autoref{sec:MoveGrid}),
 the optimization process will refine the grid automatically around the point with the optimum.
@@ -45,7 +45,7 @@ Several refinement steps can be taken. Refinement stops after a provided number 
 	\label{fig:RefinementGrid}
 \end{figure}
 
-\subsection{Genetic algorithm} \label{sec:GeneticAlgorithm}
+\section{Genetic algorithm} \label{sec:GeneticAlgorithm}
 
 The genetic algorithm is a population-based, derivative-free optimization procedure.
 It is useful for objective functions that are discontinuous, non-differentiable, stochastic, strongly non-linear, or dependent on a large number of variables.
@@ -73,7 +73,7 @@ Elitism ensures that the best solution found is not lost while the evolution of 
 	\label{fig:Figure_ProcedureGA}
 \end{figure}
 
-\subsubsection{Initialization}  
+\subsection{Initialization}  
 \label{sec:GeneticAlgorithmInitialization}
 Like in any other optimization method an initial guess of the final outcome is required.
 This guess concerns a choice of all individual genes in the population.
@@ -112,7 +112,7 @@ Note that $\eta_{c}$ is the relative position of the parabola's extreme.
 If this position is located outside the gene's position, the available space is not uniformly filled up, since the extreme enforces an extra offset.
 Therefore, it could be decided to fix the extreme always in the gene's range, $0 < \eta_{c} < 1$.
 
-\subsubsection{Parental selection} 
+\subsection{Parental selection} 
 \label{sec:ParentalSelection}
 Selection specifies how the genetic algorithm chooses parents for the next generation.
 The implemented selection method is a uniform random choice within the population.
@@ -125,7 +125,7 @@ where $\eta$ is a random number between zero and one, $M$ is the population size
 No fitness-based scaling or weighted selection is applied.
 The same population can therefore contain both well-performing and poorly performing individuals as parents.
 
-\subsubsection{Crossover}
+\subsection{Crossover}
 
 The crossover rules combine two parents to form a child.
 The crossover mask is a vector of choices: $0$ selects the first randomly selected parent and $1$ selects the second.
@@ -155,7 +155,7 @@ The implementation provides the following methods:
 	
 \end{itemize}
 
-\subsubsection{Mutation} 
+\subsection{Mutation} 
 \label{sec:Mutation}
 
 Mutation makes random changes in a child and provides genetic diversity.
@@ -172,7 +172,7 @@ Each mutation method may be assigned a fraction that determines how often it is 
 The crossover and mutation fractions can be randomized separately for every generation or every child.
 After crossover and mutation, the child is checked against fixed lower and upper bounds.
 
-\subsubsection{Child selection} \label{sec:ChildSelection}
+\subsection{Child selection} \label{sec:ChildSelection}
 
 For each non-elite position, the routine creates two children and retains the child with the lower objective value.
 This local tournament between paired children favors improvement while preserving diversity from the remaining population.
@@ -184,7 +184,7 @@ The elite size and population size are configurable.
 The search terminates after the maximum number of generations or after a configured number of generations without improvement.
 It can also stop earlier when the model runner requests termination.
 
-\subsection{Adaptive Particle Swarm Optimization} 
+\section{Adaptive Particle Swarm Optimization} 
 \label{sec:APSO}
 
 Adaptive Particle Swarm Optimization (APSO) is a population-based optimization method that combines an APSO search with differential evolution.
@@ -276,7 +276,7 @@ After evaluating a generation, the implementation updates the best particle and 
 The search stops after the configured maximum number of generations or after a configured number of generations without improvement.
 It can also stop earlier if the model runner requests termination.
 
-\subsection{Cobyla}
+\section{Cobyla}
 \label{sec:CobylaOptimization}
 
 Cobyla (Constrained Optimization by Linear Approximations) is a derivative-free optimization algorithm for problems with a nonlinear objective function and nonlinear constraints.
@@ -293,7 +293,7 @@ The search is limited by the lower and upper bounds of each optimization variabl
 Constrained Cobyla problems require the constraint value to satisfy the constraint tolerance specified in the settings.
 The optimization stops when the relative change in the variables becomes sufficiently small or when the maximum number of model evaluations is reached.
 
-\subsection{K-Means clustering}
+\section{K-Means clustering}
 \label{sec:KMeansClustering}
 
 K-Means clustering partitions a set of samples into $k$ groups such that samples in the same group are close to their cluster center.
