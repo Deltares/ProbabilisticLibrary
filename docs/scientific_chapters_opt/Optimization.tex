@@ -68,7 +68,33 @@ Elitism ensures that the best solution found is not lost while the evolution of 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.30\textwidth]{\pathOptPictures GeneticAlgorithm.png}
+	\begin{tikzpicture}[
+		font=\small,
+		process/.style={draw, rectangle, align=center, text width=4cm, minimum height=7mm},
+		decision/.style={draw, diamond, aspect=2, align=center, text width=2.6cm, inner sep=1pt},
+		terminator/.style={draw, rounded corners, align=center, minimum width=2cm, minimum height=7mm},
+		flow/.style={->, >=stealth},
+		node distance=4mm
+	]
+		\node[process] (initial) {Initialize and\\evaluate population};
+		\node[decision, below=of initial] (stop) {Stopping\\criterion met?};
+		\node[terminator, right=35mm of stop] (end) {Return best solution};
+		\node[process, below=of stop] (elite) {Retain elite};
+		\node[process, below=of elite] (parents) {Select parents randomly\\for each child};
+		\node[process, below=of parents] (children) {Create two children by crossover and mutation};
+		\node[process, below=of children] (selection) {Evaluate children and retain the better one};
+		\node[decision, below=of selection] (remaining) {More non-elite positions?};
+
+		\draw[flow] (initial) -- (stop);
+		\draw[flow] (stop) -- node[above] {Yes} (end);
+		\draw[flow] (stop) -- node[right] {No} (elite);
+		\draw[flow] (elite) -- (parents);
+		\draw[flow] (parents) -- (children);
+		\draw[flow] (children) -- (selection);
+		\draw[flow] (selection) -- (remaining);
+		\draw[flow] (remaining.east) -- node[above] {Yes} ++(1.3,0) |- (parents.east);
+		\draw[flow] (remaining.west) -- node[above] {No} ++(-1.3,0) |- (stop.west);
+	\end{tikzpicture}
 	\caption{Procedure of the genetic algorithm}
 	\label{fig:Figure_ProcedureGA}
 \end{figure}
