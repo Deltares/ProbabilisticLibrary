@@ -142,7 +142,8 @@ namespace Deltares::Reliability
 
         auto zValues = std::vector<double>(0); // copy of z for all parallel threads as double
 
-        auto uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet, Settings->RunSettings->shouldAddProbability());
+        auto uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet,
+            Settings->RunSettings->shouldAddProbability());
 
         Sample uMin = Sample(nStochasts);
 
@@ -151,7 +152,7 @@ namespace Deltares::Reliability
         double z0Fac = 0.0;
 
         double nFailed = 0.0;
-        int failedSamples = 0;
+        int failed_samples = 0;
         int nSamples = 0;
         auto convergence_report = std::make_shared<ConvergenceReport>();
         const int chunk_size = Settings->RunSettings->MaxChunkSize;
@@ -217,20 +218,20 @@ namespace Deltares::Reliability
             nSamples++;
 
             // determine total probability of failure
-            double failureAddition = getFailureAddition(z, Settings->RunSettings->modelReturnType);
-            nFailed += failureAddition;
-            if (failureAddition > 0.0)
+            const double failure_addition = getFailureAddition(z, Settings->RunSettings->modelReturnType);
+            nFailed += failure_addition;
+            if (failure_addition > 0.0)
             {
-                failedSamples++;
+                failed_samples++;
             }
-            convergence_report->FailedSamples = failedSamples;
+            convergence_report->FailedSamples = failed_samples;
             convergence_report->FailFraction = nFailed / nSamples;
 
             // register samples in the domain opposite to the origin
-            double smallestDomainAddition = z0Fac > 0.0 ? failureAddition : 1.0 - failureAddition;
-            if (smallestDomainAddition > 0.0)
+            const double smallest_domain_addition = z0Fac > 0.0 ? failure_addition : 1.0 - failure_addition;
+            if (smallest_domain_addition > 0.0)
             {
-                uMean.addSample(u, smallestDomainAddition);
+                uMean.addSample(u, smallest_domain_addition);
             }
 
             prob_failure = qRange * convergence_report->FailFraction + (1.0 - qRange) * remainder_failure;
