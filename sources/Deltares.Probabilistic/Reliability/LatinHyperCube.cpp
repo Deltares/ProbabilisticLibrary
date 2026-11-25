@@ -228,7 +228,7 @@ namespace Deltares::Reliability
 
             // register samples in the domain opposite to the origin
             double smallestDomainAddition = z0Fac > 0.0 ? failureAddition : 1.0 - failureAddition;
-            if (smallestDomainAddition > 0.0 && (Settings->RunSettings->modelReturnType != ModelReturnType::ZValue || z != 0.0))
+            if (smallestDomainAddition > 0.0)
             {
                 uMean.addSample(u, smallestDomainAddition);
             }
