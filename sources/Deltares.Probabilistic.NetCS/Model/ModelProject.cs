@@ -20,251 +20,27 @@
 // All rights reserved.
 //
 
-using Deltares.Probabilistic.Logging;
 using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
 
 namespace Deltares.Probabilistic.Model
 {
-    public delegate void ZSampleDelegate(ModelSample sample);
-    public delegate void ZMultipleSampleDelegate(IList<ModelSample> samples);
-    public delegate void EmptyDelegate();
-
-    public class ModelProject
+    /// <summary>
+    /// Project containing a model and stochastic variables
+    /// </summary>
+    public class ModelProject : BaseModelProject
     {
-        private int id = 0;
-
         private CallBackList<Stochast> stochasts = null;
-        private CallBackList<ModelParameter> inputParameters = null;
-        private CallBackList<ModelParameter> outputParameters = null;
-        private ZSampleDelegate zFunction = null;
-        private ZMultipleSampleDelegate zMultipleFunction = null;
-        private EmptyDelegate nextFunction = null;
         private CorrelationMatrix correlationMatrix = null;
-        private TagRepository tagRepository = new TagRepository();
-        private ProgressIndicator progressIndicator = null;
 
         public ModelProject()
         {
         }
 
-        internal ModelProject(int id)
+        internal ModelProject(int id) : base(id)
         {
-            if (id > 0)
-            {
-                this.id = id;
-                SetCallBacks();
-            }
-        }
-
-        ~ModelProject()
-        {
-            Interface.Destroy(id);
-        }
-
-        internal int GetId()
-        {
-            return id;
-        }
-
-        internal void SetId(int id)
-        {
-            this.id = id;
-            SetCallBacks();
-        }
-
-        private void SetCallBacks()
-        {
-            Interface.SetModelSampleCallback(id, "model", ModelCallback);
-            Interface.SetMultipleModelSampleCallback(id, "model", MultipleModelCallback);
-            Interface.SetEmptyCallback(id, "next", NextCalculation);
-        }
-
-        private void ModelCallback(ref ModelSampleStruct sample)
-        {
-            ModelSample modelSample = new ModelSample(sample);
-
-            zFunction.Invoke(modelSample);
-
-            modelSample.PrepareForReturn(ref sample, tagRepository);
-        }
-
-        private void MultipleModelCallback(IntPtr samplesPtr, int count)
-        {
-            int structSize = Marshal.SizeOf<ModelSampleStruct>();
-
-            ModelSampleStruct[] modelSampleStructs = new ModelSampleStruct[count];
-            ModelSample[] modelSamples = new ModelSample[count];
-
-            for (int i = 0; i < count; i++)
-            {
-                IntPtr current = samplesPtr + i * structSize;
-                modelSampleStructs[i] = Marshal.PtrToStructure<ModelSampleStruct>(current);
-                modelSamples[i] = new ModelSample(modelSampleStructs[i]);
-            }
-
-            if (zMultipleFunction != null)
-            {
-                zMultipleFunction.Invoke(modelSamples);
-            }
-            else
-            {
-                InvokeZFunction(modelSamples);
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                modelSamples[i].PrepareForReturn(ref modelSampleStructs[i], tagRepository);
-
-                // Write it back to unmanaged memory
-                IntPtr current = samplesPtr + i * structSize;
-                Marshal.StructureToPtr(modelSampleStructs[i], current, false);
-            }
-        }
-
-        /// <summary>
-        /// Evaluates a batch of samples with <see cref="ZFunction"/>. The samples are evaluated in parallel
-        /// when <see cref="GetMaxParallelProcesses"/> allows it, otherwise sequentially.
-        /// </summary>
-        /// <remarks>
-        /// The native library only parallelizes batches itself when no multiple sample callback is registered.
-        /// Since this class always registers one, the parallelization is done here.
-        /// </remarks>
-        private void InvokeZFunction(ModelSample[] samples)
-        {
-            int maxParallelProcesses = GetMaxParallelProcesses();
-
-            if (maxParallelProcesses <= 1 || samples.Length <= 1)
-            {
-                foreach (ModelSample sample in samples)
-                {
-                    zFunction.Invoke(sample);
-                }
-
-                return;
-            }
-
-            try
-            {
-                Parallel.ForEach(samples, new ParallelOptions { MaxDegreeOfParallelism = maxParallelProcesses }, sample => zFunction.Invoke(sample));
-            }
-            catch (AggregateException exception) when (exception.InnerExceptions.Count == 1)
-            {
-                ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
-            }
-        }
-
-        /// <summary>
-        /// Gets the maximum number of samples which may be evaluated in parallel by <see cref="ZFunction"/>.
-        /// </summary>
-        /// <remarks>
-        /// Override this method to allow more than one parallel process. The default is 1, which means no parallelization.
-        /// Overrides are usually a call to settings.MaxParallelProcesses.
-        /// </remarks>
-        protected virtual int GetMaxParallelProcesses()
-        {
-            return 1;
-        }
-
-        public IntPtr NextCalculation()
-        {
-            if (nextFunction != null)
-            {
-                nextFunction.Invoke();
-            }
-
-            return 0;
-        }
-
-        public ZSampleDelegate ZFunction
-        {
-            get { return zFunction; }
-            set { zFunction = value; }
-        }
-
-        /// <summary>
-        /// Optional function evaluating a batch of samples. When not set, the batch is evaluated with
-        /// <see cref="ZFunction"/>, in parallel if the settings allow more than one parallel process.
-        /// </summary>
-        /// <remarks><see cref="ZFunction"/> must be thread safe when more than one parallel process is allowed.</remarks>
-        public ZMultipleSampleDelegate ZMultipleFunction
-        {
-            get { return zMultipleFunction; }
-            set { zMultipleFunction = value; }
-        }
-
-        public EmptyDelegate NextFunction
-        {
-            get { return nextFunction; }
-            set { nextFunction = value; }
-        }
-
-        public ProgressIndicator ProgressIndicator
-        {
-            get { return progressIndicator; }
-            set
-            {
-                if (value != null)
-                {
-                    Interface.SetProgressCallbacks(id, value.DoProgress, value.DoDetailedProgress, value.DoTextualProgress);
-                }
-
-                progressIndicator = value;
-            }
-        }
-
-        public IList<ModelParameter> InputParameters
-        {
-            get
-            {
-                if (inputParameters == null)
-                {
-                    inputParameters = new CallBackList<ModelParameter>(InputParametersChanged);
-
-                    int[] parameterIds = Interface.GetArrayIdValue(id, "input_parameters");
-                    foreach (int parameterId in parameterIds)
-                    {
-                        inputParameters.AddWithoutCallBack(new ModelParameter(parameterId));
-                    }
-                }
-
-                return inputParameters;
-            }
-        }
-
-        private void InputParametersChanged(ListOperationType listOperation, ModelParameter item)
-        {
-            Interface.SetArrayIntValue(id, "input_parameters", this.inputParameters.Select(p => p.GetId()).ToArray());
-        }
-
-        public IList<ModelParameter> OutputParameters
-        {
-            get
-            {
-                if (outputParameters == null)
-                {
-                    outputParameters = new CallBackList<ModelParameter>(OutputParametersChanged);
-
-                    int[] parameterIds = Interface.GetArrayIdValue(id, "output_parameters");
-                    foreach (int parameterId in parameterIds)
-                    {
-                        outputParameters.AddWithoutCallBack(new ModelParameter(parameterId));
-                    }
-                }
-
-                return outputParameters;
-            }
-        }
-
-        private void OutputParametersChanged(ListOperationType listOperation, ModelParameter item)
-        {
-            Interface.SetArrayIntValue(id, "output_parameters", this.outputParameters.Select(p => p.GetId()).ToArray());
         }
 
         public IList<Stochast> Stochasts
@@ -275,7 +51,7 @@ namespace Deltares.Probabilistic.Model
                 {
                     stochasts = new CallBackList<Stochast>(StochastValuesChanged);
 
-                    int[] stochastIds = Interface.GetArrayIdValue(id, "variables");
+                    int[] stochastIds = Interface.GetArrayIdValue(GetId(), "variables");
                     foreach (int stochastId in stochastIds)
                     {
                         stochasts.AddWithoutCallBack(ObjectFactory.GetObject<Stochast>(stochastId));
@@ -288,7 +64,7 @@ namespace Deltares.Probabilistic.Model
 
         private void StochastValuesChanged(ListOperationType listOperation, Stochast item)
         {
-            Interface.SetArrayIntValue(id, "variables", this.stochasts.Select(p => p.GetId()).ToArray());
+            Interface.SetArrayIntValue(GetId(), "variables", this.stochasts.Select(p => p.GetId()).ToArray());
         }
 
         public CorrelationMatrix CorrelationMatrix
@@ -297,11 +73,11 @@ namespace Deltares.Probabilistic.Model
             {
                 if (correlationMatrix == null)
                 {
-                    int matrixId = Interface.GetIdValue(id, "correlation_matrix");
+                    int matrixId = Interface.GetIdValue(GetId(), "correlation_matrix");
                     if (matrixId == 0)
                     {
                         correlationMatrix = new CorrelationMatrix();
-                        Interface.SetIntValue(id, "correlation_matrix", correlationMatrix.GetId());
+                        Interface.SetIntValue(GetId(), "correlation_matrix", correlationMatrix.GetId());
                     }
                     else
                     {
@@ -313,19 +89,9 @@ namespace Deltares.Probabilistic.Model
             }
             set
             {
-                Interface.SetIntValue(id, "correlation_matrix", value.GetId());
+                Interface.SetIntValue(GetId(), "correlation_matrix", value.GetId());
                 correlationMatrix = value;
             }
-        }
-
-        protected internal TagRepository TagRepository
-        {
-            get { return tagRepository; }
-        }
-
-        public bool IsValid()
-        {
-            return Interface.GetBoolValue(id, "is_valid");
         }
     }
 }

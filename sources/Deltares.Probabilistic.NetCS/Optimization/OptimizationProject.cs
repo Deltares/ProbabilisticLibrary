@@ -25,7 +25,7 @@ using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Optimization
 {
-    public class OptimizationProject : ModelProject
+    public class OptimizationProject : BaseModelProject
     {
         private int id = 0;
         private OptimizationSettings settings = null;
