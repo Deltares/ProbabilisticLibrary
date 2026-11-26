@@ -100,6 +100,7 @@ namespace Deltares::Reliability
 
         latinHypercube->Settings->designPointMethod = this->designPointMethod;
         latinHypercube->Settings->StochastSet = this->StochastSet;
+        latinHypercube->Settings->RunSettings = this->RunSettings;
 
         latinHypercube->Settings->MinimumSamples = this->MinimumSamples;
 

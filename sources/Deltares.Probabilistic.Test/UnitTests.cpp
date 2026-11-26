@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 #include "Reliability/TestStartPointCalculator.h"
 #include "Reliability/TestReliabilityMethods.h"
+#include "Reliability/TestLatinHyperCube.h"
 #include "Reliability/TestNumIntShared.h"
 #include "Math/TestCholeskiDecomposition.h"
 #include "Math/TestNumericSupport.h"
@@ -319,7 +320,22 @@ TEST(ReliabilityMethodTest, TestValidation)
 
 TEST(ReliabilityMethodTest, TestLatinHyperCube)
 {
-    TestReliabilityMethods::testLatinHyperCube();
+    TestLatinHyperCube::testDifferentChunkSizes();
+}
+
+TEST(ReliabilityMethodTest, TestLatinHyperCubeBoundedProbability)
+{
+    TestLatinHyperCube::testBoundedProbability();
+}
+
+TEST(ReliabilityMethodTest, TestLatinHyperCubeFailedEvaluations)
+{
+    TestLatinHyperCube::testFailedEvaluations();
+}
+
+TEST(ReliabilityMethodTest, TestLatinHyperCubeModelReturnTypes)
+{
+    TestLatinHyperCube::testModelReturnTypes();
 }
 
 TEST(ReliabilityMethodTest, TestCobylaReliability)

@@ -155,6 +155,7 @@
     <ClInclude Include="Reliability\Waarts\TestWaartsParallelSystem.h" />
     <ClInclude Include="Reliability\Waarts\TestWaartsResistance25QuadraticTermsSparse.h" />
     <ClInclude Include="Reliability\TestReliabilityMethods.h" />
+    <ClInclude Include="Reliability\TestLatinHyperCube.h" />
     <ClInclude Include="DefaultProgressIndicator.h" />
     <ClInclude Include="Optimization\TestGridSearch.h" />
     <ClInclude Include="ZModelBuilder.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="Reliability\Waarts\TestWaartsParallelSystem.cpp" />
     <ClCompile Include="Reliability\Waarts\TestWaartsResistance25QuadraticTermsSparse.cpp" />
     <ClCompile Include="Reliability\TestReliabilityMethods.cpp" />
+    <ClCompile Include="Reliability\TestLatinHyperCube.cpp" />
     <ClCompile Include="Optimization\TestGridSearch.cpp" />
     <ClCompile Include="ZModelBuilder.cpp" />
     <ClCompile Include="Uncertainty\TestUncertainty.cpp" />

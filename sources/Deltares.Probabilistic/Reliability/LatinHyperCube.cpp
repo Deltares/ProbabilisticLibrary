@@ -23,7 +23,6 @@
 #include "LatinHyperCube.h"
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
-#include "../Math/NumericSupport.h"
 #include "../Math/RandomValueGenerator.h"
 #include "../Math/ShuffleItems.h"
 
@@ -35,38 +34,47 @@ namespace Deltares::Reliability
 {
     std::shared_ptr<DesignPoint> LatinHyperCube::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
     {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+        modelRunner->updateStochastSettings(Settings->StochastSet);
 
-        auto sampleProvider = std::make_shared<SampleProvider>(*Settings->StochastSet);
-        modelRunner->setSampleProvider(sampleProvider);
+        const auto sample_provider = std::make_shared<SampleProvider>(*Settings->StochastSet);
+        modelRunner->setSampleProvider(sample_provider);
 
         double qRange = 1.0;
 
-        Sample remainderSample = sampleProvider->getSample();
+        Sample remainder_sample = sample_provider->getSample();
 
-        for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
+        for (int i = 0; i < Settings->StochastSet->getVaryingStochastCount(); i++)
         {
-            if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
+            if (!Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
             {
-                double probLow = StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
-                double probHigh = StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
+                const double prob_low = StandardNormal::getPFromU(Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
+                const double prob_high = StandardNormal::getQFromU(Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
 
-                double prob = 1.0 - probLow - probHigh;
+                const double prob = 1.0 - prob_low - prob_high;
 
                 qRange *= prob;
 
-                if (probLow > probHigh)
+                if (prob_low > prob_high)
                 {
-                    remainderSample.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
+                    remainder_sample.Values[i] = Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
                 }
                 else
                 {
-                    remainderSample.Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
+                    remainder_sample.Values[i] = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
                 }
             }
         }
 
-        return getReducedDesignPoint(*modelRunner, qRange);
+        double remainder_failure = 0.0;
+        if (qRange < 1.0)
+        {
+            const double zRemainder = modelRunner->getZValue(remainder_sample);
+            remainder_failure = std::isnan(zRemainder)
+                ? zRemainder
+                : getFailureAddition(zRemainder, Settings->RunSettings->modelReturnType);
+        }
+
+        return getReducedDesignPoint(*modelRunner, qRange, remainder_failure);
     }
 
     std::vector<Sample*> LatinHyperCube::createAllSamples(int nStochasts, SampleStorage& storage) const
@@ -111,7 +119,6 @@ namespace Deltares::Reliability
             }
 
             std::vector<double> uValues(nStochasts);
-            double weight = 0.0;
 
             for (int i = 0; i < nStochasts; i++)
             {
@@ -119,26 +126,24 @@ namespace Deltares::Reliability
                 double pMax = pMaxValues[i];
                 double step = (pMin - pMax) / Settings->MinimumSamples;
 
-                double pLow = pMin - uIndices[i] * step;
-                double pHigh = pMin - (uIndices[i] + 1) * step;
                 uValues[i] = StandardNormal::getUFromQ(pMin - (uIndices[i] + 0.5) * step);
-                weight += pLow - pHigh;
             }
 
             auto sample = Sample(uValues);
-            sample.Weight = weight / nStochasts;
+            sample.Weight = 1.0 / Settings->MinimumSamples;
             samples.push_back(storage.keep(sample));
         }
         return samples;
     }
 
-    std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(ModelRunner& modelRunner, double qRange)
+    std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(ModelRunner& modelRunner, double qRange, double remainder_failure)
     {
-        int nStochasts = modelRunner.getVaryingStochastCount();
+        const int nStochasts = modelRunner.getVaryingStochastCount();
 
         auto zValues = std::vector<double>(0); // copy of z for all parallel threads as double
 
-        auto uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
+        auto uMean = DesignPointBuilder(nStochasts, Settings->designPointMethod, this->Settings->StochastSet,
+            Settings->RunSettings->shouldAddProbability());
 
         Sample uMin = Sample(nStochasts);
 
@@ -146,10 +151,11 @@ namespace Deltares::Reliability
         bool initial = true;
         double z0Fac = 0.0;
 
-        int nFailed = 0;
+        double nFailed = 0.0;
+        int failed_samples = 0;
         int nSamples = 0;
-        std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-        const int chunkSize = Settings->RunSettings->MaxChunkSize;
+        auto convergence_report = std::make_shared<ConvergenceReport>();
+        const int chunk_size = Settings->RunSettings->MaxChunkSize;
 
         size_t zIndex = 0;
 
@@ -157,8 +163,8 @@ namespace Deltares::Reliability
 
         auto samples = createAllSamples(nStochasts, storage);
 
-        std::vector<Sample*> calcSamples;
-        double probFailure = 0.0;
+        std::vector<Sample*> calc_samples;
+        double prob_failure = (1.0 - qRange) * remainder_failure;
 
         for (int n = 0; n < Settings->MinimumSamples && !isStopped(); n++)
         {
@@ -166,28 +172,28 @@ namespace Deltares::Reliability
 
             if (initial || zIndex >= zValues.size())
             {
-                calcSamples.clear();
+                calc_samples.clear();
 
-                int runs = std::min(chunkSize, Settings->MinimumSamples - n);
+                int runs = std::min(chunk_size, Settings->MinimumSamples - n);
 
                 if (initial)
                 {
                     Sample sample = Sample(nStochasts);
-                    calcSamples.push_back(storage.keep(sample));
+                    calc_samples.push_back(storage.keep(sample));
                     runs = std::max(1, runs - 1);
                 }
 
                 for (int i = 0; i < runs; i++)
                 {
-                    calcSamples.push_back(samples[n + i]);
+                    calc_samples.push_back(samples[n + i]);
                 }
 
-                zValues = modelRunner.getZValues(calcSamples);
+                zValues = modelRunner.getZValues(calc_samples);
 
                 if (initial)
                 {
-                    // determine multiplication factor for z (z<0), if u = 0
-                    z0Fac = getZFactor(zValues[0]);
+                    // determine which domain contains the origin
+                    z0Fac = getZFactor(zValues[0], Settings->RunSettings->modelReturnType);
                     uMin = Sample(uMin.getSampleAtBeta(z0Fac * StandardNormal::BetaMax));
                     uMean.initialize(z0Fac * StandardNormal::BetaMax);
                     initial = false;
@@ -199,9 +205,8 @@ namespace Deltares::Reliability
                 }
             }
 
-
             double z = zValues[zIndex];
-            Sample u = *calcSamples[zIndex];
+            Sample u = *calc_samples[zIndex];
 
             // ignore a failed evaluation
             if (std::isnan(z))
@@ -213,33 +218,35 @@ namespace Deltares::Reliability
             nSamples++;
 
             // determine total probability of failure
-            if (z < 0) nFailed++;
-
-            convergenceReport->FailedSamples = nFailed;
-            convergenceReport->FailFraction = NumericSupport::Divide(nFailed, nSamples);
-
-            // register minimum value of r and alpha
-            if (z * z0Fac < 0)
+            const double failure_addition = getFailureAddition(z, Settings->RunSettings->modelReturnType);
+            nFailed += failure_addition;
+            if (failure_addition > 0.0)
             {
-                uMean.addSample(u);
+                failed_samples++;
+            }
+            convergence_report->FailedSamples = failed_samples;
+            convergence_report->FailFraction = nFailed / nSamples;
+
+            // register samples in the domain opposite to the origin
+            const double smallest_domain_addition = z0Fac > 0.0 ? failure_addition : 1.0 - failure_addition;
+            if (smallest_domain_addition > 0.0)
+            {
+                uMean.addSample(u, smallest_domain_addition);
             }
 
-            if (z < 0.0)
-            {
-                probFailure += qRange * u.Weight;
-            }
+            prob_failure = qRange * convergence_report->FailFraction + (1.0 - qRange) * remainder_failure;
 
             // add convergence report to model runner
-            convergenceReport->Convergence = ReportConvergence(modelRunner, probFailure, nSamples, n);
+            convergence_report->Convergence = ReportConvergence(modelRunner, prob_failure, nSamples, n);
         }
 
         // general processing
-        double beta = StandardNormal::getUFromQ(probFailure);
+        double beta = StandardNormal::getUFromQ(prob_failure);
 
         uMin = uMean.getSample();
 
-        std::shared_ptr<DesignPoint> designPoint = modelRunner.getDesignPoint(uMin, beta, convergenceReport);
-        return designPoint;
+        auto design_point = modelRunner.getDesignPoint(uMin, beta, convergence_report);
+        return design_point;
     }
 
     double LatinHyperCube::ReportConvergence(ModelRunner& modelRunner, double pf, int samples, int index) const
