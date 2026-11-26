@@ -4,4 +4,10 @@
         <NuspecFile>Deltares.Probabilistic.NetCS.nuspec</NuspecFile>
         <NuspecProperties>version=$(Version);copyright=$(Copyright)</NuspecProperties>
     </PropertyGroup>
+
+    <!-- Probabilistic layer: Statistics, Reliability, Sensitivity, Uncertainty and the stochast-dependent model classes. -->
+
+    <ItemGroup>
+        <ProjectReference Include="..\Deltares.Probabilistic.NetCS.Core\Deltares.Probabilistic.NetCS.Core.csproj" />
+    </ItemGroup>
 </Project>

@@ -12,6 +12,9 @@
     <copyright>$copyright$</copyright>
   </metadata>
   <files>
+    <!-- Interim until NET-4 (one package per assembly): ship the split assemblies in this package. -->
+    <file src="..\x64\Release\Deltares.Probabilistic.NetCS.Core.dll" target="lib\net8.0\Deltares.Probabilistic.NetCS.Core.dll" />
+    <file src="..\x64\Release\Deltares.Probabilistic.NetCS.Optimization.dll" target="lib\net8.0\Deltares.Probabilistic.NetCS.Optimization.dll" />
     <file src="..\x64\Release\Deltares.Probabilistic.NetCS.dll" target="lib\net8.0\Deltares.Probabilistic.NetCS.dll" />
     <file src="..\x64\Release\Deltares.Probabilistic.CWrapper.dll" target="runtimes\win-x64\native\Deltares.Probabilistic.CWrapper.dll" />
     <file src="..\..\build\lib\libDeltares.Probabilistic.CWrapper.so" target="runtimes\linux-x64\native\libDeltares.Probabilistic.CWrapper.so" />

@@ -21,7 +21,6 @@
 //
 
 using Deltares.Probabilistic.Utils;
-using Deltares.Probabilistic.Statistics;
 using System;
 
 namespace Deltares.Probabilistic.Server;
@@ -31,7 +30,7 @@ namespace Deltares.Probabilistic.Server;
 /// </summary>
 /// <remarks>
 /// This class is useful when communication occurs via a socket connection, which is required when some shadow classes are defined in C#. This class
-/// is the base class for handling the .net classes defined in the probabilistic library, such as <see cref="Stochast"/>. Usually it is overridden
+/// is the base class for handling the .net classes defined in the probabilistic library, such as <c>Stochast</c>. Usually it is overridden
 /// by a class handling .net classes as a shadow class.
 /// </remarks>
 public class ProjectHandler
@@ -55,7 +54,7 @@ public class ProjectHandler
     /// </summary>
     /// <returns>New id</returns>
     /// <remarks>
-    /// The issuance and registration of ids is centralized in order to prevent confusion when same ids are used for different instances 
+    /// The issuance and registration of ids is centralized in order to prevent confusion when same ids are used for different instances
     /// </remarks>
     public int GetNewId()
     {

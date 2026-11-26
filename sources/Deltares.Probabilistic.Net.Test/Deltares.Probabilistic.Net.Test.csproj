@@ -3,6 +3,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Deltares.Probabilistic.NetCS\Deltares.Probabilistic.NetCS.csproj" />
+      <ProjectReference Include="..\Deltares.Probabilistic.NetCS.Optimization\Deltares.Probabilistic.NetCS.Optimization.csproj" />
     </ItemGroup>
 
 </Project>
