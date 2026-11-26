@@ -3,6 +3,49 @@
 
 The following algorithms are used to minimize a function.
 
+\ifdefined\PTKManual
+\section{Calibration}
+\label{sec:Calibration}
+
+Calibration is a method where input parameters can be derived from measured output parameters,
+including uncertainty.
+Calibration can be used to obtain parameters, which are difficult to obtain directly.
+
+For example, the roughness of a river bed is hard to obtain.
+Using measured values such as time series of water levels at different locations,
+the roughness coefficients are determined.
+
+\subsection{Cost function}
+
+The cost function is calculated per realization and is defined as follows:
+
+\begin{align}
+\label{eq:Cost}
+C = \sqrt{\sum_i \left(\frac{m_{\text{model, i}} - m_{\text{observed, i}}}{\sigma_i}\right)^2}
+\end{align}
+
+where
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}
+	$m_{\text{model, i}}$ & is the calculated result value (by the model) of the $i^{th}$ parameter in the current realization; \\
+	$m_{\text{observed, i}}$ & is the observed mean value of the $i^{th}$ parameter; \\
+	$\sigma_i$ & is the deviation of the $i^{th}$ parameter \\
+\end{longtable*}
+
+In case the observed value and the calculated result value refer to series, all individual observed points and their related calculated values are represented as a parameter in \autoref{eq:Cost}. But to prevent over-emphasis of series over individual parameters or series with many points over series with few points, the deviation of a point in a series is corrected as follows:
+
+\begin{align}
+\label{eq:CostPoint}
+\sigma_{\text{point}} = \sigma_{\text{series}} \times \sqrt{N}
+\end{align}
+
+where
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}
+	$\sigma_{\text{point}}$ & is the deviation of a single point; \\
+	$\sigma_{\text{series}}$ & is the deviation of the series, given by the user; \\
+	$N$ & is the number of points in the series \\
+\end{longtable*}
+\fi
+
 \section{Grid} \label{sec:GridSearch}
 
 A grid search has a number of dimensions, called N. Each dimension contains a number of numeric items.
