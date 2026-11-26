@@ -4,8 +4,9 @@
     <PropertyGroup>
         <PackageId>Deltares.ProbabilisticLibrary.Probabilistic</PackageId>
         <Description>.Net interface for the Probabilistic Library: statistics, reliability, sensitivity and uncertainty</Description>
+        <RootNamespace>Deltares.Reliability.Net</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Deltares.Probabilistic.NetCS.Core\Deltares.Probabilistic.NetCS.Core.csproj" />
+        <ProjectReference Include="..\Deltares.ModelWrapper.Net\Deltares.ModelWrapper.Net.csproj" />
     </ItemGroup>
 </Project>

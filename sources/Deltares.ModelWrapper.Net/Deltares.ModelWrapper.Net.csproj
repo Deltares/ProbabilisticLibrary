@@ -5,6 +5,7 @@
     <PropertyGroup>
         <PackageId>Deltares.ProbabilisticLibrary.Core</PackageId>
         <Description>.Net interface for the Probabilistic Library: base functionality (model, logging, native interface) and the native library</Description>
+        <RootNamespace>Deltares.Probabilistic.NetCS.Core</RootNamespace>
     </PropertyGroup>
     <!-- One native binary (option 3A). Core makes all native calls, so it ships the binary for every other package.
          The Windows binary comes from the solution build, the Linux binary from the CMake build. -->

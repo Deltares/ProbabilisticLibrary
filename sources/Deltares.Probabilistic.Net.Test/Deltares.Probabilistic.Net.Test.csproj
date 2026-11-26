@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(ProjectDir)..\utils\Test.targets"/>
     <ItemGroup>
-      <ProjectReference Include="..\Deltares.Probabilistic.NetCS.Probabilistic\Deltares.Probabilistic.NetCS.Probabilistic.csproj" />
-      <ProjectReference Include="..\Deltares.Probabilistic.NetCS.Optimization\Deltares.Probabilistic.NetCS.Optimization.csproj" />
+      <ProjectReference Include="..\Deltares.Reliability.Net\Deltares.Reliability.Net.csproj" />
+      <ProjectReference Include="..\Deltares.Optimization.Net\Deltares.Optimization.Net.csproj" />
     </ItemGroup>
 </Project>

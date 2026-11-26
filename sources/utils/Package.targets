@@ -5,8 +5,7 @@
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <PackageProjectUrl>https://deltares.github.io/ProbabilisticLibrary/</PackageProjectUrl>
     </PropertyGroup>
-    <!--
-        Pin dependencies on other projects in this solution to the exact version: [x.y.z] instead of the default >= x.y.z.
+    <!--Pin dependencies on other projects in this solution to the exact version: [x.y.z] instead of the default >= x.y.z.
         The packages talk to the native binary through string keys, so they must always be used at matching versions.
     -->
     <Target Name="PinProjectReferenceVersions" AfterTargets="_GetProjectReferenceVersions">

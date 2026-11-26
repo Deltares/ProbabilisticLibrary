@@ -4,8 +4,9 @@
     <PropertyGroup>
         <PackageId>Deltares.ProbabilisticLibrary.Optimization</PackageId>
         <Description>.Net interface for the Probabilistic Library: optimization</Description>
+        <RootNamespace>Deltares.Probabilistic.NetCS.Optimization</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Deltares.Probabilistic.NetCS.Core\Deltares.Probabilistic.NetCS.Core.csproj" />
+        <ProjectReference Include="..\Deltares.ModelWrapper.Net\Deltares.ModelWrapper.Net.csproj" />
     </ItemGroup>
 </Project>
