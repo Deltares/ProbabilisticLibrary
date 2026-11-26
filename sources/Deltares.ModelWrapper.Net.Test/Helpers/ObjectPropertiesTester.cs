@@ -22,61 +22,16 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Deltares.Probabilistic.Logging;
-using Deltares.Probabilistic.Model;
-using Deltares.Probabilistic.Optimization;
-using Deltares.Probabilistic.Reliability;
-using Deltares.Probabilistic.Sensitivity;
-using Deltares.Probabilistic.Uncertainty;
-using Deltares.Probabilistic.Statistics;
-using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
 namespace Deltares.Probabilistic.Test;
 
-[TestFixture]
-public class TestObjectProperties
+/// <summary>
+/// Checks that every read/write property of simple type round-trips its value (through the native layer).
+/// </summary>
+public static class ObjectPropertiesTester
 {
-    [Test]
-    [TestCase(typeof(Stochast), "Mean", "Deviation", "Variation", "DesignValue")]
-    [TestCase(typeof(CorrelationMatrix), "Item")]
-    [TestCase(typeof(HistogramValue))]
-    [TestCase(typeof(DiscreteValue))]
-    [TestCase(typeof(FragilityValue))]
-    [TestCase(typeof(ContributingStochast))]
-    [TestCase(typeof(ProbabilityValue))]
-    [TestCase(typeof(ConditionalValue))]
-    [TestCase(typeof(RunProject))]
-    [TestCase(typeof(RunSettings))]
-    [TestCase(typeof(StochastPointAlpha), "Identifier")]
-    [TestCase(typeof(Evaluation))]
-    [TestCase(typeof(Message))]
-    [TestCase(typeof(ModelParameter))]
-    [TestCase(typeof(ReliabilityProject))]
-    [TestCase(typeof(ReliabilitySettings))]
-    [TestCase(typeof(LimitStateFunction))]
-    [TestCase(typeof(StochastSettings))]
-    [TestCase(typeof(DesignPoint))]
-    [TestCase(typeof(ConvergenceReport))]
-    [TestCase(typeof(ReliabilityResult))]
-    [TestCase(typeof(ConvergenceReport))]
-    [TestCase(typeof(FragilityCurve), "DistributionType", "ConstantParameterType", "Truncated", "Mean", "Deviation", "Variation", "DesignValue")]
-    [TestCase(typeof(CombineProject))]
-    [TestCase(typeof(CombineSettings))]
-    [TestCase(typeof(ExcludingCombineProject))]
-    [TestCase(typeof(ExcludingCombineSettings))]
-    [TestCase(typeof(OptimizationProject))]
-    [TestCase(typeof(OptimizationResult))]
-    [TestCase(typeof(OptimizationSettings))]
-    [TestCase(typeof(SearchParameterSettings))]
-    [TestCase(typeof(SensitivityProject))]
-    [TestCase(typeof(SensitivitySettings))]
-    [TestCase(typeof(SensitivityResult))]
-    [TestCase(typeof(SensitivityValue))]
-    [TestCase(typeof(UncertaintyProject))]
-    [TestCase(typeof(UncertaintySettings))]
-    [TestCase(typeof(UncertaintyResult), "Identifier")]
-    public void TestProperties(Type type, params string[] excluded)
+    public static void TestProperties(Type type, params string[] excluded)
     {
         object obj = Activator.CreateInstance(type);
 
@@ -108,7 +63,7 @@ public class TestObjectProperties
         }
     }
 
-    private void TestIntProperty(object obj, PropertyInfo property)
+    private static void TestIntProperty(object obj, PropertyInfo property)
     {
         int current = (int)property.GetValue(obj);
         int modified = current + 1;
@@ -118,7 +73,7 @@ public class TestObjectProperties
         ClassicAssert.AreEqual(modified, modifiedRetrieved, property.Name);
     }
 
-    private void TestDoubleProperty(object obj, PropertyInfo property)
+    private static void TestDoubleProperty(object obj, PropertyInfo property)
     {
         const double margin = 1E-10;
 
@@ -131,7 +86,7 @@ public class TestObjectProperties
         ClassicAssert.AreEqual(modified, modifiedRetrieved, margin, property.Name);
     }
 
-    private void TestBoolProperty(object obj, PropertyInfo property)
+    private static void TestBoolProperty(object obj, PropertyInfo property)
     {
         bool current = (bool)property.GetValue(obj);
         bool modified = !current;
@@ -141,7 +96,7 @@ public class TestObjectProperties
         ClassicAssert.AreEqual(modified, modifiedRetrieved, property.Name);
     }
 
-    private void TestStringProperty(object obj, PropertyInfo property)
+    private static void TestStringProperty(object obj, PropertyInfo property)
     {
         string current = (string)property.GetValue(obj);
         string modified = current + "-modified";
@@ -151,7 +106,7 @@ public class TestObjectProperties
         ClassicAssert.AreEqual(modified, modifiedRetrieved, property.Name);
     }
 
-    private void TestEnumProperty(object obj, PropertyInfo property)
+    private static void TestEnumProperty(object obj, PropertyInfo property)
     {
         foreach (var enumValue in Enum.GetValues(property.PropertyType))
         {
@@ -162,3 +117,4 @@ public class TestObjectProperties
         }
     }
 }
+

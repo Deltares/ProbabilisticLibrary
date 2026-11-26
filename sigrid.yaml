@@ -22,7 +22,9 @@ languages:
     production:
     test:
        include:
-         - ".*/sources/Deltares.Probabilistic.Net.Test/.*[.]cs"
+         - ".*/sources/Deltares.ModelWrapper.Net.Test/.*[.]cs"
+         - ".*/sources/Deltares.Optimization.Net.Test/.*[.]cs"
+         - ".*/sources/Deltares.Reliability.Net.Test/.*[.]cs"
 dependencychecker:
   enabled: true
   blocklist: []

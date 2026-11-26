@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="$(ProjectDir)..\utils\Test.targets"/>
+    <ItemGroup>
+      <ProjectReference Include="..\Deltares.Reliability.Net\Deltares.Reliability.Net.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Include="..\Deltares.ModelWrapper.Net.Test\Helpers\*.cs" LinkBase="Helpers" />
+    </ItemGroup>
+</Project>
+
