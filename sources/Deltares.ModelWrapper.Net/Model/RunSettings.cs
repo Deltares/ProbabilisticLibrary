@@ -19,38 +19,44 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using System;
+using Deltares.Probabilistic.Utils;
 
 namespace Deltares.Probabilistic.Model;
 
-public enum ModelReturnType
+public class RunSettings
 {
-    ZValue,
-    ProbabilityFailure,
-    ReliabilityIndex
-}
+    private int id = 0;
 
-internal static class ModelReturnTypeConverter
-{
-    public static string ConvertToString(ModelReturnType type)
+    public RunSettings()
     {
-        return type switch
-        {
-            ModelReturnType.ZValue => "z_value",
-            ModelReturnType.ProbabilityFailure => "probability_failure",
-            ModelReturnType.ReliabilityIndex => "reliability_index",
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-        };
+        this.id = Interface.Create("run_project_settings");
     }
 
-    public static ModelReturnType ConvertFromString(string value)
+    /// <summary>Wraps an existing native object. Intended for use by the Probabilistic Library assemblies.</summary>
+    public RunSettings(int id)
     {
-        return value.ToLowerInvariant() switch
-        {
-            "z_value" => ModelReturnType.ZValue,
-            "probability_failure" => ModelReturnType.ProbabilityFailure,
-            "reliability_index" => ModelReturnType.ReliabilityIndex,
-            _ => throw new ArgumentException($"Unknown model return type: {value}")
-        };
+        this.id = id;
+    }
+
+    ~RunSettings()
+    {
+        Interface.Destroy(id);
+    }
+
+    public int GetId()
+    {
+        return id;
+    }
+
+    public RunValuesType RunValuesType
+    {
+        get { return RunValuesTypeConverter.ConvertFromString(Interface.GetStringValue(id, "run_values_type")); }
+        set { Interface.SetStringValue(id, "run_values_type", RunValuesTypeConverter.ConvertToString(value)); }
+    }
+
+    public bool ReuseCalculations
+    {
+        get { return Interface.GetBoolValue(id, "reuse_calculations"); }
+        set { Interface.SetBoolValue(id, "reuse_calculations", value); }
     }
 }

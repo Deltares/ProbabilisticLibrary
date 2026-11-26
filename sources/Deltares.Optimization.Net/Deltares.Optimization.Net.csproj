@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="$(ProjectDir)..\utils\Source.targets" />
+    <!-- Optimization layer: depends on Core only. Must not reference stochast or reliability types. -->
+    <PropertyGroup>
+        <PackageId>Deltares.ProbabilisticLibrary.Optimization</PackageId>
+        <Description>.Net interface for the Probabilistic Library: optimization</Description>
+        <RootNamespace>Deltares.Probabilistic.NetCS.Optimization</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Deltares.ModelWrapper.Net\Deltares.ModelWrapper.Net.csproj" />
+    </ItemGroup>
+</Project>

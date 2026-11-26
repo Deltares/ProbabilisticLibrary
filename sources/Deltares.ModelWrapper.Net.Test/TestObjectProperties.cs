@@ -1,4 +1,4 @@
-﻿// Copyright (C) Stichting Deltares. All rights reserved.
+// Copyright (C) Stichting Deltares. All rights reserved.
 //
 // This file is part of the Probabilistic Library.
 //
@@ -19,43 +19,24 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Probabilistic.Utils;
+using System;
+using Deltares.Probabilistic.Logging;
+using Deltares.Probabilistic.Model;
+using NUnit.Framework;
 
-namespace Deltares.Probabilistic.Model;
+namespace Deltares.Probabilistic.Test;
 
-public class RunSettings
+[TestFixture]
+public class TestObjectProperties
 {
-    private int id = 0;
-
-    public RunSettings()
+    [Test]
+    [TestCase(typeof(RunSettings))]
+    [TestCase(typeof(Evaluation))]
+    [TestCase(typeof(Message))]
+    [TestCase(typeof(ModelParameter))]
+    public void TestProperties(Type type, params string[] excluded)
     {
-        this.id = Interface.Create("run_project_settings");
-    }
-
-    internal RunSettings(int id)
-    {
-        this.id = id;
-    }
-
-    ~RunSettings()
-    {
-        Interface.Destroy(id);
-    }
-
-    internal int GetId()
-    {
-        return id;
-    }
-
-    public RunValuesType RunValuesType
-    {
-        get { return RunValuesTypeConverter.ConvertFromString(Interface.GetStringValue(id, "run_values_type")); }
-        set { Interface.SetStringValue(id, "run_values_type", RunValuesTypeConverter.ConvertToString(value)); }
-    }
-
-    public bool ReuseCalculations
-    {
-        get { return Interface.GetBoolValue(id, "reuse_calculations"); }
-        set { Interface.SetBoolValue(id, "reuse_calculations", value); }
+        ObjectPropertiesTester.TestProperties(type, excluded);
     }
 }
+

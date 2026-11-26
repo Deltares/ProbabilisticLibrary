@@ -19,27 +19,38 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Probabilistic.Utils;
+using System;
 
-namespace Deltares.Probabilistic.Logging
+namespace Deltares.Probabilistic.Model;
+
+public enum ModelReturnType
 {
-    public class Message
+    ZValue,
+    ProbabilityFailure,
+    ReliabilityIndex
+}
+
+public static class ModelReturnTypeConverter
+{
+    public static string ConvertToString(ModelReturnType type)
     {
-        public Message()
+        return type switch
         {
-        }
+            ModelReturnType.ZValue => "z_value",
+            ModelReturnType.ProbabilityFailure => "probability_failure",
+            ModelReturnType.ReliabilityIndex => "reliability_index",
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
 
-        internal Message(int id)
+    public static ModelReturnType ConvertFromString(string value)
+    {
+        return value.ToLowerInvariant() switch
         {
-            Type = MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "type"));
-            Text = Interface.GetStringValue(id, "text");
-            Subject = Interface.GetStringValue(id, "subject");
-
-            Interface.Destroy(id);
-        }
-
-        public MessageType Type { get; set; }
-        public string Text { get; set; }
-        public string Subject { get; set; }
+            "z_value" => ModelReturnType.ZValue,
+            "probability_failure" => ModelReturnType.ProbabilityFailure,
+            "reliability_index" => ModelReturnType.ReliabilityIndex,
+            _ => throw new ArgumentException($"Unknown model return type: {value}")
+        };
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (C) Stichting Deltares. All rights reserved.
+// Copyright (C) Stichting Deltares. All rights reserved.
 //
 // This file is part of the Probabilistic Library.
 //
@@ -21,7 +21,6 @@
 //
 
 using Deltares.Probabilistic.Logging;
-using Deltares.Probabilistic.Statistics;
 using Deltares.Probabilistic.Utils;
 using System;
 using System.Collections.Generic;
@@ -36,25 +35,26 @@ namespace Deltares.Probabilistic.Model
     public delegate void ZMultipleSampleDelegate(IList<ModelSample> samples);
     public delegate void EmptyDelegate();
 
-    public class ModelProject
+    /// <summary>
+    /// Base class for projects containing a model, without stochastic variables
+    /// </summary>
+    public class BaseModelProject
     {
         private int id = 0;
 
-        private CallBackList<Stochast> stochasts = null;
         private CallBackList<ModelParameter> inputParameters = null;
         private CallBackList<ModelParameter> outputParameters = null;
         private ZSampleDelegate zFunction = null;
         private ZMultipleSampleDelegate zMultipleFunction = null;
         private EmptyDelegate nextFunction = null;
-        private CorrelationMatrix correlationMatrix = null;
         private TagRepository tagRepository = new TagRepository();
         private ProgressIndicator progressIndicator = null;
 
-        public ModelProject()
+        public BaseModelProject()
         {
         }
 
-        internal ModelProject(int id)
+        protected internal BaseModelProject(int id)
         {
             if (id > 0)
             {
@@ -63,17 +63,17 @@ namespace Deltares.Probabilistic.Model
             }
         }
 
-        ~ModelProject()
+        ~BaseModelProject()
         {
             Interface.Destroy(id);
         }
 
-        internal int GetId()
+        protected internal int GetId()
         {
             return id;
         }
 
-        internal void SetId(int id)
+        protected internal void SetId(int id)
         {
             this.id = id;
             SetCallBacks();
@@ -267,57 +267,6 @@ namespace Deltares.Probabilistic.Model
             Interface.SetArrayIntValue(id, "output_parameters", this.outputParameters.Select(p => p.GetId()).ToArray());
         }
 
-        public IList<Stochast> Stochasts
-        {
-            get
-            {
-                if (stochasts == null)
-                {
-                    stochasts = new CallBackList<Stochast>(StochastValuesChanged);
-
-                    int[] stochastIds = Interface.GetArrayIdValue(id, "variables");
-                    foreach (int stochastId in stochastIds)
-                    {
-                        stochasts.AddWithoutCallBack(ObjectFactory.GetObject<Stochast>(stochastId));
-                    }
-                }
-
-                return stochasts;
-            }
-        }
-
-        private void StochastValuesChanged(ListOperationType listOperation, Stochast item)
-        {
-            Interface.SetArrayIntValue(id, "variables", this.stochasts.Select(p => p.GetId()).ToArray());
-        }
-
-        public CorrelationMatrix CorrelationMatrix
-        {
-            get
-            {
-                if (correlationMatrix == null)
-                {
-                    int matrixId = Interface.GetIdValue(id, "correlation_matrix");
-                    if (matrixId == 0)
-                    {
-                        correlationMatrix = new CorrelationMatrix();
-                        Interface.SetIntValue(id, "correlation_matrix", correlationMatrix.GetId());
-                    }
-                    else
-                    {
-                        correlationMatrix = new CorrelationMatrix(matrixId);
-                    }
-                }
-
-                return correlationMatrix;
-            }
-            set
-            {
-                Interface.SetIntValue(id, "correlation_matrix", value.GetId());
-                correlationMatrix = value;
-            }
-        }
-
         protected internal TagRepository TagRepository
         {
             get { return tagRepository; }
@@ -329,3 +278,4 @@ namespace Deltares.Probabilistic.Model
         }
     }
 }
+

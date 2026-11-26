@@ -30,7 +30,8 @@ namespace Deltares.Probabilistic.Logging
         {
         }
 
-        internal Evaluation(int id, TagRepository tagRepository)
+        /// <summary>Wraps an existing native object. Intended for use by the Probabilistic Library assemblies.</summary>
+        public Evaluation(int id, TagRepository tagRepository)
         {
             this.Iteration = Interface.GetIntValue(id, "iteration");
             this.Beta = Interface.GetValue(id, "beta");

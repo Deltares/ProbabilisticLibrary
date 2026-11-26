@@ -1,4 +1,4 @@
-﻿// Copyright (C) Stichting Deltares. All rights reserved.
+// Copyright (C) Stichting Deltares. All rights reserved.
 //
 // This file is part of the Probabilistic Library.
 //
@@ -19,26 +19,23 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-using Deltares.Probabilistic.Utils;
+using System;
+using Deltares.Probabilistic.Optimization;
+using NUnit.Framework;
 
-namespace Deltares.Probabilistic.Model;
+namespace Deltares.Probabilistic.Test;
 
-public class ConvergenceResult
+[TestFixture]
+public class TestObjectProperties
 {
-    public ConvergenceResult()
+    [Test]
+    [TestCase(typeof(OptimizationProject))]
+    [TestCase(typeof(OptimizationResult))]
+    [TestCase(typeof(OptimizationSettings))]
+    [TestCase(typeof(SearchParameterSettings))]
+    public void TestProperties(Type type, params string[] excluded)
     {
+        ObjectPropertiesTester.TestProperties(type, excluded);
     }
-
-    internal ConvergenceResult(int id)
-    {
-        this.Index = Interface.GetIntValue(id, "index");
-        this.Difference = Interface.GetValue(id, "difference");
-        this.Samples = Interface.GetIntValue(id, "samples");
-
-        Interface.Destroy(id);
-    }
-
-    public int Index { get; set; }
-    public int Samples { get; set; }
-    public double Difference { get; set; }
 }
+

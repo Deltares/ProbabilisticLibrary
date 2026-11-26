@@ -1,7 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="$(ProjectDir)..\utils\Source.targets" />
-    <PropertyGroup>
-        <NuspecFile>Deltares.Probabilistic.NetCS.nuspec</NuspecFile>
-        <NuspecProperties>version=$(Version);copyright=$(Copyright)</NuspecProperties>
-    </PropertyGroup>
-</Project>
