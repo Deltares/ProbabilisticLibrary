@@ -30,7 +30,7 @@ public enum ModelReturnType
     ReliabilityIndex
 }
 
-internal static class ModelReturnTypeConverter
+public static class ModelReturnTypeConverter
 {
     public static string ConvertToString(ModelReturnType type)
     {

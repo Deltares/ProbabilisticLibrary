@@ -54,7 +54,7 @@ namespace Deltares.Probabilistic.Model
         {
         }
 
-        internal BaseModelProject(int id)
+        protected internal BaseModelProject(int id)
         {
             if (id > 0)
             {
@@ -68,12 +68,12 @@ namespace Deltares.Probabilistic.Model
             Interface.Destroy(id);
         }
 
-        internal int GetId()
+        protected internal int GetId()
         {
             return id;
         }
 
-        internal void SetId(int id)
+        protected internal void SetId(int id)
         {
             this.id = id;
             SetCallBacks();

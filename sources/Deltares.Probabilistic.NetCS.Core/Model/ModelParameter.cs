@@ -34,7 +34,8 @@ public class ModelParameter
         this.id = Interface.Create("model_parameter");
     }
 
-    internal ModelParameter(int id)
+    /// <summary>Wraps an existing native object. Intended for use by the Probabilistic Library assemblies.</summary>
+    public ModelParameter(int id)
     {
         this.id = id;
     }

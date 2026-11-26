@@ -29,7 +29,8 @@ namespace Deltares.Probabilistic.Logging
         {
         }
 
-        internal Message(int id)
+        /// <summary>Wraps an existing native object. Intended for use by the Probabilistic Library assemblies.</summary>
+        public Message(int id)
         {
             Type = MessageTypeConverter.ConvertFromString(Interface.GetStringValue(id, "type"));
             Text = Interface.GetStringValue(id, "text");

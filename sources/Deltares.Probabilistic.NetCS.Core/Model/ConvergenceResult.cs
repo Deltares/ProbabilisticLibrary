@@ -29,7 +29,8 @@ public class ConvergenceResult
     {
     }
 
-    internal ConvergenceResult(int id)
+    /// <summary>Wraps an existing native object. Intended for use by the Probabilistic Library assemblies.</summary>
+    public ConvergenceResult(int id)
     {
         this.Index = Interface.GetIntValue(id, "index");
         this.Difference = Interface.GetValue(id, "difference");

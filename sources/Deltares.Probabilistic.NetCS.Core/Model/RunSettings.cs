@@ -32,7 +32,8 @@ public class RunSettings
         this.id = Interface.Create("run_project_settings");
     }
 
-    internal RunSettings(int id)
+    /// <summary>Wraps an existing native object. Intended for use by the Probabilistic Library assemblies.</summary>
+    public RunSettings(int id)
     {
         this.id = id;
     }
@@ -42,7 +43,7 @@ public class RunSettings
         Interface.Destroy(id);
     }
 
-    internal int GetId()
+    public int GetId()
     {
         return id;
     }

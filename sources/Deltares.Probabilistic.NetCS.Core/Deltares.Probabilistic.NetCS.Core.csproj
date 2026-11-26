@@ -3,11 +3,6 @@
 
     <!-- Base layer: native interface, logging, server base and the stochast-free model classes.
          Must not reference Statistics, Reliability, Sensitivity, Uncertainty or Optimization. -->
-
-    <ItemGroup>
-        <!-- Temporary: internal members used by the layers above. To be reviewed in NET-3. -->
-        <InternalsVisibleTo Include="Deltares.Probabilistic.NetCS.Optimization" />
-        <InternalsVisibleTo Include="Deltares.Probabilistic.NetCS" />
-    </ItemGroup>
 </Project>
+
 
