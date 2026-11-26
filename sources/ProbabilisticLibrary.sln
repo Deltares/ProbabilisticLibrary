@@ -18,7 +18,7 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.Pyth
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.Python.Test", "Deltares.Probabilistic.Python.Test\Deltares.Probabilistic.Python.Test.pyproj", "{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deltares.Probabilistic.NetCS", "Deltares.Probabilistic.NetCS\Deltares.Probabilistic.NetCS.csproj", "{BB51129A-4669-4BE9-B9CC-1F8E4ABA7685}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deltares.Probabilistic.NetCS.Probabilistic", "Deltares.Probabilistic.NetCS.Probabilistic\Deltares.Probabilistic.NetCS.Probabilistic.csproj", "{BB51129A-4669-4BE9-B9CC-1F8E4ABA7685}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E82A904A-FE1C-4695-BE1F-0AFCE5861FB4} = {E82A904A-FE1C-4695-BE1F-0AFCE5861FB4}
 	EndProjectSection
@@ -30,9 +30,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deltares.Probabilistic.NetC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deltares.Probabilistic.NetCS.Optimization", "Deltares.Probabilistic.NetCS.Optimization\Deltares.Probabilistic.NetCS.Optimization.csproj", "{109EC5D8-6921-4D63-8693-986517BA7BDD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deltares.Probabilistic.NetCS", "Deltares.Probabilistic.NetCS\Deltares.Probabilistic.NetCS.csproj", "{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		utils\Base.targets = utils\Base.targets
+		utils\Package.targets = utils\Package.targets
 		utils\Product.targets = utils\Product.targets
 		utils\Source.targets = utils\Source.targets
 		utils\Test.targets = utils\Test.targets
@@ -110,6 +113,15 @@ Global
 		{109EC5D8-6921-4D63-8693-986517BA7BDD}.Release|x64.Build.0 = Release|x64
 		{109EC5D8-6921-4D63-8693-986517BA7BDD}.Release|x86.ActiveCfg = Release|x64
 		{109EC5D8-6921-4D63-8693-986517BA7BDD}.Release|x86.Build.0 = Release|x64
+		{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}.Debug|x64.ActiveCfg = Debug|x64
+		{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}.Debug|x64.Build.0 = Debug|x64
+		{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}.Debug|x86.ActiveCfg = Debug|x64
+		{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}.Debug|x86.Build.0 = Debug|x64
+		{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}.Release|x64.ActiveCfg = Release|x64
+		{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}.Release|x64.Build.0 = Release|x64
+		{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}.Release|x86.ActiveCfg = Release|x64
+		{9C09938B-4DAC-416F-90B2-1B7E0BAFF150}.Release|x86.Build.0 = Release|x64
+
 
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

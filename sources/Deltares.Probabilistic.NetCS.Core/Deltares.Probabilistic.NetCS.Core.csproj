@@ -1,8 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(ProjectDir)..\utils\Source.targets" />
-
     <!-- Base layer: native interface, logging, server base and the stochast-free model classes.
          Must not reference Statistics, Reliability, Sensitivity, Uncertainty or Optimization. -->
+    <PropertyGroup>
+        <PackageId>Deltares.ProbabilisticLibrary.Core</PackageId>
+        <Description>.Net interface for the Probabilistic Library: base functionality (model, logging, native interface) and the native library</Description>
+    </PropertyGroup>
+    <!-- One native binary (option 3A). Core makes all native calls, so it ships the binary for every other package.
+         The Windows binary comes from the solution build, the Linux binary from the CMake build. -->
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)..\x64\$(Configuration)\Deltares.Probabilistic.CWrapper.dll" Pack="true" PackagePath="runtimes\win-x64\native" Visible="false" />
+        <None Include="$(MSBuildThisFileDirectory)..\..\build\lib\libDeltares.Probabilistic.CWrapper.so" Pack="true" PackagePath="runtimes\linux-x64\native" Visible="false" />
+    </ItemGroup>
 </Project>
-
-

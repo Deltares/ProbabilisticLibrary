@@ -1,3 +1,4 @@
 <Project>
     <Import Project="Base.targets"/>
+    <Import Project="Package.targets"/>
 </Project>

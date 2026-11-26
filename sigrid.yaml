@@ -2,9 +2,9 @@ default_excludes: true
 component_base_dirs:
   - "sources/Deltares.Probabilistic"
   - "sources/Deltares.Probabilistic.CWrapper"
-  - "sources/Deltares.Probabilistic.NetCS"
   - "sources/Deltares.Probabilistic.NetCS.Core"
   - "sources/Deltares.Probabilistic.NetCS.Optimization"
+  - "sources/Deltares.Probabilistic.NetCS.Probabilistic"
   - ""
 exclude:
   - ".*/ASA/.*"

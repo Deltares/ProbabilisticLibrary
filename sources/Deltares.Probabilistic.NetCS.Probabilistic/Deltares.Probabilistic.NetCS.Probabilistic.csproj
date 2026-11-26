@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="$(ProjectDir)..\utils\Source.targets" />
+    <!-- Probabilistic layer: Statistics, Reliability, Sensitivity, Uncertainty and the stochast-dependent model classes. -->
+    <PropertyGroup>
+        <PackageId>Deltares.ProbabilisticLibrary.Probabilistic</PackageId>
+        <Description>.Net interface for the Probabilistic Library: statistics, reliability, sensitivity and uncertainty</Description>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Deltares.Probabilistic.NetCS.Core\Deltares.Probabilistic.NetCS.Core.csproj" />
+    </ItemGroup>
+</Project>

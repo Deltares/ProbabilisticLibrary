@@ -4,6 +4,7 @@
     <PropertyGroup>
         <NoWarn>108,114</NoWarn>
         <IsPublishable>False</IsPublishable>
+        <IsPackable>False</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
